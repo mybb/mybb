@@ -319,10 +319,10 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="nocacheheaders">
 			<title>Send No Cache Headers</title>
-			<description><![CDATA[With this option you can prevent caching of the page by the browser.]]></description>
+			<description><![CDATA[With this option you can enforce dynamic pages to be re-validated by browsers and not cached by proxies.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="load">
