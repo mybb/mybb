@@ -94,7 +94,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
 
-	// Loop through all users.
+	// Loop through all users and spiders.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
