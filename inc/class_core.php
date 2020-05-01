@@ -577,6 +577,10 @@ class MyBB {
 				$message = "Xcache needs to be configured with PHP to use the Xcache cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "redis_load_error":
+				$message = "Your server does not have redis support enabled.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_GENERAL;
