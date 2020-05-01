@@ -1219,7 +1219,7 @@ $(function() {
 			if($db->num_rows($query) > 0)
 			{
 				$question = $db->fetch_array($query);
-				
+
 				//Set parser options for security question
 				$parser_options = array(
 					"allow_html" => 0,
@@ -2600,14 +2600,14 @@ if($mybb->input['action'] == "profile")
 				$activity = fetch_wol_activity($session['location'], $session['nopermission']);
 				$location = build_friendly_wol_location($activity);
 				$location_time = my_date($mybb->settings['timeformat'], $last_seen);
-	
+
 				eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 			}
 		}
 	}
 
 	if(!isset($online_status))
-	{		
+	{
 		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
@@ -3281,6 +3281,10 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
+	if(!$user['$uid'])
+	{
+		error($lang->referrals_invalid_user);
+	}
 
 	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);
 	add_breadcrumb($lang->nav_referrals);
