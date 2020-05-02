@@ -1337,6 +1337,8 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
+			$thread_started_time_date_title = $lang->sprintf($lang->thread_started_time_date_title, $thread['date'], $thread['time']);
+			$thread_started_time_date = $lang->sprintf($lang->thread_started_time_date, $thread['date'], $thread['time']);
 			eval("\$threads .= \"".$templates->get("forumdisplay_thread_deleted")."\";");
 		}
 		else
