@@ -96,6 +96,7 @@ $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 $l['deleted_thread'] = "Deleted Thread";
 $l['thread_started_time_date_title'] = "Thread started at {1}, {2}";
+$l['thread_started_time_date'] = "({1}, {2})";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 
