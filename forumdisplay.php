@@ -1335,8 +1335,8 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
 		{
-			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
-			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
+			$thread['date'] = my_date($mybb->settings['dateformat'], $thread['dateline']);
+			$thread['time'] = my_date($mybb->settings['timeformat'], $thread['dateline']);
 			$thread_started_time_date_title = $lang->sprintf($lang->thread_started_time_date_title, $thread['date'], $thread['time']);
 			$thread_started_time_date = $lang->sprintf($lang->thread_started_time_date, $thread['date'], $thread['time']);
 			eval("\$threads .= \"".$templates->get("forumdisplay_thread_deleted")."\";");
