@@ -944,7 +944,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			$post['forumlink'] = '';
-			if(!empty($forumcache[$thread['fid']]))
+			if(!empty($forumcache[$post['fid']]))
 			{
 				$post['forumlink_link'] = get_forum_link($post['fid']);
 				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
