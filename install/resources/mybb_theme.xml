@@ -3518,7 +3518,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1820"><![CDATA[<html>
+		<template name="editpost" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -3544,7 +3544,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}:</strong><br /><div style="text-align: center;">{$smilieinserter}</div></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="text-align: center;">{$smilieinserter}</div></td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{$message}</textarea>
 {$codebuttons}
