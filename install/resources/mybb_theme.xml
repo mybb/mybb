@@ -6366,7 +6366,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1820"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
@@ -6440,7 +6440,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					<br />
 					<div align="center">
-						<input type="submit" class="button" name="Edit Announcement" value="{$lang->edit_announcement}" />&nbsp;&nbsp;
+						<input type="submit" class="button" value="{$lang->edit_announcement}" />&nbsp;&nbsp;
 						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
@@ -6497,7 +6497,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>]]></template>
-		<template name="modcp_announcements_new" version="1820"><![CDATA[<html>
+		<template name="modcp_announcements_new" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
@@ -6570,7 +6570,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					<br />
 					<div align="center">
-						<input type="submit" class="button" name="Add Announcement" value="{$lang->add_announcement}" />&nbsp;&nbsp;
+						<input type="submit" class="button" value="{$lang->add_announcement}" />&nbsp;&nbsp;
 						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
