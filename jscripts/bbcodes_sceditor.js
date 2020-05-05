@@ -174,7 +174,7 @@ $(function ($) {
 
 	$.sceditor.command.set('size', {
 		_dropDown: function (editor, caller, callback) {
-			var content = $('<div />'),
+			var content = $('<div></div>'),
 				clickFunc = function (e) {
 					callback($(this).data('size'));
 					editor.closeDropDown(true);
@@ -303,7 +303,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="php">' + editor._('PHP') + ':</label> ' +
-				'<textarea type="text" id="php" />' +
+				'<textarea type="text" id="php"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -366,7 +366,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="code">' + editor._('Code') + ':</label> ' +
-				'<textarea type="text" id="code" />' +
+				'<textarea type="text" id="code"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
