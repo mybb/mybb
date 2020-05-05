@@ -444,6 +444,10 @@ table {
 	background: #ffdde0;
 }
 
+.thread_start_datetime {
+	color: #999;
+}
+
 .post.unapproved_post .post_author {
 	border-bottom-color: #ffb8be;
 }
@@ -3973,7 +3977,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		{$attachment_count}
 		<div>
           <span>{$prefix} {$gotounread}{$thread['threadprefix']}<span class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></span>{$thread['multipage']}</span>
-			<div class="author smalltext">{$thread['profilelink']} &raquo; {$thread['start_datetime']}</div>
+			<div><span class="author smalltext">{$thread['profilelink']},</span> <span class="thread_start_datetime smalltext">{$thread['start_datetime']}</span></div>
 		</div>
 	</td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
