@@ -479,9 +479,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function insert_id()
 	{
-		$this->last_query = str_replace(array("\r", "\t"), '', $this->last_query);
-		$this->last_query = str_replace("\n", ' ', $this->last_query);
-		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
+		preg_match('#INSERT\s+INTO\s+([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
 
 		$table = $matches[1];
 
