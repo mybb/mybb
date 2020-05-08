@@ -249,7 +249,7 @@ class SmtpMail extends MailHandler
 
 			if(!$this->send_data('.', 250))
 			{
-				$this->fatal_error("Mail may not delivered. Reason: ".$this->get_error());
+				$this->fatal_error("Mail may not be delivered. Reason: ".$this->get_error());
 			}
 
 			if(!$this->keep_alive)
