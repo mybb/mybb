@@ -1528,8 +1528,8 @@ function create_tables()
  *  of the most commonly accessed data in MyBB.
  *  By default, the database is used to store this data.
  *
- *  If you wish to use the file system (cache/ directory), MemCache (or MemCached), xcache, APC, eAccelerator or Redis
- *  you can change the value below to 'files', 'memcache', 'memcached', 'xcache', 'apc', 'eaccelerator' or 'redis' from 'db'.
+ *  If you wish to use the file system (cache/ directory), MemCache (or MemCached), xcache, APC, APCu, eAccelerator or Redis
+ *  you can change the value below to 'files', 'memcache', 'memcached', 'xcache', 'apc', 'apcu', 'eaccelerator' or 'redis' from 'db'.
  */
 
 \$config['cache_store'] = 'db';
