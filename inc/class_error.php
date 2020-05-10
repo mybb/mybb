@@ -559,7 +559,7 @@ HTML;
 </p>
 
 <p>
-	<strong>If you are the site owner</strong>, please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.
+	<strong>If you are the site owner</strong>, lease check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
 </p>
 HTML;
 
