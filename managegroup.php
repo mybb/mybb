@@ -379,6 +379,7 @@ else
 			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
 	}
 
+	$removeable_count = 0;
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{
@@ -413,7 +414,16 @@ else
 		}
 
 		// Checkbox for user management - only if current user is allowed
-		$checkbox = '';
+		$checkbox = $disabled = '';
+		if($user['usergroup'] == $gid)
+		{
+			$disabled = 'disabled="disabled"';
+		}
+		else
+		{
+			++$removeable_count;
+		}
+
 		if($groupleader['canmanagemembers'] == 1)
 		{
 			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
@@ -432,7 +442,10 @@ else
 	if($groupleader['canmanagemembers'] == 1)
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
-		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		if($removeable_count)
+		{
+			eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		}
 	}
 
 	if($usergroup['type'] == 5 && $groupleader['caninvitemembers'] == 1)
