@@ -555,11 +555,11 @@ HTML;
 
 			$contact = <<<HTML
 <p>
-	<strong>If you're a visitor of this website</strong>, please wait a few minutes.{$contact_site_owner}
+	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
 </p>
 
 <p>
-	<strong>If you are the site owner</strong>, lease check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
+	<strong>If you are the site owner</strong>, please check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
 </p>
 HTML;
 
