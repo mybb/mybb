@@ -423,7 +423,7 @@ class errorHandler {
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
-
+		
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
@@ -539,27 +539,29 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
-		if(isset($mybb->user) && is_array($mybb->usergroup) && $mybb->usergroup['cancp'] == 1)
+		$contact_site_owner = '';
+		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
+		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 		{
-			// admins directed to contact MyBB
-			$contact = 'Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.';
-		}
-		else
-		{
-			// users directed to contact the site owner
-			$contact_us = 'site owner';
-			if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 			{
-				if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
-				{
-					$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-				}
-
-				$contact_us = '<a href="' . $mybb->settings['contactlink'] . '">' . $contact_us . '</a>';
+				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}
 
-			$contact = 'Please contact the ' . $contact_us . ' for technical support.';
+			$contact_site_owner = <<<HTML
+ If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.
+HTML;
 		}
+
+			$contact = <<<HTML
+<p>
+	<strong>If you're a visitor of this website</strong>, please wait a few minutes.{$contact_site_owner}
+</p>
+
+<p>
+	<strong>If you are the site owner</strong>, please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.
+</p>
+HTML;
 
 		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
