@@ -1016,8 +1016,8 @@ if($mybb->input['action'] == "thread")
 
 		// Work out if we have terms to highlight
         $highlight = "";
-		$threadmode = "";
-		$extraquery = "";
+        $threadmode = "";
+        $extraquery = "";
         if($mybb->seo_support == true)
         {
             if($mybb->get_input('highlight'))
@@ -1060,7 +1060,7 @@ if($mybb->input['action'] == "thread")
             }
         }
 
-		$plugins->run_hooks('showthread_multipage');
+        $plugins->run_hooks('showthread_multipage');
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode.$extraquery));
 		
 		// Allow originator to see own unapproved posts
