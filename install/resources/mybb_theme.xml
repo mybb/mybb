@@ -4619,7 +4619,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
 <td class="{$altbg}" align="center">{$checkbox}</td>
 </tr>]]></template>
-		<template name="managegroup_user_checkbox" version="120"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
+		<template name="managegroup_user_checkbox" version="1823"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" {$disabled} />]]></template>
 		<template name="member_activate" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->account_activation}</title>

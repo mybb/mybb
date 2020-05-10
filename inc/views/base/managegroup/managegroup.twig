@@ -40,7 +40,7 @@
                     <div class="user-list__user">
                         {% if groupleader.canmanagemembers %}
                             <span class="user-list__checkbox">
-                                <input type="checkbox" class="checkbox" name="removeuser[{{ user.uid }}]" value="{{ user.uid }}" />
+                                <input type="checkbox" class="checkbox" name="removeuser[{{ user.uid }}]" value="{{ user.uid }}"{{ user.disabled }} />
                             </span>
                         {% endif %}
                         <h2 class="user-list__username">{{ user.profilelink|raw }} <span class="user-list__user-info">{{ user.leader }}</span></h2>

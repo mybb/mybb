@@ -399,6 +399,12 @@ else
 			$user['leader'] = '';
 		}
 
+		$user['disabled'] = '';
+		if($user['usergroup'] == $gid)
+		{
+			$user['disabled'] = ' disabled="disabled"';
+		}
+
 		$users[] = $user;
 	}
 
