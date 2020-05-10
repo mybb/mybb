@@ -2032,6 +2032,10 @@ if($mybb->input['action'] == "login")
 		{
 			$login_captcha->build_recaptcha();
 		}
+		elseif(in_array($login_captcha->type, array(6, 7)))
+		{
+			$login_captcha->build_hcaptcha();
+		}
 
 		if($login_captcha->html)
 		{

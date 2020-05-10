@@ -447,7 +447,8 @@ $l['invalid_captcha_verify'] = "The image verification code that you entered was
 $l['image_verification'] = "Image Verification";
 $l['human_verification'] = "Human Verification";
 $l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
-$l['verification_note_nocaptcha'] = $l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_note_nocaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification by reCAPTCHA. Please try again.";
 $l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification by hCaptcha. Please try again.";
