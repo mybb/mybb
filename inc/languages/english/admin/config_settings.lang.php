@@ -90,7 +90,7 @@ $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
 $l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 666.<br />For more information on CHMODing, see the <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.";
-$l['error_admin_email_settings_empty'] = "Admin Email can not be empty, and have to be a valid email address";
+$l['error_admin_email_settings_empty'] = "Admin Email can not be empty, and must be a valid email address";
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
