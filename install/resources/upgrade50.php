@@ -43,21 +43,9 @@ function upgrade50_verify_adminemail()
 	$output->print_header("Verifying Admin Email");
 	if(empty($mybb->settings['adminemail']))
 	{
-		echo "<p>Updating admin email into settings...</p>";
+		echo "<p>Updating admin email settings...</p>";
 		echo "<p><small>P.D: Field can not be empty</small></p>";
-		if($mybb->user['email'] != "")
-		{
-			$db->update_query('settings', array('value' => $mybb->user['email']), "name='adminemail'");
-		}
-		else
-		{
-			$query = $db->simple_select('users','email',"usergroup=4 AND email<>''", array("limit" => 1,"order_by" => "id","order_dir" => "asc"));
-			if($db->num_rows($query) == 1)
-			{
-				$email = $db->fetch_field($query, 'email');
-				$db->update_query('settings', array('value' => $email), "name='adminemail'");
-			}
-		}
+		$db->update_query('settings', array('value' => $mybb->user['email']), "name='adminemail'");
 	}
 	else
 	{
