@@ -1025,6 +1025,13 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Verify for admin email that can't be empty
+		if(isset($mybb->input['upsetting']['adminemail']) && !filter_var($mybb->input['upsetting']['adminemail'], FILTER_VALIDATE_EMAIL))
+		{
+			flash_message($lang->error_admin_email_settings_empty, "error");
+			admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+		}
+
 		// Administrator is changing the login method.
 		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
 		{
