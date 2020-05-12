@@ -647,21 +647,21 @@ if($upper > $threadcount)
 }
 
 // Assemble page URL
-$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-
-if($mybb->seo_support == true)
-{
-	$q = "?";
-	$and = '';
-}
-else
-{
-	$q = '';
-	$and = "&";
-}
-
 if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] || $mybb->input['prefix']) // Ugly URL
 {
+	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+
+	if($mybb->seo_support == true)
+	{
+		$q = "?";
+		$and = '';
+	}
+	else
+	{
+		$q = '';
+		$and = "&";
+	}
+
 	if((!empty($foruminfo['defaultsortby']) && $sortby != $foruminfo['defaultsortby']) || (empty($foruminfo['defaultsortby']) && $sortby != "lastpost"))
 	{
 		$page_url .= "{$q}{$and}sortby={$sortby}";
@@ -686,11 +686,12 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 	if($tprefix != 0)
 	{
 		$page_url .= "{$q}{$and}prefix={$tprefix}";
-		$q = '';
-		$and = "&";
 	}
 }
-$plugins->run_hooks('forumdisplay_multipage');
+else
+{
+	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+}
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
 if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
