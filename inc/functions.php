@@ -1038,7 +1038,14 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		return '';
 	}
 
-	$plugins->run_hooks('multipage', compact('count', 'perpage', 'page', 'url', 'breadcrumb'));
+	$args = array(
+		'count' => &$count,
+		'perpage' => &$perpage,
+		'page' => &$page,
+		'url' => &$url,
+		'breadcrumb' => &$breadcrumb,
+	);
+	$plugins->run_hooks('multipage', $args);
 
 	$page = (int)$page;
 
