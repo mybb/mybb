@@ -1031,12 +1031,14 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 {
-	global $theme, $templates, $lang, $mybb;
+	global $theme, $templates, $lang, $mybb, $plugins;
 
 	if($count <= $perpage)
 	{
 		return '';
 	}
+
+	$plugins->run_hooks('multipage', compact('count', 'perpage', 'page', 'url', 'breadcrumb'));
 
 	$page = (int)$page;
 
