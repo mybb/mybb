@@ -64,8 +64,8 @@ Triaged Issues usually have multiple [**Labels**](https://github.com/mybb/mybb/l
 - Branch (`b:*`), the x.**Y** release branches they are related to,
 - Priority (`p:*`), how important they are (1 per Issue),
 - Status (`s:*`), what stage the development is currently in (1 per Issue),
-- Type (`t:*`), what kind of problem or operation they are related to.
-- Involving (`i:*`), additional labels for specific modules, libraries, or types.
+- Type (`t:*`), what kind of problem or operation they are related to,
+- Involving (`i:*`), additional labels for specific modules, libraries, or types,
 - `3rdparty`, assigned to external code and other third-party solutions,
 - [`easy-pick`](https://github.com/mybb/mybb/labels/easy-pick), used for simple issues for new contributors that don't require extensive MyBB knowledge to resolve.
 
