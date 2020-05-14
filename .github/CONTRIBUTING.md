@@ -87,7 +87,7 @@ All changes made in Pull Requests must follow the development standards:
 - for MyBB 1.8, see [MyBB Documentation &rsaquo; Development Standards](https://docs.mybb.com/1.8/development/standards/),
 - for MyBB 1.9 and later, follow the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
 
-Use imperative mood in the title and reference the Issue ID in the message. If possible, use the `Resolve #ID Issue title` format (e.g. _Resolve #123 Wrong error message_).
+Use imperative mood in the title, summarizing changes the Pull Request introduces, and reference the Issue ID in the message.
 
 Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
 ```
