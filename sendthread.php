@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,sendthread_fromemail,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_nocaptcha";
+$templatelist = "sendthread,sendthread_fromemail,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_nocaptcha,post_captcha_hcaptcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

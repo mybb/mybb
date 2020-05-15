@@ -958,9 +958,11 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
+		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
@@ -1872,7 +1874,12 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',

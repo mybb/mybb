@@ -5,7 +5,7 @@
         <div class="section__container">
             <div class="row row--form field">
                 <p class="field__description">{{ lang.verification_note_nocaptcha }}</p>
-                <script type="text/javascript" src="{{ server }}"></script><div class="g-recaptcha" data-sitekey="{{ mybb.settings.captchapublickey }}"></div>
+                <script type="text/javascript" src="{{ server }}"></script><div class="g-recaptcha" data-sitekey="{{ mybb.settings.recaptchapublickey }}"></div>
             </div>
         </div>
     </section>
@@ -38,7 +38,55 @@
             captchaTarget.attr('data-size', 'invisible').unbind('click');
 
             grecaptcha.render(captchaTarget.get(0), {
-                'sitekey': '{{ mybb.settings.captchapublickey }}',
+                'sitekey': '{{ mybb.settings.recaptchapublickey }}',
+                'callback': captchaOnSubmit
+            }, true);
+
+        }
+
+    </script>
+{# hCaptcha #}
+{% elseif type == 6 %}
+    <section class="section section--form" id="captcha_trow">
+        <h2 class="title title--section">{{ lang.human_verification }}</h2>
+        <div class="section__container">
+            <div class="row row--form field">
+                <p class="field__description">{{ lang.verification_note_hcaptcha }}</p>
+                <script type="text/javascript" src="{{ server }}"></script><div class="h-recaptcha" data-sitekey="{{ mybb.settings.hcaptchapublickey }}" data-theme="{{ mybb.settings.captcha_theme }}" data-size="{{ mybb.settings.captcha_size }></div>
+            </div>
+        </div>
+    </section>
+{# hCaptcha invisible #}
+{% elseif type == 7 %}
+    <script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+    <script type="text/javascript">
+
+        var captchaTarget = '';
+
+        var captchaOnSubmit = function(token) {
+
+            if (!captchaTarget.is('#quick_reply_submit')) {
+                document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+            }
+            else {
+                captchaTarget.on('click', function(e) {
+                    return Thread.quickReply(e);
+                }).trigger('click').off('click');
+                hcaptcha.remove();
+            }
+
+        };
+
+        var captchaOnloadCallback = function() {
+
+            captchaTarget = $('input[name="regsubmit"], #quick_reply_submit').filter(function(){
+                return $(this).closest('#quick_login').length == 0
+            });
+
+            captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+            hcaptcha.render(captchaTarget.get(0), {
+                'sitekey': '{{ mybb.settings.hcaptchapublickey }}',
                 'callback': captchaOnSubmit
             }, true);
 

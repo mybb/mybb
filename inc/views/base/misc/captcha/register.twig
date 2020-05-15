@@ -31,6 +31,37 @@
         }
 
     </script>
+{# hCaptcha #}
+{% elseif type == 6 %}
+<section class="section section--form" id="captcha_trow">
+    <h2 class="title title--section">{{ lang.human_verification }}</h2>
+    <div class="section__container">
+        <div class="row row--form field">
+            <p class="field__description">{{ lang.verification_note_hcaptcha }}</p>
+            <script type="text/javascript" src="{{ server }}"></script><div class="h-captcha" data-sitekey="{{ mybb.settings.hcaptchapublickey }}" data-theme="{{ mybb.settings.captcha_theme }}" data-size="{{ mybb.settings.captcha_size }}></div>
+        </div>
+    </div>
+</section>
+{# hCaptcha invisible #}
+{% elseif type == 7 %}
+     <script src="{{ server} }?onload=captchaOnloadCallback&render=explicit" async defer></script>
+     <script type="text/javascript">
+     var captchaOnSubmit = function(token) {
+          $("#registration_form").trigger('submit');
+     };
+
+     var captchaOnloadCallback = function() {
+
+          var target = $('button[name="regsubmit"]');
+          target.attr('data-size', 'invisible');
+
+          hcaptcha.render(target.get(0), {
+               'sitekey': '{{ mybb.settings.hcaptchapublickey }}',
+               'callback': captchaOnSubmit
+          }, true);
+
+     }
+     </script>
 {# MyBB Captcha #}
 {% else %}
     <section class="section section--form">
