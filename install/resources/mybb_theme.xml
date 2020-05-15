@@ -5542,6 +5542,39 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaOnSubmit = function(token) {
+		$("#registration_form").trigger('submit');
+	};
+
+	var captchaOnloadCallback = function() {
+
+		var target = $('input[name="regsubmit"]');
+		target.attr('data-size', 'invisible');
+
+		hcaptcha.render(target.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+	<template name="member_register_regimage_hcaptcha" version="1823"><![CDATA[<br />
+<fieldset class="trow2">
+	<legend><strong>{$lang->human_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_requiredfields" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->required_info}</strong></legend>
@@ -9519,6 +9552,55 @@ if(use_xmlhttprequest == "1")
 	</tr>
 	<tr>
 		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
+		<template name="post_captcha_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaTarget = '';
+
+	var captchaOnSubmit = function(token) {
+
+		if (!captchaTarget.is('#quick_reply_submit')) {
+			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+		}
+		else {
+			captchaTarget.on('click', function(e) {
+				return Thread.quickReply(e);
+			}).trigger('click').off('click');
+			hcaptcha.remove();
+		}
+
+	};
+
+	var captchaOnloadCallback = function() {
+
+		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
+			return $(this).closest('#quick_login').length == 0
+		});
+
+		captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+		hcaptcha.render(captchaTarget.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+	<template name="post_captcha_hcaptcha" version="1823"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
+<td class="trow1">
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
 	</tr>
 </table>
 </td>
