@@ -16,7 +16,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 $nosession['avatar'] = 1;
 
 $templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
+$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_referrals_link,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
@@ -2031,6 +2031,10 @@ if($mybb->input['action'] == "login")
 		elseif(in_array($login_captcha->type, array(2, 4, 5)))
 		{
 			$login_captcha->build_recaptcha();
+		}
+		elseif(in_array($login_captcha->type, array(6, 7)))
+		{
+			$login_captcha->build_hcaptcha();
 		}
 
 		if($login_captcha->html)

@@ -444,6 +444,10 @@ table {
 	background: #ffdde0;
 }
 
+.thread_start_datetime {
+	color: #999;
+}
+
 .post.unapproved_post .post_author {
 	border-bottom-color: #ffb8be;
 }
@@ -3966,14 +3970,14 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1813"><![CDATA[<tr class="inline_row">
+		<template name="forumdisplay_thread" version="1823"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
 		{$attachment_count}
 		<div>
           <span>{$prefix} {$gotounread}{$thread['threadprefix']}<span class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></span>{$thread['multipage']}</span>
-			<div class="author smalltext">{$thread['profilelink']}</div>
+			<div><span class="author smalltext">{$thread['profilelink']}{$lang->comma}</span><span class="thread_start_datetime smalltext">{$thread['start_datetime']}</span></div>
 		</div>
 	</td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
@@ -4619,7 +4623,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
 <td class="{$altbg}" align="center">{$checkbox}</td>
 </tr>]]></template>
-		<template name="managegroup_user_checkbox" version="120"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
+		<template name="managegroup_user_checkbox" version="1823"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" {$disabled} />]]></template>
 		<template name="member_activate" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->account_activation}</title>
@@ -5535,6 +5539,39 @@ if(use_xmlhttprequest == "1")
 	</tr>
 	<tr>
 		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
+	</tr>
+</table>
+</fieldset>]]></template>
+		<template name="member_register_regimage_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaOnSubmit = function(token) {
+		$("#registration_form").trigger('submit');
+	};
+
+	var captchaOnloadCallback = function() {
+
+		var target = $('input[name="regsubmit"]');
+		target.attr('data-size', 'invisible');
+
+		hcaptcha.render(target.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+	<template name="member_register_regimage_hcaptcha" version="1823"><![CDATA[<br />
+<fieldset class="trow2">
+	<legend><strong>{$lang->human_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
 	</tr>
 </table>
 </fieldset>]]></template>
@@ -9515,6 +9552,55 @@ if(use_xmlhttprequest == "1")
 	</tr>
 	<tr>
 		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
+		<template name="post_captcha_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaTarget = '';
+
+	var captchaOnSubmit = function(token) {
+
+		if (!captchaTarget.is('#quick_reply_submit')) {
+			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+		}
+		else {
+			captchaTarget.on('click', function(e) {
+				return Thread.quickReply(e);
+			}).trigger('click').off('click');
+			hcaptcha.remove();
+		}
+
+	};
+
+	var captchaOnloadCallback = function() {
+
+		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
+			return $(this).closest('#quick_login').length == 0
+		});
+
+		captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+		hcaptcha.render(captchaTarget.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+		<template name="post_captcha_hcaptcha" version="1823"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
+<td class="trow1">
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
 	</tr>
 </table>
 </td>
@@ -13969,7 +14055,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1822"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1822"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
@@ -13979,7 +14065,7 @@ opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
 	bbcodeTrim: true,
-	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1821",
+	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	width: "100%",

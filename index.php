@@ -68,25 +68,18 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				location1, COUNT(DISTINCT ip) AS guestcount
 			FROM
 				".TABLE_PREFIX."sessions
-			WHERE uid = 0 AND time > $timesearch
+			WHERE uid = 0 AND location1 != 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch
 			GROUP BY location1
 		");
 
 		while($location = $db->fetch_array($query))
 		{
-			$guestcount += $location['guestcount'];
-
-			if($location['location1'])
-			{
-				$forum_viewers[$location['location1']] += $location['guestcount'];
-			}
+			$forum_viewers[$location['location1']] += $location['guestcount'];
 		}
 	}
-	else
-	{
-		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
-		$guestcount = $db->fetch_field($query, "guestcount");
-	}
+
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
+	$guestcount = $db->fetch_field($query, "guestcount");
 
 	$query = $db->query("
 		SELECT
@@ -101,7 +94,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
 
-	// Loop through all users.
+	// Loop through all users and spiders.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
