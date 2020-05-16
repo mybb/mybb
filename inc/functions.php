@@ -1512,6 +1512,50 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 }
 
 /**
+ * Check whether password for given forum was validated for the current user
+ *
+ * @param array $forum The forum data
+ * @param bool $ignore_empty Whether to treat forum password configured as an empty string as validated
+ * @param bool $check_parents Whether to check parent forums using `parentlist`
+ * @return bool
+ */
+function forum_password_validated($forum, $ignore_empty=false, $check_parents=false)
+{
+	global $mybb, $forum_cache;
+
+	if($check_parents && isset($forum['parentlist']))
+	{
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+			if(!$forum_cache)
+			{
+				return false;
+			}
+		}
+
+		$parents = explode(',', $forum['parentlist']);
+		rsort($parents);
+
+		foreach($parents as $parent_id)
+		{
+			if($parent_id != $forum['fid'] && !forum_password_validated($forum_cache[$parent_id], true))
+			{
+				return false;
+			}
+		}
+	}
+
+	return ($ignore_empty && $forum['password'] === '') || (
+		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
+		my_hash_equals(
+			md5($mybb->user['uid'].$forum['password']),
+			$mybb->cookies['forumpass'][$forum['fid']]
+		)
+	);
+}
+
+/**
  * Check the password given on a certain forum for validity
  *
  * @param int $fid The forum ID
@@ -1549,19 +1593,18 @@ function check_forum_password($fid, $pid=0, $return=false)
 				continue;
 			}
 
-			if($forum_cache[$parent_id]['password'] != "")
+			if($forum_cache[$parent_id]['password'] !== "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
 
-	if(!empty($forum_cache[$fid]['password']))
+	if($forum_cache[$fid]['password'] !== '')
 	{
-		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password === $mybb->get_input('pwverify'))
+			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1574,7 +1617,7 @@ function check_forum_password($fid, $pid=0, $return=false)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			if(!forum_password_validated($forum_cache[$fid]))
 			{
 				$showform = true;
 			}
@@ -4265,7 +4308,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$password_forums = $unviewable = array();
+	$unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4279,14 +4322,10 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		$pwverified = 1;
 
-		if($forum['password'] != "")
-		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
-			{
-				$pwverified = 0;
-			}
 
-			$password_forums[$forum['fid']] = $forum['password'];
+		if(!forum_password_validated($forum, true))
+		{
+			$pwverified = 0;
 		}
 		else
 		{
@@ -4294,9 +4333,10 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
+				if(!forum_password_validated($forum_cache[$parent], true))
 				{
 					$pwverified = 0;
+					break;
 				}
 			}
 		}
@@ -4696,10 +4736,7 @@ function send_page_headers()
 
 	if($mybb->settings['nocacheheaders'] == 1)
 	{
-		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-		header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Pragma: no-cache");
+		header("Cache-Control: no-cache, private");
 	}
 }
 
@@ -6269,7 +6306,7 @@ function get_forum($fid, $active_override=0)
 	global $cache;
 	static $forum_cache;
 
-	if(!isset($forum_cache) || is_array($forum_cache))
+	if(!isset($forum_cache) || !is_array($forum_cache))
 	{
 		$forum_cache = $cache->read("forums");
 	}
@@ -6561,6 +6598,8 @@ function rebuild_settings()
 	while($setting = $db->fetch_array($query))
 	{
 		$mybb->settings[$setting['name']] = $setting['value'];
+
+		$setting['name'] = addcslashes($setting['name'], "\\'");
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
@@ -7112,7 +7151,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
 			{
-				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+				preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 				if($matches)
 				{
@@ -7173,6 +7212,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 					'ssl' => array(
 						'verify_peer' => false,
 						'verify_peer_name' => false,
+						'peer_name' => $url_components['host'],
 					),
 				));
 			}
@@ -7237,7 +7277,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
-			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+			preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 			if($matches)
 			{
@@ -8738,6 +8778,18 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	if(file_exists($file_path))
 	{
+
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'file_dir_path'	=> &$file_dir_path
+			);
+			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
+		}
+
 		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');

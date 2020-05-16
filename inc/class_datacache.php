@@ -94,6 +94,11 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
 				$this->handler = new apcCacheHandler();
 				break;
+			// Redis cache
+			case "redis":
+				require_once MYBB_ROOT."/inc/cachehandlers/redis.php";
+				$this->handler = new redisCacheHandler();
+				break;
 		}
 
 		if($this->handler instanceof CacheHandlerInterface)
@@ -1089,19 +1094,12 @@ class datacache
 		$this->update("most_viewed_threads", $threads);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	function update_banned()
 	{
-		global $db;
-
-		$bans = array();
-
-		$query = $db->simple_select("banned");
-		while($ban = $db->fetch_array($query))
-		{
-			$bans[$ban['uid']] = $ban;
-		}
-
-		$this->update("banned", $bans);
+		// "banned" cache removed
 	}
 
 	function update_birthdays()

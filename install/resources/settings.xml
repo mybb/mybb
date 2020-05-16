@@ -319,10 +319,10 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="nocacheheaders">
 			<title>Send No Cache Headers</title>
-			<description><![CDATA[With this option you can prevent caching of the page by the browser.]]></description>
+			<description><![CDATA[With this option you can enforce dynamic pages to be re-validated by browsers and not cached by proxies.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="load">
@@ -977,7 +977,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
-			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
+			<description><![CDATA[If you wish to enable <a href="https://www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/childrens-online-privacy-protection-rule">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled

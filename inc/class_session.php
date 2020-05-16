@@ -53,12 +53,16 @@ class session
 		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
-			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=".$db->escape_binary($this->packedip));
-			$session = $db->fetch_array($query);
-			if($session['sid'])
+
+			// Load the session if not using a bot sid
+			if(substr($sid, 3, 1) !== '=')
 			{
-				$this->sid = $session['sid'];
+				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
+				$session = $db->fetch_array($query);
+				if($session['sid'])
+				{
+					$this->sid = $session['sid'];
+				}
 			}
 		}
 
@@ -113,16 +117,6 @@ class session
 	{
 		global $mybb, $db, $time, $lang, $mybbgroups, $cache;
 
-		// Read the banned cache
-		$bannedcache = $cache->read("banned");
-
-		// If the banned cache doesn't exist, update it and re-read it
-		if(!is_array($bannedcache))
-		{
-			$cache->update_banned();
-			$bannedcache = $cache->read("banned");
-		}
-
 		$uid = (int)$uid;
 		$query = $db->query("
 			SELECT u.*, f.*
@@ -132,16 +126,6 @@ class session
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
-
-		if(!empty($bannedcache[$uid]))
-		{
-			$banned_user = $bannedcache[$uid];
-			$mybb->user['bandate'] = $banned_user['dateline'];
-			$mybb->user['banlifted'] = $banned_user['lifted'];
-			$mybb->user['banoldgroup'] = $banned_user['oldgroup'];
-			$mybb->user['banolddisplaygroup'] = $banned_user['olddisplaygroup'];
-			$mybb->user['banoldadditionalgroups'] = $banned_user['oldadditionalgroups'];
-		}
 
 		// Check the password if we're not using a session
 		if(empty($loginkey) || $loginkey !== $mybb->user['loginkey'] || !$mybb->user['uid'])
@@ -248,6 +232,30 @@ class session
 			$mybb->settings['postlayout'] = 'horizontal';
 		}
 
+		$usergroups = $cache->read('usergroups');
+
+		if(!empty($usergroups[$mybb->user['usergroup']]) && $usergroups[$mybb->user['usergroup']]['isbannedgroup'] == 1)
+		{
+			$ban = $db->fetch_array(
+				$db->simple_select('banned', '*', 'uid='.(int)$mybb->user['uid'], array('limit' => 1))
+			);
+
+			if($ban)
+			{
+				$mybb->user['banned'] = 1;
+				$mybb->user['bandate'] = $ban['dateline'];
+				$mybb->user['banlifted'] = $ban['lifted'];
+				$mybb->user['banoldgroup'] = $ban['oldgroup'];
+				$mybb->user['banolddisplaygroup'] = $ban['olddisplaygroup'];
+				$mybb->user['banoldadditionalgroups'] = $ban['oldadditionalgroups'];
+				$mybb->user['banreason'] = $ban['reason'];
+			}
+			else
+			{
+				$mybb->user['banned'] = 0;
+			}
+		}
+
 		// Check if this user is currently banned and if we have to lift it.
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
@@ -258,7 +266,6 @@ class session
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
-			$cache->update_banned();
 
 			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])
@@ -323,6 +330,7 @@ class session
 		// Set up some defaults
 		$time = TIME_NOW;
 		$mybb->user['usergroup'] = 1;
+		$mybb->user['additionalgroups'] = '';
 		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybbgroups = 1;
@@ -503,10 +511,8 @@ class session
 		{
 			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
-		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip=".$db->escape_binary($this->packedip));
 			$onlinedata['uid'] = 0;
 		}
 

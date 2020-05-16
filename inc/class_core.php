@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.21";
+	public $version = "1.8.22";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1821;
+	public $version_code = 1822;
 
 	/**
 	 * The current working directory.
@@ -575,6 +575,10 @@ class MyBB {
 				break;
 			case "xcache_load_error":
 				$message = "Xcache needs to be configured with PHP to use the Xcache cache support.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
+			case "redis_load_error":
+				$message = "Your server does not have redis support enabled.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			default:

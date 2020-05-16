@@ -929,8 +929,8 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1821"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1822"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -2532,7 +2532,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("banned", "uid = '".$ban['uid']."'");
 				}
 
-				$cache->update_banned();
 				$cache->update_moderators();
 
 				$mybb->input['action'] = "inline_lift";
@@ -2626,7 +2625,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
 					$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
-					$cache->update_banned();
 					++$banned_count;
 				}
 				$mybb->input['action'] = "inline_banned";
@@ -3903,8 +3901,13 @@ function build_user_view_card($user, $view, &$i)
 	}
 
 	// And build the final card
+	$uname = "";
+	if(in_array('username', $view['fields']))
+	{
+		$uname = $user['view']['username'];
+	}
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
+	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$uname}</legend>\n";
 	if($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
@@ -3973,7 +3976,7 @@ function build_user_view_table($user, $view, &$table)
  */
 function output_custom_profile_fields($fields, $values, &$form_container, &$form, $search=false)
 {
-	global $lang;
+	global $lang, $mybb;
 
 	if(!is_array($fields))
 	{

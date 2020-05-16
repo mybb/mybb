@@ -630,7 +630,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 		$user['gid'] = (int)$user['gid'];
 
-		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
 		{
 			$showjoinnotice = true;
 			$gids .= ",'{$user['gid']}'";
@@ -809,30 +809,30 @@ if(isset($lang->settings['charset']) && $lang->settings['charset'])
 $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == 1)
 {
-	// Fetch details on their ban
-	$query = $db->simple_select('banned', '*', "uid = '{$mybb->user['uid']}'", array('limit' => 1));
-	$ban = $db->fetch_array($query);
-
-	if($ban['uid'])
+	// Format their ban lift date and reason appropriately
+	if(!empty($mybb->user['banned']))
 	{
-		// Format their ban lift date and reason appropriately
-		$banlift = $lang->banned_lifted_never;
-		$reason = htmlspecialchars_uni($ban['reason']);
-
-		if($ban['lifted'] > 0)
+		if(!empty($mybb->user['banlifted']))
 		{
-			$banlift = my_date('normal', $ban['lifted']);
+			$banlift = my_date('normal', $mybb->user['banlifted']);
+		}
+		else
+		{
+			$banlift = $lang->banned_lifted_never;
 		}
 	}
-
-	if(empty($reason))
-	{
-		$reason = $lang->unknown;
-	}
-
-	if(empty($banlift))
+	else
 	{
 		$banlift = $lang->unknown;
+	}
+
+	if(!empty($mybb->user['banreason']))
+	{
+		$reason = htmlspecialchars_uni($mybb->user['banreason']);
+	}
+	else
+	{
+		$reason = $lang->unknown;
 	}
 
 	// Display a nice warning to the user

@@ -20,7 +20,7 @@ $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
-$l['bottomlinks_markread'] = "Mark All Forums Read";
+$l['bottomlinks_markread'] = "Mark all forums read";
 
 $l['welcome_usercp'] = "User CP";
 $l['welcome_modcp'] = "Mod CP";
@@ -311,6 +311,7 @@ $l['forumjump_home'] = "Forum Home";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
+$l['ratings_update_error'] = 'There was an error updating the rating.';
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
