@@ -181,7 +181,10 @@ var Post = {
 
 		if (totalSize > php_max_upload_size && php_max_upload_size > 0)
 		{
-			var php_max_upload_size_pretty = php_max_upload_size;
+			var php_max_upload_size_pretty = (function (size) {
+				var i = size == 0 ? 0 : Math.floor( Math.log(size) / Math.log(1024) );
+				return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + [lang.size_b, lang.size_kb, lang.size_mb, lang.size_gb, lang.size_tb, lang.size_pb, lang.size_eb, lang.size_zb, lang.size_yb][i];
+			})(php_max_upload_size);
 			alert(lang.attachment_too_big_upload.replace('{1}', php_max_upload_size_pretty));
 			file.value="";
 			return false;

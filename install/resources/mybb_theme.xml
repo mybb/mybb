@@ -9518,10 +9518,19 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1822"><![CDATA[
+		<template name="post_javascript" version="1823"><![CDATA[
 			<script type="text/javascript">
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
+				lang.size_b = "{$lang->size_bytes}";
+				lang.size_kb = "{$lang->size_kb}";
+				lang.size_mb = "{$lang->size_mb}";
+				lang.size_gb = "{$lang->size_gb}";
+				lang.size_tb = "{$lang->size_tb}";
+				lang.size_pb = "{$lang->size_pb}";
+				lang.size_eb = "{$lang->size_eb}";
+				lang.size_zb = "{$lang->size_zb}";
+				lang.size_yb = "{$lang->size_yb}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 			</script>
