@@ -227,7 +227,11 @@ $(function ($) {
 				$cite.remove();
 
 				content = this.elementToBbcode(element);
+<<<<<<< Updated upstream
 				author = '=' + author.replace(/(^\s+|\s+$)/g,);
+=======
+				author = '=' + author.replace(/(^\s+|\s+$)/g);
+>>>>>>> Stashed changes
 
 				$elm.prepend($cite);
 			}
