@@ -4459,7 +4459,7 @@ $(".forumjump").on('change', function() {
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1807"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1823"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4484,6 +4484,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -4513,7 +4514,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1807"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1823"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4538,6 +4539,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5428,7 +5430,7 @@ if(use_xmlhttprequest == "1")
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1807"><![CDATA[<br />
+		<template name="member_register_referrer" version="1823"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5452,6 +5454,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5803,7 +5806,7 @@ if(use_xmlhttprequest == "1")
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
-		<template name="memberlist_search" version="1822"><![CDATA[<html>
+		<template name="memberlist_search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5880,6 +5883,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -6690,7 +6694,7 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
 		<template name="modcp_banning_remaining" version="1808"><![CDATA[<span class="{$banned_class}">({$ban_remaining})</span>]]></template>
-		<template name="modcp_banuser" version="1807"><![CDATA[<html>
+		<template name="modcp_banuser" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6744,6 +6748,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7157,7 +7162,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1816"><![CDATA[<html>
+		<template name="modcp_finduser" version="1823"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7230,6 +7235,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->find_users}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7859,7 +7865,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1816"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7946,6 +7952,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -9950,7 +9957,7 @@ img { max-width: 100%; height: auto; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1813"><![CDATA[<html>
+		<template name="private_advanced_search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -10039,6 +10046,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -11029,7 +11037,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1822"><![CDATA[<html>
+		<template name="search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -11122,6 +11130,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
