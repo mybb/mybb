@@ -106,7 +106,6 @@ $l['members_were_online_today'] = "<strong>{1}</strong> Members Were Online Toda
 $l['member_online_hidden'] = " ({1} member was invisible)";
 $l['members_online_hidden'] = " ({1} members were invisible)";
 $l['rating_thread'] = "Rating thread";
-$l['viewing_imcenter'] = "Viewing IM Center";
 $l['managing_favorites'] = "Managing Favorite Threads";
 $l['managing_subscriptions'] = "Managing Subscribed Threads";
 $l['managing_group'] = "Managing a User Group";
