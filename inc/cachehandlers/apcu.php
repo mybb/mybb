@@ -104,6 +104,13 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 */
 	function size_of($name='')
 	{
+		if(empty($name))
+		{
+			// get total size of cache, using an APCUIterator
+			$iterator = new APCUIterator("/^{$this->unique_id}_.*/");
+			return $iterator->getTotalSize();
+		}
+		
 		global $lang;
 
 		$info = apcu_cache_info();
@@ -111,13 +118,6 @@ class apcuCacheHandler implements CacheHandlerInterface
 		if(empty($info['cache_list']))
 		{
 			return $lang->na;
-		}
-
-		if(empty($name))
-		{
-			// get total size of cache, using an APCUIterator
-			$iterator = new APCUIterator("/^{$this->unique_id}_.*/");
-			return $iterator->getTotalSize();
 		}
 
 		$actual_name = "{$this->unique_id}_{$name}";
