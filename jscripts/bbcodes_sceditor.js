@@ -466,7 +466,7 @@ $(function ($) {
 			var params = mybbCmd.video[Object.keys(mybbCmd.video).find(key => key.toLowerCase() === attrs.defaultattr)];
 			var matches, url;
 			var n = (attrs.defaultattr == 'dailymotion') ? 2 : 1;
-			if (params['html']) {
+			if (typeof params !== "undefined") {
 				matches = content.match(params['match']);
 				url = matches ? params['url'] + matches[n] : false;
 			}
