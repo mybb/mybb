@@ -561,6 +561,10 @@ class MyBB {
 				$message = "APC needs to be configured with PHP to use the APC cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "apcu_load_error":
+				$message = "APCu needs to be configured with PHP to use the APCu cache support.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
 			case "eaccelerator_load_error":
 				$message = "eAccelerator needs to be configured with PHP to use the eAccelerator cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
