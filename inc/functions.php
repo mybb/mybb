@@ -997,12 +997,23 @@ function redirect($url, $message = "", $title = "", $force_redirect = false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb = false)
 {
-	global $lang, $mybb;
+	global $lang, $mybb, $plugins;
 
 	if($count <= $perpage)
 	{
 		return '';
 	}
+
+	$args = array(
+		'count' => &$count,
+		'perpage' => &$perpage,
+		'page' => &$page,
+		'url' => &$url,
+		'breadcrumb' => &$breadcrumb,
+	);
+	$plugins->run_hooks('multipage', $args);
+
+	$page = (int)$page;
 
 	$url = str_replace("&amp;", "&", $url);
 	$url = htmlspecialchars_uni($url);
