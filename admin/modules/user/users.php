@@ -930,7 +930,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1823"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
