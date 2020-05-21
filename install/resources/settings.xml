@@ -167,7 +167,8 @@
 4=NoCAPTCHA reCAPTCHA
 5=reCAPTCHA invisible
 6=hCaptcha
-7=hCaptcha invisible]]></optionscode>
+7=hCaptcha invisible]
+8=reCAPTCHA V3]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>

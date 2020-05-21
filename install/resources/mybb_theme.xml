@@ -9512,6 +9512,39 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+<template name="post_recaptcha_v3" version="1823"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
+<br />
+<span class="smalltext">{$lang->verification_note}</span>
+</td>
+<td class="trow1">
+<script type="text/javascript">
+<!--
+	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
+// -->
+</script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1823"></script>
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<input type="text" class="textbox" name="imagestring" value="" id="imagestring" size="16" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" />
+		<script type="text/javascript">
+		<!--
+			if(use_xmlhttprequest == "1")
+			{
+				document.write('<input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+			}
+		// -->
+		</script>
+		</td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
 <input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
 		<template name="post_captcha_recaptcha_invisible" version="1821"><![CDATA[<br />

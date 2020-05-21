@@ -43,6 +43,7 @@ class captcha
 	 * 5 = reCAPTCHA invisible
 	 * 6 = hCaptcha
 	 * 7 = hCaptcha invisible
+	 * 8 = reCAPTCHA v3
 	 *
 	 * @var int
 	 */
@@ -122,10 +123,14 @@ class captcha
 			{
 				$this->captcha_template .= "_hcaptcha_invisible";
 			}
+			elseif($this->type == 8)
+			{
+				$this->captcha_template .= "_recaptcha_v3";
+			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if(in_array($this->type, array(4, 5)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
+		if(in_array($this->type, array(4, 5, 8)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
 		{
 			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";
@@ -274,7 +279,7 @@ class captcha
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 			}
 		}
-		elseif(in_array($this->type, array(4, 5)))
+		elseif(in_array($this->type, array(4, 5, 8)))
 		{
 			$response = $mybb->input['g-recaptcha-response'];
 			if(!$response || strlen($response) == 0)
