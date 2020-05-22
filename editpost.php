@@ -579,11 +579,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-	$deletebox = '';
-	// Can we delete posts?
-	if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
-	{
-		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+	if($thread['firstpost'] == $pid) {
+		if($post['visible'] != -1 && (is_moderator($fid, "candeletethreads") || $forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid']))
+		{
+			eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+		}
+	} else {
+		// Can we delete posts?
+		if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
+		{
+			eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+		}
 	}
 
 	$bgcolor = "trow1";
