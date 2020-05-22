@@ -218,7 +218,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['action'] = '';
 			}
-			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter", "dstswitch");
+			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "dstswitch");
 			if($parameters['action'] == "whoposted")
 			{
 				if(!isset($parameters['tid']))
@@ -880,9 +880,6 @@ function build_friendly_wol_location($user_activity)
 			break;
 		case "misc_syndication":
 			$location_name = $lang->viewing_syndication;
-			break;
-		case "misc_imcenter":
-			$location_name = $lang->viewing_imcenter;
 			break;
 		// modcp.php functions
 		case "modcp_modlogs":

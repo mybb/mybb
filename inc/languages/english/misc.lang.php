@@ -9,15 +9,6 @@ $l['nav_helpdocs'] = "Help Documents";
 $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
-$l['skype'] = "Skype";
-$l['skype_center'] = "Skype Center";
-$l['chat_on_skype'] = "Chat with {1} on Skype";
-$l['call_on_skype'] = "Call {1} on Skype";
-
-$l['send_me_instant'] = "Send me an Instant Message";
-$l['add_me_buddy_list'] = "Add me to Your Buddy List";
-$l['add_remote_to_page'] = "Add Remote to Your Page";
-
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
 $l['online_none'] = "<em>You have no online buddies</em>";
@@ -83,7 +74,6 @@ $l['redirect_cookiescleared'] = "All cookies have been cleared.";
 
 $l['error_invalidforum'] = "Invalid forum";
 $l['error_invalidhelpdoc'] = "The specified help document does not appear to exist.";
-$l['error_invalidimtype'] = "This user does not have this type of instant messenger account specified in their profile.";
 $l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
 $l['error_no_search_support'] = "This database engine does not support searching.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
