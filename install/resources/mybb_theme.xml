@@ -4952,9 +4952,9 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
 	<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
 </tr>]]></template>
-		<template name="member_profile_contact_fields_skype" version="1809"><![CDATA[<tr>
+		<template name="member_profile_contact_fields_skype" version="1823"><![CDATA[<tr>
 	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-	<td class="{$bgcolors['skype']}"><a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['skype']}</a></td>
+	<td class="{$bgcolors['skype']}">{$memprofile['skype']}</td>
 </tr>]]></template>
 		<template name="member_profile_customfields" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
@@ -6098,36 +6098,6 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_helpresults_noresults" version="1800"><![CDATA[<tr>
 	<td class="trow1">{$lang->no_help_results}</td>
 </tr>]]></template>
-		<template name="misc_imcenter_error" version="1812"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="trow1" style="padding: 20px">
-			<strong>{$lang->error}</strong><br /><br />
-			<blockquote>{$message}</blockquote>
-		</td>
-	</tr>
-</table>
-</div>
-</div>]]></template>
-		<template name="misc_imcenter_skype" version="1807"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
-<tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->skype_center}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1" align="center"><strong>{$user['skype']}</strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center"><span class="smalltext"><a href="skype:{$user['skype']}?chat">{$lang->chat_on_skype}</a>  -  <a href="skype:{$user['skype']}?call">{$lang->call_on_skype}</a></span></td>
-</tr>
-</table>
-</div>
-</div>]]></template>
 		<template name="misc_rules_forum" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
