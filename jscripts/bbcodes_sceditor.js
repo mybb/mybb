@@ -227,11 +227,7 @@ $(function ($) {
 				$cite.remove();
 
 				content = this.elementToBbcode(element);
-<<<<<<< Updated upstream
-				author = '=' + author.replace(/(^\s+|\s+$)/g,);
-=======
-				author = '=' + author.replace(/(^\s+|\s+$)/g);
->>>>>>> Stashed changes
+				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
 			}
@@ -259,7 +255,7 @@ $(function ($) {
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
 		quoteType: function (val, name) {
-			return "'" + val.replace("'", "\\'") + "'";
+			return "'" + val.replace("'", "\") + "'";
 		},
 		breakStart: true,
 		breakEnd: true
