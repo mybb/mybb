@@ -44,7 +44,7 @@
                 <div class="form__submit">
                     <input type="hidden" name="action" value="do_sendtofriend" />
                     <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                    <button type="submit" class="button button--medium">
+                    <button type="submit" class="button button--medium" name="submit">
                         {{ include('partials/icon.twig', {icon: 'share', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.send_thread }}</span>
                     </button>
