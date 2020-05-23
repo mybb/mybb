@@ -14199,7 +14199,7 @@ $(function() {
 </div>
 </body>
 </html>]]></template>
-		<template name="sendthread" version="1800"><![CDATA[<html>
+		<template name="sendthread" version="1823"><![CDATA[<html>
 <head>
 <title>{$threadprefix['prefix']} {$thread['subject']} - {$lang->send_thread}</title>
 {$headerinclude}
@@ -14231,7 +14231,7 @@ $(function() {
 <br />
 <input type="hidden" name="action" value="do_sendtofriend" />
 <input type="hidden" name="tid" value="{$tid}" />
-<div align="center"><input type="submit" class="button" value="{$lang->send_thread}" /></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->send_thread}" /></div>
 </form>
 {$footer}
 </body>
