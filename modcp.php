@@ -154,8 +154,6 @@ if($mybb->usergroup['issupermod'] != 1)
 		$tflist = " AND t.fid IN (0{$flist})";
 		$flist = " AND fid IN (0{$flist})";
 	}
-	var_dump($tflist,$flist,$tflist_queue_threads,$flist_queue_threads,$tflist_queue_posts,$flist_queue_posts,$tflist_queue_attach =
-	$flist_queue_attach,$wflist_reports,$tflist_reports,$flist_reports,$tflist_modlog,$flist_modlog);
 }
 
 // Retrieve a list of unviewable forums
