@@ -1202,7 +1202,7 @@ if($mybb->input['action'] == "change")
 			");
 			while($setting = $db->fetch_array($query))
 			{
-				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
+				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gname'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
 				foreach(array("setting_{$setting['name']}", "setting_{$setting['name']}_desc", "setting_group_{$setting['gname']}", "setting_group_{$setting['gname']}_desc") as $search_in_lang_key)
 				{
 					if(!empty($lang->$search_in_lang_key))
