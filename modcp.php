@@ -59,6 +59,16 @@ $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
+	while($forum = $db->fetch_array($query))
+	{
+		$moderated_forums[] = $forum['fid'];
+		$children = get_child_list($forum['fid']);
+		if(is_array($children))
+		{
+			$moderated_forums = array_merge($moderated_forums, $children);
+		}
+	}
+	$moderated_forums = array_unique($moderated_forums);
 
 	$counters = [
 		'announcements' => 0,
@@ -70,85 +80,48 @@ if($mybb->usergroup['issupermod'] != 1)
 		'reportedposts' => 0,
 		'modlogs' => 0
 	];
-	while($forum = $db->fetch_array($query))
+	foreach($moderated_forums as $moderated_forum)
 	{
 		// For Announcements
-		if($forum['canmanageannouncements'] == 1)
+		if(is_moderator($moderated_forum, 'canmanageannouncements'))
 		{
 			++$counters['announcements'];
 		}
 
 		// For the Mod Queues
-		if($forum['canapproveunapprovethreads'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapprovethreads'))
 		{
-			$flist_queue_threads .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_threads .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_threads .= ",'{$moderated_forum}'";
 			++$counters['modqueue']['threads'];
 		}
 
-		if($forum['canapproveunapproveposts'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveposts'))
 		{
-			$flist_queue_posts .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_posts .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_posts .= ",'{$moderated_forum}'";
 			++$counters['modqueue']['posts'];
 		}
 
-		if($forum['canapproveunapproveattachs'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveattachs'))
 		{
-			$flist_queue_attach .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_attach .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_attach .= ",'{$moderated_forum}'";
 			++$counters['modqueue']['attachments'];
 		}
 
 		// For Reported posts
-		if($forum['canmanagereportedposts'] == 1)
+		if(is_moderator($moderated_forum, 'canmanagereportedposts'))
 		{
-			$flist_reports .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_reports .= ",'".implode("','", $children)."'";
-			}
+			$flist_reports .= ",'{$moderated_forum}'";
 			++$counters['reportedposts'];
 		}
 
 		// For the Mod Log
-		if($forum['canviewmodlog'] == 1)
+		if(is_moderator($moderated_forum, 'canviewmodlog'))
 		{
-			$flist_modlog .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_modlog .= ",'".implode("','", $children)."'";
-			}
+			$flist_modlog .= ",'{$moderated_forum}'";
 			++$counters['modlogs'];
 		}
 
-		$flist .= ",'{$forum['fid']}'";
-
-		$children = get_child_list($forum['fid']);
-		if(!empty($children))
-		{
-			$flist .= ",'".implode("','", $children)."'";
-		}
-		$moderated_forums[] = $forum['fid'];
+		$flist .= ",'{$moderated_forum}'";
 	}
 	if($flist_queue_threads)
 	{
@@ -181,6 +154,8 @@ if($mybb->usergroup['issupermod'] != 1)
 		$tflist = " AND t.fid IN (0{$flist})";
 		$flist = " AND fid IN (0{$flist})";
 	}
+	var_dump($tflist,$flist,$tflist_queue_threads,$flist_queue_threads,$tflist_queue_posts,$flist_queue_posts,$tflist_queue_attach =
+	$flist_queue_attach,$wflist_reports,$tflist_reports,$flist_reports,$tflist_modlog,$flist_modlog);
 }
 
 // Retrieve a list of unviewable forums
