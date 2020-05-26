@@ -2485,6 +2485,12 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				}
 			}
 
+			// Limiting URL string to stay within database limit
+			if(strlen($mybb->input['avatarurl']) > 200)
+			{
+				$avatar_error = $lang->error_avatarurltoolong;
+			}
+
 			if(empty($avatar_error))
 			{
 				if($width > 0 && $height > 0)
