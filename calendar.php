@@ -2548,19 +2548,21 @@ if(!$mybb->input['action'])
 			// Is the current day
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{
-				$day_class = "trow_sep";
+				$current_day = "trow_sep";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_currentday")."\";");
 			}
 			// Not in this month
 			else if($in_month == 0)
 			{
 				$day_class = "trow1";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
 			}
 			// Just a normal day in this month
 			else
 			{
-				$day_class = "trow2";
+				$this_month = "trow2";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_thismonth")."\";");
 			}
-			eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
 			$day_birthdays = $day_events = "";
 			++$day;
 		}
