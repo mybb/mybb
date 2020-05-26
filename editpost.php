@@ -582,7 +582,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$deletebox = '';
 	if(($thread['firstpost'] == $pid && $post['visible'] != -1 && (is_moderator($fid, "candeletethreads")) || ($forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid'] || $post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid'])) 
 	{
-    	eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
 	}
 
 	$bgcolor = "trow1";
