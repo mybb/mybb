@@ -174,7 +174,7 @@ $(function ($) {
 
 	$.sceditor.command.set('size', {
 		_dropDown: function (editor, caller, callback) {
-			var content = $('<div></div>'),
+			var content = $('<div />'),
 				clickFunc = function (e) {
 					callback($(this).data('size'));
 					editor.closeDropDown(true);
