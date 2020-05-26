@@ -5850,6 +5850,33 @@ function my_strtolower($string)
 }
 
 /**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for, case insensitive
+ *
+ * @param string $haystack String to look in (haystack)
+ * @param string $needle What to look for (needle)
+ * @param int $offset (optional) How much to offset
+ * @return int|bool false on needle not found, integer position if found
+ */
+function my_stripos($haystack, $needle, $offset=0)
+{
+	if($needle == '')
+	{
+		return false;
+	}
+
+	if(function_exists("mb_stripos"))
+	{
+		$position = mb_stripos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = stripos($haystack, $needle, $offset);
+	}
+
+	return $position;
+}
+
+/**
  * Finds a needle in a haystack and returns it position, mb strings accounted for
  *
  * @param string $haystack String to look in (haystack)

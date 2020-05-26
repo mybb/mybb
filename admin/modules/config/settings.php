@@ -1191,40 +1191,29 @@ if($mybb->input['action'] == "change")
 		// Search
 
 		// Search for settings
-		$search = $db->escape_string_like($mybb->input['search']);
-		$query = $db->query("
-			SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
-			FROM ".TABLE_PREFIX."settings s
-			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
-			ORDER BY s.disporder
-		");
-		while($setting = $db->fetch_array($query))
+		$search = trim($mybb->input['search']);
+		if(!empty($search))
 		{
-			$lang_var = "setting_{$setting['name']}";
-			if(isset($lang->$lang_var))
+			$query = $db->query("
+				SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
+				FROM ".TABLE_PREFIX."settings s
+				LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
+				ORDER BY s.disporder
+			");
+			while($setting = $db->fetch_array($query))
 			{
-				$setting["title"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_{$setting['name']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["description"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gtitle"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gdescription"] = $lang->$lang_var;
-			}
-			$lang_var = $setting["title"] . " " . $setting["description"] . " " . $setting["gtitle"] . " " . $setting["gdescription"];
-			$search = mb_convert_encoding($search, mb_detect_encoding($setting["title"], "auto"));
-			if (mb_stripos($lang_var, $search))
-			{
-				$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gname'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
+				foreach(array("setting_{$setting['name']}", "setting_{$setting['name']}_desc", "setting_group_{$setting['gname']}", "setting_group_{$setting['gname']}_desc") as $search_in_lang_key)
+				{
+					if(!empty($lang->$search_in_lang_key))
+					{
+						$search_in .= ' ' . $lang->$search_in_lang_key;
+					}
+				}
+				if(my_stripos($search_in, $search) !== false)
+				{
+					$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				}
 			}
 		}
 		if(!count($cache_settings))
