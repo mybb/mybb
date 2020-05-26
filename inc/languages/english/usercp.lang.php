@@ -299,6 +299,7 @@ $l['attachstats_spaceused'] = "Space Used";
 $l['attachstats_quota'] = "Attachment Quota";
 $l['attachstats_totaldl'] = "Total Downloads";
 $l['attachstats_bandwidth'] = "Approximate Bandwidth Usage";
+$l['error_avatarurltoolong'] = "Sorry, but we cannot change your avatar as the new avatar URL specified is too long. You can try to use a shorter URL which doesn't exceed the database field length.";
 $l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
 $l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
