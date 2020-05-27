@@ -3408,21 +3408,21 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				<td class="tcat" align="center" width="1"><a href="{$week_link}">&raquo;</a></td>
 				{$day_bits}
 			</tr>]]></template>
-		<template name="calendar_weekrow_day" version="1823"><![CDATA[				<td class="{$day_class}" style="vertical-align: top; height: 100px;">
+		<template name="calendar_weekrow_day" version="1823"><![CDATA[				<td class="trow1" style="vertical-align: top; height: 100px;">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div class="clear">
 					{$day_birthdays}
 					{$day_events}
 					</div>
 				</td>]]></template>
-		<template name="calendar_weekrow_currentday" version="1823"><![CDATA[				<td class="{$current_day}" style="vertical-align: top; height: 100px;">
+		<template name="calendar_weekrow_currentday" version="1823"><![CDATA[				<td class="trow_sep" style="vertical-align: top; height: 100px;">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div class="clear">
 					{$day_birthdays}
 					{$day_events}
 					</div>
 				</td>]]></template>
-		<template name="calendar_weekrow_thismonth" version="1823"><![CDATA[				<td class="{$this_month}" style="vertical-align: top; height: 100px;">
+		<template name="calendar_weekrow_thismonth" version="1823"><![CDATA[				<td class="trow2" style="vertical-align: top; height: 100px;">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div class="clear">
 					{$day_birthdays}
