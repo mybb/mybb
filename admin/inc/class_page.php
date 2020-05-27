@@ -106,7 +106,7 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1821\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1823\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js?ver=1821\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1821\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js?ver=1821\"></script>\n";
@@ -391,7 +391,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1823"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
 <script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
@@ -525,7 +525,7 @@ EOF;
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1823"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
 <script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
