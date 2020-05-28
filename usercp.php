@@ -243,21 +243,23 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		}
 
 		if($cfield == 'icq')
-        {
-            $user[$cfield] = $mybb->get_input($cfield, 1);
-            if(my_strlen($user[$cfield]) > 10)
-            {
-                error($lang->contact_field_icqerror);
-            }
-        }
-        else
-        {
-            $user[$cfield] = $mybb->get_input($cfield);
-            if(my_strlen($user[$cfield]) > 75)
-            {
-                error($lang->contact_field_error);
-            }
-        }
+		{
+			$user[$cfield] = $mybb->get_input($cfield, 1);
+
+			if(my_strlen($user[$cfield]) > 10)
+			{
+				error($lang->contact_field_icqerror);
+			}
+		}
+		else
+		{
+			$user[$cfield] = $mybb->get_input($cfield);
+
+			if(my_strlen($user[$cfield]) > 75)
+			{
+				error($lang->contact_field_error);
+			}
+		}
 	}
 
 	if($mybb->usergroup['canchangewebsite'] == 1)
