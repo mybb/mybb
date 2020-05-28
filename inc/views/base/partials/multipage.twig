@@ -36,7 +36,7 @@
     {% if breadcrumb == false and mybb.settings.jumptopagemultipage and multipage.total_pages > ( mybb.settings.maxmultipagelinks + 1 ) %}
         <div class="popup_menu drop_go_page" style="display: none;">
             <form action="{{ multipage.jump_url }}" method="post">
-                <input type="text" class="textbox textbox--small textbox--no-margin" name="page" value="{{ page }}" size="4" />
+                <input type="number" class="textbox textbox--small textbox--no-margin" name="page" value="{{ page }}" size="4" min="1" max="{{ multipage.total_pages }}" />
                 <button type="submit" class="button button--inline">
                     {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.multipage_jump }}</span>
