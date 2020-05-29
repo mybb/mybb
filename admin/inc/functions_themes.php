@@ -262,6 +262,8 @@ function import_theme_xml($xml, $options=array())
 		$loop = 1;
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
+			$stylesheet['attributes']['name'] = my_substr($stylesheet['attributes']['name'], 0, 30);
+
 			if(substr($stylesheet['attributes']['name'], -4) != ".css")
 			{
 				continue;
@@ -374,6 +376,11 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$filename = basename($filename);
 	$tid = (int) $tid;
 	$theme_directory = "cache/themes/theme{$tid}";
+
+	if(substr($filename, -4) != ".css")
+	{
+		return false;
+	}
 
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
@@ -623,6 +630,8 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
+	
+	$updated_theme = array();
 	if(!empty($stylesheets))
 	{
 		$updated_theme['stylesheets'] = $db->escape_string(my_serialize($stylesheets));
@@ -1452,6 +1461,7 @@ function fetch_theme_stylesheets($theme)
  */
 function upgrade_css_120_to_140($css)
 {
+	global $mybb;
 	// Update our CSS to the new stuff in 1.4
 	$parsed_css = css_to_array($css);
 

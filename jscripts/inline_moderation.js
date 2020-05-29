@@ -22,7 +22,7 @@ var inlineModeration = {
 			var element = $(this);
 			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'inlinemod'))
 			{
-				$(element).click(inlineModeration.checkItem);
+				$(element).on('click', inlineModeration.checkItem);
 			}
 
 			if(element.attr('id'))
@@ -278,7 +278,7 @@ var inlineModeration = {
 
 				if(changed)
 				{
-					element.click();
+					element.trigger('click');
 					
 					if(master.prop('checked') == true)
 					{

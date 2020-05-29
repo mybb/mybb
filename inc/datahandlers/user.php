@@ -928,6 +928,8 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_timezone()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 
 		$timezones = get_supported_timezones();
@@ -1095,13 +1097,19 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
 			{
 				$user[$value] = '';
 			}
+		}
+		
+		// If user is being created from ACP, there is no last visit or last active
+		if(defined('IN_ADMINCP'))
+		{
+			$user['lastvisit'] = $user['lastactive'] = 0;
 		}
 
 		$this->user_insert_data = array(
@@ -1123,7 +1131,6 @@ class UserDataHandler extends DataHandler
 			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
 			"icq" => (int)$user['icq'],
-			"yahoo" => $db->escape_string($user['yahoo']),
 			"skype" => $db->escape_string($user['skype']),
 			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
@@ -1282,7 +1289,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['email']))
 		{
-			$this->user_update_data['email'] = $user['email'];
+			$this->user_update_data['email'] = $db->escape_string($user['email']);
 		}
 		if(isset($user['postnum']))
 		{
@@ -1336,10 +1343,6 @@ class UserDataHandler extends DataHandler
 		if(isset($user['icq']))
 		{
 			$this->user_update_data['icq'] = (int)$user['icq'];
-		}
-		if(isset($user['yahoo']))
-		{
-			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
 		}
 		if(isset($user['skype']))
 		{
@@ -1590,7 +1593,6 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 
 		// Update  cache
-		$cache->update_banned();
 		$cache->update_moderators();
 		$cache->update_forumsdisplay();
 		$cache->update_reportedcontent();
@@ -1750,7 +1752,6 @@ class UserDataHandler extends DataHandler
 			"website" => "",
 			"birthday" => "",
 			"icq" => "",
-			"yahoo" => "",
 			"skype" => "",
 			"google" => "",
 			"usertitle" => "",
@@ -1801,7 +1802,6 @@ class UserDataHandler extends DataHandler
 
 		$parser_options = array(
 			'allow_html' => $mybb->settings['sightml'],
-			'filter_badwords' => 1,
 			'allow_mycode' => $mybb->settings['sigmycode'],
 			'allow_smilies' => $mybb->settings['sigsmilies'],
 			'allow_imgcode' => $mybb->settings['sigimgcode'],

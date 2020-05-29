@@ -374,13 +374,18 @@ if($mybb->input['action'] == "orphans")
 			foreach($bad_attachments as $file)
 			{
 				$file_path = MYBB_ROOT.$mybb->settings['uploadspath']."/".$file;
-				$filesize = get_friendly_size(filesize($file_path));
-				$table->construct_cell($form->generate_check_box('orphaned_files[]', $file, '', array('checked' => true)));
-				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
-				$table->construct_cell("<span class=\"float_right\">{$filesize}</span>{$file}");
-				$table->construct_cell($lang->reason_not_in_table, array('class' => 'align_center'));
-				$table->construct_cell(my_date('relative', filemtime($file_path)), array('class' => 'align_center'));
-				$table->construct_row();
+
+				if(file_exists($file_path))
+				{
+					$filename = htmlspecialchars_uni($file);
+					$filesize = get_friendly_size(filesize($file_path));
+					$table->construct_cell($form->generate_check_box('orphaned_files[]', $file, '', array('checked' => true)));
+					$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
+					$table->construct_cell("<span class=\"float_right\">{$filesize}</span>{$filename}");
+					$table->construct_cell($lang->reason_not_in_table, array('class' => 'align_center'));
+					$table->construct_cell(my_date('relative', filemtime($file_path)), array('class' => 'align_center'));
+					$table->construct_row();
+				}
 			}
 		}
 
@@ -497,7 +502,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$(\"#redirect_form\").submit();
+						$(\"#redirect_form\").trigger('submit');
 					}, 100
 				);
 			});</script>";
@@ -620,7 +625,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$(\"#redirect_form\").submit();
+						$(\"#redirect_form\").trigger('submit');
 					}, 100
 				);
 			});</script>";
@@ -853,12 +858,19 @@ if(!$mybb->input['action'])
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
-				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])
 					{
 						$pagination_url .= "&{$var}=".urlencode($mybb->input[$var]);
+					}
+				}
+				if(is_array($mybb->input['forum']) && !empty($mybb->input['forum']))
+				{
+					foreach($mybb->input['forum'] as $fid)
+					{
+						$pagination_url .= "&forum[]=".(int)$fid;
 					}
 				}
 				$pagination = draw_admin_pagination($mybb->input['page'], $mybb->input['perpage'], $num_results, $pagination_url);

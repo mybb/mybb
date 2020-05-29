@@ -755,7 +755,7 @@ class Moderation
 	 * @param int $tid Thread ID (Set to 0 if posts from multiple threads are selected)
 	 * @return int ID of the post into which all other posts are merged
 	 */
-	function merge_posts($pids, $tid=0, $sep="new_line")
+	function merge_posts($pids=array(), $tid=0, $sep="new_line")
 	{
 		global $db, $plugins;
 
@@ -1749,7 +1749,6 @@ class Moderation
 			"replies" => "+{$mergethread['replies']}",
 			"attachmentcount" => "+{$mergethread['attachmentcount']}",
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}",
-			"deletedposts" => "+{$mergethread['unapprovedposts']}",
 			"deletedposts" => "+{$mergethread['deletedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
@@ -2212,6 +2211,8 @@ class Moderation
 	 * @param array $tids Thread IDs
 	 * @param int $moveto Destination forum
 	 * @return boolean
+	 *
+	 * @deprecated Iterate over move_thread instead
 	 */
 	function move_threads($tids, $moveto)
 	{

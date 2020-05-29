@@ -297,7 +297,7 @@ if(!$mybb->input['action'])
 
 			$plugins->run_hooks("admin_config_report_reasons_start_commit");
 
-			//$cache->update_reportreasons();
+			$cache->update_reportreasons();
 
 			flash_message($lang->success_reasons_disporder_updated, 'success');
 			admin_redirect("index.php?module=config-report_reasons");
@@ -364,7 +364,7 @@ if(!$mybb->input['action'])
 
 	if($form_container->num_rows() == 0)
 	{
-		$form_container->construct_cell($lang->no_report_reasons, array('colspan' => 5));
+		$form_container->output_cell($lang->no_report_reasons, array('colspan' => 5));
 		$form_container->construct_row();
 	}
 

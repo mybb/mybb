@@ -11,7 +11,7 @@ var AdminCP = {
 		{
 			form = $("<form />", { method: "post", action: element.href, style: "display: none;" });
 			$("body").append(form);
-			form.submit();
+			form.trigger('submit');
 		}
 		return false;
 	}

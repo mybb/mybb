@@ -735,7 +735,7 @@ class PMDataHandler extends DataHandler
 		// If we're saving a copy
 		if($pm['options']['savecopy'] != 0)
 		{
-			if(isset($recipient_list['to']) && count($recipient_list['to']) == 1)
+			if(isset($recipient_list['to']) && is_array($recipient_list['to']) && count($recipient_list['to']) == 1)
 			{
 				$this->pm_insert_data['toid'] = $uid;
 			}

@@ -82,10 +82,10 @@ $tables[] = "CREATE TABLE mybb_attachments (
   pid int unsigned NOT NULL default '0',
   posthash varchar(50) NOT NULL default '',
   uid int unsigned NOT NULL default '0',
-  filename varchar(120) NOT NULL default '',
+  filename varchar(255) NOT NULL default '',
   filetype varchar(120) NOT NULL default '',
   filesize int(10) unsigned NOT NULL default '0',
-  attachname varchar(120) NOT NULL default '',
+  attachname varchar(255) NOT NULL default '',
   downloads int unsigned NOT NULL default '0',
   dateuploaded int unsigned NOT NULL default '0',
   visible tinyint(1) NOT NULL default '0',
@@ -103,7 +103,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
   maxsize int(15) unsigned NOT NULL default '0',
   icon varchar(100) NOT NULL default '',
   enabled tinyint(1) NOT NULL default '1',
-  groups TEXT NOT NULL,
+  `groups` TEXT NOT NULL,
   forums TEXT NOT NULL,
   avatarfile tinyint(1) NOT NULL default '0',
   PRIMARY KEY (atid)
@@ -482,7 +482,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL,
 	forums text NOT NULL,
-	groups text NOT NULL,
+	`groups` text NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL,
 	threadoptions text NOT NULL,
@@ -874,7 +874,7 @@ $tables[] = "CREATE TABLE mybb_threadprefixes (
 	prefix varchar(120) NOT NULL default '',
 	displaystyle varchar(200) NOT NULL default '',
 	forums text NOT NULL,
-	groups text NOT NULL,
+	`groups` text NOT NULL,
 	PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
 
@@ -1070,7 +1070,6 @@ $tables[] = "CREATE TABLE mybb_users (
   lastpost int unsigned NOT NULL default '0',
   website varchar(200) NOT NULL default '',
   icq varchar(10) NOT NULL default '',
-  yahoo varchar(50) NOT NULL default '',
   skype varchar(75) NOT NULL default '',
   google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',

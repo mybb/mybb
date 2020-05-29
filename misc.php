@@ -15,8 +15,8 @@ define('THIS_SCRIPT', 'misc.php');
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_smilies_popup_row,multipage_start";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_syndication_forumlist";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,misc_imcenter_error";
-$templatelist .= ",misc_smilies_popup_no_smilies,misc_smilies_no_smilies,misc_syndication,misc_help_search,misc_helpresults_noresults,misc_syndication_forumlist_forum,misc_syndication_feedurl,misc_whoposted_page";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,misc_whoposted_page";
+$templatelist .= ",misc_smilies_popup_no_smilies,misc_smilies_no_smilies,misc_syndication,misc_help_search,misc_helpresults_noresults,misc_syndication_forumlist_forum,misc_syndication_feedurl";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -269,12 +269,21 @@ elseif($mybb->input['action'] == "helpresults")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
+	$helpcount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($helpcount / $perpage);
+		if($pages > $page)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -293,14 +302,11 @@ elseif($mybb->input['action'] == "helpresults")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
-	$helpcount = $db->fetch_array($query);
-
 	if($upper > $helpcount)
 	{
 		$upper = $helpcount;
 	}
-	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
+	$multipage = multipage($helpcount, $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
 	$helpdoclist = '';
 
 	require_once MYBB_ROOT."inc/class_parser.php";
@@ -770,10 +776,6 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = ' smilie_pointer';
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
@@ -826,10 +828,6 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = $onclick = '';
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
@@ -850,179 +848,68 @@ elseif($mybb->input['action'] == "smilies")
 		output_page($smiliespage);
 	}
 }
-elseif($mybb->input['action'] == "imcenter")
-{
-	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
-	{
-		$message = $lang->error_invalidimtype;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
 
-	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
-	$user = get_user($uid);
-
-	if(!$user)
-	{
-		$message = $lang->error_invaliduser;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
-
-	if(empty($user[$mybb->input['imtype']]))
-	{
-		$message = $lang->error_invalidimtype;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
-
-	$settingkey = 'allow'.$mybb->input['imtype'].'field';
-	if(!is_member($mybb->settings[$settingkey], $user))
-	{
-		$message = $lang->error_nopermission_user_ajax;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
-
-	// Build IM navigation bar
-	$navigationbar = $navsep = $imtype = $imtype_lang = '';
-	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "skype";
-		$imtype_lang = $lang->skype;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
-	if(!empty($user['yahoo']) && is_member($mybb->settings['allowyahoofield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "yahoo";
-		$imtype_lang = $lang->yahoo_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-	}
-
-	$user['skype'] = htmlspecialchars_uni($user['skype']);
-	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-
-	$user['username'] = htmlspecialchars_uni($user['username']);
-
-	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
-	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
-
-	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
-	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
-	echo $imcenter;
-	exit;
-}
 elseif($mybb->input['action'] == "syndication")
 {
 	$plugins->run_hooks("misc_syndication_start");
 
 	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	$version = $mybb->get_input('version');
-	$new_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
 	$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
-	$limit = 15;
-	if(!empty($new_limit) && $new_limit != $limit)
-	{
-		$limit = $new_limit;
-	}
-	$feedurl = '';
-	$add = false;
+	$limit = $mybb->get_input('limit', MyBB::INPUT_INT);
+	$url = $mybb->settings['bburl']."/syndication.php";
+	$syndicate = $urlquery = array();
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
 	$inactiveforums = get_inactive_forums();
-	$unexp1 = explode(',', $unviewable);
-	$unexp2 = explode(',', $inactiveforums);
-	$unexp = array_merge($unexp1, $unexp2);
+	$unexp = explode(',', $unviewable . ',' . $inactiveforums);
 
-	if(is_array($forums))
+	if(is_array($forums) && !in_array('all', $forums))
 	{
-		foreach($unexp as $fid)
-		{
-			$unview[$fid] = true;
-		}
-
-		$syndicate = '';
-		$comma = '';
-		$all = false;
 		foreach($forums as $fid)
 		{
-			if($fid == "all")
+			if(ctype_digit($fid) && !in_array($fid, $unexp))
 			{
-				$all = true;
-				break;
+				$syndicate[] = $fid;
+				$flist[$fid] = true;
 			}
-			elseif(ctype_digit($fid))
-			{
-				if(!isset($unview[$fid]))
-				{
-					$syndicate .= $comma.$fid;
-					$comma = ",";
-					$flist[$fid] = true;
-				}
-			}
-		}
-		$url = $mybb->settings['bburl']."/syndication.php";
-		if(!$all)
-		{
-			$url .= "?fid=$syndicate";
-			$add = true;
 		}
 
-		// If the version is not RSS2.0, set the type to Atom1.0.
-		if($version != "rss2.0")
+		if(!empty($syndicate))
 		{
-			if(!$add)
-			{
-				$url .= "?";
-			}
-			else
-			{
-				$url .= "&";
-			}
-			$url .= "type=atom1.0";
-			$add = true;
+			$urlquery[] = "fid=". implode(",", $syndicate);
 		}
-		if((int)$limit > 0)
-		{
-			if($limit > 50)
-			{
-				$limit = 50;
-			}
-			if(!$add)
-			{
-				$url .= "?";
-			}
-			else
-			{
-				$url .= "&";
-			}
-			if(is_numeric($limit))
-			{
-				$url .= "limit=$limit";
-			}
-		}
-		eval("\$feedurl = \"".$templates->get("misc_syndication_feedurl")."\";");
 	}
-	unset($GLOBALS['forumcache']);
 
 	// If there is no version in the input, check the default (RSS2.0).
-	if($version == "atom1.0")
+	$json1check = $atom1check = $rss2check = "";
+	if($version == "json")
+	{
+		$json1check = "checked=\"checked\"";
+		$urlquery[] = "type=".$version;
+	}
+	elseif($version == "atom1.0")
 	{
 		$atom1check = "checked=\"checked\"";
-		$rss2check = '';
+		$urlquery[] = "type=".$version;
 	}
 	else
 	{
-		$atom1check = '';
 		$rss2check = "checked=\"checked\"";
 	}
+	// Evaluate, reset and set limit (Drive through settings?)
+	$limit = empty($limit) ? 15 : (($limit > 50) ? 50 : $limit);
+	$urlquery[] = "limit=" . $limit;
+
+	// Generate feed url
+	if(!empty($urlquery)){
+		$url .= "?" . implode('&', $urlquery);
+	}
+	eval("\$feedurl = \"".$templates->get("misc_syndication_feedurl")."\";");
+
+	unset($GLOBALS['forumcache']);
+
 	$forumselect = makesyndicateforums();
 
 	$plugins->run_hooks("misc_syndication_end");
@@ -1090,10 +977,9 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 					if(isset($flist[$forum['fid']]))
 					{
 						$optionselected = 'selected="selected"';
-						$selecteddone = "1";
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
 					{
 						eval("\$forumlistbits .= \"".$templates->get("misc_syndication_forumlist_forum")."\";");
 					}
@@ -1104,18 +990,20 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 						$forumlistbits .= makesyndicateforums($forum['fid'], '', 0, $newdepth);
 					}
 				}
+				else
+				{
+					if(isset($flist[$forum['fid']]))
+					{
+						unset($flist[$forum['fid']]);
+					}
+				}
 			}
 		}
 	}
 
 	if($addselect)
 	{
-		$addsel = '';
-		if(empty($selecteddone))
-		{
-			$addsel = ' selected="selected"';
-		}
-
+		$addsel = empty($flist) ? ' selected="selected"' : '';
 		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");
 	}
 

@@ -341,6 +341,13 @@ if($mybb->input['action'] == "results")
 			$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 		}
 
+		$pages = ceil($threadcount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+
 		// Begin selecting matching threads, cache them.
 		$sqlarray = array(
 			'order_by' => $sortfield,
@@ -885,6 +892,13 @@ if($mybb->input['action'] == "results")
 
 		$results = '';
 
+		$pages = ceil($postcount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+
 		$query = $db->query("
 			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
 			FROM ".TABLE_PREFIX."posts p
@@ -930,7 +944,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			$post['forumlink'] = '';
-			if(!empty($forumcache[$thread['fid']]))
+			if(!empty($forumcache[$post['fid']]))
 			{
 				$post['forumlink_link'] = get_forum_link($post['fid']);
 				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
@@ -1411,7 +1425,7 @@ elseif($mybb->input['action'] == "getnew")
 	{
 		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
-	
+
 	$tids = '';
 	$comma = '';
 	$query = $db->simple_select("threads", "tid", $where_sql);
@@ -1506,7 +1520,7 @@ elseif($mybb->input['action'] == "getdaily")
 			$tids .= $comma.$tid;
 			$comma = ',';
 	}
-	
+
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
@@ -1524,7 +1538,7 @@ elseif($mybb->input['action'] == "getdaily")
 	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
-elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
+elseif($mybb->input['action'] == "do_search")
 {
 	$plugins->run_hooks("search_do_search_start");
 

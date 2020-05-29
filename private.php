@@ -42,12 +42,25 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 	error_no_permission();
 }
 
+$update = false;
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**$%%$2**$%%$3**$%%$4**";
+	$update = true;
+	$mybb->user['pmfolders'] = "0**$%%$1**$%%$2**$%%$3**$%%$4**";
+}
+elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
+{
+	// Old folder structure. Need to update
+	// Since MyBB 1.8.20 fid[0] represents 'Inbox' and fid[1] represents 'Unread'
+	$update = true;
+	$mybb->user['pmfolders'] = '0'. ltrim(str_replace("$%%$2**", "$%%$1**$%%$2**", $mybb->user['pmfolders']), '1');
+}
 
+// Folder structure update required?
+if($update)
+{
 	$sql_array = array(
-		 "pmfolders" => $mybb->user['pmfolders']
+		 "pmfolders" => $db->escape_string($mybb->user['pmfolders']),
 	);
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
@@ -77,7 +90,15 @@ foreach($foldersexploded as $key => $folders)
 
 	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	// Manipulate search folder selection to omit "Unread"
+	if($folder_id != 1)
+	{
+		if($folder_id == 0)
+		{
+			$folder_id = 1;
+		}
+		eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	}
 }
 
 $from_fid = $mybb->input['fid'];
@@ -279,12 +300,21 @@ if($mybb->input['action'] == "results")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
+	$pmscount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -303,14 +333,11 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
-	$pmscount = $db->fetch_array($query);
-
 	if($upper > $pmscount)
 	{
 		$upper = $pmscount;
 	}
-	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
+	$multipage = multipage($pmscount, $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -475,7 +502,12 @@ if($mybb->input['action'] == "results")
 			$senddate = $lang->not_sent;
 		}
 
-		$foldername = $foldernames[$message['folder']];
+		$fid = "0";
+		if((int)$message['folder'] > 1)
+		{
+			$fid = $message['folder'];
+		}
+		$foldername = $foldernames[$fid];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
@@ -1455,7 +1487,7 @@ if($mybb->input['action'] == "folders")
 		$fid = $folderinfo[0];
 		$foldername = get_pm_folder_name($fid, $foldername);
 
-		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
+		if((int)$folderinfo[0] < 5)
 		{
 			$foldername2 = get_pm_folder_name($fid);
 			eval("\$folderlist .= \"".$templates->get("private_folders_folder_unremovable")."\";");
@@ -1510,42 +1542,19 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 				$fid = (int)$key;
 				// Use default language strings if empty or value is language string
-				switch($fid)
+				if($val == get_pm_folder_name($fid) || trim($val) == '')
 				{
-					case 1:
-						if($val == $lang->folder_inbox || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 2:
-						if($val == $lang->folder_sent_items || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 3:
-						if($val == $lang->folder_drafts || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 4:
-						if($val == $lang->folder_trash || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
+					$val = '';
 				}
 			}
 
-			if($val != '' && trim($val) == '' && !($key >= 1 && $key <= 4))
+			if($val != '' && trim($val) == '' && !(is_numeric($key) && $key <= 4))
 			{
 				// If the name only contains whitespace and it's not a default folder, print an error
 				error($lang->error_emptypmfoldername);
 			}
 
-			if($val != '' || ($key >= 1 && $key <= 4))
+			if($val != '' || (is_numeric($key) && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
 				$foldername = $db->escape_string(htmlspecialchars_uni($val));
@@ -1594,13 +1603,22 @@ if($mybb->input['action'] == "empty")
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = '';
+	$folderlist = $unread = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
-		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
+		if($folderinfo[0] == "1")
+		{
+			$fid = "1";
+			$unread = " AND status='0'";
+		}
+		if($folderinfo[0] == "0")
+		{
+			$fid = "1";
+		}
+		$foldername = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid'$unread AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
 		$foldercount = my_number_format($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
@@ -2080,11 +2098,12 @@ if(!$mybb->input['action'])
 
 	if(!$mybb->input['fid'] || !array_key_exists($mybb->input['fid'], $foldernames))
 	{
-		$mybb->input['fid'] = 1;
+		$mybb->input['fid'] = 0;
 	}
 
-	$folder = $mybb->input['fid'];
-	$foldername = $foldernames[$folder];
+	$fid = (int)$mybb->input['fid'];
+	$folder = !$fid ? 1 : $fid;
+	$foldername = $foldernames[$fid];
 
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
@@ -2135,8 +2154,14 @@ if(!$mybb->input['action'])
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
-	$pmscount = $db->fetch_array($query);
+	$selective = "";
+	if($fid == 1)
+	{
+		$selective = " AND status='0'";
+	}
+
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
+	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -2149,6 +2174,12 @@ if(!$mybb->input['action'])
 	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -2167,15 +2198,15 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
+		$page_url = "private.php?fid={$fid}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
-		$page_url = "private.php?fid={$folder}";
+		$page_url = "private.php?fid={$fid}";
 	}
 
-	$multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
-	$messagelist = '';
+	$multipage = multipage($pmscount, $perpage, $page, $page_url);
+	$selective = $messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
 
@@ -2241,6 +2272,11 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
+		if($fid == 1)
+		{
+			$selective = " AND pm.status='0'";
+		}
+
 		if($sortfield == "username")
 		{
 			$pm = "fu.";
@@ -2256,7 +2292,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
+		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'{$selective}
 		ORDER BY {$pm}{$sortfield} {$sortordernow}
 		LIMIT $start, $perpage
 	");

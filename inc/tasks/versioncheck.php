@@ -28,17 +28,7 @@ function task_versioncheck($task)
 		return false;
 	}
 
-	$pos = strpos($contents, "<");
-	if($pos > 1)
-	{
-		$contents = substr($contents, $pos);
-	}
-
-	$pos = strpos(strrev($contents), ">");
-	if($pos > 1)
-	{
-		$contents = substr($contents, 0, (-1) * ($pos-1));
-	}
+	$contents = trim($contents);
 
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
@@ -77,20 +67,11 @@ function task_versioncheck($task)
 				break;
 			}
 
-			$description = $item['description'];
-
-			$description = $post_parser->parse_message($description, array(
-					'allow_html' => true,
-				)
-			);
-
-			$description = preg_replace('#<img(.*)/>#', '', $description);
-
 			$updated_cache['news'][] = array(
-				'title' => htmlspecialchars_uni($item['title']),
-				'description' => $description,
-				'link' => htmlspecialchars_uni($item['link']),
-				'author' => htmlspecialchars_uni($item['author']),
+				'title' => $item['title'],
+				'description' => $item['description'],
+				'link' => $item['link'],
+				'author' => $item['author'],
 				'dateline' => $item['date_timestamp']
 			);
 		}

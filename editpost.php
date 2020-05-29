@@ -13,10 +13,10 @@ define('THIS_SCRIPT', 'editpost.php');
 
 $templatelist = "editpost,previewpost,changeuserbox,codebuttons,post_attachments_attachment_postinsert,post_attachments_attachment_mod_unapprove,postbit_attachments_thumbnails,postbit_profilefield_multiselect_value";
 $templatelist .= ",editpost_delete,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,post_subscription_method,postbit_profilefield_multiselect";
-$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,error_attacherror,posticons";
+$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,posticons";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
 $templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved";
-$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_signature,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,editpost_postoptions";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_signature,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,editpost_postoptions,post_attachments_viewlink";
 $templatelist .= ",postbit_attachments_images,global_moderation_notice,post_attachments_new,postbit_attachments,postbit_online,postbit_away,postbit_offline,postbit_gotopost,postbit_userstar,postbit_icon";
 
 require_once "./global.php";
@@ -49,7 +49,7 @@ else
 	$post = get_post($pid);
 }
 
-if(!$post)
+if(!$post || ($post['visible'] == -1 && $mybb->input['action'] != "restorepost"))
 {
 	error($lang->error_invalidpost);
 }
@@ -71,7 +71,10 @@ $forum = get_forum($fid);
 
 if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid']))
 {
-	error($lang->error_invalidthread);
+	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 if(!$forum || $forum['type'] != "f")
 {
@@ -131,8 +134,8 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
-		// User can't delete unapproved post
-		if($post['visible'] == 0)
+		// User can't delete unapproved post unless allowed for own
+		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
 			error_no_permission();
 		}
@@ -173,7 +176,7 @@ else
 			error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
-		if($post['visible'] == 0 || $post['visible'] == -1)
+		if(($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid'])) || $post['visible'] == -1)
 		{
 			error_no_permission();
 		}
@@ -194,24 +197,29 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
+	if($pid)
 	{
-		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND pid='{$pid}'");
-		$updateattach = $db->fetch_field($query, "aid");
+		$attachwhere = "pid='{$pid}'";
+	}
+	else
+	{
+		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
+	}
 
-		$update_attachment = false;
-		if($updateattach > 0 && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
-		{
-			$update_attachment = true;
-		}
-		$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-	}
-	if(!empty($attachedfile['error']))
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "editpost");
+
+	if(!empty($ret['errors']))
 	{
-		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
-		$mybb->input['action'] = "editpost";
+		$errors = $ret['errors'];
 	}
+
+	// Do we have attachment errors?
+	if(!empty($errors))
+	{
+		$attacherror = inline_error($errors);
+	}
+
+	// If we were dealing with an attachment but didn't click 'Update Post', force the post edit page again.
 	if(!isset($mybb->input['submit']))
 	{
 		$mybb->input['action'] = "editpost";
@@ -240,6 +248,14 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
+
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("success" => true));
+		exit();
+	}
+
 	if(!isset($mybb->input['submit']))
 	{
 		$mybb->input['action'] = "editpost";
@@ -294,7 +310,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
 					{
-						echo json_encode(array("data" => '1'));
+						echo json_encode(array("data" => '1', "first" => '1'));
 					}
 					else
 					{
@@ -349,7 +365,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
 					{
-						echo json_encode(array("data" => '1'));
+						echo json_encode(array("data" => '1', "first" => '0'));
 					}
 					else
 					{
@@ -407,7 +423,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					echo json_encode(array("data" => '1'));
+					echo json_encode(array("data" => '1', "first" => '1'));
 				}
 				else
 				{
@@ -433,7 +449,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					echo json_encode(array("data" => '1'));
+					echo json_encode(array("data" => '1', "first" => '0'));
 				}
 				else
 				{
@@ -631,8 +647,20 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
-		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
+
+		if($usage['ausage'] !== NULL)
+		{
+			$friendlyusage = get_friendly_size($usage['ausage']);
+			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
+			eval("\$link_viewattachments = \"".$templates->get("post_attachments_viewlink")."\";");
+		}
+		else
+		{
+			$lang->attach_usage = "";
+		}
+
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
@@ -662,12 +690,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$reason = htmlspecialchars_uni($mybb->get_input('editreason'));
 	}
 
+	$previewmessage = $message;
+	$previewsubject = $subject;
+	$message = htmlspecialchars_uni($message);
+	$subject = htmlspecialchars_uni($subject);
+
 	if(!isset($post_errors))
 	{
 		$post_errors = '';
 	}
 
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
 	if(!empty($mybb->input['previewpost']) || $post_errors)
@@ -722,10 +755,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		else
 		{
-			$previewmessage = $message;
-			$previewsubject = $subject;
-			$message = htmlspecialchars_uni($message);
-			$subject = htmlspecialchars_uni($subject);
 
 			$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
 
@@ -734,27 +763,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				$postoptionschecked['signature'] = " checked=\"checked\"";
 			}
 
-			if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-			{
-				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-			}
-			else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-			{
-				$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-			}
-			else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-			{
-				$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-			}
-			else
-			{
-				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-			}
-
 			if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
+			
+			$subscription_method = get_subscription_method($tid, $postoptions);
+			${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 		}
 	}
 
@@ -802,9 +817,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 	else if(!$post_errors)
 	{
-		$message = htmlspecialchars_uni($message);
-		$subject = htmlspecialchars_uni($subject);
-
 		$preview = '';
 
 		if($post['includesig'] != 0)
@@ -817,28 +829,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 
-		$query = $db->simple_select("threadsubscriptions", "notification", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		if($db->num_rows($query) > 0)
-		{
-			$notification = $db->fetch_field($query, 'notification');
-
-			if($notification ==  0)
-			{
-				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-			}
-			else if($notification == 1)
-			{
-				$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-			}
-			else if($notification == 2)
-			{
-				$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-			}
-			else
-			{
-				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-			}
-		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
+		${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 	}
 
 	// Generate thread prefix selector if this is the first post of the thread
@@ -937,6 +929,21 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 	}
+
+	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
+	$php_post_max_size = return_bytes(ini_get('post_max_size'));
+
+	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
+	{
+		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
+	}
+	else
+	{
+		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
+	}
+
+	$php_max_file_uploads = (int)ini_get('max_file_uploads');
+	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
 	$plugins->run_hooks("editpost_end");
 

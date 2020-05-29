@@ -425,7 +425,8 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle
+		"cpstyle" => $lang->cpstyle,
+		"prefixselect" => $lang->prefix_selection_box
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -438,9 +439,9 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -643,7 +644,8 @@ if($mybb->input['action'] == "edit")
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle
+		"cpstyle" => $lang->cpstyle,
+		"prefixselect" => $lang->prefix_selection_box
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -656,9 +658,9 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -956,9 +958,11 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
+		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
@@ -966,8 +970,8 @@ if($mybb->input['action'] == "change")
 
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
 		// We cannot rely on user input to decide this
-		$checkbox_settings = $forum_group_select = array();
-		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%' OR optionscode LIKE 'numeric%'");
+		$checkbox_settings = $forum_group_select = $prefix_select = array();
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'prefixselect') OR optionscode LIKE 'checkbox%' OR optionscode LIKE 'numeric%'");
 
 		while($multisetting = $db->fetch_array($query))
 		{
@@ -1039,6 +1043,50 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// reject dangerous/unsupported upload paths
+		$fields = array(
+			'uploadspath',
+			'cdnpath',
+			'avataruploadpath',
+		);
+
+		$dynamic_include_directories = array(
+			MYBB_ROOT.'cache/',
+			MYBB_ROOT.'inc/plugins/',
+			MYBB_ROOT.'inc/languages/',
+			MYBB_ROOT.'inc/tasks/',
+		);
+		$dynamic_include_directories_realpath = array_map('realpath', $dynamic_include_directories);
+
+		foreach($fields as $field)
+		{
+			if(
+				isset($mybb->input['upsetting'][$field]) &&
+				is_string($mybb->input['upsetting'][$field]) &&
+				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			{
+				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+
+			if ($realpath === false) {
+				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
+			{
+				if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+				{
+					unset($mybb->input['upsetting'][$field]);
+					continue 2;
+				}
+			}
+		}
+
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
@@ -1092,7 +1140,7 @@ if($mybb->input['action'] == "change")
 			{
 				$db->create_fulltext_index("posts", "message");
 			}
-			if(!$db->is_fulltext("posts") && $db->supports_fulltext("threads"))
+			if(!$db->is_fulltext("threads") && $db->supports_fulltext("threads"))
 			{
 				$db->create_fulltext_index("threads", "subject");
 			}
@@ -1143,20 +1191,32 @@ if($mybb->input['action'] == "change")
 		// Search
 
 		// Search for settings
-		$search = $db->escape_string_like($mybb->input['search']);
-		$query = $db->query("
-			SELECT s.*
-			FROM ".TABLE_PREFIX."settings s
-			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
-			WHERE s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%'
-			ORDER BY s.disporder
-		");
-		while($setting = $db->fetch_array($query))
+		$search = trim($mybb->input['search']);
+		if(!empty($search))
 		{
-			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+			$query = $db->query("
+				SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
+				FROM ".TABLE_PREFIX."settings s
+				LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
+				ORDER BY s.disporder
+			");
+			while($setting = $db->fetch_array($query))
+			{
+				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gname'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
+				foreach(array("setting_{$setting['name']}", "setting_{$setting['name']}_desc", "setting_group_{$setting['gname']}", "setting_group_{$setting['gname']}_desc") as $search_in_lang_key)
+				{
+					if(!empty($lang->$search_in_lang_key))
+					{
+						$search_in .= ' ' . $lang->$search_in_lang_key;
+					}
+				}
+				if(my_stripos($search_in, $search) !== false)
+				{
+					$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				}
+			}
 		}
-
-		if(!$db->num_rows($query))
+		if(!count($cache_settings))
 		{
 			if(isset($mybb->input['ajax_search']))
 			{
@@ -1459,6 +1519,50 @@ if($mybb->input['action'] == "change")
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
 				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
 			}
+			else if($type[0] == "prefixselect")
+			{
+				$selected_values = '';
+				if($setting['value'] != '' && $setting['value'] != -1)
+				{
+					$selected_values = explode(',', (string)$setting['value']);
+					foreach($selected_values as &$value)
+					{
+						$value = (int)$value;
+					}
+					unset($value);
+				}
+				$prefix_checked = array('all' => '', 'custom' => '', 'none' => '');
+				if($setting['value'] == -1)
+				{
+					$prefix_checked['all'] = 'checked="checked"';
+				}
+				elseif($setting['value'] != '')
+				{
+					$prefix_checked['custom'] = 'checked="checked"';
+				}
+				else
+				{
+					$prefix_checked['none'] = 'checked="checked"';
+				}
+				print_selection_javascript();
+				$setting_code = "
+				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$prefix_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_prefix}</strong></label></dt>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$prefix_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_prefix}</strong></label></dt>
+					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
+						<table cellpadding=\"4\">
+							<tr>
+								<td valign=\"top\"><small>{$lang->prefix_colon}</small></td>
+								<td>".$form->generate_prefix_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+							</tr>
+						</table>
+					</dd>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$prefix_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+				</dl>
+				<script type=\"text/javascript\">
+					checkAction('{$element_id}');
+				</script>";
+			}
 			else
 			{
 				$typecount = count($type);
@@ -1721,10 +1825,10 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1821"></script>
 <script type="text/javascript">
 //<!--
-$(document).ready(function(){
+$(function(){
 	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
 });
 //-->
@@ -1759,7 +1863,12 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
@@ -1781,16 +1890,17 @@ function print_setting_peekers()
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
-		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)'
+		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)',
+		'new Peeker($(".setting_usereferrals"), $("#row_setting_referralsperpage"), 1, true)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			' . $setting_peekers . '
 		});
 	</script>';

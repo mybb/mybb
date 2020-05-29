@@ -8,7 +8,7 @@
 $l['nav_newthread'] = "New Thread";
 $l['newthread_in'] = "New Thread in {1}";
 $l['post_new_thread'] = "Post a new Thread";
-$l['thread_subject'] = "Thread Subject";
+$l['thread_subject'] = "Thread Subject:";
 $l['your_message'] = "Your Message:";
 $l['post_options'] = "Post Options:";
 $l['options_sig'] = "<b>Signature:</b> include your signature. (registered users only)";

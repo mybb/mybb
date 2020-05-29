@@ -130,7 +130,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 			$link_to_day = false;
 			// Any events on this specific day?
-			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
+			if(!empty($events_cache["$day-$calendar_month-$calendar_year"]))
 			{
 				$link_to_day = true;
 			}
@@ -514,7 +514,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 					}
 					else if(!$first)
 					{
-						if(!isset($events_cache[$day_date]))
+						if(!isset($events_cache[$day_date]) || !is_array($events_cache[$day_date]))
 						{
 							$events_cache[$day_date] = array();
 						}

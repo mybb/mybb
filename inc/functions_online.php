@@ -218,7 +218,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['action'] = '';
 			}
-			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter", "dstswitch");
+			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "dstswitch");
 			if($parameters['action'] == "whoposted")
 			{
 				if(!isset($parameters['tid']))
@@ -881,9 +881,6 @@ function build_friendly_wol_location($user_activity)
 		case "misc_syndication":
 			$location_name = $lang->viewing_syndication;
 			break;
-		case "misc_imcenter":
-			$location_name = $lang->viewing_imcenter;
-			break;
 		// modcp.php functions
 		case "modcp_modlogs":
 			$location_name = $lang->viewing_modlogs;
@@ -1167,7 +1164,7 @@ function build_wol_row($user)
 		$online_name = format_name($lang->guest, 1);
 	}
 
-	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
+	$online_time = my_date('relative', $user['time']);
 
 	// Fetch the location name for this users activity
 	$location = build_friendly_wol_location($user['activity']);

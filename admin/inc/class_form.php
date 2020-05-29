@@ -392,7 +392,7 @@ class DefaultForm
 	 * @param array $options Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */
-	function generate_select_box($name, $option_list, $selected=array(), $options=array())
+	function generate_select_box($name, $option_list=array(), $selected=array(), $options=array())
 	{
 		if(!isset($options['multiple']))
 		{
@@ -615,6 +615,57 @@ class DefaultForm
 
 		$select .= "</select>";
 
+		return $select;
+	}
+	
+	/**
+	 * Generate a prefix selection box.
+	 *
+	 * @param string $name The name of the selection box.
+	 * @param array|string $selected Array/string of the selected items.
+	 * @param array $options Array of options (class, id, multiple, size)
+	 * @return string The built select box.
+	 */
+	function generate_prefix_select($name, $selected=array(), $options=array())
+	{
+		global $cache;
+		$select = "<select name=\"{$name}\"";
+		if(isset($options['multiple']))
+		{
+			$select .= " multiple=\"multiple\"";
+		}
+		if(isset($options['class']))
+		{
+			$select .= " class=\"{$options['class']}\"";
+		}
+		if(isset($options['id']))
+		{
+			$select .= " id=\"{$options['id']}\"";
+		}
+		if(isset($options['size']))
+		{
+			$select .= " size=\"{$options['size']}\"";
+		}
+		$select .= ">\n";
+		$prefix_cache = $cache->read('threadprefixes');
+		
+		if(!is_array($selected))
+		{
+			$selected = array($selected);
+		}
+			
+		foreach($prefix_cache as $prefix)
+		{
+			$selected_add = "";
+			
+			
+			if(in_array($prefix['pid'], $selected))
+			{
+				$selected_add = " selected=\"selected\"";
+			}
+			$select .= "<option value=\"{$prefix['pid']}\"{$selected_add}>".htmlspecialchars_uni($prefix['prefix'])."</option>";
+		}
+		$select .= "</select>";
 		return $select;
 	}
 

@@ -15,26 +15,64 @@ define('THIS_SCRIPT', 'css.php');
 require_once "./inc/init.php";
 require_once MYBB_ROOT . $config['admin_dir'] . '/inc/functions_themes.php';
 
-$stylesheet = $mybb->get_input('stylesheet', MyBB::INPUT_INT);
+$stylesheets = $mybb->get_input('stylesheet', MyBB::INPUT_ARRAY);
 
-if($stylesheet)
+if(!empty($stylesheets))
 {
-	$options = array(
-		"limit" => 1
-	);
-	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=".$stylesheet, $options);
-	$stylesheet = $db->fetch_field($query, "stylesheet");
+	$stylesheet_list = implode(', ', array_map('intval', $stylesheets));
 
-	$plugins->run_hooks("css_start");
+	$content = '';
+	$prefix = TABLE_PREFIX;
 
-	if(!empty($mybb->settings['minifycss']))
+	switch($db->type)
 	{
-		$stylesheet = minify_stylesheet($stylesheet);
+		case 'pgsql':
+		case 'sqlite':
+			$sql = <<<SQL
+SELECT stylesheet FROM {$prefix}themestylesheets
+  WHERE sid IN ({$stylesheet_list})
+  ORDER BY CASE sid
+SQL;
+
+			$i = 0;
+			foreach($stylesheets as $sid)
+			{
+				$sid = (int) $sid;
+
+				$sql .= "WHEN {$sid} THEN {$i}\n";
+				$i++;
+			}
+
+			$sql .= 'END;';
+			break;
+		default:
+			$sql = <<<SQL
+SELECT stylesheet FROM {$prefix}themestylesheets
+  WHERE sid IN ({$stylesheet_list})
+  ORDER BY FIELD(sid, {$stylesheet_list});
+SQL;
+			break;
 	}
 
-	$plugins->run_hooks("css_end");
+	$query = $db->query($sql);
 
-	header("Content-type: text/css");
-	echo $stylesheet;
+	while($row = $db->fetch_array($query))
+	{
+		$stylesheet = $row['stylesheet'];
+
+		$plugins->run_hooks('css_start', $stylesheet);
+
+		if(!empty($mybb->settings['minifycss']))
+		{
+			$stylesheet = minify_stylesheet($stylesheet);
+		}
+
+		$plugins->run_hooks('css_end', $stylesheet);
+
+		$content .= $stylesheet;
+	}
+
+	header('Content-type: text/css');
+	echo $content;
 }
 exit;

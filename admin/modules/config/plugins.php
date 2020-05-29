@@ -67,7 +67,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -107,14 +107,12 @@ if($mybb->input['action'] == "browse")
 		{
 			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
 			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
-			$result['author']['value'] = $post_parser->parse_message($result['author']['value'], array(
-					'allow_html' => true
-				)
-			);
+			$result['author']['url']['value'] = htmlspecialchars_uni($result['author']['url']['value']);
+			$result['author']['name']['value'] = htmlspecialchars_uni($result['author']['name']['value']);
 			$result['version']['value'] = htmlspecialchars_uni($result['version']['value']);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
 			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
@@ -143,18 +141,18 @@ if($mybb->input['action'] == "browse")
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
 	echo "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function()
+		form.on('submit', function()
 		{
 			var search = $(\"#search_keywords\");
 			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $(\"#search_keywords\");
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var searched_focus = $(this);
 			if(searched_focus.val() == '{$lang->search_for_plugins}')
@@ -162,9 +160,7 @@ if($mybb->input['action'] == "browse")
 				searched_focus.removeClass(\"search_default\");
 				searched_focus.val(\"\");
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var searched_blur = $(this);
 			if(searched_blur.val() == \"\")
@@ -252,6 +248,8 @@ if($mybb->input['action'] == "check")
 		flash_message($lang->error_vcheck_communications_problem, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
+
+	$contents = trim($contents);
 
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();

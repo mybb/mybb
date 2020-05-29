@@ -264,7 +264,7 @@ if($mybb->input['action'] == "add_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -641,7 +641,7 @@ if($mybb->input['action'] == "edit_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -1189,7 +1189,7 @@ if($mybb->input['action'] == "search_replace")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -1324,7 +1324,7 @@ LEGEND;
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
 		WHERE t.sid > 0 AND m.template != t.template
-		ORDER BY t.sid ASC, title ASC
+		ORDER BY t.sid ASC, t.title ASC
 	");
 	while($template = $db->fetch_array($query))
 	{
@@ -1869,7 +1869,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 
-			if(isset($group['templates']) && count($group['templates']) > 0)
+			if(isset($group['templates']) && is_array($group['templates']) && count($group['templates']) > 0)
 			{
 				$templates = $group['templates'];
 				ksort($templates);
@@ -1900,7 +1900,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 						$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 					}
 
-					$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
+					$table->construct_cell("<span style=\"padding-left: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
 					$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 
 					$table->construct_row();

@@ -122,18 +122,21 @@ if($mybb->input['action'] == "edit")
 	{
 		foreach($mybb->input['permissions'] as $module => $actions)
 		{
-			$no_access = 0;
-			foreach($actions as $action => $access)
+			if(is_array($actions))
 			{
-				if($access == 0)
+				$no_access = 0;
+				foreach($actions as $action => $access)
 				{
-					++$no_access;
+					if($access == 0)
+					{
+						++$no_access;
+					}
 				}
-			}
-			// User can't access any actions in this module - just disallow it completely
-			if($no_access == count($actions))
-			{
-				unset($mybb->input['permissions'][$module]);
+				// User can't access any actions in this module - just disallow it completely
+				if($no_access == count($actions))
+				{
+					unset($mybb->input['permissions'][$module]);
+				}
 			}
 		}
 
@@ -350,7 +353,7 @@ if($mybb->input['action'] == "group")
 			$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}");
 
 			// Check permissions for Revoke
-			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
+			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '$lang->confirm_perms_deletion3')");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		}
 		else

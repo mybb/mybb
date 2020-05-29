@@ -592,7 +592,7 @@ class WarningsHandler extends DataHandler
 							{
 								case 1: // Ban
 									// we'll have to resort to letting the admin/mod remove the ban manually, since there's an issue if stacked bans are in force...
-									continue;
+									continue 2;
 								case 2: // Revoke posting
 									$current_expiry_field = 'suspensiontime';
 									$current_inforce_field = 'suspendposting';

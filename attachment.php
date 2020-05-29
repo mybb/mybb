@@ -69,34 +69,38 @@ $pid = $attachment['pid'];
 if($pid || $attachment['uid'] != $mybb->user['uid'])
 {
 	$post = get_post($pid);
-	$thread = get_thread($post['tid']);
-
-	if(!$thread && !isset($mybb->input['thumbnail']))
+	// Check permissions if the post is not a draft
+	if($post['visible'] != -2)
 	{
-		error($lang->error_invalidthread);
-	}
-	$fid = $thread['fid'];
+		$thread = get_thread($post['tid']);
 
-	// Get forum info
-	$forum = get_forum($fid);
+		if(!$thread && !isset($mybb->input['thumbnail']))
+		{
+			error($lang->error_invalidthread);
+		}
+		$fid = $thread['fid'];
 
-	// Permissions
-	$forumpermissions = forum_permissions($fid);
+		// Get forum info
+		$forum = get_forum($fid);
 
-	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
-	{
-		error_no_permission();
-	}
+		// Permissions
+		$forumpermissions = forum_permissions($fid);
 
-	// Error if attachment is invalid or not visible
-	if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
-	{
-		error($lang->error_invalidattachment);
-	}
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+		{
+			error_no_permission();
+		}
 
-	if($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$fid.',') === false)
-	{
-		error_no_permission();
+		// Error if attachment is invalid or not visible
+		if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
+		{
+			error($lang->error_invalidattachment);
+		}
+
+		if($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$fid.',') === false)
+		{
+			error_no_permission();
+		}
 	}
 }
 

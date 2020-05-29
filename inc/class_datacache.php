@@ -94,6 +94,16 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
 				$this->handler = new apcCacheHandler();
 				break;
+			// APCu cache
+			case "apcu":
+				require_once MYBB_ROOT."/inc/cachehandlers/apcu.php";
+				$this->handler = new apcuCacheHandler();
+				break;
+			// Redis cache
+			case "redis":
+				require_once MYBB_ROOT."/inc/cachehandlers/redis.php";
+				$this->handler = new redisCacheHandler();
+				break;
 		}
 
 		if($this->handler instanceof CacheHandlerInterface)
@@ -163,7 +173,7 @@ class datacache
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-				$data = unserialize($cache_data['cache']);
+				$data = my_unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -213,7 +223,7 @@ class datacache
 	 * Update cache contents.
 	 *
 	 * @param string $name The cache content identifier.
-	 * @param string $contents The cache content.
+	 * @param mixed $contents The cache content.
 	 */
 	function update($name, $contents)
 	{
@@ -222,7 +232,7 @@ class datacache
 		$this->cache[$name] = $contents;
 
 		// We ALWAYS keep a running copy in the db just incase we need it
-		$dbcontents = $db->escape_string(serialize($contents));
+		$dbcontents = $db->escape_string(my_serialize($contents));
 
 		$replace_array = array(
 			"title" => $db->escape_string($name),
@@ -1089,19 +1099,12 @@ class datacache
 		$this->update("most_viewed_threads", $threads);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	function update_banned()
 	{
-		global $db;
-
-		$bans = array();
-
-		$query = $db->simple_select("banned");
-		while($ban = $db->fetch_array($query))
-		{
-			$bans[$ban['uid']] = $ban;
-		}
-
-		$this->update("banned", $bans);
+		// "banned" cache removed
 	}
 
 	function update_birthdays()

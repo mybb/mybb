@@ -631,7 +631,7 @@ function generate_post_check($older_code=0)
 	// Guests get a special string
 	else
 	{
-		return md5($rotation.$session->useragent.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		return md5($session->sid.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
 	}
 }
 
@@ -881,7 +881,7 @@ function inline_error($errors, $title="", $json_data=array())
 
 	foreach($errors as $error)
 	{
-		$errorlist .= "<li>".$error."</li>\n";
+		eval("\$errorlist .= \"".$templates->get("error_inline_item")."\";");
 	}
 
 	eval("\$errors = \"".$templates->get("error_inline")."\";");
@@ -1043,12 +1043,21 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 {
-	global $theme, $templates, $lang, $mybb;
+	global $theme, $templates, $lang, $mybb, $plugins;
 
 	if($count <= $perpage)
 	{
 		return '';
 	}
+
+	$args = array(
+		'count' => &$count,
+		'perpage' => &$perpage,
+		'page' => &$page,
+		'url' => &$url,
+		'breadcrumb' => &$breadcrumb,
+	);
+	$plugins->run_hooks('multipage', $args);
 
 	$page = (int)$page;
 
@@ -1524,6 +1533,50 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 }
 
 /**
+ * Check whether password for given forum was validated for the current user
+ *
+ * @param array $forum The forum data
+ * @param bool $ignore_empty Whether to treat forum password configured as an empty string as validated
+ * @param bool $check_parents Whether to check parent forums using `parentlist`
+ * @return bool
+ */
+function forum_password_validated($forum, $ignore_empty=false, $check_parents=false)
+{
+	global $mybb, $forum_cache;
+
+	if($check_parents && isset($forum['parentlist']))
+	{
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+			if(!$forum_cache)
+			{
+				return false;
+			}
+		}
+
+		$parents = explode(',', $forum['parentlist']);
+		rsort($parents);
+
+		foreach($parents as $parent_id)
+		{
+			if($parent_id != $forum['fid'] && !forum_password_validated($forum_cache[$parent_id], true))
+			{
+				return false;
+			}
+		}
+	}
+
+	return ($ignore_empty && $forum['password'] === '') || (
+		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
+		my_hash_equals(
+			md5($mybb->user['uid'].$forum['password']),
+			$mybb->cookies['forumpass'][$forum['fid']]
+		)
+	);
+}
+
+/**
  * Check the password given on a certain forum for validity
  *
  * @param int $fid The forum ID
@@ -1561,19 +1614,18 @@ function check_forum_password($fid, $pid=0, $return=false)
 				continue;
 			}
 
-			if($forum_cache[$parent_id]['password'] != "")
+			if($forum_cache[$parent_id]['password'] !== "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
 
-	if(!empty($forum_cache[$fid]['password']))
+	if($forum_cache[$fid]['password'] !== '')
 	{
-		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password === $mybb->get_input('pwverify'))
+			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1586,7 +1638,7 @@ function check_forum_password($fid, $pid=0, $return=false)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			if(!forum_password_validated($forum_cache[$fid]))
 			{
 				$showform = true;
 			}
@@ -2054,8 +2106,7 @@ function _safe_unserialize($str)
 		return false;
 	}
 
-	$stack = array();
-	$expected = array();
+	$stack = $list = $expected = array();
 
 	/*
 	 * states:
@@ -3469,7 +3520,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 {
 	global $mybb;
 
-	$subscription_methods = array('dont', 'none', 'email', 'pm'); // Define methods
+	$subscription_methods = array('', 'none', 'email', 'pm'); // Define methods
 	$subscription_method = (int)$mybb->user['subscriptionmethod']; // Set user default
 
 	// If no user default method available then reset method
@@ -3502,7 +3553,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
 	}
-	
+
 	return $subscription_methods[$subscription_method];
 }
 
@@ -4278,7 +4329,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$password_forums = $unviewable = array();
+	$unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4292,14 +4343,10 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		$pwverified = 1;
 
-		if($forum['password'] != "")
-		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
-			{
-				$pwverified = 0;
-			}
 
-			$password_forums[$forum['fid']] = $forum['password'];
+		if(!forum_password_validated($forum, true))
+		{
+			$pwverified = 0;
 		}
 		else
 		{
@@ -4307,9 +4354,10 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
+				if(!forum_password_validated($forum_cache[$parent], true))
 				{
 					$pwverified = 0;
+					break;
 				}
 			}
 		}
@@ -4397,11 +4445,9 @@ function build_breadcrumb()
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-
-	$activesep = '';
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
 
 	if($nav)
 	{
@@ -4711,10 +4757,7 @@ function send_page_headers()
 
 	if($mybb->settings['nocacheheaders'] == 1)
 	{
-		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-		header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Pragma: no-cache");
+		header("Cache-Control: no-cache, private");
 	}
 }
 
@@ -5042,6 +5085,11 @@ function leave_usergroup($uid, $leavegroup)
 	global $db, $mybb, $cache;
 
 	$user = get_user($uid);
+
+	if($user['usergroup'] == $leavegroup)
+	{
+		return false;
+	}
 
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
@@ -5814,6 +5862,33 @@ function my_strtolower($string)
 }
 
 /**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for, case insensitive
+ *
+ * @param string $haystack String to look in (haystack)
+ * @param string $needle What to look for (needle)
+ * @param int $offset (optional) How much to offset
+ * @return int|bool false on needle not found, integer position if found
+ */
+function my_stripos($haystack, $needle, $offset=0)
+{
+	if($needle == '')
+	{
+		return false;
+	}
+
+	if(function_exists("mb_stripos"))
+	{
+		$position = mb_stripos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = stripos($haystack, $needle, $offset);
+	}
+
+	return $position;
+}
+
+/**
  * Finds a needle in a haystack and returns it position, mb strings accounted for
  *
  * @param string $haystack String to look in (haystack)
@@ -6284,7 +6359,7 @@ function get_forum($fid, $active_override=0)
 	global $cache;
 	static $forum_cache;
 
-	if(!isset($forum_cache) || is_array($forum_cache))
+	if(!isset($forum_cache) || !is_array($forum_cache))
 	{
 		$forum_cache = $cache->read("forums");
 	}
@@ -6446,7 +6521,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 	}
 	// This user has a cookie lockout, show waiting time
 	elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
-	{	
+	{
 		if($fatal)
 		{
 			$secsleft = (int)($mybb->cookies['lockoutexpiry'] - $now);
@@ -6487,7 +6562,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 
 		// Are we still locked out?
 		if($attempts['loginlockoutexpiry'] > $now)
-		{	
+		{
 			if($fatal)
 			{
 				$secsleft = (int)($attempts['loginlockoutexpiry'] - $now);
@@ -6576,6 +6651,8 @@ function rebuild_settings()
 	while($setting = $db->fetch_array($query))
 	{
 		$mybb->settings[$setting['name']] = $setting['value'];
+
+		$setting['name'] = addcslashes($setting['name'], "\\'");
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
@@ -7127,7 +7204,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
 			{
-				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+				preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 				if($matches)
 				{
@@ -7188,6 +7265,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 					'ssl' => array(
 						'verify_peer' => false,
 						'verify_peer_name' => false,
+						'peer_name' => $url_components['host'],
 					),
 				));
 			}
@@ -7252,7 +7330,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
-			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+			preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 			if($matches)
 			{
@@ -7659,7 +7737,7 @@ function my_rmdir_recursive($path, $ignore=array())
  * @param array $array The array of forums
  * @return integer The number of sub forums
  */
-function subforums_count($array)
+function subforums_count($array=array())
 {
 	$count = 0;
 	foreach($array as $array2)
@@ -8753,6 +8831,18 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	if(file_exists($file_path))
 	{
+
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'file_dir_path'	=> &$file_dir_path
+			);
+			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
+		}
+
 		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
@@ -8885,4 +8975,110 @@ function my_escape_csv($string, $escape_active_content=true)
 	$string = str_replace('"', '""', $string);
 
 	return $string;
+}
+
+// Fallback function for 'array_column', PHP < 5.5.0 compatibility
+if(!function_exists('array_column'))
+{
+	function array_column($input, $column_key)
+	{
+		$values = array();
+ 		if(!is_array($input))
+		{
+			$input = array($input);
+		}
+ 		foreach($input as $val)
+		{
+			if(is_array($val) && isset($val[$column_key]))
+			{
+				$values[] = $val[$column_key];
+			}
+			elseif(is_object($val) && isset($val->$column_key))
+			{
+				$values[] = $val->$column_key;
+			}
+		}
+ 		return $values;
+	}
+}
+
+/**
+ * Performs a timing attack safe string comparison.
+ *
+ * @param string $known_string The first string to be compared.
+ * @param string $user_string The second, user-supplied string to be compared.
+ * @return bool Result of the comparison.
+ */
+function my_hash_equals($known_string, $user_string)
+{
+	if(version_compare(PHP_VERSION, '5.6.0', '>='))
+	{
+		return hash_equals($known_string, $user_string);
+	}
+	else
+	{
+		$known_string_length = my_strlen($known_string);
+		$user_string_length = my_strlen($user_string);
+
+		if($user_string_length != $known_string_length)
+		{
+			return false;
+		}
+
+		$result = 0;
+
+		for($i = 0; $i < $known_string_length; $i++)
+		{
+			$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+		}
+
+		return $result === 0;
+	}
+}
+
+/**
+ * Retrieves all referrals for a specified user
+ *
+ * @param int uid
+ * @param int start position
+ * @param int total entries
+ * @param bool false (default) only return display info, true for all info
+ * @return array
+ */
+function get_user_referrals($uid, $start=0, $limit=0, $full=false)
+{
+	global $db;
+
+	$referrals = $query_options = array();
+	$uid = (int) $uid;
+
+	if($uid === 0)
+	{
+		return $referrals;
+	}
+
+	if($start && $limit)
+	{
+		$query_options['limit_start'] = $start;
+	}
+
+	if($limit)
+	{
+		$query_options['limit'] = $limit;
+	}
+
+	$fields = 'uid, username, usergroup, displaygroup, regdate';
+	if($full === true)
+	{
+		$fields = '*';
+	}
+
+	$query = $db->simple_select('users', $fields, "referrer='{$uid}'", $query_options);
+
+	while($referral = $db->fetch_array($query))
+	{
+		$referrals[] = $referral;
+	}
+
+	return $referrals;
 }

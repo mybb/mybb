@@ -15,7 +15,7 @@ $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_
 $templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
 $templatelist .= ",postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,newreply_modoptions_close,newreply_modoptions_stick";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,post_attachments_viewlink,postbit_attachments_attachment,newreply_signature";
-$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,newreply_postoptions";
+$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_javascript,postbit_groupimage,postbit_attachments,newreply_postoptions";
 $templatelist .= ",postbit_rep_button,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link";
 $templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored";
@@ -88,11 +88,17 @@ $forumpermissions = forum_permissions($fid);
 // See if everything is valid up to here.
 if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
 {
-	error($lang->error_invalidpost);
+	if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidpost);
+	}
 }
 if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thread['visible'] < 0)
 {
-	error($lang->error_invalidthread);
+	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 if($forum['open'] == 0 || $forum['type'] != "f")
 {
@@ -211,40 +217,16 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	// If there's an attachment, check it and upload it
-	if($forumpermissions['canpostattachments'] != 0)
+	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
+
+	if(!empty($ret['errors']))
 	{
-		// If attachment exists..
-		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
-		{
-			if($_FILES['attachment']['size'] > 0)
-			{
-				$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
-				$updateattach = $db->fetch_field($query, "aid");
-
-				require_once MYBB_ROOT."inc/functions_upload.php";
-
-				$update_attachment = false;
-				if($updateattach > 0 && $mybb->get_input('updateattachment'))
-				{
-					$update_attachment = true;
-				}
-				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-			}
-			else
-			{
-				$errors[] = $lang->error_uploadempty;
-				$mybb->input['action'] = "newreply";
-			}
-		}
+		$errors = $ret['errors'];
 	}
 
-	if(!empty($attachedfile['error']))
-	{
-		$errors[] = $attachedfile['error'];
-		$mybb->input['action'] = "newreply";
-	}
-
+	// If we were dealing with an attachment but didn't click 'Post Reply', force the new reply page again.
 	if(!$mybb->get_input('submit'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
@@ -265,6 +247,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
 	}
+
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("success" => true));
+		exit();
+	}
 }
 
 $reply_errors = '';
@@ -272,10 +261,10 @@ $quoted_ids = array();
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
-if($mybb->usergroup['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
+if($mybb->usergroup['maxposts'] > 0)
 {
 	$daycut = TIME_NOW-60*60*24;
-	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
+	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible !='-1' AND dateline>{$daycut}");
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->usergroup['maxposts'])
 	{
@@ -667,7 +656,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$data .= "<script type=\"text/javascript\">\n";
 				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				$data .= "if(typeof(inlineModeration) != 'undefined') {
-					$('#inlinemod_{$pid}').bind(\"click\", function(e) {
+					$('#inlinemod_{$pid}').on(\"click\", function(e) {
 						inlineModeration.checkItem();
 					});
 				}\n";
@@ -856,7 +845,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 
 	// Set up the post options.
 	if(!empty($mybb->input['previewpost']) || $reply_errors != '')
@@ -897,7 +886,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$subscription_method = get_subscription_method($tid);
 	}
-	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
+	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 
 	if($forum['allowpicons'] != 0)
 	{
@@ -1190,10 +1179,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_recaptcha();
 			}
+			elseif(in_array($post_captcha->type, array(6, 7)))
+			{
+				$post_captcha->build_hcaptcha();
+			}
 		}
 		else if($correct && (in_array($post_captcha->type, array(4, 5))))
 		{
 			$post_captcha->build_recaptcha();
+		}
+		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		{
+			$post_captcha->build_hcaptcha();
 		}
 
 		if($post_captcha->html)
@@ -1210,7 +1207,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->settings['postsperpage'] = 20;
 		}
 
-		if(is_moderator($fid, "canviewunapprove"))
+		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
 		}
@@ -1294,6 +1291,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$altbg = "trow_shaded";
 			}
+
+			$plugins->run_hooks("newreply_threadreview_post");
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);
@@ -1469,6 +1468,21 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 	}
+
+	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
+	$php_post_max_size = return_bytes(ini_get('post_max_size'));
+
+	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
+	{
+		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
+	}
+	else
+	{
+		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
+	}
+
+	$php_max_file_uploads = (int)ini_get('max_file_uploads');
+	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
 	$plugins->run_hooks("newreply_end");
 

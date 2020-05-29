@@ -64,7 +64,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			{
 				$mybb->input['fields'] = explode(",", $mybb->input['fields_js']);
 			}
-			if(count($mybb->input['fields']) <= 0)
+			if(!is_array($mybb->input['fields']) || count($mybb->input['fields']) <= 0)
 			{
 				$errors[] = $lang->error_no_view_fields;
 			}
@@ -254,7 +254,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$mybb->input['fields'] = explode(",", $mybb->input['fields_js']);
 			}
 
-			if(count($mybb->input['fields']) <= 0)
+			if(!is_array($mybb->input['fields']) || count($mybb->input['fields']) <= 0)
 			{
 				$errors[] = $lang->error_no_view_fields;
 			}
@@ -363,7 +363,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
 
-		if(count($sort_options) > 0)
+		if(is_array($sort_options) && count($sort_options) > 0)
 		{
 			$sort_directions = array(
 				"asc" => $lang->ascending,

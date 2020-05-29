@@ -13,13 +13,13 @@ define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_poll_editpoll";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_inlinemoderation_restore";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_printthread,showthread_add_poll,showthread_send_thread,showthread_inlinemoderation_restore";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_quickreply_options_stick,postbit_status";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_multiquote,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll";
 $templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon";
-$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
+$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
 $templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink";
 $templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_search";
 $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_multiselect,showthread_subscription,postbit_deleted_member,postbit_away,postbit_warn,postbit_classic,postbit_reputation,postbit_deleted,postbit_offline,postbit_online,postbit_signature";
@@ -145,7 +145,11 @@ else
 // Make sure we are looking at a real thread here.
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted")))
 {
-	error($lang->error_invalidthread);
+	// Allow viewing own unapproved thread
+	if (!($mybb->user['uid'] && $mybb->settings['showownunapproved'] && $thread['visible'] == 0 && ($thread['uid'] == $mybb->user['uid'])))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 
 // Does the user have permission to view this thread?
@@ -858,8 +862,9 @@ if($mybb->input['action'] == "thread")
 			$where = " ORDER BY dateline LIMIT 0, 1";
 		}
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -890,14 +895,18 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		// Build the threaded post display tree.
-		$query = $db->query("
+        // Build the threaded post display tree.
+        $query = $db->query("
             SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
             FROM ".TABLE_PREFIX."posts p
             WHERE p.tid='$tid'
             $visible
             ORDER BY p.dateline
         ");
+        if(!is_array($postsdone))
+        {
+            $postsdone = array();
+        }
         while($post = $db->fetch_array($query))
         {
             if(!$postsdone[$post['pid']])
@@ -938,7 +947,7 @@ if($mybb->input['action'] == "thread")
 			$post = get_post($mybb->input['pid']);
 			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0))
 			{
-				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
+				$footer .= '<script type="text/javascript">$(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
 			}
 			else
 			{
@@ -1051,6 +1060,12 @@ if($mybb->input['action'] == "thread")
         }
 
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
+		
+		// Allow originator to see own unapproved posts
+		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$visible .= " OR (p.tid='$tid' AND p.visible='0' AND p.uid=".$mybb->user['uid'].")";
+		}
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
@@ -1093,8 +1108,9 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1320,9 +1336,9 @@ if($mybb->input['action'] == "thread")
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+						$gidswhere .= " OR CONCAT(',',`groups`,',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere})");
 					break;
 			}
 
@@ -1451,6 +1467,8 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	eval("\$printthread = \"".$templates->get("showthread_printthread")."\";");
+
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
 	if($mybb->usergroup['cansendemail'] == 1)
@@ -1501,21 +1519,22 @@ if($mybb->input['action'] == "thread")
 		$onlinemembers = '';
 		$doneusers = array();
 
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");
+		$guestcount = $db->fetch_field($query, 'guestcount');
+
 		$query = $db->query("
-			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
-			FROM ".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			SELECT
+				s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+			WHERE s.uid != 0 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 
 		while($user = $db->fetch_array($query))
 		{
-			if($user['uid'] == 0)
-			{
-				++$guestcount;
-			}
-			else if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				++$membercount;
 				$doneusers[$user['uid']] = $user['time'];
@@ -1569,6 +1588,11 @@ if($mybb->input['action'] == "thread")
 		}
 
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
+	}
+
+	if($thread['visible'] == -1 )
+	{
+		$thread_deleted = 1;
 	}
 
 	$plugins->run_hooks("showthread_end");

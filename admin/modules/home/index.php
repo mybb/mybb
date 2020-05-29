@@ -53,18 +53,7 @@ if($mybb->input['action'] == "version_check")
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
 
-	// We do this because there is some weird symbols that show up in the xml file for unknown reasons
-	$pos = strpos($contents, "<");
-	if($pos > 1)
-	{
-		$contents = substr($contents, $pos);
-	}
-
-	$pos = strpos(strrev($contents), ">");
-	if($pos > 1)
-	{
-		$contents = substr($contents, 0, (-1) * ($pos-1));
-	}
+	$contents = trim($contents);
 
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
@@ -109,36 +98,20 @@ if($mybb->input['action'] == "version_check")
 
 	$updated_cache['news'] = array();
 
-	require_once MYBB_ROOT . '/inc/class_parser.php';
-	$post_parser = new postParser();
-
 	if($feed_parser->error == '')
 	{
+		require_once MYBB_ROOT . '/inc/class_parser.php';
+		$post_parser = new postParser();
+
 		foreach($feed_parser->items as $item)
 		{
 			if(!isset($updated_cache['news'][2]))
 			{
-				$description = $item['description'];
-				$content = $item['content'];
-
-				$description = $post_parser->parse_message($description, array(
-						'allow_html' => true,
-					)
-				);
-
-				$content = $post_parser->parse_message($content, array(
-						'allow_html' => true,
-					)
-				);
-
-				$description = preg_replace('#<img(.*)/>#', '', $description);
-				$content = preg_replace('#<img(.*)/>#', '', $content);
-
 				$updated_cache['news'][] = array(
-					'title' => htmlspecialchars_uni($item['title']),
-					'description' => $description,
-					'link' => htmlspecialchars_uni($item['link']),
-					'author' => htmlspecialchars_uni($item['author']),
+					'title' => $item['title'],
+					'description' => $item['description'],
+					'link' => $item['link'],
+					'author' => $item['author'],
 					'dateline' => $item['date_timestamp'],
 				);
 			}
@@ -146,12 +119,14 @@ if($mybb->input['action'] == "version_check")
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
-				$stamp = my_date('relative', $item['date_timestamp']);
+				$stamp = my_date('relative', (int)$item['date_timestamp']);
 			}
 
 			$link = htmlspecialchars_uni($item['link']);
+			$title = htmlspecialchars_uni($item['title']);
+			$description = htmlspecialchars_uni(strip_tags($item['description']));
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>{$title}</strong></span><br /><br />{$description}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -367,11 +342,15 @@ elseif(!$mybb->input['action'])
 	{
 		foreach($update_check['news'] as $news_item)
 		{
-			$posted = my_date('relative', $news_item['dateline']);
-			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\" rel=\"noopener\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$posted = my_date('relative', (int)$news_item['dateline']);
+			$link = htmlspecialchars_uni($news_item['link']);
+			$title = htmlspecialchars_uni($news_item['title']);
+			$description = htmlspecialchars_uni(strip_tags($news_item['description']));
+
+			$table->construct_cell("<strong><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">{$title}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell($news_item['description']);
+			$table->construct_cell($description);
 			$table->construct_row();
 		}
 	}

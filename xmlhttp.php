@@ -222,7 +222,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
-	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: contains, 1: starts with, 2: ends with
+	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: starts with, 1: ends with, 2: contains
 
 	// If the string is less than 2 characters, quit.
 	if(my_strlen($mybb->input['query']) < 2)
@@ -255,15 +255,15 @@ if($mybb->input['action'] == "get_users")
 	$likestring = $db->escape_string_like($mybb->input['query']);
 	if($search_type == 1)
 	{
-		$likestring .= '%';
+		$likestring = '%'.$likestring;
 	}
 	elseif($search_type == 2)
 	{
-		$likestring = '%'.$likestring;
+		$likestring = '%'.$likestring.'%';
 	}
 	else
 	{
-		$likestring = '%'.$likestring.'%';
+		$likestring .= '%';
 	}
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '{$likestring}'", $query_options);
@@ -436,7 +436,7 @@ else if($mybb->input['action'] == "edit_post")
 	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	// No result, die.
-	if(!$post)
+	if(!$post || $post['visible'] == -1)
 	{
 		xmlhttp_error($lang->post_doesnt_exist);
 	}
@@ -483,8 +483,8 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
-		// User can't edit unapproved post
-		if($post['visible'] == 0)
+		// User can't edit unapproved post unless permitted for own
+		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
@@ -745,7 +745,11 @@ else if($mybb->input['action'] == "get_multiquoted")
 			(in_array($quoted_post['fid'], $onlyusfids) && (!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid']))
 		)
 		{
-			continue;
+			// Allow quoting from own unapproved post
+			if($quoted_post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $quoted_post['uid'] == $mybb->user['uid']))
+			{
+				continue;
+			}
 		}
 
 		$message .= parse_quoted_message($quoted_post, false);
@@ -846,12 +850,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 
 	$plugins->run_hooks("xmlhttp_refresh_question");
+	
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+	
+	$parser_options = array(
+		"allow_html" => 0,
+		"allow_mycode" => 1,
+		"allow_smilies" => 1,
+		"allow_imgcode" => 1,
+		"allow_videocode" => 1,
+		"filter_badwords" => 1,
+		"me_username" => 0,
+		"shorten_urls" => 0,
+		"highlight" => 0,
+	);	
 
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
 
-		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		echo json_encode(array("question" => $parser->parse_message($question['question'], $parser_options), 'sid' => htmlspecialchars_uni($question['sid'])));
 		exit;
 	}
 	else
@@ -1070,6 +1089,42 @@ else if($mybb->input['action'] == "get_buddyselect")
 	{
 		xmlhttp_error($lang->buddylist_error);
 	}
+}
+else if($mybb->input['action'] == 'get_referrals')
+{
+	$lang->load('member');
+	$uid = $mybb->get_input('uid', MYBB::INPUT_INT);
+
+	if (!$uid) {
+		xmlhttp_error($lang->referrals_no_user_specified);
+	}
+
+	$referrals = get_user_referrals($uid);
+
+	if (empty($referrals)) {
+		eval("\$referral_rows = \"".$templates->get('member_no_referrals')."\";");
+	} else {
+		foreach($referrals as $referral)
+		{
+			$bg_color = alt_trow();
+			// Format user name link
+			$username = htmlspecialchars_uni($referral['username']);
+			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
+			$username = build_profile_link($username, $referral['uid']);
+
+			$regdate = my_date('normal', $referral['regdate']);
+
+			eval("\$referral_rows .= \"".$templates->get('member_referral_row')."\";");
+		}
+	}
+
+	$plugins->run_hooks('xmlhttp_referrals_end');
+
+	eval("\$referrals = \"".$templates->get('member_referrals_popup', 1, 0)."\";");
+
+	// Send our headers and output.
+	header("Content-type: text/plain; charset={$charset}");
+	echo $referrals;
 }
 
 /**

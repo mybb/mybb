@@ -40,6 +40,7 @@ $sub_tabs['emails'] = array(
 
 // Fetch banned groups
 $query = $db->simple_select("usergroups", "gid,title", "isbannedgroup=1", array('order_by' => 'title'));
+$banned_groups = array();
 while($group = $db->fetch_array($query))
 {
 	$banned_groups[$group['gid']] = $group['title'];
@@ -150,7 +151,6 @@ if($mybb->input['action'] == "lift")
 
 		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 
-		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Log admin action
@@ -237,8 +237,6 @@ if($mybb->input['action'] == "edit")
 			$db->update_query('users', $update_array, "uid = {$ban['uid']}");
 
 			$plugins->run_hooks("admin_user_banning_edit_commit");
-
-			$cache->update_banned();
 
 			// Log admin action
 			log_admin_action($ban['uid'], $user['username']);
@@ -402,8 +400,6 @@ if(!$mybb->input['action'])
 
 				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
 
-				$cache->update_banned();
-
 				// Log admin action
 				log_admin_action($user['uid'], $user['username'], $lifted);
 
@@ -510,7 +506,7 @@ if(!$mybb->input['action'])
 		},
 	});
 
-  	$(\'[for=username]\').click(function(){
+  	$(\'[for=username]\').on(\'click\', function(){
 		$("#username").select2(\'open\');
 		return false;
 	});

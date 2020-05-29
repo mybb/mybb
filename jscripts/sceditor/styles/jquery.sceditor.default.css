@@ -1,0 +1,143 @@
+/*! SCEditor | (C) 2011-2013, Sam Clarke | sceditor.com/license */
+html, body, p, code:before, table {
+	margin: 0;
+	padding: 0;
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
+	font-size: 14px;
+	color: #111;
+}
+
+html {
+	/* Needed so the cursor will be placed at the end of the content
+	   when the there isn't enought content to fill the full viewport */
+	height: 100%;
+
+	/* Needed for iOS scrolling bug fix */
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+body {
+	/* Needed for iOS scrolling bug fix */
+	position: relative;
+	overflow: auto;
+
+	/* Needed so the cursor will be placed at the end of the content
+	   when the there isn't enought content to fill the full viewport */
+	min-height: 100%;
+	word-wrap: break-word;
+}
+
+table, td {
+	border: 1px dotted #000;
+
+	/* Show empty cells so they can be edited */
+	empty-cells: show;
+}
+
+code:before {
+	font-weight: bold;
+	content: 'Code:';
+	display: block;
+	border-bottom: 1px solid #ccc;
+	padding: 4px 0 3px 0;
+	margin-bottom: 10px;
+}
+
+code.phpcodeblock:before {
+	content: 'PHP Code:' !important;
+}
+
+code {
+	font-family: Monaco, Consolas, Courier, monospace;
+	font-size: 13px !important;
+	padding: 10px;
+	position: relative;
+	background: white;
+	margin: .25em .05em 0 0;
+	border: 1px solid #ccc;
+	white-space: pre-wrap;
+	display: block;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.ie6 code, .ie7 code {
+	margin-top: 0;
+}
+
+code:before, code {
+	display: block;
+	text-align: left;
+}
+
+blockquote {
+	position: relative;
+	background: white;
+	margin: .25em .05em 0 0;
+	border: 1px solid #ccc;
+	padding: 10px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+blockquote cite {
+	font-weight: bold;
+	font-style: normal;
+	display: block;
+	font-size: 1em;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+	padding-bottom: 3px;
+}
+
+/* prevent divs from being collapsed */
+div {
+	min-height: 1.25em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	padding: 0;
+	margin: 0;
+}
+
+ul, ol {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+img {
+	max-width: 100%;
+}
+
+font[size="1"] {
+    font-size: xx-small;
+}
+
+font[size="2"] {
+    font-size: x-small;
+}
+
+font[size="3"] {
+    font-size: small;
+}
+
+font[size="4"] {
+    font-size: medium;
+}
+
+font[size="5"] {
+    font-size: large;
+}
+
+font[size="6"] {
+    font-size: x-large;
+}
+
+font[size="7"] {
+    font-size: xx-large;
+}

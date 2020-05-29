@@ -21,7 +21,7 @@ function remove_attachment($pid, $posthash, $aid)
 	global $db, $mybb, $plugins;
 	$aid = (int)$aid;
 	$posthash = $db->escape_string($posthash);
-	if($posthash != "")
+	if(!empty($posthash))
 	{
 		$query = $db->simple_select("attachments", "aid, attachname, thumbnail, visible", "aid='{$aid}' AND posthash='{$posthash}'");
 		$attachment = $db->fetch_array($query);
@@ -33,6 +33,12 @@ function remove_attachment($pid, $posthash, $aid)
 	}
 
 	$plugins->run_hooks("remove_attachment_do_delete", $attachment);
+
+	if($attachment === false)
+	{
+		// no attachment found with the given details
+		return;
+	}
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
@@ -429,10 +435,18 @@ function upload_attachment($attachment, $update_attachment=false)
 		$attachtype = $attachtypes[$ext];
 	}
 
+	// check the length of the filename
+	$maxFileNameLength = 255;
+	if(my_strlen($attachment['name']) > $maxFileNameLength)
+	{
+		$ret['error'] = $lang->sprintf($lang->error_attach_filename_length, htmlspecialchars_uni($attachment['name']), $maxFileNameLength);
+		return $ret;
+	}
+
 	// Check the size
 	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
-		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
+		$ret['error'] = $lang->sprintf($lang->error_attachsize, htmlspecialchars_uni($attachment['name']), $attachtype['maxsize']);
 		return $ret;
 	}
 
@@ -472,7 +486,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			return $ret;
 		}
 
-		$ret['error'] = $lang->error_alreadyuploaded;
+		$ret['error'] = $lang->sprintf($lang->error_alreadyuploaded, htmlspecialchars_uni($attachment['name']));
 		return $ret;
 	}
 
@@ -676,6 +690,101 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 	$ret['aid'] = $aid;
+	return $ret;
+}
+
+/**
+ * Process adding attachment(s) when the "Add Attachment" button is pressed.
+ *
+ * @param int $pid The ID of the post.
+ * @param array $forumpermission The permissions for the forum.
+ * @param string $attachwhere Search string "pid='$pid'" or "posthash='".$db->escape_string($mybb->get_input('posthash'))."'"
+ * @param string $action Where called from: "newthread", "newreply", or "editpost"
+ *
+ * @return array Array of errors if any, empty array otherwise
+ */
+function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
+{
+	global $db, $mybb, $editdraftpid, $lang;
+
+	$ret = array();
+
+	if($forumpermissions['canpostattachments'])
+	{
+		$attachments = array();
+		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
+		$aid = array();
+
+		$total = isset($_FILES['attachments']['name']) ? count($_FILES['attachments']['name']) : 0;
+		$filenames = "";
+		$delim = "";
+		for($i=0; $i<$total; ++$i)
+		{
+			foreach($fields as $field)
+			{
+				$attachments[$i][$field] = $_FILES['attachments'][$field][$i];
+			}
+
+			$FILE = $attachments[$i];
+			if(!empty($FILE['name']) && !empty($FILE['type']) && $FILE['size'] > 0)
+			{
+				$filenames .= $delim . "'" . $db->escape_string($FILE['name']) . "'";
+				$delim = ",";
+			}
+		}
+
+		if ($filenames != '')
+		{
+			$query = $db->simple_select("attachments", "filename", "{$attachwhere} AND filename IN (".$filenames.")");
+
+			while ($row = $db->fetch_array($query))
+			{
+				$aid[$row['filename']] = true;
+			}
+		}
+
+		foreach($attachments as $FILE)
+		{
+			if(!empty($FILE['name']) && !empty($FILE['type']))
+			{
+				if($FILE['size'] > 0)
+				{
+					$filename = $db->escape_string($FILE['name']);
+					$exists = $aid[$filename];
+
+					$update_attachment = false;
+					if($action == "editpost")
+					{
+						if($exists && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
+						{
+							$update_attachment = true;
+						}
+					}
+					else
+					{
+						if($exists && $mybb->get_input('updateattachment'))
+						{
+							$update_attachment = true;
+						}
+					}
+
+					$attachedfile = upload_attachment($FILE, $update_attachment);
+
+					if(!empty($attachedfile['error']))
+					{
+						$ret['errors'][] = $attachedfile['error'];
+						$mybb->input['action'] = $action;
+					}
+				}
+				else
+				{
+					$ret['errors'][] = $lang->sprintf($lang->error_uploadempty, htmlspecialchars_uni($FILE['name']));
+					$mybb->input['action'] = $action;
+				}
+			}
+		}
+	}
+
 	return $ret;
 }
 

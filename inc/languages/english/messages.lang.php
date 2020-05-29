@@ -14,7 +14,7 @@ $l['error_invalidpworusername'] = "You have entered an invalid username/password
 $l['error_invalidpworusername1'] = "You have entered an invalid email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername2'] = "You have entered an invalid username/password or email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields.";
-$l['error_alreadyuploaded'] = "This post already contains an attachment with the same name. Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
+$l['error_alreadyuploaded'] = "This post already contains an attachment with the name \"{1}\". Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
 $l['error_alreadyuploaded_perm'] = "This post already contains an attachment with the same name. Please either remove the existing file or rename the file and upload it again.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
 $l['error_invalidemail'] = "You did not enter a valid email address.";
@@ -28,8 +28,8 @@ $l['error_invalidattachment'] = "The specified attachment does not exist.";
 $l['error_invalidforum'] = "Invalid forum";
 $l['error_closedinvalidforum'] = "You may not post in this forum because either the forum is closed, it is a redirect to another webpage, or it is a category.";
 $l['error_attachtype'] = "The type of file that you attached is not allowed. Please remove the attachment or choose a different type.";
-$l['error_attachsize'] = "The file you attached is too large. The maximum size for that type of file is {1} kilobytes.";
-$l['error_uploadempty'] = "The file specified is empty.";
+$l['error_attachsize'] = "The file \"{1}\" is too large. The maximum size for that type of file is {2} kilobytes.";
+$l['error_uploadempty'] = "The \"{1}\" file is empty.";
 $l['error_uploadsize'] = "The size of the uploaded file is too large.";
 $l['error_uploadfailed'] = "The file upload failed. Please choose a valid file and try again. ";
 $l['error_uploadfailed_detail'] = "Error details: ";
@@ -82,6 +82,7 @@ $l['failed_login_wait'] = "You have failed to login within the required number o
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
 $l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
+$l['error_attach_filename_length'] = "The file name '{1}' exceeds the maximum file name length {2}. Please upload a file with a shorter file name.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
@@ -98,7 +99,7 @@ $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
 $l['emailsubject_changepassword'] = "Change of Password at {1}";
-$l['emailbit_viewthread'] = "... (visit the thread to read more..)";
+$l['emailbit_viewthread'] = "&hellip; (visit the thread to read more&hellip;)";
 
 $l['email_lostpw'] = "{1},
 
