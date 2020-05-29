@@ -77,9 +77,10 @@ if($report_type == 'post')
 			$button = '#post_'.$id.' .postbit_report';
 		}
 
-		// Password protected forums ......... yhummmmy!
 		$id3 = $forum['fid'];
-		check_forum_password($forum['parentlist']);
+
+		// Password protected forums ......... yhummmmy!
+		check_forum_password($forum['fid']);
 	}
 }
 else if($report_type == 'profile')

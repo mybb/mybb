@@ -56,7 +56,7 @@ code {
 	background: white;
 	margin: .25em .05em 0 0;
 	border: 1px solid #ccc;
-	white-space: pre;
+	white-space: pre-wrap;
 	display: block;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;

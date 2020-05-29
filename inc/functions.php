@@ -1031,12 +1031,21 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 {
-	global $theme, $templates, $lang, $mybb;
+	global $theme, $templates, $lang, $mybb, $plugins;
 
 	if($count <= $perpage)
 	{
 		return '';
 	}
+
+	$args = array(
+		'count' => &$count,
+		'perpage' => &$perpage,
+		'page' => &$page,
+		'url' => &$url,
+		'breadcrumb' => &$breadcrumb,
+	);
+	$plugins->run_hooks('multipage', $args);
 
 	$page = (int)$page;
 
@@ -1512,6 +1521,50 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 }
 
 /**
+ * Check whether password for given forum was validated for the current user
+ *
+ * @param array $forum The forum data
+ * @param bool $ignore_empty Whether to treat forum password configured as an empty string as validated
+ * @param bool $check_parents Whether to check parent forums using `parentlist`
+ * @return bool
+ */
+function forum_password_validated($forum, $ignore_empty=false, $check_parents=false)
+{
+	global $mybb, $forum_cache;
+
+	if($check_parents && isset($forum['parentlist']))
+	{
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+			if(!$forum_cache)
+			{
+				return false;
+			}
+		}
+
+		$parents = explode(',', $forum['parentlist']);
+		rsort($parents);
+
+		foreach($parents as $parent_id)
+		{
+			if($parent_id != $forum['fid'] && !forum_password_validated($forum_cache[$parent_id], true))
+			{
+				return false;
+			}
+		}
+	}
+
+	return ($ignore_empty && $forum['password'] === '') || (
+		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
+		my_hash_equals(
+			md5($mybb->user['uid'].$forum['password']),
+			$mybb->cookies['forumpass'][$forum['fid']]
+		)
+	);
+}
+
+/**
  * Check the password given on a certain forum for validity
  *
  * @param int $fid The forum ID
@@ -1549,19 +1602,18 @@ function check_forum_password($fid, $pid=0, $return=false)
 				continue;
 			}
 
-			if($forum_cache[$parent_id]['password'] != "")
+			if($forum_cache[$parent_id]['password'] !== "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
 
-	if(!empty($forum_cache[$fid]['password']))
+	if($forum_cache[$fid]['password'] !== '')
 	{
-		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password === $mybb->get_input('pwverify'))
+			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1574,7 +1626,7 @@ function check_forum_password($fid, $pid=0, $return=false)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			if(!forum_password_validated($forum_cache[$fid]))
 			{
 				$showform = true;
 			}
@@ -4265,7 +4317,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$password_forums = $unviewable = array();
+	$unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4279,14 +4331,10 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		$pwverified = 1;
 
-		if($forum['password'] != "")
-		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
-			{
-				$pwverified = 0;
-			}
 
-			$password_forums[$forum['fid']] = $forum['password'];
+		if(!forum_password_validated($forum, true))
+		{
+			$pwverified = 0;
 		}
 		else
 		{
@@ -4294,9 +4342,10 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
+				if(!forum_password_validated($forum_cache[$parent], true))
 				{
 					$pwverified = 0;
+					break;
 				}
 			}
 		}
@@ -4696,10 +4745,7 @@ function send_page_headers()
 
 	if($mybb->settings['nocacheheaders'] == 1)
 	{
-		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-		header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Pragma: no-cache");
+		header("Cache-Control: no-cache, private");
 	}
 }
 
@@ -5027,6 +5073,11 @@ function leave_usergroup($uid, $leavegroup)
 	global $db, $mybb, $cache;
 
 	$user = get_user($uid);
+
+	if($user['usergroup'] == $leavegroup)
+	{
+		return false;
+	}
 
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
@@ -5799,6 +5850,33 @@ function my_strtolower($string)
 }
 
 /**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for, case insensitive
+ *
+ * @param string $haystack String to look in (haystack)
+ * @param string $needle What to look for (needle)
+ * @param int $offset (optional) How much to offset
+ * @return int|bool false on needle not found, integer position if found
+ */
+function my_stripos($haystack, $needle, $offset=0)
+{
+	if($needle == '')
+	{
+		return false;
+	}
+
+	if(function_exists("mb_stripos"))
+	{
+		$position = mb_stripos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = stripos($haystack, $needle, $offset);
+	}
+
+	return $position;
+}
+
+/**
  * Finds a needle in a haystack and returns it position, mb strings accounted for
  *
  * @param string $haystack String to look in (haystack)
@@ -6269,7 +6347,7 @@ function get_forum($fid, $active_override=0)
 	global $cache;
 	static $forum_cache;
 
-	if(!isset($forum_cache) || is_array($forum_cache))
+	if(!isset($forum_cache) || !is_array($forum_cache))
 	{
 		$forum_cache = $cache->read("forums");
 	}

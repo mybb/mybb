@@ -64,8 +64,8 @@ Triaged Issues usually have multiple [**Labels**](https://github.com/mybb/mybb/l
 - Branch (`b:*`), the x.**Y** release branches they are related to,
 - Priority (`p:*`), how important they are (1 per Issue),
 - Status (`s:*`), what stage the development is currently in (1 per Issue),
-- Type (`t:*`), what kind of problem or operation they are related to.
-- Involving (`i:*`), additional labels for specific modules, libraries, or types.
+- Type (`t:*`), what kind of problem or operation they are related to,
+- Involving (`i:*`), additional labels for specific modules, libraries, or types,
 - `3rdparty`, assigned to external code and other third-party solutions,
 - [`easy-pick`](https://github.com/mybb/mybb/labels/easy-pick), used for simple issues for new contributors that don't require extensive MyBB knowledge to resolve.
 
@@ -85,9 +85,9 @@ Pull Requests (PRs) should only be sent for [confirmed Issues](https://github.co
 
 All changes made in Pull Requests must follow the development standards:
 - for MyBB 1.8, see [MyBB Documentation &rsaquo; Development Standards](https://docs.mybb.com/1.8/development/standards/),
-- for MyBB 1.9 and later, follow the [PSR-2 standard](https://www.php-fig.org/psr/psr-2/).
+- for MyBB 1.9 and later, follow the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
 
-Use imperative mood in the title and reference the Issue ID in the message. If possible, use the `Resolve #ID Issue title` format (e.g. _Resolve #123 Wrong error message_).
+Use imperative mood in the title, summarizing changes the Pull Request introduces, and reference the Issue ID in the message.
 
 Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
 ```

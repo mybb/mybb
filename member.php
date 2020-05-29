@@ -16,7 +16,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 $nosession['avatar'] = 1;
 
 $templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
+$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_referrals_link,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
@@ -1219,7 +1219,7 @@ $(function() {
 			if($db->num_rows($query) > 0)
 			{
 				$question = $db->fetch_array($query);
-				
+
 				//Set parser options for security question
 				$parser_options = array(
 					"allow_html" => 0,
@@ -1519,7 +1519,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	$query = $db->query("
 		SELECT u.uid, u.username, u.usergroup, u.email, a.code, a.type, a.validated
 		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r' OR a.type='b')
+		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND (a.type='r' OR a.type='b'))
 		WHERE u.email='".$db->escape_string($mybb->get_input('email'))."'
 	");
 	$numusers = $db->num_rows($query);
@@ -2032,6 +2032,10 @@ if($mybb->input['action'] == "login")
 		{
 			$login_captcha->build_recaptcha();
 		}
+		elseif(in_array($login_captcha->type, array(6, 7)))
+		{
+			$login_captcha->build_hcaptcha();
+		}
 
 		if($login_captcha->html)
 		{
@@ -2143,8 +2147,6 @@ if($mybb->input['action'] == "viewnotes")
 
 if($mybb->input['action'] == "profile")
 {
-	$plugins->run_hooks("member_profile_start");
-
 	if($mybb->usergroup['canviewprofiles'] == 0)
 	{
 		error_no_permission();
@@ -2170,6 +2172,8 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$uid = $memprofile['uid'];
+
+	$plugins->run_hooks("member_profile_start");
 
 	$me_username = $memprofile['username'];
 	$memprofile['username'] = htmlspecialchars_uni($memprofile['username']);
@@ -2600,14 +2604,14 @@ if($mybb->input['action'] == "profile")
 				$activity = fetch_wol_activity($session['location'], $session['nopermission']);
 				$location = build_friendly_wol_location($activity);
 				$location_time = my_date($mybb->settings['timeformat'], $last_seen);
-	
+
 				eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 			}
 		}
 	}
 
 	if(!isset($online_status))
-	{		
+	{
 		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
@@ -3281,6 +3285,10 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
+	if(!$user['$uid'])
+	{
+		error($lang->referrals_invalid_user);
+	}
 
 	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);
 	add_breadcrumb($lang->nav_referrals);

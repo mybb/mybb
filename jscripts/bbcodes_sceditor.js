@@ -303,7 +303,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="php">' + editor._('PHP') + ':</label> ' +
-				'<textarea type="text" id="php" />' +
+				'<textarea type="text" id="php"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -366,7 +366,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="code">' + editor._('Code') + ':</label> ' +
-				'<textarea type="text" id="code" />' +
+				'<textarea type="text" id="code"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -466,7 +466,7 @@ $(function ($) {
 			var params = mybbCmd.video[Object.keys(mybbCmd.video).find(key => key.toLowerCase() === attrs.defaultattr)];
 			var matches, url;
 			var n = (attrs.defaultattr == 'dailymotion') ? 2 : 1;
-			if (params['html']) {
+			if (typeof params !== "undefined") {
 				matches = content.match(params['match']);
 				url = matches ? params['url'] + matches[n] : false;
 			}

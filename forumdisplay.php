@@ -1339,6 +1339,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		}
 		else
 		{
+			$thread['start_datetime'] = my_date('relative', $thread['dateline']);
 			eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 		}
 	}

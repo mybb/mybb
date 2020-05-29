@@ -958,9 +958,11 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
+		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
@@ -1138,7 +1140,7 @@ if($mybb->input['action'] == "change")
 			{
 				$db->create_fulltext_index("posts", "message");
 			}
-			if(!$db->is_fulltext("posts") && $db->supports_fulltext("threads"))
+			if(!$db->is_fulltext("threads") && $db->supports_fulltext("threads"))
 			{
 				$db->create_fulltext_index("threads", "subject");
 			}
@@ -1189,40 +1191,29 @@ if($mybb->input['action'] == "change")
 		// Search
 
 		// Search for settings
-		$search = $db->escape_string_like($mybb->input['search']);
-		$query = $db->query("
-			SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
-			FROM ".TABLE_PREFIX."settings s
-			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
-			ORDER BY s.disporder
-		");
-		while($setting = $db->fetch_array($query))
+		$search = trim($mybb->input['search']);
+		if(!empty($search))
 		{
-			$lang_var = "setting_{$setting['name']}";
-			if(isset($lang->$lang_var))
+			$query = $db->query("
+				SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
+				FROM ".TABLE_PREFIX."settings s
+				LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
+				ORDER BY s.disporder
+			");
+			while($setting = $db->fetch_array($query))
 			{
-				$setting["title"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_{$setting['name']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["description"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gtitle"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gdescription"] = $lang->$lang_var;
-			}
-			$lang_var = $setting["title"] . " " . $setting["description"] . " " . $setting["gtitle"] . " " . $setting["gdescription"];
-			$search = mb_convert_encoding($search, mb_detect_encoding($setting["title"], "auto"));
-			if (mb_stripos($lang_var, $search))
-			{
-				$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gname'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
+				foreach(array("setting_{$setting['name']}", "setting_{$setting['name']}_desc", "setting_group_{$setting['gname']}", "setting_group_{$setting['gname']}_desc") as $search_in_lang_key)
+				{
+					if(!empty($lang->$search_in_lang_key))
+					{
+						$search_in .= ' ' . $lang->$search_in_lang_key;
+					}
+				}
+				if(my_stripos($search_in, $search) !== false)
+				{
+					$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				}
 			}
 		}
 		if(!count($cache_settings))
@@ -1872,7 +1863,12 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
