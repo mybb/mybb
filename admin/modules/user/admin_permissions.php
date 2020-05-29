@@ -353,7 +353,7 @@ if($mybb->input['action'] == "group")
 			$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}");
 
 			// Check permissions for Revoke
-			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
+			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '$lang->confirm_perms_deletion3')");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		}
 		else

@@ -1461,6 +1461,7 @@ function fetch_theme_stylesheets($theme)
  */
 function upgrade_css_120_to_140($css)
 {
+	global $mybb;
 	// Update our CSS to the new stuff in 1.4
 	$parsed_css = css_to_array($css);
 

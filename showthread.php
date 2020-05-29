@@ -19,7 +19,7 @@ $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attac
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll";
 $templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon";
-$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
+$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
 $templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink";
 $templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_search";
 $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_multiselect,showthread_subscription,postbit_deleted_member,postbit_away,postbit_warn,postbit_classic,postbit_reputation,postbit_deleted,postbit_offline,postbit_online,postbit_signature";
@@ -1519,21 +1519,22 @@ if($mybb->input['action'] == "thread")
 		$onlinemembers = '';
 		$doneusers = array();
 
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");
+		$guestcount = $db->fetch_field($query, 'guestcount');
+
 		$query = $db->query("
-			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
-			FROM ".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			SELECT
+				s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+			WHERE s.uid != 0 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 
 		while($user = $db->fetch_array($query))
 		{
-			if($user['uid'] == 0)
-			{
-				++$guestcount;
-			}
-			else if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				++$membercount;
 				$doneusers[$user['uid']] = $user['time'];

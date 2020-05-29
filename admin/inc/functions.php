@@ -726,7 +726,7 @@ function delete_user_posts($uid, $date)
 		{
 			while($post = $db->fetch_array($query))
 			{
-				if($post['usepostcounts'] != 0 && $post['visible'] != 0)
+				if($post['usepostcounts'] != 0 && $post['visible'] == 1)
 				{
 					++$post_count;
 				}

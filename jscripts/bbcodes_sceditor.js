@@ -107,10 +107,28 @@ $(function ($) {
 
 	$.sceditor.command
 		.set('bulletlist', {
-			txtExec: ['[list]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list]\n' + content + '\n[/list]');
+			}
 		})
 		.set('orderedlist', {
-			txtExec: ['[list=1]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list=1]\n' + content + '\n[/list]');
+			}
 		});
 
 	// Update size tag to use xx-small-xx-large instead of 1-7
@@ -285,7 +303,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="php">' + editor._('PHP') + ':</label> ' +
-				'<textarea type="text" id="php" />' +
+				'<textarea type="text" id="php"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -348,7 +366,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="code">' + editor._('Code') + ':</label> ' +
-				'<textarea type="text" id="code" />' +
+				'<textarea type="text" id="code"></textarea>' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -448,7 +466,7 @@ $(function ($) {
 			var params = mybbCmd.video[Object.keys(mybbCmd.video).find(key => key.toLowerCase() === attrs.defaultattr)];
 			var matches, url;
 			var n = (attrs.defaultattr == 'dailymotion') ? 2 : 1;
-			if (params['html']) {
+			if (typeof params !== "undefined") {
 				matches = content.match(params['match']);
 				url = matches ? params['url'] + matches[n] : false;
 			}

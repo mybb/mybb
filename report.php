@@ -77,9 +77,10 @@ if($report_type == 'post')
 			$button = '#post_'.$id.' .postbit_report';
 		}
 
-		// Password protected forums ......... yhummmmy!
 		$id3 = $forum['fid'];
-		check_forum_password($forum['parentlist']);
+
+		// Password protected forums ......... yhummmmy!
+		check_forum_password($forum['fid']);
 	}
 }
 else if($report_type == 'profile')
@@ -120,13 +121,13 @@ else if($report_type == 'reputation')
 	}
 }
 
+$plugins->run_hooks("report_type");
+
 $permissions = user_permissions($checkid);
 if(empty($permissions['canbereported']))
 {
 	$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 }
-
-$plugins->run_hooks("report_type");
 
 // Check for an existing report
 if(!empty($report_type_db))

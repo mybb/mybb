@@ -94,6 +94,10 @@ if($mybb->input['action'] == "copy")
 
 			if(!$errors)
 			{
+				if($mybb->input['pid'] < 0)
+				{
+					$mybb->input['pid'] = 0;
+				}
 				$new_forum = $from_forum;
 				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
 				$new_forum['name'] = $db->escape_string($mybb->input['title']);
@@ -142,7 +146,7 @@ if($mybb->input['action'] == "copy")
 		if(!$errors)
 		{
 			// Copy permissions
-			if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups'] > 0))
+			if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups']) > 0)
 			{
 				foreach($mybb->input['copygroups'] as $gid)
 				{
@@ -2286,7 +2290,7 @@ if(!$mybb->input['action'])
 		$form_container = new FormContainer($lang->manage_forums);
 	}
 	$form_container->output_row_header($lang->forum);
-	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
+	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '6%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px'));
 
 	build_admincp_forums_list($form_container, $form, $fid);
@@ -2718,6 +2722,7 @@ function build_admincp_forums_list(&$form_container, &$form, $pid=0, $depth=1)
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->moderators, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_moderators");
 				$popup->add_item($lang->permissions, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_permissions");
+				$popup->add_item($lang->forum_thread_prefixes, "index.php?module=config-thread_prefixes&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum-management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum-management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?module=forum-management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
@@ -2758,6 +2763,7 @@ function build_admincp_forums_list(&$form_container, &$form, $pid=0, $depth=1)
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->moderators, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_moderators");
 				$popup->add_item($lang->permissions, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_permissions");
+				$popup->add_item($lang->forum_thread_prefixes, "index.php?module=config-thread_prefixes&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum-management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum-management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?module=forum-management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");

@@ -50,7 +50,7 @@ function upgrade35_dbchanges()
 	$db->delete_query('templates', "title IN ('member_register_regimage_ayah', 'post_captcha_ayah')");
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].trigger('submit'); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("35_dbchanges2");
@@ -103,7 +103,7 @@ function upgrade35_dbchanges2()
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].trigger('submit'); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("35_dbchanges3");
@@ -150,7 +150,7 @@ function upgrade35_dbchanges3()
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].trigger('submit'); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("35_dbchanges4");

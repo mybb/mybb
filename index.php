@@ -20,10 +20,10 @@ require_once MYBB_ROOT.'inc/functions_forumlist.php';
 require_once MYBB_ROOT.'inc/class_parser.php';
 $parser = new postParser;
 
-$plugins->run_hooks('index_start');
-
 // Load global language phrases
 $lang->load('index');
+
+$plugins->run_hooks('index_start');
 
 $logoutlink = '';
 if($mybb->user['uid'] != 0)
@@ -57,21 +57,44 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
+
+	$membercount = $guestcount = $anoncount = $botcount = 0;
+	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
+
+	if($mybb->settings['showforumviewing'] != 0)
+	{
+		$query = $db->query("
+			SELECT
+				location1, COUNT(DISTINCT ip) AS guestcount
+			FROM
+				".TABLE_PREFIX."sessions
+			WHERE uid = 0 AND location1 != 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch
+			GROUP BY location1
+		");
+
+		while($location = $db->fetch_array($query))
+		{
+			$forum_viewers[$location['location1']] += $location['guestcount'];
+		}
+	}
+
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
+	$guestcount = $db->fetch_field($query, "guestcount");
+
 	$query = $db->query("
-		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time > '".$timesearch."'
+		SELECT
+			s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM
+			".TABLE_PREFIX."sessions s
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
 		ORDER BY {$order_by}, {$order_by2}
 	");
-
-	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
-	$membercount = $guestcount = $anoncount = $botcount = 0;
 
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
 
-	// Loop through all users.
+	// Loop through all users and spiders.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
@@ -124,11 +147,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			// The user is a search bot.
 			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
-		}
-		else
-		{
-			// The user is a guest.
-			++$guestcount;
 		}
 
 		if($user['location1'])

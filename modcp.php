@@ -4248,7 +4248,6 @@ if($mybb->input['action'] == "liftban")
 	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 	$db->delete_query("banned", "uid='{$ban['uid']}'");
 
-	$cache->update_banned();
 	$cache->update_moderators();
 	log_moderator_action(array("uid" => $ban['uid'], "username" => $username), $lang->lifted_ban);
 
@@ -4404,8 +4403,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			'additionalgroups' => '',
 		);
 		$db->update_query('users', $update_array, "uid = {$user['uid']}");
-
-		$cache->update_banned();
 
 		// Log edit or add ban
 		if($existing_ban)

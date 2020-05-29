@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.21";
+	public $version = "1.8.22";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1821;
+	public $version_code = 1822;
 
 	/**
 	 * The current working directory.
@@ -561,6 +561,10 @@ class MyBB {
 				$message = "APC needs to be configured with PHP to use the APC cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "apcu_load_error":
+				$message = "APCu needs to be configured with PHP to use the APCu cache support.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
 			case "eaccelerator_load_error":
 				$message = "eAccelerator needs to be configured with PHP to use the eAccelerator cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
@@ -580,6 +584,9 @@ class MyBB {
 			case "cache_runtime_error":
 				$message = "The cache store is either misconfigured or not working properly.";
 				$error_code = E_USER_WARNING;	// TODO: or MYBB_CACHEHANDLER_LOAD_ERROR for triggering an error?
+			case "redis_load_error":
+				$message = "Your server does not have redis support enabled.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
