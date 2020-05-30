@@ -224,7 +224,7 @@ function run_shutdown()
 		// Loop through and run them all
 		foreach($shutdown_queries as $query)
 		{
-			$db->query($query);
+			$db->write_query($query);
 		}
 	}
 
