@@ -8791,7 +8791,7 @@ if(use_xmlhttprequest == "1")
 		<template name="multipage_start" version="1600"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> {$lang->multipage_link_start}]]></template>
 		<template name="mycode_code" version="1808"><![CDATA[<div class="codeblock"><div class="title">{$lang->code}</div><div class="body" dir="ltr"><code>{$code}</code></div></div><br />]]></template>
 		<template name="mycode_email" version="1808"><![CDATA[<a href="mailto:{$email}" class="mycode_email">{$name}</a>]]></template>
-		<template name="mycode_img" version="1808"><![CDATA[<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />]]></template>
+		<template name="mycode_img" version="1823"><![CDATA[<img src="{$url}" loading="lazy" {$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />]]></template>
 		<template name="mycode_php" version="1808"><![CDATA[<div class="codeblock phpcodeblock"><div class="title">{$lang->php_code}</div><div class="body">{$code}</div></div><br />]]></template>
 		<template name="mycode_quote_post" version="1808"><![CDATA[<blockquote class="mycode_quote"><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote><br />]]></template>
 		<template name="mycode_size_int" version="1808"><![CDATA[<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>]]></template>
