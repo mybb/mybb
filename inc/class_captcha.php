@@ -125,7 +125,7 @@ class captcha
 			}
 			elseif($this->type == 8)
 			{
-				$this->captcha_template .= "_recaptcha_v3";
+				$this->captcha_template .= "_recaptcha_invisible";
 			}
 		}
 
