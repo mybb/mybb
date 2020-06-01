@@ -9512,7 +9512,6 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
 <input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
 		<template name="post_captcha_recaptcha_invisible" version="1821"><![CDATA[<br />
