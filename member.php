@@ -1098,6 +1098,7 @@ if($mybb->input['action'] == "register")
 			$regerrors = '';
 		}
 		// Spambot registration image thingy
+		$captcha_html = 0;
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -1105,15 +1106,16 @@ if($mybb->input['action'] == "register")
 
 			if($captcha->html)
 			{
+				$captcha_html = 1;
 				$regimage = $captcha->html;
 			}
 		}
 
 		// Security Question
 		$questionbox = '';
+		$question_exists = 0;
 		if($mybb->settings['securityquestion'])
 		{
-			$question_exists = 0;
 			$sid = generate_question();
 			$query = $db->query("
 				SELECT q.question, s.sid
@@ -1211,6 +1213,7 @@ if($mybb->input['action'] == "register")
 				maxnamelength: '{$mybb->settings['maxnamelength']}',
 				minpasswordlength: '{$mybb->settings['minpasswordlength']}',
 				captchaimage: '{$mybb->settings['captchaimage']}',
+				captchahtml: '{$captcha_html}',
 				securityquestion: '{$mybb->settings['securityquestion']}',
 				questionexists: '{$question_exists}',
 				requirecomplexpasswords: '{$mybb->settings['requirecomplexpasswords']}',

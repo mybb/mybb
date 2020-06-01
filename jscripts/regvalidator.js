@@ -71,7 +71,7 @@ $(function () {
 		});
 	});
 
-	if (regsettings.captchaimage == "1") {
+	if (regsettings.captchaimage == "1" && regsettings.captchahtml == "1") {
 		$('#imagestring').rules('add', {
 			required: true,
 			remote: {
