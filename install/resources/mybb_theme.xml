@@ -10558,7 +10558,7 @@ if(use_xmlhttprequest == "1")
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1818"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
+		<template name="private_send_autocomplete" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10568,7 +10568,9 @@ if(use_xmlhttprequest == "1")
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
-		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
+		maximumSelectionSize: function() {
+			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#bcc").select2('data').length);
+		},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10601,12 +10603,24 @@ if(use_xmlhttprequest == "1")
 				callback(newqueries);
 			}
 		}
+	})
+	.on("change", function(e) {
+		if(e.val.length >= {$mybb->usergroup['maxpmrecipients']})
+		{
+			$("#bcc").select2("enable", false);
+		}
+		else
+		{
+			$("#bcc").select2("enable", true);
+		}
 	});
 
-  $("#bcc").select2({
+	$("#bcc").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
-		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
+		maximumSelectionSize: function() {
+			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#to").select2('data').length);
+		},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10638,6 +10652,16 @@ if(use_xmlhttprequest == "1")
 				});
 				callback(newqueries);
 			}
+		}
+	})
+	.on("change", function(e) {
+		if(e.val.length >= {$mybb->usergroup['maxpmrecipients']})
+		{
+			$("#to").select2("enable", false);
+		}
+		else
+		{
+			$("#to").select2("enable", true);
 		}
 	});
 }
