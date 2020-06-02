@@ -156,6 +156,9 @@
             placeholder: "{{ lang.search_user }}",
             minimumInputLength: 2,
             maximumSelectionSize: function() {
+                if ({{ mybb.usergroup.maxpmrecipients }} == 0) {
+                    return 0;
+                }
                 return Math.max(1, {{ mybb.usergroup.maxpmrecipients }} - $("#bcc").select2('data').length);
             },
             multiple: true,
@@ -192,7 +195,12 @@
             }
         })
         .on("change", function(e) {
-            if(e.val.length >= {{ mybb.usergroup.maxpmrecipients }})
+            if ({{ mybb.usergroup.maxpmrecipients }} == 0)
+            {
+                return;
+            }
+
+            if (e.val.length >= {{ mybb.usergroup.maxpmrecipients }})
             {
                 $("#bcc").select2("enable", false);
             }
@@ -206,6 +214,9 @@
             placeholder: "{{ lang.search_user }}",
             minimumInputLength: 2,
             maximumSelectionSize: function() {
+                if ({{ mybb.usergroup.maxpmrecipients }} == 0) {
+                    return 0;
+                }
                 return Math.max(1, {{ mybb.usergroup.maxpmrecipients }} - $("#to").select2('data').length);
             },
             multiple: true,
@@ -242,7 +253,12 @@
             }
         })
         .on("change", function(e) {
-            if(e.val.length >= {{ mybb.usergroup.maxpmrecipients }})
+            if ({{ mybb.usergroup.maxpmrecipients }} == 0)
+            {
+                return;
+            }
+
+            if (e.val.length >= {{ mybb.usergroup.maxpmrecipients }})
             {
                 $("#to").select2("enable", false);
             }
