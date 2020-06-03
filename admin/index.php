@@ -537,17 +537,21 @@ if(!empty($mybb->user['uid']))
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 
-	if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+	// Only update language / theme once fully authenticated
+	if(empty($admin_options['authsecret']) || $admin_session['authenticated'] == 1)
 	{
-		$cp_language = $admin_options['cplanguage'];
-		$lang->set_language($cp_language, "admin");
-		$lang->load("global"); // Reload global language vars
-		$lang->load("messages", true);
-	}
+		if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+		{
+			$cp_language = $admin_options['cplanguage'];
+			$lang->set_language($cp_language, "admin");
+			$lang->load("global"); // Reload global language vars
+			$lang->load("messages", true);
+		}
 
-	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
-	{
-		$cp_style = $admin_options['cpstyle'];
+		if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
+		{
+			$cp_style = $admin_options['cpstyle'];
+		}
 	}
 
 	// Update the session information in the DB
@@ -643,8 +647,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		$admin_session['authenticated'] = 1;
 		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		my_setcookie('acploginattempts', 0);
-		// post would result in an authorization code mismatch error
-		$mybb->request_method = "get";
+		admin_redirect("index.php");
 	}
 	else
 	{
