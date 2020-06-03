@@ -261,9 +261,9 @@ class MyLanguage
 		{
 			$uselang = $language;
 		}
-		elseif(!empty($mybb->settings['bblanguage']) && $this->language_exists($mybb->settings['bblanguage']))
+		elseif(!empty($mybb->settings['orig_bblanguage']) && $this->language_exists($mybb->settings['orig_bblanguage']))
 		{
-			$uselang = $mybb->settings['bblanguage'];
+			$uselang = $mybb->settings['orig_bblanguage'];
 		}
 		else
 		{

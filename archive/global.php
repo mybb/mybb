@@ -163,11 +163,8 @@ else
 // Initialise session
 $session = new session;
 $session->init();
+$mybb->session = &$session;
 
-if(!$mybb->settings['bblanguage'])
-{
-	$mybb->settings['bblanguage'] = "english";
-}
 $lang->set_language($mybb->settings['bblanguage']);
 
 // Load global language phrases
