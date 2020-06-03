@@ -537,6 +537,19 @@ if(!empty($mybb->user['uid']))
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 
+	if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+	{
+		$cp_language = $admin_options['cplanguage'];
+		$lang->set_language($cp_language, "admin");
+		$lang->load("global"); // Reload global language vars
+		$lang->load("messages", true);
+	}
+
+	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
+	{
+		$cp_style = $admin_options['cpstyle'];
+	}
+
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
@@ -547,16 +560,43 @@ if(!empty($mybb->user['uid']))
 	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
 }
 
+// Include the layout generation class overrides for this style
+if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
+{
+	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
+}
+
+// Check if any of the layout generation classes we can override exist in the style file
+$classes = array(
+	"Page" => "DefaultPage",
+	"SidebarItem" => "DefaultSidebarItem",
+	"PopupMenu" => "DefaultPopupMenu",
+	"Table" => "DefaultTable",
+	"Form" => "DefaultForm",
+	"FormContainer" => "DefaultFormContainer"
+);
+foreach($classes as $style_name => $default_name)
+{
+	// Style does not have this layout generation class, create it
+	if(!class_exists($style_name))
+	{
+		eval("class {$style_name} extends {$default_name} { }");
+	}
+}
+
+$page = new Page;
+$page->style = $cp_style;
+
 // Do not have a valid Admin user, throw back to login page.
 if(!isset($mybb->user['uid']) || $logged_out == true)
 {
 	if($logged_out == true)
 	{
-		$default_page->show_login($lang->success_logged_out);
+		$page->show_login($lang->success_logged_out);
 	}
 	elseif($fail_check == 1)
 	{
-		$default_page->show_login($login_lang_string, "error");
+		$page->show_login($login_lang_string, "error");
 	}
 	else
 	{
@@ -566,7 +606,7 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 			echo json_encode(array("errors" => array("login")));
 			exit;
 		}
-		$default_page->show_login($login_message, "error");
+		$page->show_login($login_message, "error");
 	}
 }
 
@@ -650,59 +690,19 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 				)
 			);
 
-			$default_page->show_lockedout();
+			$page->show_lockedout();
 		}
 
 		// Still here? Show a custom login page
-		$default_page->show_login($lang->my2fa_failed, "error");
+		$page->show_login($lang->my2fa_failed, "error");
 	}
 }
 
 // Show our 2FA page
 if(!empty($admin_options['authsecret']) && $admin_session['authenticated'] != 1)
 {
-	$default_page->show_2fa();
+	$page->show_2fa();
 }
-
-// Now the user is fully authenticated setup their personal options
-if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
-{
-	$cp_language = $admin_options['cplanguage'];
-	$lang->set_language($cp_language, "admin");
-	$lang->load("global"); // Reload global language vars
-	$lang->load("messages", true);
-}
-if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
-{
-	$cp_style = $admin_options['cpstyle'];
-}
-
-// Include the layout generation class overrides for this style
-if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
-{
-	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
-}
-
-// Check if any of the layout generation classes we can override exist in the style file
-$classes = array(
-	"Page" => "DefaultPage",
-	"SidebarItem" => "DefaultSidebarItem",
-	"PopupMenu" => "DefaultPopupMenu",
-	"Table" => "DefaultTable",
-	"Form" => "DefaultForm",
-	"FormContainer" => "DefaultFormContainer"
-);
-foreach($classes as $style_name => $default_name)
-{
-	// Style does not have this layout generation class, create it
-	if(!class_exists($style_name))
-	{
-		eval("class {$style_name} extends {$default_name} { }");
-	}
-}
-
-$page = new Page;
-$page->style = $cp_style;
 
 $page->add_breadcrumb_item($lang->home, "index.php");
 
