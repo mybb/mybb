@@ -58,7 +58,6 @@ function upgrade50_verify_email()
 							<input type="radio" name="email" value="ftp_admin_email" />Use Admin FTP Email<br />
 							<input type="radio" name="email" value="custom_email" checked="checked" />Set Custom Email
 							<input class="text" type="text" value="" name="input_email" placeholder="Enter Admin Email" />
-							<input type="hidden" value="1" name="send_admin_email" />
 						</td>
 					</tr>
 					</tbody>
@@ -95,6 +94,6 @@ function upgrade50_submit_email()
 	else
 	{
 		echo "Error: Admin email must be a valid email address";
-		$output->print_footer("50_submit_email");
+		$output->print_footer("50_verify_email");
 	}
 }
