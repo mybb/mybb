@@ -1183,71 +1183,20 @@ class PostDataHandler extends DataHandler
 					continue;
 				}
 
-				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
-				{
-					$uselang = $subscribedmember['language'];
-				}
-				elseif($mybb->settings['orig_bblanguage'])
-				{
-					$uselang = $mybb->settings['orig_bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
+				$userlang = $lang->get_alternative($subscribedmember['language']);
 
-				if($uselang == $mybb->settings['bblanguage'])
+				// If the poster is unregistered and hasn't set a username, call them Guest
+				if(!$post['uid'] && !$post['username'])
 				{
-					if($subscribedmember['notification'] == 1)
-					{
-						$emailsubject = $lang->emailsubject_subscription;
-						$emailmessage = $lang->email_subscription;
-					}
-
-					// If the poster is unregistered and hasn't set a username, call them Guest
-					if(!$post['uid'] && !$post['username'])
-					{
-						$post['username'] = htmlspecialchars_uni($lang->guest);
-					}
-				}
-				else
-				{
-
-					if(($subscribedmember['notification'] == 1 && !isset($langcache[$uselang]['emailsubject_subscription'])) || !isset($langcache[$uselang]['guest']))
-					{
-						$userlang = new MyLanguage;
-						$userlang->set_path(MYBB_ROOT."inc/languages");
-						$userlang->set_language($uselang);
-						if($subscribedmember['notification'] == 1)
-						{
-							$userlang->load("messages");
-							$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-							$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-						}
-						$userlang->load("global");
-
-						$langcache[$uselang]['guest'] = $userlang->guest;
-						unset($userlang);
-					}
-					if($subscribedmember['notification'] == 1)
-					{
-						$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
-						$emailmessage = $langcache[$uselang]['email_subscription'];
-					}
-
-					// If the poster is unregistered and hasn't set a username, call them Guest
-					if(!$post['uid'] && !$post['username'])
-					{
-						$post['username'] = $langcache[$uselang]['guest'];
-					}
+					$post['username'] = htmlspecialchars_uni($userlang->guest);
 				}
 
 				if($subscribedmember['notification'] == 1)
 				{
-					$emailsubject = $lang->sprintf($emailsubject, $subject);
+					$emailsubject = $userlang->sprintf($userlang->emailsubject_subscription, $subject);
 
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code);
+					$emailmessage = $userlang->sprintf($userlang->email_subscription, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
@@ -1256,7 +1205,6 @@ class PostDataHandler extends DataHandler
 						"headers" => ''
 					);
 					$db->insert_query("mailqueue", $new_email);
-					unset($userlang);
 					$queued_email = 1;
 				}
 				elseif($subscribedmember['notification'] == 2)
@@ -1688,58 +1636,18 @@ class PostDataHandler extends DataHandler
 						continue;
 					}
 
-					// Determine the language pack we'll be using to send this email in and load it if it isn't already.
-					if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
+					$userlang = $lang->get_alternative($subscribedmember['language']);
+
+					// If the poster is unregistered and hasn't set a username, call them Guest
+					if(!$thread['uid'] && !$thread['username'])
 					{
-						$uselang = $subscribedmember['language'];
-					}
-					else if($mybb->settings['bblanguage'])
-					{
-						$uselang = $mybb->settings['bblanguage'];
-					}
-					else
-					{
-						$uselang = "english";
+						$thread['username'] = htmlspecialchars_uni($userlang->guest);
 					}
 
-					if($uselang == $mybb->settings['bblanguage'])
-					{
-						$emailsubject = $lang->emailsubject_forumsubscription;
-						$emailmessage = $lang->email_forumsubscription;
-
-						// If the poster is unregistered and hasn't set a username, call them Guest
-						if(!$thread['uid'] && !$thread['username'])
-						{
-							$thread['username'] = htmlspecialchars_uni($lang->guest);
-						}
-					}
-					else
-					{
-						if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
-						{
-							$userlang = new MyLanguage;
-							$userlang->set_path(MYBB_ROOT."inc/languages");
-							$userlang->set_language($uselang);
-							$userlang->load("messages");
-							$userlang->load("global");
-							$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
-							$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;
-							$langcache[$uselang]['guest'] = $userlang->guest;
-							unset($userlang);
-						}
-						$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
-						$emailmessage = $langcache[$uselang]['email_forumsubscription'];
-
-						// If the poster is unregistered and hasn't set a username, call them Guest
-						if(!$thread['uid'] && !$thread['username'])
-						{
-							$thread['username'] = $langcache[$uselang]['guest'];
-						}
-					}
-					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
+					$emailsubject = $userlang->sprintf($userlang->emailsubject_forumsubscription, $forum['name']);
 
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
+					$emailmessage = $userlang->sprintf($userlang->email_forumsubscription, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
@@ -1748,7 +1656,6 @@ class PostDataHandler extends DataHandler
 						"headers" => ''
 					);
 					$db->insert_query("mailqueue", $new_email);
-					unset($userlang);
 					$queued_email = 1;
 				}
 				// Have one or more emails been queued? Update the queue count

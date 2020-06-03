@@ -158,6 +158,7 @@ $db->type = $config['database']['type'];
 require_once MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
 $lang->set_path(MYBB_ROOT."inc/languages");
+$langcache = array();
 
 // Load cache
 $cache->cache();

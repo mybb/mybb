@@ -325,34 +325,10 @@ class PMDataHandler extends DataHandler
 			// Check to see if the user has reached their private message quota - if they have, email them.
 			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
-				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
-				{
-					$uselang = trim($user['language']);
-				}
-				elseif($mybb->settings['bblanguage'])
-				{
-					$uselang = $mybb->settings['bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
-				if($uselang == $mybb->settings['bblanguage'] || !$uselang)
-				{
-					$emailsubject = $lang->emailsubject_reachedpmquota;
-					$emailmessage = $lang->email_reachedpmquota;
-				}
-				else
-				{
-					$userlang = new MyLanguage;
-					$userlang->set_path(MYBB_ROOT."inc/languages");
-					$userlang->set_language($uselang);
-					$userlang->load("messages");
-					$emailsubject = $userlang->emailsubject_reachedpmquota;
-					$emailmessage = $userlang->email_reachedpmquota;
-				}
-				$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
+				$userlang = $lang->get_alternative($user['language']);
+
+				$emailmessage = $userlang->sprintf($userlang->email_reachedpmquota, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+				$emailsubject = $userlang->sprintf($userlang->emailsubject_reachedpmquota, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($user['email']),
@@ -631,36 +607,11 @@ class PMDataHandler extends DataHandler
 			$lastpm = $db->fetch_array($query);
 			if($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
 			{
-				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
-				{
-					$uselang = $recipient['language'];
-				}
-				elseif($mybb->settings['bblanguage'])
-				{
-					$uselang = $mybb->settings['bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
-				if($uselang == $mybb->settings['bblanguage'] && !empty($lang->emailsubject_newpm))
-				{
-					$emailsubject = $lang->emailsubject_newpm;
-					$emailmessage = $lang->email_newpm;
-				}
-				else
-				{
-					$userlang = new MyLanguage;
-					$userlang->set_path(MYBB_ROOT."inc/languages");
-					$userlang->set_language($uselang);
-					$userlang->load("messages");
-					$emailsubject = $userlang->emailsubject_newpm;
-					$emailmessage = $userlang->email_newpm;
-				}
+				$userlang = $lang->get_alternative($recipient['language']);
 
 				if(!$pm['sender']['username'])
 				{
-					$pm['sender']['username'] = $lang->mybb_engine;
+					$pm['sender']['username'] = $userlang->mybb_engine;
 				}
 
 				require_once MYBB_ROOT.'inc/class_parser.php';
@@ -673,8 +624,8 @@ class PMDataHandler extends DataHandler
 
 				$pm['message'] = $parser->text_parse_message($pm['message'], $parser_options);
 
-				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
+				$emailmessage = $userlang->sprintf($userlang->email_newpm, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
+				$emailsubject = $userlang->sprintf($userlang->emailsubject_newpm, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($recipient['email']),

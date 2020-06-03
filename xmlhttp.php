@@ -60,6 +60,7 @@ if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['languag
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }
 $lang->set_language($mybb->settings['bblanguage']);
+$langcache[$lang->language] = $lang;
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {

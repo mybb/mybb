@@ -89,6 +89,7 @@ else if(!isset($mybb->settings['bblanguage']))
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load('global');
 $lang->load('messages');
+$langcache[$lang->language] = $lang;
 
 // Wipe lockout cookie if enough time has passed
 if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)

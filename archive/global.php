@@ -174,6 +174,7 @@ $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 $lang->load("archive");
+$langcache[$lang->language] = $lang;
 
 // Draw up the basic part of our naviagation
 $navbits[0]['name'] = $mybb->settings['bbname_orig'];
