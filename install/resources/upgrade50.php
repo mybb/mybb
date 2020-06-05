@@ -32,6 +32,9 @@ function upgrade50_dbchanges()
 
 	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
 
+	// Moved PM wrong folder correction
+	$db->update_query("privatemessages", array('folder' => 1), "folder='0'");
+
 	// Add hCaptcha support
 	echo "<p>Updating settings...</p>";
 	$db->update_query("settings", array('name' => 'recaptchapublickey'), "name='captchapublickey'");
