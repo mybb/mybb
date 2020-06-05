@@ -172,7 +172,6 @@ class MailHandler
 		}
 		else
 		{
-			$this->return_email = "";
 			$this->return_email = $this->get_from_email();
 		}
 
