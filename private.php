@@ -1688,6 +1688,11 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 		$mybb->input['check'] = $mybb->get_input('check', MyBB::INPUT_ARRAY);
 		if(!empty($mybb->input['check']))
 		{
+			if(!$mybb->input['fid'])
+			{
+				$mybb->input['fid'] = 1;
+			}
+			
 			foreach($mybb->input['check'] as $key => $val)
 			{
 				$sql_array = array(
