@@ -137,29 +137,30 @@ class MyLanguage
 	 * Load the language variables for a section.
 	 *
 	 * @param string $section The section name.
-	 * @param boolean $isdatahandler Is this a datahandler?
+	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
 	 * @param boolean $supress_error supress the error if the file doesn't exist?
 	 */
-	function load($section, $isdatahandler=false, $supress_error=false)
+	function load($section, $forceuserarea=false, $supress_error=false)
 	{
-		// Assign language variables.
-		// Datahandlers are never in admin lang directory.
-		if($isdatahandler === true)
+		$language = $this->language;
+		$fallback = $this->fallback;
+
+		if($forceuserarea === true)
 		{
-			$lfile = $this->path."/".str_replace('/admin', '', $this->language)."/".$section.".lang.php";
+			$language = str_replace('/admin', '', $language);
+			$fallback = str_replace('/admin', '', $fallback);
 		}
-		else
-		{
-			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
-		}
+
+		$lfile = $this->path."/".$language."/".$section.".lang.php";
+		$ffile = $this->path."/".$fallback."/".$section.".lang.php";
 
 		if(file_exists($lfile))
 		{
 			require_once $lfile;
 		}
-		elseif(file_exists($this->path."/".$this->fallback."/".$section.".lang.php"))
+		elseif(file_exists($ffile))
 		{
-			require_once $this->path."/".$this->fallback."/".$section.".lang.php";
+			require_once $ffile;
 		}
 		else
 		{
