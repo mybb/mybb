@@ -19,18 +19,29 @@ class MyLanguage
 	public $path;
 
 	/**
-	 * The language we are using.
+	 * The language we are using and the area (if admin).
+	 * 
+	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
 	 */
 	public $language;
 
 	/**
-	 * The fallback language we are using.
+	 * The fallback language we are using and the area (if admin).
+	 * 
+	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
 	 */
 	public $fallback = 'english';
+
+	/**
+	 * The fallback language we are using.
+	 *
+	 * @var string
+	 */
+	public $fallbackLanguage = 'english';
 
 	/**
 	 * Information about the current language.
@@ -118,7 +129,7 @@ class MyLanguage
 				}
 			}
 			$this->language = $language."/{$area}";
-			$this->fallback = $this->fallback."/{$area}";
+			$this->fallback = $this->fallbackLanguage."/{$area}";
 		}
 	}
 
@@ -159,7 +170,7 @@ class MyLanguage
 		}
 
 		// We must unite and protect our language variables!
-		$lang_keys_ignore = array('language', 'path', 'settings');
+		$lang_keys_ignore = array('language', 'fallback', 'fallbackLanguage', 'path', 'settings');
 
 		if(isset($l) && is_array($l))
 		{
