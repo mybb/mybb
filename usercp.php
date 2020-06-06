@@ -2352,7 +2352,7 @@ if($mybb->input['action'] == "editsig")
 		$sig = htmlspecialchars_uni($sig);
 		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 
-		if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
+		if($mybb->settings['sigmycode'] != 0 && $mybb->settings['bbcodeinserter'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
 			$codebuttons = build_mycode_inserter("signature");
 		}
