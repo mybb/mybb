@@ -441,7 +441,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_document'] = array(
 			'title'	=> $lang->edit_document,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$hid,
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$doc['hid'],
 			'description' => $lang->edit_document_desc
 		);
 
