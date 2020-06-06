@@ -2356,6 +2356,7 @@ if($mybb->input['action'] == "editsig")
 		{
 			$codebuttons = build_mycode_inserter("signature");
 		}
+
 		$plugins->run_hooks("usercp_editsig_end");
 
 		eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
