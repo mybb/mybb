@@ -998,9 +998,10 @@ if($mybb->input['action'] == "results")
 				'allow_mycode' => 1,
 				'allow_smilies' => 0,
 				'allow_imgcode' => 0,
+				'me_username' => $post['username'],
 				'filter_badwords' => 1
 			);
-			$post['message'] = strip_tags($parser->parse_message($post['message'], $parser_options));
+			$post['message'] = strip_tags($parser->text_parse_message($post['message'], $parser_options));
 
 			$post['posted'] = my_date('relative', $post['dateline']);
 

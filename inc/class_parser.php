@@ -1778,6 +1778,7 @@ class postParser
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
 			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
 			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
+			"#\[attachment=([0-9]+?)\]#i",
 		);
 
 		$replace = array(
@@ -1785,6 +1786,7 @@ class postParser
 			"$4",
 			"$3 ($1$2)",
 			"$2 ($1)",
+			"",
 		);
 		$message = preg_replace($find, $replace, $message);
 
