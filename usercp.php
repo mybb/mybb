@@ -44,12 +44,6 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == 0)
 	error_no_permission();
 }
 
-if(!$mybb->user['pmfolders'])
-{
-	$mybb->user['pmfolders'] = '1**$%%$2**$%%$3**$%%$4**';
-	$db->update_query('users', array('pmfolders' => $mybb->user['pmfolders']), "uid = {$mybb->user['uid']}");
-}
-
 $errors = '';
 
 $mybb->input['action'] = $mybb->get_input('action');
