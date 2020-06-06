@@ -29,7 +29,8 @@ function upgrade50_dbchanges()
 	echo "<p>Updating cache...</p>";
 
 	$cache->delete("banned");
-
+	
+	$db->update_query('users', array('pmfolders' => "0**$%%$1**$%%$2**$%%$3**$%%$4**"), "pmfolders NOT LIKE '0%'");
 	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
 
 	// Add hCaptcha support
