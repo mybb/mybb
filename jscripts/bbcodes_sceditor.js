@@ -137,22 +137,23 @@ $(function ($) {
 			var fontsize = 1,
 				scefontsize = $($elm).data('scefontsize'),
 				parsed = parseInt(scefontsize, 10),
-				size = $($elm).attr('size');
+				size = parseInt($($elm).attr('size'), 10);
 
-			if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
+			if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
+				fontsize = mybbCmd.fsStr[size - 1];
+			} else if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
 				fontsize = scefontsize;
 			} else if (!isNaN(parsed)) {
 				fontsize = parsed;
-			} else if (size && size > 1 && size <= mybbCmd.fsStr.length) {
-				fontsize = mybbCmd.fsStr[size - 1];
 			}
 
 			return '[size=' + fontsize + ']' + content + '[/size]';
 		},
 		html: function (token, attrs, content) {
 			var size = 0,
-				units = "";
-			if (!isNaN(attrs.defaultattr)) {
+				units = "",
+				parsed = parseInt(attrs.defaultattr, 10);
+			if (!isNaN(parsed)) {
 				size = attrs.defaultattr;
 				if (size < 1) {
 					size = 1;
