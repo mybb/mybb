@@ -255,7 +255,9 @@ $(function ($) {
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
 		quoteType: function (val, name) {
-			return "'" + val.replace("'", "\\'") + "'";
+			var quoteChar = val.indexOf('"') !== -1 ? "'" : '"';
+
+			return quoteChar + val + quoteChar;
 		},
 		breakStart: true,
 		breakEnd: true
