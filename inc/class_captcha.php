@@ -279,7 +279,7 @@ class captcha
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 			}
 		}
-		elseif(in_array($this->type, array(4, 5, 8)))
+		elseif(in_array($this->type, array(4, 5)))
 		{
 			$response = $mybb->input['g-recaptcha-response'];
 			if(!$response || strlen($response) == 0)
@@ -292,6 +292,40 @@ class captcha
 				// Contact Google and see if our reCAPTCHA was successful
 				$response = fetch_remote_file($this->verify_server, array(
 					'secret' => $mybb->settings['recaptchaprivatekey'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				if($response == false)
+				{
+					$this->set_error($lang->invalid_nocaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+
+					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_nocaptcha);
+					}
+				}
+			}
+		}
+		elseif(in_array($this->type, array(8)))
+		{
+			$response = $mybb->input['g-recaptcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_nocaptcha);
+			}
+			else
+			{
+				// We have a reCAPTCHA invisible to handle
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['recaptchaprivatekey'],
+					'score' => $mybb->settings['recaptchascore'],
 					'remoteip' => $session->ipaddress,
 					'response' => $response
 				));
