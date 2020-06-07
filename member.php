@@ -1229,6 +1229,7 @@ if($mybb->input['action'] == "register")
 			lang.js_validator_password_matches = '{$lang->js_validator_password_matches}';
 			lang.js_validator_no_image_text = '{$lang->js_validator_no_image_text}';
 			lang.js_validator_no_security_question = '{$lang->js_validator_no_security_question}';
+			lang.js_validator_bad_password_security = '{$lang->js_validator_bad_password_security}';
 		</script>\n";
 
 		eval("\$registration = \"".$templates->get("member_register")."\";");
