@@ -338,7 +338,7 @@ class captcha
 				{
 					$answer = json_decode($response, true);
 
-					if($answer['success'] != 'true')
+					if($answer['success'] != 'true' || $answer[‘score’] < $mybb->settings['recaptchascore'])
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_nocaptcha);
