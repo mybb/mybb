@@ -2766,13 +2766,23 @@ class Moderation
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
-			$subject = str_replace('{username}', $mybb->user['username'], $format);
-			$subject = str_replace('{subject}', $thread['subject'], $subject);
-			$new_subject = array(
-				"subject" => $db->escape_string($subject)
+			$find = array('{username}', '{subject}');
+			$replace = array($mybb->user['username'], $thread['subject']);
+
+			$new_subject = str_ireplace($find, $replace, $format);
+
+			$args = array(
+				'thread' => &$thread,
+				'new_subject' => &$new_subject,
 			);
-			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'");
-			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'");
+
+			$plugins->run_hooks("class_moderation_change_thread_subject_newsubject", $args);
+
+			$update_subject = array(
+				"subject" => $db->escape_string($new_subject)
+			);
+			$db->update_query("threads", $update_subject, "tid='{$thread['tid']}'");
+			$db->update_query("posts", $update_subject, "tid='{$thread['tid']}' AND replyto='0'");
 		}
 
 		$arguments = array("tids" => $tids, "format" => $format);
