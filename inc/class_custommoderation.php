@@ -104,7 +104,7 @@ class CustomModeration extends Moderation
 	 */
 	function execute_post_moderation($post_options=array(), $pids=array(), $tid)
 	{
-		global $db, $mybb, $lang;
+		global $db, $mybb, $lang, $plugins;
 
 		if(is_array($tid))
 		{
@@ -115,6 +115,14 @@ class CustomModeration extends Moderation
 
 		// Get the information about thread
 		$thread = get_thread($tid);
+
+		$args = array(
+			'post_options' => &$post_options,
+			'pids' => &$pids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_post_moderation_start", $args);
 
 		// If deleting posts, only do that
 		if($post_options['deleteposts'] == 1)
@@ -257,6 +265,15 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
+
+		$args = array(
+			'post_options' => &$post_options,
+			'pids' => &$pids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_post_moderation_end", $args);
+
 		return true;
 	}
 
@@ -269,11 +286,19 @@ class CustomModeration extends Moderation
 	 */
 	function execute_thread_moderation($thread_options=array(), $tids=array())
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		$tid = (int)$tids[0]; // Take the first thread to get thread data from
 		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
+
+		$args = array(
+			'thread_options' => &$thread_options,
+			'tids' => &$tids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_thread_moderation_start", $args);
 
 		// If deleting threads, only do that
 		if($thread_options['deletethread'] == 1)
@@ -489,6 +514,14 @@ class CustomModeration extends Moderation
 				send_pm($pm, $mybb->user['uid'], 1);
 			}
 		}
+
+		$args = array(
+			'thread_options' => &$thread_options,
+			'tids' => &$tids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_thread_moderation_end", $args);
 
 		return true;
 	}
