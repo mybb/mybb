@@ -319,6 +319,12 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'threadprefix' => $mybb->get_input('threadprefix', MyBB::INPUT_INT)
 			);
 
+			$args = array(
+				'thread_options' => &$thread_options,
+			);
+
+			$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool_options", $args);
+
 			$update_tool['type'] = 't';
 			$update_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
 			$update_tool['name'] = $db->escape_string($mybb->input['title']);
@@ -651,6 +657,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
+	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool_end");
+
 	$buttons[] = $form->generate_submit_button($lang->save_thread_tool);
 
 	$form->output_submit_wrapper($buttons);
@@ -816,6 +824,12 @@ if($mybb->input['action'] == "add_thread_tool")
 				'pm_message' => $mybb->input['pm_message'],
 				'threadprefix' => $mybb->input['threadprefix'],
 			);
+
+			$args = array(
+				'thread_options' => &$thread_options,
+			);
+
+			$plugins->run_hooks("admin_config_mod_tools_add_thread_tool_options", $args);
 
 			$new_tool['type'] = 't';
 			$new_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
@@ -1124,6 +1138,8 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
+	$plugins->run_hooks("admin_config_mod_tools_add_thread_tool_end");
+
 	$buttons[] = $form->generate_submit_button($lang->save_thread_tool);
 
 	$form->output_submit_wrapper($buttons);
@@ -1324,6 +1340,13 @@ if($mybb->input['action'] == "edit_post_tool")
 				'splitpostsaddreply' => $mybb->input['splitpostsaddreply'],
 				'splitpostsreplysubject' => $mybb->input['splitpostsreplysubject']
 			);
+
+			$args = array(
+				'thread_options' => &$thread_options,
+				'post_options' => &$post_options,
+			);
+
+			$plugins->run_hooks("admin_config_mod_tools_edit_post_tool_options", $args);
 
 			$update_tool['type'] = 'p';
 			$update_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
@@ -1734,6 +1757,8 @@ if($mybb->input['action'] == "edit_post_tool")
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
+	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool_end");
+
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
 
 	$form->output_submit_wrapper($buttons);
@@ -1961,6 +1986,13 @@ if($mybb->input['action'] == "add_post_tool")
 				'splitpostsaddreply' => $mybb->input['splitpostsaddreply'],
 				'splitpostsreplysubject' => $mybb->input['splitpostsreplysubject']
 			);
+
+			$args = array(
+				'thread_options' => &$thread_options,
+				'post_options' => &$post_options,
+			);
+
+			$plugins->run_hooks("admin_config_mod_tools_add_post_tool_options", $args);
 
 			$new_tool['type'] = 'p';
 			$new_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
@@ -2302,6 +2334,8 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
+
+	$plugins->run_hooks("admin_config_mod_tools_add_post_tool_end");
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
 
