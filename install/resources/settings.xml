@@ -192,19 +192,13 @@
 			<title><![CDATA[reCAPTCHA v3 Score]]></title>
 			<description><![CDATA[Set the user rejection score for reCAPTCHA v3. 1.0 is very likely a genuine user, 0.0 is very likely a bot]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[select
-			0.0=0.0
-			0.1=0.1
-			0.2=0.2
-			0.3=0.3
-			0.4=0.4
-			0.5=0.5
-			0.6=0.6
-			0.7=0.7
-			0.8=0.8
-			0.9=0.9
-			1.0=1.0]]></optionscode>
+			<optionscode><![CDATA[numeric
+min=0
+max=1
+step=0.01]]></optionscode>
+			<settingvalue><![CDATA[0.5]]></settingvalue>
 			<isdefault>1</isdefault>
+		</setting>
 		<setting name="hcaptchapublickey">
 			<title><![CDATA[hCaptcha Public Key]]></title>
 			<description><![CDATA[Your hCaptcha public key.]]></description>
