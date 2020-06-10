@@ -1055,10 +1055,10 @@ if($mybb->input['action'] == "register")
 					// JS validator extra, choose correct selectors for everything except single select which always has value
 					if($type != 'select')
 					{
-						$jsvar_reqfield = array();
-						$jsvar_reqfield['type'] = $type;
-						$jsvar_reqfield['fid'] = $field;
-						$jsvar_reqfields[] = $jsvar_reqfield;
+						$jsvar_reqfields[] = array(
+							'type' => $type,
+							'fid' => $field,
+						);
 					}
 
 					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
