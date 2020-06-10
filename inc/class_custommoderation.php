@@ -115,6 +115,7 @@ class CustomModeration extends Moderation
 
 		// Get the information about thread
 		$thread = get_thread($tid);
+		$author = get_user($thread['uid']);
 
 		$args = array(
 			'post_options' => &$post_options,
@@ -207,8 +208,8 @@ class CustomModeration extends Moderation
 					$post_options['splitpostsnewsubject'] = "{$lang->split_thread_subject} {$thread['subject']}";
 				}
 
-				$find = array('{username}', '{subject}');
-				$replace = array($mybb->user['username'], $thread['subject']);
+				$find = array('{username}', '{author}', '{subject}');
+				$replace = array($mybb->user['username'], $author['username'], $thread['subject']);
 
 				$new_subject = str_ireplace($find, $replace, $post_options['splitpostsnewsubject']);
 
@@ -245,8 +246,8 @@ class CustomModeration extends Moderation
 					require_once MYBB_ROOT."inc/datahandlers/post.php";
 					$posthandler = new PostDataHandler("insert");
 
-					$find = array('{username}', '{subject}');
-					$replace = array($mybb->user['username'], $new_thread_subject);
+					$find = array('{username}', '{author}', '{subject}');
+					$replace = array($mybb->user['username'], $author['username'], $new_thread_subject);
 
 					if(empty($post_options['splitpostsreplysubject']))
 					{
@@ -439,7 +440,11 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND moved='0'");
+				$query = $db->query("
+					SELECT u.uid, u.username, t.fid, t.subject, t.tid, t.firstpost, t.closed FROM ".TABLE_PREFIX."threads t
+					LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+					WHERE tid IN ($tid_list) AND closed NOT LIKE 'moved|%'
+				");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 
 				// Loop threads adding a reply to each one
@@ -447,8 +452,8 @@ class CustomModeration extends Moderation
 				{
 					$posthandler = new PostDataHandler("insert");
 
-					$find = array('{username}', '{subject}');
-					$replace = array($mybb->user['username'], $thread['subject']);
+					$find = array('{username}', '{author}', '{subject}');
+					$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
 
 					if(empty($thread_options['replysubject']))
 					{
@@ -546,11 +551,15 @@ class CustomModeration extends Moderation
 			$tid_list = implode(',', $tids);
 
 			// For each thread, we send a PM to the author
-			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
-			while($uid = $db->fetch_field($query, 'uid'))
+			$query = $db->query("
+				SELECT u.uid, u.username, t.subject FROM ".TABLE_PREFIX."threads t
+				LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+				WHERE tid IN ($tid_list)
+			");
+			while($thread = $db->fetch_array($query))
 			{
-				$find = array('{username}', '{subject}');
-				$replace = array($mybb->user['username'], $thread['subject']);
+				$find = array('{username}', '{author}', '{subject}');
+				$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
 
 				$pm_subject = str_ireplace($find, $replace, $thread_options['pm_subject']);
 				$pm_message = str_ireplace($find, $replace, $thread_options['pm_message']);
@@ -558,7 +567,7 @@ class CustomModeration extends Moderation
 				$args = array(
 					'thread_options' => &$thread_options,
 					'tids' => &$tids,
-					'uid' => &$uid,
+					'thread' => &$thread,
 					'pm_subject' => &$pm_subject,
 					'pm_message' => &$pm_message,
 				);
@@ -569,7 +578,7 @@ class CustomModeration extends Moderation
 				$pm = array(
 					'subject' => $pm_subject,
 					'message' => $pm_message,
-					'touid' => $uid
+					'touid' => $thread['uid']
 				);
 				send_pm($pm, $mybb->user['uid'], 1);
 			}

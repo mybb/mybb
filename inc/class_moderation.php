@@ -2762,12 +2762,16 @@ class Moderation
 		$tid_list = implode(',', $tids);
 
 		// Get original subject
-		$query = $db->simple_select("threads", "subject, tid", "tid IN ($tid_list)");
+		$query = $db->query("
+			SELECT u.uid, u.username, t.tid, t.subject FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+			WHERE tid IN ($tid_list)
+		");
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
-			$find = array('{username}', '{subject}');
-			$replace = array($mybb->user['username'], $thread['subject']);
+			$find = array('{username}', 'author', '{subject}');
+			$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
 
 			$new_subject = str_ireplace($find, $replace, $format);
 
