@@ -644,15 +644,18 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, array($mybb->get_input('threadprefix', MyBB::INPUT_INT)), array('id' => 'threadprefix')), 'threadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject'], array('id' => 'newsubject')));
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->add_new_reply);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
@@ -1125,15 +1128,18 @@ if($mybb->input['action'] == "add_thread_tool")
 		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, $mybb->input['threadprefix'], array('id' => 'threadprefix')), 'threadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject'], array('id' => 'newsubject')));
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->add_new_reply);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
@@ -1657,6 +1663,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		$form_container->output_row($lang->split_thread_prefix." <em>*</em>", '', $form->generate_select_box('splitthreadprefix', $split_thread_prefixes, array($mybb->get_input('splitthreadprefix', MyBB::INPUT_INT)), array('id' => 'splitthreadprefix')), 'splitthreadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->split_thread_subject, $lang->split_thread_subject_desc, $form->generate_text_box('splitpostsnewsubject', $mybb->input['splitpostsnewsubject'], array('id' => 'splitpostsnewsubject ')), 'newreplysubject');
 	$form_container->output_row($lang->add_new_split_reply, $lang->add_new_split_reply_desc, $form->generate_text_area('splitpostsaddreply', $mybb->input['splitpostsaddreply'], array('id' => 'splitpostsaddreply')), 'splitpostsaddreply');
 	$form_container->output_row($lang->split_reply_subject, $lang->split_reply_subject_desc, $form->generate_text_box('splitpostsreplysubject', $mybb->input['splitpostsreplysubject'], array('id' => 'splitpostsreplysubject')), 'splitpostsreplysubject');
@@ -1744,15 +1751,18 @@ if($mybb->input['action'] == "edit_post_tool")
 		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, array($mybb->get_input('threadprefix', MyBB::INPUT_INT)), array('id' => 'threadprefix')), 'threadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->add_new_reply);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply']), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
@@ -2234,6 +2244,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$form_container->output_row($lang->split_thread_prefix." <em>*</em>", '', $form->generate_select_box('splitthreadprefix', $split_thread_prefixes, array($mybb->get_input('splitthreadprefix', MyBB::INPUT_INT)), array('id' => 'splitthreadprefix')), 'splitthreadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->split_thread_subject, $lang->split_thread_subject_desc, $form->generate_text_box('splitpostsnewsubject', $mybb->input['splitpostsnewsubject'], array('id' => 'splitpostsnewsubject ')), 'newreplysubject');
 	$form_container->output_row($lang->add_new_split_reply, $lang->add_new_split_reply_desc, $form->generate_text_area('splitpostsaddreply', $mybb->input['splitpostsaddreply'], array('id' => 'splitpostsaddreply')), 'splitpostsaddreply');
 	$form_container->output_row($lang->split_reply_subject, $lang->split_reply_subject_desc, $form->generate_text_box('splitpostsreplysubject', $mybb->input['splitpostsreplysubject'], array('id' => 'splitpostsreplysubject')), 'splitpostsreplysubject');
@@ -2322,15 +2333,18 @@ if($mybb->input['action'] == "add_post_tool")
 		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, $mybb->input['threadprefix'], array('id' => 'threadprefix')), 'threadprefix');
 	}
 
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->add_new_reply);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->subject_message_replacements, $lang->subject_message_replacements_desc);
 	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
 	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
