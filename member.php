@@ -2834,14 +2834,14 @@ if($mybb->input['action'] == "profile")
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin'])))
 	{
-			if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['cancp'] == 1)
-			{
-				eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions_manageban")."\";");
-			}
-			else
-			{
-				eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
-			}
+		if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['cancp'] == 1)
+		{
+			eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions_manageban")."\";");
+		}
+		else
+		{
+			eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
+		}
 	}
 
 	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageban = $manageuser = '';
