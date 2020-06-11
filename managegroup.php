@@ -237,6 +237,8 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 		error_no_permission();
 	}
 
+	$users = $mybb->get_input('removeuser', MyBB::INPUT_ARRAY);
+
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
 	if(is_array($users) && count($users))
