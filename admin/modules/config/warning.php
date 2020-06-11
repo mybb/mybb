@@ -542,7 +542,7 @@ if($mybb->input['action'] == "edit_type")
 			$errors[] = $lang->error_missing_type_title;
 		}
 
-		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] < 0)
+		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] <= 0)
 		{
 			$errors[] = $lang->sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
 		}
