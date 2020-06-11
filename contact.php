@@ -249,14 +249,12 @@ if($mybb->request_method == "post")
 		$mybb->input['from'] = $mybb->get_input('from');
 		if(isset($mybb->input['from']) && !empty($mybb->input['from']))
 		{
-			$redirect_url = $mybb->input['from'];
+			redirect($mybb->input['from'], $lang->contact_success_message, '', true);
 		}
 		else
 		{
-			$redirect_url = 'index.php';
+			redirect('index.php', $lang->contact_success_message, '', true);
 		}
-
-		redirect($redirect_url, $lang->contact_success_message, '', true);
 	}
 	else
 	{
