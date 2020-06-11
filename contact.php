@@ -244,15 +244,18 @@ if($mybb->request_method == "post")
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}
-
-		if($mybb->usergroup['emailfloodtime'] > 0 || (isset($sent_count) && $sent_count + 1 >= $mybb->usergroup['maxemails']))
+		
+		$mybb->input['from'] = $mybb->get_input('from');
+		if(isset($mybb->input['from']) && !empty($mybb->input['from']))
 		{
-			redirect('index.php', $lang->contact_success_message, '', true);
+			$redirect_url = $mybb->input['from'];
 		}
 		else
 		{
-			redirect('contact.php', $lang->contact_success_message, '', true);
+			$redirect_url = 'index.php';
 		}
+		
+		redirect($redirect_url, $lang->contact_success_message, '', true);
 	}
 	else
 	{
@@ -288,6 +291,15 @@ if($mybb->user['uid'] && !$mybb->get_input('email'))
 else
 {
 	$user_email = htmlspecialchars_uni($mybb->get_input('email'));
+}
+
+if(isset($mybb->input['from']))
+{
+	$redirect_url = htmlspecialchars_uni($mybb->get_input('from'));
+}
+else if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $mybb->settings['bburl']) !== false  && strpos($_SERVER['HTTP_REFERER'], "contact.php") === false)
+{
+	$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 }
 
 $plugins->run_hooks('contact_end');
