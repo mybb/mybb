@@ -431,11 +431,12 @@ if(!$mybb->input['action'])
 		$title = htmlspecialchars_uni($title);
 		if($row['points'] > 0)
 		{
-			$points = '+'.$row['points'];
+			$row['points'] = "+{$row['points']}";
 		}
+		$points = $lang->sprintf($lang->warning_points, $row['points']);
 
 		$table->construct_cell($username_link);
-		$table->construct_cell("{$title} ({$points})");
+		$table->construct_cell("{$title} {$points}");
 		$table->construct_cell($issued_date, array("class" => "align_center"));
 		$table->construct_cell($expire_date.$revoked_text, array("class" => "align_center"));
 		$table->construct_cell($mod_username_link);
