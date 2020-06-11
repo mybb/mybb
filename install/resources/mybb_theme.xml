@@ -14187,7 +14187,7 @@ $(function() {
 	{$sourcemode}
 });
 </script>]]></template>
-		<template name="contact" version="1816"><![CDATA[<html>
+		<template name="contact" version="1824"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>
 {$headerinclude}
@@ -14196,6 +14196,7 @@ $(function() {
 {$header}
 <form action="contact.php" method="post">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="from" value="{$redirect_url}" />
 	{$errors}
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
