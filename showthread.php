@@ -1540,7 +1540,7 @@ if($mybb->input['action'] == "thread")
 				$doneusers[$user['uid']] = $user['time'];
 
 				$invisiblemark = '';
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					$invisiblemark = "*";
 					++$inviscount;

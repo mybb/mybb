@@ -107,7 +107,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					++$anoncount;
 				}
@@ -115,7 +115,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					// If this usergroup can see anonymously logged-in users, mark them.
-					if($user['invisible'] == 1)
+					if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 					{
 						$invisiblemark = '*';
 					}

@@ -878,13 +878,18 @@ if($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if(isset($user['invisible']) && $user['invisible'] == 1)
+	// Check usergroup permission before showing invisible check box
+	if($mybb->usergroup['canbeinvisible'] == 1)
 	{
-		$invisiblecheck = "checked=\"checked\"";
-	}
-	else
-	{
-		$invisiblecheck = "";
+		if(isset($user['invisible']) && $user['invisible'] == 1)
+		{
+			$invisiblecheck .= "checked=\"checked\"";
+		}
+		elseif($user['invisible'] != 0)
+		{
+			$invisiblecheck = "";
+		}
+		eval('$canbeinvisible = "'.$templates->get("usercp_options_invisible")."\";");
 	}
 
 	if(isset($user['hideemail']) && $user['hideemail'] == 1)
