@@ -239,7 +239,6 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	$users = $mybb->get_input('removeuser', MyBB::INPUT_ARRAY);
 	if(is_array($users) && count($users))
 	{
 		foreach($users as $uid)
