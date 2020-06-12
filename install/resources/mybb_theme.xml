@@ -4938,7 +4938,7 @@ if(use_xmlhttprequest == "1")
 <ul>
 <li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
 <li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_ban_in_acp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=lift&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}">{$lang->admin_lift_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=lift&amp;uid={$uid}">{$lang->admin_lift_ban_in_acp}</a></li>
 </ul>
 </td>
 </tr>
