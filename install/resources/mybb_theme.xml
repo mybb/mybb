@@ -3641,7 +3641,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="error_inline_item" version="1818"><![CDATA[<li>{$error}</li>]]></template>
 		<template name="error_nopermission" version="1824"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
-<li>{$lang->error_nopermission_guest_2}</li>
+<li>{$lang->error_nopermission_guest_2} <a href="member.php?action=login">{$lang->login}</a> | <a href="member.php?action=register">{$lang->need_reg}</a></li>
 <li>{$lang->error_nopermission_guest_3}</li>
 <li>{$lang->error_nopermission_guest_4}</li>
 <li>{$lang->error_nopermission_guest_5}</li>
