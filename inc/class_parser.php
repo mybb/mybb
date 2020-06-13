@@ -1590,8 +1590,6 @@ class postParser
 	*/
 	function mycode_auto_url($message)
 	{
-		if($this->options['allow_url'] == 1)
-		{
 		$message = " ".$message;
 
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
@@ -1601,12 +1599,7 @@ class postParser
 		$message = my_substr($message, 1);
 
 		return $message;
-		}
-		else
-		{
-			return $message;
-		}
-		}
+	}
 
 	/**
 	* Parses URLs automatically.
