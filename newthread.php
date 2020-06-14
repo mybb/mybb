@@ -157,7 +157,7 @@ $errors = array();
 $maximageserror = $attacherror = '';
 
 // Handle attachments if we've got any.
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -180,12 +180,14 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$errors = $ret['errors'];
 	}
 
-	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
-	if(!$mybb->get_input('submit'))
+	// If we were dealing with an attachment but didn't click 'Post Thread' or 'Save as Draft', force the new thread page again.
+	if(!$mybb->get_input('submit') && !$mybb->get_input('savedraft'))
 	{
 		$mybb->input['action'] = "newthread";
 	}
 }
+
+detect_attachmentact();
 
 // Are we removing an attachment from the thread?
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && $mybb->get_input('attachmentact') == "remove")

@@ -105,7 +105,7 @@ var Post = {
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
 					
-					var form = $('input[name=rem]').parents('form');
+					var form = $('input[name^=\'rem\']').parents('form');
 
 					if(use_xmlhttprequest != 1)
 					{
@@ -146,6 +146,8 @@ var Post = {
 									$(this).remove();
 								});
 							}
+							document.input.attachmentaid.value = '';
+							document.input.attachmentact.value = '';
 						}
 					});
 				}

@@ -9448,14 +9448,14 @@ if(use_xmlhttprequest == "1")
 <td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
-		<template name="post_attachments_attachment_mod_unapprove" version="120"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
+		<template name="post_attachments_attachment_mod_approve" version="1823"><![CDATA[<input type="submit" class="button" name="approveattach_{$attachment['aid']}" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
+		<template name="post_attachments_attachment_mod_unapprove" version="1823"><![CDATA[<input type="submit" class="button" name="unapproveattach_{$attachment['aid']}" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
 		<template name="post_attachments_attachment_postinsert" version="1809"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="$('#message').sceditor('instance').insertText('[attachment={$attachment['aid']}]'); return false;" />]]></template>
-		<template name="post_attachments_attachment_remove" version="1604"><![CDATA[<input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
-		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
+		<template name="post_attachments_attachment_remove" version="1823"><![CDATA[<input type="submit" class="button" name="rem_{$attachment['aid']}" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
+		<template name="post_attachments_attachment_unapproved" version="1823"><![CDATA[<tr id="attachment_{$attachment['aid']}">
 <td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
-<td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
+<td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_new" version="1818"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
@@ -9596,14 +9596,14 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1822"><![CDATA[
+		<template name="post_javascript" version="1823"><![CDATA[
 			<script type="text/javascript">
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 			</script>
-			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1822"></script>
+			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1823"></script>
 			]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>
