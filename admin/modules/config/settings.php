@@ -1848,7 +1848,7 @@ function print_setting_peekers()
 	$peekers = array(
 		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errortypemedium, #row_setting_errorloglocation"), 1, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
 		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
 		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
@@ -1886,7 +1886,6 @@ function print_setting_peekers()
 		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
 		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
 		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
-		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',

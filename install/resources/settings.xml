@@ -434,7 +434,7 @@ error=Errors
 both=Warnings and Errors
 none=Hide Errors and Warnings
 ]]></optionscode>
-			<settingvalue><![CDATA[both]]></settingvalue>
+			<settingvalue><![CDATA[none]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="errorloglocation">
