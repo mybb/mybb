@@ -122,7 +122,8 @@ if(!$mybb->input['action'])
 	}
 	closedir($dir);
 	ksort($folders);
-	$setting_code = $form->generate_select_box("cpstyle", $folders, $admin_options['cpstyle']);
+	$styles = array_merge(array('' => $lang->use_default), $folders);
+	$setting_code = $form->generate_select_box("cpstyle", $styles, $admin_options['cpstyle']);
 
 	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages(1));
 	$language_code = $form->generate_select_box("cplanguage", $languages, $admin_options['cplanguage']);

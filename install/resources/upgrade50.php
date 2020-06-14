@@ -22,14 +22,21 @@ $upgrade_detail = array(
 
 function upgrade50_dbchanges()
 {
-	global $output, $cache;
+	global $output, $cache, $db;
 
-	$output->print_header("Updating Cache");
+	$output->print_header("Updating Database");
 
 	echo "<p>Updating cache...</p>";
 
 	$cache->delete("banned");
 
+	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
+
+	// Add hCaptcha support
+	echo "<p>Updating settings...</p>";
+	$db->update_query("settings", array('name' => 'recaptchapublickey'), "name='captchapublickey'");
+	$db->update_query("settings", array('name' => 'recaptchaprivatekey'), "name='captchaprivatekey'");
+	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("50_done");
 }

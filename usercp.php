@@ -155,6 +155,8 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$user = array();
+
 	$plugins->run_hooks("usercp_do_profile_start");
 
 	if($mybb->get_input('away', MyBB::INPUT_INT) == 1 && $mybb->settings['allowaway'] != 0)
@@ -217,7 +219,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
 
-	$user = array(
+	$user = array_merge($user, array(
 		"uid" => $mybb->user['uid'],
 		"postnum" => $mybb->user['postnum'],
 		"usergroup" => $mybb->user['usergroup'],
@@ -226,7 +228,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
-	);
+	));
 	foreach(array('icq', 'skype', 'google') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
@@ -243,10 +245,20 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		if($cfield == 'icq')
 		{
 			$user[$cfield] = $mybb->get_input($cfield, 1);
+
+			if(my_strlen($user[$cfield]) > 10)
+			{
+				error($lang->contact_field_icqerror);
+			}
 		}
 		else
 		{
 			$user[$cfield] = $mybb->get_input($cfield);
+
+			if(my_strlen($user[$cfield]) > 75)
+			{
+				error($lang->contact_field_error);
+			}
 		}
 	}
 
@@ -751,13 +763,15 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$user = array();
+
 	$plugins->run_hooks("usercp_do_options_start");
 
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
 
-	$user = array(
+	$user = array_merge($user, array(
 		"uid" => $mybb->user['uid'],
 		"style" => $mybb->get_input('style', MyBB::INPUT_INT),
 		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
@@ -766,7 +780,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"language" => $mybb->get_input('language'),
 		'usergroup'	=> $mybb->user['usergroup'],
 		'additionalgroups'	=> $mybb->user['additionalgroups']
-	);
+	));
 
 	$user['options'] = array(
 		"allownotices" => $mybb->get_input('allownotices', MyBB::INPUT_INT),
@@ -823,8 +837,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "options")
 {
-	$plugins->run_hooks("usercp_options_start");
-
 	if($errors != '')
 	{
 		$user = $mybb->input;
@@ -833,6 +845,8 @@ if($mybb->input['action'] == "options")
 	{
 		$user = $mybb->user;
 	}
+
+	$plugins->run_hooks("usercp_options_start");
 
 	$languages = $lang->get_languages();
 	$board_language = $langoptions = '';
@@ -1318,6 +1332,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$user = array();
 	$errors = array();
 
 	$plugins->run_hooks("usercp_do_password_start");
@@ -1331,11 +1346,11 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
-		$user = array(
+		$user = array_merge($user, array(
 			"uid" => $mybb->user['uid'],
 			"password" => $mybb->get_input('password'),
 			"password2" => $mybb->get_input('password2')
-		);
+		));
 
 		$userhandler->set_data($user);
 
@@ -1379,11 +1394,14 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 
 	$errors = array();
 
-	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != 1)
 	{
 		error_no_permission();
 	}
+
+	$user = array();
+
+	$plugins->run_hooks("usercp_do_changename_start");
 
 	if(validate_password_from_uid($mybb->user['uid'], $mybb->get_input('password')) == false)
 	{
@@ -1395,10 +1413,10 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
-		$user = array(
+		$user = array_merge($user, array(
 			"uid" => $mybb->user['uid'],
 			"username" => $mybb->get_input('username')
-		);
+		));
 
 		$userhandler->set_data($user);
 
@@ -1411,7 +1429,6 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 			$userhandler->update_user();
 			$plugins->run_hooks("usercp_do_changename_end");
 			redirect("usercp.php?action=changename", $lang->redirect_namechanged);
-
 		}
 	}
 	if(count($errors) > 0)
@@ -1450,12 +1467,12 @@ if($mybb->input['action'] == "do_subscriptions")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_subscriptions_start");
-
 	if(!isset($mybb->input['check']) || !is_array($mybb->input['check']))
 	{
 		error($lang->no_subscriptions_selected);
 	}
+
+	$plugins->run_hooks("usercp_do_subscriptions_start");
 
 	// Clean input - only accept integers thanks!
 	$mybb->input['check'] = array_map('intval', $mybb->get_input('check', MyBB::INPUT_ARRAY));
@@ -2195,13 +2212,13 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_editsig_start");
-
 	// User currently has a suspended signature
 	if($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > TIME_NOW)
 	{
 		error_no_permission();
 	}
+
+	$plugins->run_hooks("usercp_do_editsig_start");
 
 	if($mybb->get_input('updateposts') == "enable")
 	{
@@ -2335,7 +2352,7 @@ if($mybb->input['action'] == "editsig")
 		$sig = htmlspecialchars_uni($sig);
 		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 
-		if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
+		if($mybb->settings['sigmycode'] != 0 && $mybb->settings['bbcodeinserter'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
 			$codebuttons = build_mycode_inserter("signature");
 		}
@@ -2476,6 +2493,12 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 						$avatar_error = $lang->error_avatartoobig;
 					}
 				}
+			}
+
+			// Limiting URL string to stay within database limit
+			if(strlen($mybb->input['avatarurl']) > 200)
+			{
+				$avatar_error = $lang->error_avatarurltoolong;
 			}
 
 			if(empty($avatar_error))
@@ -3361,14 +3384,17 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_drafts_start");
 	$mybb->input['deletedraft'] = $mybb->get_input('deletedraft', MyBB::INPUT_ARRAY);
 	if(empty($mybb->input['deletedraft']))
 	{
 		error($lang->no_drafts_selected);
 	}
+
+	$plugins->run_hooks("usercp_do_drafts_start");
+
 	$pidin = array();
 	$tidin = array();
+
 	foreach($mybb->input['deletedraft'] as $id => $val)
 	{
 		if($val == "post")
@@ -3406,10 +3432,11 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "usergroups")
 {
-	$plugins->run_hooks("usercp_usergroups_start");
 	$ingroups = ",".$mybb->user['usergroup'].",".$mybb->user['additionalgroups'].",".$mybb->user['displaygroup'].",";
 
 	$usergroups = $mybb->cache->read('usergroups');
+
+	$plugins->run_hooks("usercp_usergroups_start");
 
 	// Changing our display group
 	if($mybb->get_input('displaygroup', MyBB::INPUT_INT))
@@ -3804,13 +3831,14 @@ if($mybb->input['action'] == "usergroups")
 
 if($mybb->input['action'] == "attachments")
 {
-	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
 
 	if($mybb->settings['enableattachments'] == 0)
 	{
 		error($lang->attachments_disabled);
 	}
+
+	$plugins->run_hooks("usercp_attachments_start");
 
 	// Get unviewable forums
 	$f_perm_sql = '';
@@ -3827,10 +3855,6 @@ if($mybb->input['action'] == "attachments")
 
 	$attachments = '';
 
-	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
-	$usage = $db->fetch_array($query);
-	$totalattachments = $usage['acount'];
-
 	// Pagination
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -3843,12 +3867,6 @@ if($mybb->input['action'] == "attachments")
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
-		$pages = ceil($totalattachments / $perpage);
-		if($page > $pages)
-		{
-			$start = 0;
-			$page = 1;
-		}
 	}
 	else
 	{
@@ -3868,7 +3886,7 @@ if($mybb->input['action'] == "attachments")
 		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
 
-	$bandwidth = $totaldownloads = 0;
+	$bandwidth = $totaldownloads = $totalusage = $totalattachments = $processedattachments = 0;
 	while($attachment = $db->fetch_array($query))
 	{
 		if($attachment['dateline'] && $attachment['tid'])
@@ -3891,15 +3909,33 @@ if($mybb->input['action'] == "attachments")
 			// Add to bandwidth total
 			$bandwidth += ($attachment['filesize'] * $attachment['downloads']);
 			$totaldownloads += $attachment['downloads'];
+			$totalusage += $attachment['filesize'];
+			++$totalattachments;
 		}
 		else
 		{
 			// This little thing delets attachments without a thread/post
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
+		++$processedattachments;
 	}
 
-	$totalusage = $usage['ausage'];
+	if($processedattachments >= $perpage || $page > 1)
+	{
+		$query = $db->query("
+			SELECT SUM(a.filesize) AS ausage, COUNT(a.aid) AS acount
+			FROM ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE a.uid='".$mybb->user['uid']."' {$f_perm_sql}
+		");
+		$usage = $db->fetch_array($query);
+		$totalusage = $usage['ausage'];
+		$totalattachments = $usage['acount'];
+
+		$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
+	}
+
 	$friendlyusage = get_friendly_size((int)$totalusage);
 	if($mybb->usergroup['attachquota'])
 	{
@@ -3914,7 +3950,6 @@ if($mybb->input['action'] == "attachments")
 		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
 
-	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
 	$bandwidth = get_friendly_size($bandwidth);
 
 	if(!$attachments)
@@ -3934,12 +3969,13 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	if(!isset($mybb->input['attachments']) || !is_array($mybb->input['attachments']))
 	{
 		error($lang->no_attachments_selected);
 	}
+
+	$plugins->run_hooks("usercp_do_attachments_start");
 
 	// Get unviewable forums
 	$f_perm_sql = '';

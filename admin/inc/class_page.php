@@ -106,7 +106,7 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1821\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1823\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js?ver=1821\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1821\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js?ver=1821\"></script>\n";
@@ -378,10 +378,10 @@ lang.saved = \"{$lang->saved}\";
 
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
 		if(isset($lang->login_field_width))
-        {
-        	$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
+		{
+			$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
 			$login_container_width = " style=\"width: ".(410+((int)$lang->login_field_width))."px;\"";
-        }
+		}
 
 		$login_page .= <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -391,7 +391,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1823"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
 <script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
@@ -515,6 +515,8 @@ EOF;
 	{
 		global $lang, $cp_style, $mybb;
 
+		$copy_year = COPY_YEAR;
+
 		$mybb2fa_page = <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -523,7 +525,7 @@ EOF;
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1823"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
 <script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
@@ -625,6 +627,15 @@ EOF;
 		global $lang, $mybb, $cp_style;
 
 		$copy_year = COPY_YEAR;
+
+		$login_label_width = "";
+
+		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
+		if(isset($lang->login_field_width))
+		{
+			$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
+		}
+
 		switch($mybb->settings['username_method'])
 		{
 			case 0:

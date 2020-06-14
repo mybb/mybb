@@ -928,6 +928,8 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_timezone()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 
 		$timezones = get_supported_timezones();
@@ -1800,7 +1802,6 @@ class UserDataHandler extends DataHandler
 
 		$parser_options = array(
 			'allow_html' => $mybb->settings['sightml'],
-			'filter_badwords' => 1,
 			'allow_mycode' => $mybb->settings['sigmycode'],
 			'allow_smilies' => $mybb->settings['sigsmilies'],
 			'allow_imgcode' => $mybb->settings['sigimgcode'],

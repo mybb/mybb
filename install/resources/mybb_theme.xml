@@ -444,6 +444,10 @@ table {
 	background: #ffdde0;
 }
 
+.thread_start_datetime {
+	color: #999;
+}
+
 .post.unapproved_post .post_author {
 	border-bottom-color: #ffb8be;
 }
@@ -3404,7 +3408,21 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				<td class="tcat" align="center" width="1"><a href="{$week_link}">&raquo;</a></td>
 				{$day_bits}
 			</tr>]]></template>
-		<template name="calendar_weekrow_day" version="1800"><![CDATA[				<td class="{$day_class}" style="vertical-align: top; height: 100px;">
+		<template name="calendar_weekrow_day" version="1823"><![CDATA[				<td class="trow1" style="vertical-align: top; height: 100px;">
+					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
+					<div class="clear">
+					{$day_birthdays}
+					{$day_events}
+					</div>
+				</td>]]></template>
+		<template name="calendar_weekrow_currentday" version="1823"><![CDATA[				<td class="trow_sep" style="vertical-align: top; height: 100px;">
+					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
+					<div class="clear">
+					{$day_birthdays}
+					{$day_events}
+					</div>
+				</td>]]></template>
+		<template name="calendar_weekrow_thismonth" version="1823"><![CDATA[				<td class="trow2" style="vertical-align: top; height: 100px;">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div class="clear">
 					{$day_birthdays}
@@ -3518,7 +3536,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1820"><![CDATA[<html>
+		<template name="editpost" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -3544,7 +3562,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}:</strong><br /><div style="text-align: center;">{$smilieinserter}</div></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="text-align: center;">{$smilieinserter}</div></td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{$message}</textarea>
 {$codebuttons}
@@ -3966,14 +3984,14 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1813"><![CDATA[<tr class="inline_row">
+		<template name="forumdisplay_thread" version="1823"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
 		{$attachment_count}
 		<div>
           <span>{$prefix} {$gotounread}{$thread['threadprefix']}<span class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></span>{$thread['multipage']}</span>
-			<div class="author smalltext">{$thread['profilelink']}</div>
+			<div><span class="author smalltext">{$thread['profilelink']}{$lang->comma}</span><span class="thread_start_datetime smalltext">{$thread['start_datetime']}</span></div>
 		</div>
 	</td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
@@ -4455,7 +4473,7 @@ $(".forumjump").on('change', function() {
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1807"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1823"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4480,6 +4498,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -4509,7 +4528,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1807"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1823"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4534,6 +4553,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -4619,7 +4639,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
 <td class="{$altbg}" align="center">{$checkbox}</td>
 </tr>]]></template>
-		<template name="managegroup_user_checkbox" version="120"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
+		<template name="managegroup_user_checkbox" version="1823"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" {$disabled} />]]></template>
 		<template name="member_activate" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->account_activation}</title>
@@ -4946,9 +4966,9 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
 	<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
 </tr>]]></template>
-		<template name="member_profile_contact_fields_skype" version="1809"><![CDATA[<tr>
+		<template name="member_profile_contact_fields_skype" version="1823"><![CDATA[<tr>
 	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-	<td class="{$bgcolors['skype']}"><a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['skype']}</a></td>
+	<td class="{$bgcolors['skype']}">{$memprofile['skype']}</td>
 </tr>]]></template>
 		<template name="member_profile_customfields" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
@@ -5424,7 +5444,7 @@ if(use_xmlhttprequest == "1")
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1807"><![CDATA[<br />
+		<template name="member_register_referrer" version="1823"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5448,6 +5468,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5538,6 +5559,39 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaOnSubmit = function(token) {
+		$("#registration_form").trigger('submit');
+	};
+
+	var captchaOnloadCallback = function() {
+
+		var target = $('input[name="regsubmit"]');
+		target.attr('data-size', 'invisible');
+
+		hcaptcha.render(target.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+	<template name="member_register_regimage_hcaptcha" version="1823"><![CDATA[<br />
+<fieldset class="trow2">
+	<legend><strong>{$lang->human_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_requiredfields" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->required_info}</strong></legend>
@@ -5546,7 +5600,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>]]></template>
 		<template name="member_register_stylebit" version="120"><![CDATA[<option value="{$style['sid']}">{$style['name']}</option>]]></template>
-		<template name="member_resendactivation" version="1820"><![CDATA[<html>
+		<template name="member_resendactivation" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->resend_activation}</title>
 {$headerinclude}
@@ -5566,7 +5620,7 @@ if(use_xmlhttprequest == "1")
 {$captcha}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->request_activation}" /></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->request_activation}" /></div>
 <input type="hidden" name="action" value="do_resendactivation" />
 </form>
 {$footer}
@@ -5766,7 +5820,7 @@ if(use_xmlhttprequest == "1")
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
-		<template name="memberlist_search" version="1822"><![CDATA[<html>
+		<template name="memberlist_search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5843,6 +5897,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -6057,36 +6112,6 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_helpresults_noresults" version="1800"><![CDATA[<tr>
 	<td class="trow1">{$lang->no_help_results}</td>
 </tr>]]></template>
-		<template name="misc_imcenter_error" version="1812"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="trow1" style="padding: 20px">
-			<strong>{$lang->error}</strong><br /><br />
-			<blockquote>{$message}</blockquote>
-		</td>
-	</tr>
-</table>
-</div>
-</div>]]></template>
-		<template name="misc_imcenter_skype" version="1807"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
-<tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->skype_center}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1" align="center"><strong>{$user['skype']}</strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center"><span class="smalltext"><a href="skype:{$user['skype']}?chat">{$lang->chat_on_skype}</a>  -  <a href="skype:{$user['skype']}?call">{$lang->call_on_skype}</a></span></td>
-</tr>
-</table>
-</div>
-</div>]]></template>
 		<template name="misc_rules_forum" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
@@ -6366,7 +6391,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1820"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
@@ -6440,7 +6465,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					<br />
 					<div align="center">
-						<input type="submit" class="button" name="Edit Announcement" value="{$lang->edit_announcement}" />&nbsp;&nbsp;
+						<input type="submit" class="button" value="{$lang->edit_announcement}" />&nbsp;&nbsp;
 						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
@@ -6497,7 +6522,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>]]></template>
-		<template name="modcp_announcements_new" version="1820"><![CDATA[<html>
+		<template name="modcp_announcements_new" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
@@ -6570,7 +6595,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					<br />
 					<div align="center">
-						<input type="submit" class="button" name="Add Announcement" value="{$lang->add_announcement}" />&nbsp;&nbsp;
+						<input type="submit" class="button" value="{$lang->add_announcement}" />&nbsp;&nbsp;
 						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
@@ -6653,7 +6678,7 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
 		<template name="modcp_banning_remaining" version="1808"><![CDATA[<span class="{$banned_class}">({$ban_remaining})</span>]]></template>
-		<template name="modcp_banuser" version="1807"><![CDATA[<html>
+		<template name="modcp_banuser" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6707,6 +6732,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7120,7 +7146,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1816"><![CDATA[<html>
+		<template name="modcp_finduser" version="1823"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7193,6 +7219,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->find_users}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7822,7 +7849,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1816"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7909,6 +7936,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -8751,9 +8779,9 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_jump_page" version="1821"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
+		<template name="multipage_jump_page" version="1823"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
 	<form action="{$jump_url}" method="post">
-		<label for="page">{$lang->multipage_jump}:</label> <input type="text" class="textbox" name="page" value="{$page}" size="4" />
+		<label for="page">{$lang->multipage_jump}:</label> <input type="number" class="textbox" name="page" value="{$page}" size="4" min="1" max="{$pages}" />
 		<input type="submit" class="button" value="{$lang->go}" />
 	</form>
 </div>
@@ -8777,7 +8805,7 @@ if(use_xmlhttprequest == "1")
 		<template name="multipage_start" version="1600"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> {$lang->multipage_link_start}]]></template>
 		<template name="mycode_code" version="1808"><![CDATA[<div class="codeblock"><div class="title">{$lang->code}</div><div class="body" dir="ltr"><code>{$code}</code></div></div><br />]]></template>
 		<template name="mycode_email" version="1808"><![CDATA[<a href="mailto:{$email}" class="mycode_email">{$name}</a>]]></template>
-		<template name="mycode_img" version="1808"><![CDATA[<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />]]></template>
+		<template name="mycode_img" version="1823"><![CDATA[<img src="{$url}" loading="lazy" {$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />]]></template>
 		<template name="mycode_php" version="1808"><![CDATA[<div class="codeblock phpcodeblock"><div class="title">{$lang->php_code}</div><div class="body">{$code}</div></div><br />]]></template>
 		<template name="mycode_quote_post" version="1808"><![CDATA[<blockquote class="mycode_quote"><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote><br />]]></template>
 		<template name="mycode_size_int" version="1808"><![CDATA[<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>]]></template>
@@ -9519,6 +9547,55 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+		<template name="post_captcha_hcaptcha_invisible" version="1823"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaTarget = '';
+
+	var captchaOnSubmit = function(token) {
+
+		if (!captchaTarget.is('#quick_reply_submit')) {
+			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+		}
+		else {
+			captchaTarget.on('click', function(e) {
+				return Thread.quickReply(e);
+			}).trigger('click').off('click');
+			hcaptcha.remove();
+		}
+
+	};
+
+	var captchaOnloadCallback = function() {
+
+		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
+			return $(this).closest('#quick_login').length == 0
+		});
+
+		captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+		hcaptcha.render(captchaTarget.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
+	<template name="post_captcha_hcaptcha" version="1823"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
+<td class="trow1">
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
 		<template name="post_javascript" version="1823"><![CDATA[
 			<script type="text/javascript">
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
@@ -9864,7 +9941,7 @@ img { max-width: 100%; height: auto; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1813"><![CDATA[<html>
+		<template name="private_advanced_search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9953,6 +10030,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -10391,7 +10469,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1823"></script>
 </head>
 <body>
 {$header}
@@ -10480,7 +10558,7 @@ if(use_xmlhttprequest == "1")
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1818"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
+		<template name="private_send_autocomplete" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10490,7 +10568,12 @@ if(use_xmlhttprequest == "1")
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
-		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
+		maximumSelectionSize: function() {
+			if ({$mybb->usergroup['maxpmrecipients']} == 0) {
+				return 0;
+			}
+			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#bcc").select2('data').length);
+		},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10523,12 +10606,32 @@ if(use_xmlhttprequest == "1")
 				callback(newqueries);
 			}
 		}
+	})
+	.on("change", function(e) {
+		if ({$mybb->usergroup['maxpmrecipients']} == 0)
+		{
+			return;
+		}
+		if (e.val.length >= {$mybb->usergroup['maxpmrecipients']})
+		{
+			$("#bcc").select2("enable", false);
+		}
+		else
+		{
+			$("#bcc").select2("enable", true);
+		}
 	});
 
-  $("#bcc").select2({
+	$("#bcc").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
-		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
+		maximumSelectionSize: function() {
+			if ({$mybb->usergroup['maxpmrecipients']} == 0)
+			{
+				return 0;
+			}
+			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#to").select2('data').length);
+		},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10560,6 +10663,20 @@ if(use_xmlhttprequest == "1")
 				});
 				callback(newqueries);
 			}
+		}
+	})
+	.on("change", function(e) {
+		if ({$mybb->usergroup['maxpmrecipients']} == 0)
+		{
+			return;
+		}
+		if (e.val.length >= {$mybb->usergroup['maxpmrecipients']})
+		{
+			$("#to").select2("enable", false);
+		}
+		else
+		{
+			$("#to").select2("enable", true);
 		}
 	});
 }
@@ -10943,7 +11060,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1822"><![CDATA[<html>
+		<template name="search" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -11036,6 +11153,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -12212,7 +12330,7 @@ if(use_xmlhttprequest == "1")
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1821"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1823"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
@@ -13960,9 +14078,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1822"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1822"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1823"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
@@ -13970,7 +14088,7 @@ opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
 	bbcodeTrim: true,
-	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1821",
+	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	width: "100%",
@@ -14040,11 +14158,11 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1820"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1823"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1823"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1821"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1821"></script>
 
@@ -14134,7 +14252,7 @@ $(function() {
 </div>
 </body>
 </html>]]></template>
-		<template name="sendthread" version="1800"><![CDATA[<html>
+		<template name="sendthread" version="1823"><![CDATA[<html>
 <head>
 <title>{$threadprefix['prefix']} {$thread['subject']} - {$lang->send_thread}</title>
 {$headerinclude}
@@ -14166,7 +14284,7 @@ $(function() {
 <br />
 <input type="hidden" name="action" value="do_sendtofriend" />
 <input type="hidden" name="tid" value="{$tid}" />
-<div align="center"><input type="submit" class="button" value="{$lang->send_thread}" /></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->send_thread}" /></div>
 </form>
 {$footer}
 </body>

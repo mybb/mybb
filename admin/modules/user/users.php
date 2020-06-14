@@ -930,7 +930,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1823"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -1996,8 +1996,16 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
 
 			// Carry over referrals
-			$db->update_query("users", array("referrer" => ((int)$source_user['referrer'] + (int)$destination_user['referrer'])), "uid='{$destination_user['uid']}'");
-			$db->update_query("users", array("referrals" => ((int)$source_user['referrals'] + (int)$destination_user['referrals'])), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array("referrer" => $destination_user['uid']), "referrer='{$source_user['uid']}' AND uid!='{$destination_user['uid']}'");
+			// If destination user has no referrer but source does and source user was not referred by destination user
+			// or destination user was referred by the source user
+			if(($destination_user['referrer'] == 0 && $source_user['referrer'] > 0 && $source_user['referrer'] != $destination_user['uid']) || $destination_user['referrer'] == $source_user['uid'])
+			{
+				$db->update_query("users", array("referrer" => $source_user['referrer']), "uid='{$destination_user['uid']}'");
+			}
+			$query = $db->simple_select("users", "COUNT(uid) as total_referrals", "referrer='{$destination_user['uid']}' AND uid!='{$source_user['uid']}'");
+			$new_referrals = $db->fetch_field($query, "total_referrals");
+			$db->update_query("users", array("referrals" => (int)$new_referrals), "uid='{$destination_user['uid']}'");
 
 			// Merging Reputation
 			// First, let's change all the details over to our new user...
@@ -3901,8 +3909,13 @@ function build_user_view_card($user, $view, &$i)
 	}
 
 	// And build the final card
+	$uname = "";
+	if(in_array('username', $view['fields']))
+	{
+		$uname = $user['view']['username'];
+	}
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
+	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$uname}</legend>\n";
 	if($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
@@ -3971,7 +3984,7 @@ function build_user_view_table($user, $view, &$table)
  */
 function output_custom_profile_fields($fields, $values, &$form_container, &$form, $search=false)
 {
-	global $lang;
+	global $lang, $mybb;
 
 	if(!is_array($fields))
 	{
