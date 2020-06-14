@@ -312,7 +312,7 @@ class captcha
 				}
 			}
 		}
-		elseif(in_array($this->type, array(8)))
+		elseif($this->type == 8)
 		{
 			$response = $mybb->input['g-recaptcha-response'];
 			if(!$response || strlen($response) == 0)
@@ -330,7 +330,7 @@ class captcha
 					'response' => $response
 				));
 
-				if($response == false)
+				if($response === false)
 				{
 					$this->set_error($lang->invalid_nocaptcha_transmit);
 				}
@@ -338,7 +338,7 @@ class captcha
 				{
 					$answer = json_decode($response, true);
 
-					if($answer['success'] != 'true' || $answer[‘score’] < $mybb->settings['recaptchascore'])
+					if($answer['success'] != 'true' || $answer['score'] < $mybb->settings['recaptchascore'])
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_nocaptcha);
