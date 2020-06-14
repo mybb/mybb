@@ -14,9 +14,9 @@
                     </div>
                     <div class="uploaded-attachment__buttons">
                         {% if attachment.showmodapproval %}
-                            <input type="submit" class="button button--danger" name="unapproveattach" value="{{ lang.unapprove_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'unapprove');" />
+                            <input type="submit" class="button button--danger" name="unapproveattach_{{ attachment.aid }}" value="{{ lang.unapprove_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'unapprove');" />
                         {% endif %}
-                        <button type="submit" class="button button--secondary" name="rem" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
+                        <button type="submit" class="button button--secondary" name="rem_{{ attachment.aid }}" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
                             {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.remove_attachment }}</span>
                         </button>
@@ -37,8 +37,8 @@
                     </div>
                     <div class="uploaded-attachment__buttons">
                         {% if attachment.showmodapproval %}
-                            <input type="submit" class="button button--success" name="approveattach" value="{{ lang.approve_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'approve');" />
-                            <button type="submit" class="button button--secondary" name="rem" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
+                            <input type="submit" class="button button--success" name="approveattach_{{ attachment.aid }}" value="{{ lang.approve_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'approve');" />
+                            <button type="submit" class="button button--secondary" name="rem" value="rem_{{ attachment.aid }}" onclick="return Post.removeAttachment({{ attachment.aid }});">
                                 {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.remove_attachment }}</span>
                             </button>

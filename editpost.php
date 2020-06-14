@@ -195,8 +195,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 	error($lang->error_cannot_upload_php_post);
 }
 
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid',
-		MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_editpost" && isset($mybb->input['submitbutton'])) || ($mybb->input['action'] == "editpost" && isset($mybb->input['previewpost']))) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -220,14 +219,16 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$mybb->input['action'] = "editpost";
 	}
 
-	if(!isset($mybb->input['submit']))
+	// If we were dealing with an attachment but didn't click 'Update Post', force the post edit page again.
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
 }
 
-if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid',
-		MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
+detect_attachmentact();
+
+if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -257,7 +258,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		exit();
 	}
 
-	if(!isset($mybb->input['submit']))
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
