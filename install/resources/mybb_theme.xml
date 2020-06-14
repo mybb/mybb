@@ -3645,11 +3645,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <li>{$lang->error_nopermission_guest_3}</li>
 <li>{$lang->error_nopermission_guest_4}</li>
 <li>{$lang->error_nopermission_guest_5}</li>
-</ol>
-<form action="member.php" method="post">
-<div align="center"><input type="submit" class="button" value="{$lang->login}" tabindex="3" /></div>
-</form>
-<br />]]></template>
+</ol>]]></template>
 		<template name="error_nopermission_loggedin" version="1600"><![CDATA[{$lang->error_nopermission_user_1}
 <ol>
 	<li>{$lang->error_nopermission_user_2}</li>
