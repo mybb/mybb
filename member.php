@@ -811,59 +811,6 @@ if($mybb->input['action'] == "register")
 			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
 		}
 
-		$validator_javascript = "<script type=\"text/javascript\">
-$(function() {
-	$('#registration_form').validate({
-		rules: {
-			username: {
-				required: true,
-				minlength: {$mybb->settings['minnamelength']},
-				maxlength: {$mybb->settings['maxnamelength']},
-				remote: {
-					url: 'xmlhttp.php?action=username_availability',
-					type: 'post',
-					dataType: 'json',
-					data:
-					{
-						my_post_key: my_post_key
-					},
-				},
-			},
-			email: {
-				required: true,
-				email: true,
-				remote: {
-					url: 'xmlhttp.php?action=email_availability',
-					type: 'post',
-					dataType: 'json',
-					data:
-					{
-						my_post_key: my_post_key
-					},
-				},
-			},
-			email2: {
-				required: true,
-				email: true,
-				equalTo: '#email'
-			},
-		},
-		messages: {
-			username: {
-				minlength: '{$lang->js_validator_username_length}',
-				maxlength: '{$lang->js_validator_username_length}',
-			},
-			email: '{$lang->js_validator_invalid_email}',
-			email2: '{$lang->js_validator_email_match}',
-		},
-		errorPlacement: function(error, element) {
-			if(element.is(':checkbox') || element.is(':radio'))
-				error.insertAfter($('input[name=\"' + element.attr('name') + '\"]').last().next('span'));
-			else
-				error.insertAfter(element);
-		}
-	});\n";
-
 		if(isset($mybb->input['timezoneoffset']))
 		{
 			$timezoneoffset = $mybb->get_input('timezoneoffset');
@@ -923,6 +870,7 @@ $(function() {
 
 		if(is_array($pfcache))
 		{
+			$jsvar_reqfields = array();
 			foreach($pfcache as $profilefield)
 			{
 				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
@@ -1094,30 +1042,10 @@ $(function() {
 					// JS validator extra, choose correct selectors for everything except single select which always has value
 					if($type != 'select')
 					{
-						if($type == "textarea")
-						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$profilefield['field']}]\"]')";
-						}
-						elseif($type == "multiselect")
-						{
-							$inp_selector = "$('select[name=\"profile_fields[{$profilefield['field']}][]\"]')";
-						}
-						elseif($type == "checkbox")
-						{
-							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}][]\"]')";
-						}
-						else
-						{
-							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}]\"]')";
-						}
-
-						$validator_javascript .= "
-	{$inp_selector}.rules('add', {
-		required: true,
-		messages: {
-			required: '{$lang->js_validator_not_empty}'
-		}
-	});\n";
+						$jsvar_reqfields[] = array(
+							'type' => $type,
+							'fid' => $field,
+						);
 					}
 
 					$requiredfields[] = $profilefield;
@@ -1167,6 +1095,7 @@ $(function() {
 		}
 
 		// Spambot registration image thingy
+		$captcha_html = 0;
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -1174,36 +1103,14 @@ $(function() {
 
 			if($captcha->html)
 			{
+				$captcha_html = 1;
 				$registration['regimage'] = $captcha->html;
-
-				if($mybb->settings['captchaimage'] == 1)
-				{
-					// JS validator extra for our default CAPTCHA
-					$validator_javascript .= "
-	$('#imagestring').rules('add', {
-		required: true,
-		remote:{
-			url: 'xmlhttp.php?action=validate_captcha',
-			type: 'post',
-			dataType: 'json',
-			data:
-			{
-				imagehash: function () {
-					return $('#imagehash').val();
-				},
-				my_post_key: my_post_key
-			},
-		},
-		messages: {
-			remote: '{$lang->js_validator_no_image_text}'
-		}
-	});\n";
-				}
 			}
 		}
 
 		// Security Question
 		$registration['showquestion'] = false;
+		$question_exists = 0;
 		if($mybb->settings['securityquestion'])
 		{
 			$registration['questionsid'] = generate_question();
@@ -1216,6 +1123,7 @@ $(function() {
 			if($db->num_rows($query) > 0)
 			{
 				$registration['showquestion'] = true;
+				$question_exists = 1;
 				$question = $db->fetch_array($query);
 
 				//Set parser options for security question
@@ -1243,25 +1151,6 @@ $(function() {
 					$registration['questionrefresh'] = true;
 				}
 
-				$validator_javascript .= "
-	$('#answer').rules('add', {
-		required: true,
-		remote:{
-			url: 'xmlhttp.php?action=validate_question',
-			type: 'post',
-			dataType: 'json',
-			data:
-			{
-				question: function () {
-					return $('#question_id').val();
-				},
-				my_post_key: my_post_key
-			},
-		},
-		messages: {
-			remote: '{$lang->js_validator_no_security_question}'
-		}
-	});\n";
 			}
 		}
 
@@ -1272,69 +1161,11 @@ $(function() {
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
 
-			$validator_javascript .= "
-	$.validator.addMethod('passwordSecurity', function(value, element, param) {
-		return !(
-				($('#email').val() != '' && value == $('#email').val()) ||
-				($('#username').val() != '' && value == $('#username').val()) ||
-				($('#email').val() != '' && value.indexOf($('#email').val()) > -1) ||
-				($('#username').val() != '' && value.indexOf($('#username').val()) > -1) ||
-				($('#email').val() != '' && $('#email').val().indexOf(value) > -1) ||
-				($('#username').val() != '' && $('#username').val().indexOf(value) > -1)
-		);
-	}, '{$lang->js_validator_bad_password_security}');\n";
-
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-
-				$validator_javascript .= "
-	$('#password').rules('add', {
-		required: true,
-		minlength: {$mybb->settings['minpasswordlength']},
-		remote:{
-			url: 'xmlhttp.php?action=complex_password',
-			type: 'post',
-			dataType: 'json',
-			data:
-			{
-				my_post_key: my_post_key
-			},
-		},
-		passwordSecurity: '',
-		messages: {
-			minlength: '{$lang->js_validator_password_length}',
-			required: '{$lang->js_validator_password_length}',
-			remote: '{$lang->js_validator_no_image_text}'
-		}
-	});\n";
 			}
-			else
-			{
-				$validator_javascript .= "
-	$('#password').rules('add', {
-		required: true,
-		minlength: {$mybb->settings['minpasswordlength']},
-        passwordSecurity: '',
-		messages: {
-			minlength: '{$lang->js_validator_password_length}',
-			required: '{$lang->js_validator_password_length}'
-		}
-	});\n";
-			}
-
-			$validator_javascript .= "
-	$('#password2').rules('add', {
-		required: true,
-		minlength: {$mybb->settings['minpasswordlength']},
-		equalTo: '#password',
-		messages: {
-			minlength: '{$lang->js_validator_password_length}',
-			required: '{$lang->js_validator_password_length}',
-			equalTo: '{$lang->js_validator_password_matches}'
-		}
-	});\n";
 		}
 
 		$registration['showlanguages'] = false;
@@ -1363,9 +1194,33 @@ $(function() {
 
 		$plugins->run_hooks("member_register_end");
 
-		$validator_javascript .= "
-});
-</script>\n";
+		$jsvar_reqfields = json_encode($jsvar_reqfields);
+
+		$validator_javascript = "<script type=\"text/javascript\">
+			var regsettings = {
+				requiredfields: '{$jsvar_reqfields}',
+				minnamelength: '{$mybb->settings['minnamelength']}',
+				maxnamelength: '{$mybb->settings['maxnamelength']}',
+				minpasswordlength: '{$mybb->settings['minpasswordlength']}',
+				captchaimage: '{$mybb->settings['captchaimage']}',
+				captchahtml: '{$captcha_html}',
+				securityquestion: '{$mybb->settings['securityquestion']}',
+				questionexists: '{$question_exists}',
+				requirecomplexpasswords: '{$mybb->settings['requirecomplexpasswords']}',
+				regtype: '{$mybb->settings['regtype']}',
+				hiddencaptchaimage: '{$mybb->settings['hiddencaptchaimage']}'
+			};
+
+			lang.js_validator_username_length = '{$lang->js_validator_username_length}';
+			lang.js_validator_invalid_email = '{$lang->js_validator_invalid_email}';
+			lang.js_validator_email_match = '{$lang->js_validator_email_match}';
+			lang.js_validator_not_empty = '{$lang->js_validator_not_empty}';
+			lang.js_validator_password_length = '{$lang->js_validator_password_length}';
+			lang.js_validator_password_matches = '{$lang->js_validator_password_matches}';
+			lang.js_validator_no_image_text = '{$lang->js_validator_no_image_text}';
+			lang.js_validator_no_security_question = '{$lang->js_validator_no_security_question}';
+			lang.js_validator_bad_password_security = '{$lang->js_validator_bad_password_security}';
+		</script>\n";
 
 		output_page(\MyBB\template('member/register.twig', [
 			'regerrors' => $regerrors,
