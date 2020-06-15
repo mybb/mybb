@@ -5107,7 +5107,7 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</div>
 </div>]]></template>
-		<template name="member_register" version="1821"><![CDATA[<html>
+		<template name="member_register" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
