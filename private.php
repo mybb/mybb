@@ -1694,16 +1694,16 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$mybb->input['fid'] = 1;
 			}
 
-			foreach($mybb->input['check'] as $key => $val)
+			if(array_key_exists($mybb->input['fid'], $foldernames))
 			{
-				$sql_array = array(
-					"folder" => $mybb->input['fid']
-				);
-				$db->update_query("privatemessages", $sql_array, "pmid='".(int)$key."' AND uid='".$mybb->user['uid']."'");
+				$db->update_query("privatemessages", array("folder" => $mybb->input['fid']), "pmid IN (".implode(",", array_keys($mybb->input['check'])).") AND uid='".$mybb->user['uid']."'");
+				update_pm_count();
+			}
+			else
+			{
+				error($lang->error_invalidmovefid);
 			}
 		}
-		// Update PM count
-		update_pm_count();
 
 		if(!empty($mybb->input['fromfid']))
 		{
