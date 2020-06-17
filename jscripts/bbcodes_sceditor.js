@@ -83,26 +83,40 @@ $(function ($) {
 
 				return '<' + type + '>' + content + '</' + type + '>';
 			},
-
-			breakAfter: false
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ul', {
-			format: '[list]{0}[/list]'
+			format: '[list]{0}[/list]',
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ol', {
 			format: function ($elm, content) {
 				var type = ($($elm).attr('type') === 'a' ? 'a' : '1');
 
 				return '[list=' + type + ']' + content + '[/list]';
-			}
+			},
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('li', {
 			format: '[*]{0}',
-			excludeClosing: true
+			isInline: false,
+			skipLastLineBreak: true,
 		})
 		.set('*', {
+			html: '<li>{0}</li>',
+			isInline: false,
 			excludeClosing: true,
-			isInline: true
+			skipLastLineBreak: true,
+			breakAfter: false,
 		});
 
 	$.sceditor.command
