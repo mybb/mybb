@@ -4,41 +4,5 @@
         <p class="alert__message">{{ trans('error_nopermission_user_username', mybb.user.username) }}</p>
     </div>
 {% else %}
-
-    <form action="member.php" method="post">
-        <section class="block block--form form">
-            <div class="section section--form">
-                <h1 class="title title--section">{{ lang.login }}</h1>
-                <div class="section__container">
-                    <div class="row row--form field">
-                        <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
-                        <input type="text" class="textbox" name="username" id="username" value="{{ login.username }}" tabindex="1" required autofocus>
-                    </div>
-                    <div class="row row--form field">
-                        <h3 class="field__name"><label for="password">{{ lang.password }}</label></h3>
-                        <p class="field__description"><a href="member.php?action=lostpw">{{ lang.forgot_password }}</a></p>
-                        <input type="password" class="textbox" name="password" id="password" value="{{ login.password }}" tabindex="2" required>
-                    </div>
-                    <div class="row row--form field">
-                        <p class="option-field option-field--compact">
-                            <label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label>
-                        </p>
-                    </div>
-                </div>
-                {{ captcha|raw }}
-            </div>
-            <div class="form__submit">
-                <button type="submit" class="button button--big">
-                    {{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.login }}</span>
-                </button>
-                <a href="member.php?action=register" class="button button--basic">
-                    {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.need_reg }}</span>
-                </a>
-            </div>
-        </section>
-        <input type="hidden" name="action" value="do_login" />
-        <input type="hidden" name="url" value="{{ redirect_url }}" />
-    </form>
+    {{ lang.error_nopermission_guest_2 }} <a href="member.php?action=login">{{ lang.login }}</a> | <a href="member.php?action=register">{{ lang.need_reg }}</a>
 {% endif %}
