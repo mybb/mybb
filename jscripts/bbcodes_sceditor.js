@@ -530,16 +530,44 @@ $(function ($) {
 
 			var url = $(element).attr('src'),
 				width = $(element).attr('width'),
-				height = $(element).attr('height')
-			;
+				height = $(element).attr('height'),
+				align = $(element).data('scealign');
 
-			var attrs = width && height
+			var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
 				? '=' + width + 'x' + height
 				: ''
 			;
 
+			if (align === 'left' || align === 'right')
+				attrs += ' align='+align
+
 			return '[img' + attrs + ']' + url + '[/img]';
 		},
+		html: function (token, attrs, content) {
+			var	width, height, match,
+				align = attrs.align,
+				attribs = '';
+
+			// handle [img=340x240]url[/img]
+			if (attrs.defaultattr) {
+				match = attrs.defaultattr.split(/x/i);
+
+				width  = match[0];
+				height = (match.length === 2 ? match[1] : match[0]);
+
+				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
+					attribs +=
+						' width="' + $.sceditor.escapeEntities(width, true) + '"' +
+						' height="' + $.sceditor.escapeEntities(height, true) + '"';
+				}
+			}
+
+			if (align === 'left' || align === 'right')
+				attribs += ' style="float: ' + align + '" data-scealign="' + align + '"';
+
+			return '<img' + attribs +
+				' src="' + $.sceditor.escapeUriScheme(content) + '" />';
+		}
 	})
 
 	$.sceditor.command.set('image', {
@@ -572,7 +600,7 @@ $(function ($) {
 					height = $content.find('#height').val()
 				;
 
-				var attrs = width && height
+				var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
 					? '=' + width + 'x' + height
 					: ''
 				;
