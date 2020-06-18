@@ -737,9 +737,9 @@ $(function() {
 
 		$hidefields = array();
 			if($usergroup['gid'] == 1)
-				{
-					$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletionnotice');
-				}
+			{
+				$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletionnotice');
+			}
 		
 		$groups = $plugins->run_hooks("admin_forum_management_permission_groups", $groups);
 
@@ -768,7 +768,7 @@ $(function() {
 		$fields_array = $db->show_fields_from("forumpermissions");
 		foreach($fields_array as $field)
 		{
-			if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
+			if(!in_array($field['Field'], $hidefields) && (strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false))
 			{
 				if(array_key_exists($field['Field'], $groups))
 				{
