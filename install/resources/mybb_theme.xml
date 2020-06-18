@@ -3639,38 +3639,13 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </div>
 <br />]]></template>
 		<template name="error_inline_item" version="1818"><![CDATA[<li>{$error}</li>]]></template>
-		<template name="error_nopermission" version="1818"><![CDATA[{$lang->error_nopermission_guest_1}
+		<template name="error_nopermission" version="1823"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
-<li>{$lang->error_nopermission_guest_2}</li>
+<li>{$lang->error_nopermission_guest_2} <a href="member.php?action=login">{$lang->login}</a> | <a href="member.php?action=register">{$lang->need_reg}</a></li>
 <li>{$lang->error_nopermission_guest_3}</li>
 <li>{$lang->error_nopermission_guest_4}</li>
 <li>{$lang->error_nopermission_guest_5}</li>
-</ol>
-<form action="member.php" method="post">
-<input type="hidden" name="action" value="do_login" />
-<input type="hidden" name="url" value="{$redirect_url}" />
-<input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><span class="smalltext"><strong>{$lang->login}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang_username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->password}</strong></td>
-<td class="trow2"><input type="password" class="textbox" name="password" tabindex="2" /></td>
-</tr>
-<tr>
-<td class="trow1" colspan="2" align="center"><label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {$lang->remember_me}</label></td>
-</tr>
-<tr>
-<td class="trow2" colspan="2"><span class="smalltext float_right" style="padding-top: 3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}" tabindex="3" /></td>
-</tr>
-</table>
-</form>
-<br />]]></template>
+</ol>]]></template>
 		<template name="error_nopermission_loggedin" version="1600"><![CDATA[{$lang->error_nopermission_user_1}
 <ol>
 	<li>{$lang->error_nopermission_user_2}</li>
