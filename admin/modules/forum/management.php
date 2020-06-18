@@ -735,7 +735,18 @@ $(function() {
 			'cansearch' => 'misc',
 		);
 
+		$hidefields = array();
+			if($usergroup['gid'] == 1)
+				{
+					$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletionnotice');
+				}
+		
 		$groups = $plugins->run_hooks("admin_forum_management_permission_groups", $groups);
+
+		foreach($hidefields as $field)
+		{
+			unset($groups[$field]);
+		}
 
 		$tabs = array();
 		foreach(array_unique(array_values($groups)) as $group)
