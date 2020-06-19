@@ -560,7 +560,9 @@ $(function ($) {
 				'<label for="height">' + editor._('Height (optional)') + ':</label> ' +
 				'<input type="text" id="height" size="2" />' +
 				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
+				'<div>' +
+				'<input type="button" class="button" value="' + editor._('Insert') + '" />' +
+				'</div>' +
 				'</div>'
 			);
 
