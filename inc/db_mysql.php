@@ -191,7 +191,7 @@ class DB_MySQL implements DB_Base
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 

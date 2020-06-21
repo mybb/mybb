@@ -1996,8 +1996,16 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
 
 			// Carry over referrals
-			$db->update_query("users", array("referrer" => ((int)$source_user['referrer'] + (int)$destination_user['referrer'])), "uid='{$destination_user['uid']}'");
-			$db->update_query("users", array("referrals" => ((int)$source_user['referrals'] + (int)$destination_user['referrals'])), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array("referrer" => $destination_user['uid']), "referrer='{$source_user['uid']}' AND uid!='{$destination_user['uid']}'");
+			// If destination user has no referrer but source does and source user was not referred by destination user
+			// or destination user was referred by the source user
+			if(($destination_user['referrer'] == 0 && $source_user['referrer'] > 0 && $source_user['referrer'] != $destination_user['uid']) || $destination_user['referrer'] == $source_user['uid'])
+			{
+				$db->update_query("users", array("referrer" => $source_user['referrer']), "uid='{$destination_user['uid']}'");
+			}
+			$query = $db->simple_select("users", "COUNT(uid) as total_referrals", "referrer='{$destination_user['uid']}' AND uid!='{$source_user['uid']}'");
+			$new_referrals = $db->fetch_field($query, "total_referrals");
+			$db->update_query("users", array("referrals" => (int)$new_referrals), "uid='{$destination_user['uid']}'");
 
 			// Merging Reputation
 			// First, let's change all the details over to our new user...

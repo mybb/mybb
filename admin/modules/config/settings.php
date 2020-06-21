@@ -961,6 +961,8 @@ if($mybb->input['action'] == "change")
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
 		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
 		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
+		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(8)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey'] || !$mybb->input['upsetting']['recaptchascore']))
+		   || (in_array($mybb->settings['captchaimage'], array(8)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey'] || !$mybb->settings['recaptchascore']))
 		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
 		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
 		{
@@ -1861,7 +1863,7 @@ function print_setting_peekers()
 	$peekers = array(
 		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errortypemedium, #row_setting_errorloglocation"), 1, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
 		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
 		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
@@ -1876,8 +1878,8 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchascore"), /(8)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
@@ -1899,7 +1901,6 @@ function print_setting_peekers()
 		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
 		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
 		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
-		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
