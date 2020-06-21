@@ -1881,7 +1881,7 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif(in_array($login_captcha->type, array(2, 4, 5)))
+		elseif(in_array($login_captcha->type, array(4, 5, 8)))
 		{
 			$login_captcha->build_recaptcha();
 		}

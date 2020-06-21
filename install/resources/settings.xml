@@ -167,7 +167,8 @@
 4=NoCAPTCHA reCAPTCHA
 5=reCAPTCHA invisible
 6=hCaptcha
-7=hCaptcha invisible]]></optionscode>
+7=hCaptcha invisible
+8=reCAPTCHA v3]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -187,10 +188,21 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="recaptchascore">
+			<title><![CDATA[reCAPTCHA v3 Score]]></title>
+			<description><![CDATA[Set the user rejection score for reCAPTCHA v3. 1.0 is very likely a genuine user, 0.0 is very likely a bot]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[numeric
+min=0
+max=1
+step=0.01]]></optionscode>
+			<settingvalue><![CDATA[0.5]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="hcaptchapublickey">
 			<title><![CDATA[hCaptcha Public Key]]></title>
 			<description><![CDATA[Your hCaptcha public key.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -198,7 +210,7 @@
 		<setting name="hcaptchaprivatekey">
 			<title><![CDATA[hCaptcha Private Key]]></title>
 			<description><![CDATA[Your hCaptcha private key.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -206,7 +218,7 @@
 		<setting name="hcaptchatheme">
 			<title><![CDATA[hCaptcha Theme]]></title>
 			<description><![CDATA[Set the color of the hCaptcha Widget.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[select
 light=Light
 dark=Dark]]></optionscode>
@@ -216,7 +228,7 @@ dark=Dark]]></optionscode>
 		<setting name="hcaptchasize">
 			<title><![CDATA[hCaptcha Size]]></title>
 			<description><![CDATA[Set the size of the hCaptcha Widget.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[select
 normal=Normal
 compact=Compact]]></optionscode>
@@ -226,7 +238,7 @@ compact=Compact]]></optionscode>
 		<setting name="reportmethod">
 			<title>Reported Content Notification Method</title>
 			<description><![CDATA[Please select from the list how you would like moderators to be notified when content is reported. Note: Moderators are only notified for posts in forums they moderate or all content if they are a super moderator.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[radio
 db=Shown in the Mod CP only
 pms=Sent as Private Messages and shown in the Mod CP
@@ -237,7 +249,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -245,7 +257,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
 			<description><![CDATA[The punctuation you want to use. For example, a setting of ',' with the number 1200 will give you 1,200.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -253,7 +265,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
 			<description><![CDATA[Set to No if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -261,7 +273,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 		<setting name="showthemeselect">
 			<title>Show Theme Selector in Footer</title>
 			<description><![CDATA[Set to No if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -269,7 +281,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results. Set to 0 to disable the limitation.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
@@ -278,7 +290,7 @@ min=0]]></optionscode>
 		<setting name="jumptopagemultipage">
 			<title>Show Jump To Page form in Pagination</title>
 			<description><![CDATA[Do you want to show a "jump to page" form in pagination if number of pages exceeds "Maximum Page Links in Pagination"?]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -286,7 +298,7 @@ min=0]]></optionscode>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to Yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -294,7 +306,7 @@ min=0]]></optionscode>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
@@ -303,7 +315,7 @@ min=0]]></optionscode>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -311,7 +323,7 @@ min=0]]></optionscode>
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
