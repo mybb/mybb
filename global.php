@@ -57,7 +57,7 @@ $mybb->post_code = generate_post_check();
 // Set and load the language
 if(isset($mybb->input['language']) && $lang->language_exists($mybb->get_input('language')) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
-	$mybb->settings['bblanguage'] = $mybb->get_input('language');
+	$mybb->user['language'] = $mybb->settings['bblanguage'] = $mybb->get_input('language');
 	// If user is logged in, update their language selection with the new one
 	if($mybb->user['uid'])
 	{
@@ -73,22 +73,13 @@ if(isset($mybb->input['language']) && $lang->language_exists($mybb->get_input('l
 	{
 		my_setcookie('mybblang', $mybb->settings['bblanguage']);
 	}
-	$mybb->user['language'] = $mybb->settings['bblanguage'];
-}
-// Cookied language!
-else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybblang']) && $lang->language_exists($mybb->cookies['mybblang']))
-{
-	$mybb->settings['bblanguage'] = $mybb->cookies['mybblang'];
-}
-else if(!isset($mybb->settings['bblanguage']))
-{
-	$mybb->settings['bblanguage'] = 'english';
 }
 
 // Load language
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load('global');
 $lang->load('messages');
+$langcache[$lang->language] = $lang;
 
 // Wipe lockout cookie if enough time has passed
 if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)

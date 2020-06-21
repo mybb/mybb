@@ -22,6 +22,7 @@ require_once dirname(__FILE__)."/inc/init.php";
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
+$langcache[$lang->language] = $lang;
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {

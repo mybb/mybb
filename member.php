@@ -382,6 +382,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
+		$userlang = $lang->get_alternative($user['language']);
+		$userlang->load('member');
+
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'])
 		{
@@ -413,20 +416,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"type" => "r"
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+			$emailsubject = $userlang->sprintf($userlang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			switch($mybb->settings['username_method'])
 			{
 				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
@@ -439,20 +442,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "randompass")
 		{
-			$emailsubject = $lang->sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
+			$emailsubject = $userlang->sprintf($userlang->emailsubject_randompassword, $mybb->settings['bbname']);
 			switch($mybb->settings['username_method'])
 			{
 				case 0:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
+					$emailmessage = $userlang->sprintf($userlang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				case 1:
-					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
+					$emailmessage = $userlang->sprintf($userlang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				case 2:
-					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
+					$emailmessage = $userlang->sprintf($userlang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				default:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
+					$emailmessage = $userlang->sprintf($userlang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
@@ -523,23 +526,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					}
 
 					// Load language
-					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
+					$adminlang = $lang->get_alternative($recipient['language']);
+					$adminlang->load('member');
 
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
+					$subject = $adminlang->sprintf($adminlang->newregistration_subject, $mybb->settings['bbname']);
+					$message = $adminlang->sprintf($adminlang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
 					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->settings['bblanguage']);
-					$lang->load("member");
 				}
 			}
 
@@ -611,23 +603,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					}
 
 					// Load language
-					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
+					$adminlang = $lang->get_alternative($recipient['language']);
+					$adminlang->load('member');
 
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
+					$subject = $adminlang->sprintf($adminlang->newregistration_subject, $mybb->settings['bbname']);
+					$message = $adminlang->sprintf($adminlang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
 					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->settings['bblanguage']);
-					$lang->load("member");
 				}
 			}
 
@@ -639,20 +620,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"type" => "b"
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+			$emailsubject = $userlang->sprintf($userlang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			switch($mybb->settings['username_method'])
 			{
 				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					$emailmessage = $userlang->sprintf($userlang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 					break;
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);

@@ -49,17 +49,10 @@ header("Pragma: no-cache");
 require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
+$mybb->session = &$session;
 
-// Load the language we'll be using
-if(!isset($mybb->settings['bblanguage']))
-{
-	$mybb->settings['bblanguage'] = "english";
-}
-if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
-{
-	$mybb->settings['bblanguage'] = $mybb->user['language'];
-}
 $lang->set_language($mybb->settings['bblanguage']);
+$langcache[$lang->language] = $lang;
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {

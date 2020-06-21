@@ -239,4 +239,51 @@ class MyLanguage
 	{
 		return $this->{$matches[1]};
 	}
+
+	/**
+	 * Get a language object for an alternative language to the current one.
+	 * 
+	 * @param string $language The desired language name.
+	 * @return \MyLanguage The resolved language object.
+	 */
+	function get_alternative($language='')
+	{
+		global $mybb, $langcache;
+		
+		$language = trim($language);
+
+		if($language == $this->language)
+		{
+			return $this;
+		}
+
+		if(!empty($language) && $this->language_exists($language))
+		{
+			$uselang = $language;
+		}
+		elseif(!empty($mybb->settings['orig_bblanguage']) && $this->language_exists($mybb->settings['orig_bblanguage']))
+		{
+			$uselang = $mybb->settings['orig_bblanguage'];
+		}
+		else
+		{
+			$uselang = 'english';
+		}
+
+		$templang = $this;
+		if($uselang != $this->language)
+		{
+			if(empty($langcache[$uselang]))
+			{
+				$langcache[$uselang] = new MyLanguage();
+				$langcache[$uselang]->set_path(MYBB_ROOT.'inc/languages');
+				$langcache[$uselang]->set_language($uselang);
+				$langcache[$uselang]->load('global');
+				$langcache[$uselang]->load('messages');
+			}
+			$templang = $langcache[$uselang];
+		}
+
+		return $templang;
+	}
 }
