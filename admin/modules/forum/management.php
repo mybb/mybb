@@ -866,6 +866,9 @@ if($mybb->input['action'] == "add")
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
+
+			$plugins->run_hooks("admin_forum_management_add_start");
+
 			$fid = $db->insert_query("forums", $insert_array);
 
 			$parentlist = make_parent_list($fid);
