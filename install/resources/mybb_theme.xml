@@ -14063,7 +14063,7 @@ var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
-	bbcodeTrim: true,
+	bbcodeTrim: false,
 	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
