@@ -582,8 +582,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 	$deletebox = '';
-	// Can we delete posts?
-	if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
+	if($post['visible'] != -1 && (($thread['firstpost'] == $pid && (is_moderator($fid, "candeletethreads") || $forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid'])) || ($thread['firstpost'] != $pid && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))))
 	{
 		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
 	}
