@@ -970,6 +970,19 @@ if($mybb->input['action'] == "change")
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
 
+		// If using fulltext then enforce minimum word length given by database
+		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
+		{
+			// Attempt to determine minimum word length from MySQL for fulltext searches
+			$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
+			$min_length = $db->fetch_field($query, 'Value');
+			if(is_numeric($min_length) && $mybb->input['upsetting']['minsearchword'] < $min_length)
+			{
+				$mybb->input['upsetting']['minsearchword'] = $min_length;
+				$lang->success_settings_updated .= $lang->success_settings_updated_minsearchword;
+			}
+		}
+
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
 		// We cannot rely on user input to decide this
 		$checkbox_settings = $forum_group_select = $prefix_select = array();

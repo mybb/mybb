@@ -99,6 +99,7 @@ $l['success_settings_updated_hiddencaptchaimage'] = '<div class="smalltext" styl
 $l['success_settings_updated_username_method'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allowed Login Methods</b> setting was not updated due to multiple users using the same e-mail address at this time.</div>';
 $l['success_settings_updated_allowmultipleemails'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allow emails to be registered multiple times?</b> setting can\'t be enabled because the <b>Allowed Login Methods</b> setting allows users to login by e-mail address.</div>';
 $l['success_settings_updated_captchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>CAPTCHA Images for Registration &amp; Posting</strong> setting was reverted to <strong>MyBB Default Captcha</strong> due to the lack of public/private key(s).</div>';
+$l['success_settings_updated_minsearchword'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Minimum Search Word Length</strong> setting was set to match the database system configuration.</div>';
 $l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
 $l['success_setting_group_added'] = "The setting group has been created successfully.";
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";
