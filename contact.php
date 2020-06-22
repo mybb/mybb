@@ -247,7 +247,7 @@ if($mybb->request_method == "post")
 		}
 
 		$mybb->input['from'] = $mybb->get_input('from');
-		if(isset($mybb->input['from']) && !empty($mybb->input['from']))
+		if(!empty($mybb->input['from']))
 		{
 			redirect($mybb->input['from'], $lang->contact_success_message, '', true);
 		}
