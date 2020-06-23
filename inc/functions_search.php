@@ -283,7 +283,7 @@ function get_password_protected_forums($fids=array())
  */
 function clean_keywords($keywords)
 {
-	global $db;
+	global $db, $lang;
 
 	$keywords = my_strtolower($keywords);
 	$keywords = $db->escape_string_like($keywords);
@@ -297,11 +297,18 @@ function clean_keywords($keywords)
 	if(my_strpos($keywords, "or") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 2);
+		$keywords = " ".$keywords;
 	}
 
 	if(my_strpos($keywords, "and") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 3);
+		$keywords = " ".$keywords;
+	}
+
+	if(!$keywords)
+	{
+		error($lang->error_nosearchterms);
 	}
 
 	return $keywords;
