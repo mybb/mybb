@@ -1381,15 +1381,7 @@ function perform_search_mysql_ft($search)
 
 	$keywords = clean_keywords_ft($search['keywords']);
 
-	// Attempt to determine minimum word length from MySQL for fulltext searches
-	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
-	$min_length = $db->fetch_field($query, 'Value');
-	if(is_numeric($min_length))
-	{
-		$mybb->settings['minsearchword'] = $min_length;
-	}
-	// Otherwise, could not fetch - default back to MySQL fulltext default setting
-	else
+	if($mybb->settings['minsearchword'] < 1)
 	{
 		$mybb->settings['minsearchword'] = 4;
 	}
