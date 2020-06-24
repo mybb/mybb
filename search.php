@@ -236,13 +236,13 @@ if($mybb->input['action'] == "results")
 		$threadcount = 0;
 
 		// Moderators can view unapproved threads and deleted threads from forums they moderate
-		$unapproved_where = get_visible_where();
+		$unapproved_where_t = get_visible_where('t');
 
 		// If we have saved WHERE conditions, execute them
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND ({$unapproved_where_t}) AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -264,7 +264,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND ({$unapproved_where_t}) AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
-			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
+			WHERE $where_conditions AND ({$unapproved_where_t}) {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -347,8 +347,8 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
-			$p_unapproved_where = str_replace('t.', '', $unapproved_where);
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids}) AND {$p_unapproved_where}");
+			$unapproved_where_p = str_replace('t.', '', $unapproved_where_t);
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids}) AND ({$unapproved_where_p})");
 			while($thread = $db->fetch_array($query))
 			{
 				$thread_cache[$thread['tid']]['dot_icon'] = 1;
@@ -723,7 +723,7 @@ if($mybb->input['action'] == "results")
 		$tids = array();
 		$pids = array();
 		// Make sure the posts we're viewing we have permission to view.
-		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND {$unapproved_where}", $post_cache_options);
+		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND ({$unapproved_where})", $post_cache_options);
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['tid'];
@@ -805,7 +805,7 @@ if($mybb->input['action'] == "results")
 		$dot_icon = array();
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND {$unapproved_where}");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND ({$unapproved_where})");
 			while($post = $db->fetch_array($query))
 			{
 				$dot_icon[$post['tid']] = true;
@@ -1104,7 +1104,7 @@ elseif($mybb->input['action'] == "findguest")
 
 	// Moderators can view unapproved threads and deleted threads from forums they moderate
 	$unapproved_where = get_visible_where();
-	$where_sql .= " AND {$unapproved_where}";
+	$where_sql .= " AND ({$unapproved_where})";
 
 	$permsql = "";
 	$onlyusfids = array();
@@ -1185,7 +1185,7 @@ elseif($mybb->input['action'] == "finduser")
 
 	// Moderators can view unapproved threads and deleted threads from forums they moderate
 	$unapproved_where = get_visible_where();
-	$where_sql .= " AND {$unapproved_where}";
+	$where_sql .= " AND ({$unapproved_where})";
 
 	$permsql = "";
 	$onlyusfids = array();
@@ -1266,7 +1266,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 
 	// Moderators can view unapproved threads and deleted threads from forums they moderate
 	$unapproved_where = get_visible_where();
-	$where_sql .= " AND {$unapproved_where}";
+	$where_sql .= " AND ({$unapproved_where})";
 
 	$permsql = "";
 	$onlyusfids = array();
@@ -1346,7 +1346,7 @@ elseif($mybb->input['action'] == "getnew")
 
 	// Moderators can view unapproved threads and deleted threads from forums they moderate
 	$unapproved_where = get_visible_where();
-	$where_sql .= " AND {$unapproved_where}";
+	$where_sql .= " AND ({$unapproved_where})";
 
 	$permsql = "";
 	$onlyusfids = array();
@@ -1436,7 +1436,7 @@ elseif($mybb->input['action'] == "getdaily")
 
 	// Moderators can view unapproved threads and deleted threads from forums they moderate
 	$unapproved_where = get_visible_where();
-	$where_sql .= " AND {$unapproved_where}";
+	$where_sql .= " AND ({$unapproved_where})";
 
 	$permsql = "";
 	$onlyusfids = array();
