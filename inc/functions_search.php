@@ -182,39 +182,44 @@ function get_visible_where($table_alias = null)
 		$deleted_forums = array();
 		$unapproved_where = "({$aliasdot}visible = 1";
 		
-		$forums = cache_forums();
-		foreach($forums as $forum)
+		$moderated_fids = get_moderated_fids($mybb->user['uid']);
+
+		if($moderated_fids !== false)
 		{
-			if(!is_moderator($forum['fid']))
+			foreach($moderated_fids as $fid)
 			{
-				continue;
+				if(!is_moderator($fid))
+				{
+					// Shouldn't occur.
+					continue;
+				}
+	
+				// Use moderates this forum
+				$modperms = get_moderator_permissions($fid, $mybb->user['uid']);
+	
+				if($modperms['canviewunapprove'] == 1)
+				{
+					$unapprove_forums[] = $fid;
+				}
+	
+				if($modperms['canviewdeleted'] == 1)
+				{
+					$deleted_forums[] = $fid;
+				}
 			}
-
-			// Use moderates this forum
-			$modperms = get_moderator_permissions($forum['fid'], $mybb->user['uid']);
-
-			if($modperms['canviewunapprove'] == 1)
+	
+			if(!empty($unapprove_forums))
 			{
-				$unapprove_forums[] = $forum['fid'];
+				$unapproved_where .= " OR ({$aliasdot}visible = 0 AND {$aliasdot}fid IN(".implode(',', $unapprove_forums)."))";
 			}
-
-			if($modperms['canviewdeleted'] == 1)
+			if(!empty($deleted_forums))
 			{
-				$deleted_forums[] = $forum['fid'];
+				$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
 			}
+			$unapproved_where .= ')';
+	
+			return $unapproved_where;
 		}
-
-		if(!empty($unapprove_forums))
-		{
-			$unapproved_where .= " OR ({$aliasdot}visible = 0 AND {$aliasdot}fid IN(".implode(',', $unapprove_forums)."))";
-		}
-		if(!empty($deleted_forums))
-		{
-			$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
-		}
-		$unapproved_where .= ')';
-
-		return $unapproved_where;
 	}
 
 	// Normal users
