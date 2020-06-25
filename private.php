@@ -1686,8 +1686,8 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	}
 	elseif(!empty($mybb->input['moveto']))
 	{
-		$mybb->input['check'] = $mybb->get_input('check', MyBB::INPUT_ARRAY);
-		if(!empty($mybb->input['check']))
+		$pms = array_map('intval', array_keys($mybb->get_input('check', MyBB::INPUT_ARRAY)));
+		if(!empty($pms))
 		{
 			if(!$mybb->input['fid'])
 			{
@@ -1696,7 +1696,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 			if(array_key_exists($mybb->input['fid'], $foldernames))
 			{
-				$db->update_query("privatemessages", array("folder" => $mybb->input['fid']), "pmid IN (".implode(",", array_keys($mybb->input['check'])).") AND uid='".$mybb->user['uid']."'");
+				$db->update_query("privatemessages", array("folder" => $mybb->input['fid']), "pmid IN (".implode(",", $pms).") AND uid='".$mybb->user['uid']."'");
 				update_pm_count();
 			}
 			else
