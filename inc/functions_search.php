@@ -170,29 +170,37 @@ function get_visible_where($table_alias = null)
 		$aliasdot = $table_alias.'.';
 	}
 
-	$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
 	if($mybb->usergroup['issupermod'] == 1)
 	{
 		// Super moderators (and admins)
-		$unapproved_where = "{$aliasdot}visible >= -1";
+		return "{$aliasdot}visible >= -1";
 	}
-	elseif($db->num_rows($query))
+	elseif(is_moderator())
 	{
 		// Normal moderators
 		$unapprove_forums = array();
 		$deleted_forums = array();
 		$unapproved_where = "({$aliasdot}visible = 1";
-
-		while($moderator = $db->fetch_array($query))
+		
+		$forums = cache_forums();
+		foreach($forums as $forum)
 		{
-			if($moderator['canviewunapprove'] == 1)
+			if(!is_moderator($forum['fid']))
 			{
-				$unapprove_forums[] = $moderator['fid'];
+				continue;
 			}
 
-			if($moderator['canviewdeleted'] == 1)
+			// Use moderates this forum
+			$modperms = get_moderator_permissions($forum['fid'], $mybb->user['uid']);
+
+			if($modperms['canviewunapprove'] == 1)
 			{
-				$deleted_forums[] = $moderator['fid'];
+				$unapprove_forums[] = $forum['fid'];
+			}
+
+			if($modperms['canviewdeleted'] == 1)
+			{
+				$deleted_forums[] = $forum['fid'];
 			}
 		}
 
@@ -205,14 +213,12 @@ function get_visible_where($table_alias = null)
 			$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
 		}
 		$unapproved_where .= ')';
-	}
-	else
-	{
-		// Normal users
-		$unapproved_where = "{$aliasdot}visible = 1";
+
+		return $unapproved_where;
 	}
 
-	return $unapproved_where;
+	// Normal users
+	return "{$aliasdot}visible = 1";
 }
 
 /**
