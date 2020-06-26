@@ -691,7 +691,7 @@ if($mybb->input['action'] == "thread")
 	// Create the admin tools dropdown box.
 	if($ismod == true)
 	{
-		$closelinkch = $stickch = '';
+		$closeoption = $closelinkch = $stickch = '';
 
 		if($thread['closed'] == 1)
 		{
@@ -736,7 +736,7 @@ if($mybb->input['action'] == "thread")
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
-	$rating = '';
+	$rating = $ratethread = '';
 	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
 	{
 		$rated = 0;
@@ -1060,7 +1060,7 @@ if($mybb->input['action'] == "thread")
         }
 
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
-		
+
 		// Allow originator to see own unapproved posts
 		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
 		{
@@ -1321,6 +1321,7 @@ if($mybb->input['action'] == "thread")
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1492,7 +1493,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
-		if($db->fetch_field($query, 'tid'))
+		if($db->num_rows($query) > 0)
 		{
 			$add_remove_subscription = 'remove';
 			$add_remove_subscription_text = $lang->unsubscribe_thread;
@@ -1590,7 +1591,8 @@ if($mybb->input['action'] == "thread")
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
 
-	if($thread['visible'] == -1 )
+	$thread_deleted = 0;
+	if($thread['visible'] == -1)
 	{
 		$thread_deleted = 1;
 	}

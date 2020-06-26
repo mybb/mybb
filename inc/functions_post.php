@@ -459,7 +459,7 @@ function build_postbit($post, $post_type=0)
 							"filter_badwords" => 1
 						);
 
-						if($customfield['type'] == "textarea")
+						if($field['type'] == "textarea")
 						{
 							$field_parser_options['me_username'] = $post['username'];
 						}

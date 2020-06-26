@@ -258,8 +258,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	}
 }
 
-$reply_errors = '';
-$quoted_ids = array();
+$reply_errors = $quoted_ids = '';
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
@@ -349,8 +348,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	if(!$mybb->get_input('savedraft'))
 	{
 		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible > -1 AND p.dateline>".(TIME_NOW-600));
-		$duplicate_check = $db->fetch_field($query, "pid");
-		if($duplicate_check)
+		if($db->num_rows($query) > 0)
 		{
 			error($lang->error_post_already_submitted);
 		}
@@ -726,6 +724,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
+			$quoted_ids = array();
 			$unviewable_forums = get_unviewable_forums();
 			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
@@ -1113,8 +1112,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
-
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
+
+		$link_viewattachments = '';
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -1125,12 +1125,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$lang->attach_usage = "";
 		}
-		
+
+		$attach_add_options = '';
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 		}
 
+		$attach_update_options = '';
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
 			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");

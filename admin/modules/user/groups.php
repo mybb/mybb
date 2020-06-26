@@ -1405,6 +1405,8 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=user-groups", "post", "groups");
 
+	$primaryusers = $secondaryusers = array();
+
 	$query = $db->query("
 		SELECT g.gid, COUNT(u.uid) AS users
 		FROM ".TABLE_PREFIX."users u
@@ -1502,9 +1504,13 @@ if(!$mybb->input['action'])
 
 		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".format_name(htmlspecialchars_uni($usergroup['title']), $usergroup['gid'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
-		if(!$primaryusers[$usergroup['gid']])
+		if(!isset($primaryusers[$usergroup['gid']]))
 		{
 			$primaryusers[$usergroup['gid']] = 0;
+		}
+		if(!isset($secondaryusers[$usergroup['gid']]))
+		{
+			$secondaryusers[$usergroup['gid']] = 0;
 		}
 		$numusers = $primaryusers[$usergroup['gid']];
 		$numusers += $secondaryusers[$usergroup['gid']];

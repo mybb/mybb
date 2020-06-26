@@ -183,9 +183,8 @@ if(in_array($current_page, $valid))
 	if(isset($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -195,9 +194,8 @@ if(in_array($current_page, $valid))
 	else if(isset($mybb->input['tid']))
 	{
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -207,9 +205,8 @@ if(in_array($current_page, $valid))
 	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
 		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -535,7 +532,7 @@ if($mybb->user['uid'] != 0)
 	{
 		eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
 	}
-    
+
 	if($mybb->usergroup['cansearch'] == 1)
 	{
 		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
@@ -661,6 +658,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $modnotice = '';
 $moderation_queue = array();
+$can_access_moderationqueue = false;
 
 // This user is a moderator, super moderator or administrator
 if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
@@ -738,7 +736,7 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 				{
 					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 				}
-				
+
 				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports', 1, 0).'";');
 			}
 		}
@@ -894,6 +892,7 @@ if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gra
 	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
 
+$awaitingusers = '';
 if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
@@ -1163,7 +1162,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 
-	if($referrer['uid'])
+	if(!empty($referrer) && $referrer['uid'])
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
 	}
@@ -1232,7 +1231,7 @@ if(!empty($mybb->cookies['collapsed']))
 	$colcookie = $mybb->cookies['collapsed'];
 }
 
-$collapse = $collapsed = $collapsedimg = array();
+$collapse = $collapsed = $collapsedimg = $collapsedthead = array();
 
 if($colcookie)
 {

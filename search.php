@@ -216,7 +216,7 @@ if($mybb->input['action'] == "results")
 	$fpermissions = forum_permissions();
 
 	// Inline Mod Column for moderators
-	$inlinemodcol = $inlinecookie = '';
+	$inlinemodcol = $inlinecookie = $inline_edit_js = '';
 	$is_mod = $is_supermod = $show_inline_moderation = false;
 	if($mybb->usergroup['issupermod'])
 	{
@@ -1139,8 +1139,8 @@ elseif($mybb->input['action'] == "findguest")
 	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
-			$pids .= $comma.$pid;
-			$comma = ',';
+		$pids .= $comma.$pid;
+		$comma = ',';
 	}
 
 	$tids = '';
@@ -1148,8 +1148,8 @@ elseif($mybb->input['action'] == "findguest")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1220,8 +1220,8 @@ elseif($mybb->input['action'] == "finduser")
 	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
-			$pids .= $comma.$pid;
-			$comma = ',';
+		$pids .= $comma.$pid;
+		$comma = ',';
 	}
 
 	$tids = '';
@@ -1229,8 +1229,8 @@ elseif($mybb->input['action'] == "finduser")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1290,8 +1290,8 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1370,8 +1370,8 @@ elseif($mybb->input['action'] == "getnew")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1460,8 +1460,8 @@ elseif($mybb->input['action'] == "getdaily")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));

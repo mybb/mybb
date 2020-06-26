@@ -350,7 +350,7 @@ if($mybb->input['action'] == "orphans")
 			$aids[$key] = (int)$aid;
 		}
 
-		$results += count($aids);
+		$results = count($aids);
 
 		if($results == 0)
 		{
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "orphans")
 				}
 				closedir($dh);
 				// Any reamining to check?
-				if(count($attachments_to_check) > 0)
+				if(!empty($attachments_to_check))
 				{
 					$attachments_to_check = array_map(array($db, "escape_string"), $attachments_to_check);
 					$attachment_names = "'".implode("','", $attachments_to_check)."'";
@@ -855,6 +855,7 @@ if(!$mybb->input['action'])
 			}
 
 			// Need to draw pagination for this result set
+			$pagination = '';
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";

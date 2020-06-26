@@ -253,7 +253,7 @@ function send_mail_queue($count=10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
+	if($mailcache !== false && $mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->update_mailqueue(0, TIME_NOW);
@@ -332,7 +332,7 @@ function parse_page($contents)
  */
 function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
-	global $mybb, $lang, $mybbadmin, $plugins;
+	global $mybb, $lang, $plugins;
 
 	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
@@ -346,11 +346,6 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
-		}
-		elseif(defined("IN_ADMINCP"))
-		{
-			$offset = (float)$mybbadmin['timezone'];
-			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
@@ -689,11 +684,11 @@ function get_parent_list($fid)
 	global $forum_cache;
 	static $forumarraycache;
 
-	if($forumarraycache[$fid])
+	if(!empty($forumarraycache[$fid]))
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forum_cache[$fid])
+	elseif(!empty($forum_cache[$fid]))
 	{
 		return $forum_cache[$fid]['parentlist'];
 	}
@@ -1731,14 +1726,14 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(empty($forum) || !is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
 		}
 
 		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
+		if(!empty($forum['users'][$uid]))
 		{
 			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
@@ -1763,7 +1758,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 		foreach($groups as $group)
 		{
-			if(!is_array($forum['usergroups'][$group]))
+			if(empty($forum['usergroups'][$group]) || !is_array($forum['usergroups'][$group]))
 			{
 				// There are no permissions set for this group
 				continue;
@@ -2799,15 +2794,28 @@ function update_forum_lastpost($fid)
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
-	$lastpost = $db->fetch_array($query);
 
-	$updated_forum = array(
-		"lastpost" => (int)$lastpost['lastpost'],
-		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => (int)$lastpost['lastposteruid'],
-		"lastposttid" => (int)$lastpost['tid'],
-		"lastpostsubject" => $db->escape_string($lastpost['subject'])
-	);
+	if($db->num_rows($query) > 0)
+	{
+		$lastpost = $db->fetch_array($query);
+
+		$updated_forum = array(
+			"lastpost" => (int)$lastpost['lastpost'],
+			"lastposter" => $db->escape_string($lastpost['lastposter']),
+			"lastposteruid" => (int)$lastpost['lastposteruid'],
+			"lastposttid" => (int)$lastpost['tid'],
+			"lastpostsubject" => $db->escape_string($lastpost['subject']),
+		);
+	}
+	else {
+		$updated_forum = array(
+			"lastpost" => 0,
+			"lastposter" => '',
+			"lastposteruid" => 0,
+			"lastposttid" => 0,
+			"lastpostsubject" => '',
+		);
+	}
 
 	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
@@ -3608,7 +3616,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if($subscription['tid'])
+		if(!empty($subscription) && $subscription['tid'])
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -3664,7 +3672,7 @@ function build_clickable_smilies()
 				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
 			}
 
-			$smilies = '';
+			$smilies = $smilie_icons = '';
 			$counter = 0;
 			$i = 0;
 
@@ -3929,6 +3937,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$default_selected['any'] = ' selected="selected"';
 	}
 
+	$prefixselect_prefix = '';
 	foreach($prefixes as $prefix)
 	{
 		$selected = '';
@@ -4836,7 +4845,7 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4847,7 +4856,7 @@ function mark_reports($id, $type="post")
 		case "threads":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4967,6 +4976,8 @@ function nice_time($stamp, $options=array())
 		), $options);
 	}
 
+	$nicetime = array();
+
 	if(!isset($options['years']) || $options['years'] !== false)
 	{
 		if($years == 1)
@@ -5051,7 +5062,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if(is_array($nicetime))
+	if(!empty($nicetime))
 	{
 		return implode(", ", $nicetime);
 	}
@@ -5321,11 +5332,6 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		$tid = 1;
 		$num_themes = 0;
 		$themeselect_option = '';
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
 	}
 
 	if(!is_array($tcache))
@@ -7131,7 +7137,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 
-		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
+		eval("\$timezone_option = \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
 
 	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
@@ -7345,11 +7351,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
 		}
 
-		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
 			return false;
 		}
+		@stream_set_timeout($fp, 10);
 		$headers = array();
 		if(!empty($post_body))
 		{
@@ -8473,6 +8479,7 @@ function trim_blank_chrs($string, $charlist="")
 	);
 
 	// Start from the beginning and work our way in
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8488,6 +8495,7 @@ function trim_blank_chrs($string, $charlist="")
 
 	// Start from the end and work our way in
 	$string = strrev($string);
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array

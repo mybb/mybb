@@ -228,6 +228,11 @@ function create_graph($type, $range=null)
 
 	require_once MYBB_ROOT.'inc/class_graph.php';
 
+	if(!Graph::can_use())
+	{
+		die;
+	}
+
 	$points = $stats = $datelines = array();
 	if($start == 0)
 	{

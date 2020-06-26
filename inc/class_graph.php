@@ -88,11 +88,12 @@ class Graph {
 		// Setup initial graph layout
 
 		// Check for GD >= 2, create base image
-		if(gd_version() >= 2)
+		$gd_version = gd_version();
+		if($gd_version >= 2)
 		{
 			$this->im = imagecreatetruecolor($this->img_width, $this->img_height);
 		}
-		else
+		elseif (!empty($gd_version))
 		{
 			$this->im = imagecreate($this->img_width, $this->img_height);
 		}
@@ -100,7 +101,7 @@ class Graph {
 		// No GD support, die.
 		if(!$this->im)
 		{
-			return;
+			throw new Exception('No GD support');
 		}
 
 		if(function_exists("imageantialias"))
@@ -122,6 +123,16 @@ class Graph {
 			$y_value = $this->inside_y+(($this->inside_height/4)*$i);
 			imageline($this->im, $this->inside_x, $y_value, $inside_end_x, $y_value, $this->color(185, 185, 185));
 		}
+	}
+
+	/**
+	 * Check if GD support is enabled and this class can be used.
+	 *
+	 * @return bool True if the class can be used.
+	 */
+	public static function can_use()
+	{
+		return !empty(gd_version());
 	}
 
 	/**

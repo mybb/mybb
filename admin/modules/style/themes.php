@@ -2294,7 +2294,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$stylesheet['sid'])
+	if($db->num_rows($query) == 0)
 	{
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2369,7 +2369,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
 	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if($this_stylesheet['inherited'][$stylesheet['name']])
+	if(!empty($this_stylesheet['inherited']) && $this_stylesheet['inherited'][$stylesheet['name']])
 	{
 		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
 		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
@@ -2669,6 +2669,8 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
+	$add_checked = array();
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -2702,6 +2704,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	else
 	{
+		if(empty($stylesheet = $mybb->input['stylesheet']))
+		{
+			$stylesheet = array();
+		}
 		$mybb->input['name'] = $stylesheet['name'];
 	}
 
@@ -2715,11 +2721,10 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
+	$check_actions = "";
 
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
-		$check_actions = "";
-
 		foreach($mybb->input['applied_to'] as $name => $actions)
 		{
 			$action_list = "";

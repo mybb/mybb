@@ -142,11 +142,11 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		$newtext .= substr($text, $cpy_start, $region[0]-$cpy_start);
 		$cpy_start = $region[1]+8; // 8 = strlen('[/quote]')
 		// clean up newlines
-		$next_char = $text{$region[1]+8};
+		$next_char = $text[$region[1]+8];
 		if($next_char == "\r" || $next_char == "\n")
 		{
 			++$cpy_start;
-			if($next_char == "\r" && $text{$region[1]+9} == "\n")
+			if($next_char == "\r" && $text[$region[1]+9] == "\n")
 			{
 				++$cpy_start;
 			}

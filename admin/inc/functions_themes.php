@@ -630,7 +630,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
-	
+
 	$updated_theme = array();
 	if(!empty($stylesheets))
 	{
@@ -1015,7 +1015,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				}
 			}
 		}
-		
+
 		if(is_object($plugins))
 		{
 			$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url);
@@ -1076,7 +1076,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 		{
 			$properties = my_unserialize($theme['properties']);
 		}
-		
+
 		$max_disporder = 0;
 
 		foreach($stylesheets as $stylesheet)
@@ -1086,7 +1086,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				$orphaned_stylesheets[] = $stylesheet['name'];
 				continue;
 			}
-			
+
 			if($properties['disporder'][$stylesheet['name']] > $max_disporder)
 			{
 				$max_disporder = $properties['disporder'][$stylesheet['name']];
@@ -1306,6 +1306,7 @@ function build_theme_list($parent=0, $depth=0)
 	foreach($theme_cache[$parent] as $theme)
 	{
 		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
+		$set_default = '';
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
@@ -1327,10 +1328,11 @@ function build_theme_list($parent=0, $depth=0)
 				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
 			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			$set_default = "<div class=\"float_right\">{$set_default}</div>";
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;tid={$theme['tid']}");
 		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
-		$table->construct_cell("<div class=\"float_right\">{$set_default}</div><div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
+		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();

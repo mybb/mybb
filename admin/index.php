@@ -201,7 +201,7 @@ elseif($mybb->input['do'] == "login")
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
 
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
@@ -345,15 +345,15 @@ elseif($mybb->input['do'] == "login")
 
 		$plugins->run_hooks("admin_login_fail");
 
-		if($login_user['uid'] > 0)
+		$loginattempts = false;
+		if(!empty($login_user['uid']) && $login_user['uid'] > 0)
 		{
 			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
+			$loginattempts = login_attempt_check_acp($login_user['uid'], true);
 		}
 
-		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
-
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
@@ -407,7 +407,7 @@ else
 		$admin_session = $db->fetch_array($query);
 
 		// No matching admin session found - show message on login screen
-		if(!$admin_session['sid'])
+		if(empty($admin_session) || !$admin_session['sid'])
 		{
 			$login_message = $lang->error_invalid_admin_session;
 		}
@@ -518,7 +518,11 @@ else
 }
 $mybb->usergroup = usergroup_permissions($mybbgroups);
 
-$is_super_admin = is_super_admin($mybb->user['uid']);
+$is_super_admin = false;
+if(isset($mybb->user['uid']))
+{
+	$is_super_admin = is_super_admin($mybb->user['uid']);
+}
 
 if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 {
@@ -661,7 +665,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		$loginattempts = login_attempt_check_acp($mybb->user['uid'], true);
 
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)

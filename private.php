@@ -44,7 +44,7 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 
 $mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
 
-$folder_id = $folder_name = '';
+$folder_id = $folder_name = $folderjump_folder = $folderoplist_folder = $foldersearch_folder ='';
 
 $foldernames = array();
 $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -578,8 +578,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
 		LIMIT 0, 1
 	");
-	$duplicate_check = $db->fetch_field($query, "pmid");
-	if($duplicate_check)
+	if($db->num_rows($query) > 0)
 	{
 		error($lang->error_pm_already_submitted);
 	}
@@ -1217,7 +1216,8 @@ if($mybb->input['action'] == "read")
 
 			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
 		}
-		
+
+		$postoptionschecked = $optionschecked; // Backwards compatability instead of correcting variable used in template
 		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
@@ -2456,7 +2456,7 @@ if(!$mybb->input['action'])
 			{
 				$spaceused_severity = "high";
 			}
-			
+
 			$overhalf = round($spaceused, 0)."%";
 			if((int)$overhalf > 100)
 			{

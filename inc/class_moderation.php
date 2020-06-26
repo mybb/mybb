@@ -1808,6 +1808,8 @@ class Moderation
 			'deletedposts' => 0
 		);
 
+		$user_counters = array();
+
 		if($destination_tid == 0)
 		{
 			// Splitting into a new thread
@@ -3723,7 +3725,7 @@ class Moderation
 		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
 
 		mark_reports($tids, "threads");
-		
+
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;

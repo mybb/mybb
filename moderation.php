@@ -2330,7 +2330,7 @@ switch($mybb->input['action'])
 			SELECT p.*, u.*
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN (".implode($posts, ",").")
+			WHERE pid IN (".implode(",", $posts).")
 			ORDER BY dateline ASC
 		");
 		$altbg = "trow1";

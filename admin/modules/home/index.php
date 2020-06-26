@@ -63,21 +63,13 @@ if($mybb->input['action'] == "version_check")
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
-		$version_warn = 1;
 		$updated_cache['latest_version'] = $latest_version;
 		$updated_cache['latest_version_code'] = $latest_code;
-	}
-	else
-	{
-		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
-	}
-
-	if($version_warn)
-	{
 		$page->output_error("<p><em>{$lang->error_out_of_date}</em> {$lang->update_forum}</p>");
 	}
 	else
 	{
+		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
 		$page->output_success("<p><em>{$lang->success_up_to_date}</em></p>");
 	}
 
@@ -277,6 +269,13 @@ elseif(!$mybb->input['action'])
 	$plugins->run_hooks("admin_home_index_output_message");
 
 	$adminmessage = $cache->read("adminnotes");
+
+	if($adminmessage === false)
+	{
+		$adminmessage = array(
+			'adminmessage' => '',
+		);
+	}
 
 	$table = new Table;
 	$table->construct_header($lang->mybb_server_stats, array("colspan" => 2));
