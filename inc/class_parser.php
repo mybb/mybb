@@ -521,7 +521,10 @@ class postParser
 			}
 		}
 
-		$message = $this->mycode_auto_url($message);
+		if(!empty($this->options['allowautourl']))
+		{
+			$message = $this->mycode_auto_url($message);
+		}
 
 		return $message;
 	}
@@ -1592,6 +1595,11 @@ class postParser
 	{
 		$message = " ".$message;
 
+		if($this->options['allow_url'] != 1)
+		{
+			return $message;
+		}
+		
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
 		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
