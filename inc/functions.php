@@ -9167,7 +9167,16 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
  */
 function create_xml_parser($data)
 {
-	require_once MYBB_ROOT."inc/class_xmlparser.php";
+	if(version_compare(PHP_VERSION, '8.0', '>='))
+	{
+		require_once MYBB_ROOT."inc/class_xmlparser.php";
 
-	return new MyBBXMLParser($data);
+		return new MyBBXMLParser($data);
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_xml.php";
+
+		return new XMLParser($data);
+	}
 }
