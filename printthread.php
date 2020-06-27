@@ -132,6 +132,7 @@ else
 {
 	$visible = "AND p.visible='1'";
 }
+
 $query = $db->query("
 	SELECT u.*, u.username AS userusername, p.*
 	FROM ".TABLE_PREFIX."posts p
@@ -177,6 +178,22 @@ while($postrow = $db->fetch_array($query))
 	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
+	
+	$attachcache = array();
+	if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
+	{
+		// Get the attachments for this post.
+		$queryAttachments = $db->simple_select("attachments", "*", "pid=".$postrow['pid']);
+		while($attachment = $db->fetch_array($queryAttachments))
+		{
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+		}
+	}
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		get_post_attachments($postrow['pid'], $postrow);
+	}
+
 	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
 }
