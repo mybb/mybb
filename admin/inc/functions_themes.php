@@ -19,9 +19,7 @@ function import_theme_xml($xml, $options=array())
 {
 	global $mybb, $db;
 
-	require_once MYBB_ROOT."inc/class_xml.php";
-
-	$parser = new XMLParser($xml);
+	$parser = create_xml_parser($xml);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !is_array($tree['theme']))

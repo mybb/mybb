@@ -38,7 +38,6 @@ if($mybb->input['action'] == "version_check")
 		"last_check" => TIME_NOW
 	);
 
-	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)
@@ -55,7 +54,7 @@ if($mybb->input['action'] == "version_check")
 
 	$contents = trim($contents);
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	$latest_code = (int)$tree['mybb']['version_code']['value'];

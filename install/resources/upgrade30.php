@@ -2168,9 +2168,8 @@ function upgrade30_updatetheme()
 	$stylesheets = my_unserialize($theme['stylesheets']);
 
 	$old = array("global.css", "usercp.css", "modcp.css", "star_ratings.css");
-	require_once MYBB_ROOT."inc/class_xml.php";
 	$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	$parser = new XMLParser($colors);
+	$parser = create_xml_parser($colors);
 	$tree = $parser->get_tree();
 
 	if(is_array($tree) && is_array($tree['theme']))
@@ -2318,9 +2317,8 @@ function upgrade30_updatetheme()
 			$properties['logo'] = "images/logo.png";
 		}
 	
-		require_once MYBB_ROOT."inc/class_xml.php";
 		$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
-		$parser = new XMLParser($colors);
+		$parser = create_xml_parser($colors);
 		$tree = $parser->get_tree();
 	
 		if(is_array($tree) && is_array($tree['colors']))

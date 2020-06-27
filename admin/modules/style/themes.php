@@ -145,8 +145,6 @@ if($mybb->input['action'] == "browse")
 	$page->output_nav_tabs($sub_tabs, 'browse_themes');
 
 	// Process search requests
-	require_once MYBB_ROOT."inc/class_xml.php";
-
 	$keywords = "";
 	if($mybb->input['keywords'])
 	{
@@ -181,7 +179,7 @@ if($mybb->input['action'] == "browse")
 	$table->construct_header($lang->themes, array('colspan' => 2));
 	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['results']))

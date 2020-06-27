@@ -9158,3 +9158,16 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 
 	return $referrals;
 }
+
+/**
+ * Initialize the parser and store the XML data to be parsed.
+ *
+ * @param string $data
+ * @return XMLParser The constructed XML parser.
+ */
+function create_xml_parser($data)
+{
+	require_once MYBB_ROOT."inc/class_xml.php";
+
+	return new XMLParser($data);
+}

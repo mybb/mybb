@@ -44,8 +44,6 @@ if($mybb->input['action'] == "browse")
 	$page->output_nav_tabs($sub_tabs, 'browse_plugins');
 
 	// Process search requests
-	require_once MYBB_ROOT."inc/class_xml.php";
-
 	$keywords = "";
 	if($mybb->input['keywords'])
 	{
@@ -81,7 +79,7 @@ if($mybb->input['action'] == "browse")
 	$table->construct_header($lang->latest_version, array("class" => "align_center", 'width' => 125));
 	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['results']))
@@ -245,7 +243,6 @@ if($mybb->input['action'] == "check")
 
 	$url = "https://community.mybb.com/version_check.php?";
 	$url .= http_build_query(array("info" => $info))."&";
-	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file($url);
 
 	if(!$contents)
@@ -256,7 +253,7 @@ if($mybb->input['action'] == "check")
 
 	$contents = trim($contents);
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['plugins']))
