@@ -14,7 +14,7 @@
  * and is licensed under the public domain license.
  */
 
-class XMLParser {
+class MyBBXMLParser {
 
 	/**
 	 * @var string
@@ -101,7 +101,7 @@ class XMLParser {
 	 * @param int $i Internal counter
 	 * @return array Array of child nodes
 	 */
-	function get_children($vals=array(), &$i)
+	function get_children($vals, &$i)
 	{
 		$children = array();
 

@@ -9163,11 +9163,11 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
  * Initialize the parser and store the XML data to be parsed.
  *
  * @param string $data
- * @return XMLParser The constructed XML parser.
+ * @return MyBBXMLParser The constructed XML parser.
  */
 function create_xml_parser($data)
 {
-	require_once MYBB_ROOT."inc/class_xml.php";
+	require_once MYBB_ROOT."inc/class_xmlparser.php";
 
-	return new XMLParser($data);
+	return new MyBBXMLParser($data);
 }
