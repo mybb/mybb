@@ -2096,7 +2096,7 @@ if($mybb->input['action'] == "addsubscription")
 	}
 }
 
-if($mybb->input['action'] == "removesubscription")
+if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "post" || verify_post_check($mybb->get_input('my_post_key'), true)))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -2159,6 +2159,83 @@ if($mybb->input['action'] == "removesubscription")
 			$url = "usercp.php?action=subscriptions";
 		}
 		redirect($url, $lang->redirect_subscriptionremoved);
+	}
+}
+
+// Show remove subscription form when GET method and without valid my_post_key
+if($mybb->input['action'] == "removesubscription")
+{
+	$referrer = '';
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+
+		add_breadcrumb($lang->nav_forumsubscriptions, "usercp.php?action=forumsubscriptions");
+		add_breadcrumb($lang->nav_removesubscription);
+
+		$forumpermissions = forum_permissions($forum['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		$lang->unsubscribe_from_forum = $lang->sprintf($lang->unsubscribe_from_forum, $forum['name']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_display_forum");
+
+		eval("\$remove_forum_subscription = \"".$templates->get("usercp_removesubscription_forum")."\";");
+		output_page($remove_forum_subscription);
+		exit;
+	}
+	else
+	{
+		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread || $thread['visible'] == -1)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
+		add_breadcrumb($lang->nav_removesubscription);
+
+		$forumpermissions = forum_permissions($thread['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$lang->unsubscribe_from_thread = $lang->sprintf($lang->unsubscribe_from_thread, $thread['subject']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_display_thread");
+
+		eval("\$remove_thread_subscription = \"".$templates->get("usercp_removesubscription_thread")."\";");
+		output_page($remove_thread_subscription);
+		exit;
 	}
 }
 
