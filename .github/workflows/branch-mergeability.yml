@@ -1,0 +1,25 @@
+name: Multi-branch Compatibility
+
+on:
+  pull_request:
+    branches: [ feature ]
+
+jobs:
+  19_merge_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - uses: actions/checkout@v2
+      with:
+        ref: develop/1.9
+
+    - name: Test merge
+      run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+        git merge --no-commit --allow-unrelated-histories ${{ github.event.pull_request.head.sha }} || true
+        echo
+        git diff --check
