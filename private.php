@@ -89,14 +89,15 @@ foreach($foldersexploded as $key => $folders)
 	$folder_name = $folderinfo[1];
 
 	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	// Manipulate search folder selection to omit "Unread"
+
+	// Manipulate search folder selection & move selector to omit "Unread"
 	if($folder_id != 1)
 	{
 		if($folder_id == 0)
 		{
 			$folder_id = 1;
 		}
+		eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 		eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 	}
 }
@@ -1685,19 +1686,24 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	}
 	elseif(!empty($mybb->input['moveto']))
 	{
-		$mybb->input['check'] = $mybb->get_input('check', MyBB::INPUT_ARRAY);
-		if(!empty($mybb->input['check']))
+		$pms = array_map('intval', array_keys($mybb->get_input('check', MyBB::INPUT_ARRAY)));
+		if(!empty($pms))
 		{
-			foreach($mybb->input['check'] as $key => $val)
+			if(!$mybb->input['fid'])
 			{
-				$sql_array = array(
-					"folder" => $mybb->input['fid']
-				);
-				$db->update_query("privatemessages", $sql_array, "pmid='".(int)$key."' AND uid='".$mybb->user['uid']."'");
+				$mybb->input['fid'] = 1;
+			}
+
+			if(array_key_exists($mybb->input['fid'], $foldernames))
+			{
+				$db->update_query("privatemessages", array("folder" => $mybb->input['fid']), "pmid IN (".implode(",", $pms).") AND uid='".$mybb->user['uid']."'");
+				update_pm_count();
+			}
+			else
+			{
+				error($lang->error_invalidmovefid);
 			}
 		}
-		// Update PM count
-		update_pm_count();
 
 		if(!empty($mybb->input['fromfid']))
 		{
