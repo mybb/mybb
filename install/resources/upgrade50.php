@@ -29,7 +29,11 @@ function upgrade50_dbchanges()
 	echo "<p>Updating cache...</p>";
 
 	$cache->delete("banned");
-	
+
+	// Moved PM wrong folder correction
+	$db->update_query("privatemessages", array('folder' => 1), "folder='0'");
+
+	// PM folder structure conversion
 	$db->update_query('users', array('pmfolders' => "0**$%%$1**$%%$2**$%%$3**$%%$4**"), "pmfolders = ''");
 	switch($db->type)
 	{
@@ -41,10 +45,8 @@ function upgrade50_dbchanges()
 			$update = "CONCAT('0**$%%$', pmfolders)";
 	}
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET pmfolders=".$update." WHERE pmfolders NOT LIKE '0%'");
-	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
 
-	// Moved PM wrong folder correction
-	$db->update_query("privatemessages", array('folder' => 1), "folder='0'");
+	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
 
 	// Add hCaptcha support
 	echo "<p>Updating settings...</p>";
