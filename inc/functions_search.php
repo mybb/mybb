@@ -154,7 +154,7 @@ function get_unsearchable_forums($pid=0, $first=1)
  * Build query condition for threads/posts the user is allowed to see.
  * Will return for example:
  *  - visible = 1 - for normal users
- *  - visible >=1 - for admins & super mods
+ *  - visible >= -1 - for admins & super mods
  *  - (visible = 1 OR (visible = ? AND fid IN ...)) - for forum moderators
  * 
  * @param string $table_alias The alias of the table eg t to use t.visible instead of visible
