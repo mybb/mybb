@@ -1875,7 +1875,7 @@ function get_moderated_fids($uid=0)
 
 	if($uid == 0)
 	{
-		return false;
+		return array();
 	}
 
 	$user_perms = user_permissions($uid);
