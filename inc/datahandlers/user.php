@@ -1149,7 +1149,7 @@ class UserDataHandler extends DataHandler
 			"referrals" => 0,
 			"buddylist" => '',
 			"ignorelist" => '',
-			"pmfolders" => '',
+			"pmfolders" => "0**$%%$1**$%%$2**$%%$3**$%%$4**",
 			"notepad" => '',
 			"warningpoints" => 0,
 			"moderateposts" => 0,
