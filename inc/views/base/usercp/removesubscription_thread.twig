@@ -1,0 +1,33 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ trans('unsubscribe_from_thread', thread.subject ) }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ trans('unsubscribe_from_thread', thread.subject ) }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <form action="usercp.php" method="post" name="input">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="removesubscription" />
+        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+
+        {% include 'usercp/profile_menu.twig' %}
+
+        {{ errors|raw }}
+
+        <section class="section section--form">
+            <div class="block block--form form">
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <input type="submit" class="button" name="submit" value="{{ lang.do_unsubscribe_thread }}" tabindex="3" accesskey="s" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+{% endblock accountBody %}

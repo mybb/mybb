@@ -1246,8 +1246,7 @@ class PostDataHandler extends DataHandler
 				{
 					$emailsubject = $lang->sprintf($emailsubject, $subject);
 
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid']);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
@@ -1261,10 +1260,9 @@ class PostDataHandler extends DataHandler
 				}
 				elseif($subscribedmember['notification'] == 2)
 				{
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 					$pm = array(
 						'subject' => array('pmsubject_subscription', $subject),
-						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code),
+						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid']),
 						'touid' => $subscribedmember['uid'],
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
@@ -1738,8 +1736,7 @@ class PostDataHandler extends DataHandler
 					}
 					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
 
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid']);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',

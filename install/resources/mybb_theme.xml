@@ -13416,6 +13416,75 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
+		<template name="usercp_removesubscription_forum" version="1823"><![CDATA[<html>
+<head>
+<title>{$lang->unsubscribe_from_forum}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="removesubscription" />
+<input type="hidden" name="type" value="forum" />
+<input type="hidden" name="fid" value="{$forum['fid']}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->unsubscribe_from_forum}</strong></td>
+</tr>
+<tr>
+<td class="trow1" valign="top">{$lang->unsubscribe_from_forum_desc}</td>
+</tr>
+</table>
+<br />
+<div style="text-align: center;">
+	<input type="submit" class="button" name="submit" value="{$lang->do_unsubscribe_forum}" tabindex="3" accesskey="s" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="usercp_removesubscription_thread" version="1823"><![CDATA[<html>
+<head>
+<title>{$lang->unsubscribe_from_thread}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="removesubscription" />
+<input type="hidden" name="tid" value="{$thread['tid']}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->unsubscribe_from_thread}</strong></td>
+</tr>
+<tr>
+<td class="trow1" valign="top">{$lang->unsubscribe_from_thread_desc} <a href="usercp.php?action=addsubscription&tid={$thread['tid']}&my_post_key={$mybb->post_code}">{$lang->unsubscribe_change_notificaton}</a></td>
+</tr>
+</table>
+<br />
+<div style="text-align: center;">
+	<input type="submit" class="button" name="submit" value="{$lang->do_unsubscribe_thread}" tabindex="3" accesskey="s" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
 		<template name="usercp_resendactivation" version="1800"><![CDATA[<br />(<a href="member.php?action=resendactivation">{$lang->resend_activation}</a>)]]></template>
 		<template name="usercp_subscriptions" version="1817"><![CDATA[<html>

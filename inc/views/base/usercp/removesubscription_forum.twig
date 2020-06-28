@@ -1,0 +1,34 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ lang.unsubscribe_from_forum }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.unsubscribe_from_forum }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <form action="usercp.php" method="post" name="input">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="removesubscription" />
+        <input type="hidden" name="type" value="forum" />
+        <input type="hidden" name="fid" value="{{ forum.fid }}" />
+
+        {% include 'usercp/profile_menu.twig' %}
+
+        {{ errors|raw }}
+
+        <section class="section section--form">
+            <div class="block block--form form">
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <input type="submit" class="button" name="submit" value="{{ lang.do_unsubscribe_forum }}" tabindex="3" accesskey="s" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+{% endblock accountBody %}
