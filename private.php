@@ -42,29 +42,6 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 	error_no_permission();
 }
 
-$update = false;
-if(!$mybb->user['pmfolders'])
-{
-	$update = true;
-	$mybb->user['pmfolders'] = "0**$%%$1**$%%$2**$%%$3**$%%$4**";
-}
-elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
-{
-	// Old folder structure. Need to update
-	// Since MyBB 1.8.20 fid[0] represents 'Inbox' and fid[1] represents 'Unread'
-	$update = true;
-	$mybb->user['pmfolders'] = '0'. ltrim(str_replace("$%%$2**", "$%%$1**$%%$2**", $mybb->user['pmfolders']), '1');
-}
-
-// Folder structure update required?
-if($update)
-{
-	$sql_array = array(
-		 "pmfolders" => $db->escape_string($mybb->user['pmfolders']),
-	);
-	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
-}
-
 $mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 $folder_id = $folder_name = '';
