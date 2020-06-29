@@ -230,14 +230,10 @@ $l['js_validator_email_match'] = "You need to enter the same email address again
 $l['js_validator_no_image_text'] = "You need to enter the text in the image above";
 $l['js_validator_no_security_question'] = "You need to enter the answer to the question above";
 $l['js_validator_password_matches'] = "The passwords you enter must match";
-$l['js_validator_password_complexity'] = "Checking password complexity";
 $l['js_validator_password_length'] = "Your password must be {1} or more characters long";
 $l['js_validator_bad_password_security'] = 'The password you entered is similar to either your username or email address. Please enter a stronger password.';
 $l['js_validator_not_empty'] = "You must select or enter a value for this field";
-$l['js_validator_checking_username'] = "Checking if username is available";
 $l['js_validator_username_length'] = "Usernames must be between {1} and {2} characters long";
-$l['js_validator_checking_referrer'] = "Checking if referrer username exists.";
-$l['js_validator_captcha_valid'] = "Checking whether or not you entered the correct image verification code.";
 
 $l['security_question'] = "Security Question";
 $l['question_note'] = "Please answer the question provided. This process is used to prevent automated processes.";
