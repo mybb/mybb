@@ -32,5 +32,3 @@ function upgrade51_dbchanges()
     // Add new setting for new usergroup permission if group members can hide online status
     $db->add_column("usergroups", "canbeinvisible", "smallint NOT NULL default '1' AFTER canusercp");
 }
-
-?>
