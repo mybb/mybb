@@ -610,7 +610,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
-		<canbeinvisible><![CDATA[0]]></canbeinvisible>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
