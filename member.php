@@ -1220,7 +1220,8 @@ if($mybb->input['action'] == "register")
 				regtype: '{$mybb->settings['regtype']}',
 				hiddencaptchaimage: '{$mybb->settings['hiddencaptchaimage']}'
 			};
-		
+
+			lang.js_validator_no_username = '{$lang->js_validator_no_username}';
 			lang.js_validator_username_length = '{$lang->js_validator_username_length}';
 			lang.js_validator_invalid_email = '{$lang->js_validator_invalid_email}';
 			lang.js_validator_email_match = '{$lang->js_validator_email_match}';

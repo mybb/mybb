@@ -1,4 +1,6 @@
 $(function () {
+	$.validator.messages.required = lang.js_validator_not_empty;
+
 	$('#registration_form').validate({
 		rules: {
 			username: {
@@ -36,6 +38,7 @@ $(function () {
 		},
 		messages: {
 			username: {
+				required: lang.js_validator_no_username,
 				minlength: lang.js_validator_username_length,
 				maxlength: lang.js_validator_username_length,
 			},
@@ -65,9 +68,6 @@ $(function () {
 
 		$(input_type + '[name="profile_fields[' + this.fid + ']' + depth + '"]').rules('add', {
 			required: true,
-			messages: {
-				required: lang.js_validator_not_empty
-			}
 		});
 	});
 
