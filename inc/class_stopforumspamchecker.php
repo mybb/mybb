@@ -18,7 +18,7 @@ class StopForumSpamChecker
 	 *
 	 * @var string
 	 */
-	const STOP_FORUM_SPAM_API_URL_FORMAT = 'http://api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
+	const STOP_FORUM_SPAM_API_URL_FORMAT = 'https://api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
 	/**
 	 * @var pluginSystem
 	 */
