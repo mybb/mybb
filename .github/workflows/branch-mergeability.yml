@@ -5,7 +5,7 @@ on:
     branches: [ feature ]
 
 jobs:
-  19_merge_test:
+  merge_test_19:
     runs-on: ubuntu-latest
 
     steps:
