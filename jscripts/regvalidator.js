@@ -87,7 +87,7 @@ $(function () {
 				},
 			},
 			messages: {
-				remote: lang.js_validator_no_image_text
+				required: lang.js_validator_no_image_text
 			}
 		});
 	}
@@ -108,7 +108,7 @@ $(function () {
 				},
 			},
 			messages: {
-				remote: lang.js_validator_no_security_question
+				required: lang.js_validator_no_security_question
 			}
 		});
 	}
@@ -142,7 +142,6 @@ $(function () {
 				messages: {
 					minlength: lang.js_validator_password_length,
 					required: lang.js_validator_password_length,
-					remote: lang.js_validator_no_image_text
 				}
 			});
 		} else {
