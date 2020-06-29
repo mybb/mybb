@@ -1785,7 +1785,7 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_cell("<strong>{$usergroup['title']}</strong> <small style=\"vertical-align: middle;\">({$inherited_text})</small>");
 
 		$field_select = "<div class=\"quick_perm_fields\">\n";
-		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
+		$field_select .= "<div class=\"enabled\"><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
 		foreach($perms_checked as $perm => $value)
 		{
 			if($value == 1)
@@ -1794,7 +1794,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 		$field_select .= "</ul></div>\n";
-		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
+		$field_select .= "<div class=\"disabled\"><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
 		foreach($perms_checked as $perm => $value)
 		{
 			if($value == 0)
@@ -2898,7 +2898,7 @@ function retrieve_single_permissions_row($gid, $fid)
 	$form_container->output_cell("<strong>{$usergroup['title']}</strong> <small style=\"vertical-align: middle;\">({$inherited_text})</small>");
 
 	$field_select = "<div class=\"quick_perm_fields\">\n";
-	$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
+	$field_select .= "<div class=\"enabled\"><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
 	foreach($perms_checked as $perm => $value)
 	{
 		if($value == 1)
@@ -2907,7 +2907,7 @@ function retrieve_single_permissions_row($gid, $fid)
 		}
 	}
 	$field_select .= "</ul></div>\n";
-	$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
+	$field_select .= "<div class=\"disabled\"><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
 	foreach($perms_checked as $perm => $value)
 	{
 		if($value == 0)
