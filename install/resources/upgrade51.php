@@ -29,6 +29,14 @@ function upgrade51_dbchanges()
     echo "<p>Performing necessary upgrade queries...</p>";
     flush();
 
-    // Add new setting for new usergroup permission if group members can hide online status
-    $db->add_column("usergroups", "canbeinvisible", "smallint NOT NULL default '1' AFTER canusercp");
-}
+    switch($db->type)
+	{
+        // Add new setting for new usergroup permission if group members can hide online status
+        case "pgsql":
+            $db->add_column("usergroups", "canbeinvisible", "smallint NOT NULL default '1' AFTER canusercp");
+            break;
+
+        default:
+            $db->add_column("usergroups", "canbeinvisible", "tinyint(1) NOT NULL default '1' AFTER canusercp");
+            break;
+    }
