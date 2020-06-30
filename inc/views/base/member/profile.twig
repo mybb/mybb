@@ -276,14 +276,28 @@
                 <section class="block">
                     <h3 class="title title--major">{{ lang.admin_options }}</h3>
                     <div class="row">
-                        <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-users&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
-                            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.admin_edit_in_acp }}</span>
-                        </a>
-                        <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
-                            {{ include('partials/icon.twig', {icon: 'gavel', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.admin_ban_in_acp }}</span>
-                        </a>
+                        {% if memperms.isbannedgroup %}
+                            <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-users&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.admin_edit_in_acp }}</span>
+                            </a>
+                            <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.admin_edit_ban_in_acp }}</span>
+                            </a>
+                            <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;action=lift&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                <span class="button__text">{{ lang.admin_lift_ban_in_acp }}</span>
+                            </a>
+                        {% else %}
+                            <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-users&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.admin_edit_in_acp }}</span>
+                            </a>
+                            <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                {{ include('partials/icon.twig', {icon: 'gavel', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.admin_ban_in_acp }}</span>
+                            </a>
+                        {% endif %}
                     </div>
                 </section>
             {% endif %}
