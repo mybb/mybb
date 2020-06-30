@@ -492,7 +492,7 @@ if($mybb->input['action'] == "permissions")
 			$forum = get_forum($fid);
 		}
 
-		$field_list = array();
+		$update_array = $field_list = array();
 		$fields_array = $db->show_fields_from("forumpermissions");
 		if(is_array($mybb->input['permissions']))
 		{
