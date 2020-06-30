@@ -4929,7 +4929,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
-		<template name="member_profile_adminoptions_manageban" version="1824"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
+		<template name="member_profile_adminoptions_manageban" version="1823"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
 </tr>
