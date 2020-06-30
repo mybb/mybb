@@ -4904,6 +4904,21 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
+		<template name="member_profile_adminoptions_manageban" version="1823"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
+</tr>
+<tr>
+<td class="trow1">
+<ul>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=lift&amp;uid={$uid}">{$lang->admin_lift_ban_in_acp}</a></li>
+</ul>
+</td>
+</tr>
+</table>
+<br />]]></template>
 		<template name="member_profile_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="member_profile_away" version="1801"><![CDATA[<fieldset>
 <legend><strong>{$lang->away_note}</strong></legend>
