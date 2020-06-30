@@ -2,24 +2,38 @@ name: Multi-branch Compatibility
 
 on:
   pull_request:
-    branches: [ feature ]
+    branches: [feature]
 
 jobs:
-  merge_test_19:
+  cherry_pick_develop19:
+    env:
+      HEAD_REF: ${{ github.ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      COMMITS: ${{ github.event.pull_request.commits }}
+      COMPARE_REF: develop/1.9
+    name: develop/1.9
     runs-on: ubuntu-latest
-
     steps:
+    - run: |
+        echo ::set-env name=FETCH_DEPTH::$(( $COMMITS + 1 ))
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/checkout@v2
-      with:
-        ref: develop/1.9
-
-    - name: Test merge
+        ref: ${{ env.HEAD_SHA }}
+        fetch-depth: ${{ env.FETCH_DEPTH }}
+    - run: |
+        git branch head_branch $HEAD_SHA
+        git fetch --no-tags --depth=1 origin $COMPARE_REF
+        git checkout -b $COMPARE_REF origin/$COMPARE_REF
+    - name: "cherry-pick test"
       run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        git merge --no-commit --allow-unrelated-histories ${{ github.event.pull_request.head.sha }} || true
+        START_PARENT_SHA=$( git rev-parse $HEAD_SHA~$COMMITS )
+        RANGE=$START_PARENT_SHA..$HEAD_SHA
+      
+        echo "cherry-pick $RANGE"
+        git cherry-pick --no-commit $RANGE &> /dev/null || true
         echo
-        git diff --check
+        git diff --check && echo "No conflicts detected" || true
+        
+    - name: "Cleanup"
+      run: |
+        git cherry-pick --abort || true
