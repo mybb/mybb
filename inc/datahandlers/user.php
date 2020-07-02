@@ -690,7 +690,7 @@ class UserDataHandler extends DataHandler
 		{
 			$options['dst'] = 0;
 		}
-		
+
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded" && $options['threadmode'] != ''))
 		{
 			$options['threadmode'] = '';
