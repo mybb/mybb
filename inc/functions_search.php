@@ -223,6 +223,10 @@ function get_visible_where($table_alias = null)
 	}
 
 	// Normal users
+	if($mybb->user['uid'] > 0 && $mybb->settings['showownunapproved'] == 1)
+	{
+		return "({$aliasdot}visible = 1 OR ({$aliasdot}visible = 0 AND {$aliasdot}uid = {$mybb->user['uid']}))";
+	}
 	return "{$aliasdot}visible = 1";
 }
 
