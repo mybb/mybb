@@ -691,16 +691,9 @@ class UserDataHandler extends DataHandler
 			$options['dst'] = 0;
 		}
 
-		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
+		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded" && $options['threadmode'] != ''))
 		{
-			if($mybb->settings['threadusenetstyle'])
-			{
-				$options['threadmode'] = 'threaded';
-			}
-			else
-			{
-				$options['threadmode'] = 'linear';
-			}
+			$options['threadmode'] = '';
 		}
 
 		// Verify the "threads per page" option.
