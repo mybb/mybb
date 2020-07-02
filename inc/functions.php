@@ -1885,7 +1885,7 @@ function get_moderated_fids($uid=0)
 		return false;
 	}
 
-	$fids = $child_fids = array();
+	$fids = array();
 
 	$modcache = $cache->read('moderators');
 	if(!empty($modcache))
@@ -1897,7 +1897,6 @@ function get_moderated_fids($uid=0)
 			if(isset($forum['users'][$uid]) && $forum['users'][$uid]['mid'])
 			{
 				$fids[] = $fid;
-				$child_fids += get_child_list($fid);
 				continue;
 			}
 
@@ -1906,12 +1905,9 @@ function get_moderated_fids($uid=0)
 				if(trim($group) != '' && isset($forum['usergroups'][$group]))
 				{
 					$fids[] = $fid;
-					$child_fids += get_child_list($fid);
 				}
 			}
 		}
-
-		$fids += $child_fids;
 	}
 
 	return $fids;
