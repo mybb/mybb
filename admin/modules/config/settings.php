@@ -1026,10 +1026,10 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Verify for admin email that can't be empty
-		if(isset($mybb->input['upsetting']['adminemail']) && !filter_var($mybb->input['upsetting']['adminemail'], FILTER_VALIDATE_EMAIL))
+		if(isset($mybb->input['upsetting']['adminemail']) && !validate_email_format($mybb->input['upsetting']['adminemail']))
 		{
-			flash_message($lang->error_admin_email_settings_empty, "error");
-			admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			unset($mybb->input['upsetting']['adminemail']);
+			$lang->success_settings_updated .= $lang->error_admin_email_settings_empty;
 		}
 
 		// Administrator is changing the login method.
