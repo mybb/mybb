@@ -1042,6 +1042,13 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Verify for admin email that can't be empty
+		if(isset($mybb->input['upsetting']['adminemail']) && !validate_email_format($mybb->input['upsetting']['adminemail']))
+		{
+			unset($mybb->input['upsetting']['adminemail']);
+			$lang->success_settings_updated .= $lang->error_admin_email_settings_empty;
+		}
+
 		// Administrator is changing the login method.
 		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
 		{
