@@ -42,10 +42,12 @@ function upgrade50_verify_email()
 
 	$output->print_header("Admin Email");
 
-	if(!is_array($errors)) {
+	if(!is_array($errors))
+	{
 		echo "<p>Checking if Admin Email setting is set correctly...</p>";
 		flush();
 	}
+	
 	if(empty($mybb->settings['adminemail']))
 	{
 		if(is_array($errors))
@@ -82,10 +84,13 @@ function upgrade50_verify_email()
 		<td class="first"><label for="usepresetemail">Select an option:</label></td>
 		<td class="alt_col last" width="70%">
 			<input type="radio" name="usepresetemail" value="current_user"'.$checked['current_user'].' />Use current user email: '.htmlspecialchars_uni($mybb->user['email']).'<br />';
-		if ($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== false) {
+		
+		if($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== false)
+		{
 			echo '
 			<input type="radio" name="usepresetemail" value="smtp"'.$checked['smtp'].' />Use SMTP username: '.htmlspecialchars_uni($mybb->settings['smtp_user']).'<br />';
 		}
+		
 		echo '
 			<input type="radio" name="usepresetemail" value="custom"'.$checked['custom'].' />Use custom
 		</td>
@@ -113,7 +118,7 @@ $("#userpresetemail_row input").change(function()
 </script>
 <p>Once you\'ve correctly entered the details above and are ready to proceed, click Next.</p>';
 
-	$output->print_footer("50_submit_email");
+		$output->print_footer("50_submit_email");
 	}
 	else
 	{
@@ -126,15 +131,19 @@ $("#userpresetemail_row input").change(function()
 function upgrade50_submit_email()
 {
 	global $output, $db, $mybb, $cache, $errors, $checked;
+	
 	if(empty($mybb->get_input('usepresetemail')) || !in_array($mybb->input['usepresetemail'], array('current_user', 'smtp', 'custom')))
  	{
 		$errors[] = "Please select an option for the admin email.";
 	}
+	
 	if($mybb->input['usepresetemail'] == 'smtp' && !($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user'])))
 	{
 		$errors[] = "Please select a different option. SMTP user setting is not configured.";
 	}
-	switch ($mybb->input['usepresetemail']) {
+	
+	switch ($mybb->input['usepresetemail'])
+	{
 		case 'current_user':
 			$email = $mybb->user['email'];
 			break;
@@ -145,12 +154,16 @@ function upgrade50_submit_email()
 			$email = $mybb->input['adminemail'];
 			break;
 	}
+	
 	$checked = array(
 		$mybb->input['usepresetemail'] => ' checked="checked"'
 	);
-	if(empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+	
+	if(empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+	{
 		$errors[] = "The email address given was invalid. Please enter a valid email address.";
 	}
+	
 	if(!empty($errors))
 	{
 		upgrade50_verify_email();
