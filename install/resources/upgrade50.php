@@ -169,7 +169,7 @@ function upgrade50_submit_email()
 {
 	global $output, $db, $mybb, $cache, $errors, $checked;
 	
-	if(empty($mybb->get_input('usepresetemail')) || !in_array($mybb->input['usepresetemail'], array('current_user', 'smtp', 'custom')))
+	if(empty($mybb->input['usepresetemail']) || !in_array($mybb->input['usepresetemail'], array('current_user', 'smtp', 'custom')))
  	{
 		$errors[] = "Please select an option for the admin email.";
 	}
