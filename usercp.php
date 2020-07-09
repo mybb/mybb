@@ -44,12 +44,6 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == 0)
 	error_no_permission();
 }
 
-if(!$mybb->user['pmfolders'])
-{
-	$mybb->user['pmfolders'] = '1**$%%$2**$%%$3**$%%$4**';
-	$db->update_query('users', array('pmfolders' => $mybb->user['pmfolders']), "uid = {$mybb->user['uid']}");
-}
-
 $errors = '';
 
 $mybb->input['action'] = $mybb->get_input('action');
@@ -245,10 +239,20 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		if($cfield == 'icq')
 		{
 			$user[$cfield] = $mybb->get_input($cfield, 1);
+
+			if(my_strlen($user[$cfield]) > 10)
+			{
+				error($lang->contact_field_icqerror);
+			}
 		}
 		else
 		{
 			$user[$cfield] = $mybb->get_input($cfield);
+
+			if(my_strlen($user[$cfield]) > 75)
+			{
+				error($lang->contact_field_error);
+			}
 		}
 	}
 
@@ -2092,7 +2096,7 @@ if($mybb->input['action'] == "addsubscription")
 	}
 }
 
-if($mybb->input['action'] == "removesubscription")
+if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "post" || verify_post_check($mybb->get_input('my_post_key'), true)))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -2155,6 +2159,83 @@ if($mybb->input['action'] == "removesubscription")
 			$url = "usercp.php?action=subscriptions";
 		}
 		redirect($url, $lang->redirect_subscriptionremoved);
+	}
+}
+
+// Show remove subscription form when GET method and without valid my_post_key
+if($mybb->input['action'] == "removesubscription")
+{
+	$referrer = '';
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+
+		add_breadcrumb($lang->nav_forumsubscriptions, "usercp.php?action=forumsubscriptions");
+		add_breadcrumb($lang->nav_removesubscription);
+
+		$forumpermissions = forum_permissions($forum['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		$lang->unsubscribe_from_forum = $lang->sprintf($lang->unsubscribe_from_forum, $forum['name']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_display_forum");
+
+		eval("\$remove_forum_subscription = \"".$templates->get("usercp_removesubscription_forum")."\";");
+		output_page($remove_forum_subscription);
+		exit;
+	}
+	else
+	{
+		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread || $thread['visible'] == -1)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
+		add_breadcrumb($lang->nav_removesubscription);
+
+		$forumpermissions = forum_permissions($thread['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$lang->unsubscribe_from_thread = $lang->sprintf($lang->unsubscribe_from_thread, $thread['subject']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_display_thread");
+
+		eval("\$remove_thread_subscription = \"".$templates->get("usercp_removesubscription_thread")."\";");
+		output_page($remove_thread_subscription);
+		exit;
 	}
 }
 
@@ -2342,7 +2423,7 @@ if($mybb->input['action'] == "editsig")
 		$sig = htmlspecialchars_uni($sig);
 		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 
-		if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
+		if($mybb->settings['sigmycode'] != 0 && $mybb->settings['bbcodeinserter'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
 			$codebuttons = build_mycode_inserter("signature");
 		}
@@ -3845,10 +3926,6 @@ if($mybb->input['action'] == "attachments")
 
 	$attachments = '';
 
-	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
-	$usage = $db->fetch_array($query);
-	$totalattachments = $usage['acount'];
-
 	// Pagination
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -3861,12 +3938,6 @@ if($mybb->input['action'] == "attachments")
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
-		$pages = ceil($totalattachments / $perpage);
-		if($page > $pages)
-		{
-			$start = 0;
-			$page = 1;
-		}
 	}
 	else
 	{
@@ -3886,7 +3957,7 @@ if($mybb->input['action'] == "attachments")
 		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
 
-	$bandwidth = $totaldownloads = 0;
+	$bandwidth = $totaldownloads = $totalusage = $totalattachments = $processedattachments = 0;
 	while($attachment = $db->fetch_array($query))
 	{
 		if($attachment['dateline'] && $attachment['tid'])
@@ -3909,15 +3980,33 @@ if($mybb->input['action'] == "attachments")
 			// Add to bandwidth total
 			$bandwidth += ($attachment['filesize'] * $attachment['downloads']);
 			$totaldownloads += $attachment['downloads'];
+			$totalusage += $attachment['filesize'];
+			++$totalattachments;
 		}
 		else
 		{
 			// This little thing delets attachments without a thread/post
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
+		++$processedattachments;
 	}
 
-	$totalusage = $usage['ausage'];
+	if($processedattachments >= $perpage || $page > 1)
+	{
+		$query = $db->query("
+			SELECT SUM(a.filesize) AS ausage, COUNT(a.aid) AS acount
+			FROM ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE a.uid='".$mybb->user['uid']."' {$f_perm_sql}
+		");
+		$usage = $db->fetch_array($query);
+		$totalusage = $usage['ausage'];
+		$totalattachments = $usage['acount'];
+
+		$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
+	}
+
 	$friendlyusage = get_friendly_size((int)$totalusage);
 	if($mybb->usergroup['attachquota'])
 	{
@@ -3932,7 +4021,6 @@ if($mybb->input['action'] == "attachments")
 		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
 
-	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
 	$bandwidth = get_friendly_size($bandwidth);
 
 	if(!$attachments)

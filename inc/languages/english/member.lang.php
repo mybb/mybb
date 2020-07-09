@@ -191,6 +191,8 @@ $l['reputation_details'] = "Details";
 $l['already_logged_in'] = "Notice: You are already currently logged in as {1}.";
 $l['admin_edit_in_acp'] = "Edit this user in Admin CP";
 $l['admin_ban_in_acp'] = "Ban this user in Admin CP";
+$l['admin_lift_ban_in_acp'] = "Lift ban in Admin CP";
+$l['admin_edit_ban_in_acp'] = "Edit ban in Admin CP";
 $l['admin_options'] = "Administrator Options";
 
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, please check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";

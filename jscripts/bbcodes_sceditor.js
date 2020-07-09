@@ -255,7 +255,9 @@ $(function ($) {
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
 		quoteType: function (val, name) {
-			return "'" + val.replace("'", "\\'") + "'";
+			var quoteChar = val.indexOf('"') !== -1 ? "'" : '"';
+
+			return quoteChar + val + quoteChar;
 		},
 		breakStart: true,
 		breakEnd: true
@@ -520,6 +522,106 @@ $(function ($) {
 		tooltip: 'Insert a video'
 	});
 
+	// Update image command to support MyBB syntax
+	$.sceditor.formats.bbcode.set('img', {
+		format: function (element, content) {
+			if ($(element).data('sceditor-emoticon'))
+				return content;
+
+			var url = $(element).attr('src'),
+				width = $(element).attr('width'),
+				height = $(element).attr('height'),
+				align = $(element).data('scealign');
+
+			var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
+				? '=' + width + 'x' + height
+				: ''
+			;
+
+			if (align === 'left' || align === 'right')
+				attrs += ' align='+align
+
+			return '[img' + attrs + ']' + url + '[/img]';
+		},
+		html: function (token, attrs, content) {
+			var	width, height, match,
+				align = attrs.align,
+				attribs = '';
+
+			// handle [img=340x240]url[/img]
+			if (attrs.defaultattr) {
+				match = attrs.defaultattr.split(/x/i);
+
+				width  = match[0];
+				height = (match.length === 2 ? match[1] : match[0]);
+
+				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
+					attribs +=
+						' width="' + $.sceditor.escapeEntities(width, true) + '"' +
+						' height="' + $.sceditor.escapeEntities(height, true) + '"';
+				}
+			}
+
+			if (align === 'left' || align === 'right')
+				attribs += ' style="float: ' + align + '" data-scealign="' + align + '"';
+
+			return '<img' + attribs +
+				' src="' + $.sceditor.escapeUriScheme(content) + '" />';
+		}
+	})
+
+	$.sceditor.command.set('image', {
+		_dropDown: function (editor, caller) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+				'<div>' +
+				'<label for="image">' + editor._('URL') + ':</label> ' +
+				'<input type="text" id="image" placeholder="https://" />' +
+				'</div>' +
+				'<div>' +
+				'<label for="width">' + editor._('Width (optional)') + ':</label> ' +
+				'<input type="text" id="width" size="2" />' +
+				'</div>' +
+				'<div>' +
+				'<label for="height">' + editor._('Height (optional)') + ':</label> ' +
+				'<input type="text" id="height" size="2" />' +
+				'</div>' +
+				'<div>' +
+				'<input type="button" class="button" value="' + editor._('Insert') + '" />' +
+				'</div>' +
+				'</div>'
+			);
+
+			$content.find('.button').on('click', function (e) {
+				var url = $content.find('#image').val(),
+					width = $content.find('#width').val(),
+					height = $content.find('#height').val()
+				;
+
+				var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
+					? '=' + width + 'x' + height
+					: ''
+				;
+
+				if (url)
+					editor.insert('[img' + attrs + ']' + url + '[/img]');
+
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertimage', $content.get(0));
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('image')._dropDown(this, caller);
+		},
+		txtExec: function (caller) {
+			$.sceditor.command.get('image')._dropDown(this, caller);
+		},
+	});
+
 	// Remove last bits of table, superscript/subscript, youtube and ltr/rtl support
 	$.sceditor.command
 		.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
@@ -531,44 +633,6 @@ $(function ($) {
 	if (partialmode) {
 		$.sceditor.formats.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
 		$.sceditor.command
-			.set('image', {
-				exec: function (caller) {
-					var editor = this,
-						content = $(this._('<form><div><label for="link">{0}</label> <input type="text" id="image" value="http://" /></div>' +
-							'<div><label for="width">{1}</label> <input type="text" id="width" size="2" /></div>' +
-							'<div><label for="height">{2}</label> <input type="text" id="height" size="2" /></div></form>',
-							this._("URL:"),
-							this._("Width (optional):"),
-							this._("Height (optional):")
-						))
-						.submit(function () {
-							return false;
-						});
-
-					content.append($(this._('<div><input type="button" class="button" value="Insert" /></div>',
-						this._("Insert")
-					)).on('click', function (e) {
-						var $form = $(this).parent('form'),
-							val = $form.find('#image').val(),
-							width = $form.find('#width').val(),
-							height = $form.find('#height').val(),
-							attrs = '';
-
-						if (width && height) {
-							attrs = '=' + width + 'x' + height;
-						}
-
-						if (val && val !== 'http://') {
-							editor.wysiwygEditorInsertHtml('[img' + attrs + ']' + val + '[/img]');
-						}
-
-						editor.closeDropDown(true);
-						e.preventDefault();
-					}));
-
-					editor.createDropDown(caller, 'insertimage', content.get(0));
-				}
-			})
 			.set('quote', {
 				exec: function () {
 					this.insert('[quote]', '[/quote]');

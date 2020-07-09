@@ -194,7 +194,7 @@ class DB_PgSQL implements DB_Base
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 
@@ -962,7 +962,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**
