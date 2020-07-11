@@ -12051,6 +12051,14 @@ if(use_xmlhttprequest == "1")
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 	{$headerinclude}
+		<script>
+		$( document ).ready(function() {
+			var numAttach = $('input[type=checkbox][name^=attachments]').length
+			if(numAttach == 0){
+				$('input[type=submit][class=button]').hide();			
+			}
+		});
+	</script>
 </head>
 <body>
 	{$header}
