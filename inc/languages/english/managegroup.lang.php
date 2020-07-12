@@ -11,7 +11,7 @@ $l['nav_group_memberships'] = "Group Memberships";
 
 $l['not_leader_of_this_group'] = "Sorry, but you are not a leader of this user group.";
 $l['invalid_group'] = "This user group does not exist.";
-$l['pending_requests'] ="Pending Join Requests";
+$l['pending_requests'] = "Pending Join Requests";
 $l['num_requests_pending'] = "There are currently <strong>{1}</strong> pending join requests for this user group.";
 $l['group_management'] = "Group Management";
 $l['members_of'] = "Members in \"{1}\"";
