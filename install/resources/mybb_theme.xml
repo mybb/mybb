@@ -12051,14 +12051,6 @@ if(use_xmlhttprequest == "1")
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 	{$headerinclude}
-		<script>
-		$( document ).ready(function() {
-			var numAttach = $('input[type=checkbox][name^=attachments]').length
-			if(numAttach == 0){
-				$('input[type=submit][class=button]').hide();			
-			}
-		});
-	</script>
 </head>
 <body>
 	{$header}
@@ -12081,10 +12073,7 @@ if(use_xmlhttprequest == "1")
 						{$attachments}
 					</table>
 					<br />
-					<div align="center">
-						<input type="hidden" name="action" value="do_attachments" />
-						<input type="submit" class="button" value="{$lang->delete_attachments}" />
-					</div>
+					{$delete_button}
 				</form>
 				{$multipage}
 				<br />

@@ -4023,10 +4023,16 @@ if($mybb->input['action'] == "attachments")
 
 	$bandwidth = get_friendly_size($bandwidth);
 
+	$delete_button = "<div align=\"center\">
+						<input type=\"hidden\" name=\"action\" value=\"do_attachments\" />
+						<input type=\"submit\" class=\"button\" value=\"{$lang->delete_attachments}\" />
+					</div>";
+					
 	if(!$attachments)
 	{
 		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
 		$usagenote = '';
+		$delete_button = '';
 	}
 
 	$plugins->run_hooks("usercp_attachments_end");
