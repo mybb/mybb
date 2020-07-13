@@ -958,6 +958,8 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
 		$set_captcha_image = false;
 		if(isset($mybb->input['upsetting']['captchaimage'])){
@@ -967,13 +969,13 @@ if($mybb->input['action'] == "change")
 			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
 			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
 
-			if(in_array($captchaimage, array(4, 5)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+			if(in_array($captchaimage, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
 				$set_captcha_image = true;
 			}
-			if(in_array($captchaimage, array(8)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+			if(in_array($captchaimage, array(RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
 				$set_captcha_image = true;
 			}
-			if(in_array($captchaimage, array(6, 7)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+			if(in_array($captchaimage, array(HCAPTCHA, HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
 				$set_captcha_image = true;
 			}
 		}
@@ -986,17 +988,17 @@ if($mybb->input['action'] == "change")
 		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
 		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
 
-		if(in_array($captchaimage, array(4, 5)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+		if(in_array($captchaimage, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
 			$set_captcha_image = true;
 		}
-		if(in_array($captchaimage, array(8)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+		if(in_array($captchaimage, array(RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
 			$set_captcha_image = true;
 		}
-		if(in_array($captchaimage, array(6, 7)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+		if(in_array($captchaimage, array(6, HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
 			$set_captcha_image = true;
 		}
 		if($set_captcha_image){
-			$mybb->input['upsetting']['captchaimage'] = 1;
+			$mybb->input['upsetting']['captchaimage'] = DEFAULT_CAPTCHA;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
 
