@@ -958,17 +958,48 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
-		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(8)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey'] || !$mybb->input['upsetting']['recaptchascore']))
-		   || (in_array($mybb->settings['captchaimage'], array(8)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey'] || !$mybb->settings['recaptchascore']))
-		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
-		{
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
+		$set_captcha_image = false;
+		if(isset($mybb->input['upsetting']['captchaimage'])){
+			$captchaimage = $mybb->input['upsetting']['captchaimage'];
+			$recaptchaprivatekey = $mybb->input['upsetting']['recaptchaprivatekey'];
+			$recaptchapublickey = $mybb->input['upsetting']['recaptchapublickey'];
+			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
+			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
+
+			if(in_array($captchaimage, array(4, 5)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+				$set_captcha_image = true;
+			}
+			if(in_array($captchaimage, array(8)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+				$set_captcha_image = true;
+			}
+			if(in_array($captchaimage, array(6, 7)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+				$set_captcha_image = true;
+			}
+		}
+
+		//Checking settings for reCAPTCHA or hCaptcha and public/private key not set?
+		$captchaimage = $mybb->settings['captchaimage'];
+		$recaptchaprivatekey = $mybb->settings['recaptchaprivatekey'];
+		$recaptchapublickey = $mybb->settings['recaptchapublickey'];
+		$recaptchascore = $mybb->settings['recaptchascore'];
+		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
+		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
+
+		if(in_array($captchaimage, array(4, 5)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+			$set_captcha_image = true;
+		}
+		if(in_array($captchaimage, array(8)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+			$set_captcha_image = true;
+		}
+		if(in_array($captchaimage, array(6, 7)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+			$set_captcha_image = true;
+		}
+		if($set_captcha_image){
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
+
 
 		// If using fulltext then enforce minimum word length given by database
 		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
