@@ -1819,7 +1819,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 /**
  * Get an array of fids that the forum moderator has access to.
  * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
- * 
+ *
  * @param int $uid The user ID (0 assumes current user)
  * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
  */
@@ -4905,12 +4905,14 @@ function leave_usergroup($uid, $leavegroup)
  * Get the current location taking in to account different web serves and systems
  *
  * @param boolean $fields True to return as "hidden" fields
- * @param array $ignore Array of fields to ignore if first argument is true
+ * @param array $ignore Array of fields to ignore for returning "hidden" fields or URL being accessed
  * @param boolean $quick True to skip all inputs and return only the file path part of the URL
- * @return string The current URL being accessed
+ * @return string|array The current URL being accessed or form data if $fields is true
  */
 function get_current_location($fields = false, $ignore = array(), $quick = false)
 {
+	global $mybb;
+
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
@@ -4942,14 +4944,13 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
 		return $location;
 	}
 
+	if(!is_array($ignore))
+	{
+		$ignore = array($ignore);
+	}
+
 	if($fields == true)
 	{
-		global $mybb;
-
-		if(!is_array($ignore))
-		{
-			$ignore = array($ignore);
-		}
 		$fields = [];
 		if(!empty($mybb->input))
 		{
@@ -4968,39 +4969,46 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
 	}
 	else
 	{
+		$parameters = array();
+
 		if(isset($_SERVER['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
+			$current_query_string = $_SERVER['QUERY_STRING'];
 		}
 		elseif(isset($_ENV['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
+			$current_query_string = $_ENV['QUERY_STRING'];
+		} else
+		{
+			$current_query_string = '';
 		}
 
-		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
+		parse_str($current_query_string, $current_parameters);
+
+		foreach($current_parameters as $name => $value)
+		{
+			if(!in_array($name, $ignore))
+			{
+				$parameters[$name] = $value;
+			}
+		}
+
+		if($mybb->request_method === 'post')
 		{
 			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
 
 			foreach($post_array as $var)
 			{
-				if(isset($_POST[$var]))
+				if(isset($_POST[$var]) && !in_array($var, $ignore))
 				{
-					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
+					$parameters[$var] = $_POST[$var];
 				}
 			}
+		}
 
-			if(isset($addloc) && is_array($addloc))
-			{
-				if(strpos($location, "?") === false)
-				{
-					$location .= "?";
-				}
-				else
-				{
-					$location .= "&amp;";
-				}
-				$location .= implode("&amp;", $addloc);
-			}
+		if(!empty($parameters))
+		{
+			$location .= '?'.http_build_query($parameters, '', '&amp;');
 		}
 
 		return $location;
