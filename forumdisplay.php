@@ -833,7 +833,7 @@ else
 	$announcementlist = '';
 }
 
-$tids = $threadCache = [];
+$tids = $threadCache = array();
 if($mybb->settings['allowposticons'] == 1){
 	$icon_cache = $cache->read("posticons");
 }
