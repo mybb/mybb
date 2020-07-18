@@ -670,6 +670,23 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$posticons = get_post_icons();
 			}
 		}
+
+		if($postoptions['subscriptionmethod'] == "none")
+		{
+			$newthread['subscriptionmethod']['none'] = true;
+		}
+		else if($postoptions['subscriptionmethod'] == "email")
+		{
+			$newthread['subscriptionmethod']['email'] = true;
+		}
+		else if($postoptions['subscriptionmethod'] == "pm")
+		{
+			$newthread['subscriptionmethod']['pm'] = true;
+		}
+		else
+		{
+			$newthread['subscriptionmethod']['dont'] = true;
+		}
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 	}
 
