@@ -717,8 +717,9 @@ if($has_announcements == true)
 }
 
 $tids = $threadCache = [];
-$icon_cache = $cache->read("posticons");
-
+if($mybb->settings['allowposticons'] == 1){
+	$icon_cache = $cache->read("posticons");
+}
 if($fpermissions['canviewthreads'] != 0)
 {
 	$plugins->run_hooks('forumdisplay_get_threads');
@@ -746,7 +747,9 @@ if($fpermissions['canviewthreads'] != 0)
 			$ratings = true; // Looks for ratings in the forum
 		}
 
-		$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+		if($mybb->settings['allowposticons'] == 1){
+			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 		if($thread['moved'] != 0)
