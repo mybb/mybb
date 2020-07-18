@@ -104,10 +104,12 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 	}
 }
 
-// Does this forum allow post icons? If so, fetch the post icons.
-if($forum['allowpicons'] != 0)
-{
-	$posticons = get_post_icons();
+if($mybb->settings['allowposticons'] == 1){
+	// Does this forum allow post icons? If so, fetch the post icons.
+	if($forum['allowpicons'] != 0)
+	{
+		$posticons = get_post_icons();
+	}
 }
 
 // If we have a currently logged in user then fetch the change user box.
@@ -695,9 +697,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$icon = $post['icon'];
-		if($forum['allowpicons'] != 0)
-		{
-			$posticons = get_post_icons();
+		if($mybb->settings['allowposticons'] == 1){
+			if($forum['allowpicons'] != 0)
+			{
+				$posticons = get_post_icons();
+			}
 		}
 
 		if($postoptions['subscriptionmethod'] == "none")
