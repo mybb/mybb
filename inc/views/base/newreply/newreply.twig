@@ -52,7 +52,7 @@
                 <input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newreply.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
                 <section class="section section--form compose__primary-section">
                     <div class="row row--form field">
-                        <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</h3>
+                        <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</label></h3>
                         <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" id="subject" value="{{ newreply.subject }}" tabindex="1" />
                     </div>
                     {{ loginbox|raw }}
