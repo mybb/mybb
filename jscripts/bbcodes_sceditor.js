@@ -405,53 +405,6 @@ $(function ($) {
 		txtExec: ['[code]', '[/code]'],
 	});
 
-	// Update email to support description
-	$.sceditor.command.set('email', {
-		_dropDown: function (editor, caller) {
-			var $content;
-
-			$content = $(
-				'<div>' +
-				'<div>' +
-				'<label for="email">' + editor._('E-mail:') + '</label> ' +
-				'<input type="text" id="email" />' +
-				'</div>' +
-				'<div>' +
-				'<label for="des">' + editor._('Description (optional):') + '</label> ' +
-				'<input type="text" id="des" />' +
-				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
-				'</div>'
-			);
-
-			$content.find('.button').on('click', function (e) {
-				var val = $content.find('#email').val(),
-					description = $content.find('#des').val();
-
-				if (val) {
-					// needed for IE to reset the last range
-					$(editor).trigger('focus');
-
-					if (!editor.getRangeHelper().selectedHtml() || description) {
-						if (!description)
-							description = val;
-
-						editor.insert('[email=' + val + ']' + description + '[/email]');
-					} else
-						editor.execCommand('createlink', 'mailto:' + val);
-				}
-
-				editor.closeDropDown(true);
-				e.preventDefault();
-			});
-
-			editor.createDropDown(caller, 'insertemail', $content.get(0));
-		},
-		exec: function (caller) {
-			$.sceditor.command.get('email')._dropDown(this, caller);
-		}
-	});
-
 	// Add MyBB video command
 	$.sceditor.formats.bbcode.set('video', {
 		allowsEmpty: true,
@@ -639,15 +592,4 @@ $(function ($) {
 				}
 			});
 	}
-
-	// Fix url code
-	$.sceditor.formats.bbcode.set('url', {
-		html: function (token, attrs, content) {
-
-			if (!attrs.defaultattr)
-				attrs.defaultattr = content;
-
-			return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
-		}
-	});
 });
