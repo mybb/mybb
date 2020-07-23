@@ -363,13 +363,13 @@ $l['days_short'] = "d";
 $l['hour'] = "Hour";
 $l['hour_short'] = "h";
 $l['hours'] = "Hours";
-$l['hours_short'] ="h";
+$l['hours_short'] = "h";
 $l['minute'] = "Minute";
-$l['minute_short'] ="m";
+$l['minute_short'] = "m";
 $l['minutes'] = "Minutes";
 $l['minutes_short'] = "m";
 $l['second'] = "Second";
-$l['second_short'] ="s";
+$l['second_short'] = "s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 

@@ -33,9 +33,7 @@ $l['add_public_event'] = "Add Public Event";
 
 $l['calendar'] = "Calendar";
 
-$l['jump_month'] ="Jump to month";
-
-$l['go_week'] = "Go to Week";
+$l['jump_month'] = "Jump to month";
 
 $l['birthdays_on_day'] = "Birthdays on {1}";
 $l['birthdayhidden'] = "Hidden";
