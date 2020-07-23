@@ -541,7 +541,7 @@ function my_date($format, $stamp = 0, $offset = "", $ty = 1, $adodb = false)
  */
 function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "text", $message_text = "", $return_email = "")
 {
-	global $mybb;
+	global $mybb, $plugins;
 	static $mail;
 
 	// Does our object not exist? Create it
@@ -549,15 +549,20 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 	{
 		require_once MYBB_ROOT."inc/class_mailhandler.php";
 
-		if($mybb->settings['mail_handler'] == 'smtp')
+		$plugins->run_hooks('my_mail_mailhandler_init', $mail);
+
+		if(!is_object($mail) || !($mail instanceof MailHandler))
 		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+				$mail = new SmtpMail();
+			}
+			else
+			{
+				require_once MYBB_ROOT."inc/mailhandlers/php.php";
+				$mail = new PhpMail();
+			}
 		}
 	}
 
