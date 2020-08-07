@@ -209,13 +209,28 @@ function upload_avatar($avatar=array(), $uid=0)
 		return $ret;
 	}
 
+	// Check a list of known MIME types to establish what kind of avatar we're uploading
+	$attachtypes = (array)$cache->read('attachtypes');
+	
+	$imagesexts = array_filter($attachtypes, 'get_images_exts');
+	$validavatarexts = array_filter($imagesexts, 'get_images_avatar_exts');
+	if (count($validavatarexts)>0)
+	{
+		$pattern = "#^(".implode('|', array_keys($validavatarexts))."$#i";
+	}
+	else
+	{
+		// Didn't find extensions ? Using default ones
+		$pattern = "#^(gif|jpg|jpeg|jpe|bmp|png)$#i";
+	}
+	
 	// Check we have a valid extension
-    	$ext = get_extension(my_strtolower($avatar['name']));
-    	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
-    	{
-        	$ret['error'] = $lang->error_avatartype;
-        	return $ret;
-    	}
+	$ext = get_extension(my_strtolower($avatar['name']));
+	if(!preg_match($pattern, $ext))
+	{
+		$ret['error'] = $lang->error_avatartype;
+		return $ret;
+	}
 
 	if(defined('IN_ADMINCP'))
 	{
@@ -293,9 +308,6 @@ function upload_avatar($avatar=array(), $uid=0)
 			}
 		}
 	}
-
-	// Check a list of known MIME types to establish what kind of avatar we're uploading
-	$attachtypes = (array)$cache->read('attachtypes');
 
 	$allowed_mime_types = array();
 	foreach($attachtypes as $attachtype)
@@ -575,7 +587,8 @@ function upload_attachment($attachment, $update_attachment=false)
 	);
 
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
-	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+	$imagesexts = array_filter($attachtypes, 'get_images_exts');
+	if(in_array($ext, array_keys($imagesexts)))
 	{
 		// Check a list of known MIME types to establish what kind of image we're uploading
 		switch(my_strtolower($file['type']))
@@ -908,4 +921,24 @@ function upload_file($file, $path, $filename="")
 	}
 
 	return $upload;
+}
+
+/**
+ * Returns extension if mimetype begins with 'image/'
+ * @param array $ext Extension array record
+ * @return array|null the initial record or nothing
+ */
+function get_images_exts($ext)
+{
+	return preg_match('/^image\/.+/', $var['mimetype']);
+}
+
+/**
+ * Returns extension if avatarfile is set to 1
+ * @param array $ext Extension array record
+ * @return array|null the initial record or nothing
+ */
+function get_images_avatar_exts($ext)
+{
+	return $var['avatarfile'] == 1;
 }
