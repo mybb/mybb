@@ -216,7 +216,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	$validavatarexts = array_filter($imagesexts, 'get_images_avatar_exts');
 	if (count($validavatarexts)>0)
 	{
-		$pattern = "#^(".implode('|', array_keys($validavatarexts))."$#i";
+		$pattern = "#^(".implode('|', array_keys($validavatarexts)).")$#i";
 	}
 	else
 	{
