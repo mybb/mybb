@@ -58,7 +58,7 @@ $(function ($) {
 	$.sceditor.formats.bbcode
 		.set('align', {
 			html: function (element, attrs, content) {
-				return '<div align="' + (attrs.defaultattr || 'left') + '">' + content + '</div>';
+				return '<div align="' + ($.sceditor.escapeEntities(attrs.defaultattr) || 'left') + '">' + content + '</div>';
 			},
 			isInline: false
 		});
@@ -168,7 +168,7 @@ $(function ($) {
 			if (size < 0) {
 				size = 0;
 			}
-			return '<font data-scefontsize="' + attrs.defaultattr + '" size="' + size + '">' + content + '</font>';
+			return '<font data-scefontsize="' + $.sceditor.escapeEntities(attrs.defaultattr) + '" size="' + size + '">' + content + '</font>';
 		}
 	});
 
@@ -218,7 +218,6 @@ $(function ($) {
 			var author = '',
 				$elm = $(element),
 				$cite = $elm.children('cite').first();
-			$cite.html($cite.text());
 
 			if ($cite.length === 1 || $elm.data('author')) {
 				author = $cite.text() || $elm.data('author');
@@ -244,13 +243,13 @@ $(function ($) {
 			var data = '';
 
 			if (attrs.pid)
-				data += ' data-pid="' + attrs.pid + '"';
+				data += ' data-pid="' + $.sceditor.escapeEntities(attrs.pid) + '"';
 
 			if (attrs.dateline)
-				data += ' data-dateline="' + attrs.dateline + '"';
+				data += ' data-dateline="' + $.sceditor.escapeEntities(attrs.dateline) + '"';
 
 			if (typeof attrs.defaultattr !== "undefined")
-				content = '<cite>' + attrs.defaultattr.replace(/ /g, '&nbsp;') + '</cite>' + content;
+				content = '<cite>' + $.sceditor.escapeEntities(attrs.defaultattr).replace(/ /g, '&nbsp;') + '</cite>' + content;
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
@@ -280,7 +279,7 @@ $(function ($) {
 		html: function (token, attrs, content) {
 			if (typeof attrs.defaultattr == 'string' && attrs.defaultattr != '' && attrs.defaultattr != '{defaultattr}') {
 				return '<font face="' +
-					attrs.defaultattr +
+					$.sceditor.escapeEntities(attrs.defaultattr) +
 					'">' + content + '</font>';
 			} else {
 				return content;
