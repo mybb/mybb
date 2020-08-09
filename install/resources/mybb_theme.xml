@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1823">
+<theme name="MyBB Master Style" version="1824">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -14138,9 +14138,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1824"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1823"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1824"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
