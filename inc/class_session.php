@@ -42,7 +42,7 @@ class session
 	 */
 	public $ignore_parameters = array(
 		'my_post_key',
-		'logoutkey',
+		'logoutkey'
 	);
 
 	/**
