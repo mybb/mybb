@@ -1,5 +1,5 @@
 <div class="user-list__user">
-    <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">
+    <a href="{{ get_profile_link(user.uid)|raw }}" class="avatar-profile-link">
         {{ render_avatar(url=user.avatar, alt=user.username_raw, class='avatar--large') }}
     </a>
     <h2 class="user-list__username">{{ user.profilelink|raw }}</h2>

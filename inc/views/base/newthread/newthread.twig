@@ -53,7 +53,7 @@
                 <input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newthread.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
                 <section class="section section--form compose__primary-section">
                     <div class="row row--form field">
-                        <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</h3>
+                        <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</label></h3>
                         <div class="compose__subject">
                             {% if newthread.showprefixes %}
                                 <div class="select-field select-field--subject">
@@ -190,10 +190,10 @@
 
                 {{ captcha|raw }}
 
+            </div>
             {% if newthread.showattachments %}
                 {% include 'misc/attachments.twig' %}
             {% endif %}
-
             <div class="form__submit">
                 <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
                     {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
