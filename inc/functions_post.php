@@ -435,6 +435,8 @@ function build_postbit($post, $post_type=0)
 
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
+						$post['fieldvalue_option'] = '';
+
 						foreach($useropts as $val)
 						{
 							if($val != '')
