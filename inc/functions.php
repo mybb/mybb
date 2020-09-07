@@ -1873,7 +1873,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 /**
  * Get an array of fids that the forum moderator has access to.
  * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
- * 
+ *
  * @param int $uid The user ID (0 assumes current user)
  * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
  */
