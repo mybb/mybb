@@ -62,7 +62,8 @@ function remove_attachment($pid, $posthash, $aid)
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
-		if(@is_dir($uploadpath."/".$date_directory[0]))
+		$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
+		if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadpath."/".$date_directory[0]))
 		{
 			delete_upload_directory($uploadpath."/".$date_directory[0]);
 		}
@@ -131,7 +132,8 @@ function remove_attachments($pid, $posthash="")
 			}
 
 			$date_directory = explode('/', $attachment['attachname']);
-			if(@is_dir($uploadpath."/".$date_directory[0]))
+			$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
+			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadpath."/".$date_directory[0]))
 			{
 				delete_upload_directory($uploadpath."/".$date_directory[0]);
 			}
@@ -178,6 +180,18 @@ function remove_avatars($uid, $exclude="")
 
 		@closedir($dir);
 	}
+}
+
+/**
+ * Create the attachment directory index file.
+ * 
+ * @param string $path The path to the attachment directory to create the file in.
+ */
+function create_attachment_index($path)
+{
+	$index = @fopen(rtrim($path, '/').'/index.html', 'w');
+	@fwrite($index, '<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>');
+	@fclose($index);
 }
 
 /**
@@ -487,9 +501,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			}
 			else
 			{
-				$index = @fopen($mybb->settings['uploadspath']."/".$month_dir."/index.html", 'w');
-				@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
-				@fclose($index);
+				create_attachment_index($mybb->settings['uploadspath']."/".$month_dir);
 			}
 		}
 	}
@@ -643,7 +655,8 @@ function upload_attachment($attachment, $update_attachment=false)
 			}
 
 			$date_directory = explode('/', $prevattach['attachname']);
-			if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+			$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
+			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
 			{
 				delete_upload_directory($mybb->settings['uploadspath']."/".$date_directory[0]);
 			}
@@ -857,6 +870,8 @@ function delete_upload_directory($path = '')
 
 	$deleted = false;
 
+	$deleted_index = @unlink(rtrim($path, '/').'/index.html');
+
 	$deleted = @rmdir($path);
 
 	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
@@ -874,6 +889,12 @@ function delete_upload_directory($path = '')
 	);
 
 	$plugins->run_hooks('delete_upload_directory', $hook_params);
+
+	// If not successfully deleted then reinstante the index file
+	if(!$deleted && $deleted_index)
+	{
+		create_attachment_index($path);
+	}
 
 	return $deleted;
 }
