@@ -477,7 +477,7 @@ class DefaultForm
 			}
 		}
 
-		if($options['main_option'] && $is_first)
+		if(isset($options['main_option']) && $is_first)
 		{
 			$select_add = '';
 			if($selected == -1)

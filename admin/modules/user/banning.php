@@ -418,9 +418,10 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
+	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
+		$current_page = $mybb->input['page'];
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);
@@ -444,7 +445,11 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
-	if($mybb->input['uid'] && !$mybb->input['username'])
+	$mybb->input['username'] = $mybb->get_input('username');
+	$mybb->input['reason'] = $mybb->get_input('reason');
+	$mybb->input['bantime'] = $mybb->get_input('bantime');
+
+	if(isset($mybb->input['uid']) && empty($mybb->input['username']))
 	{
 		$user = get_user($mybb->input['uid']);
 		$mybb->input['username'] = $user['username'];

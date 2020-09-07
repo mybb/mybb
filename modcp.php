@@ -1936,7 +1936,7 @@ if($mybb->input['action'] == "announcements")
 			foreach($global_announcements as $aid => $announcement)
 			{
 				$trow = alt_trow();
-				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+				if((isset($announcement['startdate']) && $announcement['startdate'] > TIME_NOW) || (isset($announcement['enddate']) && $announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
 					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 				}
@@ -4804,11 +4804,11 @@ if(!$mybb->input['action'])
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
 				$data = my_unserialize($logitem['data']);
-				if($data['uid'])
+				if(isset($data['uid']))
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 				}
-				if($data['aid'])
+				if(isset($data['aid']))
 				{
 					$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 					$data['announcement'] = get_announcement_link($data['aid']);

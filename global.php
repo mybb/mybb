@@ -91,7 +91,7 @@ $lang->load('global');
 $lang->load('messages');
 
 // Wipe lockout cookie if enough time has passed
-if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+if(isset($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
 {
 	my_unsetcookie('lockoutexpiry');
 }
@@ -1225,16 +1225,12 @@ if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->setting
 }
 
 // work out which items the user has collapsed
-$colcookie = '';
+$collapse = $collapsed = $collapsedimg = $collapsedthead = array();
+
 if(!empty($mybb->cookies['collapsed']))
 {
 	$colcookie = $mybb->cookies['collapsed'];
-}
 
-$collapse = $collapsed = $collapsedimg = $collapsedthead = array();
-
-if($colcookie)
-{
 	// Preserve and don't unset $collapse, will be needed globally throughout many pages
 	$collapse = explode("|", $colcookie);
 	foreach($collapse as $val)

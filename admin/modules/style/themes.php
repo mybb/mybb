@@ -1219,7 +1219,7 @@ if($mybb->input['action'] == "edit")
 			foreach($style as $stylesheet)
 			{
 				$stylesheets[$stylesheet]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+				if(isset($file_stylesheets['inherited'][$file."_".$action]) && is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet, array_keys($file_stylesheets['inherited'][$file."_".$action])))
 				{
 					$stylesheets[$stylesheet]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
 					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
@@ -1381,7 +1381,7 @@ if($mybb->input['action'] == "edit")
 
 		$inherited = "";
 		$inherited_ary = array();
-		if(is_array($style['inherited']))
+		if(isset($style['inherited']) && is_array($style['inherited']))
 		{
 			foreach($style['inherited'] as $tid)
 			{
@@ -1425,7 +1425,7 @@ if($mybb->input['action'] == "edit")
 
 			$colors = array();
 
-			if(!is_array($properties['colors']))
+			if(!isset($properties['colors']) || !is_array($properties['colors']))
 			{
 				$properties['colors'] = array();
 			}
@@ -1596,6 +1596,10 @@ if($mybb->input['action'] == "edit")
 		$colors = array('none' => $lang->colors_please_select);
 		$colors = array_merge($colors, $properties['colors']);
 
+		if(!isset($properties['color']))
+		{
+			$properties['color'] = 'none';
+		}
 		$color_setting = $form->generate_select_box('color', $colors, $properties['color'], array('class' => "select\" style=\"width: 200px;"));
 
 		$mybb->input['colors'] = '';
@@ -2702,11 +2706,15 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	else
 	{
-		if(empty($stylesheet = $mybb->input['stylesheet']))
+		$stylesheet = $mybb->get_input('stylesheet', MyBB::INPUT_ARRAY);
+		if(!isset($stylesheet['sid']))
 		{
-			$stylesheet = array();
+			$stylesheet['sid'] = '';
 		}
-		$mybb->input['name'] = $stylesheet['name'];
+		if(isset($stylesheet['name']))
+		{
+			$mybb->input['name'] = $stylesheet['name'];
+		}
 	}
 
 	$global_checked[1] = "checked=\"checked\"";
@@ -2720,6 +2728,8 @@ if($mybb->input['action'] == "add_stylesheet")
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
 	$check_actions = "";
+	$mybb->input['attach'] = $mybb->get_input('attach', MyBB::INPUT_INT);
+	$stylesheet['colors'] = array();
 
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
@@ -2777,7 +2787,6 @@ if($mybb->input['action'] == "add_stylesheet")
 	else if($mybb->input['attach'] == 2)
 	{
 		// Colors
-		$stylesheet['colors'] = array();
 		if(is_array($properties['colors']))
 		{
 			// We might have colors here...

@@ -908,7 +908,7 @@ if($mybb->input['action'] == "thread")
 		$postsdone = array();
 		while($post = $db->fetch_array($query))
 		{
-			if(!$postsdone[$post['pid']])
+			if(empty($postsdone[$post['pid']]))
 			{
 				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
 				{
@@ -1641,7 +1641,7 @@ function buildtree($replyto=0, $indent=0)
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
 
-			if($tree[$post['pid']])
+			if(!empty($tree[$post['pid']]))
 			{
 				$posts .= buildtree($post['pid'], $indent);
 			}
