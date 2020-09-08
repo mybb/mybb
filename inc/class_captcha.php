@@ -137,7 +137,7 @@ class captcha
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if(in_array($this->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, HCAPTCHA_INVISIBLE)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
+		if(in_array($this->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
 		{
 			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";

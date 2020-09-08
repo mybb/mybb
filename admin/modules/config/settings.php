@@ -1002,7 +1002,6 @@ if($mybb->input['action'] == "change")
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
 
-
 		// If using fulltext then enforce minimum word length given by database
 		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
 		{
