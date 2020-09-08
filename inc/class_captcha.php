@@ -33,13 +33,6 @@
  *
  */
 
-define('DEFAULT_CAPTCHA', 1);
-define('NOCAPTCHA_RECAPTCHA', 4);
-define('RECAPTCHA_INVISIBLE', 5);
-define('HCAPTCHA', 6);
-define('HCAPTCHA_INVISIBLE', 7);
-define('RECAPTCHA_V3', 8);
-
 class captcha
 {
 	/**
@@ -55,6 +48,18 @@ class captcha
 	 * @var int
 	 */
 	public $type = 0;
+
+	/**
+	 * CAPTCHA constants declaration
+	 * 
+	 * @var int
+	 */
+	const DEFAULT_CAPTCHA = 1;
+	const NOCAPTCHA_RECAPTCHA = 4;
+	const RECAPTCHA_INVISIBLE = 5;
+	const HCAPTCHA = 6;
+	const HCAPTCHA_INVISIBLE = 7;
+	const RECAPTCHA_V3 = 8;
 
 	/**
 	 * The template to display the CAPTCHA in

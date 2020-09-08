@@ -962,20 +962,24 @@ if($mybb->input['action'] == "change")
 		
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
 		$set_captcha_image = false;
-		if(isset($mybb->input['upsetting']['captchaimage'])){
+		if(isset($mybb->input['upsetting']['captchaimage']))
+		{
 			$captchaimage = $mybb->input['upsetting']['captchaimage'];
 			$recaptchaprivatekey = $mybb->input['upsetting']['recaptchaprivatekey'];
 			$recaptchapublickey = $mybb->input['upsetting']['recaptchapublickey'];
 			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
 			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
 
-			if(in_array($captchaimage, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+			if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+			{
 				$set_captcha_image = true;
 			}
-			if(in_array($captchaimage, array(RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+			else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+			{
 				$set_captcha_image = true;
 			}
-			if(in_array($captchaimage, array(HCAPTCHA, HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+			else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+			{
 				$set_captcha_image = true;
 			}
 		}
@@ -988,17 +992,20 @@ if($mybb->input['action'] == "change")
 		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
 		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
 
-		if(in_array($captchaimage, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey)){
+		if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+		{
 			$set_captcha_image = true;
 		}
-		if(in_array($captchaimage, array(RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore)){
+		else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+		{
 			$set_captcha_image = true;
 		}
-		if(in_array($captchaimage, array(6, HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey)){
+		else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+		{
 			$set_captcha_image = true;
 		}
 		if($set_captcha_image){
-			$mybb->input['upsetting']['captchaimage'] = DEFAULT_CAPTCHA;
+			$mybb->input['upsetting']['captchaimage'] = captcha::DEFAULT_CAPTCHA;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
 
