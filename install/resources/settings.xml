@@ -2422,7 +2422,7 @@ delete=Delete]]></optionscode>
 		<setting name="purgespammerbanip">
 			<title>Add banned IP filter</title>
 			<description><![CDATA[Do you want to ban the spammer's IP using this tool? If other users are issued the same banned IP, they will not be able to use the forums.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
