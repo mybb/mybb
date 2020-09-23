@@ -2410,6 +2410,16 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		</setting>
+		<setting name="purgespammerbanip">
+			<title>Add banned IP filter</title>
+			<description><![CDATA[Do you want to ban the spammer's IP using this tool? If other users are issued the same banned IP, they will not be able to use the forums.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="stopforumspam" title="Stop Forum Spam" description="This section allows you to change the settings used for the integration with StopForumSpam.com" disporder="27" isdefault="1">
 		<setting name="enablestopforumspam_on_register">
