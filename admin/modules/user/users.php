@@ -2051,7 +2051,7 @@ if($mybb->input['action'] == "merge")
 			);
 
 			$to_remove = array();
-			$query = $db->simple_select("reputation", "*", "adduid = '".$destination_user['uid']."'");
+			$query = $db->simple_select("reputation", "*", "adduid = '".$destination_user['uid']."'", $options);
 			while($rep = $db->fetch_array($query))
 			{
 				if($rep['pid'] == 0 && $mybb->settings['multirep'] == 0 && $last_result['uid'] == $rep['uid'])
