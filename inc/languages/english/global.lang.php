@@ -122,8 +122,8 @@ $l['insert_attachment_post'] = "Insert Into Post";
 $l['new_attachment'] = "New Attachment:";
 $l['add_attachment'] = "Add Attachment";
 $l['update_attachment'] = "Update Attachment";
-$l['attachment_too_many_files'] = "You can upload a maximum of {1} files at once.";
-$l['attachment_too_big_upload'] = "You can upload a maximum of {1} bytes at once.";
+$l['attachment_too_many_files'] = "You can upload a maximum of {1} file(s) at once.";
+$l['attachment_too_big_upload'] = "You can upload a maximum of {1} at once.";
 $l['post_preview'] = "Preview";
 $l['change_user'] = "change user";
 $l['post_icon'] = "Post Icon:";
@@ -595,3 +595,6 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['post_reply_prefix'] = 'RE: ';
+$l['post_no_subject'] = '(No Subject)';

@@ -9574,7 +9574,7 @@ if(use_xmlhttprequest == "1")
 	}
 
 </script>]]></template>
-	<template name="post_captcha_hcaptcha" version="1823"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha_hcaptcha" version="1823"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
 <td class="trow1">
 <table style="width: 300px; padding: 4px;">
@@ -9591,6 +9591,15 @@ if(use_xmlhttprequest == "1")
 			<script type="text/javascript">
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
+				lang.size_b = "{$lang->size_bytes}";
+				lang.size_kb = "{$lang->size_kb}";
+				lang.size_mb = "{$lang->size_mb}";
+				lang.size_gb = "{$lang->size_gb}";
+				lang.size_tb = "{$lang->size_tb}";
+				lang.size_pb = "{$lang->size_pb}";
+				lang.size_eb = "{$lang->size_eb}";
+				lang.size_zb = "{$lang->size_zb}";
+				lang.size_yb = "{$lang->size_yb}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 			</script>
