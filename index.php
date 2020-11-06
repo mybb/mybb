@@ -368,7 +368,7 @@ if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
 }
 
 $excols = 'index';
-$permissioncache['-1'] = '1';
+$permissioncache = null;
 $bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.
