@@ -878,6 +878,8 @@ if($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
+	$canbeinvisible = '';
+
 	// Check usergroup permission before showing invisible check box
 	if($mybb->usergroup['canbeinvisible'] == 1)
 	{
