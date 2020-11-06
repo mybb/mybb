@@ -38,7 +38,7 @@ $(function ($) {
 			},
 			'Youtube': {
 				'match': /(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/,
-				'url': '//www.youtube.com/embed/',
+				'url': '//www.youtube-nocookie.com/embed/',
 				'html': '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Twitch': {
