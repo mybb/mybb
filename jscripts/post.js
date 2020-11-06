@@ -129,6 +129,10 @@ var Post = {
 							}
 							else if (data.success)
 							{
+								if($('[id^=attachment_]').length == 1){ 
+									$('input[name="updateattachment"]').hide(); 
+								}
+
 								$('#attachment_'+aid).hide(500, function()
 								{
 									var instance = MyBBEditor;
