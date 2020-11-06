@@ -3222,9 +3222,12 @@ if($mybb->input['action'] == "attachments")
 
 	$bandwidth = get_friendly_size($bandwidth);
 
+	eval("\$delete_button = \"".$templates->get("delete_attachments_button")."\";");
+
 	if(!$attachments)
 	{
 		$usagenote = '';
+		$delete_button = '';
 	}
 
 	$plugins->run_hooks('usercp_attachments_end');

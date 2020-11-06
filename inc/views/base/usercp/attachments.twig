@@ -27,13 +27,15 @@
                     <div class="alert alert--no-results">{{ lang.no_attachments }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <input type="hidden" name="action" value="do_attachments" />
-                <button type="submit" class="button">
-                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.delete_attachments }}</span>
-                </button>
-            </div>
+            {% if attachments %}
+                <div class="sort-results">
+                    <input type="hidden" name="action" value="do_attachments" />
+                    <button type="submit" class="button">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.delete_attachments }}</span>
+                    </button>
+                </div>
+            {% endif %}
         </section>
     </form>
     {{ multipage|raw }}

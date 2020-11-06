@@ -12073,10 +12073,7 @@ if(use_xmlhttprequest == "1")
 						{$attachments}
 					</table>
 					<br />
-					<div align="center">
-						<input type="hidden" name="action" value="do_attachments" />
-						<input type="submit" class="button" value="{$lang->delete_attachments}" />
-					</div>
+					{$delete_button}
 				</form>
 				{$multipage}
 				<br />
@@ -14359,5 +14356,10 @@ $(function() {
 </tr>]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
+	<template name="delete_attachments_button" version="1825"><![CDATA[		
+		<div align="center">
+						<input type="hidden" name="action" value="do_attachments" />
+						<input type="submit" class="button" value="{$lang->delete_attachments}" />
+					</div>]]></template>
 	</templates>
 </theme>
