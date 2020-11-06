@@ -1424,7 +1424,8 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Fetch the forum this thread is being made in
-		$forum = get_forum($thread['fid']);
+		$query = $db->simple_select("forums", "*", "fid='{$thread['fid']}'");
+		$forum = $db->fetch_array($query);
 
 		// This thread is being saved as a draft.
 		if($thread['savedraft'])
@@ -1635,11 +1636,6 @@ class PostDataHandler extends DataHandler
 					{
 						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, true);
 					}
-				}
-
-				if(!isset($forum['lastpost']))
-				{
-					$forum['lastpost'] = 0;
 				}
 
 				$done_users = array();
