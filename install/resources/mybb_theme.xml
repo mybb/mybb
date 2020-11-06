@@ -12874,7 +12874,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1824"><![CDATA[<html>
+		<template name="usercp_options" version="1825"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -13069,7 +13069,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_options_invisible" version="1824"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_options_invisible" version="1825"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->login_cookies_privacy}</strong></legend>
 <table cellspacing="0" cellpadding="2">
 <tr>
