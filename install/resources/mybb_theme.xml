@@ -1510,7 +1510,7 @@ a.button.report_user_button span {
 	opacity: 0.9;
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-	zoom: 1;
+	transform: scale(1);
 	width: 250px;
 	padding: 10px;
 	margin: 10px;
@@ -1550,7 +1550,7 @@ a.button.report_user_button span {
 	opacity: 0.9;
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-	zoom: 1;
+	transform: scale(1);
 	width: 250px;
 	padding: 10px;
 	margin: 10px;
