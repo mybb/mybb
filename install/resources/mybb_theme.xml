@@ -5048,9 +5048,13 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="member_profile_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="member_profile_warn" version="1400"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
-		<template name="member_profile_warninglevel" version="1600"><![CDATA[<tr>
+		<template name="member_profile_warninglevel" version="1825"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
-	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
+	<td class="{$bg_color}">{$warning_level}</td>
+</tr>]]></template>
+		<template name="member_profile_warninglevel_link" version="1825"><![CDATA[<tr>
+	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
+	<td class="{$bg_color}"><a href="warnings.php?uid={$memprofile['uid']}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_website" version="1813"><![CDATA[<tr>
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
