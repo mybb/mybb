@@ -12866,7 +12866,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1809"><![CDATA[<html>
+		<template name="usercp_options" version="1825"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -12886,16 +12886,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td width="50%" class="trow1" valign="top">
-<fieldset class="trow2">
-<legend><strong>{$lang->login_cookies_privacy}</strong></legend>
-<table cellspacing="0" cellpadding="2">
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
-<td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
-</tr>
-</table>
-</fieldset>
-<br />
+{$canbeinvisible}
 <fieldset class="trow2">
 <legend><strong>{$lang->messaging_notification}</strong></legend>
 <table cellspacing="0" cellpadding="2">
@@ -13070,6 +13061,16 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_options_invisible" version="1825"><![CDATA[<fieldset class="trow2">
+<legend><strong>{$lang->login_cookies_privacy}</strong></legend>
+<table cellspacing="0" cellpadding="2">
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
+<td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
+</tr>
+</table>
+</fieldset>
+<br />]]></template>
 		<template name="usercp_options_date_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$dateformat}</option>]]></template>
 		<template name="usercp_options_language" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>

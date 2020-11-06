@@ -240,7 +240,7 @@ if($mybb->settings['browsingthisforum'] != 0)
         if(empty($usersBrowsing[$user['uid']]) || $usersBrowsing[$user['uid']]['time'] < $user['time'])
 		{
 			++$usersBrowsingCounter['members'];
-			if($user['invisible'] == 1)
+			if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 			{
 				++$usersBrowsingCounter['invisible'];
 			}

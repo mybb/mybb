@@ -99,7 +99,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 				++$membercount;
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					++$anoncount;
 				}

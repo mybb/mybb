@@ -127,6 +127,7 @@ $l['account_management'] = "Account Management";
 $l['edit_time_limit'] = "Edit Time Limit";
 $l['edit_time_limit_desc'] = "The number of minutes until regular users cannot edit their own posts (if they have the permission). Enter 0 (zero) for no limit.";
 $l['can_be_reported'] = "Can be reported (profile, posts and reputation)?";
+$l['can_be_invisible'] = "Can this group hide their Online Status?";
 $l['can_access_usercp'] = "Can access User CP?";
 $l['can_change_username'] = "Can change username?";
 $l['can_change_website'] = "Can change website?";

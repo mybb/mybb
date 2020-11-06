@@ -981,6 +981,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canratemembers smallint NOT NULL default '0',
   canchangename smallint NOT NULL default '0',
   canbereported smallint NOT NULL default '0',
+  canbeinvisible smallint NOT NULL default '1',
   canchangewebsite smallint NOT NULL default '1',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
@@ -1142,5 +1143,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes text NOT NULL default '',
 	PRIMARY KEY(wid)
 );";
-
 
