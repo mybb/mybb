@@ -872,13 +872,20 @@ if($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if(isset($user['invisible']) && $user['invisible'] == 1)
+	$canbeinvisible = '';
+
+	// Check usergroup permission before showing invisible check box
+	if($mybb->usergroup['canbeinvisible'] == 1)
 	{
-		$invisiblecheck = "checked=\"checked\"";
-	}
-	else
-	{
-		$invisiblecheck = "";
+		if(isset($user['invisible']) && $user['invisible'] == 1)
+		{
+			$invisiblecheck .= "checked=\"checked\"";
+		}
+		elseif($user['invisible'] != 0)
+		{
+			$invisiblecheck = "";
+		}
+		eval('$canbeinvisible = "'.$templates->get("usercp_options_invisible")."\";");
 	}
 
 	if(isset($user['hideemail']) && $user['hideemail'] == 1)
@@ -4023,10 +4030,13 @@ if($mybb->input['action'] == "attachments")
 
 	$bandwidth = get_friendly_size($bandwidth);
 
+	eval("\$delete_button = \"".$templates->get("delete_attachments_button")."\";");
+
 	if(!$attachments)
 	{
 		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
 		$usagenote = '';
+		$delete_button = '';
 	}
 
 	$plugins->run_hooks("usercp_attachments_end");
