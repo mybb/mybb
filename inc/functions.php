@@ -2891,7 +2891,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
@@ -2903,7 +2903,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -5758,7 +5758,7 @@ function update_first_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -5792,7 +5792,7 @@ function update_last_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
@@ -5809,7 +5809,7 @@ function update_last_post($tid)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.tid='$tid'
-			ORDER BY p.dateline ASC
+			ORDER BY p.dateline ASC, p.pid ASC
 			LIMIT 1
 		");
 		$firstpost = $db->fetch_array($query);

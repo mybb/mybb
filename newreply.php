@@ -1232,7 +1232,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
@@ -1251,7 +1251,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC
+			ORDER BY dateline DESC, pid DESC
 		");
 		$postsdone = 0;
 		$altbg = "trow1";

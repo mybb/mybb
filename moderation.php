@@ -1541,7 +1541,7 @@ switch($mybb->input['action'])
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE tid='$tid'
-			ORDER BY dateline ASC
+			ORDER BY dateline ASC, pid ASC
 		");
 
 		$numposts = $db->num_rows($query);
@@ -2331,7 +2331,7 @@ switch($mybb->input['action'])
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE pid IN (".implode($posts, ",").")
-			ORDER BY dateline ASC
+			ORDER BY dateline ASC, pid ASC
 		");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
@@ -3266,8 +3266,7 @@ switch($mybb->input['action'])
 				// Get threads which are associated with the posts
 				$tids = array();
 				$options = array(
-					'order_by' => 'dateline',
-					'order_dir' => 'asc'
+					'order_by' => 'dateline, pid',
 				);
 				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))
