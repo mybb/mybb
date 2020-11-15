@@ -148,41 +148,40 @@ $(function ($) {
 	// Update size tag to use xx-small-xx-large instead of 1-7
 	$.sceditor.formats.bbcode.set('size', {
 		format: function ($elm, content) {
-			var fontSize,
-				size = $($elm).attr('size');
+			var fontsize = 1,
+				scefontsize = $($elm).data('scefontsize'),
+				parsed = parseInt(scefontsize, 10),
+				size = parseInt($($elm).attr('size'), 10);
 
-			if (!size) {
-				fontSize = $($elm).css('fontSize');
-				// Most browsers return px value but IE returns 1-7
-				if (fontSize.indexOf('px') > -1) {
-					// convert size to an int
-					fontSize = parseInt(fontSize);
-					size = 1;
-					$.each(mybbCmd.fSize, function (i, val) {
-						if (fontSize > val) size = i + 2;
-					});
-				} else {
-					size = (~~fontSize) + 1;
-				}
-				size = (size >= 7) ? mybbCmd.fsStr[6] : ((size <= 1) ? mybbCmd.fsStr[0] : mybbCmd.fsStr[size - 1]);
-			} else {
-				size = mybbCmd.fsStr[size - 1];
+			if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
+				fontsize = mybbCmd.fsStr[size - 1];
+			} else if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
+				fontsize = scefontsize;
+			} else if (!isNaN(parsed)) {
+				fontsize = parsed;
 			}
-			return '[size=' + size + ']' + content + '[/size]';
+
+			return '[size=' + fontsize + ']' + content + '[/size]';
 		},
 		html: function (token, attrs, content) {
-			var size = $.inArray(attrs.defaultattr, mybbCmd.fsStr) + 1;
-			if (!isNaN(attrs.defaultattr)) {
+			var size = 0,
+				units = "",
+				parsed = parseInt(attrs.defaultattr, 10);
+			if (!isNaN(parsed)) {
 				size = attrs.defaultattr;
-				if (size > 7)
-					size = 7;
-				if (size < 1)
+				if (size < 1) {
 					size = 1;
+				} else if (size > 50) {
+					size = 50;
+				}
+				units = "pt";
+			} else {
+				var fsStrPos = $.inArray(attrs.defaultattr, mybbCmd.fsStr);
+				if (fsStrPos !== -1) {
+					size = attrs.defaultattr;
+				}
 			}
-			if (size < 0) {
-				size = 0;
-			}
-			return '<font data-scefontsize="' + $.sceditor.escapeEntities(attrs.defaultattr) + '" size="' + size + '">' + content + '</font>';
+			return '<font data-scefontsize="' + $.sceditor.escapeEntities(attrs.defaultattr) + '" style="font-size: ' + size + units + ';">' + content + '</font>';
 		}
 	});
 
@@ -196,7 +195,7 @@ $(function ($) {
 				};
 
 			for (var i = 1; i <= 7; i++)
-				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').on('click', clickFunc));
+				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font style="font-size: ' + mybbCmd.fsStr[i-1] + '">' + i + '</font></a>').on('click', clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content.get(0));
 		},
