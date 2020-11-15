@@ -2151,9 +2151,9 @@ if(!$mybb->input['action'])
 			else
 			{
 				$options = array(
-					'fields' => array('uid AS id', 'username AS name')
+					'fields' => array('uid AS id', 'username AS name', 'usergroup', 'additionalgroups')
 				);
-				$newmod = get_user_by_username($mybb->input['username'], $options);
+				$newmod = $newmoduser = get_user_by_username($mybb->input['username'], $options);
 
 				if(empty($newmod['id']))
 				{
@@ -2203,7 +2203,27 @@ if(!$mybb->input['action'])
 
 					if(!$isgroup)
 					{
-						$db->update_query("users", array('usergroup' => 6), "uid='{$newmod['id']}' AND usergroup='2'");
+						$newmodgroups = $newmoduser['usergroup'];
+						if(!empty($newmoduser['additionalgroups']))
+						{
+							$newmodgroups .= ','.$newmoduser['additionalgroups'];
+						}
+						$groupperms = usergroup_permissions($newmodgroups);
+
+						// Check if new moderator already belongs to a moderators group
+						if($groupperms['canmodcp'] != 1)
+						{
+							if($newmoduser['usergroup'] == 2 || $newmoduser['usergroup'] == 5)
+							{
+								// Primary group is default registered or awaiting activation group so change primary group to Moderators
+								$db->update_query("users", array('usergroup' => 6), "uid='{$newmoduser['id']}'");
+							}
+							else
+							{
+								// Primary group is another usergroup without canmodcp so add Moderators to additional groups
+								join_usergroup($newmoduser['id'], 6);
+							}
+						}
 					}
 
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
