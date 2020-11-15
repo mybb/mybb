@@ -557,7 +557,7 @@ class Moderation
 			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if($thread['visible'] == 1 || $thread['visible'] == -1)
+			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == -1)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
@@ -3688,7 +3688,7 @@ class Moderation
 			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if($thread['visible'] == 1 || $thread['visible'] == 0)
+			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == 0)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
