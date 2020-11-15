@@ -45,10 +45,6 @@ $mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_
 
 if(!isset($cp_language))
 {
-	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
-	{
-		$mybb->settings['cplanguage'] = "english";
-	}
 	$lang->set_language($mybb->settings['cplanguage'], "admin");
 }
 
@@ -540,7 +536,7 @@ if(!empty($mybb->user['uid']))
 	// Only update language / theme once fully authenticated
 	if(empty($admin_options['authsecret']) || $admin_session['authenticated'] == 1)
 	{
-		if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+		if(!empty($admin_options['cplanguage']))
 		{
 			$cp_language = $admin_options['cplanguage'];
 			$lang->set_language($cp_language, "admin");
