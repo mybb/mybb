@@ -983,24 +983,24 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if(!$correct)
 		{
-			if($post_captcha->type == 1)
+ 			if($post_captcha->type == DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5, 8)))
+			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(6, 7)))
+			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5, 8))))
+		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}
