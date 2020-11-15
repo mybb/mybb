@@ -270,8 +270,7 @@ if($mybb->input['action'] == "newpost")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "asc"
+		"order_by" => "dateline, pid",
 	);
 
 	$lastread = (int)$lastread;
@@ -311,7 +310,7 @@ if($mybb->input['action'] == "lastpost")
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
 			WHERE t.fid='".$thread['fid']."' AND t.moved='0' {$visibleonly2}
-			ORDER BY p.dateline DESC
+			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT 1
 		");
 		$pid = $db->fetch_field($query, "pid");
@@ -319,8 +318,7 @@ if($mybb->input['action'] == "lastpost")
 	else
 	{
 		$options = array(
-			'order_by' => 'dateline',
-			'order_dir' => 'desc',
+			'order_by' => 'dateline DESC, pid DESC',
 			'limit_start' => 0,
 			'limit' => 1
 		);
@@ -350,8 +348,7 @@ if($mybb->input['action'] == "nextnewest")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "desc"
+		"order_by" => "dateline DESC, pid DESC",
 	);
 	$query = $db->simple_select('posts', 'pid', "tid='{$nextthread['tid']}'", $options);
 
@@ -381,8 +378,7 @@ if($mybb->input['action'] == "nextoldest")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "desc"
+		"order_by" => "dateline DESC, pid DESC",
 	);
 	$query = $db->simple_select("posts", "pid", "tid='".$nextthread['tid']."'", $options);
 
@@ -787,7 +783,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$where = " ORDER BY dateline LIMIT 0, 1";
+			$where = " ORDER BY dateline, pid LIMIT 0, 1";
 		}
 
 		$query = $db->query("
@@ -830,7 +826,7 @@ if($mybb->input['action'] == "thread")
             FROM ".TABLE_PREFIX."posts p
             WHERE p.tid='$tid'
             $visible
-            ORDER BY p.dateline
+            ORDER BY p.dateline, p.pid
         ");
 		if(!is_array($postsdone))
 		{
@@ -1002,7 +998,7 @@ if($mybb->input['action'] == "thread")
 		// Lets get the pids of the posts on this page.
 		$pids = '';
 		$comma = '';
-		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline, p.pid', 'limit_start' => $start, 'limit' => $perpage));
 		while($getid = $db->fetch_array($query))
 		{
 			// Set the ID of the first post on page to $pid if it doesn't hold any value
@@ -1049,7 +1045,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
 			WHERE $pids
-			ORDER BY p.dateline
+			ORDER BY p.dateline, p.pid
 		");
 		while($post = $db->fetch_array($query))
 		{

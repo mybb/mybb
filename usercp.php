@@ -2713,13 +2713,13 @@ if($mybb->input['action'] == "drafts")
 	if($draftCount)
 	{
 		$query = $db->query("
-            SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
-            FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-            LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
-            WHERE p.uid = '{$mybb->user['uid']}' AND p.visible = '-2'
-            ORDER BY p.dateline DESC
-        ");
+			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+			WHERE p.uid = '{$mybb->user['uid']}' AND p.visible = '-2'
+			ORDER BY p.dateline DESC, p.pid DESC
+		");
 
 		while($draft = $db->fetch_array($query))
 		{
@@ -3149,14 +3149,13 @@ if($mybb->input['action'] == "attachments")
 	$lower = $start + 1;
 
 	$query = $db->query("
-        SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
-        FROM ".TABLE_PREFIX."attachments a
-        LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-        WHERE a.uid='".$mybb->user['uid']."'
-        ORDER BY p.dateline DESC LIMIT {$perpage} OFFSET {$start}
-    ");
-
+		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
+		FROM ".TABLE_PREFIX."attachments a
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE a.uid='".$mybb->user['uid']."' {$f_perm_sql}
+		ORDER BY p.dateline DESC, p.pid DESC LIMIT {$perpage} OFFSET {$start}
+	");
 	$attachments = [];
 
 	$bandwidth = $totaldownloads = $totalusage = $totalattachments = $processedattachments = 0;

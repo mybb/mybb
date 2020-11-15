@@ -38,7 +38,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$newthread['isdraft'] = true;
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -556,13 +556,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			if($mybb->get_input('load_all_quotes', MyBB::INPUT_INT) == 1)
 			{
 				$query = $db->query("
-                    SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
-                    FROM ".TABLE_PREFIX."posts p
-                    LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-                    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-                    WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-                    ORDER BY p.dateline
-                ");
+					SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
+					FROM ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
+					ORDER BY p.dateline, p.pid
+				");
 				while($quoted_post = $db->fetch_array($query))
 				{
 					if($quoted_post['userusername'])

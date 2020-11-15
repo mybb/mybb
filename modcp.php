@@ -2025,14 +2025,14 @@ if($mybb->input['action'] == "modqueue")
 
 		$posts = [];
 		$query = $db->query("
-            SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
-            FROM  ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-            WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
-            ORDER BY p.dateline DESC
-            LIMIT {$start}, {$perpage}
-        ");
+			SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
+			ORDER BY p.dateline DESC, p.pid DESC
+			LIMIT {$start}, {$perpage}
+		");
 		while($post = $db->fetch_array($query))
 		{
 			$post['threadsubject'] = $parser->parse_badwords($post['threadsubject']);
@@ -3297,13 +3297,13 @@ if($mybb->input['action'] == "ipsearch")
 			$ipaddresses = $tids = $uids = array();
 
 			$query = $db->query("
-                SELECT p.username AS postusername, p.uid, p.subject, p.pid, p.tid, p.ipaddress
-                FROM ".TABLE_PREFIX."posts p
-                LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
-                WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
-                ORDER BY p.dateline desc
-                LIMIT {$post_start}, {$post_limit}
-            ");
+				SELECT p.username AS postusername, p.uid, p.subject, p.pid, p.tid, p.ipaddress
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
+				WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
+				ORDER BY p.dateline DESC, p.pid DESC
+				LIMIT {$post_start}, {$post_limit}
+			");
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$tids[$ipaddress['tid']] = $ipaddress['pid'];
@@ -3998,13 +3998,13 @@ if(!$mybb->input['action'])
 			if($unapproved_posts > 0)
 			{
 				$query = $db->query("
-                    SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
-                    FROM  ".TABLE_PREFIX."posts p
-                    LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-                    WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-                    ORDER BY p.dateline DESC
-                    LIMIT 1
-                ");
+					SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
+					FROM  ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+					WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+					ORDER BY p.dateline DESC, p.pid DESC
+					LIMIT 1
+				");
 				$post = $db->fetch_array($query);
 				$post['date'] = my_date('relative', $post['dateline']);
 				$post['username'] = htmlspecialchars_uni($post['username']);

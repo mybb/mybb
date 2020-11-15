@@ -144,7 +144,7 @@ switch($action)
 
 		$pids = array();
 		// Fetch list of post IDs to be shown
-		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('order_by' => 'dateline', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('order_by' => 'dateline, pid', 'limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['pid'];
@@ -175,7 +175,7 @@ switch($action)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.pid IN ({$pids})
-			ORDER BY p.dateline
+			ORDER BY p.dateline, p.pid
 		");
 		while($post = $db->fetch_array($query))
 		{

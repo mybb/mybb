@@ -2817,25 +2817,25 @@ function update_thread_data($tid)
 	}
 
 	$query = $db->query("
-        SELECT u.uid, u.username, p.username AS postusername, p.dateline
-        FROM ".TABLE_PREFIX."posts p
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-        WHERE p.tid='$tid' AND p.visible='1'
-        ORDER BY p.dateline DESC
-        LIMIT 1"
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid' AND p.visible='1'
+		ORDER BY p.dateline DESC, p.pid DESC
+		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
 
 	$db->free_result($query);
 
 	$query = $db->query("
-        SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
-        FROM ".TABLE_PREFIX."posts p
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-        WHERE p.tid='$tid'
-        ORDER BY p.dateline ASC
-        LIMIT 1
-    ");
+		SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid'
+		ORDER BY p.dateline ASC, p.pid ASC
+		LIMIT 1
+	");
 	$firstpost = $db->fetch_array($query);
 
 	$db->free_result($query);
@@ -5452,13 +5452,13 @@ function update_first_post($tid)
 	global $db;
 
 	$query = $db->query("
-        SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
-        FROM ".TABLE_PREFIX."posts p
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-        WHERE p.tid='$tid'
-        ORDER BY p.dateline ASC
-        LIMIT 1
-    ");
+		SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid'
+		ORDER BY p.dateline ASC, p.pid ASC
+		LIMIT 1
+	");
 	$firstpost = $db->fetch_array($query);
 
 	if(empty($firstpost['username']))
@@ -5486,12 +5486,12 @@ function update_last_post($tid)
 	global $db;
 
 	$query = $db->query("
-        SELECT u.uid, u.username, p.username AS postusername, p.dateline
-        FROM ".TABLE_PREFIX."posts p
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-        WHERE p.tid='$tid' AND p.visible='1'
-        ORDER BY p.dateline DESC
-        LIMIT 1"
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid' AND p.visible='1'
+		ORDER BY p.dateline DESC, p.pid DESC
+		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
 
@@ -5503,13 +5503,13 @@ function update_last_post($tid)
 	if(empty($lastpost['dateline']))
 	{
 		$query = $db->query("
-            SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-            WHERE p.tid='$tid'
-            ORDER BY p.dateline ASC
-            LIMIT 1
-        ");
+			SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.tid='$tid'
+			ORDER BY p.dateline ASC, p.pid ASC
+			LIMIT 1
+		");
 		$firstpost = $db->fetch_array($query);
 
 		$lastpost['username'] = $firstpost['username'];
