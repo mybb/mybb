@@ -23,7 +23,7 @@
                     <div class="section__container">
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
-                            <input type="text" class="textbox" name="username" id="username" value="{{ select.username }}" />
+                            <input type="text" class="textbox" name="username" id="username" autocomplete="username" value="{{ select.username }}" />
                         </div>
                         {% if registration.showpassword %}
                             <div class="row row--form field">
@@ -32,11 +32,11 @@
                                 <div class="confirm-field">
                                     <div class="confirm-field__field">
                                         <h4 class="visually-hidden"><label for="password">{{ lang.password }}</label></h4>
-                                        <input type="password" class="textbox" name="password" id="password" />
+                                        <input type="password" class="textbox" name="password" id="password" autocomplete="new-password"/>
                                     </div>
                                     <div class="confirm-field__field">
                                         <h4 class="visually-hidden"><label for="password2">{{ lang.confirm_password }}</label></h4>
-                                        <input type="password" class="textbox" name="password2" id="password2" />
+                                        <input type="password" class="textbox" name="password2" id="password2" autocomplete="new-password" />
                                     </div>
                                 </div>
                                 <div style="display: none;" id="password_status">&nbsp;</div>
@@ -48,11 +48,11 @@
                             <div class="confirm-field">
                                 <div class="confirm-field__field">
                                     <h4 class="visually-hidden"><label for="email">{{ lang.email }}</label></h4>
-                                    <input type="text" class="textbox" name="email" id="email" maxlength="50" value="{{ select.email }}" />
+                                    <input type="text" class="textbox" name="email" id="email" autocomplete="email" inputmode="email" maxlength="50" value="{{ select.email }}" />
                                 </div>
                                 <div class="confirm-field__field">
                                     <h4 class="visually-hidden"><label for="email2">{{ lang.confirm_email }}</label></h4>
-                                    <input type="text" class="textbox" name="email2" id="email2" maxlength="50" value="{{ select.email2 }}" />
+                                    <input type="text" class="textbox" name="email2" id="email2" autocomplete="email" inputmode="email" maxlength="50" value="{{ select.email2 }}" />
                                 </div>
                             </div>
                             <div style="display: none;" id="email_status">&nbsp;</div>
