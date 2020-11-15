@@ -51,7 +51,7 @@ $l['error_invalidusername'] = "The username you have entered appears to be inval
 $l['error_invalidpassword'] = "The password you entered is incorrect. If you have forgotten your password, click <a href=\"member.php?action=lostpw\">here</a>. Otherwise, go back and try again.";
 $l['error_postflooding'] = "We are sorry but we cannot process your post. The administrator has specified you are only allowed to post once every {1} seconds.";
 $l['error_nopermission_guest_1'] = "You are either not logged in or do not have permission to view this page. This could be because one of the following reasons:";
-$l['error_nopermission_guest_2'] = "You are not logged in or registered. Please use the form at the bottom of this page to login.";
+$l['error_nopermission_guest_2'] = "You are not logged in or registered. Please login and retry the desired action.";
 $l['error_nopermission_guest_3'] = "You do not have permission to access this page. Are you trying to access administrative pages or a resource that you shouldn't be?  Check in the forum rules that you are allowed to perform this action.";
 $l['error_nopermission_guest_4'] = "Your account may have been disabled by an administrator, or it may be awaiting account activation.";
 $l['error_nopermission_guest_5'] = "You have accessed this page directly rather than using appropriate forms or links.";
@@ -273,7 +273,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of new threads in this forum, visit the following URL in your browser:
-{7}/usercp.php?action=removesubscription&type=forum&fid={9}&my_post_key={10}
+{7}/usercp.php?action=removesubscription&type=forum&fid={9}
 
 ------------------------------------------";
 
@@ -349,7 +349,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{6}/usercp.php?action=removesubscription&tid={8}&my_post_key={9}
+{6}/usercp.php?action=removesubscription&tid={8}
 
 ------------------------------------------";
 $l['email_reachedpmquota'] = "{1},
@@ -494,7 +494,7 @@ There may also be other replies to this thread but you will not receive anymore 
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-[url]{5}/usercp.php?action=removesubscription&tid={7}&my_post_key={8}[/url]
+[url]{5}/usercp.php?action=removesubscription&tid={7}[/url]
 
 ------------------------------------------";
 

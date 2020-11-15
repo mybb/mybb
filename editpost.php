@@ -192,7 +192,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 }
 
 $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_editpost" && isset($mybb->input['submitbutton'])) || ($mybb->input['action'] == "editpost" && isset($mybb->input['previewpost']))) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -220,11 +220,13 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 
 	// If we were dealing with an attachment but didn't click 'Update Post', force the post edit page again.
-	if(!isset($mybb->input['submit']))
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
 }
+
+detect_attachmentact();
 
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 {
@@ -256,7 +258,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		exit();
 	}
 
-	if(!isset($mybb->input['submit']))
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
@@ -271,7 +273,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -349,7 +351,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					log_moderator_action($modlogdata, $lang->post_deleted);
 				}
 
-				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
+				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline DESC, pid DESC"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
 				{
@@ -398,7 +400,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 
 	if($mybb->get_input('restore', MyBB::INPUT_INT) == 1)
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -580,8 +582,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 	$deletebox = '';
-	// Can we delete posts?
-	if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
+	if($post['visible'] != -1 && (($thread['firstpost'] == $pid && (is_moderator($fid, "candeletethreads") || $forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid'])) || ($thread['firstpost'] != $pid && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))))
 	{
 		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
 	}
@@ -864,7 +865,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 	$firstcheck = $db->fetch_array($query);
 
 	$time = TIME_NOW;

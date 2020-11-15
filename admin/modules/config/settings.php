@@ -958,14 +958,68 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
-		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
+		$set_captcha_image = false;
+		if(isset($mybb->input['upsetting']['captchaimage']))
 		{
-			$mybb->input['upsetting']['captchaimage'] = 1;
+			$captchaimage = $mybb->input['upsetting']['captchaimage'];
+			$recaptchaprivatekey = $mybb->input['upsetting']['recaptchaprivatekey'];
+			$recaptchapublickey = $mybb->input['upsetting']['recaptchapublickey'];
+			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
+			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
+
+			if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+			{
+				$set_captcha_image = true;
+			}
+			else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+			{
+				$set_captcha_image = true;
+			}
+			else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+			{
+				$set_captcha_image = true;
+			}
+		}
+
+		//Checking settings for reCAPTCHA or hCaptcha and public/private key not set?
+		$captchaimage = $mybb->settings['captchaimage'];
+		$recaptchaprivatekey = $mybb->settings['recaptchaprivatekey'];
+		$recaptchapublickey = $mybb->settings['recaptchapublickey'];
+		$recaptchascore = $mybb->settings['recaptchascore'];
+		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
+		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
+
+		if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+		{
+			$set_captcha_image = true;
+		}
+		else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+		{
+			$set_captcha_image = true;
+		}
+		else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+		{
+			$set_captcha_image = true;
+		}
+		if($set_captcha_image){
+			$mybb->input['upsetting']['captchaimage'] = captcha::DEFAULT_CAPTCHA;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
+		}
+
+		// If using fulltext then enforce minimum word length given by database
+		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
+		{
+			// Attempt to determine minimum word length from MySQL for fulltext searches
+			$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
+			$min_length = $db->fetch_field($query, 'Value');
+			if(is_numeric($min_length) && $mybb->input['upsetting']['minsearchword'] < $min_length)
+			{
+				$mybb->input['upsetting']['minsearchword'] = $min_length;
+				$lang->success_settings_updated .= $lang->success_settings_updated_minsearchword;
+			}
 		}
 
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
@@ -1025,6 +1079,13 @@ if($mybb->input['action'] == "change")
 			{
 				$forum_group_select[] = $multisetting['name'];
 			}
+		}
+
+		// Verify for admin email that can't be empty
+		if(isset($mybb->input['upsetting']['adminemail']) && !validate_email_format($mybb->input['upsetting']['adminemail']))
+		{
+			unset($mybb->input['upsetting']['adminemail']);
+			$lang->success_settings_updated .= $lang->error_admin_email_settings_empty;
 		}
 
 		// Administrator is changing the login method.
@@ -1848,7 +1909,7 @@ function print_setting_peekers()
 	$peekers = array(
 		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errortypemedium, #row_setting_errorloglocation"), 1, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
 		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
 		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
@@ -1863,8 +1924,8 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchascore"), /(8)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
@@ -1886,7 +1947,6 @@ function print_setting_peekers()
 		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
 		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
 		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
-		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',

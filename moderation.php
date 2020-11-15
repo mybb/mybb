@@ -1541,7 +1541,7 @@ switch($mybb->input['action'])
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE tid='$tid'
-			ORDER BY dateline ASC
+			ORDER BY dateline ASC, pid ASC
 		");
 
 		$numposts = $db->num_rows($query);
@@ -2331,7 +2331,7 @@ switch($mybb->input['action'])
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE pid IN (".implode($posts, ",").")
-			ORDER BY dateline ASC
+			ORDER BY dateline ASC, pid ASC
 		");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
@@ -3063,18 +3063,21 @@ switch($mybb->input['action'])
 				}
 
 				// Add the IP's to the banfilters
-				foreach(array($user['regip'], $user['lastip']) as $ip)
+				if($mybb->settings['purgespammerbanip'] == 1)
 				{
-					$ip = my_inet_ntop($db->unescape_binary($ip));
-					$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
-					if($db->num_rows($query) == 0)
+					foreach(array($user['regip'], $user['lastip']) as $ip)
 					{
-						$insert = array(
-							"filter" => $db->escape_string($ip),
-							"type" => 1,
-							"dateline" => TIME_NOW
-						);
-						$db->insert_query("banfilters", $insert);
+						$ip = my_inet_ntop($db->unescape_binary($ip));
+						$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
+						if($db->num_rows($query) == 0)
+						{
+							$insert = array(
+								"filter" => $db->escape_string($ip),
+								"type" => 1,
+								"dateline" => TIME_NOW
+							);
+							$db->insert_query("banfilters", $insert);
+						}
 					}
 				}
 
@@ -3263,8 +3266,7 @@ switch($mybb->input['action'])
 				// Get threads which are associated with the posts
 				$tids = array();
 				$options = array(
-					'order_by' => 'dateline',
-					'order_dir' => 'asc'
+					'order_by' => 'dateline, pid',
 				);
 				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))

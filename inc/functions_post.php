@@ -435,6 +435,8 @@ function build_postbit($post, $post_type=0)
 
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
+						$post['fieldvalue_option'] = '';
+
 						foreach($useropts as $val)
 						{
 							if($val != '')
@@ -1066,4 +1068,36 @@ function return_bytes($val) {
 	}
 
 	return intval($val);
+}
+
+/**
+ * Detects whether an attachment removal/approval/unapproval
+ * submit button was pressed (without triggering an AJAX request)
+ * and sets inputs accordingly (as for an AJAX request).
+ */
+function detect_attachmentact()
+{
+	global $mybb;
+
+	foreach($mybb->input as $key => $val)
+	{
+		if(strpos($key, 'rem_') === 0)
+		{
+			$mybb->input['attachmentaid'] = (int)substr($key, 4);
+			$mybb->input['attachmentact'] = 'remove';
+			break;
+		}
+		elseif(strpos($key, 'approveattach_') === 0)
+		{
+			$mybb->input['attachmentaid'] = (int)substr($key, 14);
+			$mybb->input['attachmentact'] = 'approve';
+			break;
+		}
+		elseif(strpos($key, 'unapproveattach_') === 0)
+		{
+			$mybb->input['attachmentaid'] = (int)substr($key, 16);
+			$mybb->input['attachmentact'] = 'unapprove';
+			break;
+		}
+	}
 }

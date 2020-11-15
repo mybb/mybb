@@ -962,7 +962,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**

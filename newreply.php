@@ -203,7 +203,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 
 $errors = array();
 $maximageserror = $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit') && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -226,13 +226,15 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$errors = $ret['errors'];
 	}
 
-	// If we were dealing with an attachment but didn't click 'Post Reply', force the new reply page again.
-	if(!$mybb->get_input('submit'))
+	// If we were dealing with an attachment but didn't click 'Post Reply' or 'Save as Draft', force the new reply page again.
+	if(!$mybb->get_input('submit') && !$mybb->get_input('savedraft'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
 	}
 }
+
+detect_attachmentact();
 
 // Remove an attachment.
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && $mybb->get_input('attachmentact') == "remove")
@@ -700,7 +702,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	$quote_ids = $multiquote_external = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
-	if(empty($mybb->input['previewpost']) && !$reply_errors && $mybb->input['action'] != "editdraft" && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !$mybb->get_input('rem'))
+	if(empty($mybb->input['previewpost']) && !$reply_errors && $mybb->input['action'] != "editdraft" && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment'))
 	{
 		$message = '';
 		$quoted_posts = array();
@@ -1171,24 +1173,24 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			if($post_captcha->type == 1)
+			if($post_captcha->type == DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5)))
+			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(6, 7)))
+			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}
@@ -1230,7 +1232,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
@@ -1249,7 +1251,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC
+			ORDER BY dateline DESC, pid DESC
 		");
 		$postsdone = 0;
 		$altbg = "trow1";
