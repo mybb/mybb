@@ -384,9 +384,18 @@ class Moderation
 
 		$tid_list = $forum_counters = $user_counters = $posts_to_approve = array();
 
+		$tids_list = implode(",", $tids);
+		$threads = array();
+		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
+
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread;
+		}
+
 		foreach($tids as $tid)
 		{
-			$thread = get_thread($tid);
+			$thread = $threads[$tid];
 			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == -1)
 			{
 				continue;
@@ -534,12 +543,21 @@ class Moderation
 
 		$forum_counters = $user_counters = $posts_to_unapprove = array();
 
+		$tids_list = implode(",", $tids);
+		$threads = array();
+		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
+
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread;
+		}
+
 		foreach($tids as $tid)
 		{
-			$thread = get_thread($tid);
+			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if($thread['visible'] == 1 || $thread['visible'] == -1)
+			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == -1)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
@@ -3510,9 +3528,17 @@ class Moderation
 
 		$tid_list = $forum_counters = $user_counters = $posts_to_restore = array();
 
+		$tids_list = implode(",", $tids);
+		$threads = array();
+		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
+
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread;
+		}
 		foreach($tids as $tid)
 		{
-			$thread = get_thread($tid);
+			$thread = $threads[$tid];
 			if(!$thread || $thread['visible'] != -1)
 			{
 				continue;
@@ -3664,12 +3690,20 @@ class Moderation
 
 		$forum_counters = $user_counters = $posts_to_delete = array();
 
+		$tids_list = implode(",", $tids);
+		$threads = array();
+		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread;
+		}
+
 		foreach($tids as $tid)
 		{
-			$thread = get_thread($tid);
+			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if($thread['visible'] == 1 || $thread['visible'] == 0)
+			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == 0)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
