@@ -253,7 +253,6 @@ if(!$mybb->input['action'])
 		$search_user = get_user_by_username($mybb->input['filter']['username']);
 
 		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
-		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
 	}
 	if($mybb->input['filter']['uid'])
 	{
