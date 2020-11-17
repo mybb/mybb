@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo ::set-env name=FETCH_DEPTH::$(( $COMMITS + 1 ))
+        echo "FETCH_DEPTH=$(( $COMMITS + 1 ))" >> $GITHUB_ENV
     - uses: actions/checkout@v2
       with:
         ref: ${{ env.HEAD_SHA }}
