@@ -1,8 +1,8 @@
 <?php
 
-namespace MyBB\Tests\Unit\Traits;
+declare(strict_types=1);
 
-use Mockery\Mock;
+namespace MyBB\Tests\Unit\Traits;
 
 /**
  * This trait can be used by any unit tests that is testing a legacy MyBB component.

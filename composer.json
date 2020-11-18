@@ -27,7 +27,8 @@
         "illuminate/events": "5.7.*",
         "illuminate/hashing": "5.7.*",
         "illuminate/routing": "5.7.*",
-        "twig/twig": "^2.11"
+        "twig/twig": "^2.11",
+        "ext-json": "*"
     },
     "require-dev": {
         "mockery/mockery": "^1.2",
