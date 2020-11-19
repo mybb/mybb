@@ -750,10 +750,10 @@ if($mybb->input['action'] == "send")
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new postDataHandler();
-		
+
 		$valid_subject = $posthandler->verify_subject($post);
 		$valid_message = $posthandler->verify_message($post);
-		
+
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_subject || !$valid_message)
 		{
@@ -1134,7 +1134,7 @@ if($mybb->input['action'] == "read")
 	// Decide whether or not to show quick reply.
 	if($mybb->settings['pmquickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $mybb->usergroup['cansendpms'] != 0 && $pm['fromid'] != 0 && $pm['folder'] != 3)
 	{
-		$pm['options'] = array('savecopy' => true);
+		$pm['options'] = array('savecopy' => true, 'disablesmilies' => false);
 		if(!empty($mybb->user['signature']))
 		{
 			$pm['options']['signature'] = true;

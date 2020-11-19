@@ -10316,7 +10316,7 @@ if(use_xmlhttprequest == "1")
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
-		<template name="private_quickreply" version="1816"><![CDATA[<br />
+		<template name="private_quickreply" version="1825"><![CDATA[<br />
 <form action="private.php" method="post" name="input">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="to" value="{$to}" />
@@ -10339,7 +10339,7 @@ if(use_xmlhttprequest == "1")
               <td class="{$trow}" valign="top" width="22%">
 					<strong>{$lang->message}</strong><br />
 					<span class="smalltext">{$lang->message_note}<br /><br />
-					<label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{$optionschecked['signature']} {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->quickreply_signature}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{$optionschecked['signature']} />&nbsp;<strong>{$lang->quickreply_signature}</strong></label><br />
 					<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{$optionschecked['disablesmilies']} />&nbsp;<strong>{$lang->quickreply_disable_smilies}</strong></label><br />
 					<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{$optionschecked['savecopy']} />&nbsp;<strong>{$lang->quickreply_save_copy}</strong></label>{$private_send_tracking}</span>
 				</td>
