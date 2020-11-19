@@ -1188,7 +1188,7 @@ if($mybb->input['action'] == "read")
 	{
 		$trow = alt_trow();
 
-		$optionschecked = array('savecopy' => 'checked="checked"');
+		$optionschecked = array('savecopy' => 'checked="checked"', 'disablesmilies' => '');
 		if(!empty($mybb->user['signature']))
 		{
 			$optionschecked['signature'] = 'checked="checked"';
