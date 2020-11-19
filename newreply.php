@@ -275,6 +275,11 @@ if($mybb->usergroup['maxposts'] > 0)
 	}
 }
 
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
+
 if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -588,11 +593,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					{
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
-				}
-
-				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-				{
-					$mybb->settings['postsperpage'] = 20;
 				}
 
 				// Lets see if this post is on the same page as the one we're viewing or not
@@ -1204,11 +1204,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$reviewmore = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
-
 		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
@@ -1219,11 +1214,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
-
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
 
 		if($numposts > $mybb->settings['postsperpage'])
 		{
