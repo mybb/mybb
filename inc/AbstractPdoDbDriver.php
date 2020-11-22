@@ -425,9 +425,9 @@ abstract class AbstractPdoDbDriver implements DB_Base
 
 		// Only execute write queries on master server
 		if (($writeQuery || $this->last_query_type) && $this->write_link) {
-			$this->current_link = &$this->write_link;
+			$this->current_link = $this->write_link;
 		} else {
-			$this->current_link = &$this->read_link;
+			$this->current_link = $this->read_link;
 		}
 
 		/** @var PDOStatement|null $query */
@@ -484,7 +484,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 *
 	 * @param PDOStatement $query The query to retrieve a result for.
 	 * @param int $resultType The type of array to return. Can be any of the following values:
-	 *  - {@see PDO::FETCH_ASSOC} Fetch an array o results keyed by column name. This is the default.
+	 *  - {@see PDO::FETCH_ASSOC} Fetch an array of results keyed by column name. This is the default.
 	 *  - {@see PDO::FETCH_NUM} Fetch an array of results keyed by column number, starting at 0.
 	 *  - {@see PDO::FETCH_BOTH} Fetch an array of results keyed by both column name and number.
 	 *

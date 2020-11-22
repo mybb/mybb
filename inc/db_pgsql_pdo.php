@@ -211,9 +211,12 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		// TODO: Implement create_fulltext_index() method.
 	}
 
-	function drop_index($table, $name)
+	public function drop_index($table, $name)
 	{
-		// TODO: Implement drop_index() method.
+		$this->write_query("
+			ALTER TABLE {$this->table_prefix}{$table}
+			DROP INDEX {$name}
+		");
 	}
 
 	function drop_table($table, $hard = false, $table_prefix = true)
@@ -231,14 +234,14 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		// TODO: Implement replace_query() method.
 	}
 
-	function drop_column($table, $column)
+	public function drop_column($table, $column)
 	{
-		// TODO: Implement drop_column() method.
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
 	}
 
-	function add_column($table, $column, $definition)
+	public function add_column($table, $column, $definition)
 	{
-		// TODO: Implement add_column() method.
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
 
 	function modify_column($table, $column, $new_definition, $new_not_null = false, $new_default_value = false)
