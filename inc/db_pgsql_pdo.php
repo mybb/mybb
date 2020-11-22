@@ -110,9 +110,31 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		return $exists > 0;
 	}
 
-	function simple_select($table, $fields = "*", $conditions = "", $options = array())
+	public function simple_select($table, $fields = "*", $conditions = "", $options = array())
 	{
-		// TODO: Implement simple_select() method.
+		$query = "SELECT {$fields} FROM {$this->table_prefix}{$table}";
+		if ($conditions != "") {
+			$query .= " WHERE {$conditions}";
+		}
+
+		if (isset($options['group_by'])) {
+			$query .= " GROUP BY {$options['group_by']}";
+		}
+
+		if (isset($options['order_by'])) {
+			$query .= " ORDER BY {$options['order_by']}";
+			if (isset($options['order_dir'])) {
+				$query .= " {$options['order_dir']}";
+			}
+		}
+
+		if (isset($options['limit_start']) && isset($options['limit'])) {
+			$query .= " LIMIT {$options['limit']} OFFSET {$options['limit_start']}";
+		} else if (isset($options['limit'])) {
+			$query .= " LIMIT {$options['limit']}";
+		}
+
+		return $this->query($query);
 	}
 
 	function insert_query($table, $array)
@@ -130,19 +152,28 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		// TODO: Implement update_query() method.
 	}
 
-	function delete_query($table, $where = "", $limit = "")
+	public function delete_query($table, $where = "", $limit = "")
 	{
-		// TODO: Implement delete_query() method.
+		$query = "";
+		if (!empty($where)) {
+			$query .= " WHERE {$where}";
+		}
+
+		return $this->write_query("
+			DELETE
+			FROM {$this->table_prefix}$table
+			$query
+		");
 	}
 
-	function optimize_table($table)
+	public function optimize_table($table)
 	{
-		// TODO: Implement optimize_table() method.
+		$this->write_query("VACUUM {$this->table_prefix}{$table};");
 	}
 
-	function analyze_table($table)
+	public function analyze_table($table)
 	{
-		// TODO: Implement analyze_table() method.
+		$this->write_query("ANALYZE {$this->table_prefix}{$table};");
 	}
 
 	function show_create_table($table)
@@ -220,9 +251,25 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		// TODO: Implement rename_column() method.
 	}
 
-	function fetch_size($table = '')
+	public function fetch_size($table = '')
 	{
-		// TODO: Implement fetch_size() method.
+		if (!empty($table)) {
+			$query = $this->query("SELECT SUM(reltuples), SUM(relpages) FROM pg_class WHERE relname = '{$this->table_prefix}{$table}'");
+		} else {
+			$query = $this->query("SELECT SUM(reltuples), SUM(relpages) FROM pg_class");
+		}
+
+		if (null === $query) {
+			return 0;
+		}
+
+		$result = $this->fetch_array($query, PDO::FETCH_NUM);
+
+		if (false === $result) {
+			return 0;
+		}
+
+		return $result[0] + $result[1];
 	}
 
 	function fetch_db_charsets()
