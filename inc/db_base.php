@@ -8,6 +8,14 @@
  *
  */
 
+/**
+ * @property string title The title of the database access layer.
+ * @property string short_title The short title of the database access layer.
+ * @property string type The type of db software being used.
+ * @property int query_count A count of the number of queries.
+ * @property array querylist A list of the performed queries.
+ * @property float query_time The time spent performing queries.
+ */
 interface DB_Base
 {
 	/**
