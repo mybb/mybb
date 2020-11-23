@@ -33,48 +33,68 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 
 	public function explain_query($string, $qtime)
 	{
-		if (preg_match("#^\s*select#i", $string))
-		{
+		$duration = format_time_duration($qtime);
+		$queryText = htmlspecialchars_uni($string);
+
+		if (preg_match('/(^|\\s)SELECT\\b/i', $string) === 1) {
 			$query = $this->read_link->query("EXPLAIN {$string}");
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>Info</strong></td>\n".
-				"</tr>\n";
+
+			$this->explain .= <<<HTML
+<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
+	<tr>
+		<td colspan="8" style="background-color: #ccc;">
+			<strong>#{$this->query_count} - Select Query</strong>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="8" style="background-color: #fefefe;">
+			<span style=\"font-family: Courier; font-size: 14px;">{$queryText}</span>
+		</td>
+	<tr style="background-color: #efefef">
+		<td>
+			<strong>Info</strong>
+		</td>
+	</tr>
+HTML;
 
 			while ($table = $query->fetch(PDO::FETCH_ASSOC)) {
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['QUERY PLAN']."</td>\n".
-					"</tr>\n";
+				$this->explain .= <<<HTML
+	<tr style="background-color: #fff">
+		<td>{$table['QUERY PLAN']}</td>
+	</tr>
+HTML;
 			}
 
-			$this->explain .=
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
-		}
-		else
-		{
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #fefefe;\">\n".
-				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
+			$this->explain .= <<<HTML
+	<tr>
+		<td colspan="8" style="background-color: #fff;">
+			Query Time: {$duration}
+		</td>
+	</tr>
+</table>
+<br />
+HTML;
+		} else {
+			$this->explain .= <<<HTML
+<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
+	<tr>
+		<td style="background-color: #ccc;">
+			<strong>#{$this->query_count} - Write Query</strong>
+		</td>
+	</tr>
+	<tr style="background-color: #fefefe;">
+		<td>
+			<span style="font-family: Courier; font-size: 14px;">{$queryText}</span>
+		</td>
+	</tr>
+	<tr>
+		<td style="background-color: #fff">
+			Query Time: {$duration}
+		</td>
+	</tr>
+</table>
+<br />
+HTML;
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;
@@ -137,19 +157,114 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		return $this->query($query);
 	}
 
-	function insert_query($table, $array)
+	public function insert_query($table, $array)
 	{
-		// TODO: Implement insert_query() method.
+		global $mybb;
+
+		if (!is_array($array)) {
+			return false;
+		}
+
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$array[$field] = $value;
+			}
+			else
+			{
+				$array[$field] = $this->quote_val($value);
+			}
+		}
+
+		$fields = implode(",", array_keys($array));
+		$values = implode(",", $array);
+		$this->write_query("
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
+			VALUES ({$values})
+		");
+
+		return $this->insert_id();
 	}
 
-	function insert_query_multiple($table, $array)
+	private function quote_val($value, $quote = "'")
 	{
-		// TODO: Implement insert_query_multiple() method.
+		if (is_int($value)) {
+			return $value;
+		}
+
+		return "{$quote}{$value}{$quote}";
 	}
 
-	function update_query($table, $array, $where = "", $limit = "", $no_quote = false)
+	public function insert_query_multiple($table, $array)
 	{
-		// TODO: Implement update_query() method.
+		global $mybb;
+
+		if (!is_array($array)){
+			return;
+		}
+
+		// Field names
+		$fields = array_keys($array[0]);
+		$fields = implode(",", $fields);
+
+		$insert_rows = array();
+		foreach ($array as $values) {
+			foreach ($values as $field => $value) {
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+					$values[$field] = $value;
+				} else {
+					$values[$field] = $this->quote_val($value);
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
+		}
+		$insert_rows = implode(", ", $insert_rows);
+
+		$this->write_query("
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
+			VALUES {$insert_rows}
+		");
+	}
+
+	public function update_query($table, $array, $where = "", $limit = "", $no_quote = false)
+	{
+		global $mybb;
+
+		if (!is_array($array)) {
+			return false;
+		}
+
+		$comma = "";
+		$query = "";
+		$quote = "'";
+
+		if ($no_quote == true) {
+			$quote = "";
+		}
+
+		foreach($array as $field => $value) {
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+				$query .= "{$comma}{$field}={$value}";
+			} else {
+				$quoted_value = $this->quote_val($value, $quote);
+
+				$query .= "{$comma}{$field}={$quoted_value}";
+			}
+
+			$comma = ', ';
+		}
+
+		if(!empty($where)) {
+			$query .= " WHERE {$where}";
+		}
+
+		return $this->write_query("
+			UPDATE {$this->table_prefix}$table
+			SET $query
+		");
 	}
 
 	public function delete_query($table, $where = "", $limit = "")

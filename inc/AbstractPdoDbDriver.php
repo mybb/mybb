@@ -417,7 +417,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 *
 	 * @return PDOStatement|null The result of the query, or null if an error occurred and {@see $hideErrors} was set.
 	 */
-	function query($string, $hideErrors = false, $writeQuery = 0)
+	public function query($string, $hideErrors = false, $writeQuery = false)
 	{
 		global $mybb;
 
@@ -474,9 +474,9 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 *
 	 * @return PDOStatement|null The result of the query, or null if an error occurred and {@see $hideErrors} was set.
 	 */
-	function write_query($query, $hideErrors = false)
+	public function write_query($query, $hideErrors = false)
 	{
-		return $this->query($query, $hideErrors, 1);
+		return $this->query($query, $hideErrors, true);
 	}
 
 	/**
@@ -490,7 +490,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 *
 	 * @return array|bool The array of results, or false if there are no more results.
 	 */
-	function fetch_array($query, $resultType = PDO::FETCH_ASSOC)
+	public function fetch_array($query, $resultType = PDO::FETCH_ASSOC)
 	{
 		if (is_null($query) || !($query instanceof PDOStatement)) {
 			return false;
@@ -525,7 +525,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 * @return mixed The resulting field, of false if no more rows are in th result set.
 	 *  Note that when querying fields that have a boolean value, this method should not be used.
 	 */
-	function fetch_field($query, $field, $row = false)
+	public function fetch_field($query, $field, $row = false)
 	{
 		if (is_null($query) || !($query instanceof PDOStatement)) {
 			return false;
@@ -553,7 +553,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 *
 	 * @return bool Whether seeking was successful.
 	 */
-	function data_seek($query, $row)
+	public function data_seek($query, $row)
 	{
 		if (is_null($query) || !($query instanceof PDOStatement)) {
 			return false;
@@ -579,7 +579,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 			return false;
 		}
 
-		if (stripos($query->queryString, 'SELECT') !== false) {
+		if (preg_match('/(^|\\s)SELECT\\b/i', $query->queryString) === 1) {
 			// rowCount does not return the number of rows in a select query on most DBMS, so we instead fetch all results then count them
 			// TODO: how do we handle the case where we issued a prepared statement with parameters..?
 			$countQuery = $this->read_link->query($query->queryString);
