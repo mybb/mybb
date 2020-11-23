@@ -165,14 +165,10 @@ HTML;
 			return false;
 		}
 
-		foreach($array as $field => $value)
-		{
-			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
-			{
+		foreach ($array as $field => $value) {
+			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
 				$array[$field] = $value;
-			}
-			else
-			{
+			} else {
 				$array[$field] = $this->quote_val($value);
 			}
 		}
@@ -218,8 +214,10 @@ HTML;
 					$values[$field] = $this->quote_val($value);
 				}
 			}
+
 			$insert_rows[] = "(".implode(",", $values).")";
 		}
+
 		$insert_rows = implode(", ", $insert_rows);
 
 		$this->write_query("
@@ -296,9 +294,27 @@ HTML;
 		// TODO: Implement show_create_table() method.
 	}
 
-	function show_fields_from($table)
+	public function show_fields_from($table)
 	{
-		// TODO: Implement show_fields_from() method.
+		$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+		$primary_key = $this->fetch_field($query, 'column_name');
+
+		$query = $this->write_query("
+			SELECT column_name as Field, data_type as Extra
+			FROM information_schema.columns
+			WHERE table_name = '{$this->table_prefix}{$table}'
+		");
+
+		$field_info = array();
+		while ($field = $this->fetch_array($query)) {
+			if ($field['field'] == $primary_key) {
+				$field['extra'] = 'auto_increment';
+			}
+
+			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
+		}
+
+		return $field_info;
 	}
 
 	function is_fulltext($table, $index = "")
