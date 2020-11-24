@@ -350,14 +350,40 @@ HTML;
 		");
 	}
 
-	function drop_table($table, $hard = false, $table_prefix = true)
+	public function drop_table($table, $hard = false, $table_prefix = true)
 	{
-		// TODO: Implement drop_table() method.
+		if ($table_prefix == false) {
+			$table_prefix = "";
+		} else {
+			$table_prefix = $this->table_prefix;
+		}
+
+		if ($hard == false) {
+			if($this->table_exists($table))
+			{
+				$this->write_query("DROP TABLE {$table_prefix}{$table}");
+			}
+		} else {
+			$this->write_query("DROP TABLE {$table_prefix}{$table}");
+		}
+
+		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
+		$field = $this->fetch_field($query, 'column_name');
+
+		if ($field) {
+			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
+		}
 	}
 
-	function rename_table($old_table, $new_table, $table_prefix = true)
+	public function rename_table($old_table, $new_table, $table_prefix = true)
 	{
-		// TODO: Implement rename_table() method.
+		if ($table_prefix == false) {
+			$table_prefix = "";
+		} else {
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
 	}
 
 	function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
@@ -406,18 +432,18 @@ HTML;
 		return $result[0] + $result[1];
 	}
 
-	function fetch_db_charsets()
+	public function fetch_db_charsets()
 	{
-		// TODO: Implement fetch_db_charsets() method.
+		return false;
 	}
 
-	function fetch_charset_collation($charset)
+	public function fetch_charset_collation($charset)
 	{
-		// TODO: Implement fetch_charset_collation() method.
+		return false;
 	}
 
-	function build_create_table_collation()
+	public function build_create_table_collation()
 	{
-		// TODO: Implement build_create_table_collation() method.
+		return '';
 	}
 }
