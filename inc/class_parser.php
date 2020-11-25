@@ -368,8 +368,8 @@ class postParser
 
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
-			$nestable_mycode['font']['regex'] = "#\[font=(\"?)([a-z0-9 ,\-_']+)\\1\](.*?)\[/font\]#si";
-			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $2;\" class=\"mycode_font\">$3</span>";
+			$callback_mycode['font']['regex'] = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
+			$callback_mycode['font']['replacement'] = array($this, 'mycode_parse_font_callback');
 
 			++$nestable_count;
 		}
@@ -1137,6 +1137,23 @@ class postParser
 
 		eval("\$mycode_url = \"".$templates->get("mycode_url", 1, 0)."\";");
 		return $mycode_url;
+	}
+
+	/**
+	* Parses font MyCode.
+	*
+	* @param array $matches Matches.
+	* @return string The HTML <span> tag with styled font.
+	*/
+	function mycode_parse_font_callback($matches)
+	{
+		// Replace any occurrence(s) of double quotes in fonts with single quotes.
+		// A back-fix for double-quote-containing MyBB font tags in existing
+		// posts prior to the client-side aspect of this fix for the
+		// browser-independent SCEditor bug of issue #4182.
+		$fonts = str_replace('"', "'", $matches[2]);
+
+		return "<span style=\"font-family: {$fonts};\" class=\"mycode_font\">{$matches[3]}</span>";
 	}
 
 	/**
