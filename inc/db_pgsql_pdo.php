@@ -319,27 +319,37 @@ HTML;
 
 	function is_fulltext($table, $index = "")
 	{
-		// TODO: Implement is_fulltext() method.
+		return false;
 	}
 
-	function supports_fulltext($table)
+	public function supports_fulltext($table)
 	{
-		// TODO: Implement supports_fulltext() method.
+		return false;
 	}
 
-	function index_exists($table, $index)
+	public function index_exists($table, $index)
 	{
-		// TODO: Implement index_exists() method.
+		$err = $this->error_reporting;
+		$this->error_reporting = 0;
+
+		$tableName = $this->escape_string("{$this->table_prefix}{$table}");
+
+		$query = $this->write_query("SELECT * FROM pg_indexes WHERE tablename = '{$tableName}'");
+
+		$exists = $this->fetch_field($query, $index);
+		$this->error_reporting = $err;
+
+		return (bool)$exists;
 	}
 
-	function supports_fulltext_boolean($table)
+	public function supports_fulltext_boolean($table)
 	{
-		// TODO: Implement supports_fulltext_boolean() method.
+		return false;
 	}
 
-	function create_fulltext_index($table, $column, $name = "")
+	public function create_fulltext_index($table, $column, $name = "")
 	{
-		// TODO: Implement create_fulltext_index() method.
+		return false;
 	}
 
 	public function drop_index($table, $name)
@@ -401,14 +411,41 @@ HTML;
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
 
-	function modify_column($table, $column, $new_definition, $new_not_null = false, $new_default_value = false)
+	public function modify_column($table, $column, $new_definition, $new_not_null = false, $new_default_value = false)
 	{
-		// TODO: Implement modify_column() method.
+		$result1 = $result2 = $result3 = true;
+
+		if ($new_definition !== false) {
+			$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} TYPE {$new_definition}");
+		}
+
+		if ($new_not_null !== false) {
+			$set_drop = "DROP";
+
+			if (strtolower($new_not_null) == "set") {
+				$set_drop = "SET";
+			}
+
+			$result2 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} {$set_drop} NOT NULL");
+		}
+
+		if ($new_default_value !== null) {
+			if($new_default_value !== false) {
+				$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} SET DEFAULT {$new_default_value}");
+			} else {
+				$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} DROP DEFAULT");
+			}
+		}
+
+		return $result1 && $result2 && $result3;
 	}
 
-	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null = false, $new_default_value = false)
+	public function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null = false, $new_default_value = false)
 	{
-		// TODO: Implement rename_column() method.
+		$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} RENAME COLUMN {$old_column} TO {$new_column}");
+		$result2 = $this->modify_column($table, $new_column, $new_definition, $new_not_null, $new_default_value);
+
+		return $result1 && $result2;
 	}
 
 	public function fetch_size($table = '')
