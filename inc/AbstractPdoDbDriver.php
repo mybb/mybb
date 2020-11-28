@@ -425,19 +425,24 @@ abstract class AbstractPdoDbDriver implements DB_Base
 
 		// Only execute write queries on master server
 		if (($writeQuery || $this->last_query_type) && $this->write_link) {
-			$this->current_link = $this->write_link;
+			$this->current_link = &$this->write_link;
 		} else {
-			$this->current_link = $this->read_link;
+			$this->current_link = &$this->read_link;
 		}
 
 		/** @var PDOStatement|null $query */
 		$query = null;
 
 		try {
-			// NOTE: we use prepare + execute here rather than just query so that we may request a scrollable cursor...
-			$query = $this->current_link->prepare($string, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-			$query->execute();
-			$this->lastPdoException = null;
+			if (preg_match('/^\\s*SELECT\\b/i', $string) === 1) {
+				// NOTE: we use prepare + execute here rather than just query so that we may request a scrollable cursor...
+				$query = $this->current_link->prepare($string, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+				$query->execute();
+				$this->lastPdoException = null;
+			} else {
+				$query = $this->current_link->query($string);
+				$this->lastPdoException = null;
+			}
 		} catch (PDOException $e) {
 			$this->lastPdoException = $e;
 			$query = null;
@@ -459,9 +464,9 @@ abstract class AbstractPdoDbDriver implements DB_Base
 		$this->query_count++;
 		$this->lastResult = $query;
 
-//TODO:		if ($mybb->debug_mode) {
-//			// TODO: $this->explain_query($string, $query_time);
-//		}
+		if ($mybb->debug_mode) {
+			$this->explain_query($string, $query_time);
+		}
 
 		return $query;
 	}
@@ -579,7 +584,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 			return false;
 		}
 
-		if (preg_match('/(^|\\s)SELECT\\b/i', $query->queryString) === 1) {
+		if (preg_match('/^\\s*SELECT\\b/i', $query->queryString) === 1) {
 			// rowCount does not return the number of rows in a select query on most DBMS, so we instead fetch all results then count them
 			// TODO: how do we handle the case where we issued a prepared statement with parameters..?
 			$countQuery = $this->read_link->query($query->queryString);
@@ -690,15 +695,5 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 public function get_execution_time()
 	 {
 		 return get_execution_time();
-	 }
-
-	 public function escape_binary($string)
-	 {
-		 // TODO: Implement escape_binary() method.
-	 }
-
-	 public function unescape_binary($string)
-	 {
-		 // TODO: Implement unescape_binary() method.
 	 }
  }

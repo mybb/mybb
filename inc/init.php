@@ -111,6 +111,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 
@@ -121,6 +122,9 @@ switch($config['database']['type'])
 		break;
 	case "pgsql":
 		$db = new DB_PgSQL;
+		break;
+	case "pgsql_pdo":
+		$db = new PostgresPdoDbDriver();
 		break;
 	case "mysqli":
 		$db = new DB_MySQLi;

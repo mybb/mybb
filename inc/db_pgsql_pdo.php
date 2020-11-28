@@ -31,13 +31,20 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 		return $dsn;
 	}
 
+	public function query($string, $hideErrors = false, $writeQuery = false)
+	{
+		$string = preg_replace("#LIMIT (\s*)([0-9]+),(\s*)([0-9]+);?$#im", "LIMIT $4 OFFSET $2", trim($string));
+
+		return parent::query($string, $hideErrors, $writeQuery);
+	}
+
 	public function explain_query($string, $qtime)
 	{
 		$duration = format_time_duration($qtime);
 		$queryText = htmlspecialchars_uni($string);
 
-		if (preg_match('/(^|\\s)SELECT\\b/i', $string) === 1) {
-			$query = $this->read_link->query("EXPLAIN {$string}");
+		if (preg_match('/^\\s*SELECT\\b/i', $string) === 1) {
+			$query = $this->current_link->query("EXPLAIN {$string}");
 
 			$this->explain .= <<<HTML
 <table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
@@ -482,5 +489,36 @@ HTML;
 	public function build_create_table_collation()
 	{
 		return '';
+	}
+
+	public function insert_id()
+	{
+		try {
+			return $this->write_link->lastInsertId();
+		} catch (PDOException $e) {
+			// in order to behave the same way as the MySQL driver, we return false if there is no last insert ID
+			return false;
+		}
+	}
+
+	public function escape_binary($string)
+	{
+		var_dump(
+			[
+				'escape_binary',
+				'string' => $string,
+				'bin2hex' => bin2hex($string)
+			]
+		);
+	}
+
+	public function unescape_binary($string)
+	{
+		var_dump(
+			[
+				'unescape_binary',
+				'string' => $string,
+			]
+		);
 	}
 }
