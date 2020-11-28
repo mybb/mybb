@@ -503,22 +503,14 @@ HTML;
 
 	public function escape_binary($string)
 	{
-		var_dump(
-			[
-				'escape_binary',
-				'string' => $string,
-				'bin2hex' => bin2hex($string)
-			]
-		);
+		$hex = bin2hex($string);
+		return "decode('{$hex}', 'hex')";
 	}
 
 	public function unescape_binary($string)
 	{
-		var_dump(
-			[
-				'unescape_binary',
-				'string' => $string,
-			]
-		);
+		// binary fields are treated as streams
+		/** @var resource $string */
+		return fgets($string);
 	}
 }
