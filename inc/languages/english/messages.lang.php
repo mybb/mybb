@@ -100,7 +100,7 @@ $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
 $l['emailsubject_changepassword'] = "Change of Password at {1}";
-$l['emailbit_viewthread'] = "&hellip; (visit the thread to read more&hellip;)";
+$l['emailbit_viewthread'] = "... (visit the thread to read more...)";
 
 $l['email_lostpw'] = "{1},
 
