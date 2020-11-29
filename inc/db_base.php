@@ -15,6 +15,8 @@
  * @property int query_count A count of the number of queries.
  * @property array querylist A list of the performed queries.
  * @property float query_time The time spent performing queries.
+ * @property string engine The engine used to run the SQL database.
+ * @property bool can_search Whether or not this engine can use the search functionality.
  */
 interface DB_Base
 {

@@ -296,9 +296,104 @@ HTML;
 		$this->write_query("ANALYZE {$this->table_prefix}{$table};");
 	}
 
-	function show_create_table($table)
+	public function show_create_table($table)
 	{
-		// TODO: Implement show_create_table() method.
+		$query = $this->write_query("
+			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotnull as notnull
+			FROM pg_class c
+			LEFT JOIN pg_attribute a ON (a.attrelid = c.oid)
+			LEFT JOIN pg_type t ON (a.atttypid = t.oid)
+			WHERE c.relname = '{$this->table_prefix}{$table}' AND a.attnum > 0
+			ORDER BY a.attnum
+		");
+
+		$lines = array();
+		$table_lines = "CREATE TABLE {$this->table_prefix}{$table} (\n";
+
+		while ($row = $this->fetch_array($query)) {
+			// Get the data from the table
+			$query2 = $this->write_query("
+				SELECT pg_get_expr(d.adbin, d.adrelid) as rowdefault
+				FROM pg_attrdef d
+				LEFT JOIN pg_class c ON (c.oid = d.adrelid)
+				WHERE c.relname = '{$this->table_prefix}{$table}' AND d.adnum = '{$row['attnum']}'
+			");
+
+			if (!$query2) {
+				unset($row['rowdefault']);
+			} else {
+				$row['rowdefault'] = $this->fetch_field($query2, 'rowdefault');
+			}
+
+			if ($row['type'] == 'bpchar') {
+				// Stored in the engine as bpchar, but in the CREATE TABLE statement it's char
+				$row['type'] = 'char';
+			}
+
+			$line = "  {$row['field']} {$row['type']}";
+
+			if (strpos($row['type'], 'char') !== false) {
+				if ($row['lengthvar'] > 0) {
+					$line .= '('.($row['lengthvar'] - 4).')';
+				}
+			}
+
+			if (strpos($row['type'], 'numeric') !== false) {
+				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
+			}
+
+			if (!empty($row['rowdefault'])) {
+				$line .= " DEFAULT {$row['rowdefault']}";
+			}
+
+			if ($row['notnull'] == 't') {
+				$line .= ' NOT NULL';
+			}
+
+			$lines[] = $line;
+		}
+
+		// Get the listing of primary keys.
+		$query = $this->write_query("
+			SELECT ic.relname as index_name, bc.relname as tab_name, ta.attname as column_name, i.indisunique as unique_key, i.indisprimary as primary_key
+			FROM pg_class bc
+			LEFT JOIN pg_index i ON (bc.oid = i.indrelid)
+			LEFT JOIN pg_class ic ON (ic.oid = i.indexrelid)
+			LEFT JOIN pg_attribute ia ON (ia.attrelid = i.indexrelid)
+			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
+			WHERE bc.relname = '{$this->table_prefix}{$table}'
+			ORDER BY index_name, tab_name, column_name
+		");
+
+		$primary_key = array();
+		$primary_key_name = '';
+
+		$unique_keys = array();
+
+		// We do this in two steps. It makes placing the comma easier
+		while ($row = $this->fetch_array($query)) {
+			if ($row['primary_key'] == 't') {
+				$primary_key[] = $row['column_name'];
+				$primary_key_name = $row['index_name'];
+			}
+
+			if ($row['unique_key'] == 't') {
+				$unique_keys[$row['index_name']][] = $row['column_name'];
+			}
+		}
+
+		if (!empty($primary_key)) {
+			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
+		}
+
+		foreach ($unique_keys as $key_name => $key_columns) {
+			$lines[] = "  CONSTRAINT $key_name UNIQUE (".implode(', ', $key_columns).")";
+		}
+
+		$table_lines .= implode(", \n", $lines);
+		$table_lines .= "\n)\n";
+
+		return $table_lines;
 	}
 
 	public function show_fields_from($table)
@@ -403,9 +498,44 @@ HTML;
 		return $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
 	}
 
-	function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
+	public function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
 	{
-		// TODO: Implement replace_query() method.
+		global $mybb;
+
+		if ($default_field == "") {
+			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+			$main_field = $this->fetch_field($query, 'column_name');
+		} else {
+			$main_field = $default_field;
+		}
+
+		$update = false;
+		$search_bit = array();
+
+		if (!is_array($main_field)) {
+			$main_field = array($main_field);
+		}
+
+		foreach ($main_field as $field) {
+			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+				$search_bit[] = "{$field} = ".$replacements[$field];
+			} else {
+				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
+			}
+		}
+
+		$search_bit = implode(" AND ", $search_bit);
+		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+
+		if ($this->fetch_field($query, "count") == 1) {
+			$update = true;
+		}
+
+		if ($update === true) {
+			return $this->update_query($table, $replacements, $search_bit);
+		} else {
+			return $this->insert_query($table, $replacements);
+		}
 	}
 
 	public function drop_column($table, $column)
@@ -512,5 +642,43 @@ HTML;
 		// binary fields are treated as streams
 		/** @var resource $string */
 		return fgets($string);
+	}
+
+	/**
+	 * @param string $table
+	 * @param string $append
+	 *
+	 * @return string
+	 */
+	public function build_fields_string($table, $append="")
+	{
+		$fields = $this->show_fields_from($table);
+		$comma = $fieldstring = '';
+
+		foreach($fields as $key => $field)
+		{
+			$fieldstring .= "{$comma}{$append}{$field['Field']}";
+			$comma = ',';
+		}
+
+		return $fieldstring;
+	}
+
+	public function __set($name, $value)
+	{
+		if ($name === 'type') {
+			// NOTE: This is to prevent the type being set - this type should appear as `pgsql` to ensure compatibility
+			return;
+		}
+	}
+
+	public function __get($name)
+	{
+		if ($name === 'type') {
+			// NOTE: this is to ensure compatibility checks on the DB type will work
+			return 'pgsql';
+		}
+
+		return null;
 	}
 }

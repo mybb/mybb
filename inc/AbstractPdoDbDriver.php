@@ -122,6 +122,20 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	public $querylist = array();
 
 	/**
+	 * The engine used to run the SQL database.
+	 *
+	 * @var string
+	 */
+	public $engine = "pdo";
+
+	/**
+	 * Whether or not this engine can use the search functionality.
+	 *
+	 * @var boolean
+	 */
+	public $can_search = true;
+
+	/**
 	 * Build a DSN string using the given configuration.
 	 *
 	 * @param string $hostname The hostname of the database serer to connect to.
