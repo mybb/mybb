@@ -385,18 +385,11 @@ class Moderation
 		$tid_list = $forum_counters = $user_counters = $posts_to_approve = array();
 
 		$tids_list = implode(",", $tids);
-		$threads = array();
 		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
 
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = $thread;
-		}
-
-		foreach($tids as $tid)
-		{
-			$thread = $threads[$tid];
-			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == -1)
+			if($thread['visible'] == 1 || $thread['visible'] == -1)
 			{
 				continue;
 			}
@@ -430,7 +423,7 @@ class Moderation
 			if($forum['usepostcounts'] != 0)
 			{
 				// On approving thread restore user post counts
-				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
+				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
 					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
@@ -544,20 +537,13 @@ class Moderation
 		$forum_counters = $user_counters = $posts_to_unapprove = array();
 
 		$tids_list = implode(",", $tids);
-		$threads = array();
 		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
 
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = $thread;
-		}
-
-		foreach($tids as $tid)
-		{
-			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == -1)
+			if($thread['visible'] == 1 || $thread['visible'] == -1)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
@@ -598,7 +584,7 @@ class Moderation
 				// On unapproving thread update user post counts
 				if($thread['visible'] == 1 && $forum['usepostcounts'] != 0)
 				{
-					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
+					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
 						$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
@@ -3529,17 +3515,11 @@ class Moderation
 		$tid_list = $forum_counters = $user_counters = $posts_to_restore = array();
 
 		$tids_list = implode(",", $tids);
-		$threads = array();
 		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
 
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = $thread;
-		}
-		foreach($tids as $tid)
-		{
-			$thread = $threads[$tid];
-			if(!$thread || $thread['visible'] != -1)
+			if($thread['visible'] != -1)
 			{
 				continue;
 			}
@@ -3573,7 +3553,7 @@ class Moderation
 			if($forum['usepostcounts'] != 0)
 			{
 				// On approving thread restore user post counts
-				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
+				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
 					if(!isset($user_counters[$counter['uid']]['num_posts']))
@@ -3691,19 +3671,13 @@ class Moderation
 		$forum_counters = $user_counters = $posts_to_delete = array();
 
 		$tids_list = implode(",", $tids);
-		$threads = array();
 		$query = $db->simple_select("threads", "*", "tid IN ($tids_list)");
+
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = $thread;
-		}
-
-		foreach($tids as $tid)
-		{
-			$thread = $threads[$tid];
 			$forum = get_forum($thread['fid']);
 
-			if(!$thread || $thread['visible'] == 1 || $thread['visible'] == 0)
+			if($thread['visible'] == 1 || $thread['visible'] == 0)
 			{
 				if(!isset($forum_counters[$forum['fid']]))
 				{
@@ -3744,7 +3718,7 @@ class Moderation
 				// On unapproving thread update user post counts
 				if($thread['visible'] == 1 && $forum['usepostcounts'] != 0)
 				{
-					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
+					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
 						if(!isset($user_counters[$counter['uid']]['num_posts']))
