@@ -413,23 +413,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"type" => "r"
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+			send_activation_mail($user_info, $activationcode);
 
 			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
@@ -439,29 +424,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "randompass")
 		{
-			$emailsubject = $lang->sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
+			send_activation_mail($user_info, $mybb->get_input('password'), "randompassword");
 
 			$plugins->run_hooks("member_do_register_end");
 
 			error($lang->redirect_registered_passwordsent);
 		}
-		else if($mybb->settings['regtype'] == "admin")
+		else if(in_array($mybb->settings['regtype'], array("admin", "both")))
 		{
 			$groups = $cache->read("usergroups");
 			$admingroups = array();
@@ -543,125 +512,31 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				}
 			}
 
-			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
+			if($mybb->settings['regtype'] == "admin")
+			{
+				$lang_string = "redirect_registered_admin_activate";
+			}
+			else
+			{
+				$activationcode = random_str();
+				$activationarray = array(
+					"uid" => $user_info['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => "b"
+				);
+				$db->insert_query("awaitingactivation", $activationarray);
+
+				send_activation_mail($user_info, $activationcode);
+
+				$lang_string = "redirect_registered_activation";
+			}
+				
+			$lang_string = $lang->sprintf($lang->{$lang_string}, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_admin_activate);
-		}
-		else if($mybb->settings['regtype'] == "both")
-		{
-			$groups = $cache->read("usergroups");
-			$admingroups = array();
-			if(!empty($groups)) // Shouldn't be...
-			{
-				foreach($groups as $group)
-				{
-					if($group['cancp'] == 1)
-					{
-						$admingroups[] = (int)$group['gid'];
-					}
-				}
-			}
-
-			if(!empty($admingroups))
-			{
-				$sqlwhere = 'usergroup IN ('.implode(',', $admingroups).')';
-				foreach($admingroups as $admingroup)
-				{
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$sqlwhere .= " OR ','||additionalgroups||',' LIKE '%,{$admingroup},%'";
-							break;
-						default:
-							$sqlwhere .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$admingroup},%'";
-							break;
-					}
-				}
-				$q = $db->simple_select('users', 'uid,username,email,language', $sqlwhere);
-				while($recipient = $db->fetch_array($q))
-				{
-					// First we check if the user's a super admin: if yes, we don't care about permissions
-					$is_super_admin = is_super_admin($recipient['uid']);
-					if(!$is_super_admin)
-					{
-						// Include admin functions
-						if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
-						{
-							continue;
-						}
-
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-
-						// Verify if we have permissions to access user-users
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/user/module_meta.php";
-						if(function_exists("user_admin_permissions"))
-						{
-							// Get admin permissions
-							$adminperms = get_admin_permissions($recipient['uid']);
-
-							$permissions = user_admin_permissions();
-							if(array_key_exists('users', $permissions['permissions']) && $adminperms['user']['users'] != 1)
-							{
-								continue; // No permissions
-							}
-						}
-					}
-
-					// Load language
-					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
-
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
-					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->settings['bblanguage']);
-					$lang->load("member");
-				}
-			}
-
-			$activationcode = random_str();
-			$activationarray = array(
-				"uid" => $user_info['uid'],
-				"dateline" => TIME_NOW,
-				"code" => $activationcode,
-				"type" => "b"
-			);
-			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
-
-			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
-
-			$plugins->run_hooks("member_do_register_end");
-
-			error($lang->redirect_registered_activation);
+			error($lang_string);
 		}
 		else
 		{
@@ -1396,35 +1271,16 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 					if(!$user['code'])
 					{
 						$user['code'] = random_str();
-						$uid = $user['uid'];
 						$awaitingarray = array(
-							"uid" => $uid,
+							"uid" => $user['uid'],
 							"dateline" => TIME_NOW,
 							"code" => $user['code'],
 							"type" => $user['type']
 						);
 						$db->insert_query("awaitingactivation", $awaitingarray);
 					}
-					$username = $user['username'];
-					$email = $user['email'];
-					$activationcode = $user['code'];
-					$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-					switch($mybb->settings['username_method'])
-					{
-						case 0:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						case 1:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						case 2:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						default:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-					}
-					my_mail($email, $emailsubject, $emailmessage);
+					
+					send_activation_mail($user, $user['code']);
 				}
 			}
 
@@ -1528,7 +1384,6 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 				$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
 				$user['activationcode'] = random_str(30);
 				$now = TIME_NOW;
-				$uid = $user['uid'];
 				$awaitingarray = array(
 					"uid" => $user['uid'],
 					"dateline" => TIME_NOW,
@@ -1536,26 +1391,8 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 					"type" => "p"
 				);
 				$db->insert_query("awaitingactivation", $awaitingarray);
-				$username = $user['username'];
-				$email = $user['email'];
-				$activationcode = $user['activationcode'];
-				$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-				switch($mybb->settings['username_method'])
-				{
-					case 0:
-						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					case 1:
-						$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					case 2:
-						$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					default:
-						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-				}
-				my_mail($email, $emailsubject, $emailmessage);
+				
+				send_activation_mail($user, $user['activationcode'], "lostpw");
 			}
 
 			$plugins->run_hooks("member_do_lostpw_end");
@@ -2817,12 +2654,21 @@ if($mybb->input['action'] == "profile")
 	output_page($profile);
 }
 
-if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+$emailuser = $mybb->input['action'] == "emailuser";
+$do_emailuser = $mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post";
 
-	$plugins->run_hooks("member_do_emailuser_start");
+if($emailuser || $do_emailuser)
+{
+	if($do_emailuser)
+	{
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+		$plugins->run_hooks("member_do_emailuser_start");
+	}
+	else
+	{
+		$plugins->run_hooks("member_emailuser_start");
+	}
 
 	// Guests or those without permission can't email other users
 	if($mybb->usergroup['cansendemail'] == 0)
@@ -2903,177 +2749,6 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		error($lang->error_invalidusername);
 	}
 
-	if($to_user['hideemail'] != 0)
-	{
-		error($lang->error_hideemail);
-	}
-
-	$errors = array();
-
-	if($mybb->user['uid'])
-	{
-		$mybb->input['fromemail'] = $mybb->user['email'];
-		$mybb->input['fromname'] = $mybb->user['username'];
-	}
-
-	if(!validate_email_format($mybb->input['fromemail']))
-	{
-		$errors[] = $lang->error_invalidfromemail;
-	}
-
-	if(empty($mybb->input['fromname']))
-	{
-		$errors[] = $lang->error_noname;
-	}
-
-	if(empty($mybb->input['subject']))
-	{
-		$errors[] = $lang->error_no_email_subject;
-	}
-
-	if(empty($mybb->input['message']))
-	{
-		$errors[] = $lang->error_no_email_message;
-	}
-
-	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
-	{
-		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$captcha = new captcha;
-
-		if($captcha->validate_captcha() == false)
-		{
-			// CAPTCHA validation failed
-			foreach($captcha->get_errors() as $error)
-			{
-				$errors[] = $error;
-			}
-		}
-	}
-
-	if(count($errors) == 0)
-	{
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			$from = $mybb->input['fromemail'];
-		}
-		else
-		{
-			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
-		}
-
-		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
-		my_mail($to_user['email'], $mybb->get_input('subject'), $message, '', '', '', false, 'text', '', $from);
-
-		if($mybb->settings['mail_logging'] > 0)
-		{
-			// Log the message
-			$log_entry = array(
-				"subject" => $db->escape_string($mybb->get_input('subject')),
-				"message" => $db->escape_string($mybb->get_input('message')),
-				"dateline" => TIME_NOW,
-				"fromuid" => $mybb->user['uid'],
-				"fromemail" => $db->escape_string($mybb->input['fromemail']),
-				"touid" => $to_user['uid'],
-				"toemail" => $db->escape_string($to_user['email']),
-				"tid" => 0,
-				"ipaddress" => $db->escape_binary($session->packedip),
-				"type" => 1
-			);
-			$db->insert_query("maillogs", $log_entry);
-		}
-
-		$plugins->run_hooks("member_do_emailuser_end");
-
-		redirect(get_profile_link($to_user['uid']), $lang->redirect_emailsent);
-	}
-	else
-	{
-		$mybb->input['action'] = "emailuser";
-	}
-}
-
-if($mybb->input['action'] == "emailuser")
-{
-	$plugins->run_hooks("member_emailuser_start");
-
-	// Guests or those without permission can't email other users
-	if($mybb->usergroup['cansendemail'] == 0)
-	{
-		error_no_permission();
-	}
-
-	// Check group limits
-	if($mybb->usergroup['maxemails'] > 0)
-	{
-		if($mybb->user['uid'] > 0)
-		{
-			$user_check = "fromuid='{$mybb->user['uid']}'";
-		}
-		else
-		{
-			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
-		}
-
-		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
-		$sent_count = $db->fetch_field($query, "sent_count");
-		if($sent_count >= $mybb->usergroup['maxemails'])
-		{
-			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-			error($lang->error_max_emails_day);
-		}
-	}
-
-	// Check email flood control
-	if($mybb->usergroup['emailfloodtime'] > 0)
-	{
-		if($mybb->user['uid'] > 0)
-		{
-			$user_check = "fromuid='{$mybb->user['uid']}'";
-		}
-		else
-		{
-			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
-		}
-
-		$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
-
-		$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
-		$last_email = $db->fetch_array($query);
-
-		// Users last email was within the flood time, show the error
-		if($last_email['mid'])
-		{
-			$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
-
-			if($remaining_time == 1)
-			{
-				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_second, $mybb->usergroup['emailfloodtime']);
-			}
-			elseif($remaining_time < 60)
-			{
-				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_seconds, $mybb->usergroup['emailfloodtime'], $remaining_time);
-			}
-			elseif($remaining_time > 60 && $remaining_time < 120)
-			{
-				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_minute, $mybb->usergroup['emailfloodtime']);
-			}
-			else
-			{
-				$remaining_time_minutes = ceil($remaining_time/60);
-				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
-			}
-
-			error($lang->error_emailflooding);
-		}
-	}
-
-	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
-	$to_user = $db->fetch_array($query);
-
-	$to_user['username'] = htmlspecialchars_uni($to_user['username']);
-	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
-
 	if(!$to_user['uid'])
 	{
 		error($lang->error_invaliduser);
@@ -3084,54 +2759,144 @@ if($mybb->input['action'] == "emailuser")
 		error($lang->error_hideemail);
 	}
 
-	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
+	if($do_emailuser)
 	{
-		error_no_permission();
-	}
+		$errors = array();
 
-	if(isset($errors) && count($errors) > 0)
-	{
-		$errors = inline_error($errors);
-		$fromname = htmlspecialchars_uni($mybb->get_input('fromname'));
-		$fromemail = htmlspecialchars_uni($mybb->get_input('fromemail'));
-		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-		$message = htmlspecialchars_uni($mybb->get_input('message'));
-	}
-	else
-	{
-		$errors = '';
-		$fromname = '';
-		$fromemail = '';
-		$subject = '';
-		$message = '';
-	}
-
-	// Generate CAPTCHA?
-	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
-	{
-		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
-
-		if($post_captcha->html)
+		if($mybb->user['uid'])
 		{
-			$captcha = $post_captcha->html;
+			$mybb->input['fromemail'] = $mybb->user['email'];
+			$mybb->input['fromname'] = $mybb->user['username'];
+		}
+
+		if(!validate_email_format($mybb->input['fromemail']))
+		{
+			$errors[] = $lang->error_invalidfromemail;
+		}
+
+		if(empty($mybb->input['fromname']))
+		{
+			$errors[] = $lang->error_noname;
+		}
+
+		if(empty($mybb->input['subject']))
+		{
+			$errors[] = $lang->error_no_email_subject;
+		}
+
+		if(empty($mybb->input['message']))
+		{
+			$errors[] = $lang->error_no_email_message;
+		}
+
+		if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+		{
+			require_once MYBB_ROOT.'inc/class_captcha.php';
+			$captcha = new captcha;
+
+			if($captcha->validate_captcha() == false)
+			{
+				// CAPTCHA validation failed
+				foreach($captcha->get_errors() as $error)
+				{
+					$errors[] = $error;
+				}
+			}
+		}
+
+		if(count($errors) == 0)
+		{
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				$from = $mybb->input['fromemail'];
+			}
+			else
+			{
+				$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
+			}
+
+			$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
+			my_mail($to_user['email'], $mybb->get_input('subject'), $message, '', '', '', false, 'text', '', $from);
+
+			if($mybb->settings['mail_logging'] > 0)
+			{
+				// Log the message
+				$log_entry = array(
+					"subject" => $db->escape_string($mybb->get_input('subject')),
+					"message" => $db->escape_string($mybb->get_input('message')),
+					"dateline" => TIME_NOW,
+					"fromuid" => $mybb->user['uid'],
+					"fromemail" => $db->escape_string($mybb->input['fromemail']),
+					"touid" => $to_user['uid'],
+					"toemail" => $db->escape_string($to_user['email']),
+					"tid" => 0,
+					"ipaddress" => $db->escape_binary($session->packedip),
+					"type" => 1
+				);
+				$db->insert_query("maillogs", $log_entry);
+			}
+
+			$plugins->run_hooks("member_do_emailuser_end");
+
+			redirect(get_profile_link($to_user['uid']), $lang->redirect_emailsent);
+		}
+		else
+		{
+			$mybb->input['action'] = "emailuser";
+			$emailuser = true;
 		}
 	}
-	else
+
+	if($emailuser)
 	{
-		$captcha = '';
+		$to_user['username'] = htmlspecialchars_uni($to_user['username']);
+		$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
+
+		if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
+		{
+			error_no_permission();
+		}
+
+		if(isset($errors) && count($errors) > 0)
+		{
+			$errors = inline_error($errors);
+			$fromname = htmlspecialchars_uni($mybb->get_input('fromname'));
+			$fromemail = htmlspecialchars_uni($mybb->get_input('fromemail'));
+			$subject = htmlspecialchars_uni($mybb->get_input('subject'));
+			$message = htmlspecialchars_uni($mybb->get_input('message'));
+		}
+		else
+		{
+			$errors = $fromname = $fromemail = $subject = $message = '';
+		}
+
+		// Generate CAPTCHA?
+		if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+		{
+			require_once MYBB_ROOT.'inc/class_captcha.php';
+			$post_captcha = new captcha(true, "post_captcha");
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
+		}
+		else
+		{
+			$captcha = '';
+		}
+
+		$from_email = '';
+		if($mybb->user['uid'] == 0)
+		{
+			eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
+		}
+
+		$plugins->run_hooks("member_emailuser_end");
+
+		eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
+		output_page($emailuser);
 	}
-
-	$from_email = '';
-	if($mybb->user['uid'] == 0)
-	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
-	}
-
-	$plugins->run_hooks("member_emailuser_end");
-
-	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
-	output_page($emailuser);
 }
 
 if($mybb->input['action'] == 'referrals')
@@ -3219,4 +2984,19 @@ if($mybb->input['action'] == 'referrals')
 if(!$mybb->input['action'])
 {
 	header("Location: index.php");
+}
+
+function send_activation_mail($user, $code, $type = "activateaccount")
+{
+	global $mybb, $lang;
+	
+	$emailsubject = $lang->sprintf($lang->{'emailsubject_' . $type}, $mybb->settings['bbname']);
+
+	if((int)$mybb->settings['username_method'])
+	{
+		$type = $type . $mybb->settings['username_method'];
+	}
+	
+	$emailmessage = $lang->sprintf($lang->{'email_' . $type}, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $code);
+	my_mail($user['email'], $emailsubject, $emailmessage);
 }

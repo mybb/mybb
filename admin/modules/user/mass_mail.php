@@ -305,21 +305,11 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row("{$lang->message_type}: <em>*</em>", "", implode("<br />", $type_options));
 
-	$monthnames = array(
-		"offset",
-		$lang->january,
-		$lang->february,
-		$lang->march,
-		$lang->april,
-		$lang->may,
-		$lang->june,
-		$lang->july,
-		$lang->august,
-		$lang->september,
-		$lang->october,
-		$lang->november,
-		$lang->december,
-	);
+	$monthnames = array("offset");
+	for($m = 1; $m <= 12; $m++)
+	{
+		$monthnames[] = $lang->{'month_'.$m};
+	}
 
 	$enddatemonth = "";
 	foreach($monthnames as $key => $month)
@@ -778,21 +768,11 @@ if($mybb->input['action'] == "send")
 			$input['enddateday'] = (int)$input['deliveryday'];
 		}
 
-		$monthnames = array(
-			"offset",
-			$lang->january,
-			$lang->february,
-			$lang->march,
-			$lang->april,
-			$lang->may,
-			$lang->june,
-			$lang->july,
-			$lang->august,
-			$lang->september,
-			$lang->october,
-			$lang->november,
-			$lang->december,
-		);
+		$monthnames = array("offset");
+		for($m = 1; $m <= 12; $m++)
+		{
+			$monthnames[] = $lang->{'month_'.$m};
+		}
 
 		$enddatemonth = "";
 		foreach($monthnames as $key => $month)

@@ -1169,21 +1169,11 @@ EOF;
 		$birthday_days[$i] = $i;
 	}
 
-	$birthday_months = array(
-		0 => '',
-		1 => $lang->january,
-		2 => $lang->february,
-		3 => $lang->march,
-		4 => $lang->april,
-		5 => $lang->may,
-		6 => $lang->june,
-		7 => $lang->july,
-		8 => $lang->august,
-		9 => $lang->september,
-		10 => $lang->october,
-		11 => $lang->november,
-		12 => $lang->december
-	);
+	$birthday_months = array(0 => '');
+	for($m = 1; $m <= 12; $m++)
+	{
+		$birthday_months[$m] = $lang->{'month_'.$m};
+	}
 
 	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
 	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));

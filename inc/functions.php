@@ -5647,20 +5647,11 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$lang->saturday
 	);
 
-	$bmonth = array(
-		$lang->month_1,
-		$lang->month_2,
-		$lang->month_3,
-		$lang->month_4,
-		$lang->month_5,
-		$lang->month_6,
-		$lang->month_7,
-		$lang->month_8,
-		$lang->month_9,
-		$lang->month_10,
-		$lang->month_11,
-		$lang->month_12
-	);
+	$bmonth = array();
+	for($m = 1; $m <= 12; $m++)
+	{
+		$bmonth[] = $lang->{'month_'.$m};
+	}
 
 	// This needs to be in this specific order
 	$find = array(

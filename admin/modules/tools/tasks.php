@@ -218,21 +218,12 @@ if($mybb->input['action'] == "add")
 	);
 	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true, 'size' => 8)), 'weekday');
 
-	$options = array(
-		"*" => $lang->every_month,
-		"1" => $lang->january,
-		"2" => $lang->february,
-		"3" => $lang->march,
-		"4" => $lang->april,
-		"5" => $lang->may,
-		"6" => $lang->june,
-		"7" => $lang->july,
-		"8" => $lang->august,
-		"9" => $lang->september,
-		"10" => $lang->october,
-		"11" => $lang->november,
-		"12" => $lang->december
-	);
+	$options = array("*" => $lang->every_month);
+	for($m = 1; $m <= 12; $m++)
+	{
+		$options[$m] = $lang->{'month_'.$m};
+	}
+
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
@@ -423,21 +414,12 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $task_data['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
 
-	$options = array(
-		"*" => $lang->every_month,
-		"1" => $lang->january,
-		"2" => $lang->february,
-		"3" => $lang->march,
-		"4" => $lang->april,
-		"5" => $lang->may,
-		"6" => $lang->june,
-		"7" => $lang->july,
-		"8" => $lang->august,
-		"9" => $lang->september,
-		"10" => $lang->october,
-		"11" => $lang->november,
-		"12" => $lang->december
-	);
+	$options = array("*" => $lang->every_month);
+	for($m = 1; $m <= 12; $m++)
+	{
+		$options[$m] = $lang->{'month_'.$m};
+	}
+	
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], true));

@@ -867,20 +867,11 @@ class DefaultForm
 	{
 		global $lang;
 
-		$months = array(
-			1 => $lang->january,
-			2 => $lang->february,
-			3 => $lang->march,
-			4 => $lang->april,
-			5 => $lang->may,
-			6 => $lang->june,
-			7 => $lang->july,
-			8 => $lang->august,
-			9 => $lang->september,
-			10 => $lang->october,
-			11 => $lang->november,
-			12 => $lang->december,
-		);
+		$months = array();
+		for($m = 1; $m <= 12; $m++)
+		{
+			$months[$m] = $lang->{'month_'.$m};
+		}
 
 		// Construct option list for days
 		$days = array();
