@@ -244,24 +244,34 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		return $this->write_query("DELETE FROM {$this->table_prefix}{$table} {$query}");
 	}
 
-	function optimize_table($table)
+	public function optimize_table($table)
 	{
-		// TODO: Implement optimize_table() method.
+		$this->write_query("OPTIMIZE TABLE {$this->table_prefix}{$table}");
 	}
 
-	function analyze_table($table)
+	public function analyze_table($table)
 	{
-		// TODO: Implement analyze_table() method.
+		$this->write_query("ANALYZE TABLE {$this->table_prefix}{$table}");
 	}
 
-	function show_create_table($table)
+	public function show_create_table($table)
 	{
-		// TODO: Implement show_create_table() method.
+		$query = $this->write_query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
+		$structure = $this->fetch_array($query);
+
+		return $structure['Create Table'];
 	}
 
-	function show_fields_from($table)
+	public function show_fields_from($table)
 	{
-		// TODO: Implement show_fields_from() method.
+		$query = $this->write_query("SHOW FIELDS FROM {$this->table_prefix}{$table}");
+
+		$field_info = array();
+		while ($field = $this->fetch_array($query)) {
+			$field_info[] = $field;
+		}
+
+		return $field_info;
 	}
 
 	function is_fulltext($table, $index = "")
