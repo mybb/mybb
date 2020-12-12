@@ -1124,8 +1124,7 @@ elseif($mybb->input['action'] == "findguest")
 	}
 
 	$options = array(
-		'order_by' => 'dateline',
-		'order_dir' => 'desc'
+		'order_by' => 'dateline DESC, pid DESC',
 	);
 
 	// Do we have a hard search limit?
@@ -1205,8 +1204,7 @@ elseif($mybb->input['action'] == "finduser")
 	}
 
 	$options = array(
-		'order_by' => 'dateline',
-		'order_dir' => 'desc'
+		'order_by' => 'dateline DESC, pid DESC',
 	);
 
 	// Do we have a hard search limit?

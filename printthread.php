@@ -137,7 +137,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."posts p
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 	WHERE p.tid='$tid' {$visible}
-	ORDER BY p.dateline
+	ORDER BY p.dateline, p.pid
 	LIMIT {$start}, {$perpage}
 ");
 while($postrow = $db->fetch_array($query))

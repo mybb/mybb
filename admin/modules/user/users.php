@@ -932,7 +932,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1824"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1825"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -2021,7 +2021,7 @@ if($mybb->input['action'] == "merge")
 			);
 
 			$to_remove = array();
-			$query = $db->simple_select("reputation", "*", "adduid = '".$destination_user['uid']."'");
+			$query = $db->simple_select("reputation", "*", "adduid = '".$destination_user['uid']."'", $options);
 			while($rep = $db->fetch_array($query))
 			{
 				if($rep['pid'] == 0 && $mybb->settings['multirep'] == 0 && $last_result['uid'] == $rep['uid'])

@@ -274,6 +274,11 @@ if($mybb->usergroup['maxposts'] > 0)
 	}
 }
 
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
+
 if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -586,11 +591,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					{
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
-				}
-
-				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-				{
-					$mybb->settings['postsperpage'] = 20;
 				}
 
 				// Lets see if this post is on the same page as the one we're viewing or not
@@ -1175,24 +1175,24 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			if($post_captcha->type == 1)
+			if($post_captcha->type == DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5, 8)))
+			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(6, 7)))
+			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5, 8))))
+		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}
@@ -1206,11 +1206,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$reviewmore = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
-
 		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
@@ -1222,11 +1217,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
 
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
-
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
@@ -1234,7 +1224,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
@@ -1253,7 +1243,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC
+			ORDER BY dateline DESC, pid DESC
 		");
 		$postsdone = 0;
 		$altbg = "trow1";

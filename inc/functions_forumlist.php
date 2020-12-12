@@ -43,7 +43,8 @@ function build_forumbits($pid=0, $depth=1)
 		{
 			$subforums = $sub_forums = '';
 			$lastpost_data = array(
-				'lastpost' => 0
+				'lastpost' => 0,
+				'lastposter' => '',
 			);
 			$forum_viewers_text = '';
 			$forum_viewers_text_plain = '';
@@ -62,13 +63,14 @@ function build_forumbits($pid=0, $depth=1)
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);
 
-			// This forum has a password, and the user isn't authenticated with it - hide post information
 			$hideinfo = $hidecounters = false;
 			$hidelastpostinfo = false;
 			$showlockicon = 0;
-			if(isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1)
+
+			// Hide post info if user cannot view forum or cannot view threads
+			if($permissions['canview'] != 1 || (isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1))
 			{
-			    $hideinfo = true;
+				$hideinfo = true;
 			}
 
 			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
@@ -142,6 +144,7 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
+			// This forum has a password, and the user isn't authenticated with it - hide post information
 			if(!forum_password_validated($forum, true))
 			{
 				$hideinfo = true;
@@ -186,11 +189,13 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
-			if($hidelastpostinfo == true)
+			if($hideinfo == true || $hidelastpostinfo == true)
 			{
+				// Used later for get_forum_lightbulb function call - Setting to 0 prevents the bulb from being lit up
+				// If hiding info or hiding lastpost info no "unread" posts indication should be shown to the user.
 				$lastpost_data = array(
 					'lastpost' => 0,
-					'lastposter' => ''
+					'lastposter' => '',
 				);
 			}
 

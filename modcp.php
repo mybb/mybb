@@ -2306,7 +2306,7 @@ if($mybb->input['action'] == "modqueue")
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
-			ORDER BY p.dateline DESC
+			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT {$start}, {$perpage}
 		");
 		$posts = '';
@@ -3933,7 +3933,7 @@ if($mybb->input['action'] == "ipsearch")
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
 				WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
-				ORDER BY p.dateline desc
+				ORDER BY p.dateline DESC, p.pid DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
 			while($ipaddress = $db->fetch_array($query))
@@ -4684,7 +4684,7 @@ if(!$mybb->input['action'])
 					FROM  ".TABLE_PREFIX."posts p
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-					ORDER BY p.dateline DESC
+					ORDER BY p.dateline DESC, p.pid DESC
 					LIMIT 1
 				");
 				$post = $db->fetch_array($query);

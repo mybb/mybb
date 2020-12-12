@@ -872,13 +872,20 @@ if($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if(isset($user['invisible']) && $user['invisible'] == 1)
+	$canbeinvisible = '';
+
+	// Check usergroup permission before showing invisible check box
+	if($mybb->usergroup['canbeinvisible'] == 1)
 	{
-		$invisiblecheck = "checked=\"checked\"";
-	}
-	else
-	{
-		$invisiblecheck = "";
+		if(isset($user['invisible']) && $user['invisible'] == 1)
+		{
+			$invisiblecheck .= "checked=\"checked\"";
+		}
+		elseif($user['invisible'] != 0)
+		{
+			$invisiblecheck = "";
+		}
+		eval('$canbeinvisible = "'.$templates->get("usercp_options_invisible")."\";");
 	}
 
 	if(isset($user['hideemail']) && $user['hideemail'] == 1)
@@ -3409,7 +3416,7 @@ if($mybb->input['action'] == "drafts")
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 			WHERE p.uid = '{$mybb->user['uid']}' AND p.visible = '-2'
-			ORDER BY p.dateline DESC
+			ORDER BY p.dateline DESC, p.pid DESC
 		");
 
 		while($draft = $db->fetch_array($query))
@@ -3960,7 +3967,7 @@ if($mybb->input['action'] == "attachments")
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE a.uid='".$mybb->user['uid']."' {$f_perm_sql}
-		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
+		ORDER BY p.dateline DESC, p.pid DESC LIMIT {$start}, {$perpage}
 	");
 
 	$bandwidth = $totaldownloads = $totalusage = $totalattachments = $processedattachments = 0;
@@ -4030,10 +4037,13 @@ if($mybb->input['action'] == "attachments")
 
 	$bandwidth = get_friendly_size($bandwidth);
 
+	eval("\$delete_button = \"".$templates->get("delete_attachments_button")."\";");
+
 	if(!$attachments)
 	{
 		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
 		$usagenote = '';
+		$delete_button = '';
 	}
 
 	$plugins->run_hooks("usercp_attachments_end");
