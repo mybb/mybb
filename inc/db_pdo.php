@@ -77,31 +77,6 @@ class dbpdoEngine
 	}
 
 	/**
-	 * Query the database with a set of parameters.
-	 *
-	 * This will execute a prepared statement.
-	 *
-	 * @param string $query The query SQL.
-	 * @param array $parameters The parameters to pass when executing the prepared statement.
-	 *
-	 * @return PDOStatement The query data.
-	 */
-	public function query_prepared($query, $parameters=array())
-	{
-		if(!is_array($parameters))
-		{
-			$parameters = array($parameters);
-		}
-
-		$query = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-		$query->execute($parameters);
-
-		$this->last_query = $query;
-
-		return $query;
-	}
-
-	/**
 	 * Return a result array for a query.
 	 *
 	 * @param PDOStatement $query The query resource.
