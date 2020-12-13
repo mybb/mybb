@@ -274,44 +274,99 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		return $field_info;
 	}
 
-	function is_fulltext($table, $index = "")
+	public function is_fulltext($table, $index = "")
 	{
-		// TODO: Implement is_fulltext() method.
+		$structure = $this->show_create_table($table);
+		if ($index != "") {
+			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (preg_match('#FULLTEXT KEY#i', $structure)) {
+			return true;
+		}
+
+		return false;
 	}
 
-	function supports_fulltext($table)
+	public function supports_fulltext($table)
 	{
-		// TODO: Implement supports_fulltext() method.
+		$version = $this->get_version();
+		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
+		$status = $this->fetch_array($query);
+		$table_type = my_strtoupper($status['Engine']);
+
+		if (version_compare($version, '3.23.23', '>=') && ($table_type == 'MYISAM' || $table_type == 'ARIA')) {
+			return true;
+		} else if (version_compare($version, '5.6', '>=') && $table_type == 'INNODB') {
+			return true;
+		}
+
+		return false;
 	}
 
-	function index_exists($table, $index)
+	public function index_exists($table, $index)
 	{
-		// TODO: Implement index_exists() method.
+		$index_exists = false;
+		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
+		while ($ukey = $this->fetch_array($query)) {
+			if ($ukey['Key_name'] == $index) {
+				$index_exists = true;
+				break;
+			}
+		}
+
+		return $index_exists;
 	}
 
-	function supports_fulltext_boolean($table)
+	public function supports_fulltext_boolean($table)
 	{
-		// TODO: Implement supports_fulltext_boolean() method.
+		$version = $this->get_version();
+		$supports_fulltext = $this->supports_fulltext($table);
+		if (version_compare($version, '4.0.1', '>=') && $supports_fulltext == true) {
+			return true;
+		}
+
+		return false;
 	}
 
-	function create_fulltext_index($table, $column, $name = "")
+	public function create_fulltext_index($table, $column, $name = "")
 	{
-		// TODO: Implement create_fulltext_index() method.
+		$this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD FULLTEXT {$name} ({$column})");
 	}
 
-	function drop_index($table, $name)
+	public function drop_index($table, $name)
 	{
-		// TODO: Implement drop_index() method.
+		$this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP INDEX {$name}");
 	}
 
-	function drop_table($table, $hard = false, $table_prefix = true)
+	public function drop_table($table, $hard = false, $table_prefix = true)
 	{
-		// TODO: Implement drop_table() method.
+		if ($table_prefix == false) {
+			$table_prefix = "";
+		} else {
+			$table_prefix = $this->table_prefix;
+		}
+
+		if ($hard == false) {
+			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
+		} else {
+			$this->write_query('DROP TABLE '.$table_prefix.$table);
+		}
 	}
 
-	function rename_table($old_table, $new_table, $table_prefix = true)
+	public function rename_table($old_table, $new_table, $table_prefix = true)
 	{
-		// TODO: Implement rename_table() method.
+		if ($table_prefix == false) {
+			$table_prefix = "";
+		} else {
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
 	}
 
 	function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
@@ -319,29 +374,83 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		// TODO: Implement replace_query() method.
 	}
 
-	function drop_column($table, $column)
+	public function drop_column($table, $column)
 	{
-		// TODO: Implement drop_column() method.
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP `{$column}`");
 	}
 
-	function add_column($table, $column, $definition)
+	public function add_column($table, $column, $definition)
 	{
-		// TODO: Implement add_column() method.
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD `{$column}` {$definition}");
 	}
 
-	function modify_column($table, $column, $new_definition, $new_not_null = false, $new_default_value = false)
+	public function modify_column($table, $column, $new_definition, $new_not_null = false, $new_default_value = false)
 	{
-		// TODO: Implement modify_column() method.
+		$column = trim($column, '`');
+
+		if ($new_not_null !== false) {
+			if (strtolower($new_not_null) == "set") {
+				$not_null = "NOT NULL";
+			} else {
+				$not_null = "NULL";
+			}
+		} else {
+			$not_null = '';
+		}
+
+		if ($new_default_value !== false) {
+			$default = "DEFAULT ".$new_default_value;
+		}
+		else
+		{
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null} {$default}");
 	}
 
-	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null = false, $new_default_value = false)
+	public function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null = false, $new_default_value = false)
 	{
-		// TODO: Implement rename_column() method.
+		$old_column = trim($old_column, '`');
+		$new_column = trim($new_column, '`');
+
+		if ($new_not_null !== false) {
+			if(strtolower($new_not_null) == "set") {
+				$not_null = "NOT NULL";
+			} else {
+				$not_null = "NULL";
+			}
+		} else {
+			$not_null = '';
+		}
+
+		if ($new_default_value !== false) {
+			$default = "DEFAULT ".$new_default_value;
+		} else {
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition} {$not_null} {$default}");
 	}
 
-	function fetch_size($table = '')
+	public function fetch_size($table = '')
 	{
-		// TODO: Implement fetch_size() method.
+		if ($table != '') {
+			$query = $this->query("SHOW TABLE STATUS LIKE '{$this->table_prefix}{$table}'");
+		} else {
+			$query = $this->query("SHOW TABLE STATUS");
+		}
+
+		$total = 0;
+		while ($table = $this->fetch_array($query)) {
+			$total += $table['Data_length'] + $table['Index_length'];
+		}
+
+		return $total;
 	}
 
 	function fetch_db_charsets()
