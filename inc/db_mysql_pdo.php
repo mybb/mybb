@@ -26,7 +26,91 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 
 	function explain_query($string, $qtime)
 	{
-		// TODO: Implement explain_query() method.
+		global $plugins;
+
+		$duration = format_time_duration($qtime);
+		$queryText = htmlspecialchars_uni($string);
+
+		$debug_extra = '';
+		if ($plugins->current_hook) {
+			$debug_extra = <<<HTML
+<div style="float_right">(Plugin Hook: {$plugins->current_hook})</div>
+HTML;
+		}
+
+		if (preg_match('/^\\s*SELECT\\b/i', $string) === 1) {
+			$query = $this->current_link->query("EXPLAIN {$string}");
+
+			$this->explain .= <<<HTML
+<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
+	<tr>
+		<td colspan="8" style="background-color: #ccc;">
+			{$debug_extra}<div><strong>#{$this->query_count} - Select Query</strong></div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="8" style="background-color: #fefefe;">
+			<span style="font-family: Courier; font-size: 14px;">{$queryText}</span>
+		</td>
+	</tr>
+	<tr style="background-color: #efefef">
+		<td><strong>Table</strong></td>
+		<td><strong>Type</strong></td>
+		<td><strong>Possible Keys</strong></td>
+		<td><strong>Key</strong></td>
+		<td><strong>Key Length</strong></td>
+		<td><strong>Ref</strong></td>
+		<td><strong>Rows</strong></td>
+		<td><strong>Extra</strong></td>
+	</tr>
+</table>
+HTML;
+
+			while ($table = $query->fetch(PDO::FETCH_ASSOC)) {
+				$this->explain .= <<<HTML
+<tr bgcolor="#ffffff">
+	<td>{$table['table']}</td>
+	<td>{$table['type']}</td>
+	<td>{$table['possible_keys']}</td>
+	<td>{$table['key']}</td>
+	<td>{$table['key_len']}</td>
+	<td>{$table['ref']}</td>
+	<td>{$table['rows']}</td>
+	<td>{$table['Extra']}</td>
+</tr>
+HTML;
+			}
+
+			$this->explain .= <<<HTML
+<tr>
+	<td colspan="8" style="background-color: #fff;">
+		Query Time: {$duration}
+	</td>
+</tr>
+</table>
+<br />
+HTML;
+		} else {
+			$this->explain .= <<<HTML
+<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
+	<tr>
+		<td style="background-color: #ccc;">
+			{$debug_extra}<div><strong>#{$this->query_count} - Write Query</strong></div>
+		</td>
+	</tr>
+	<tr style="background-color: #fefefe;">
+		<td><span style="font-family: Courier; font-size: 14px;">{$queryText}</span></td>
+	</tr>
+	<tr>
+		<td bgcolor="#ffffff">Query Time:{$duration}</td>
+	</tr>
+</table>
+<br/>
+HTML;
+		}
+
+		$this->querylist[$this->query_count]['query'] = $string;
+		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
 	function list_tables($database, $prefix = '')
@@ -369,9 +453,32 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
 	}
 
-	function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
+	public function replace_query($table, $replacements = array(), $default_field = "", $insert_id = true)
 	{
-		// TODO: Implement replace_query() method.
+		global $mybb;
+
+		$values = '';
+		$comma = '';
+
+		foreach ($replacements as $column => $value) {
+			if (isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column]) {
+				if ($value[0] != 'X') { // Not escaped?
+					$value = $this->escape_binary($value);
+				}
+
+				$values .= $comma."`".$column."`=".$value;
+			} else {
+				$values .= $comma."`".$column."`=".$this->quote_val($value);
+			}
+
+			$comma = ',';
+		}
+
+		if (empty($replacements)) {
+			return false;
+		}
+
+		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
 	}
 
 	public function drop_column($table, $column)
@@ -453,29 +560,122 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		return $total;
 	}
 
-	function fetch_db_charsets()
+	public function fetch_db_charsets()
 	{
-		// TODO: Implement fetch_db_charsets() method.
+		if ($this->write_link && version_compare($this->get_version(), "4.1", "<")) {
+			return false;
+		}
+
+		return array(
+			'big5' => 'Big5 Traditional Chinese',
+			'dec8' => 'DEC West European',
+			'cp850' => 'DOS West European',
+			'hp8' => 'HP West European',
+			'koi8r' => 'KOI8-R Relcom Russian',
+			'latin1' => 'ISO 8859-1 Latin 1',
+			'latin2' => 'ISO 8859-2 Central European',
+			'swe7' => '7bit Swedish',
+			'ascii' => 'US ASCII',
+			'ujis' => 'EUC-JP Japanese',
+			'sjis' => 'Shift-JIS Japanese',
+			'hebrew' => 'ISO 8859-8 Hebrew',
+			'tis620' => 'TIS620 Thai',
+			'euckr' => 'EUC-KR Korean',
+			'koi8u' => 'KOI8-U Ukrainian',
+			'gb2312' => 'GB2312 Simplified Chinese',
+			'greek' => 'ISO 8859-7 Greek',
+			'cp1250' => 'Windows Central European',
+			'gbk' => 'GBK Simplified Chinese',
+			'latin5' => 'ISO 8859-9 Turkish',
+			'armscii8' => 'ARMSCII-8 Armenian',
+			'utf8' => 'UTF-8 Unicode',
+			'utf8mb4' => '4-Byte UTF-8 Unicode (requires MySQL 5.5.3 or above)',
+			'ucs2' => 'UCS-2 Unicode',
+			'cp866' => 'DOS Russian',
+			'keybcs2' => 'DOS Kamenicky Czech-Slovak',
+			'macce' => 'Mac Central European',
+			'macroman' => 'Mac West European',
+			'cp852' => 'DOS Central European',
+			'latin7' => 'ISO 8859-13 Baltic',
+			'cp1251' => 'Windows Cyrillic',
+			'cp1256' => 'Windows Arabic',
+			'cp1257' => 'Windows Baltic',
+			'geostd8' => 'GEOSTD8 Georgian',
+			'cp932' => 'SJIS for Windows Japanese',
+			'eucjpms' => 'UJIS for Windows Japanese',
+		);
 	}
 
-	function fetch_charset_collation($charset)
+	public function fetch_charset_collation($charset)
 	{
-		// TODO: Implement fetch_charset_collation() method.
+		$collations = array(
+			'big5' => 'big5_chinese_ci',
+			'dec8' => 'dec8_swedish_ci',
+			'cp850' => 'cp850_general_ci',
+			'hp8' => 'hp8_english_ci',
+			'koi8r' => 'koi8r_general_ci',
+			'latin1' => 'latin1_swedish_ci',
+			'latin2' => 'latin2_general_ci',
+			'swe7' => 'swe7_swedish_ci',
+			'ascii' => 'ascii_general_ci',
+			'ujis' => 'ujis_japanese_ci',
+			'sjis' => 'sjis_japanese_ci',
+			'hebrew' => 'hebrew_general_ci',
+			'tis620' => 'tis620_thai_ci',
+			'euckr' => 'euckr_korean_ci',
+			'koi8u' => 'koi8u_general_ci',
+			'gb2312' => 'gb2312_chinese_ci',
+			'greek' => 'greek_general_ci',
+			'cp1250' => 'cp1250_general_ci',
+			'gbk' => 'gbk_chinese_ci',
+			'latin5' => 'latin5_turkish_ci',
+			'armscii8' => 'armscii8_general_ci',
+			'utf8' => 'utf8_general_ci',
+			'utf8mb4' => 'utf8mb4_general_ci',
+			'ucs2' => 'ucs2_general_ci',
+			'cp866' => 'cp866_general_ci',
+			'keybcs2' => 'keybcs2_general_ci',
+			'macce' => 'macce_general_ci',
+			'macroman' => 'macroman_general_ci',
+			'cp852' => 'cp852_general_ci',
+			'latin7' => 'latin7_general_ci',
+			'cp1251' => 'cp1251_general_ci',
+			'cp1256' => 'cp1256_general_ci',
+			'cp1257' => 'cp1257_general_ci',
+			'geostd8' => 'geostd8_general_ci',
+			'cp932' => 'cp932_japanese_ci',
+			'eucjpms' => 'eucjpms_japanese_ci',
+		);
+
+		if (isset($collations[$charset])) {
+			return $collations[$charset];
+		}
+
+		return false;
 	}
 
-	function build_create_table_collation()
+	public function build_create_table_collation()
 	{
-		// TODO: Implement build_create_table_collation() method.
+		if (!$this->db_encoding) {
+			return '';
+		}
+
+		$collation = $this->fetch_charset_collation($this->db_encoding);
+		if (!$collation) {
+			return '';
+		}
+
+		return " CHARACTER SET {$this->db_encoding} COLLATE {$collation}";
 	}
 
-	function escape_binary($string)
+	public function escape_binary($string)
 	{
-		// TODO: Implement escape_binary() method.
+		return "X'{$this->escape_string(bin2hex($string))}'";
 	}
 
-	function unescape_binary($string)
+	public function unescape_binary($string)
 	{
-		// TODO: Implement unescape_binary() method.
+		return $string;
 	}
 
 	/**
@@ -491,5 +691,23 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 		}
 
 		return "{$quote}{$value}{$quote}";
+	}
+
+	public function __set($name, $value)
+	{
+		if ($name === 'type') {
+			// NOTE: This is to prevent the type being set - this type should appear as `mysqli` to ensure compatibility
+			return;
+		}
+	}
+
+	public function __get($name)
+	{
+		if ($name === 'type') {
+			// NOTE: this is to ensure compatibility checks on the DB type will work
+			return 'mysqli';
+		}
+
+		return null;
 	}
 }
