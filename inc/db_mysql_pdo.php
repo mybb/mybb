@@ -113,13 +113,13 @@ HTML;
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-	function list_tables($database, $prefix = '')
+	public function list_tables($database, $prefix = '')
 	{
 		if ($prefix) {
 			if (version_compare($this->get_version(), '5.0.2', '>=')) {
 				$query = $this->query("SHOW FULL TABLES FROM `{$database}` WHERE table_type = 'BASE TABLE' AND `Tables_in_{$database}` LIKE '".$this->escape_string($prefix)."%'");
 			} else {
-				$query = $this->query("SHOW TABLES FROM `{$database}` LIKE '".$this->escape_string($prefix)."%'");
+				$query = $this->query("SHOW TABLES FROM `{$database}` LIKE '{$this->escape_string($prefix)}%'");
 			}
 		} else {
 			if (version_compare($this->get_version(), '5.0.2', '>=')) {
@@ -158,8 +158,8 @@ HTML;
 	{
 		$query = $this->write_query("
 			SHOW COLUMNS
-			FROM {$this->table_prefix}$table
-			LIKE '$field'
+			FROM {$this->table_prefix}{$table}
+			LIKE '{$field}'
 		");
 
 		$exists = $this->num_rows($query);
@@ -169,7 +169,7 @@ HTML;
 
 	public function simple_select($table, $fields = "*", $conditions = "", $options = array())
 	{
-		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
+		$query = "SELECT {$fields} FROM {$this->table_prefix}{$table}";
 
 		if (!empty($conditions)) {
 			$query .= " WHERE {$conditions}";
@@ -362,7 +362,7 @@ HTML;
 	{
 		$structure = $this->show_create_table($table);
 		if ($index != "") {
-			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure)) {
+			if(preg_match("#FULLTEXT KEY (`?){$index}(`?)#i", $structure)) {
 				return true;
 			}
 
@@ -436,9 +436,9 @@ HTML;
 		}
 
 		if ($hard == false) {
-			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
+			$this->write_query("DROP TABLE IF EXISTS {$table_prefix}{$table}");
 		} else {
-			$this->write_query('DROP TABLE '.$table_prefix.$table);
+			$this->write_query("DROP TABLE {$table_prefix}{$table}");
 		}
 	}
 
