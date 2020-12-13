@@ -1440,6 +1440,9 @@ function create_tables()
 		case "mysqli":
 			$db = new DB_MySQLi;
 			break;
+		case "mysql_pdo":
+			$db = new MysqlPdoDbDriver();
+			break;
 		default:
 			$db = new DB_MySQL;
 	}
@@ -2480,7 +2483,7 @@ function install_done()
 /**
  * @param array $config
  *
- * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite|PostgresPdoDbDriver
+ * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite|PostgresPdoDbDriver|MysqlPdoDbDriver
  */
 function db_connection($config)
 {
@@ -2498,6 +2501,9 @@ function db_connection($config)
 			break;
 		case "mysqli":
 			$db = new DB_MySQLi;
+			break;
+		case "mysql_pdo":
+			$db = new MysqlPdoDbDriver();
 			break;
 		default:
 			$db = new DB_MySQL;

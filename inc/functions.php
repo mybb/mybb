@@ -193,6 +193,9 @@ function run_shutdown()
 				case "mysqli":
 					$db = new DB_MySQLi;
 					break;
+				case "mysql_pdo":
+					$db = new MysqlPdoDbDriver();
+					break;
 				default:
 					$db = new DB_MySQL;
 			}
