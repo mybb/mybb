@@ -9591,8 +9591,9 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1823"><![CDATA[
+		<template name="post_javascript" version="1825"><![CDATA[
 			<script type="text/javascript">
+				lang.attachment_missing = "{$lang->attachment_missing}";
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
 				php_max_upload_size = {$php_max_upload_size};
