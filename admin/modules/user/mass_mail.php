@@ -62,7 +62,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		// Fill the conditions with default values
-		$email['conditions'] = Array(
+		$email['conditions'] = array(
 			"username" => "",
 			"email" => "",
 			"postnum_dir" => "greater_than",
@@ -691,6 +691,13 @@ if($mybb->input['action'] == "send")
 		{
 			$page->output_inline_error($errors);
 			$input = $mybb->input;
+
+			// Delivery type radio selection is to carry over in step 4 only
+			$input['delivery_type'] = $mybb->get_input('delivery_type');
+			if(empty($input['delivery_type']))
+			{
+				$input['delivery_type'] = "now";
+			}
 			$delivery_type_checked[$input['delivery_type']] = " checked=\"checked\"";
 		}
 		else
