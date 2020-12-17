@@ -16,6 +16,7 @@ $l['error_invalidpworusername2'] = "You have entered an invalid username/passwor
 $l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields.";
 $l['error_alreadyuploaded'] = "This post already contains an attachment with the name \"{1}\". Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
 $l['error_alreadyuploaded_perm'] = "This post already contains an attachment with the same name. Please either remove the existing file or rename the file and upload it again.";
+$l['error_updatefailed'] = "The file \"{1}\" is not already attached and can not be updated.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
 $l['error_invalidemail'] = "You did not enter a valid email address.";
 $l['error_nomember'] = "The member you specified is either invalid or doesn't exist.";
