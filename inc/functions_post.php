@@ -17,7 +17,7 @@
  */
 function build_postbit($post, $post_type=0)
 {
-	global $db, $altbg, $theme, $mybb, $postcounter, $profile_fields;
+	global $db, $altbg, $theme, $mybb, $postcounter;
 	global $titlescache, $page, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
@@ -433,6 +433,29 @@ function build_postbit($post, $post_type=0)
 			purgespammer_show($post['postnum'], $post['usergroup'], $post['uid']))
 		{
 			$post['button_purgespammer'] = true;
+		}
+
+		static $profile_fields = null;
+
+		if($profile_fields === null)
+		{
+			$profile_fields = array();
+
+			// Fetch profile fields to display
+			$pfcache = $cache->read('profilefields');
+
+			if(is_array($pfcache))
+			{
+				foreach($pfcache as $profilefield)
+				{
+					if($profilefield['postbit'] != 1)
+					{
+						continue;
+					}
+
+					$profile_fields[$profilefield['fid']] = $profilefield;
+				}
+			}
 		}
 
 		// Display profile fields on posts - only if field is filled in
