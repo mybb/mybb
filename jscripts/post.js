@@ -148,6 +148,10 @@ var Post = {
 									}
 
 									$(this).remove();
+									
+									if (!$('[id^=attachment_]').length) {
+										$('input[name=updateattachment]').remove();
+									}
 								});
 							}
 							document.input.attachmentaid.value = '';
@@ -182,11 +186,12 @@ var Post = {
 			return true;
 		}
 
-		if(!file.files.length && (submitter == 'newattachment' || submitter == 'updateattachment')){
+		if (!file.files.length && (submitter == 'newattachment' || submitter == 'updateattachment')){
 			$.jGrowl(lang.attachment_missing, {theme:'jgrowl_error'});
 			return false;
 		}
-		else if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
+		
+		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
 		{
 			$.jGrowl(lang.attachment_too_many_files.replace('{1}', php_max_file_uploads), {theme:'jgrowl_error'});
 			file.value="";
