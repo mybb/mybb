@@ -230,9 +230,10 @@ var Post = {
 			return false;
 		}
 
-		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0) {
-			$.jGrowl(lang.attachment_too_many_files.replace('{1}', php_max_file_uploads), { theme: 'jgrowl_error' });
-			file.value = "";
+		var maxAllowed = Math.min.apply(null, [mybb_max_file_uploads, php_max_file_uploads].filter(Boolean));
+		if(isFinite(maxAllowed) && file.files.length > maxAllowed) {
+			$.jGrowl(lang.attachment_too_many_files.replace('{1}', maxAllowed), { theme: 'jgrowl_error' });
+			file.value = '';
 			return false;
 		}
 
