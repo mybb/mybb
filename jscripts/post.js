@@ -139,18 +139,25 @@ var Post = {
 		return attached;
 	},
 
-	addAttachments: function () {
-		Post.checkAttachments();
+	getCommonFiles: function () {
 		var files = Post.fileInput.prop('files');
-
 		if (files.length) {
 			var names = $.map(files, function (val) {
 				return val.name;
 			});
-			var common = $.grep(Post.getAttachments(), function (i) {
+			return $.grep(Post.getAttachments(), function (i) {
 				return $.inArray(i, names) > -1;
 			});
+		} else {
+			return [];
+		}
+	},
 
+	addAttachments: function () {
+		Post.checkAttachments();
+
+		if (Post.fileInput.prop('files').length) {
+			var common = Post.getCommonFiles();
 			if (common.length) {
 				common = '<ul><li>' + common.join('</li><li>') + '</li></ul>';
 				MyBB.prompt(lang.update_confirm.replace("{1}", common), {
@@ -183,7 +190,7 @@ var Post = {
 				type: 'POST',
 				url: Post.form.attr('action') + '&ajax=1',
 				data: formData,
-				async: false,
+				async: true,
 				cache: false,
 				contentType: false,
 				enctype: 'multipart/form-data',
@@ -191,12 +198,22 @@ var Post = {
 				success: function (data) {
 					if (data.hasOwnProperty("errors")) {
 						$.each(data.errors, function (i, message) {
-							$.jGrowl(message, {
-								theme: 'jgrowl_error'
-							});
+							$.jGrowl(message, { theme: 'jgrowl_error' });
 						});
 					}
-					// TODO : Append new attachment data
+					// Append new attachment data
+					if (data.hasOwnProperty("success")) {
+						$.each(data.success, function (i, message) {
+							if ($('#attachment_' + message[0]).length) {
+								$('#attachment_' + message[0]).remove();
+							}
+							Post.fileInput.parents('tbody').append(data.template
+								.replace(/\{1\}/g, message[0])
+								.replace('{2}', message[1])
+								.replace('{3}', message[2])
+								.replace('{4}', message[3]));
+						});
+					}
 
 					Post.fileInput.val('');
 					Post.regenAttachbuttons();
@@ -208,7 +225,7 @@ var Post = {
 
 	regenAttachbuttons: function () {
 		var button = $('input[name=newattachment]').length ? 'newattachment' : 'updateattachment';
-		button = $("input[name="+button+"]").clone();
+		button = $("input[name=" + button + "]").clone();
 
 		if (Post.getAttachments().length) {
 			if (!$('input[name=updateattachment]').length) {
@@ -248,13 +265,14 @@ var Post = {
 		}
 
 		if (mybb_max_file_uploads != 0) {
-			var moreAllowed = (mybb_max_file_uploads - Post.getAttachments().length);
+			var common = Post.getCommonFiles().length;
+			var moreAllowed = (mybb_max_file_uploads - (Post.getAttachments().length - common));
 			if (moreAllowed <= 0) {
 				$.jGrowl(lang.error_maxattachpost.replace('{1}', mybb_max_file_uploads), { theme: 'jgrowl_error' });
 				file.value = '';
 				return false;
 			} else if (file.files.length > moreAllowed) {
-				$.jGrowl(lang.attachment_max_allowed_files.replace('{1}', moreAllowed), { theme: 'jgrowl_error' });
+				$.jGrowl(lang.attachment_max_allowed_files.replace('{1}', (moreAllowed - common)), { theme: 'jgrowl_error' });
 				file.value = '';
 				return false;
 			}
