@@ -240,7 +240,7 @@ var Post = {
 		var totalSize = 0;
 		files.each(function () {
 			for (var i = 0; i < this.files.length; i++) {
-				totalSize += this.files[i].size;
+				totalSize += (this.files[i].size || this.files[i].fileSize);
 			}
 		});
 
