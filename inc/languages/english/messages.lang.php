@@ -9,7 +9,7 @@ $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
 $l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"{1}\">return to the forum</a>.";
 $l['redirect_emailsent'] = "Your e-mail message has been sent successfully.";
 $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
-
+$l['update_confirm'] = "The following file(s) are already attached and will be updated / replaced with the newly selected one(s). {1} Are you sure?";
 $l['error_invalidpworusername'] = "You have entered an invalid username/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername1'] = "You have entered an invalid email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername2'] = "You have entered an invalid username/password or email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";

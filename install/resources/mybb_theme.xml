@@ -9438,9 +9438,9 @@ if(use_xmlhttprequest == "1")
 </table>]]></template>
 		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_viewlink" version="1816"><![CDATA[<a href="usercp.php?action=attachments">{$lang->view_attachments}</a>]]></template>
-		<template name="post_attachments_attachment" version="1820"><![CDATA[<tr id="attachment_{$attachment['aid']}">
+		<template name="post_attachments_attachment" version="1825"><![CDATA[<tr id="attachment_{$attachment['aid']}">
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
-<td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
+<td class="trow2" width="60%" style="white-space: nowrap"><span class="attachment_filename">{$attachment['filename']}</span> ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="1823"><![CDATA[<input type="submit" class="button" name="approveattach_{$attachment['aid']}" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
@@ -9593,13 +9593,16 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_javascript" version="1825"><![CDATA[
 			<script type="text/javascript">
+				lang.add_attachment = "{$lang->add_attachment}";
+				lang.update_attachment = "{$lang->update_attachment}";
+				lang.update_confirm = "{$lang->update_confirm}";
 				lang.attachment_missing = "{$lang->attachment_missing}";
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 			</script>
-			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1823"></script>
+			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1825"></script>
 			]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>

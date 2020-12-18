@@ -802,7 +802,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 						}
 					}
 					
-					if(!$exists && $mybb->get_input('updateattachment') && $mybb->get_input('ajax', MyBB::INPUT_INT) != 1)
+					if(!$exists && $mybb->get_input('updateattachment') && $mybb->get_input('updateconfirmed', MyBB::INPUT_INT) != 1)
 					{
 						$ret['errors'][] = $lang->sprintf($lang->error_updatefailed, $filename);
 					}
