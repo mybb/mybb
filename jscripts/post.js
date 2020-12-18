@@ -48,7 +48,7 @@ var Post = {
 		if (typeof response == 'object') {
 			if (json.hasOwnProperty("errors")) {
 				$.each(json.errors, function (i, message) {
-					$.jGrowl(lang.post_fetch_error + ' ' + message, { theme: 'jgrowl_error' });
+					$.jGrowl(message, { theme: 'jgrowl_error' });
 				});
 				return false;
 			}
@@ -100,7 +100,7 @@ var Post = {
 						success: function (data) {
 							if (data.hasOwnProperty("errors")) {
 								$.each(data.errors, function (i, message) {
-									$.jGrowl(lang.post_fetch_error + ' ' + message, { theme: 'jgrowl_error' });
+									$.jGrowl(message, { theme: 'jgrowl_error' });
 								});
 								return false;
 							} else if (data.success) {
