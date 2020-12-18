@@ -1,7 +1,11 @@
 var Post = {
 	init: function () {
 		$(function () {
-			Post.initAttachments();
+			Post.fileInput = $("input[type='file']");
+			Post.form = Post.fileInput.parents('form');
+
+			Post.form.on('submit', Post.checkAttachments);
+			Post.fileInput.on('change', Post.addAttachments);
 		});
 	},
 
@@ -9,36 +13,32 @@ var Post = {
 		if (use_xmlhttprequest == 1) {
 			tid = document.input.tid.value;
 
-			$.ajax(
-				{
-					url: 'xmlhttp.php?action=get_multiquoted&tid=' + tid,
-					type: 'get',
-					complete: function (request, status) {
-						Post.multiQuotedLoaded(request, status);
-					}
-				});
+			$.ajax({
+				url: 'xmlhttp.php?action=get_multiquoted&tid=' + tid,
+				type: 'get',
+				complete: function (request, status) {
+					Post.multiQuotedLoaded(request, status);
+				}
+			});
 
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	},
 
 	loadMultiQuotedAll: function () {
 		if (use_xmlhttprequest == 1) {
-			$.ajax(
-				{
-					url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
-					type: 'get',
-					complete: function (request, status) {
-						Post.multiQuotedLoaded(request, status);
-					}
-				});
+			$.ajax({
+				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
+				type: 'get',
+				complete: function (request, status) {
+					Post.multiQuotedLoaded(request, status);
+				}
+			});
 
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	},
@@ -48,7 +48,7 @@ var Post = {
 		if (typeof response == 'object') {
 			if (json.hasOwnProperty("errors")) {
 				$.each(json.errors, function (i, message) {
-					$.jGrowl(message, { theme: 'jgrowl_error' });
+					$.jGrowl(lang.post_fetch_error + ' ' + message, { theme: 'jgrowl_error' });
 				});
 				return false;
 			}
@@ -57,8 +57,7 @@ var Post = {
 		var id = 'message';
 		if (typeof MyBBEditor !== 'undefined' && MyBBEditor !== null) {
 			MyBBEditor.insert(json.message);
-		}
-		else {
+		} else {
 			if ($('#' + id).value) {
 				$('#' + id).value += "\n";
 			}
@@ -82,25 +81,22 @@ var Post = {
 			],
 			submit: function (e, v, m, f) {
 				if (v == true) {
-					document.input.attachmentaid.value = aid;
-					document.input.attachmentact.value = "remove";
-
-					var form = $('input[name^=\'rem\']').parents('form');
+					Post.attachmentAction(aid, 'remove');
 
 					if (use_xmlhttprequest != 1) {
-						form.append('<input type="submit" id="rem_submit" class="hidden" />');
+						Post.form.append('<input type="submit" id="rem_submit" class="hidden" />');
 						$('#rem_submit').trigger('click');
 						return false;
 					}
 
 					$.ajax({
 						type: 'POST',
-						url: form.attr('action') + '&ajax=1',
-						data: form.serialize(),
+						url: Post.form.attr('action') + '&ajax=1',
+						data: Post.form.serialize(),
 						success: function (data) {
 							if (data.hasOwnProperty("errors")) {
 								$.each(data.errors, function (i, message) {
-									$.jGrowl(message, { theme: 'jgrowl_error' });
+									$.jGrowl(lang.post_fetch_error + ' ' + message, { theme: 'jgrowl_error' });
 								});
 								return false;
 							} else if (data.success) {
@@ -117,14 +113,10 @@ var Post = {
 									}
 
 									$(this).remove();
-
-									if (!Post.getAttachments().length) {
-										$('input[name=updateattachment]').remove();
-									}
+									Post.regenAttachbuttons();
 								});
 							}
-							document.input.attachmentaid.value = '';
-							document.input.attachmentact.value = '';
+							Post.attachmentAction('', '');
 						}
 					});
 				}
@@ -147,24 +139,20 @@ var Post = {
 		return attached;
 	},
 
-	initAttachments: function () {
-		$("input[type='file']").parents('form').on('submit', Post.checkAttachments);
-		$("input[type='file']").on('change', Post.addAttachments);
-	},
-
 	addAttachments: function () {
-		var files = $("input[type='file']");
-		var file = files.get(0);
+		Post.checkAttachments();
+		var files = Post.fileInput.prop('files');
 
-		if (file.files.length) {
-			var names = $.map(file.files, function (val) { return val.name; });
+		if (files.length) {
+			var names = $.map(files, function (val) {
+				return val.name;
+			});
 			var common = $.grep(Post.getAttachments(), function (i) {
 				return $.inArray(i, names) > -1;
 			});
 
 			if (common.length) {
 				common = '<ul><li>' + common.join('</li><li>') + '</li></ul>';
-				lang.update_confirm = "The following file(s) are already attached and will be updated / replaced with the newly selected one(s). {1} Are you sure?";
 				MyBB.prompt(lang.update_confirm.replace("{1}", common), {
 					buttons: [
 						{ title: yes_confirm, value: true },
@@ -172,8 +160,7 @@ var Post = {
 					],
 					submit: function (e, v, m, f) {
 						if (v == true) {
-							var form = $("input[type='file']").parents('form');
-							form.append('<input type="hidden" class="temp_input" name="updateconfirmed" value="1" />');
+							Post.form.append('<input type="hidden" class="temp_input" name="updateconfirmed" value="1" />');
 							Post.uploadAttachments('updateattachment');
 						}
 					}
@@ -189,13 +176,12 @@ var Post = {
 		if (use_xmlhttprequest != 1) {
 			$("input[name='" + type + "']").trigger('click');
 		} else {
-			var form = $("input[type='file']").parents('form');
-			form.append('<input type="hidden" class="temp_input" name="' + type + '" value="1" />');
-			var formData = new FormData($(form)[0]);
+			Post.form.append('<input type="hidden" class="temp_input" name="' + type + '" value="1" />');
+			var formData = new FormData($(Post.form)[0]);
 
 			$.ajax({
 				type: 'POST',
-				url: form.attr('action') + '&ajax=1',
+				url: Post.form.attr('action') + '&ajax=1',
 				data: formData,
 				async: false,
 				cache: false,
@@ -205,22 +191,53 @@ var Post = {
 				success: function (data) {
 					if (data.hasOwnProperty("errors")) {
 						$.each(data.errors, function (i, message) {
-							$.jGrowl(message, { theme: 'jgrowl_error' });
+							$.jGrowl(message, {
+								theme: 'jgrowl_error'
+							});
 						});
 					}
-					// TODO : PROCESS SUCCESS DATA AND MANIPULATE DOM
+					// TODO : Append new attachment data
 
-					$("input[type='file']").val('');
+					Post.fileInput.val('');
+					Post.regenAttachbuttons();
 				}
 			});
 			$('.temp_input').remove();
 		}
 	},
 
+	regenAttachbuttons: function () {
+		var button = $('input[name=newattachment]').length ? 'newattachment' : 'updateattachment';
+		button = $("input[name="+button+"]").clone();
+
+		if (Post.getAttachments().length) {
+			if (!$('input[name=updateattachment]').length) {
+				var updateButton = button.clone()
+					.prop('name', 'updateattachment')
+					.prop('value', lang.update_attachment)
+					.prop('tabindex', '12');
+				$("input[name='newattachment']").before(updateButton).before('&nbsp;');
+			}
+		} else {
+			$('input[name=updateattachment]').remove();
+		}
+
+		if (Post.getAttachments().length < mybb_max_file_uploads) {
+			if (!$('input[name=newattachment]').length) {
+				var newButton = button.clone()
+					.prop('name', 'newattachment')
+					.prop('value', lang.add_attachment)
+					.prop('tabindex', '13');
+				$("input[name='updateattachment']").after(newButton).after('&nbsp;');
+			}
+		} else {
+			$('input[name=newattachment]').remove();
+		}
+	},
+
 	checkAttachments: function (e) {
-		var submitter = e.originalEvent.submitter.name;
-		var files = $("input[type='file']");
-		var file = files.get(0);
+		var submitter = ($.type(e) === 'undefined') ? '' : e.originalEvent.submitter.name;
+		var file = Post.fileInput[0];
 		if (!file) {
 			return true;
 		}
@@ -250,7 +267,7 @@ var Post = {
 		}
 
 		var totalSize = 0;
-		files.each(function () {
+		Post.fileInput.each(function () {
 			for (var i = 0; i < this.files.length; i++) {
 				totalSize += (this.files[i].size || this.files[i].fileSize);
 			}
@@ -259,12 +276,14 @@ var Post = {
 		if (totalSize > php_max_upload_size && php_max_upload_size > 0) {
 			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4) / 1e2;
 			$.jGrowl(lang.attachment_too_big_upload.replace('{1}', php_max_upload_size_pretty), { theme: 'jgrowl_error' });
-			file.value = "";
+			file.value = '';
 			return false;
 		}
 
 		return true;
-	}
+	},
+	fileInput: $(),
+	form: $()
 };
 
 Post.init();
