@@ -269,7 +269,7 @@ var Post = {
 		if (mybb_max_file_uploads != 0) {
 			var common = Post.getCommonFiles().length;
 			var moreAllowed = (mybb_max_file_uploads - (Post.getAttachments().length - common));
-			if (moreAllowed <= 0) {
+			if (moreAllowed < 0 || (!moreAllowed && file.files.length)) {
 				$.jGrowl(lang.error_maxattachpost.replace('{1}', mybb_max_file_uploads), { theme: 'jgrowl_error' });
 				file.value = '';
 				return false;
