@@ -111,14 +111,22 @@ var MyBB = {
 	prompt: function(message, options)
 	{
 		var defaults = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) };
-		var buttonsText = '';
+		var buttonsText = '', title = '';
 
 		for (var i in options.buttons)
 		{
 			buttonsText += templates.modal_button.replace('__title__', options.buttons[i].title);
 		}
 
-		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message);
+		// Support passing custom title
+		if ($.isArray(message)) {
+			title = message[0];
+			message = message[1];
+		} else {
+			title = lang.confirm_title;
+		}
+
+		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message).replace('__title__', title);
 		var modal = $(html);
 		modal.modal($.extend(defaults, options));
 		var buttons = modal.find('.modal_buttons > .button');
