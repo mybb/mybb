@@ -221,6 +221,25 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
 
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		if(isset($ret['success']))
+		{
+			$attachment = array('aid'=>'{1}', 'icon'=>'{2}', 'filename'=>'{3}', 'size'=>'{4}');
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+			}
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
+			$ret['template'] = $attemplate;
+		}
+		
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode($ret);
+		exit();
+	}
+
 	if(!empty($ret['errors']))
 	{
 		$errors = $ret['errors'];
