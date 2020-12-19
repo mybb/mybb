@@ -112,6 +112,7 @@ var Post = {
 										instance.setWysiwygEditorValue(instance.getWysiwygEditorValue(false).split('[attachment=' + aid + ']').join(''));
 									}
 
+									$(this).parent().find('.tcat>strong').text(data.usage);
 									$(this).remove();
 									Post.regenAttachbuttons();
 								});
@@ -207,11 +208,12 @@ var Post = {
 							if ($('#attachment_' + message[0]).length) {
 								$('#attachment_' + message[0]).remove();
 							}
-							Post.fileInput.parents('tbody').append(data.template
+							Post.fileInput.parents().eq(2).append(data.template
 								.replace(/\{1\}/g, message[0])
 								.replace('{2}', message[1])
 								.replace('{3}', message[2])
-								.replace('{4}', message[3]));
+								.replace('{4}', message[3]))
+								.find('.tcat>strong').text(data.usage);
 						});
 					}
 

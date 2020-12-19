@@ -187,6 +187,10 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
 			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
 			$ret['template'] = $attemplate;
+
+			$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+			$usage = $db->fetch_array($query);
+			$ret['usage'] = get_friendly_size($usage['ausage']);
 		}
 		
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -223,8 +227,11 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => true, "usage" => get_friendly_size($usage['ausage'])));
 		exit();
 	}
 }
