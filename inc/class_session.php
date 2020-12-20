@@ -69,7 +69,7 @@ class session
 			{
 				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
 				$session = $db->fetch_array($query);
-				if($session['sid'])
+				if(!empty($session) && $session['sid'])
 				{
 					$this->sid = $session['sid'];
 				}
@@ -496,7 +496,7 @@ class session
 
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(false, $this->ignore_parameters), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -545,7 +545,7 @@ class session
 
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(false, $this->ignore_parameters), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;

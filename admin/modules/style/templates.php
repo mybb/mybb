@@ -398,6 +398,7 @@ if($mybb->input['action'] == "add_template_group")
 	$page->output_header($lang->add_template_group);
 	$page->output_nav_tabs($sub_tabs, 'add_template_group');
 
+	$template_group = array();
 	if($errors)
 	{
 		$template_group = array(

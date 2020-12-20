@@ -83,7 +83,7 @@ if($mybb->input['action'] == "edit")
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
 	$localized_time_offset = (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-	
+
 	// All done here
 	if($mybb->request_method == "post")
 	{
@@ -225,7 +225,7 @@ if($mybb->input['action'] == "edit")
 			else
 			{
 				// correct date by timezone and dst
-				$offset = 
+				$offset =
 				$input['delivery_type'] = "future";
 				$time = gmdate("d-n-Y", $email['senddate'] + $localized_time_offset);
 				$time = explode('-', $time);
@@ -242,7 +242,7 @@ if($mybb->input['action'] == "edit")
 			$delivery_type_checked['now'] = " checked=\"checked\"";
 		}
 	}
-	
+
 	if(!$input['endtime_time'])
 	{
 		$input['endtime_time'] = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
@@ -614,7 +614,7 @@ if($mybb->input['action'] == "send")
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
 	$plugins->run_hooks("admin_user_mass_email_send_start");
-	
+
 	$localized_time_offset = (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 	if($mybb->input['step'] == 4)
@@ -1423,9 +1423,9 @@ if($mybb->input['action'] == "preview")
 
 	echo '<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">';
-	
+
 	$table = new Table();
-	
+
 	if($mybb->input['format'] == 'text' || !$mass_email['htmlmessage'])
 	{
 		// Show preview of the text version
@@ -1574,7 +1574,6 @@ if($mybb->input['action'] == "archive")
 	{
 		$table->construct_cell($lang->no_archived_messages, array('colspan' => 6));
 		$table->construct_row();
-		$no_results = true;
 	}
 
 	$plugins->run_hooks("admin_user_mass_email_archive_end");
@@ -1657,7 +1656,6 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell($lang->no_unsent_messages, array('colspan' => 6));
 		$table->construct_row();
-		$no_results = true;
 	}
 
 	$plugins->run_hooks("admin_user_mass_email_end");

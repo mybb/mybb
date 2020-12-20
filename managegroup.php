@@ -197,7 +197,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 }
 elseif($mybb->input['action'] == "joinrequests")
 {
-	$users = "";
+	$users = $joinrequests = '';
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
 	$query = $db->query("
@@ -439,8 +439,8 @@ else
 		eval("\$users = \"".$templates->get("managegroup_no_users")."\";");
 	}
 
-	$add_user = '';
-	$remove_users = '';
+	$add_user = $remove_users = $invite_user = '';
+
 	if($groupleader['canmanagemembers'] == 1)
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");

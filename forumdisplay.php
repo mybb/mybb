@@ -152,10 +152,10 @@ else
 
 $subforums = '';
 $child_forums = build_forumbits($fid, 2);
-$forums = $child_forums['forum_list'];
 
-if($forums)
+if(!empty($child_forums) && !empty($child_forums['forum_list']))
 {
+	$forums = $child_forums['forum_list'];
 	$lang->sub_forums_in = $lang->sprintf($lang->sub_forums_in, $foruminfo['name']);
 	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
@@ -177,11 +177,13 @@ if($mybb->settings['enableforumjump'] != 0)
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
+$newthread = '';
 if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
 
+$searchforum = '';
 if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 {
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
@@ -694,6 +696,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
+$ratingcol = $ratingsort = '';
 if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
@@ -954,8 +957,12 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadc
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
+	$forum_read = 0;
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$forum_read = $db->fetch_field($query, "dateline");
+	if($db->num_rows($query) > 0)
+	{
+		$forum_read = $db->fetch_field($query, "dateline");
+	}
 
 	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
@@ -1455,7 +1462,7 @@ if($mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
 
-	if($db->fetch_field($query, 'fid'))
+	if($db->num_rows($query) > 0)
 	{
 		$add_remove_subscription = 'remove';
 		$add_remove_subscription_text = $lang->unsubscribe_forum;

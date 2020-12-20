@@ -557,7 +557,7 @@ function upgrade12_dbchanges2()
 
 	include_once MYBB_ROOT."inc/functions_task.php";
 	$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-	$parser = new XMLParser($tasks);
+	$parser = create_xml_parser($tasks);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -914,7 +914,7 @@ function upgrade12_dbchanges4()
 	}
 
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
-	$parser = new XMLParser($adminoptions);
+	$parser = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -1239,7 +1239,7 @@ function upgrade12_dbchanges5()
 	) ENGINE=MyISAM{$collation};");
 
 	$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
-	$parser = new XMLParser($views);
+	$parser = create_xml_parser($views);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 

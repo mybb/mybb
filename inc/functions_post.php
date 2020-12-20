@@ -291,12 +291,12 @@ function build_postbit($post, $post_type=0)
 			$post['starimage'] = $usergroup['starimage'];
 		}
 
-		if($post['starimage'] && $post['stars'])
+		$post['userstars'] = '';
+		if($post['starimage'] && isset($post['stars']))
 		{
 			// Only display stars if we have an image to use...
 			$post['starimage'] = str_replace("{theme}", $theme['imgdir'], $post['starimage']);
 
-			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
 				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
@@ -442,6 +442,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Display profile fields on posts - only if field is filled in
+		$post['profilefield'] = '';
 		if(!empty($profile_fields))
 		{
 			foreach($profile_fields as $field)
@@ -484,7 +485,7 @@ function build_postbit($post, $post_type=0)
 							"filter_badwords" => 1
 						);
 
-						if($customfield['type'] == "textarea")
+						if($field['type'] == "textarea")
 						{
 							$field_parser_options['me_username'] = $post['username'];
 						}
@@ -731,8 +732,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['iplogged'] = '';
 	$show_ips = $mybb->settings['logip'];
-	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
-
+	
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if($post_type == 2)
 	{
@@ -740,6 +740,7 @@ function build_postbit($post, $post_type=0)
 	}
 	if(!$post_type || $post_type == 2)
 	{
+		$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
 			if($show_ips == "show")
@@ -916,7 +917,7 @@ function build_postbit($post, $post_type=0)
 			break;
 	}
 
-	if($forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && $post_type == 0 && !is_moderator($fid, "canviewdeleted"))
+	if($post_type == 0 && $forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
 	{
 		eval("\$postbit = \"".$templates->get("postbit_deleted_member")."\";");
 	}

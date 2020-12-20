@@ -110,7 +110,7 @@ if($mybb->input['action'] == "add_level")
 	$page->output_nav_tabs($sub_tabs, 'add_level');
 	$form = new Form("index.php?module=config-warning&amp;action=add_level", "post");
 
-
+	$action_checked = array();
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -679,6 +679,7 @@ if($mybb->input['action'] == "levels")
 		// Get the right language for the ban period
 		$lang_str = "expiration_".$period['period'];
 		$period_str = $lang->$lang_str;
+		$group_name = '';
 
 		if($action['type'] == 1)
 		{
@@ -718,7 +719,6 @@ if($mybb->input['action'] == "levels")
 	{
 		$table->construct_cell($lang->no_warning_levels, array('colspan' => 4));
 		$table->construct_row();
-		$no_results = true;
 	}
 
 	$table->output($lang->warning_levels);
@@ -765,7 +765,6 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell($lang->no_warning_types, array('colspan' => 5));
 		$table->construct_row();
-		$no_results = true;
 	}
 
 	$table->output($lang->warning_types);

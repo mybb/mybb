@@ -155,7 +155,7 @@ $all_options .= "<li><a href=\"#\" class=\"mass_approve\">{$lang->mark_as_approv
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
-if($mybb->input['type'] == "threads" || !$mybb->input['type'])
+if(empty($mybb->input['type']) || $mybb->input['type'] == "threads")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_threads");
 
@@ -168,9 +168,10 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 	{
 		// Figure out if we need to display multiple pages.
 		$per_page = 15;
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		if($mybb->input['page'] > 0)
 		{
-			$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
+			$current_page = $mybb->input['page'];
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_threads / $per_page;
 			$pages = ceil($pages);
