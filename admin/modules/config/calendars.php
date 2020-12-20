@@ -146,6 +146,8 @@ if($mybb->input['action'] == "permissions")
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
 
+	$existing_permissions = array();
+
 	$query = $db->simple_select("calendarpermissions", "*", "cid='{$calendar['cid']}'");
 	while($existing = $db->fetch_array($query))
 	{
@@ -205,7 +207,7 @@ if($mybb->input['action'] == "permissions")
 
 	foreach($usergroups as $usergroup)
 	{
-		if($existing_permissions[$usergroup['gid']])
+		if(!empty($existing_permissions[$usergroup['gid']]))
 		{
 			$perms = $existing_permissions[$usergroup['gid']];
 			$default_checked = false;
@@ -255,11 +257,8 @@ if($mybb->input['action'] == "permissions")
 	}
 	$table->output("{$lang->calendar_permissions_for} {$calendar['name']}");
 
-	if(!$no_results)
-	{
-		$buttons[] = $form->generate_submit_button($lang->save_permissions);
-		$form->output_submit_wrapper($buttons);
-	}
+	$buttons[] = $form->generate_submit_button($lang->save_permissions);
+	$form->output_submit_wrapper($buttons);
 
 	$form->end();
 
@@ -458,7 +457,8 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows()  == 0)
+	$no_results = false;
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_calendars, array('colspan' => 5));
 		$table->construct_row();

@@ -119,14 +119,14 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
-	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
+	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs");
 	$total_rows = $db->fetch_field($query, "logs");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
-		
+
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
@@ -187,12 +187,14 @@ if(!$mybb->input['action'])
 	$subject = $db->escape_string_like($mybb->input['subject']);
 
 	// Begin criteria filtering
+	$additional_sql_criteria = '';
 	if($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND l.subject LIKE '%{$subject}%'";
 		$additional_criteria[] = "subject=".urlencode($mybb->input['subject']);
 	}
 
+	$from_filter = '';
 	if($mybb->input['fromuid'])
 	{
 		$query = $db->simple_select("users", "uid, username", "uid = '{$fromuid}'");
@@ -216,14 +218,14 @@ if(!$mybb->input['action'])
 		$additional_sql_criteria .= "AND l.fromuid = '{$user['uid']}'";
 		$additional_criteria[] = "fromuid={$user['uid']}";
 	}
-
-	if($mybb->input['fromemail'])
+	else if($mybb->input['fromemail'])
 	{
 		$additional_sql_criteria .= " AND l.fromemail LIKE '%{$fromemail}%'";
 		$additional_criteria[] = "fromemail=".urlencode($mybb->input['fromemail']);
 		$from_filter = $mybb->input['fromemail'];
 	}
 
+	$to_filter = '';
 	if($mybb->input['touid'])
 	{
 		$query = $db->simple_select("users", "uid, username", "uid = '{$touid}'");
@@ -247,8 +249,7 @@ if(!$mybb->input['action'])
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
 		$additional_criteria[] = "touid={$user['uid']}";
 	}
-
-	if($mybb->input['toemail'])
+	else if($mybb->input['toemail'])
 	{
 		$additional_sql_criteria .= " AND l.toemail LIKE '%{$toemail}%'";
 		$additional_criteria[] = "toemail=".urlencode($mybb->input['toemail']);
@@ -428,7 +429,8 @@ if(!$mybb->input['action'])
 		"email" => $lang->email_contains
 	);
 	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');
-	if($from_username)
+	$from_type = '';
+	if($mybb->input['fromname'])
 	{
 		$from_type = "user";
 	}
@@ -437,7 +439,8 @@ if(!$mybb->input['action'])
 		$from_type = "email";
 	}
 	$form_container->output_row($lang->from, "", $form->generate_select_box('from_type', $user_email, $from_type)." ".$form->generate_text_box('from_value', htmlspecialchars_uni($from_filter), array('id' => 'from_value')), 'from_value');
-	if($to_username)
+	$to_type = '';
+	if($mybb->input['toname'])
 	{
 		$to_type = "user";
 	}

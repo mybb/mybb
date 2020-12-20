@@ -684,6 +684,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 							$isimage = false;
 						}
 						$attachment['icon'] = get_attachment_icon($ext);
+						if(!$attachment['dateuploaded'])
+						{
+							$attachment['dateuploaded'] = $announcement['dateline'];
+						}
+						$attachdate = my_date('normal', $attachment['dateuploaded']);
 						// Support for [attachment=id] code
 						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
 						{

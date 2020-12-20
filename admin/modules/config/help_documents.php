@@ -377,10 +377,10 @@ if($mybb->input['action'] == "edit")
 		$plugins->run_hooks("admin_config_help_documents_edit_page");
 
 		// Do edit?
+		$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
+
 		if($mybb->request_method == "post")
 		{
-			$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
-
 			if(empty($hid))
 			{
 				$errors[] = $lang->error_invalid_sid;

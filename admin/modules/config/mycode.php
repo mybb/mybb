@@ -85,8 +85,10 @@ if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "
 
 if($mybb->input['action'] == "add")
 {
-	$plugins->run_hooks("admin_config_mycode_add");
+	$sandbox = array();
 
+	$plugins->run_hooks("admin_config_mycode_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -218,6 +220,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
+
+	$sandbox = array();
 
 	$plugins->run_hooks("admin_config_mycode_edit");
 

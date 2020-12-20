@@ -34,6 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	$stats_page_separator = '';
 	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
@@ -365,7 +366,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-	
+
 	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }

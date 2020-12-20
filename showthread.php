@@ -700,7 +700,7 @@ if($mybb->input['action'] == "thread")
 	// Create the admin tools dropdown box.
 	if($ismod == true)
 	{
-		$closelinkch = $stickch = '';
+		$closeoption = $closelinkch = $stickch = '';
 
 		if($thread['closed'] == 1)
 		{
@@ -745,7 +745,7 @@ if($mybb->input['action'] == "thread")
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
-	$rating = '';
+	$rating = $ratethread = '';
 	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
 	{
 		$rated = 0;
@@ -795,22 +795,6 @@ if($mybb->input['action'] == "thread")
 		foreach($ignore_list as $uid)
 		{
 			$ignored_users[$uid] = 1;
-		}
-	}
-
-	// Fetch profile fields to display on postbit
-	$pfcache = $cache->read('profilefields');
-
-	if(is_array($pfcache))
-	{
-		foreach($pfcache as $profilefield)
-		{
-			if($profilefield['postbit'] != 1)
-			{
-				continue;
-			}
-
-			$profile_fields[$profilefield['fid']] = $profilefield;
 		}
 	}
 
@@ -883,31 +867,30 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-        // Build the threaded post display tree.
-        $query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            WHERE p.tid='$tid'
-            $visibleonly_p
-            ORDER BY p.dateline, p.pid
-        ");
-        if(!is_array($postsdone))
-        {
-            $postsdone = array();
-        }
-        while($post = $db->fetch_array($query))
-        {
-            if(!$postsdone[$post['pid']])
-            {
-                if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
-                {
+		$multipage = '';
+
+		// Build the threaded post display tree.
+		$query = $db->query("
+			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid'
+			$visibleonly_p
+			ORDER BY p.dateline, p.pid
+		");
+		$postsdone = array();
+		while($post = $db->fetch_array($query))
+		{
+			if(empty($postsdone[$post['pid']]))
+			{
+				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
+				{
 					$postcounter = count($postsdone);
-                    $isfirst = 0;
-                }
-                $tree[$post['replyto']][$post['pid']] = $post;
-                $postsdone[$post['pid']] = 1;
-            }
-        }
+					$isfirst = 0;
+				}
+				$tree[$post['replyto']][$post['pid']] = $post;
+				$postsdone[$post['pid']] = 1;
+			}
+		}
 
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
@@ -1012,29 +995,29 @@ if($mybb->input['action'] == "thread")
 		$upper = $start+$perpage;
 
 		// Work out if we have terms to highlight
-        $highlight = "";
-        $threadmode = "";
-        if($mybb->seo_support == true)
-        {
-            if($mybb->get_input('highlight'))
-            {
-                $highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
-            }
+		$highlight = "";
+		$threadmode = "";
+		if($mybb->seo_support == true)
+		{
+			if($mybb->get_input('highlight'))
+			{
+				$highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
+			}
 
 			if($defaultmode != "linear")
 			{
-	            if($mybb->get_input('highlight'))
-	            {
-	                $threadmode = "&amp;mode=linear";
-	            }
-	            else
-	            {
-	                $threadmode = "?mode=linear";
-	            }
+				if($mybb->get_input('highlight'))
+				{
+					$threadmode = "&amp;mode=linear";
+				}
+				else
+				{
+					$threadmode = "?mode=linear";
+				}
 			}
-        }
-        else
-        {
+		}
+		else
+		{
 			if(!empty($mybb->input['highlight']))
 			{
 				if(is_array($mybb->input['highlight']))
@@ -1050,13 +1033,13 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 
-            if($defaultmode != "linear")
-            {
-                $threadmode = "&amp;mode=linear";
-            }
-        }
+			if($defaultmode != "linear")
+			{
+				$threadmode = "&amp;mode=linear";
+			}
+		}
 
-        $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
+		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
@@ -1280,7 +1263,7 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-	    	$posthash = md5($mybb->user['uid'].random_str());
+			$posthash = md5($mybb->user['uid'].random_str());
 		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
@@ -1312,6 +1295,7 @@ if($mybb->input['action'] == "thread")
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1483,7 +1467,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
-		if($db->fetch_field($query, 'tid'))
+		if($db->num_rows($query) > 0)
 		{
 			$add_remove_subscription = 'remove';
 			$add_remove_subscription_text = $lang->unsubscribe_thread;
@@ -1581,7 +1565,8 @@ if($mybb->input['action'] == "thread")
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
 
-	if($thread['visible'] == -1 )
+	$thread_deleted = 0;
+	if($thread['visible'] == -1)
 	{
 		$thread_deleted = 1;
 	}
@@ -1631,7 +1616,7 @@ function buildtree($replyto=0, $indent=0)
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
 
-			if($tree[$post['pid']])
+			if(!empty($tree[$post['pid']]))
 			{
 				$posts .= buildtree($post['pid'], $indent);
 			}
