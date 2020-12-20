@@ -399,6 +399,8 @@ if($mybb->input['action'] == "add")
 		$mybb->input = array_merge($mybb->input, array('usergroup' => 2));
 	}
 
+	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
+
 	$form_container = new FormContainer($lang->required_profile_info);
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password', 'autocomplete' => 'off')), 'password');
@@ -2325,19 +2327,17 @@ if($mybb->input['action'] == "search")
 			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 			unset($admin_view['extra_sql']);
 		}
-		else
+
+		// Don't have a view? Fetch the default
+		if(!isset($admin_view) || !$admin_view['vid'])
 		{
-			// Don't have a view? Fetch the default
-			if(!$admin_view['vid'])
+			$default_view = fetch_default_view("user");
+			if(!$default_view)
 			{
-				$default_view = fetch_default_view("user");
-				if(!$default_view)
-				{
-					$default_view = "0";
-				}
-				$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
-				$admin_view = $db->fetch_array($query);
+				$default_view = "0";
 			}
+			$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
+			$admin_view = $db->fetch_array($query);
 		}
 
 		// Override specific parts of the view
@@ -3200,7 +3200,7 @@ function build_users_view($view)
 	{
 		$title_string = "view_title_{$view['vid']}";
 
-		if($lang->$title_string)
+		if(isset($lang->$title_string))
 		{
 			$view['title'] = $lang->$title_string;
 		}
@@ -3948,15 +3948,15 @@ function build_user_view_card($user, $view, &$i)
 	}
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
 	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$uname}</legend>\n";
-	if($avatar)
+	if(!empty($avatar))
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
 	}
-	if($user_details)
+	if(!empty($user_details))
 	{
 		$card .= "<div class=\"user_details\">".implode("<br />", $user_details)."</div>\n";
 	}
-	if($controls)
+	if(!empty($controls))
 	{
 		$card .= "<div class=\"float_right\" style=\"padding: 4px;\">{$controls}</div>\n";
 	}
@@ -4165,7 +4165,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
  * @param array $input
  * @param DefaultForm $form
  */
-function user_search_conditions($input=array(), &$form)
+function user_search_conditions($input, &$form)
 {
 	global $mybb, $db, $lang;
 
@@ -4179,14 +4179,29 @@ function user_search_conditions($input=array(), &$form)
 		$input['conditions'] = my_unserialize($input['conditions']);
 	}
 
+	if(empty($input['conditions']))
+	{
+		$input['conditions'] = array();
+	}
+
 	if(!is_array($input['profile_fields']))
 	{
 		$input['profile_fields'] = my_unserialize($input['profile_fields']);
 	}
 
+	if(empty($input['profile_fields']))
+	{
+		$input['profile_fields'] = array();
+	}
+
 	if(!is_array($input['fields']))
 	{
 		$input['fields'] = my_unserialize($input['fields']);
+	}
+
+	if(empty($input['fields']))
+	{
+		$input['fields'] = array();
 	}
 
 	$form_container = new FormContainer($lang->find_users_where);

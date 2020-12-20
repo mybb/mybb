@@ -804,21 +804,18 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-        // Build the threaded post display tree.
-        $query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            WHERE p.tid='$tid'
-            $visible
-            ORDER BY p.dateline, p.pid
-        ");
-		if(!is_array($postsdone))
-		{
-				$postsdone = array();
-		}
+		// Build the threaded post display tree.
+		$query = $db->query("
+			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid'
+			$visible
+			ORDER BY p.dateline, p.pid
+		");
+		$postsdone = array();
 		while($post = $db->fetch_array($query))
 		{
-			if(!$postsdone[$post['pid']])
+			if(empty($postsdone[$post['pid']]))
 			{
 				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
 				{
@@ -1204,6 +1201,7 @@ if($mybb->input['action'] == "thread")
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1296,7 +1294,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
-		if($db->fetch_field($query, 'tid'))
+		if($db->num_rows($query) > 0)
 		{
 			$thread['issubscribed'] = true;
 		}
@@ -1364,7 +1362,8 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
-	if($thread['visible'] == -1 )
+	$thread_deleted = 0;
+	if($thread['visible'] == -1)
 	{
 		$thread_deleted = 1;
 	}
@@ -1432,7 +1431,7 @@ function buildtree($replyto = 0, $indent = 0)
 			$post['indentsize'] = $indentsize;
 			$posttree[] = $post;
 
-			if($tree[$post['pid']])
+			if(!empty($tree[$post['pid']]))
 			{
 				$posts = buildtree($post['pid'], $indent);
 				$posttree = array_merge($posttree, $posts);

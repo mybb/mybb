@@ -365,7 +365,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
-	if(!$subscription['tid'])
+	if(empty($subscription) || !$subscription['tid'])
 	{
 		$insert_array = array(
 			'uid' => (int)$uid,
@@ -439,7 +439,7 @@ function add_subscribed_forum($fid, $uid=0)
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(!$fsubscription['fid'])
+	if(empty($fsubscription) || !$fsubscription['fid'])
 	{
 		$insert_array = array(
 			'fid' => $fid,
@@ -796,6 +796,7 @@ function generate_question($old_qid=0)
 		$order_by = 'RAND()';
 	}
 
+	$excl_old = '';
 	if($old_qid)
 	{
 		$excl_old = ' AND qid != '.(int)$old_qid;

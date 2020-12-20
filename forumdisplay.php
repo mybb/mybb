@@ -137,7 +137,10 @@ else
 }
 
 $child_forums = build_forumbits($fid, 2);
-$subforums = $child_forums['forum_list'];
+if(!empty($child_forums) && !empty($child_forums['forum_list']))
+{
+    $subforums = $child_forums['forum_list'];
+}
 
 // No forums available within a category forum, get out
 if($foruminfo['type'] == 'c' && empty($subforums))
@@ -601,6 +604,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
+$ratingcol = $ratingsort = '';
 if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
@@ -825,8 +829,12 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadC
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
+	$forum_read = 0;
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$forum_read = $db->fetch_field($query, "dateline");
+	if($db->num_rows($query) > 0)
+	{
+		$forum_read = $db->fetch_field($query, "dateline");
+	}
 
 	$read_cutoff = TIME_NOW - $mybb->settings['threadreadcut'] * 60 * 60 * 24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
@@ -1106,7 +1114,7 @@ if($mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", ['limit' => 1]);
 
-	if($db->fetch_field($query, 'fid'))
+	if($db->num_rows($query) > 0)
 	{
 		$subAction = 'remove';
 	}

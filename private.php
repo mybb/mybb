@@ -552,8 +552,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
 		LIMIT 0, 1
 	");
-	$duplicate_check = $db->fetch_field($query, "pmid");
-	if($duplicate_check)
+	if($db->num_rows($query) > 0)
 	{
 		error($lang->error_pm_already_submitted);
 	}

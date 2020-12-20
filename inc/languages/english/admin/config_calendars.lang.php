@@ -20,6 +20,7 @@ $l['save_calendar_orders'] = "Save Calendar Display Order";
 
 $l['name'] = "Name";
 $l['display_order'] = "Display Order";
+$l['display_order_desc'] = "The order the calendars are shown in the calendar selection. The calendar with display order 1 will be shown on the calendar page by default.";
 $l['week_start'] = "Start of Week";
 $l['week_start_desc'] = "Here you can set the day weeks should start on for this calendar.";
 $l['sunday'] = "Sunday";

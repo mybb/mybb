@@ -504,10 +504,12 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 		{
 			return $final_group_perms;
 		}
-		else
+		elseif(isset($perms_def))
 		{
 			return $perms_def;
 		}
+
+		return array();
 	}
 }
 

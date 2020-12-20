@@ -434,6 +434,12 @@ else
 		$users[] = $user;
 	}
 
+	$referrals_option = '';
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
+	}
+
 	$plugins->run_hooks("memberlist_end");
 
 	output_page(\MyBB\template('memberlist/memberlist.twig', [

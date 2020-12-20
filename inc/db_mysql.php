@@ -487,7 +487,11 @@ class DB_MySQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
 		else
 		{

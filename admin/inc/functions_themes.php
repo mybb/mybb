@@ -19,9 +19,7 @@ function import_theme_xml($xml, $options=array())
 {
 	global $mybb, $db;
 
-	require_once MYBB_ROOT."inc/class_xml.php";
-
-	$parser = new XMLParser($xml);
+	$parser = create_xml_parser($xml);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !is_array($tree['theme']))
@@ -630,7 +628,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
-	
+
 	$updated_theme = array();
 	if(!empty($stylesheets))
 	{
@@ -1015,7 +1013,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				}
 			}
 		}
-		
+
 		if(is_object($plugins))
 		{
 			$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url);
@@ -1076,7 +1074,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 		{
 			$properties = my_unserialize($theme['properties']);
 		}
-		
+
 		$max_disporder = 0;
 
 		foreach($stylesheets as $stylesheet)
@@ -1086,7 +1084,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				$orphaned_stylesheets[] = $stylesheet['name'];
 				continue;
 			}
-			
+
 			if($properties['disporder'][$stylesheet['name']] > $max_disporder)
 			{
 				$max_disporder = $properties['disporder'][$stylesheet['name']];
@@ -1232,6 +1230,7 @@ function cache_themes()
 		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
 		while($theme = $db->fetch_array($query))
 		{
+			$theme['users'] = 0;
 			$theme['properties'] = my_unserialize($theme['properties']);
 			$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
 			$theme_cache[$theme['tid']] = $theme;
@@ -1274,7 +1273,7 @@ function build_theme_list($parent=0, $depth=0)
 				$user_themes['style'] = $themes['default'];
 			}
 
-			if($themes[$user_themes['style']]['users'] > 0)
+			if(isset($themes[$user_themes['style']]['users']) && $themes[$user_themes['style']]['users'] > 0)
 			{
 				$themes[$user_themes['style']]['users'] += (int)$user_themes['users'];
 			}
@@ -1298,7 +1297,7 @@ function build_theme_list($parent=0, $depth=0)
 		unset($themes);
 	}
 
-	if(!is_array($theme_cache[$parent]))
+	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]))
 	{
 		return;
 	}
@@ -1306,6 +1305,7 @@ function build_theme_list($parent=0, $depth=0)
 	foreach($theme_cache[$parent] as $theme)
 	{
 		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
+		$set_default = '';
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
@@ -1327,10 +1327,11 @@ function build_theme_list($parent=0, $depth=0)
 				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
 			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			$set_default = "<div class=\"float_right\">{$set_default}</div>";
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;tid={$theme['tid']}");
 		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
-		$table->construct_cell("<div class=\"float_right\">{$set_default}</div><div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
+		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
@@ -1424,7 +1425,7 @@ function fetch_theme_stylesheets($theme)
 			foreach($style as $stylesheet2)
 			{
 				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+				if(isset($file_stylesheets['inherited'][$file."_".$action]) && is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
 				{
 					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
 					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
@@ -1438,7 +1439,7 @@ function fetch_theme_stylesheets($theme)
 
 	foreach($stylesheets as $file => $stylesheet2)
 	{
-		if(is_array($stylesheet2['inherited']))
+		if(isset($stylesheet2['inherited']) && is_array($stylesheet2['inherited']))
 		{
 			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
 			{

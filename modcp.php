@@ -56,6 +56,7 @@ $tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_
 $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
+$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
@@ -3632,6 +3633,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// Editing an existing ban
+	$existing_ban = false;
 	if($mybb->get_input('uid', MyBB::INPUT_INT))
 	{
 		// Get the users info from their uid
@@ -3643,7 +3645,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
         ");
 		$user = $db->fetch_array($query);
 
-		$existing_ban = false;
 		if($user['uid'])
 		{
 			$existing_ban = true;
@@ -3703,8 +3704,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	// If this is a new ban, we check the user isn't already part of a banned group
 	if(!$existing_ban && $user['uid'])
 	{
-		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-		if($db->fetch_field($query, "uid"))
+		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'", array('limit' => 1));
+		if($db->num_rows($query) > 0)
 		{
 			$errors[] = $lang->error_useralreadybanned;
 		}
@@ -3836,7 +3837,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Permission to edit this ban?
-	if($banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if(isset($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -4189,8 +4190,12 @@ if(!$mybb->input['action'])
 		$bannedusers[] = $banned;
 	}
 
-	$modnotes = $cache->read("modnotes");
-	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
+	$modnotes = '';
+	$modnotes_cache = $cache->read("modnotes");
+	if($modnotes_cache !== false)
+	{
+		$modnotes = htmlspecialchars_uni($modnotes_cache['modmessage']);
+	}
 
 	$plugins->run_hooks('modcp_end');
 

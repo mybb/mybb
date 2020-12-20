@@ -1813,6 +1813,8 @@ class Moderation
 			'deletedposts' => 0
 		);
 
+		$user_counters = array();
+
 		if($destination_tid == 0)
 		{
 			// Splitting into a new thread

@@ -111,22 +111,20 @@ function acp_recount_user_posts()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
+	$fids = array();
 	$query = $db->simple_select("forums", "fid", "usepostcounts = 0");
 	while($forum = $db->fetch_array($query))
 	{
 		$fids[] = $forum['fid'];
 	}
-	if(is_array($fids))
-    {
-        $fids = implode(',', $fids);
-    }
-	if($fids)
+	if(!empty($fids))
 	{
+		$fids = implode(',', $fids);
 		$fids = " AND p.fid NOT IN($fids)";
 	}
 	else
 	{
-		$fids = "";
+		$fids = '';
 	}
 
 	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
@@ -162,22 +160,20 @@ function acp_recount_user_threads()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
+	$fids = array();
 	$query = $db->simple_select("forums", "fid", "usethreadcounts = 0");
 	while($forum = $db->fetch_array($query))
 	{
 		$fids[] = $forum['fid'];
 	}
-	if(is_array($fids))
-    {
-        $fids = implode(',', $fids);
-    }
-	if($fids)
+	if(!empty($fids))
 	{
+		$fids = implode(',', $fids);
 		$fids = " AND t.fid NOT IN($fids)";
 	}
 	else
 	{
-		$fids = "";
+		$fids = '';
 	}
 
 	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));

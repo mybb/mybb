@@ -118,7 +118,7 @@ SQL;
 					}
 				}
 
-				if($private_forums[$forum['fid']]['lastpost'])
+				if(!empty($private_forums[$forum['fid']]['lastpost']))
 				{
 					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
 
@@ -176,7 +176,7 @@ SQL;
 				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
-				if($forum_info['lastpost']['lastpost'] > $forum['last_post']['lastpost'])
+				if(isset($forum_info['lastpost']['lastpost']) && $forum_info['lastpost']['lastpost'] > $forum['last_post']['lastpost'])
 				{
 					$forum['last_post'] = $forum_info['lastpost'];
 

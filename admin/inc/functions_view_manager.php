@@ -52,6 +52,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		admin_redirect($base_url."&action=views");
 	}
 
+	$errors = array();
 	if($mybb->input['do'] == "add")
 	{
 		if($mybb->request_method == "post")
@@ -89,7 +90,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 				$mybb->input['visibility'] = 2;
 			}
 
-			if(!$errors)
+			if(empty($errors))
 			{
 				$new_view = array(
 					"uid" => $mybb->user['uid'],
@@ -131,7 +132,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$page->output_nav_tabs($sub_tabs, 'create_view');
 
 		// If we have any error messages, show them
-		if($errors)
+		if(!empty($errors))
 		{
 			$page->output_inline_error($errors);
 		}
@@ -139,14 +140,8 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$form_container = new FormContainer($lang->create_new_view);
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
-		if($mybb->input['visibility'] == 2)
-		{
-			$visibility_public_checked = true;
-		}
-		else
-		{
-			$visibility_private_checked = true;
-		}
+		$visibility_public_checked = $mybb->input['visibility'] == 2;
+		$visibility_private_checked = !$visibility_public_checked;
 
 		$visibility_options = array(
 			$form->generate_radio_button("visibility", "1", "<strong>{$lang->private}</strong> - {$lang->private_desc}", array("checked" => $visibility_private_checked)),
@@ -174,7 +169,9 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 		$form_container->end();
 
-		$field_select .= "<div class=\"view_fields\">\n";
+		$active = array();
+
+		$field_select = "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
 		if(is_array($mybb->input['fields']))
 		{
@@ -216,7 +213,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
-		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
+		$form_container->output_row($lang->fields_to_show_desc, '', $field_select);
 		$form_container->end();
 
 		// Build the search conditions
@@ -279,7 +276,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$mybb->input['visibility'] = 2;
 			}
 
-			if(!$errors)
+			if(empty($errors))
 			{
 				$updated_view = array(
 					"title" => $db->escape_string($mybb->input['title']),
@@ -323,7 +320,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$page->output_nav_tabs($sub_tabs, 'edit_view');
 
 		// If we have any error messages, show them
-		if($errors)
+		if(!empty($errors))
 		{
 			$page->output_inline_error($errors);
 		}
@@ -346,14 +343,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form_container = new FormContainer($lang->edit_view);
 		$form_container->output_row($lang->view." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
-		if($mybb->input['visibility'] == 2)
-		{
-			$visibility_public_checked = true;
-		}
-		else
-		{
-			$visibility_private_checked = true;
-		}
+		$visibility_public_checked = $mybb->input['visibility'] == 2;
+		$visibility_private_checked = !$visibility_public_checked;
 
 		$visibility_options = array(
 			$form->generate_radio_button("visibility", "1", "<strong>{$lang->private}</strong> - {$lang->private_desc}", array("checked" => $visibility_private_checked)),
@@ -381,7 +372,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$form_container->end();
 
-		$field_select .= "<div class=\"view_fields\">\n";
+		$field_select = "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
 		if(is_array($mybb->input['fields']))
 		{
@@ -425,7 +416,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
-		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
+		$form_container->output_row($lang->fields_to_show_desc, '', $field_select);
 		$form_container->end();
 
 		// Build the search conditions
@@ -592,7 +583,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 			$title_string = "view_title_{$view['vid']}";
 
-			if($lang->$title_string)
+			if(isset($lang->$title_string))
 			{
 				$view['title'] = $lang->$title_string;
 			}
@@ -635,10 +626,8 @@ function set_default_view($type, $vid)
 
 	$query = $db->simple_select("adminoptions", "defaultviews", "uid='{$mybb->user['uid']}'");
 	$default_views = my_unserialize($db->fetch_field($query, "defaultviews"));
-	if(!$db->num_rows($query))
-	{
-		$create = true;
-	}
+	$create = !$db->num_rows($query);
+
 	$default_views[$type] = $vid;
 	$default_views = my_serialize($default_views);
 	$updated_admin = array("defaultviews" => $db->escape_string($default_views));

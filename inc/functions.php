@@ -250,7 +250,7 @@ function send_mail_queue($count = 10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW - 300))
+	if($mailcache !== false && $mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->update_mailqueue(0, TIME_NOW);
@@ -305,7 +305,7 @@ function parse_page($contents)
  */
 function my_date($format, $stamp = 0, $offset = "", $ty = 1, $adodb = false)
 {
-	global $mybb, $lang, $mybbadmin, $plugins;
+	global $mybb, $lang, $plugins;
 
 	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
@@ -319,11 +319,6 @@ function my_date($format, $stamp = 0, $offset = "", $ty = 1, $adodb = false)
 		{
 			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
-		}
-		elseif(defined("IN_ADMINCP"))
-		{
-			$offset = (float)$mybbadmin['timezone'];
-			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
@@ -662,11 +657,11 @@ function get_parent_list($fid)
 	global $forum_cache;
 	static $forumarraycache;
 
-	if($forumarraycache[$fid])
+	if(!empty($forumarraycache[$fid]))
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forum_cache[$fid])
+	elseif(!empty($forum_cache[$fid]))
 	{
 		return $forum_cache[$fid]['parentlist'];
 	}
@@ -1412,8 +1407,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
-			$level_permissions = $fpermcache[$fid][$gid];
-
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1430,6 +1423,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
+			}
+			else
+			{
+				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
@@ -1674,14 +1671,14 @@ function get_moderator_permissions($fid, $uid = 0, $parentslist = "")
 
 	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(empty($forum) || !is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
 		}
 
 		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
+		if(!empty($forum['users'][$uid]))
 		{
 			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
@@ -1706,7 +1703,7 @@ function get_moderator_permissions($fid, $uid = 0, $parentslist = "")
 
 		foreach($groups as $group)
 		{
-			if(!is_array($forum['usergroups'][$group]))
+			if(empty($forum['usergroups'][$group]) || !is_array($forum['usergroups'][$group]))
 			{
 				// There are no permissions set for this group
 				continue;
@@ -1753,12 +1750,12 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 	}
 
 	$user_perms = user_permissions($uid);
-	if($user_perms['issupermod'] == 1)
+	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
 		{
 			$forumpermissions = forum_permissions($fid);
-			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && empty($forumpermissions['canonlyviewownthreads']))
 			{
 				return true;
 			}
@@ -2729,15 +2726,28 @@ function update_forum_lastpost($fid)
         ORDER BY lastpost DESC
         LIMIT 0, 1
     ");
-	$lastpost = $db->fetch_array($query);
 
-	$updated_forum = array(
-		"lastpost" => (int)$lastpost['lastpost'],
-		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => (int)$lastpost['lastposteruid'],
-		"lastposttid" => (int)$lastpost['tid'],
-		"lastpostsubject" => $db->escape_string($lastpost['subject'])
-	);
+	if($db->num_rows($query) > 0)
+	{
+		$lastpost = $db->fetch_array($query);
+
+		$updated_forum = array(
+			"lastpost" => (int)$lastpost['lastpost'],
+			"lastposter" => $db->escape_string($lastpost['lastposter']),
+			"lastposteruid" => (int)$lastpost['lastposteruid'],
+			"lastposttid" => (int)$lastpost['tid'],
+			"lastpostsubject" => $db->escape_string($lastpost['subject']),
+		);
+	}
+	else {
+		$updated_forum = array(
+			"lastpost" => 0,
+			"lastposter" => '',
+			"lastposteruid" => 0,
+			"lastposttid" => 0,
+			"lastpostsubject" => '',
+		);
+	}
 
 	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
@@ -3531,7 +3541,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if($subscription['tid'])
+		if(!empty($subscription) && $subscription['tid'])
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -4552,7 +4562,7 @@ function mark_reports($id, $type = "post")
 		case "posts":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4563,7 +4573,7 @@ function mark_reports($id, $type = "post")
 		case "threads":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4683,6 +4693,8 @@ function nice_time($stamp, $options = array())
 		), $options);
 	}
 
+	$nicetime = array();
+
 	if(!isset($options['years']) || $options['years'] !== false)
 	{
 		if($years == 1)
@@ -4767,7 +4779,7 @@ function nice_time($stamp, $options = array())
 		}
 	}
 
-	if(is_array($nicetime))
+	if(!empty($nicetime))
 	{
 		return implode(", ", $nicetime);
 	}
@@ -7033,11 +7045,11 @@ function fetch_remote_file($url, $post_data = array(), $max_redirects = 20)
 			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
 		}
 
-		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
 			return false;
 		}
+		@stream_set_timeout($fp, 10);
 		$headers = array();
 		if(!empty($post_body))
 		{
@@ -8168,6 +8180,7 @@ function trim_blank_chrs($string, $charlist = "")
 	);
 
 	// Start from the beginning and work our way in
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8182,6 +8195,7 @@ function trim_blank_chrs($string, $charlist = "")
 
 	// Start from the end and work our way in
 	$string = strrev($string);
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8843,4 +8857,26 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 	}
 
 	return $referrals;
+}
+
+/**
+ * Initialize the parser and store the XML data to be parsed.
+ *
+ * @param string $data
+ * @return MyBBXMLParser The constructed XML parser.
+ */
+function create_xml_parser($data)
+{
+	if(version_compare(PHP_VERSION, '8.0', '>='))
+	{
+		require_once MYBB_ROOT."inc/class_xmlparser.php";
+
+		return new MyBBXMLParser($data);
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_xml.php";
+
+		return new XMLParser($data);
+	}
 }

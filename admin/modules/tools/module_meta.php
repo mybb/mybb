@@ -82,7 +82,7 @@ function tools_action_handler($action)
 
 	if(!isset($actions[$action]))
 	{
-		$page->active_action = "system_health";
+		$page->active_action = $action = "system_health";
 	}
 
 	$sidebar = new SidebarItem($lang->logs);

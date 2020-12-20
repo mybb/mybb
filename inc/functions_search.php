@@ -1474,6 +1474,7 @@ function perform_search_mysql_ft($search)
 		$mybb->settings['minsearchword'] = 4;
 	}
 
+	$message_lookin = $subject_lookin = '';
 	if($keywords)
 	{
 		$keywords_exp = explode("\"", $keywords);
@@ -1560,7 +1561,7 @@ function perform_search_mysql_ft($search)
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = '';
+	$datecut = $thread_datecut = $post_datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -1709,6 +1710,7 @@ function perform_search_mysql_ft($search)
 	$unapproved_where_p = get_visible_where('p');
 
 	// Searching a specific thread?
+	$tidsql = '';
 	if($search['tid'])
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";

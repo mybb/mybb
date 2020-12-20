@@ -96,7 +96,7 @@ $lang->load('global');
 $lang->load('messages');
 
 // Wipe lockout cookie if enough time has passed
-if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+if(isset($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
 {
 	my_unsetcookie('lockoutexpiry');
 }
@@ -188,9 +188,8 @@ if(in_array($current_page, $valid))
 	if(isset($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -200,9 +199,8 @@ if(in_array($current_page, $valid))
 	elseif(isset($mybb->input['tid']))
 	{
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -212,9 +210,8 @@ if(in_array($current_page, $valid))
 	elseif(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
 		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -565,6 +562,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $modnotice = '';
 $moderation_queue = array();
+$can_access_moderationqueue = false;
 
 // This user is a moderator, super moderator or administrator
 if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
@@ -802,6 +800,7 @@ if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gra
 	];
 }
 
+$awaitingusers = '';
 if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
@@ -1009,7 +1008,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 
-	if($referrer['uid'])
+	if(!empty($referrer) && $referrer['uid'])
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
 	}

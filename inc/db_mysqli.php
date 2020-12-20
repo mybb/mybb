@@ -485,7 +485,11 @@ class DB_MySQLi implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**

@@ -119,7 +119,7 @@ if($mybb->settings['showgroupleaders'])
 		$leadlist = implode(",", $leadlist);
 
 		$query = $db->simple_select("usergroups", "gid, title, namestyle", "gid IN ($leadlist)");
-		unset($leadlist);
+		$leadlist = array();
 
 		while($leaded_group = $db->fetch_array($query))
 		{

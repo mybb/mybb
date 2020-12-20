@@ -246,6 +246,11 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'warning_logs');
 
+	if(empty($mybb->input['filter']))
+	{
+		$mybb->input['filter'] = array();
+	}
+
 	// Filter options
 	$where_sql = '';
 	if(!empty($mybb->input['filter']['username']))
@@ -254,7 +259,7 @@ if(!$mybb->input['action'])
 
 		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
 	}
-	if($mybb->input['filter']['uid'])
+	if(!empty($mybb->input['filter']['uid']))
 	{
 		$search['uid'] = (int)$mybb->input['filter']['uid'];
 		$where_sql .= " AND w.uid='{$search['uid']}'";
@@ -270,7 +275,7 @@ if(!$mybb->input['action'])
 
 		$mybb->input['filter']['mod_uid'] = (int)$mod_user['uid'];
 	}
-	if($mybb->input['filter']['mod_uid'])
+	if(!empty($mybb->input['filter']['mod_uid']))
 	{
 		$search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
 		$where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
@@ -280,13 +285,18 @@ if(!$mybb->input['action'])
 			$mybb->input['search']['mod_username'] = $mod_user['username'];
 		}
 	}
-	if($mybb->input['filter']['reason'])
+	if(!empty($mybb->input['filter']['reason']))
 	{
 		$search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
 	}
 	$sortbysel = array();
-	switch($mybb->input['filter']['sortby'])
+	$sortby_input = '';
+	if(!empty($mybb->input['filter']['sortby']))
+	{
+		$sortby_input = $mybb->input['filter']['sortby'];
+	}
+	switch($sortby_input)
 	{
 		case "username":
 			$sortby = "u.username";
@@ -304,9 +314,8 @@ if(!$mybb->input['action'])
 			$sortby = "w.dateline";
 			$sortbysel['dateline'] = ' selected="selected"';
 	}
-	$order = $mybb->input['filter']['order'];
 	$ordersel = array();
-	if($order != "asc")
+	if(empty($mybb->input['filter']['order']) || $mybb->input['filter']['order'] != "asc")
 	{
 		$order = "desc";
 		$ordersel['desc'] = ' selected="selected"';

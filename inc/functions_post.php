@@ -303,8 +303,7 @@ function build_postbit($post, $post_type=0)
 			$post['starimage'] = $usergroup['starimage'];
 		}
 
-		if($post['starimage'] &&
-			$post['stars'])
+		if($post['starimage'] && isset($post['stars']))
 		{
 			// Only display stars if we have an image to use...
 			$post['starimage'] = str_replace('{theme}', $theme['imgdir'], $post['starimage']);
@@ -728,8 +727,7 @@ function build_postbit($post, $post_type=0)
 	if(!$post_type ||
 		$post_type == 2)
 	{
-		if($show_ips != 'no' &&
-			!empty($post['ipaddress']))
+		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
 			$post['iphide'] = $post['ipshow'] = false;
 
@@ -953,10 +951,7 @@ function build_postbit($post, $post_type=0)
 			break;
 	}
 
-	if($forumpermissions['canviewdeletionnotice'] == 1 &&
-		$post['visible'] == -1 &&
-		$post_type == 0 &&
-		!is_moderator($fid, 'canviewdeleted'))
+	if($post_type == 0 && $forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
 	{
 		$postbit = \MyBB\template('postbit/postbit_deleted_member.twig', [
 			'post' => $post,

@@ -39,9 +39,6 @@ class FeedParser
 	 */
 	function parse_feed($feed)
 	{
-		// Include the XML parser
-		require_once MYBB_ROOT."inc/class_xml.php";
-
 		// Load the feed we want to parse
 		$contents = fetch_remote_file($feed);
 
@@ -65,7 +62,7 @@ class FeedParser
 		}
 
 		// Parse the feed and get the tree
-		$parser = new XMLParser($contents);
+		$parser = create_xml_parser($contents);
 		$tree = $parser->get_tree();
 
 		// If the feed is invalid, throw back an error

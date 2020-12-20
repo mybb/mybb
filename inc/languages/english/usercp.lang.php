@@ -156,7 +156,6 @@ $l['show_redirect'] = "Show friendly redirect pages.";
 $l['thread_view_options'] = "Thread View Options";
 $l['thread_mode'] = "Thread View Mode";
 $l['thread_mode_desc'] = "The style of threads shown to you. Selecting 'Use Default' will use the boards default mode.";
-$l['use_default'] = "Use Default";
 $l['threaded'] = "Threaded";
 $l['linear'] = "Linear";
 $l['show_classic_postbit'] = "Display posts in classic mode.";
@@ -400,6 +399,7 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_close'] = " Closed thread.";
+$l['goto_first_unread'] = "Go to first unread post";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 

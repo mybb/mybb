@@ -69,7 +69,7 @@ class session
 			{
 				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
 				$session = $db->fetch_array($query);
-				if($session['sid'])
+				if(!empty($session) && $session['sid'])
 				{
 					$this->sid = $session['sid'];
 				}

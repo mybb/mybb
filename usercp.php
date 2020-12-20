@@ -1026,12 +1026,14 @@ if($mybb->input['action'] == "subscriptions")
 
 			if($mybb->settings['threadreadcut'] > 0)
 			{
-				$forum_read = $readforums[$thread['fid']];
-
-				$read_cutoff = TIME_NOW - $mybb->settings['threadreadcut'] * 60 * 60 * 24;
-				if($forum_read == 0 || $forum_read < $read_cutoff)
+				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+				if(empty($readforums[$thread['fid']]) || $readforums[$thread['fid']] < $read_cutoff)
 				{
 					$forum_read = $read_cutoff;
+				}
+				else
+				{
+					$forum_read = $readforums[$thread['fid']];
 				}
 			}
 
@@ -1043,7 +1045,7 @@ if($mybb->input['action'] == "subscriptions")
 
 			if($thread['lastpost'] > $cutoff)
 			{
-				if($thread['lastread'])
+				if(!empty($thread['lastread']))
 				{
 					$lastread = $thread['lastread'];
 				}
@@ -2660,11 +2662,11 @@ if($mybb->input['action'] == 'editlists')
 	}
 
 	$received_rows = [];
-	$query = $db->query('
-        SELECT r.*, u.username
-        FROM '.TABLE_PREFIX.'buddyrequests r
-        LEFT JOIN '.TABLE_PREFIX.'users u ON (u.uid=r.uid)
-        WHERE r.touid='.(int)$mybb->user['uid']);
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.uid)
+		WHERE r.touid=".(int)$mybb->user['uid']);
 
 	while($request = $db->fetch_array($query))
 	{
@@ -2675,11 +2677,11 @@ if($mybb->input['action'] == 'editlists')
 	}
 
 	$sent_rows = [];
-	$query = $db->query('
-        SELECT r.*, u.username
-        FROM '.TABLE_PREFIX.'buddyrequests r
-        LEFT JOIN '.TABLE_PREFIX.'users u ON (u.uid=r.touid)
-        WHERE r.uid='.(int)$mybb->user['uid']);
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
+		WHERE r.uid=".(int)$mybb->user['uid']);
 
 	while($request = $db->fetch_array($query))
 	{
@@ -3189,6 +3191,7 @@ if($mybb->input['action'] == "attachments")
 		++$processedattachments;
 	}
 
+	$multipage = '';
 	if($processedattachments >= $perpage || $page > 1)
 	{
 		$query = $db->query("
@@ -3464,7 +3467,7 @@ if(!$mybb->input['action'])
 		while($subscription = $db->fetch_array($query))
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
-			if($forumpermissions['canview'] != 0 && $forumpermissions['canviewthreads'] != 0 && ($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid']))
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && (empty($forumpermissions['canonlyviewownthreads'])|| $subscription['uid'] == $mybb->user['uid']))
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -3541,7 +3544,7 @@ if(!$mybb->input['action'])
 						$thread['folder'] = $thread['folder_label'] = $thread['class'] = '';
 
 						// Check to see which icon we display
-						if($thread['lastread'] && $thread['lastread'] < $thread['lastpost'])
+						if(!empty($thread['lastread']) && $thread['lastread'] < $thread['lastpost'])
 						{
 							$thread['folder'] .= "new";
 							$thread['folder_label'] .= $lang->icon_new;
@@ -3722,7 +3725,7 @@ if(!$mybb->input['action'])
 
 				if($thread['lastpost'] > $cutoff)
 				{
-					if($thread['lastread'])
+					if(!empty($thread['lastread']))
 					{
 						$lastread = $thread['lastread'];
 					}
