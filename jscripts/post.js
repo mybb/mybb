@@ -226,12 +226,11 @@ var Post = {
 	},
 
 	regenAttachbuttons: function () {
-		var button = $('input[name=newattachment]').length ? 'newattachment' : 'updateattachment';
-		button = $("input[name=" + button + "]").clone();
+		var attachButton = $("input[name=newattachment], input[name=updateattachment]").eq(0).clone();
 
 		if (Post.getAttachments().length) {
 			if (!$('input[name=updateattachment]').length) {
-				var updateButton = button.clone()
+				var updateButton = attachButton.clone()
 					.prop('name', 'updateattachment')
 					.prop('value', lang.update_attachment)
 					.prop('tabindex', '12');
@@ -243,7 +242,7 @@ var Post = {
 
 		if (Post.getAttachments().length < mybb_max_file_uploads) {
 			if (!$('input[name=newattachment]').length) {
-				var newButton = button.clone()
+				var newButton = attachButton.clone()
 					.prop('name', 'newattachment')
 					.prop('value', lang.add_attachment)
 					.prop('tabindex', '13');
