@@ -898,10 +898,6 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 		}
-		else if($forumpermissions['canviewdeletionnotice'] != 0)
-		{
-			$thread['replies'] += $thread['deletedposts'];
-		}
 
 		$postcount = (int)$thread['replies'] + 1;
 		$pages = $postcount / $perpage;
