@@ -51,7 +51,16 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$query = $db->simple_select("posts", "fid,tid,visible", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
 
-		if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
+		if(
+			empty($post) ||
+			(
+				$post['visible'] == 0 && !(
+					is_moderator($post['fid'], 'canviewunapprove') ||
+					($mybb->user['uid'] && $post['uid'] == $mybb->user['uid'] && $mybb->settings['showownunapproved'])
+				)
+			) ||
+			($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted'))
+		)
 		{
 			// Post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
@@ -101,15 +110,11 @@ if(!$thread['username'])
 $forumpermissions = forum_permissions($thread['fid']);
 
 // Set here to fetch only approved/deleted posts (and then below for a moderator we change this).
+$visible_states = array("1");
+
 if($forumpermissions['canviewdeletionnotice'] != 0)
 {
-	$visibleonly = " AND visible IN (-1,1)";
-	$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
-}
-else
-{
-	$visibleonly = " AND visible=1";
-	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
+	$visible_states[] = "-1";
 }
 
 // Is the currently logged in user a moderator of this forum?
@@ -147,28 +152,36 @@ if(is_moderator($fid))
 		$modpermissions[$permission] = is_moderator($fid, $permission);
 	}
 
-	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewdeleted") == true)
 	{
-		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
-		{
-			$visibleonly = " AND visible IN (0,1)";
-			$visibleonly2 = "AND p.visible IN (0,1) AND t.visible IN (0,1)";
-		}
-		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
-		{
-			$visibleonly = " AND visible IN (-1,1)";
-			$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
-		}
-		else
-		{
-			$visibleonly = " AND visible IN (-1,0,1)";
-			$visibleonly2 = "AND p.visible IN (-1,0,1) AND t.visible IN (-1,0,1)";
-		}
+		$visible_states[] = "-1";
+	}
+	if(is_moderator($fid, "canviewunapprove") == true)
+	{
+		$visible_states[] = "0";
 	}
 }
 else
 {
 	$modpermissions['ismod'] = false;
+}
+
+$visible_condition = "visible IN (".implode(',', array_unique($visible_states)).")";
+
+// Allow viewing own unapproved threads for logged in users
+if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+{
+	$own_unapproved = ' AND (%1$s'.$visible_condition.' OR (%1$svisible=0 AND %1$suid='.(int)$mybb->user['uid'].'))';
+
+	$visibleonly = sprintf($own_unapproved, null);
+	$visibleonly_p = sprintf($own_unapproved, 'p.');
+	$visibleonly_p_t = sprintf($own_unapproved, 'p.').sprintf($own_unapproved, 't.');
+}
+else
+{
+	$visibleonly = " AND ".$visible_condition;
+	$visibleonly_p = " AND p.".$visible_condition;
+	$visibleonly_p_t = "AND p.".$visible_condition." AND t.".$visible_condition;
 }
 
 // Make sure we are looking at a real thread here.
@@ -309,7 +322,7 @@ if($mybb->input['action'] == "lastpost")
 			SELECT p.pid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
-			WHERE t.fid='".$thread['fid']."' AND t.moved='0' {$visibleonly2}
+			WHERE t.fid='".$thread['fid']."' AND t.moved='0' {$visibleonly_p_t}
 			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT 1
 		");
@@ -700,28 +713,6 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
-	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
-	if($modpermissions['ismod'] && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
-	{
-		$visible = "AND p.visible IN (-1,1)";
-	}
-	else if($modpermissions['ismod'] && is_moderator($fid, "canviewdeleted") == false && is_moderator($fid, "canviewunapprove") == true)
-	{
-		$visible = "AND p.visible IN (0,1)";
-	}
-	else if($modpermissions['ismod'] && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == true)
-	{
-		$visible = "AND p.visible IN (-1,0,1)";
-	}
-	else if($forumpermissions['canviewdeletionnotice'] != 0 && $modpermissions['ismod'] == false)
-	{
-		$visible = "AND p.visible IN (-1,1)";
-	}
-	else
-	{
-		$visible = "AND p.visible='1'";
-	}
-
 	// Fetch the ignore list for the current user if they have one
 	$ignored_users = array();
 	if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
@@ -777,7 +768,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
-			WHERE p.tid='$tid' $visible $where
+			WHERE p.tid='$tid' $visibleonly_p $where
 		");
 		$showpost = $db->fetch_array($query);
 
@@ -809,10 +800,13 @@ if($mybb->input['action'] == "thread")
 			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
 			FROM ".TABLE_PREFIX."posts p
 			WHERE p.tid='$tid'
-			$visible
+            $visibleonly_p
 			ORDER BY p.dateline, p.pid
 		");
-		$postsdone = array();
+		if(!is_array($postsdone))
+		{
+			$postsdone = array();
+		}
 		while($post = $db->fetch_array($query))
 		{
 			if(empty($postsdone[$post['pid']]))
@@ -851,8 +845,16 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-
-			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0))
+			if(
+				empty($post) ||
+				(
+					$post['visible'] == 0 && !(
+						is_moderator($post['fid'], 'canviewunapprove') ||
+						($mybb->user['uid'] && $post['uid'] == $mybb->user['uid'] && $mybb->settings['showownunapproved'])
+					)
+				) ||
+				($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0)
+			)
 			{
 				$footer .= '<script type="text/javascript">$(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
 			}
@@ -863,7 +865,7 @@ if($mybb->input['action'] == "thread")
                     FROM ".TABLE_PREFIX."posts p
                     WHERE p.tid = '{$tid}'
                     AND p.dateline <= '{$post['dateline']}'
-                    {$visible}
+                    {$visibleonly_p}
                 ");
 				$result = $db->fetch_field($query, "count");
 				if(($result % $perpage) == 0)
@@ -878,18 +880,22 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Recount replies if user is a moderator or can see the deletion notice to take into account unapproved/deleted posts.
-		if($modpermissions['ismod'] || $forumpermissions['canviewdeletionnotice'] != 0)
+		if($visible_states != array("1"))
 		{
-			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
-			$cached_replies = $thread['replies'] + $thread['unapprovedposts'] + $thread['deletedposts'];
-			$thread['replies'] = $db->fetch_field($query, 'replies') - 1;
+			$cached_replies = $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts'];
 
-			// The counters are wrong? Rebuild them
-			// This doesn't cover all cases however it is a good addition to the manual rebuild function
-			if($thread['replies'] != $cached_replies)
+			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visibleonly_p");
+			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
+
+			if(in_array('-1', $visible_states) && in_array('0', $visible_states))
 			{
-				require_once MYBB_ROOT."/inc/functions_rebuild.php";
-				rebuild_thread_counters($thread['tid']);
+				// The counters are wrong? Rebuild them
+				// This doesn't cover all cases however it is a good addition to the manual rebuild function
+				if($thread['replies'] != $cached_replies)
+				{
+					require_once MYBB_ROOT."/inc/functions_rebuild.php";
+					rebuild_thread_counters($thread['tid']);
+				}
 			}
 		}
 		else if($forumpermissions['canviewdeletionnotice'] != 0)
@@ -970,16 +976,10 @@ if($mybb->input['action'] == "thread")
 
 		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 
-		// Allow originator to see own unapproved posts
-		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
-		{
-			$visible .= " OR (p.tid='$tid' AND p.visible='0' AND p.uid=".$mybb->user['uid'].")";
-		}
-
 		// Lets get the pids of the posts on this page.
 		$pids = '';
 		$comma = '';
-		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline, p.pid', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visibleonly_p", array('order_by' => 'p.dateline, p.pid', 'limit_start' => $start, 'limit' => $perpage));
 		while($getid = $db->fetch_array($query))
 		{
 			// Set the ID of the first post on page to $pid if it doesn't hold any value
