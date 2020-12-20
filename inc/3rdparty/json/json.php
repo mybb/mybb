@@ -809,14 +809,20 @@ if (class_exists('PEAR_Error')) {
 
 }
 
-function json_encode($var)
+if(!function_exists('json_encode'))
 {
-    $JSON = new Services_JSON;
-    return $JSON->encode($var);
+	function json_encode($var)
+	{
+		$JSON = new Services_JSON;
+		return $JSON->encode($var);
+	}
 }
 
-function json_decode($var)
+if(!function_exists('json_decode'))
 {
-    $JSON = new Services_JSON;
-    return $JSON->decode($var);
+	function json_decode($var)
+	{
+		$JSON = new Services_JSON;
+		return $JSON->decode($var);
+	}
 }
