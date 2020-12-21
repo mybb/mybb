@@ -8256,7 +8256,7 @@ function match_sequence($string, $array, $i = 0, $n = 0)
 /**
  * Obtain the version of GD installed.
  *
- * @return float Version of GD
+ * @return float|null Version of GD
  */
 function gd_version()
 {
@@ -8266,9 +8266,10 @@ function gd_version()
 	{
 		return $gd_version;
 	}
+
 	if(!extension_loaded('gd'))
 	{
-		return;
+		return null;
 	}
 
 	if(function_exists("gd_info"))

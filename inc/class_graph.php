@@ -132,7 +132,9 @@ class Graph {
 	 */
 	public static function can_use()
 	{
-		return !empty(gd_version());
+		$gd_version = gd_version();
+
+		return !empty($gd_version);
 	}
 
 	/**

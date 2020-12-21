@@ -81,7 +81,7 @@ class CustomModeration extends Moderation
 		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
-			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
+			$deleted_thread = $this->execute_post_moderation($tids, $post_options, $pids);
 		}
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
@@ -97,12 +97,13 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Inline Post Moderation
 	 *
+	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
 	 * @param array $post_options Moderation information
 	 * @param array $pids Post IDs
-	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
+	 *
 	 * @return boolean true
 	 */
-	function execute_post_moderation($post_options=array(), $pids=array(), $tid)
+	function execute_post_moderation($tid, $post_options=array(), $pids=array())
 	{
 		global $db, $mybb, $lang, $plugins;
 

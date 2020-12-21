@@ -1913,14 +1913,14 @@ function upgrade30_dbchanges_ip()
 						$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
 						if($ip1 === false && $ip2 === false)
 						{
-							continue;
+							continue 2;
 						}
 						break;
 					case 5:
 						$ip = my_inet_pton($db->unescape_binary($data['ip']));
 						if($ip === false)
 						{
-							continue;
+							continue 2;
 						}
 						break;
 					case 6:
@@ -1931,7 +1931,7 @@ function upgrade30_dbchanges_ip()
 						$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
 						if($ip === false)
 						{
-							continue;
+							continue 2;
 						}
 						break;
 				}
