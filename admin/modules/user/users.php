@@ -776,7 +776,14 @@ if($mybb->input['action'] == "edit")
 					{
 						// User has selected a type of ban, but not entered a valid time frame
 						$string = $option['action']."_error";
-						$errors[] = $lang->$string;
+						if(is_array($errors))
+						{
+							$errors[] = $lang->$string;
+						}
+						else
+						{
+							$errors = array($lang->$string);
+						}
 					}
 
 					if(!is_array($errors))
