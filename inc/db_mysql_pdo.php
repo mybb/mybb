@@ -9,6 +9,13 @@
 
 class MysqlPdoDbDriver extends AbstractPdoDbDriver
 {
+	/**
+	 * Explanation of a query.
+	 *
+	 * @var string
+	 */
+	public $explain = '';
+
 	protected function getDsn($hostname, $db, $port, $encoding)
 	{
 		$dsn = "mysql:host={$hostname};dbname={$db}";
@@ -63,7 +70,6 @@ HTML;
 		<td><strong>Rows</strong></td>
 		<td><strong>Extra</strong></td>
 	</tr>
-</table>
 HTML;
 
 			while ($table = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -102,7 +108,7 @@ HTML;
 		<td><span style="font-family: Courier; font-size: 14px;">{$queryText}</span></td>
 	</tr>
 	<tr>
-		<td bgcolor="#ffffff">Query Time:{$duration}</td>
+		<td bgcolor="#ffffff">Query Time: {$duration}</td>
 	</tr>
 </table>
 <br/>
@@ -129,12 +135,7 @@ HTML;
 			}
 		}
 
-		$tables = array();
-		while (list($table) = $this->fetch_array($query)) {
-			$tables[] = $table;
-		}
-
-		return $tables;
+		return $query->fetchAll(PDO::FETCH_COLUMN, 0);
 	}
 
 	public function table_exists($table)
