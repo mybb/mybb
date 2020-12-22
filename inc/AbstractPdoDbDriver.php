@@ -682,7 +682,11 @@ abstract class AbstractPdoDbDriver implements DB_Base
 
 	 public function free_result($query)
 	 {
-		 return true;
+	 	 if (is_object($query) && $query instanceof PDOStatement) {
+		     return $query->closeCursor();
+	     }
+
+	 	 return false;
 	 }
 
 	 public function escape_string_like($string)
