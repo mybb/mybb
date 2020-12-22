@@ -89,6 +89,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	}
 }
 
+$fromreg = 0;
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_register_start");
@@ -304,6 +305,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 	}
 
+	$regerrors = '';
 	if(!empty($errors))
 	{
 		$username = htmlspecialchars_uni($mybb->get_input('username'));
@@ -597,17 +599,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 						// Verify if we have permissions to access user-users
 						require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/user/module_meta.php";
-						if(function_exists("user_admin_permissions"))
-						{
 							// Get admin permissions
 							$adminperms = get_admin_permissions($recipient['uid']);
-
-							$permissions = user_admin_permissions();
-							if(array_key_exists('users', $permissions['permissions']) && $adminperms['user']['users'] != 1)
+							if(empty($adminperms['user']['users']) || $adminperms['user']['users'] != 1)
 							{
 								continue; // No permissions
 							}
-						}
 					}
 
 					// Load language
@@ -910,7 +907,7 @@ if($mybb->input['action'] == "register")
 				$field = "fid{$profilefield['fid']}";
 				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-				if($errors && isset($mybb->input['profile_fields'][$field]))
+				if(!empty($errors) && isset($mybb->input['profile_fields'][$field]))
 				{
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
@@ -920,7 +917,7 @@ if($mybb->input['action'] == "register")
 				}
 				if($type == "multiselect")
 				{
-					if($errors)
+					if(!empty($errors))
 					{
 						$useropts = $userfield;
 					}
@@ -1003,7 +1000,7 @@ if($mybb->input['action'] == "register")
 				}
 				elseif($type == "checkbox")
 				{
-					if($errors)
+					if(!empty($errors))
 					{
 						$useropts = $userfield;
 					}
@@ -1080,7 +1077,7 @@ if($mybb->input['action'] == "register")
 			}
 		}
 
-		if(!isset($fromreg))
+		if(!isset($fromreg) || $fromreg == 0)
 		{
 			$allownoticescheck = "checked=\"checked\"";
 			$hideemailcheck = '';
@@ -1099,6 +1096,7 @@ if($mybb->input['action'] == "register")
 		}
 		// Spambot registration image thingy
 		$captcha_html = 0;
+		$regimage = '';
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -1203,7 +1201,7 @@ if($mybb->input['action'] == "register")
 		$time = TIME_NOW;
 
 		$plugins->run_hooks("member_register_end");
-		
+
 		$jsvar_reqfields = json_encode($jsvar_reqfields);
 
 		$validator_javascript = "<script type=\"text/javascript\">
@@ -1220,7 +1218,7 @@ if($mybb->input['action'] == "register")
 				regtype: '{$mybb->settings['regtype']}',
 				hiddencaptchaimage: '{$mybb->settings['hiddencaptchaimage']}'
 			};
-		
+
 			lang.js_validator_username_length = '{$lang->js_validator_username_length}';
 			lang.js_validator_invalid_email = '{$lang->js_validator_invalid_email}';
 			lang.js_validator_email_match = '{$lang->js_validator_email_match}';
@@ -1762,7 +1760,10 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	);
 
 	$user_loginattempts = get_user_by_username($user['username'], $options);
-	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+	if(!empty($user_loginattempts))
+	{
+		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+	}
 
 	$loginhandler->set_data($user);
 	$validated = $loginhandler->validate_login();
@@ -1772,16 +1773,19 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->input['action'] = "login";
 		$mybb->request_method = "get";
 
-		$login_user = get_user_by_username($user['username'], array('fields' => 'uid'));
+		$login_user_uid = 0;
+		if(!empty($loginhandler->login_data))
+		{
+			$login_user_uid = (int)$loginhandler->login_data['uid'];
+			$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
+		}
 
 		// Is a fatal call if user has had too many tries
-		$logins = login_attempt_check($login_user['uid']);
+		$logins = login_attempt_check($login_user_uid);
 
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
+		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".$login_user_uid."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
-
-		$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
 
 		// If we need a captcha set it here
 		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
@@ -2730,7 +2734,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
 		}
 
-		if($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
+		if($mybb->usergroup['canbanusers'] == 1 && !empty($memban) && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
 		{
 			if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1)
 			{
@@ -2742,6 +2746,7 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 
+		$purgespammer = '';
 		if($can_purge_spammer)
 		{
 			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");

@@ -75,7 +75,7 @@ if($mybb->input['action'] == "view")
 	$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
 
 	?>
-	
+
 <div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 
@@ -127,13 +127,13 @@ if($mybb->input['action'] == "view")
 </div>
 </div>
 	<?php
-	
+
 	exit;
 }
 
 if(!$mybb->input['action'])
 {
-	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs", "1=1 {$additional_sql_criteria}");
+	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs");
 	$total_rows = $db->fetch_field($query, "logs");
 
 	$per_page = 20;
@@ -172,6 +172,7 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=tools-mailerrors&amp;action=prune", "post");
 
 	// Begin criteria filtering
+	$additional_sql_criteria = '';
 	if($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string_like($mybb->input['subject'])."%'";
@@ -215,9 +216,9 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
-	
+
 	$query = $db->simple_select('mailerrors', '*', "1=1 $additional_sql_criteria", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $per_page));
-	
+
 	while($log = $db->fetch_array($query))
 	{
 		$log['subject'] = htmlspecialchars_uni($log['subject']);

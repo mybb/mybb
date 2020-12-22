@@ -20,7 +20,7 @@
  *
  * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
  *
- * See the enclosed file LICENSE for license information (LGPL). If you did
+ * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
@@ -196,30 +196,18 @@ class Horde_Text_Diff_Engine_Native
                     continue;
                 }
                 $matches = $ymatches[$line];
-                reset($matches);
-                while (($y = current($matches)) !== false) {
+                foreach ($matches as $y) {
                     if (empty($this->in_seq[$y])) {
                         $k = $this->_lcsPos($y);
                         assert($k > 0);
                         $ymids[$k] = $ymids[$k - 1];
                         break;
-                    }
-                    next($matches);
-                }
-                while (($y = current($matches)) !== false) {
-                    if ($y > $this->seq[$k - 1]) {
+                    } elseif ($y > $this->seq[$k - 1]) {
                         assert($y <= $this->seq[$k]);
-                        /* Optimization: this is a common case: next match is
-                         * just replacing previous match. */
                         $this->in_seq[$this->seq[$k]] = false;
                         $this->seq[$k] = $y;
                         $this->in_seq[$y] = 1;
-                    } elseif (empty($this->in_seq[$y])) {
-                        $k = $this->_lcsPos($y);
-                        assert($k > 0);
-                        $ymids[$k] = $ymids[$k - 1];
                     }
-                    next($matches);
                 }
             }
         }

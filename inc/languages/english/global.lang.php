@@ -308,6 +308,7 @@ $l['forumjump_wol'] = "Who's Online";
 $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
+$l['confirm_title'] = "Please Confirm";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
@@ -595,3 +596,5 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['use_default'] = "Use Default";

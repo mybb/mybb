@@ -22,14 +22,14 @@
 
 function upgrade51_dbchanges()
 {
-    global $output, $cache, $db, $mybb;
-    
-    $output->print_header("Updating Database");
-    
-    echo "<p>Performing necessary upgrade queries...</p>";
-    flush();
-    
-    switch($db->type)
+	global $output, $cache, $db, $mybb;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	switch($db->type)
 	{
         // Add new settings for (a) new usergroup permission if group members can hide online status & (b) attachments force download
         case "pgsql":
