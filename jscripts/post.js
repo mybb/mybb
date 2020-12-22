@@ -185,9 +185,24 @@ var Post = {
 			$("input[name='" + type + "']").trigger('click');
 		} else {
 			Post.form.append('<input type="hidden" class="temp_input" name="' + type + '" value="1" />');
-			var formData = new FormData($(Post.form)[0]);
+			var formData = new FormData($(Post.form)[0]),
+				progress = $('#upload_progress').slideDown('fast');
 
 			$.ajax({
+				xhr: function () {
+					var x = $.ajaxSettings.xhr();
+					x.upload.addEventListener("progress", function (e) {
+						if (e.lengthComputable) {
+							var completed = parseFloat((e.loaded / e.total) * 100).toFixed(2);
+							progress.find('#upload_bar').css('width', completed + '%');
+							progress.find('#upload_percent').text(completed + '%');
+							if (e.loaded === e.total) {
+								progress.slideUp('fast').find('#upload_bar').css('width', '0%');
+							}
+						}
+					}, false);
+					return x;
+				},
 				type: 'POST',
 				url: Post.form.attr('action') + '&ajax=1',
 				data: formData,
