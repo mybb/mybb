@@ -133,6 +133,16 @@ if(class_exists('PDO'))
 			'population_file' => 'pgsql_db_inserts.php'
 		);
 	}
+
+	if (in_array('mysql', $supported_dbs)) {
+		$dboptions['mysql_pdo'] = array(
+			'class' => 'MysqlPdoDbDriver',
+			'title' => 'MySQL (PDO)',
+			'short_title' => 'MySQL (PDO)',
+			'structure_file' => 'mysql_db_tables.php',
+			'population_file' => 'mysql_db_inserts.php'
+		);
+	}
 }
 
 if(file_exists('lock') && $mybb->dev_mode != true)
