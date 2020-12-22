@@ -9426,8 +9426,8 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
 		<template name="post_attachments" version="1825"><![CDATA[<br />
-			<div id="upload_progress" style="width: 200px; margin: -20px auto 10px; display: none;">
-				<div style="margin: 12px auto 5px; text-align: center;">
+			<div id="upload_progress" style="width: 200px; margin: -10px auto 10px; display: none;">
+				<div style="margin: 0 auto 5px; text-align: center;">
 					<strong><span id="upload_percent" class="smalltext"></span></strong>
 				</div>
 				<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
