@@ -380,7 +380,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item(preg_replace("<\?|\?>", "<span>?</span>", htmlspecialchars_uni($languages[$editlang])), "index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang));
 
-	$editwith = basename($mybb->input['editwith']);
+	$editwith = basename($mybb->get_input('editwith'));
 	$editwithfolder = '';
 
 	if($editwith)
@@ -421,7 +421,7 @@ if($mybb->input['action'] == "edit")
 	{
 		// Validate input
 		$file = basename($mybb->input['file']);
-		if($mybb->input['inadmin'] == 1)
+		if($mybb->get_input('inadmin') == 1)
 		{
 			$file = 'admin/'.$file;
 		}
@@ -444,9 +444,18 @@ if($mybb->input['action'] == "edit")
 			@include $editfile;
 			$valid_keys = (array)$l;
 			unset($l);
-			@include $editwithfile;
-			$valid_keys = array_merge($valid_keys, (array)$l);
+
+			if(!empty($editwithfile))
+			{
+				@include $editwithfile;
+			}
+			if(!empty($l))
+			{
+				$valid_keys = array_merge($valid_keys, (array)$l);
+			}
 			unset($l);
+
+			$contents_wfile = null;
 
 			// Then fetch from input only valid keys
 			foreach($valid_keys as $key => $value)
@@ -1007,7 +1016,7 @@ if($mybb->input['action'] == "edit")
 
 					$table->construct_cell(htmlspecialchars_uni($file), array("class" => "langeditor_editfile"));
 					$table->construct_cell(count($editvars_count), array("class" => "langeditor_phrases"));
-					$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang)."&amp;editwith=".htmlspecialchars_uni($editwith)."&amp;file={$config['admindir']}/".htmlspecialchars_uni($file)."&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "langeditor_edit"));
+					$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang)."&amp;editwith=".htmlspecialchars_uni($editwith)."&amp;file=/".htmlspecialchars_uni($file)."&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "langeditor_edit"));
 					$table->construct_row();
 				}
 			}

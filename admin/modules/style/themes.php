@@ -66,6 +66,14 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$editable_selector = $css_array[$mybb->input['selector']];
 	$properties = parse_css_properties($editable_selector['values']);
 
+	foreach(array('background', 'color', 'width', 'font-family', 'font-size', 'font-style', 'font-weight', 'text-decoration') as $_p)
+	{
+		if(!isset($properties[$_p]))
+		{
+			$properties[$_p] = '';
+		}
+	}
+
 	$form = new Form("index.php?module=style-themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
@@ -146,12 +154,12 @@ if($mybb->input['action'] == "browse")
 
 	// Process search requests
 	$keywords = "";
-	if($mybb->input['keywords'])
+	if(!empty($mybb->input['keywords']))
 	{
 		$keywords = "&keywords=".urlencode($mybb->input['keywords']);
 	}
 
-	if($mybb->input['page'])
+	if(!empty($mybb->input['page']))
 	{
 		$url_page = "&page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -166,7 +174,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}");
 
 	if(!$contents)
 	{
@@ -225,7 +233,7 @@ if($mybb->input['action'] == "browse")
 
 	$search = new Form("index.php?module=style-themes&amp;action=browse", 'post', 'search_form');
 	echo "<div style=\"padding-bottom: 3px; margin-top: -9px; text-align: right;\">";
-	if($mybb->input['keywords'])
+	if(!empty($mybb->input['keywords']))
 	{
 		$default_class = '';
 		$value = htmlspecialchars_uni($mybb->input['keywords']);
@@ -287,7 +295,10 @@ if($mybb->input['action'] == "browse")
 		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
 	}
 
-	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=style-themes&amp;action=browse{$keywords}&amp;page={page}");
+	if(!empty($tree['results']['attributes']['total']))
+	{
+		echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=style-themes&amp;action=browse{$keywords}&amp;page={page}");
+	}
 
 	$page->output_footer();
 }
@@ -483,7 +494,7 @@ if($mybb->input['action'] == "import")
 		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_1" class="imports">
 		<table cellpadding="4">
 				<tr>
-					<td>'.$form->generate_text_box("url", $mybb->input['file']).'</td>
+					<td>'.$form->generate_text_box("url", $mybb->get_input('file')).'</td>
 				</tr>
 		</table></dd>
 	</dl>
@@ -493,9 +504,9 @@ if($mybb->input['action'] == "import")
 
 	$form_container = new FormContainer($lang->import_a_theme);
 	$form_container->output_row($lang->import_from, $lang->import_from_desc, $actions, 'file');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->input['tid'], array('id' => 'tid')), 'tid');
-	$form_container->output_row($lang->new_name, $lang->new_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->input['version_compat'], 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->input['import_stylesheets'], 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->input['import_templates'], 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
+	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
+	$form_container->output_row($lang->new_name, $lang->new_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->get_input('version_compat'), 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->get_input('import_stylesheets'), 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->get_input('import_templates'), 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
 
 	$form_container->end();
 
@@ -514,7 +525,7 @@ if($mybb->input['action'] == "export")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(empty($theme['tid']))
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -563,7 +574,10 @@ if($mybb->input['action'] == "export")
 				foreach($style as $stylesheet)
 				{
 					$stylesheets[$stylesheet]['applied_to'][$file][] = $action;
-					if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+
+					$array = &$file_stylesheets['inherited'][$file."_".$action];
+
+					if(is_array($array) && array_key_exists($stylesheet, $array))
 					{
 						$stylesheets[$stylesheet]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
 						foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
@@ -590,7 +604,7 @@ if($mybb->input['action'] == "export")
 			$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")", array('order_by' => 'tid', 'order_dir' => 'desc'));
 			while($theme_stylesheet = $db->fetch_array($query))
 			{
-				if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
+				if(empty($theme_stylesheets[$theme_stylesheet['cachefile']]))
 				{
 					$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
 					$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
@@ -609,33 +623,51 @@ if($mybb->input['action'] == "export")
 			else
 			{
 				$filename = basename($filename);
-				$style['sid'] = $theme_stylesheets[$filename]['sid'];
+
+				if(isset($theme_stylesheets[$filename]['sid']))
+				{
+					$style['sid'] = $theme_stylesheets[$filename]['sid'];
+				}
+				else
+				{
+					$style['sid'] = null;
+				}
 			}
 
-			$style['tid'] = $theme_stylesheets[$filename]['tid'];
+			if(isset($theme_stylesheets[$filename]['tid']))
+			{
+				$style['tid'] = $theme_stylesheets[$filename]['tid'];
+			}
+			else
+			{
+				$style['tid'] = null;
+			}
 
 			if($mybb->input['custom_theme'] == 1 && $style['tid'] != $mybb->input['tid'])
 			{
 				continue;
 			}
 
-			// Has the file on the file system been modified?
-			resync_stylesheet($theme_stylesheets[$filename]);
-
-			$style['sid'] = $theme_stylesheets[$filename]['sid'];
-
-			$attachedto = $theme_stylesheets[$filename]['attachedto'];
-			$stylesheet = $theme_stylesheets[$filename]['stylesheet'];
-			$stylesheet = str_replace(']]>', ']]]]><![CDATA[>', $stylesheet);
-
-			if($attachedto)
+			if(isset($theme_stylesheets[$filename]))
 			{
-				$attachedto = "attachedto=\"{$attachedto}\" ";
+				// Has the file on the file system been modified?
+				resync_stylesheet($theme_stylesheets[$filename]);
+
+				$style['sid'] = $theme_stylesheets[$filename]['sid'];
+
+				$attachedto = $theme_stylesheets[$filename]['attachedto'];
+				$stylesheet = $theme_stylesheets[$filename]['stylesheet'];
+				$stylesheet = str_replace(']]>', ']]]]><![CDATA[>', $stylesheet);
+
+				if($attachedto)
+				{
+					$attachedto = "attachedto=\"{$attachedto}\" ";
+				}
+
+				$filename = $theme_stylesheets[$filename]['name'];
+
+				$xml .= "\t\t<stylesheet name=\"{$filename}\" {$attachedto}version=\"{$mybb->version_code}\"><![CDATA[{$stylesheet}]]>\r\n\t\t</stylesheet>\r\n";
 			}
-
-			$filename = $theme_stylesheets[$filename]['name'];
-
-			$xml .= "\t\t<stylesheet name=\"{$filename}\" {$attachedto}version=\"{$mybb->version_code}\"><![CDATA[{$stylesheet}]]>\r\n\t\t</stylesheet>\r\n";
 
 		}
 		$xml .= "\t</stylesheets>\r\n";
@@ -707,8 +739,8 @@ if($mybb->input['action'] == "export")
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 
 	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']));
-	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->input['custom_theme']), 'custom_theme');
-	$form_container->output_row($lang->include_templates, $lang->include_templates_desc, $form->generate_yes_no_radio('include_templates', $mybb->input['include_templates']), 'include_templates');
+	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->get_input('custom_theme')), 'custom_theme');
+	$form_container->output_row($lang->include_templates, $lang->include_templates_desc, $form->generate_yes_no_radio('include_templates', $mybb->get_input('include_templates')), 'include_templates');
 
 	$form_container->end();
 
@@ -757,9 +789,9 @@ if($mybb->input['action'] == "duplicate")
 			$properties = my_unserialize($theme['properties']);
 			$sid = $properties['templateset'];
 			$nprops = null;
-			if($mybb->input['duplicate_templates'])
+			if($mybb->get_input('duplicate_templates'))
 			{
-				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['name'])." Templates"));
+				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->get_input('name'))." Templates"));
 
 				// Copy all old Templates to our new templateset
 				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
@@ -791,7 +823,7 @@ if($mybb->input['action'] == "duplicate")
 					}
 
 					$nprops[$property] = $value;
-					if($properties['inherited'][$property])
+					if(!empty($properties['inherited'][$property]))
 					{
 						$nprops['inherited'][$property] = $properties['inherited'][$property];
 					}
@@ -802,7 +834,7 @@ if($mybb->input['action'] == "duplicate")
 				}
 				$nprops['templateset'] = $nsid;
 			}
-			$tid = build_new_theme($mybb->input['name'], $nprops, $theme['tid']);
+			$tid = build_new_theme($mybb->get_input('name'), $nprops, $theme['tid']);
 
 			update_theme_stylesheet_list($tid);
 
@@ -816,7 +848,7 @@ if($mybb->input['action'] == "duplicate")
 		}
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->get_input('tid')}");
 
 	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
 
@@ -824,23 +856,23 @@ if($mybb->input['action'] == "duplicate")
 
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->get_input('tid')}",
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->get_input('tid')}",
 	);
 
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->get_input('tid')}",
 		'description' => $lang->export_theme_desc
 	);
 
 	$sub_tabs['duplicate_theme'] = array(
 		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->get_input('tid')}",
 		'description' => $lang->duplicate_theme_desc
 	);
 
@@ -858,8 +890,8 @@ if($mybb->input['action'] == "duplicate")
 	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}", "post");
 
 	$form_container = new FormContainer($lang->duplicate_theme);
-	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('duplicate_templates', '1', $lang->duplicate_templates, array('checked' => $mybb->input['duplicate_templates'], 'id' => 'duplicate_templates'))."<br /><small>{$lang->duplicate_templates_desc}</small>");
+	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('duplicate_templates', '1', $lang->duplicate_templates, array('checked' => $mybb->get_input('duplicate_templates'), 'id' => 'duplicate_templates'))."<br /><small>{$lang->duplicate_templates_desc}</small>");
 
 	$form_container->end();
 
@@ -921,8 +953,8 @@ if($mybb->input['action'] == "add")
 	$form = new Form("index.php?module=style-themes&amp;action=add", "post");
 
 	$form_container = new FormContainer($lang->create_a_theme);
-	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->input['tid'], array('id' => 'tid')), 'tid');
+	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
 
 	$form_container->end();
 
@@ -948,7 +980,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-themes");
 	}
@@ -964,7 +996,7 @@ if($mybb->input['action'] == "delete")
 		{
 			$theme2['stylesheets'] = my_unserialize($theme2['stylesheets']);
 
-			if(!$theme2['stylesheets']['inherited'])
+			if(empty($theme2['stylesheets']['inherited']))
 			{
 				continue;
 			}
@@ -1003,7 +1035,12 @@ if($mybb->input['action'] == "delete")
 			$filename_min = str_replace('.css', '.min.css', $cachefile['cachefile']);
 			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 		}
-		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
+
+		$path = MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html";
+		if(file_exists($path))
+		{
+			@unlink($path);
+		}
 
 		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
 
@@ -1012,7 +1049,11 @@ if($mybb->input['action'] == "delete")
 
 		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
 
-		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
+		$path = MYBB_ROOT."cache/themes/theme{$theme['tid']}/";
+		if(file_exists($path))
+		{
+			@rmdir($path);
+		}
 
 		$children = (array)make_child_theme_list($theme['tid']);
 		$child_tids = array();
@@ -1052,7 +1093,7 @@ if($mybb->input['action'] == "edit")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'] || $theme['tid'] == 1)
+	if(empty($theme['tid']) || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1064,12 +1105,12 @@ if($mybb->input['action'] == "edit")
 	{
 		$properties = array(
 			'templateset' => $mybb->get_input('templateset', MyBB::INPUT_INT),
-			'editortheme' => $mybb->input['editortheme'],
-			'imgdir' => $mybb->input['imgdir'],
-			'logo' => $mybb->input['logo'],
+			'editortheme' => $mybb->get_input('editortheme'),
+			'imgdir' => $mybb->get_input('imgdir'),
+			'logo' => $mybb->get_input('logo'),
 			'tablespace' => $mybb->get_input('tablespace', MyBB::INPUT_INT),
 			'borderwidth' => $mybb->get_input('borderwidth', MyBB::INPUT_INT),
-			'color' => $mybb->input['color']
+			'color' => $mybb->get_input('color')
 		);
 
 		if($properties['color'] == 'none')
@@ -1615,7 +1656,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container->output_row($lang->colors_setting, $lang->colors_setting_desc, $color_setting, 'color');
-	$form_container->output_row($lang->colors_add, $lang->colors_add_desc, $form->generate_text_area('colors', $mybb->input['colors'], array('style' => 'width: 200px;', 'rows' => '5')));
+	$form_container->output_row($lang->colors_add, $lang->colors_add_desc, $form->generate_text_area('colors', $mybb->get_input('colors'), array('style' => 'width: 200px;', 'rows' => '5')));
 
 	$form_container->end();
 
@@ -1841,7 +1882,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
-	if(is_array($applied_to) && $applied_to['global'][0] != "global")
+	if(is_array($applied_to) && (!isset($applied_to['global']) || $applied_to['global'][0] != "global"))
 	{
 		$check_actions = "";
 		$stylesheet['colors'] = array();
@@ -2013,7 +2054,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'] || $theme['tid'] == 1)
+	if(empty($theme['tid']) || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2128,7 +2169,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	}
 
 	$css_array = css_to_array($stylesheet['stylesheet']);
-	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
+	$selector_list = get_selectors_as_options($css_array, $mybb->get_input('selector'));
 
 	// Do we not have any selectors? Send em to the full edit page
 	if(!$selector_list)
@@ -2154,7 +2195,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
 	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if($this_stylesheet['inherited'][$stylesheet['name']])
+	if(!empty($this_stylesheet['inherited'][$stylesheet['name']]))
 	{
 		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
 		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
@@ -2195,7 +2236,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	$form->end();
 
 	// Haven't chosen a selector to edit, show the first one from the stylesheet
-	if(!$mybb->input['selector'])
+	if(!$mybb->get_input('selector'))
 	{
 		reset($css_array);
 		uasort($css_array, "css_selectors_sort_cmp");
@@ -2277,7 +2318,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'] || $theme['tid'] == 1)
+	if(empty($theme['tid']) || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2336,7 +2377,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 		flash_message($lang->success_stylesheet_updated, 'success');
 
-		if(!$mybb->input['save_close'])
+		if(!$mybb->get_input('save_close'))
 		{
 			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&file=".htmlspecialchars_uni($stylesheet['name'])."&tid={$theme['tid']}&mode=advanced");
 		}
@@ -2473,7 +2514,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-themes");
 	}
@@ -2509,7 +2550,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'] || $theme['tid'] == 1)
+	if(empty($theme['tid']) || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2715,6 +2756,9 @@ if($mybb->input['action'] == "add_stylesheet")
 		{
 			$mybb->input['name'] = $stylesheet['name'];
 		}
+
+		$add_checked[1] = "";
+		$add_checked[2] = "";
 	}
 
 	$global_checked[1] = "checked=\"checked\"";
@@ -2730,6 +2774,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$check_actions = "";
 	$mybb->input['attach'] = $mybb->get_input('attach', MyBB::INPUT_INT);
 	$stylesheet['colors'] = array();
+	$stylesheet['sid'] = null;
 
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
@@ -2813,7 +2858,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	// Colors
 	$specific_colors = $specific_colors_option = '';
 
-	if(is_array($properties['colors']))
+	if(isset($properties['colors']) && is_array($properties['colors']))
 	{
 		$specific_colors = "<br /><div id=\"attach_2\" class=\"attachs\">";
 		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt>';
@@ -2865,7 +2910,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
 
 	$form_container = new FormContainer($lang->add_stylesheet_to.' '.htmlspecialchars_uni($theme['name']), 'tfixed');
-	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
 
@@ -2880,12 +2925,12 @@ if($mybb->input['action'] == "add_stylesheet")
 		<dd style=\"margin-top: 4px;\" id=\"add_1\" class=\"adds\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td>".$form->generate_select_box('import', $sheetnames, $mybb->input['import'], array('id' => 'import'))."</td>
+					<td>".$form->generate_select_box('import', $sheetnames, $mybb->get_input('import'), array('id' => 'import'))."</td>
 				</tr>
 			</table>
 		</dd>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->write_own}</strong></label></dt>
-		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->input['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30'))."</span>
+		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->get_input('stylesheet'), array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30'))."</span>
 	</dl>";
 
 	$form_container->output_row("", "", $actions);
@@ -2975,7 +3020,7 @@ if($mybb->input['action'] == "force")
 	$plugins->run_hooks("admin_style_themes_force");
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-themes");
 	}

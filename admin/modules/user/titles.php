@@ -98,10 +98,10 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_user_title);
-	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
-	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
+	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->get_input('posts'), array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->get_input('stars'), array('id' => 'stars', 'min' => 0)), 'stars');
+	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->get_input('starimage'), array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_user_title);
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-titles");
 	}

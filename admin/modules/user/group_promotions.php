@@ -38,7 +38,7 @@ $plugins->run_hooks("admin_user_group_promotions_begin");
 
 if($mybb->input['action'] == "disable")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-group_promotions");
 	}
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-group_promotions");
 	}
@@ -554,8 +554,8 @@ if($mybb->input['action'] == "add")
 		$mybb->input['logging'] = '1';
 	}
 	$form_container = new FormContainer($lang->add_new_promotion);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_desc." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_desc." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
 	$options = array(
 		"postcount" => $lang->post_count,
@@ -567,7 +567,7 @@ if($mybb->input['action'] == "add")
 		"timeonline" => $lang->time_online
 	);
 
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->get_input('requirements', MyBB::INPUT_ARRAY), array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
 
 	$options_type = array(
 		">" => $lang->greater_than,
@@ -577,11 +577,11 @@ if($mybb->input['action'] == "add")
 		"<" => $lang->less_than
 	);
 
-	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_numeric_field('postcount', $mybb->input['postcount'], array('id' => 'postcount', 'min' => 0))." ".$form->generate_select_box("posttype", $options_type, $mybb->input['posttype'], array('id' => 'posttype')), 'postcount');
+	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_numeric_field('postcount', $mybb->get_input('postcount'), array('id' => 'postcount', 'min' => 0))." ".$form->generate_select_box("posttype", $options_type, $mybb->get_input('posttype'), array('id' => 'posttype')), 'postcount');
 
-	$form_container->output_row($lang->thread_count, $lang->thread_count_desc, $form->generate_numeric_field('threadcount', $mybb->input['threadcount'], array('id' => 'threadcount', 'min' => 0))." ".$form->generate_select_box("threadtype", $options_type, $mybb->input['threadtype'], array('id' => 'threadtype')), 'threadcount');
+	$form_container->output_row($lang->thread_count, $lang->thread_count_desc, $form->generate_numeric_field('threadcount', $mybb->get_input('threadcount'), array('id' => 'threadcount', 'min' => 0))." ".$form->generate_select_box("threadtype", $options_type, $mybb->get_input('threadtype'), array('id' => 'threadtype')), 'threadcount');
 
-	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_numeric_field('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount', 'min' => 0))." ".$form->generate_select_box("reputationtype", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
+	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_numeric_field('reputationcount', $mybb->get_input('reputationcount'), array('id' => 'reputationcount', 'min' => 0))." ".$form->generate_select_box("reputationtype", $options_type, $mybb->get_input('reputationtype'), array('id' => 'reputationtype')), 'reputationcount');
 
 	$options = array(
 		"hours" => $lang->hours,
@@ -591,13 +591,13 @@ if($mybb->input['action'] == "add")
 		"years" => $lang->years
 	);
 
-	$form_container->output_row($lang->referral_count, $lang->referral_count_desc, $form->generate_numeric_field('referrals', $mybb->input['referrals'], array('id' => 'referrals', 'min' => 0))." ".$form->generate_select_box("referralstype", $options_type, $mybb->input['referralstype'], array('id' => 'referralstype')), 'referrals');
+	$form_container->output_row($lang->referral_count, $lang->referral_count_desc, $form->generate_numeric_field('referrals', $mybb->get_input('referrals'), array('id' => 'referrals', 'min' => 0))." ".$form->generate_select_box("referralstype", $options_type, $mybb->get_input('referralstype'), array('id' => 'referralstype')), 'referrals');
 
-	$form_container->output_row($lang->warning_points, $lang->warning_points_desc, $form->generate_numeric_field('warnings', $mybb->input['warnings'], array('id' => 'warnings', 'min' => 0))." ".$form->generate_select_box("warningstype", $options_type, $mybb->input['warningstype'], array('id' => 'warningstype')), 'warnings');
+	$form_container->output_row($lang->warning_points, $lang->warning_points_desc, $form->generate_numeric_field('warnings', $mybb->get_input('warnings'), array('id' => 'warnings', 'min' => 0))." ".$form->generate_select_box("warningstype", $options_type, $mybb->get_input('warningstype'), array('id' => 'warningstype')), 'warnings');
 
-	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_numeric_field('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered', 'min' => 0))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
+	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_numeric_field('timeregistered', $mybb->get_input('timeregistered'), array('id' => 'timeregistered', 'min' => 0))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->get_input('timeregisteredtype'), array('id' => 'timeregisteredtype')), 'timeregistered');
 
-	$form_container->output_row($lang->time_online, $lang->time_online_desc, $form->generate_numeric_field('timeonline', $mybb->input['timeonline'], array('id' => 'timeonline', 'min' => 0))." ".$form->generate_select_box("timeonlinetype", $options, $mybb->input['timeonlinetype'], array('id' => 'timeonlinetype')), 'timeonline');
+	$form_container->output_row($lang->time_online, $lang->time_online_desc, $form->generate_numeric_field('timeonline', $mybb->get_input('timeonline'), array('id' => 'timeonline', 'min' => 0))." ".$form->generate_select_box("timeonlinetype", $options, $mybb->get_input('timeonlinetype'), array('id' => 'timeonlinetype')), 'timeonline');
 	$options = array();
 
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
@@ -606,21 +606,21 @@ if($mybb->input['action'] == "add")
 		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->get_input('originalusergroup', MyBB::INPUT_ARRAY), array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
 
 	unset($options['*']);
-	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
+	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->get_input('newusergroup'), array('id' => 'newusergroup')), 'newusergroup');
 
 	$options = array(
 		'primary' => $lang->primary_user_group,
 		'secondary' => $lang->secondary_user_group
 	);
 
-	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
+	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->get_input('usergroupchangetype'), array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);

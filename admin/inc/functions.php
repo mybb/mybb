@@ -212,7 +212,7 @@ function make_parent_list($fid, $navsep=",")
 	{
 		if($fid == $forum['fid'])
 		{
-			if($pforumcache[$forum['pid']])
+			if(!empty($pforumcache[$forum['pid']]))
 			{
 				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
 			}
@@ -609,6 +609,11 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 	{
 		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
 		$attempts = $db->fetch_array($query);
+
+		if(!$attempts)
+		{
+			return false;
+		}
 	}
 
 	if($attempts['loginattempts'] <= 0)
