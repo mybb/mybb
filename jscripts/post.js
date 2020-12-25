@@ -2,10 +2,37 @@ var Post = {
 	init: function () {
 		$(function () {
 			Post.fileInput = $("input[type='file']");
+			Post.dropZone = $('#dropzone').text(lang.drop_files);
 			Post.form = Post.fileInput.parents('form');
 
 			Post.form.on('submit', Post.checkAttachments);
 			Post.fileInput.on('change', Post.addAttachments);
+
+			Post.dropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+			Post.dropZone.on('dragover dragenter', function () {
+				$(this).addClass('activated').text(lang.upload_initiate);
+			});
+
+			Post.dropZone.on('dragleave dragend', function () {
+				$(this).removeClass('activated').text(lang.drop_files);
+			});
+
+			Post.dropZone.on('click', function () {
+				Post.fileInput.trigger('click');
+			});
+
+			Post.dropZone.on('drop', function (e) {
+				$(this).removeClass('activated');
+				var files = e.originalEvent.dataTransfer.files;
+				Post.fileInput.prop('files', files).trigger('change');
+			});
+
+			Post.fileInput.parents().eq(1).hide();
+			Post.dropZone.parents().eq(1).show();
 		});
 	},
 
@@ -185,8 +212,7 @@ var Post = {
 			$("input[name='" + type + "']").trigger('click');
 		} else {
 			Post.form.append('<input type="hidden" class="temp_input" name="' + type + '" value="1" />');
-			var formData = new FormData($(Post.form)[0]),
-				progress = $('#upload_progress').slideDown('fast');
+			var formData = new FormData($(Post.form)[0]);
 
 			$.ajax({
 				xhr: function () {
@@ -194,10 +220,11 @@ var Post = {
 					x.upload.addEventListener("progress", function (e) {
 						if (e.lengthComputable) {
 							var completed = parseFloat((e.loaded / e.total) * 100).toFixed(2);
-							progress.find('#upload_bar').css('width', completed + '%');
-							progress.find('#upload_percent').text(completed + '%');
+							$('#upload_bar').css('width', completed + '%');
+							Post.dropZone.text(completed + '%');
 							if (e.loaded === e.total) {
-								progress.slideUp('fast').find('#upload_bar').css('width', '0%');
+								$('#upload_bar').css('width', '0%');
+								Post.dropZone.text(lang.drop_files);
 							}
 						}
 					}, false);
@@ -317,6 +344,7 @@ var Post = {
 		return true;
 	},
 	fileInput: $(),
+	dropZone: $(),
 	form: $()
 };
 

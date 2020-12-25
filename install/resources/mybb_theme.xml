@@ -9425,13 +9425,7 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="post_attachments" version="1825"><![CDATA[<br />
-			<div id="upload_progress" style="width: 200px; margin: -10px auto 10px; display: none;">
-				<div style="margin: 0 auto 5px; text-align: center;">
-					<strong><span id="upload_percent" class="smalltext"></span></strong>
-				</div>
-				<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
-			</div>
+		<template name="post_attachments" version="1823"><![CDATA[<br />
 			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="3"><strong>{$lang->attachments}</strong></td>
@@ -9458,10 +9452,16 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1818"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1825"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
 <td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
+</tr>
+<tr style="display: none;">
+	<td class="trow1" colspan="3">
+		<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
+		<div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;"></div>
+	</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
 		<template name="post_captcha" version="1821"><![CDATA[<tr id="captcha_trow">
@@ -9607,6 +9607,8 @@ if(use_xmlhttprequest == "1")
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
 				lang.attachment_max_allowed_files = "{$lang->attachment_max_allowed_files}";
 				lang.error_maxattachpost = "{$lang->error_maxattachpost}";
+				lang.drop_files = "{$lang->drop_files}";
+				lang.upload_initiate = "{$lang->upload_initiate}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 				mybb_max_file_uploads = {$mybb->settings['maxattachments']};
