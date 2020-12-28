@@ -89,6 +89,7 @@ if($mybb->input['action'] == "add")
 				"maxsize" => $maxsize,
 				"icon" => $db->escape_string($mybb->input['icon']),
 				'enabled' => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				'forcedownload' => $mybb->get_input('forcedownload', MyBB::INPUT_INT),
 				'groups' => $db->escape_string($mybb->get_input('groups')),
 				'forums' => $db->escape_string($mybb->get_input('forums')),
 				'avatarfile' => $mybb->get_input('avatarfile', MyBB::INPUT_INT)
@@ -278,6 +279,8 @@ if($mybb->input['action'] == "add")
 	<script type=\"text/javascript\">
 		checkAction('forums');
 	</script>";
+	
+	$mybb->input['forcedownload'] = $mybb->get_input('forcedownload', MyBB::INPUT_INT);
 
 	$form_container = new FormContainer($lang->add_new_attachment_type);
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
@@ -286,6 +289,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
+	$form_container->output_row($lang->forcedownload, $lang->forcedownload_desc, $form->generate_yes_no_radio('forcedownload', $mybb->input['forcedownload']), 'forcedownload');
 	$form_container->output_row($lang->available_to_groups, '', $groups_select_code, '', array(), array('id' => 'row_groups'));
 	$form_container->output_row($lang->available_in_forums, '', $forums_select_code, '', array(), array('id' => 'row_forums'));
 	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->input['avatarfile']), 'avatarfile');
@@ -373,6 +377,7 @@ if($mybb->input['action'] == "edit")
 				"maxsize" => $mybb->get_input('maxsize', MyBB::INPUT_INT),
 				"icon" => $db->escape_string($mybb->input['icon']),
 				'enabled' => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				'forcedownload' => $mybb->get_input('forcedownload', MyBB::INPUT_INT),
 				'groups' => $db->escape_string($mybb->get_input('groups')),
 				'forums' => $db->escape_string($mybb->get_input('forums')),
 				'avatarfile' => $mybb->get_input('avatarfile', MyBB::INPUT_INT)
@@ -557,6 +562,8 @@ if($mybb->input['action'] == "edit")
 		checkAction('forums');
 	</script>";
 
+	$mybb->input['forcedownload'] = $mybb->get_input('forcedownload', MyBB::INPUT_INT);
+
 	$form_container = new FormContainer($lang->edit_attachment_type);
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
@@ -564,6 +571,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
+	$form_container->output_row($lang->forcedownload, $lang->forcedownload_desc, $form->generate_yes_no_radio('forcedownload', $mybb->input['forcedownload']), 'forcedownload');
 	$form_container->output_row($lang->available_to_groups, '', $groups_select_code, '', array(), array('id' => 'row_groups'));
 	$form_container->output_row($lang->available_in_forums, '', $forums_select_code, '', array(), array('id' => 'row_forums'));
 	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->input['avatarfile']), 'avatarfile');
