@@ -31,13 +31,15 @@ function upgrade51_dbchanges()
 
 	switch($db->type)
 	{
-		// Add new setting for new usergroup permission if group members can hide online status
+		// Add new settings for (a) new usergroup permission if group members can hide online status & (b) attachments force download
 		case "pgsql":
 			$db->add_column("usergroups", "canbeinvisible", "smallint NOT NULL default '1' AFTER canusercp");
+			$db->add_column("attachtypes", "forcedownload", "smallint NOT NULL default '0' AFTER enabled");
 			break;
 
 		default:
 			$db->add_column("usergroups", "canbeinvisible", "tinyint(1) NOT NULL default '1' AFTER canusercp");
+			$db->add_column("attachtypes", "forcedownload", "tinyint(1) NOT NULL default '0' AFTER enabled");
 			break;
 	}
 }
