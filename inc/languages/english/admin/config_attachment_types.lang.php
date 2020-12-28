@@ -47,7 +47,7 @@ $l['success_deactivated_attachment_type'] = 'The selected attachment type has be
 
 $l['enabled'] = "Enabled?";
 $l['forcedownload'] = "Force Download";
-$l['forcedownload_desc'] = "Enabling this will always force the attachment to be downloaded as file.";
+$l['forcedownload_desc'] = "Enabling this will always force the attachment to be downloaded as a file.";
 $l['avatar_file'] = 'Avatar File';
 $l['avatar_file_desc'] = 'Do you want to allow this attachment type to be used for avatars?';
 
