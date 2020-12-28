@@ -40,4 +40,8 @@ function upgrade51_dbchanges()
 			$db->add_column("usergroups", "canbeinvisible", "tinyint(1) NOT NULL default '1' AFTER canusercp");
 			break;
 	}
+
+	$added_tasks = sync_tasks();
+
+	echo "<p>Added {$added_tasks} new tasks.</p>";
 }
