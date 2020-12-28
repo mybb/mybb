@@ -59,6 +59,22 @@ if($mybb->input['action'] == "edit")
 	{
 		$email['conditions'] = my_unserialize($email['conditions']);
 	}
+	else
+	{
+		// Fill the conditions with default values
+		$email['conditions'] = array(
+			"username" => "",
+			"email" => "",
+			"postnum_dir" => "greater_than",
+			"postnum" => "",
+			"regdate_dir" => "more_than",
+			"regdate" => "",
+			"regdate_date" => "hours",
+			"lastactive_dir" => "more_than",
+			"lastactive" => "",
+			"lastactive_date" => "hours"
+		);
+	}
 
 	$sub_tabs['edit_mass_mail'] = array(
 		'title' => $lang->edit_mass_mail,
@@ -675,6 +691,14 @@ if($mybb->input['action'] == "send")
 		{
 			$page->output_inline_error($errors);
 			$input = $mybb->input;
+
+			// Delivery type radio selection is to carry over in step 4 only
+			$input['delivery_type'] = $mybb->get_input('delivery_type');
+			if(empty($input['delivery_type']))
+			{
+				$input['delivery_type'] = "now";
+			}
+			$delivery_type_checked[$input['delivery_type']] = " checked=\"checked\"";
 		}
 		else
 		{
