@@ -102,7 +102,7 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 </tr>
 <tr>
 <td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[quote='Admin' pid='1' dateline='946684800']</span>Quoted text will be here<span style=\"font-weight: bold; color: #ff0000;\">[/quote]</span></td>
-<td class=\"trow2\"><blockquote class=\"mycode_quote\"><cite><span> (01-01-2000, 12:00 AM)</span>Admin Wrote:  <a href=\"http://www.example.com/showthread.php?pid=1#pid1\" class=\"quick_jump\" rel=\"nofollow\"></a></cite>Quoted text will be here</blockquote></td>
+<td class=\"trow2\"><blockquote class=\"mycode_quote\"><cite><span> (01-01-2000, 12:00 AM)</span>Admin Wrote: <a href=\"http://www.example.com/showthread.php?pid=1#pid1\" class=\"quick_jump\" rel=\"nofollow\"></a></cite>Quoted text will be here</blockquote></td>
 <td class=\"trow2\">This format is used when quoting posts. <strong>pid</strong> links to a post, <strong>dateline</strong> is a <a href=\"https://www.unixtimestamp.com/\">UNIX timestamp</a>.</td>
 </tr>
 <tr>
