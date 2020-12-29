@@ -15,7 +15,7 @@ $l['edit_mycode_desc'] = "Here you can edit a custom MyCode. You can use the MyC
 $l['title'] = "Title";
 $l['short_description'] = "Short Description";
 $l['regular_expression'] = "Regular Expression";
-$l['regular_expression_desc'] = "Enter a regular expression that will search for a specific combination of characters.  You must make sure the regular expression is valid and safe&mdash;no validation is performed.";
+$l['regular_expression_desc'] = "Enter a regular expression that will search for a specific combination of characters. You must make sure the regular expression is valid and safe&mdash;no validation is performed.";
 $l['replacement'] = "Replacement";
 $l['replacement_desc'] = "Enter a replacement for the regular expression.";
 $l['example'] = "Example:";
@@ -55,5 +55,5 @@ $l['success_activated_mycode'] = "The selected MyCode has been activated success
 
 $l['confirm_mycode_deletion'] = "Are you sure you wish to delete this MyCode?";
 
-$l['mycode_sandbox_test_error'] = 'There was an error fetching the test results.';
+$l['mycode_sandbox_test_error'] = "There was an error fetching the test results.";
 
