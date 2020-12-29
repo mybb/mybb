@@ -9,7 +9,7 @@ $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Never";
 $l['lastvisit_hidden'] = "(Hidden)";
 
-$l['search_button'] = 'Search';
+$l['search_button'] = "Search";
 $l['toplinks_memberlist'] = "Member List";
 $l['toplinks_search'] = "Search";
 $l['toplinks_calendar'] = "Calendar";
@@ -282,23 +282,23 @@ $l['postbit_thread_deleted'] = "This thread has been deleted.";
 $l['postbit_thread_unapproved'] = "This thread is awaiting approval.";
 $l['postbit_deleted_post_user'] = "This post by {1} has been deleted.";
 
-$l['postbit_button_reputation_add'] = 'Rate';
-$l['postbit_button_website'] = 'Website';
-$l['postbit_button_email'] = 'Email';
-$l['postbit_button_find'] = 'Find';
-$l['postbit_button_report'] = 'Report';
-$l['postbit_button_quote'] = 'Reply';
-$l['postbit_button_qdelete'] = 'Delete';
-$l['postbit_button_qrestore'] = 'Restore';
-$l['postbit_button_profile'] = 'Profile';
-$l['postbit_button_pm'] = 'PM';
-$l['postbit_button_warn'] = 'Warn';
-$l['postbit_button_edit'] = 'Edit';
-$l['postbit_button_multiquote'] = 'Quote';
-$l['postbit_button_reply_pm'] = 'Reply';
-$l['postbit_button_reply_all'] = 'Reply All';
-$l['postbit_button_forward'] = 'Forward';
-$l['postbit_button_delete_pm'] = 'Delete';
+$l['postbit_button_reputation_add'] = "Rate";
+$l['postbit_button_website'] = "Website";
+$l['postbit_button_email'] = "Email";
+$l['postbit_button_find'] = "Find";
+$l['postbit_button_report'] = "Report";
+$l['postbit_button_quote'] = "Reply";
+$l['postbit_button_qdelete'] = "Delete";
+$l['postbit_button_qrestore'] = "Restore";
+$l['postbit_button_profile'] = "Profile";
+$l['postbit_button_pm'] = "PM";
+$l['postbit_button_warn'] = "Warn";
+$l['postbit_button_edit'] = "Edit";
+$l['postbit_button_multiquote'] = "Quote";
+$l['postbit_button_reply_pm'] = "Reply";
+$l['postbit_button_reply_all'] = "Reply All";
+$l['postbit_button_forward'] = "Forward";
+$l['postbit_button_delete_pm'] = "Delete";
 $l['postbit_button_purgespammer'] = "Purge Spammer";
 
 $l['forumjump'] = "Forum Jump:";
@@ -311,8 +311,8 @@ $l['forumjump_home'] = "Forum Home";
 $l['confirm_title'] = "Please Confirm";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
-$l['post_fetch_error'] = 'There was an error fetching the posts.';
-$l['ratings_update_error'] = 'There was an error updating the rating.';
+$l['post_fetch_error'] = "There was an error fetching the posts.";
+$l['ratings_update_error'] = "There was an error updating the rating.";
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
@@ -425,9 +425,9 @@ $l['folder_untitled'] = "Untitled Folder";
 $l['standard_mod_tools'] = "Standard Tools";
 $l['custom_mod_tools'] = "Custom Tools";
 
-$l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
+$l['error_loadlimit'] = "The maximum server load limit has been reached. Please check back later once the server is less busy.";
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
-$l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
+$l['error_banned'] = "I'm sorry, but you are banned. You may not post, read threads, or access the forum. Please contact your forum administrator should you have any questions.";
 $l['error_cannot_upload_php_post'] = "Can not upload file - Too large for php post_max_size directive. Please press the back button.";
 $l['error_empty_post_input'] = "There has been an error due to your post data being empty. This could be due to a browser page refresh or direct access to this page. We recommend you press the browser back button and begin again.";
 $l['error_database_repair'] = "MyBB is automatically repairing a crashed table.";
@@ -453,8 +453,8 @@ $l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below.
 $l['verification_subnote'] = "(case insensitive)";
 $l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification by reCAPTCHA. Please try again.";
 $l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification by hCaptcha. Please try again.";
-$l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
-$l['question_fetch_failure'] = 'There was an error fetching the new question.';
+$l['captcha_fetch_failure'] = "There was an error fetching the new captcha.";
+$l['question_fetch_failure'] = "There was an error fetching the new question.";
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Howland and Baker Islands";
 $l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island";
@@ -517,7 +517,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
-$l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_recachestylesheets_ran'] = "Re-cached {1} stylesheets.";
 
 $l['dismiss_notice'] = "Dismiss this notice";
 
@@ -585,16 +585,16 @@ $l['select2_selectiontoobig_plural'] = "You can only select {1} items";
 $l['select2_loadmore'] = "Loading more results&hellip;";
 $l['select2_searching'] = "Searching&hellip;";
 
-$l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
-$l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';
-$l['stopforumspam_invalid_email'] = 'Invalid email address whilst checking against the StopForumSpam.com API.';
-$l['stopforumspam_invalid_ip_address'] = 'Invalid IP address whilst checking against the StopForumSpam.com API.';
+$l['stopforumspam_error_decoding'] = "Error decoding data from StopForumSpam.com.";
+$l['stopforumspam_error_retrieving'] = "Error retrieving data from StopForumSpam.com.";
+$l['stopforumspam_invalid_email'] = "Invalid email address whilst checking against the StopForumSpam.com API.";
+$l['stopforumspam_invalid_ip_address'] = "Invalid IP address whilst checking against the StopForumSpam.com API.";
 
-$l['sfs_error_username'] = 'username';
-$l['sfs_error_ip'] = 'IP';
-$l['sfs_error_email'] = 'email';
-$l['sfs_error_or'] = 'or';
+$l['sfs_error_username'] = "username";
+$l['sfs_error_ip'] = "IP";
+$l['sfs_error_email'] = "email";
+$l['sfs_error_or'] = "or";
 
-$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+$l['boardclosed_reason'] = "These forums are currently closed for maintenance. Please check back later";
 
 $l['use_default'] = "Use Default";
