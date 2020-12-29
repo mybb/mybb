@@ -35,11 +35,11 @@ $l['edit_group'] = "Edit Group";
 $l['default'] = "Default";
 $l['group'] = "Group";
 
-$l['error_super_admin'] = 'Sorry, but you cannot perform this action on the specified user as they are a super administrator.';
-$l['error_delete_no_uid'] = 'You did not enter a admin user/usergroup permission id';
-$l['error_delete_invalid_uid'] = 'You did not enter a valid admin user/usergroup permission id';
+$l['error_super_admin'] = "Sorry, but you cannot perform this action on the specified user as they are a super administrator.";
+$l['error_delete_no_uid'] = "You did not enter a admin user/usergroup permission id";
+$l['error_delete_invalid_uid'] = "You did not enter a valid admin user/usergroup permission id";
 
-$l['success_perms_deleted'] = 'The admin user/usergroup permissions has been revoked successfully.';
+$l['success_perms_deleted'] = "The admin user/usergroup permissions has been revoked successfully.";
 
 $l['confirm_perms_deletion'] = "Are you sure you wish to revoked this admin user/usergroup permissions?";
 $l['confirm_perms_deletion2'] = "Are you sure you wish to revoke this user\'s permissions?";
