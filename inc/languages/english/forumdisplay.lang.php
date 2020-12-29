@@ -68,7 +68,7 @@ $l['approve_threads'] = "Approve Threads";
 $l['unapprove_threads'] = "Unapprove Threads";
 $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
-$l['sub_forums_in']  = "Forums in '{1}'";
+$l['sub_forums_in'] = "Forums in '{1}'";
 $l['forum_rules'] = "{1} - Rules";
 $l['subforums'] = "Sub Forums:";
 $l['asc'] = "asc";
@@ -98,5 +98,5 @@ $l['deleted_thread'] = "Deleted Thread";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 
-$l['inline_edit_description'] = '(Click and hold to edit)';
+$l['inline_edit_description'] = "(Click and hold to edit)";
 
