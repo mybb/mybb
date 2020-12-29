@@ -57,7 +57,7 @@ $l['export_html'] = "HTML File (.html)";
 $l['export_txt'] = "Text File (.txt)";
 $l['export_csv'] = "Importable MS Excel File (.csv)";
 $l['private_messages_for'] = "Private Messages for {1}";
-$l['exported_date']  = "Exported: {1}, {2}";
+$l['exported_date'] = "Exported: {1}, {2}";
 $l['subject'] = "Subject:";
 $l['to'] = "To:";
 $l['from'] = "From:";
@@ -162,7 +162,7 @@ $l['check_all'] = "Check All";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
-$l['error_emptypmfoldername'] = "Sorry, but a folder name you have entered does not contain any text.  Please enter a name for the folder, or completely blank the name to delete the folder.";
+$l['error_emptypmfoldername'] = "Sorry, but a folder name you have entered does not contain any text. Please enter a name for the folder, or completely blank the name to delete the folder.";
 $l['error_invalidpmrecipient'] = "The recipient you entered is either invalid or doesn't exist. Please go back and enter a correct one.";
 $l['error_invalidmovefid'] = "The folder you are trying to move your message(s) to is invalid. Please go back and try again.";
 $l['error_invalidpm'] = "Invalid PM";
@@ -179,7 +179,7 @@ $l['error_no_search_support'] = "This database engine does not support searching
 $l['error_nosearchterms'] = "You did not enter any search terms. At a minimum, you must enter either some search terms or a username to search by.";
 $l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
-$l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
+$l['error_invalidsearch'] = "An invalid search was specified. Please go back and try again.";
 
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
