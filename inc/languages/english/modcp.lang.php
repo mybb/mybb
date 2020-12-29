@@ -100,8 +100,8 @@ $l['action'] = "Action";
 $l['all_moderators'] = "All Moderators";
 $l['ip'] = "IP Address";
 $l['info_on_ip'] = "Information on this IP Address";
-$l['search_ip_sfs']  = "Search this IP on Stop Forum Spam";
-$l['information']  = "Information";
+$l['search_ip_sfs'] = "Search this IP on Stop Forum Spam";
+$l['information'] = "Information";
 $l['filter_modlogs'] = "Filter Moderator Logs";
 $l['forum'] = "Forum";
 $l['post'] = "Post";
@@ -152,7 +152,7 @@ $l['away_status_desc'] = "Allows you to leave an away message if you are going a
 $l['im_away'] = "I'm Away";
 $l['im_here'] = "I'm Here";
 $l['away_reason'] = "Away Reason:";
-$l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
+$l['away_reason_desc'] = "Allows you to enter a small description of why you are away (max 200 characters).";
 $l['return_date'] = "Return Date:";
 $l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
 $l['error_modcp_return_date_past'] = "You cannot return in the past!";
@@ -320,7 +320,7 @@ $l['announcement_added'] = "Announcement Added";
 $l['announcement_edited'] = "Announcement Edited";
 $l['announcement_deleted'] = "Announcement Deleted";
 
-$l['preview'] = 'Preview';
+$l['preview'] = "Preview";
 
 $l['you_cannot_view_mod_logs'] = "You do not have sufficient permission to view the Moderator Logs.";
 $l['you_cannot_view_reported_posts'] = "You do not have sufficient permission to view Reported Posts.";
@@ -330,4 +330,4 @@ $l['you_cannot_moderate_posts'] = "You do not have sufficient permission to mode
 $l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
 $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
 
-$l['post'] = 'Post';
+$l['post'] = "Post";
