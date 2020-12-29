@@ -131,9 +131,9 @@ $l['admin_log_config_spiders_add'] = "Added spider #{1} ({2})";
 $l['admin_log_config_spiders_edit'] = "Edited spider #{1} ({2})";
 $l['admin_log_config_spiders_delete'] = "Deleted spider #{1} ({2})";
 
-$l['admin_log_config_thread_prefixes_add_prefix'] = 'Added thread prefix #{1} ({2})';
-$l['admin_log_config_thread_prefixes_edit_prefix'] = 'Edited thread prefix #{1} ({2})';
-$l['admin_log_config_thread_prefixes_delete_prefix'] = 'Deleted thread prefix #{1} ({2})';
+$l['admin_log_config_thread_prefixes_add_prefix'] = "Added thread prefix #{1} ({2})";
+$l['admin_log_config_thread_prefixes_edit_prefix'] = "Edited thread prefix #{1} ({2})";
+$l['admin_log_config_thread_prefixes_delete_prefix'] = "Deleted thread prefix #{1} ({2})";
 
 $l['admin_log_config_warning_add_level'] = "Added warning level #{1} at {2}%";
 $l['admin_log_config_warning_edit_level'] = "Edited warning level #{1} at {2}%";
@@ -306,6 +306,6 @@ $l['admin_log_user_users_inline_lift'] = "Lifted {1} user(s) bans";
 
 $l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})";
 
-$l['admin_log_admin_locked_out'] = 'Administrator login attempt for user #{1} ({2}) locked out.';
+$l['admin_log_admin_locked_out'] = "Administrator login attempt for user #{1} ({2}) locked out.";
 
 
