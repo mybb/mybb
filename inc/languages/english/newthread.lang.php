@@ -43,8 +43,8 @@ $l['redirect_newthread_unviewable'] = "<br />You do not have permission to view 
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
 
-$l['error_stop_forum_spam_spammer'] = 'Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
-$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
+$l['error_stop_forum_spam_spammer'] = "Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator";
+$l['error_stop_forum_spam_fetching'] = "Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn't be accessed. Please try again later.";
 
 $l['error_suspendedposting'] = "Your posting privileges are currently suspended {1}.<br /><br />
 
