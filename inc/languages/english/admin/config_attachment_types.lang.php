@@ -42,14 +42,14 @@ $l['success_attachment_type_deleted'] = "The attachment type has been deleted su
 
 $l['confirm_attachment_type_deletion'] = "Are you sure you wish to delete this attachment type?";
 
-$l['success_activated_attachment_type'] = 'The selected attachment type has been activated successfully.';
-$l['success_deactivated_attachment_type'] = 'The selected attachment type has been deactivated successfully.';
+$l['success_activated_attachment_type'] = "The selected attachment type has been activated successfully.";
+$l['success_deactivated_attachment_type'] = "The selected attachment type has been deactivated successfully.";
 
 $l['enabled'] = "Enabled?";
 $l['forcedownload'] = "Force Download";
 $l['forcedownload_desc'] = "Enabling this will always force the attachment to be downloaded as a file.";
-$l['avatar_file'] = 'Avatar File';
-$l['avatar_file_desc'] = 'Do you want to allow this attachment type to be used for avatars?';
+$l['avatar_file'] = "Avatar File";
+$l['avatar_file_desc'] = "Do you want to allow this attachment type to be used for avatars?";
 
-$l['available_to_groups'] = 'Available to groups';
-$l['available_in_forums'] = 'Available in forums';
+$l['available_to_groups'] = "Available to groups";
+$l['available_in_forums'] = "Available in forums";
