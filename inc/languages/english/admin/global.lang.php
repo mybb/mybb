@@ -33,9 +33,9 @@ $l['generated_in'] = "Generated in {1} with <a href=\"{2}\" target=\"_blank\">{3
 
 // Login page
 $l['enter_username_and_password'] = "Please enter your {1} and password to continue.";
-$l['login_username'] = 'username';
-$l['login_email'] = 'email';
-$l['login_username_and_password'] = 'username/email';
+$l['login_username'] = "username";
+$l['login_email'] = "email";
+$l['login_username_and_password'] = "username/email";
 $l['mybb_admin_login'] = "MyBB Control Panel - Login";
 $l['return_to_forum'] = "Return to forum";
 $l['please_login'] = "Please Login";
@@ -139,8 +139,8 @@ $l['alt_enabled'] = "Enabled";
 $l['alt_disabled'] = "Disabled";
 $l['enable'] = "Enable";
 $l['disable'] = "Disable";
-$l['saved'] = 'Saved';
-$l['guest'] = 'Guest';
+$l['saved'] = "Saved";
+$l['guest'] = "Guest";
 
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
@@ -327,7 +327,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
-$l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_recachestylesheets_ran'] = "Re-cached {1} stylesheets.";
 
 $l['massmail_username'] = "Username";
 $l['email_addr'] = "Email Address";
