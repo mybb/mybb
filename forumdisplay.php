@@ -834,9 +834,11 @@ else
 }
 
 $tids = $threadCache = array();
-if($mybb->settings['allowposticons'] == 1){
+if($mybb->settings['allowposticons'] == 1)
+{
 	$icon_cache = $cache->read("posticons");
 }
+
 if($fpermissions['canviewthreads'] != 0)
 {
 	$plugins->run_hooks("forumdisplay_get_threads");
@@ -862,7 +864,8 @@ if($fpermissions['canviewthreads'] != 0)
 			$ratings = true; // Looks for ratings in the forum
 		}
 
-		if($mybb->settings['allowposticons'] == 1){
+		if($mybb->settings['allowposticons'] == 1)
+		{
 			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 		}
 
