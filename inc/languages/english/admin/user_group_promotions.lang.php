@@ -42,20 +42,20 @@ $l['months'] = "Months";
 $l['years'] = "Years";
 $l['time_registered_desc'] = "Enter the number of hours, days, weeks, months, or years that this user must have been registered for. Time registered must be selected as a required value for this to be included. Select whether the time registered should be counted in hours, days, weeks, months, or years.";
 $l['time_online_desc'] = "Enter the number of hours, days, weeks, months, or years that this user must have been online for. Time online must be selected as a required value for this to be included. Select whether the time spend online should be counted in hours, days, weeks, months, or years.";
-$l['all_user_groups'] = 'All User Groups';
-$l['orig_user_group'] = 'Original User Group';
+$l['all_user_groups'] = "All User Groups";
+$l['orig_user_group'] = "Original User Group";
 $l['orig_user_group_desc'] = "Select which user group or user groups that the user must be in for the promotion to run. Holding down CTRL selects multiple groups.";
-$l['new_user_group'] = 'New User Group';
+$l['new_user_group'] = "New User Group";
 $l['new_user_group_desc'] = "Select the user group that the user will be moved into after this promotion.";
-$l['primary_user_group'] = 'Primary User Group';
-$l['secondary_user_group'] = 'Secondary User Group';
-$l['user_group_change_type'] = 'User Group Change Type';
+$l['primary_user_group'] = "Primary User Group";
+$l['secondary_user_group'] = "Secondary User Group";
+$l['user_group_change_type'] = "User Group Change Type";
 $l['user_group_change_type_desc'] = "Select 'Primary User Group' if the user should have their primary user group changed to the new user group. Select 'Secondary User Group' if the user should have the new user group added as an secondary user group to their profile.";
 $l['enabled'] = "Enabled?";
 $l['enable_logging'] = "Enable Logging?";
 $l['promotion_logs'] = "Promotion Logs";
 $l['view_promotion_logs'] = "View Promotion Logs";
-$l['view_promotion_logs_desc'] = 'Here you can view logs of promotions previously run.';
+$l['view_promotion_logs_desc'] = "Here you can view logs of promotions previously run.";
 $l['promoted_user'] = "Promoted User";
 $l['time_promoted'] = "Time Promoted";
 $l['no_promotion_logs'] = "There are currently no promotions logged.";
@@ -70,8 +70,8 @@ $l['multiple_usergroups'] = "Multiple User Groups";
 $l['secondary'] = "Secondary";
 $l['primary'] = "Primary";
 
-$l['error_no_promo_id'] = 'You did not enter a promotion id';
-$l['error_invalid_promo_id'] = 'You did not enter a valid promotion id';
+$l['error_no_promo_id'] = "You did not enter a promotion id";
+$l['error_invalid_promo_id'] = "You did not enter a valid promotion id";
 
 $l['error_no_title'] = "You did not enter a title for this promotion";
 $l['error_no_desc'] = "You did not enter a description for this promotion";
@@ -80,12 +80,11 @@ $l['error_no_orig_usergroup'] = "You did not select at least one original user g
 $l['error_no_new_usergroup'] = "You did not select at least one new user group for this promotion";
 $l['error_no_usergroup_change_type'] = "You did not select at least one user group change type for this promotion";
 
-$l['success_promo_disabled'] = 'The selected group promotion has been disabled successfully.';
-$l['success_promo_deleted'] = 'The selected group promotion has been deleted successfully.';
-$l['success_promo_enabled'] = 'The selected group promotion has been enabled successfully.';
-$l['success_promo_updated'] = 'The selected group promotion has been updated successfully.';
-$l['success_promo_added'] = 'The promotion has been created successfully.';
+$l['success_promo_disabled'] = "The selected group promotion has been disabled successfully.";
+$l['success_promo_deleted'] = "The selected group promotion has been deleted successfully.";
+$l['success_promo_enabled'] = "The selected group promotion has been enabled successfully.";
+$l['success_promo_updated'] = "The selected group promotion has been updated successfully.";
+$l['success_promo_added'] = "The promotion has been created successfully.";
 
 $l['confirm_promo_disable'] = "Are you sure you want to disable this promotion?";
 $l['confirm_promo_deletion'] = "Are you sure you wish to delete this promotion?";
-
