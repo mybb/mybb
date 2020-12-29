@@ -29,17 +29,17 @@ $l['charset'] = "Character Set";
 $l['admin'] = "Contains Admin CP language variables?";
 $l['rtl'] = "Right-To-Left?";
 
-$l['quickphrases_agreement'] = 'Registration Agreement - Title';
-$l['quickphrases_agreement_1'] = 'Registration Agreement - Paragraph 1';
-$l['quickphrases_agreement_2'] = 'Registration Agreement - Paragraph 2';
-$l['quickphrases_agreement_3'] = 'Registration Agreement - Paragraph 3';
-$l['quickphrases_agreement_4'] = 'Registration Agreement - Paragraph 4';
-$l['quickphrases_agreement_5'] = 'Registration Agreement - Paragraph 5';
+$l['quickphrases_agreement'] = "Registration Agreement - Title";
+$l['quickphrases_agreement_1'] = "Registration Agreement - Paragraph 1";
+$l['quickphrases_agreement_2'] = "Registration Agreement - Paragraph 2";
+$l['quickphrases_agreement_3'] = "Registration Agreement - Paragraph 3";
+$l['quickphrases_agreement_4'] = "Registration Agreement - Paragraph 4";
+$l['quickphrases_agreement_5'] = "Registration Agreement - Paragraph 5";
 
-$l['quickphrases_error_nopermission_guest_1'] = 'No Permissions Message - Paragraph 1';
-$l['quickphrases_error_nopermission_guest_2'] = 'No Permissions Message - Paragraph 2';
-$l['quickphrases_error_nopermission_guest_3'] = 'No Permissions Message - Paragraph 3';
-$l['quickphrases_error_nopermission_guest_4'] = 'No Permissions Message - Paragraph 4';
+$l['quickphrases_error_nopermission_guest_1'] = "No Permissions Message - Paragraph 1";
+$l['quickphrases_error_nopermission_guest_2'] = "No Permissions Message - Paragraph 2";
+$l['quickphrases_error_nopermission_guest_3'] = "No Permissions Message - Paragraph 3";
+$l['quickphrases_error_nopermission_guest_4'] = "No Permissions Message - Paragraph 4";
 
 $l['no_languages'] = "No Languages";
 $l['no_language_files_front_end'] = "There are no Front End Language files found.";
@@ -47,7 +47,7 @@ $l['no_language_files_admin_cp'] = "There are no Admin CP Language files found."
 
 $l['error_invalid_set'] = "Invalid language set specified.";
 $l['error_invalid_file'] = "Invalid language file specified.";
-$l['error_cannot_write_to_file'] = "Cannot write to file.  Check the file permissions for this language set and try again";
+$l['error_cannot_write_to_file'] = "Cannot write to file. Check the file permissions for this language set and try again";
 $l['error_folders_fail'] = "There was problem accessing requested language pack folders. Please make sure they exists and are writable.";
 
 $l['alert_note_cannot_write'] = "Before you can edit the language file, you must CHMOD the files in this language set so that the server has permission to write to them.";
