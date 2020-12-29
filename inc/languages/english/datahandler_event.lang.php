@@ -5,17 +5,17 @@
  *
  */
 
-$l['eventdata_missing_name'] = 'The name for the event is missing. Please enter an event name.';
-$l['eventdata_missing_description'] = 'The description for the event is missing. Please enter an event description.';
+$l['eventdata_missing_name'] = "The name for the event is missing. Please enter an event name.";
+$l['eventdata_missing_description'] = "The description for the event is missing. Please enter an event description.";
 
-$l['eventdata_invalid_start_date'] = 'The event start date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.';
+$l['eventdata_invalid_start_date'] = "The event start date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.";
 $l['eventdata_invalid_start_year'] = "Events can only be created in the next 5 years. Please select a reasonable start year from the list.";
-$l['eventdata_invalid_start_month'] = 'The start month you entered is not a valid month. Please enter a valid start month.';
+$l['eventdata_invalid_start_month'] = "The start month you entered is not a valid month. Please enter a valid start month.";
 
-$l['eventdata_invalid_end_date'] = 'The event end date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.';
+$l['eventdata_invalid_end_date'] = "The event end date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.";
 $l['eventdata_invalid_end_year'] = "Events can only be created in the next 5 years. Please select a reasonable end year from the list.";
-$l['eventdata_invalid_end_month'] = 'The end month you entered is not a valid month. Please and enter a valid end month.';
-$l['eventdata_invalid_end_day'] = 'The end day you entered is not a valid day. The day you selected is probably greater than the number of days in this month.';
+$l['eventdata_invalid_end_month'] = "The end month you entered is not a valid month. Please and enter a valid end month.";
+$l['eventdata_invalid_end_day'] = "The end day you entered is not a valid day. The day you selected is probably greater than the number of days in this month.";
 
 $l['eventdata_cant_specify_one_time'] = "If you are specifying an event start time you need to enter an event end time.";
 $l['eventdata_start_time_invalid'] = "The start time you entered is invalid. Valid examples are 12am, 12:01am, 00:01.";
