@@ -15,11 +15,11 @@ $l['nav_emailuser'] = "Email User";
 $l['nav_referrals'] = "Users Referred by {1}";
 $l['nav_profile'] = "Profile of {1}";
 
-$l['referrals'] = 'Referrals';
-$l['referral_date'] = 'Referral Date:';
-$l['referrals_no_user_specified'] = 'No user specified.';
-$l['referrals_invalid_user'] = 'Invalid user specified.';
-$l['member_no_referrals'] = 'No referrals for this user.';
+$l['referrals'] = "Referrals";
+$l['referral_date'] = "Referral Date:";
+$l['referrals_no_user_specified'] = "No user specified.";
+$l['referrals_invalid_user'] = "Invalid user specified.";
+$l['member_no_referrals'] = "No referrals for this user.";
 
 $l['tpp_option'] = "Show {1} threads per page";
 $l['ppp_option'] = "Show {1} posts per page";
@@ -67,7 +67,7 @@ $l['send_pm'] = "Send {1} a private message.";
 $l['icq_number'] = "ICQ Number:";
 $l['skype_id'] = "Skype ID:";
 $l['google_id'] = "Google Hangouts ID:";
-$l['avatar']  = "Avatar:";
+$l['avatar'] = "Avatar:";
 $l['warning_level'] = "Warning Level:";
 $l['warn'] = "Warn";
 $l['away_note'] = "{1} is currently away.";
@@ -143,7 +143,7 @@ $l['coppa_agreement_1'] = "Users under the age of 13 must receive permission fro
 $l['coppa_agreement_2'] = "A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\" target=\"_blank\" rel=\"noopener\">COPPA Compliance &amp; Permission form</a> before membership will be granted.";
 $l['coppa_agreement_3'] = "If you'd like to, you can begin the registration process now, however the account will be inaccessible until the above compliance form is received.";
 
-$l['error_invalid_birthday'] = 'The birthday you entered is invalid. Please enter a valid birthday.';
+$l['error_invalid_birthday'] = "The birthday you entered is invalid. Please enter a valid birthday.";
 $l['error_awaitingcoppa'] = "You cannot login using this account as it is still awaiting COPPA validation from a parent or guardian.<br /><br />A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a>.<br /><br />Once we receive a completed copy of this form, the account will be activated.";
 
 $l['lang_select'] = "Language Settings:";
@@ -167,8 +167,8 @@ $l['timeonline'] = "Time Spent Online:";
 $l['timeonline_hidden'] = "(Hidden)";
 $l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
-$l['error_stop_forum_spam_spammer'] = 'Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator.';
-$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your account against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
+$l['error_stop_forum_spam_spammer'] = "Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator.";
+$l['error_stop_forum_spam_fetching'] = "Sorry, something went wrong verifying your account against a spammer database. Most likely the database couldn't be accessed. Please try again later.";
 
 $l['none_registered'] = "None Registered";
 $l['not_specified'] = "Not Specified";
@@ -218,8 +218,8 @@ $l['error_badactivationcode'] = "You have entered an invalid account activation 
 $l['error_alreadyactivated'] = "Your account has already been activated or does not require email validation.";
 $l['error_alreadyvalidated'] = "Your email has already been validated.";
 $l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
-$l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
-$l['error_notloggedout'] = "Your user ID could not be verified to proceed with the log out process. This could be due to malicious Javascript that was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.";
+$l['error_bannedusername'] = "You have entered a username that is banned from registration. Please choose another username.";
+$l['error_notloggedout'] = "Your user ID could not be verified to proceed with the log out process. This could be due to malicious Javascript that was attempting to log you out automatically. If you intended to log out, please click the Log Out button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_regimagerequired'] = "Please fill out the image verification code to continue the login process. Please enter the code exactly how it appears in the image.";
 $l['error_spam_deny'] = "Our systems detect that you may be a spammer and therefore you have been denied registration. If this is a mistake, please contact the Administrator.";
