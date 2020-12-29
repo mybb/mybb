@@ -19,7 +19,7 @@ $l['attachment_stats_desc'] = "Below are some general statistics for the attachm
 $l['error_nothing_selected'] = "Please select one or more attachments to delete.";
 $l['error_no_attachments'] = "There aren't any attachments on your forum yet. Once an attachment is posted you'll be able to access this section.";
 $l['error_not_all_removed'] = "Only some orphaned attachments were successfully deleted, others could not be removed from the uploads directory.";
-$l['error_count'] = 'Unable to remove {1} attachment(s).';
+$l['error_count'] = "Unable to remove {1} attachment(s).";
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_invalid_forums'] = "One or more forums you selected are invalid.";
 $l['error_no_results'] = "No attachments were found with the specified search criteria.";
@@ -30,7 +30,7 @@ $l['error_does_not_exist'] = "Thread or post for this attachment no longer exist
 // Success
 $l['success_deleted'] = "The selected attachments have been deleted successfully.";
 $l['success_orphan_deleted'] = "The selected orphaned attachment(s) have been deleted successfully.";
-$l['success_count'] = '{1} attachment(s) removed successfully.';
+$l['success_count'] = "{1} attachment(s) removed successfully.";
 $l['success_no_orphans'] = "There are no orphaned attachments on your forum.";
 
 // Confirm
@@ -72,7 +72,7 @@ $l['step2of2'] = "Step 2 of 2 - Database Scan";
 $l['step1of2_line1'] = "Please wait, the file system is currently being scanned for orphaned attachments.";
 $l['step2of2_line1'] = "Please wait, the database is currently being scanned for orphaned attachments.";
 $l['step_line2'] = "You'll automatically be redirected to the next step once this process is complete.";
-$l['scanning'] = 'Scanning&hellip;';
+$l['scanning'] = "Scanning&hellip;";
 
 // = Attachments / Index
 $l['index_find_attachments'] = "Attachments - Find Attachments";
