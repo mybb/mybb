@@ -790,8 +790,9 @@ class PostDataHandler extends DataHandler
 				$this->first_post = true;
 			}
 		}
-		
+
 		// Verify all post assets.
+
 		if($this->method == "insert" || array_key_exists('uid', $post))
 		{
 			$this->verify_author();
@@ -1002,11 +1003,11 @@ class PostDataHandler extends DataHandler
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
 				$_message = $post['message'];
-				
+
 				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
 				
-				// Extra check to validate the merged version
-				if ($this->validate_post()) {
+				if ($this->validate_post())
+				{
 					$this->pid = $double_post['pid'];
 					
 					$update_query = array(
