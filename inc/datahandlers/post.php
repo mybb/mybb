@@ -790,20 +790,7 @@ class PostDataHandler extends DataHandler
 				$this->first_post = true;
 			}
 		}
-
-		// Make sure there isn't multiple posts (due to merge) that need to be verified
-		$old_message = $post['message'];
-
-		if ($this->method == "insert") 
-		{
-			$double_post = $this->verify_post_merge();
-		}
-
-		if($double_post !== true && $double_post['visible'] == 1)
-		{
-			$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
-		}
-
+		
 		// Verify all post assets.
 		if($this->method == "insert" || array_key_exists('uid', $post))
 		{
@@ -846,9 +833,6 @@ class PostDataHandler extends DataHandler
 		{
 			$this->verify_prefix();
 		}
-
-		// Revert message in case of double_post
-		$post['message'] = $old_message;
 
 		$plugins->run_hooks("datahandler_post_validate_post", $this);
 
@@ -1017,52 +1001,60 @@ class PostDataHandler extends DataHandler
 			// Only combine if they are both invisible (mod queue'd forum) or both visible
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
-				$this->pid = $double_post['pid'];
-
+				$_message = $post['message'];
+				
 				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
-				$update_query = array(
-					"message" => $db->escape_string($double_post['message'])
-				);
-				$update_query['edituid'] = (int)$post['uid'];
-				$update_query['edittime'] = TIME_NOW;
-				$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
-
-				if($draft_check)
-				{
-					$db->delete_query("posts", "pid='".$post['pid']."'");
-				}
-
-				if($post['posthash'])
-				{
-					// Assign any uploaded attachments with the specific posthash to the merged post.
-					$post['posthash'] = $db->escape_string($post['posthash']);
-
-					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-					$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-					if($attachmentcount > 0)
-					{
-						// Update forum count
-						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-					}
-
-					$attachmentassign = array(
-						"pid" => $double_post['pid'],
-						"posthash" => ''
+				
+				// Extra check to validate the merged version
+				if ($this->validate_post()) {
+					$this->pid = $double_post['pid'];
+					
+					$update_query = array(
+						"message" => $db->escape_string($double_post['message'])
 					);
-					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					$update_query['edituid'] = (int)$post['uid'];
+					$update_query['edittime'] = TIME_NOW;
+					$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+					
+					if($draft_check)
+					{
+						$db->delete_query("posts", "pid='".$post['pid']."'");
+					}
+					
+					if($post['posthash'])
+					{
+						// Assign any uploaded attachments with the specific posthash to the merged post.
+						$post['posthash'] = $db->escape_string($post['posthash']);
+						
+						$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+						$attachmentcount = $db->fetch_field($query, "attachmentcount");
+						
+						if($attachmentcount > 0)
+						{
+							// Update forum count
+							update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+						}
+						
+						$attachmentassign = array(
+							"pid" => $double_post['pid'],
+							"posthash" => ''
+						);
+						$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					}
+					
+					// Return the post's pid and whether or not it is visible.
+					$this->return_values = array(
+						"pid" => $double_post['pid'],
+						"visible" => $visible,
+						"merge" => true
+					);
+					
+					$plugins->run_hooks("datahandler_post_insert_merge", $this);
+					
+					return $this->return_values;
+				} else {
+					$post['message'] = $_message;
 				}
-
-				// Return the post's pid and whether or not it is visible.
-				$this->return_values = array(
-					"pid" => $double_post['pid'],
-					"visible" => $visible,
-					"merge" => true
-				);
-
-				$plugins->run_hooks("datahandler_post_insert_merge", $this);
-
-				return $this->return_values;
 			}
 		}
 
