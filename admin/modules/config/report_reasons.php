@@ -107,7 +107,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_reason);
-	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
 	$form_container->output_row($lang->applies_to." <em>*</em>", '', generate_content_select());
 	$form_container->output_row($lang->requires_extra." <em>*</em>", $lang->requires_extra_desc, $form->generate_yes_no_radio('extra', $mybb->input['extra']));
 	$form_container->end();
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-report_reasons");
 	}
@@ -384,11 +384,11 @@ function generate_content_select()
 	global $mybb, $lang;
 
 	$checked = array('all' => '', 'custom' => '', 'none' => '');
-	if($mybb->input['appliesto'] == 'all')
+	if($mybb->get_input('appliesto') == 'all')
 	{
 		$checked['all'] = 'checked="checked"';
 	}
-	elseif($mybb->input['appliesto'] == '')
+	elseif($mybb->get_input('appliesto') == '')
 	{
 		$checked['none'] = 'checked="checked"';
 	}
@@ -427,7 +427,7 @@ function generate_content_choices()
 	foreach($content_types as $content)
 	{
 		$key = "report_content_{$content}";
-		$content_choices[] = $form->generate_check_box("appliesto_{$content}", 1, $lang->$key, array('id' => "appliesto_{$content}", 'checked' => $mybb->input["appliesto_{$content}"]));
+		$content_choices[] = $form->generate_check_box("appliesto_{$content}", 1, $lang->$key, array('id' => "appliesto_{$content}", 'checked' => $mybb->get_input("appliesto_{$content}")));
 	}
 
 	return $content_choices;

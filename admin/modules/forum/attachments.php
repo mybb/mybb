@@ -43,7 +43,7 @@ if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
 
-	if(!is_array($mybb->input['aids']))
+	if(!is_array($mybb->get_input('aids')))
 	{
 		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
 	}
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "orphans")
 		// Now send the user to the final page
 		$form = new Form("index.php?module=forum-attachments&amp;action=orphans&amp;step=3", "post", "redirect_form", 0, "");
 		// Scan complete
-		if($mybb->input['bad_attachments'])
+		if($mybb->get_input('bad_attachments'))
 		{
 			echo $form->generate_hidden_field("bad_attachments", $mybb->input['bad_attachments']);
 		}
@@ -649,7 +649,7 @@ if(!$mybb->input['action'])
 		$user_like_fields = array("filename", "filetype");
 		foreach($user_like_fields as $search_field)
 		{
-			if($mybb->input[$search_field])
+			if($mybb->get_input($search_field))
 			{
 				$search_sql .= " AND a.{$search_field} LIKE '%".$db->escape_string_like($mybb->input[$search_field])."%'";
 			}
@@ -701,7 +701,7 @@ if(!$mybb->input['action'])
 		$forum_cache = cache_forums();
 
 		// Searching for attachments in a specific forum, we need to fetch all child forums too
-		if($mybb->input['forum'])
+		if($mybb->get_input('forum'))
 		{
 			if(!is_array($mybb->input['forum']))
 			{
@@ -734,11 +734,11 @@ if(!$mybb->input['action'])
 			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
 		);
 
-		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
+		if(!empty($mybb->input['dateuploaded']) && $mybb->request_method == "post")
 		{
 			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
-		if($mybb->input['filesize'] && $mybb->request_method == "post")
+		if(!empty($mybb->input['filesize']) && $mybb->request_method == "post")
 		{
 			$direction_fields['filesize'] *= 1024;
 		}
@@ -746,7 +746,7 @@ if(!$mybb->input['action'])
 		foreach($direction_fields as $field_name => $field_content)
 		{
 			$direction_field = $field_name."_dir";
-			if($mybb->input[$field_name] && $mybb->input[$direction_field])
+			if(!empty($mybb->input[$field_name]) && !empty($mybb->input[$direction_field]))
 			{
 				switch($mybb->input[$direction_field])
 				{

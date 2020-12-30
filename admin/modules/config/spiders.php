@@ -81,14 +81,14 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_bot);
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $mybb->input['useragent'], array('id' => 'useragent')), 'useragent');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $mybb->get_input('useragent'), array('id' => 'useragent')), 'useragent');
 
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
-	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
+	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->get_input('language'), array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", true, false, true));
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->get_input('theme'), 0, "", true, false, true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 
@@ -97,7 +97,7 @@ if($mybb->input['action'] == "add")
 	{
 		$usergroups[$usergroup['gid']] = $usergroup['title'];
 	}
-	if(!$mybb->input['usergroup'])
+	if(!$mybb->get_input('usergroup'))
 	{
 		$mybb->input['usergroup'] = 1;
 	}
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-spiders");
 	}

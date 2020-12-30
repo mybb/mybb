@@ -65,7 +65,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			{
 				$mybb->input['fields'] = explode(",", $mybb->input['fields_js']);
 			}
-			if(!is_array($mybb->input['fields']) || count($mybb->input['fields']) <= 0)
+			if(!isset($mybb->input['fields']) || !is_array($mybb->input['fields']) || count($mybb->input['fields']) <= 0)
 			{
 				$errors[] = $lang->error_no_view_fields;
 			}
@@ -138,9 +138,9 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 		$form_container = new FormContainer($lang->create_new_view);
-		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
 
-		$visibility_public_checked = $mybb->input['visibility'] == 2;
+		$visibility_public_checked = $mybb->get_input('visibility') == 2;
 		$visibility_private_checked = !$visibility_public_checked;
 
 		$visibility_options = array(
@@ -149,7 +149,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		);
 		$form_container->output_row($lang->visibility, "", implode("<br />", $visibility_options));
 
-		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
+		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->get_input('isdefault'), array('yes' => 1, 'no' => 0)));
 
 		if(count($sort_options) > 0)
 		{
@@ -157,14 +157,14 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 				"asc" => $lang->ascending,
 				"desc" => $lang->descending
 			);
-			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
+			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->get_input('sortorder'), array('id' => 'sortorder')), 'sortby');
 		}
 
-		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
+		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->get_input('perpage'), array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 		if($type == "user")
 		{
-			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
+			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->get_input('view_type') != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->get_input('view_type') == "card" ? true : false))));
 		}
 
 		$form_container->end();
@@ -173,7 +173,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 		$field_select = "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
-		if(is_array($mybb->input['fields']))
+		if(isset($mybb->input['fields']) && is_array($mybb->input['fields']))
 		{
 			foreach($mybb->input['fields'] as $field)
 			{
@@ -188,7 +188,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled\">\n";
 		foreach($fields as $key => $field)
 		{
-			if($active[$key])
+			if(!empty($active[$key]))
 			{
 				continue;
 			}
@@ -210,7 +210,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$field_options[$key] = $field['title'];
 		}
 
-		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->get_input('fields'), array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
 		$form_container->output_row($lang->fields_to_show_desc, '', $field_select);
@@ -391,7 +391,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			foreach($fields as $key => $field)
 			{
-				if($active[$key])
+				if(!empty($active[$key]))
 				{
 					continue;
 				}
@@ -434,7 +434,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 	else if($mybb->input['do'] == "delete")
 	{
-		if($mybb->input['no'])
+		if($mybb->get_input('no'))
 		{
 			admin_redirect($base_url."&action=views");
 		}

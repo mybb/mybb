@@ -44,7 +44,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 
 	$num_activated = $num_deleted = 0;
 	$users_to_delete = array();
-	if($mybb->input['delete']) // Delete selected user(s)
+	if(!empty($mybb->input['delete'])) // Delete selected user(s)
 	{
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('delete');

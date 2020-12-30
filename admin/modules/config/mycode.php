@@ -113,7 +113,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_replacement;
 		}
 
-		if($mybb->input['test'])
+		if($mybb->get_input('test'))
 		{
 			$errors[] = $lang->changes_not_saved;
 			$sandbox = test_regex($mybb->input['regex'], $mybb->input['replacement'], $mybb->input['test_value']);
@@ -177,24 +177,26 @@ if($mybb->input['action'] == "add")
 
 	$form = new Form("index.php?module=config-mycode&amp;action=add", "post", "add");
 	$form_container = new FormContainer($lang->add_mycode);
-	$form_container->output_row($lang->title." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description, '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
-	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
-	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder', 'min' => 0)), 'parseorder');
+	$form_container->output_row($lang->title." <em>*</em>", '', $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_description, '', $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->get_input('regex'), array('id' => 'regex')), 'regex');
+	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->get_input('replacement'), array('id' => 'replacement')), 'replacement');
+	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->get_input('active')));
+	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->get_input('parseorder'), array('id' => 'parseorder', 'min' => 0)), 'parseorder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_mycode);
 	$form->output_submit_wrapper($buttons);
 
 	// Sandbox
+	$sandbox_actual = isset($sandbox['actual']) ? $sandbox['actual'] : null;
+
 	echo "<br />\n";
 	$form_container = new FormContainer($lang->sandbox);
 	$form_container->output_row($lang->sandbox_desc);
-	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
-	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', $sandbox['html'], array('id' => 'result_html', 'disabled' => 1)), 'result_html');
-	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox['actual']}</div>");
+	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->get_input('test_value'), array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
+	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', isset($sandbox['html']) ? $sandbox['html'] : null, array('id' => 'result_html', 'disabled' => 1)), 'result_html');
+	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox_actual}</div>");
 	$form_container->end();
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
@@ -249,7 +251,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_replacement;
 		}
 
-		if($mybb->input['test'])
+		if($mybb->get_input('test'))
 		{
 			$errors[] = $lang->changes_not_saved;
 			$sandbox = test_regex($mybb->input['regex'], $mybb->input['replacement'], $mybb->input['test_value']);
@@ -322,12 +324,14 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 
 	// Sandbox
+	$sandbox_actual = isset($sandbox['actual']) ? $sandbox['actual'] : null;
+
 	echo "<br />\n";
 	$form_container = new FormContainer($lang->sandbox);
 	$form_container->output_row($lang->sandbox_desc);
-	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
-	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', $sandbox['html'], array('id' => 'result_html', 'disabled' => 1)), 'result_html');
-	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox['actual']}</div>");
+	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->get_input('test_value'), array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
+	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', isset($sandbox['html']) ? $sandbox['html'] : null, array('id' => 'result_html', 'disabled' => 1)), 'result_html');
+	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox_actual}</div>");
 	$form_container->end();
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
@@ -358,7 +362,7 @@ if($mybb->input['action'] == "delete")
 	$plugins->run_hooks("admin_config_mycode_delete");
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-mycode");
 	}

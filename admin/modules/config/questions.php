@@ -110,8 +110,8 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_question);
-	$form_container->output_row($lang->question." <em>*</em>", $lang->question_desc, $form->generate_text_area('question', $mybb->input['question'], array('id' => 'question')), 'question');
-	$form_container->output_row($lang->answers." <em>*</em>", $lang->answers_desc, $form->generate_text_area('answer', $mybb->input['answer'], array('id' => 'answer')), 'answer');
+	$form_container->output_row($lang->question." <em>*</em>", $lang->question_desc, $form->generate_text_area('question', $mybb->get_input('question'), array('id' => 'question')), 'question');
+	$form_container->output_row($lang->answers." <em>*</em>", $lang->answers_desc, $form->generate_text_area('answer', $mybb->get_input('answer'), array('id' => 'answer')), 'answer');
 	$form_container->output_row($lang->active." <em>*</em>", "", $form->generate_yes_no_radio('active', $mybb->input['active']));
 	$form_container->end();
 
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-questions");
 	}
