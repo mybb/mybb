@@ -791,8 +791,20 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		// Verify all post assets.
+		// Make sure there isn't multiple posts (due to merge) that need to be verified
+		if ($this->method == "insert") 
+		{
+			$double_post = $this->verify_post_merge();
+		}
 
+		if($double_post !== true && $double_post['visible'] == 1)
+		{
+			$this->pid = $double_post['pid'];
+
+			$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
+		}
+		
+		// Verify all post assets.
 		if($this->method == "insert" || array_key_exists('uid', $post))
 		{
 			$this->verify_author();
