@@ -1431,6 +1431,11 @@ function create_tables()
 	}
  	$db->error_reporting = 0;
 
+	if(!isset($config['encoding']))
+	{
+		$config['encoding'] = null;
+	}
+
 	$connect_array = array(
 		"hostname" => $config['dbhost'],
 		"username" => $config['dbuser'],
@@ -1956,6 +1961,10 @@ EOF;
 		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
 		{
 			$contactemail = $_SERVER['SERVER_ADMIN'];
+		}
+		else
+		{
+			$contactemail = null;
 		}
 	}
 

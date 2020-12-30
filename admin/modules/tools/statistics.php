@@ -48,7 +48,7 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("admin_tools_statistics_overall_begin");
 
 	// Do we have date range criteria?
-	if($mybb->input['from_year'])
+	if($mybb->get_input('from_year'))
 	{
 		$start_dateline = mktime(0, 0, 0, $mybb->get_input('from_month', MyBB::INPUT_INT), $mybb->get_input('from_day', MyBB::INPUT_INT), $mybb->get_input('from_year', MyBB::INPUT_INT));
 		$end_dateline = mktime(23, 59, 59, $mybb->get_input('to_month', MyBB::INPUT_INT), $mybb->get_input('to_day', MyBB::INPUT_INT), $mybb->get_input('to_year', MyBB::INPUT_INT));
@@ -56,7 +56,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Otherwise default to the last 30 days
-	if(!$mybb->input['from_year'] || $start_dateline > TIME_NOW || $end_dateline > mktime(23, 59, 59))
+	if(!$mybb->get_input('from_year') || $start_dateline > TIME_NOW || $end_dateline > mktime(23, 59, 59))
 	{
 		$start_dateline = TIME_NOW-(60*60*24*30);
 		$end_dateline = TIME_NOW;
@@ -69,7 +69,7 @@ if(!$mybb->input['action'])
 
 	$last_dateline = 0;
 
-	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	if(!empty($mybb->input['page']) && $mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
@@ -90,6 +90,12 @@ if(!$mybb->input['action'])
 			$stat['change_users'] = ($stat['numusers'] - $stats[$last_dateline]['numusers']);
 			$stat['change_threads'] = ($stat['numthreads'] - $stats[$last_dateline]['numthreads']);
 			$stat['change_posts'] = ($stat['numposts'] - $stats[$last_dateline]['numposts']);
+		}
+		else
+		{
+			$stat['change_users'] = 0;
+			$stat['change_threads'] = 0;
+			$stat['change_posts'] = 0;
 		}
 
 		$stats[$stat['dateline']] = $stat;

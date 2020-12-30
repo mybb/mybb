@@ -110,7 +110,7 @@ if($mybb->input['action'] == "add_level")
 	$page->output_nav_tabs($sub_tabs, 'add_level');
 	$form = new Form("index.php?module=config-warning&amp;action=add_level", "post");
 
-	$action_checked = array();
+	$action_checked = array_fill(1, 3, null);
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add_level")
 	}
 
 	$form_container = new FormContainer($lang->add_warning_level);
-	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
+	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->get_input('percentage'), array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
 
 	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
@@ -162,11 +162,11 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->banned_group}</small></td>
-					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->input['action_1_usergroup'])."</td>
+					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->get_input('action_1_usergroup'))."</td>
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->get_input('action_1_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->get_input('action_1_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->get_input('action_2_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->get_input('action_2_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->get_input('action_3_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->get_input('action_3_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -300,21 +300,23 @@ if($mybb->input['action'] == "edit_level")
 		{
 			$mybb->input['action_1_usergroup'] = $action['usergroup'];
 			$length = fetch_friendly_expiration($action['length']);
-			$mybb->input['action_1_time'] = $length['time'];
+			$mybb->input['action_1_time'] = isset($length['time']) ? $length['time'] : null;
 			$mybb->input['action_1_period'] = $length['period'];
 		}
 		else if($action['type'] == 2)
 		{
 			$length = fetch_friendly_expiration($action['length']);
-			$mybb->input['action_2_time'] = $length['time'];
+			$mybb->input['action_2_time'] = isset($length['time']) ? $length['time'] : null;
 			$mybb->input['action_2_period'] = $length['period'];
 		}
 		else if($action['type'] == 3)
 		{
 			$length = fetch_friendly_expiration($action['length']);
-			$mybb->input['action_3_time'] = $length['time'];
+			$mybb->input['action_3_time'] = isset($length['time']) ? $length['time'] : null;
 			$mybb->input['action_3_period'] = $length['period'];
 		}
+
+		$action_checked = array_fill(1, 3, null);
 		$action_checked[$action['type']] = "checked=\"checked\"";
 	}
 
@@ -363,11 +365,11 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->banned_group}</small></td>
-					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->input['action_1_usergroup'])."</td>
+					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->get_input('action_1_usergroup'))."</td>
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->get_input('action_1_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->get_input('action_1_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -376,7 +378,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->get_input('action_2_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->get_input('action_2_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -385,7 +387,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->get_input('action_3_time'), array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->get_input('action_3_period'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -417,7 +419,7 @@ if($mybb->input['action'] == "delete_level")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
@@ -501,8 +503,8 @@ if($mybb->input['action'] == "add_type")
 	}
 
 	$form_container = new FormContainer($lang->add_warning_type);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->get_input('points'), array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
 	$expiration_periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -630,7 +632,7 @@ if($mybb->input['action'] == "delete_type")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-warning");
 	}

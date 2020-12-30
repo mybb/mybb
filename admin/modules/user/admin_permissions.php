@@ -49,7 +49,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-admin_permissions");
 	}

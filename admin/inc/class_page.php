@@ -853,7 +853,7 @@ EOF;
 			$target = '';
 		}
 		echo "\t</ul>\n";
-		if($tabs[$active]['description'])
+		if(!empty($tabs[$active]['description']))
 		{
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}

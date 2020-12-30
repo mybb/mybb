@@ -242,6 +242,7 @@ if($mybb->input['action'] == "add_template")
 			$sid = -1;
 		}
 
+		$template['title'] = "";
 		$template['template'] = "";
 		$template['sid'] = $sid;
 	}
@@ -389,7 +390,7 @@ if($mybb->input['action'] == "add_template_group")
 		}
 	}
 
-	if($mybb->input['sid'])
+	if(!empty($mybb->input['sid']))
 	{
 		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
 	}
@@ -407,6 +408,13 @@ if($mybb->input['action'] == "add_template_group")
 		);
 
 		$page->output_inline_error($errors);
+	}
+	else
+	{
+		$template_group = array(
+			'prefix' => null,
+			'title' => null,
+		);
 	}
 
 	$form = new Form("index.php?module=style-templates&amp;action=add_template_group{$expand_str}", "post", "add_template_group");
@@ -589,13 +597,22 @@ if($mybb->input['action'] == "edit_template")
 			}
 
 			// Log admin action
-			log_admin_action($template['tid'], $mybb->input['title'], $mybb->input['sid'], $set['title']);
+			if(!empty($set['title']))
+			{
+				$title = $set['title'];
+			}
+			else
+			{
+				$title = null;
+			}
+
+			log_admin_action($template['tid'], $mybb->get_input('title'), $mybb->get_input('sid'), $title);
 
 			flash_message($lang->success_template_saved, 'success');
 
-			if($mybb->input['continue'])
+			if($mybb->get_input('continue'))
 			{
-				if($mybb->input['from'] == "diff_report")
+				if($mybb->get_input('from') == "diff_report")
 				{
 					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', MyBB::INPUT_INT).$expand_str2."&amp;from=diff_report");
 				}
@@ -606,7 +623,7 @@ if($mybb->input['action'] == "edit_template")
 			}
 			else
 			{
-				if($mybb->input['from'] == "diff_report")
+				if($mybb->get_input('from') == "diff_report")
 				{
 					admin_redirect("index.php?module=style-templates&amp;action=find_updated");
 				}
@@ -1208,9 +1225,9 @@ if($mybb->input['action'] == "search_replace")
 	echo $form->generate_hidden_field('type', "templates");
 
 	$form_container = new FormContainer($lang->search_replace, 'tfixed');
-	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
+	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->get_input('find'), array('id' => 'find', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 
-	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->input['replace'], array('id' => 'replace', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
+	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->get_input('replace'), array('id' => 'replace', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->find_and_replace);
@@ -1227,7 +1244,7 @@ if($mybb->input['action'] == "search_replace")
 
 	$form_container = new FormContainer($lang->search_template_names);
 
-	$form_container->output_row($lang->search_for, "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->search_for, "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
 
 	$form_container->end();
 
@@ -1334,7 +1351,7 @@ LEGEND;
 
 	foreach($templates as $sid => $templates)
 	{
-		if(!$done_set[$sid])
+		if(empty($done_set[$sid]))
 		{
 			$table->construct_header(htmlspecialchars_uni($templatesets[$sid]['title']), array("colspan" => 2));
 
@@ -1355,7 +1372,7 @@ LEGEND;
 			$table->construct_row();
 		}
 
-		if($done_set[$sid] && !$done_output[$sid])
+		if(!empty($done_set[$sid]) && empty($done_output[$sid]))
 		{
 			$done_output[$sid] = 1;
 			if($count == 1)
@@ -1384,7 +1401,7 @@ if($mybb->input['action'] == "delete_template_group")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
 	}
@@ -1440,7 +1457,7 @@ if($mybb->input['action'] == "delete_set")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-templates");
 	}
@@ -1485,7 +1502,7 @@ if($mybb->input['action'] == "delete_template")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-templates&sid={$template['sid']}{$expand_str2}");
 	}
@@ -1631,7 +1648,7 @@ if($mybb->input['action'] == "revert")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=style-templates&sid={$template['sid']}{$expand_str2}");
 	}
@@ -1665,7 +1682,7 @@ if($mybb->input['action'] == "revert")
 	}
 }
 
-if($mybb->input['sid'] && !$mybb->input['action'])
+if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 {
 	if(!isset($template_sets[$mybb->input['sid']]))
 	{
@@ -1968,7 +1985,7 @@ if(!$mybb->input['action'])
 			continue;
 		}
 
-		if($themes[$set['sid']])
+		if(!empty($themes[$set['sid']]))
 		{
 			$used_by_note = $lang->used_by;
 			$comma = "";
@@ -1996,7 +2013,7 @@ if(!$mybb->input['action'])
 			{
 				$popup->add_item($lang->edit_template_set, "index.php?module=style-templates&amp;action=edit_set&amp;sid={$set['sid']}");
 
-				if(!$themes[$set['sid']])
+				if(empty($themes[$set['sid']]))
 				{
 					$popup->add_item($lang->delete_template_set, "index.php?module=style-templates&amp;action=delete_set&amp;sid={$set['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
 				}

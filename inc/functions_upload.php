@@ -784,7 +784,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 				if($FILE['size'] > 0)
 				{
 					$filename = $db->escape_string($FILE['name']);
-					$exists = $aid[$filename];
+					$exists = !empty($aid[$filename]);
 
 					$update_attachment = false;
 					if($action == "editpost")
@@ -842,7 +842,7 @@ function delete_uploaded_file($path = '')
 	$path = ltrim($path, '/');
 	$cdn_path = realpath($cdn_base_path.'/'.$path);
 
-	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
 	{
 		$deleted = $deleted && @unlink($cdn_path);
 	}
@@ -878,7 +878,7 @@ function delete_upload_directory($path = '')
 	$path = ltrim($path, '/');
 	$cdn_path = rtrim(realpath($cdn_base_path.'/'.$path), '/');
 
-	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
 	{
 		$deleted = $deleted && @rmdir($cdn_path);
 	}

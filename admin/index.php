@@ -247,7 +247,7 @@ elseif($mybb->input['do'] == "login")
 		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
 
-	if($mybb->user['uid'])
+	if(!empty($mybb->user['uid']))
 	{
 		if(login_attempt_check_acp($mybb->user['uid']) == true)
 		{
@@ -283,6 +283,7 @@ elseif($mybb->input['do'] == "login")
 			"lastactive" => TIME_NOW,
 			"data" => my_serialize(array()),
 			"useragent" => $db->escape_string($useragent),
+			"authenticated" => 0,
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();

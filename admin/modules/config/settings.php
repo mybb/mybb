@@ -98,10 +98,10 @@ if($mybb->input['action'] == "addgroup")
 	}
 
 	$form_container = new FormContainer($lang->add_new_setting_group);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting_group);
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "deletegroup")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
@@ -389,14 +389,14 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_setting);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -405,10 +405,10 @@ if($mybb->input['action'] == "add")
 			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
 		}
 	}
-	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->get_input('gid'), array('id' => 'gid')), 'gid');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
 
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 
 	$setting_types = array(
 		"text" => $lang->text,
@@ -430,9 +430,9 @@ if($mybb->input['action'] == "add")
 		//"php" => $lang->php // Internal Use Only
 	);
 
-	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
-	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
+	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->get_input('type'), array('id' => 'type')), 'type');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->get_input('extra'), array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
+	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->get_input('value'), array('id' => 'value')), 'value');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting);
@@ -602,7 +602,11 @@ if($mybb->input['action'] == "edit")
 		$setting_data = $setting;
 		$type = explode("\n", $setting['optionscode'], 2);
 		$setting_data['type'] = trim($type[0]);
-		$setting_data['extra'] = trim($type[1]);
+
+		if(isset($type[1]))
+		{
+			$setting_data['extra'] = trim($type[1]);
+		}
 	}
 
 	$form_container = new FormContainer($lang->modify_setting);
@@ -613,7 +617,7 @@ if($mybb->input['action'] == "edit")
 	while($group = $db->fetch_array($query))
 	{
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -650,7 +654,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', !empty($setting_data['extra']) ? $setting_data['extra'] : null, array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
 	$form_container->output_row($lang->value, '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
@@ -677,7 +681,7 @@ if($mybb->input['action'] == "delete")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$setting['sid'])
+	if(empty($setting['sid']))
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -691,7 +695,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
@@ -805,7 +809,7 @@ if($mybb->input['action'] == "manage")
 		// Make setting group row
 		// Translated?
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$group_title = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -830,12 +834,12 @@ if($mybb->input['action'] == "manage")
 		$table->construct_row(array('class' => 'alt_row', 'no_alt_row' => 1));
 
 		// Make rows for each setting in the group
-		if(is_array($settings_cache[$group['gid']]))
+		if(isset($settings_cache[$group['gid']]) && is_array($settings_cache[$group['gid']]))
 		{
 			foreach($settings_cache[$group['gid']] as $setting)
 			{
 				$setting_lang_var = "setting_{$setting['name']}";
-				if($lang->$setting_lang_var)
+				if(!empty($lang->$setting_lang_var))
 				{
 					$setting_title = htmlspecialchars_uni($lang->$setting_lang_var);
 				}
@@ -915,7 +919,10 @@ if($mybb->input['action'] == "change")
 		);
 
 		$is_current_hiddencaptcha_wrong = in_array($mybb->settings['hiddencaptchaimagefield'], $disallowed_fields);
-		if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields) || $is_current_hiddencaptcha_wrong)
+		if(
+			(isset($mybb->input['upsetting']['hiddencaptchaimagefield']) && in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields)) ||
+			$is_current_hiddencaptcha_wrong
+		)
 		{
 			if(isset($mybb->input['upsetting']['hiddencaptchaimagefield']) && $mybb->input['upsetting']['hiddencaptchaimagefield'] != $mybb->settings['hiddencaptchaimagefield'] && !$is_current_hiddencaptcha_wrong)
 			{
@@ -1089,7 +1096,17 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Administrator is changing the login method.
-		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		if(
+			$mybb->settings['username_method'] == 1 ||
+			$mybb->settings['username_method'] == 2 ||
+			(
+				isset($mybb->input['upsetting']['username_method']) &&
+				(
+					$mybb->input['upsetting']['username_method'] == 1 ||
+					$mybb->input['upsetting']['username_method'] == 2
+				)
+			)
+		)
 		{
 			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
 			if($db->num_rows($query))
@@ -1121,28 +1138,30 @@ if($mybb->input['action'] == "change")
 
 		foreach($fields as $field)
 		{
-			if(
-				isset($mybb->input['upsetting'][$field]) &&
-				is_string($mybb->input['upsetting'][$field]) &&
-				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			if(isset($mybb->input['upsetting'][$field]))
 			{
-				unset($mybb->input['upsetting'][$field]);
-				continue;
-			}
-
-			$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
-
-			if ($realpath === false) {
-				unset($mybb->input['upsetting'][$field]);
-				continue;
-			}
-
-			foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
-			{
-				if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+				if(
+					is_string($mybb->input['upsetting'][$field]) &&
+					strpos($mybb->input['upsetting'][$field], '://') !== false)
 				{
 					unset($mybb->input['upsetting'][$field]);
-					continue 2;
+					continue;
+				}
+
+				$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+
+				if ($realpath === false) {
+					unset($mybb->input['upsetting'][$field]);
+					continue;
+				}
+
+				foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
+				{
+					if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+					{
+						unset($mybb->input['upsetting'][$field]);
+						continue 2;
+					}
 				}
 			}
 		}
@@ -1195,7 +1214,11 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Check if we need to create our fulltext index after changing the search mode
-		if($mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] && $mybb->input['upsetting']['searchtype'] == "fulltext")
+		if(
+			isset($mybb->input['upsetting']['searchtype']) &&
+			$mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] &&
+			$mybb->input['upsetting']['searchtype'] == "fulltext"
+		)
 		{
 			if(!$db->is_fulltext("posts") && $db->supports_fulltext_boolean("posts"))
 			{
@@ -1307,7 +1330,7 @@ if($mybb->input['action'] == "change")
 			$page->output_header($lang->board_settings." - {$lang->settings_search}");
 		}
 	}
-	elseif($mybb->input['gid'])
+	elseif(($mybb->get_input('gid')))
 	{
 		// Group listing
 		// Cache groups
@@ -1446,7 +1469,7 @@ if($mybb->input['action'] == "change")
 				$folders = array();
 				while($folder = readdir($dir))
 				{
-					if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
+					if($folder != "." && $folder != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
 					{
 						$folders[$folder] = ucfirst($folder);
 					}

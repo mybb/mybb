@@ -59,7 +59,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	}
 	else
 	{
-		if(!is_object($parser))
+		if(!isset($parser) || !is_object($parser))
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-badwords");
 	}

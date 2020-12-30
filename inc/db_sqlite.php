@@ -325,7 +325,7 @@ class DB_SQLite implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		if($array !== null)
+		if($array !== null && $array !== false)
 		{
 			return $array[$field];
 		}

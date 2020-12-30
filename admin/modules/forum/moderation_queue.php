@@ -45,11 +45,11 @@ if($mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 
-	if(is_array($mybb->input['threads']))
+	if(is_array($mybb->get_input('threads')))
 	{
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads'])))."){$flist}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads']))).")");
 		while($thread = $db->fetch_array($query))
 		{
 			$action = $mybb->input['threads'][$thread['tid']];
@@ -87,7 +87,12 @@ if($mybb->request_method == "post")
 	{
 		$posts_to_approve = $posts_to_delete = array();
 		// Fetch posts
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts'])))."){$flist}");
+		$pids = array_map(
+			"intval",
+			array_keys($mybb->get_input('posts', MyBB::INPUT_ARRAY))
+		);
+
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $pids).")");
 		while($post = $db->fetch_array($query))
 		{
 			$action = $mybb->input['posts'][$post['pid']];
@@ -124,7 +129,7 @@ if($mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['attachments']))
 	{
-		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}");
+		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments']))).")");
 		while($attachment = $db->fetch_array($query))
 		{
 			$action = $mybb->input['attachments'][$attachment['aid']];
@@ -286,7 +291,7 @@ if(empty($mybb->input['type']) || $mybb->input['type'] == "threads")
 }
 
 // Posts awaiting moderation
-if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
+if($mybb->get_input('type') == "posts" || $mybb->get_input('type') == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_posts");
 
@@ -304,7 +309,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 	{
 		// Figure out if we need to display multiple pages.
 		$per_page = 15;
-		if($mybb->input['page'] > 0)
+		if($mybb->get_input('page') > 0)
 		{
 			$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 			$start = ($current_page-1)*$per_page;
@@ -429,7 +434,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 
 		$page->output_footer();
 	}
-	else if($mybb->input['type'] == "posts")
+	else if($mybb->get_input('type') == "posts")
 	{
 		$page->output_header($lang->moderation_queue);
 		$page->output_nav_tabs($sub_tabs, "posts");
@@ -439,7 +444,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 }
 
 // Attachments awaiting moderation
-if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
+if($mybb->get_input('type') == "attachments" || $mybb->get_input('type') == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_attachments");
 
@@ -568,7 +573,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 		$page->output_footer();
 	}
-	else if($mybb->input['type'] == "attachments")
+	else if($mybb->get_input('type') == "attachments")
 	{
 		$page->output_header($lang->moderation_queue);
 		$page->output_nav_tabs($sub_tabs, "attachments");

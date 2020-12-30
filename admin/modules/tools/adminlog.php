@@ -88,8 +88,8 @@ if($mybb->input['action'] == 'prune')
 	$page->output_nav_tabs($sub_tabs, 'prune_admin_logs');
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
-	$ordersel[$mybb->input['order']] = 'selected="selected"';
+	$sortbysel[$mybb->get_input('sortby')] = 'selected="selected"';
+	$ordersel[$mybb->get_input('order')] = 'selected="selected"';
 
 	$user_options[''] = $lang->all_administrators;
 	$user_options['0'] = '----------';
@@ -120,13 +120,13 @@ if($mybb->input['action'] == 'prune')
 
 	$form = new Form("index.php?module=tools-adminlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_administrator_logs);
-	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');
-	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
-	if(!$mybb->input['older_than'])
+	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->get_input('filter_module'), array('id' => 'filter_module')), 'filter_module');
+	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	if(!$mybb->get_input('older_than'))
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->get_input('older_than'), array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_administrator_logs);
 	$form->output_submit_wrapper($buttons);
@@ -156,19 +156,19 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("admin_tools_adminlog_start");
 
 	// Searching for entries by a particular user
-	if($mybb->input['uid'])
+	if(!empty($mybb->input['uid']))
 	{
 		$where .= " AND l.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 	}
 
 	// Searching for entries in a specific module
-	if($mybb->input['filter_module'])
+	if(!empty($mybb->input['filter_module']))
 	{
 		$where .= " AND module='".$db->escape_string($mybb->input['filter_module'])."'";
 	}
 
 	// Order?
-	switch($mybb->input['sortby'])
+	switch($mybb->get_input('sortby'))
 	{
 		case "username":
 			$sortby = "u.username";
@@ -176,7 +176,7 @@ if(!$mybb->input['action'])
 		default:
 			$sortby = "l.dateline";
 	}
-	$order = $mybb->input['order'];
+	$order = $mybb->get_input('order');
 	if($order != 'asc')
 	{
 		$order = 'desc';
@@ -191,7 +191,7 @@ if(!$mybb->input['action'])
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if($mybb->input['page'] != "last")
+	if($mybb->get_input('page') != "last")
 	{
 		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -200,7 +200,7 @@ if(!$mybb->input['action'])
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if($mybb->get_input('page') == "last")
 	{
 		$pagecnt = $pages;
 	}
@@ -266,12 +266,12 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}&amp;filter_module=".htmlspecialchars_uni($mybb->input['filter_module']))."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-adminlog&amp;perpage=$perpage&amp;uid={$mybb->get_input('uid')}&amp;fid={$mybb->get_input('fid')}&amp;sortby={$mybb->get_input('sortby')}&amp;order={$order}&amp;filter_module=".htmlspecialchars_uni($mybb->get_input('filter_module')))."<br />";
 	}
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
-	$ordersel[$mybb->input['order']] = 'selected="selected"';
+	$sortbysel[$mybb->get_input('sortby')] = 'selected="selected"';
+	$ordersel[$mybb->get_input('order')] = 'selected="selected"';
 
 	$user_options[''] = $lang->all_administrators;
 	$user_options['0'] = '----------';
@@ -312,9 +312,9 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools-adminlog", "post");
 	$form_container = new FormContainer($lang->filter_administrator_logs);
-	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');
-	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
+	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->get_input('filter_module'), array('id' => 'filter_module')), 'filter_module');
+	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$form_container->end();
@@ -335,7 +335,18 @@ function get_admin_log_action($logitem)
 	global $lang, $plugins, $mybb;
 
 	$logitem['module'] = str_replace('/', '-', $logitem['module']);
-	list($module, $action) = explode('-', $logitem['module']);
+
+	$module_path = explode('-', $logitem['module']);
+	$module = $module_path[0];
+	if(isset($module_path[1]))
+	{
+		$action = $module_path[1];
+	}
+	else
+	{
+		$action = null;
+	}
+
 	$lang_string = 'admin_log_'.$module.'_'.$action.'_'.$logitem['action'];
 
 	// Specific page overrides
@@ -410,7 +421,7 @@ function get_admin_log_action($logitem)
 		case 'admin_log_forum_management_': // add mod, permissions, forum orders
 			// first parameter already set with action
 			$lang_string .= $logitem['data'][0];
-			if($logitem['data'][0] == 'orders' && $logitem['data'][1])
+			if($logitem['data'][0] == 'orders' && !empty($logitem['data'][1]))
 			{
 				$lang_string .= '_sub'; // updating forum orders in a subforum
 			}

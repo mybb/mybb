@@ -27,7 +27,7 @@ if(!$mybb->input['action'])
 	if($mybb->request_method == "post")
 	{
 		// User clicked no
-		if($mybb->input['no'])
+		if($mybb->get_input('no'))
 		{
 			admin_redirect("index.php?module=tools-system_health");
 		}

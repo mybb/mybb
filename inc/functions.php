@@ -8620,7 +8620,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
 		}
 
-		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 

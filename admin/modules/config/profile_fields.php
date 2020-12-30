@@ -189,8 +189,8 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_profile_field);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 	$select_list = array(
 		"text" => $lang->text,
 		"textarea" => $lang->textarea,
@@ -199,18 +199,18 @@ if($mybb->input['action'] == "add")
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox
 	);
-	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->input['contact']));
-	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
-	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
-	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
-	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
-	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
+	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->get_input('fieldtype'), array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->input('contact')));
+	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->get_input('regex'), array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->get_input('maxlength'), array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->get_input('length'), array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->get_input('options'), array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->get_input('postnum'), array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->get_input('required')));
+	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->get_input('registration')));
+	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->get_input('profile')));
+	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->get_input('postbit')));
 
 	$selected_values = '';
 	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
@@ -307,11 +307,11 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->editableby, $lang->editableby_desc, $select_code, '', array(), array('id' => 'row_editableby'));
 
 	$parser_options = array(
-		$form->generate_check_box('allowhtml', 1, $lang->parse_allowhtml, array('checked' => $mybb->input['allowhtml'], 'id' => 'allowhtml')),
-		$form->generate_check_box('allowmycode', 1, $lang->parse_allowmycode, array('checked' => $mybb->input['allowmycode'], 'id' => 'allowmycode')),
-		$form->generate_check_box('allowsmilies', 1, $lang->parse_allowsmilies, array('checked' => $mybb->input['allowsmilies'], 'id' => 'allowsmilies')),
-		$form->generate_check_box('allowimgcode', 1, $lang->parse_allowimgcode, array('checked' => $mybb->input['allowimgcode'], 'id' => 'allowimgcode')),
-		$form->generate_check_box('allowvideocode', 1, $lang->parse_allowvideocode, array('checked' => $mybb->input['allowvideocode'], 'id' => 'allowvideocode'))
+		$form->generate_check_box('allowhtml', 1, $lang->parse_allowhtml, array('checked' => $mybb->get_input('allowhtml'), 'id' => 'allowhtml')),
+		$form->generate_check_box('allowmycode', 1, $lang->parse_allowmycode, array('checked' => $mybb->get_input('allowmycode'), 'id' => 'allowmycode')),
+		$form->generate_check_box('allowsmilies', 1, $lang->parse_allowsmilies, array('checked' => $mybb->get_input('allowsmilies'), 'id' => 'allowsmilies')),
+		$form->generate_check_box('allowimgcode', 1, $lang->parse_allowimgcode, array('checked' => $mybb->get_input('allowimgcode'), 'id' => 'allowimgcode')),
+		$form->generate_check_box('allowvideocode', 1, $lang->parse_allowvideocode, array('checked' => $mybb->get_input('allowvideocode'), 'id' => 'allowvideocode'))
 	);
 	$form_container->output_row($lang->parser_options, '', implode('<br />', $parser_options), '', array(), array('id' => 'row_parser_options'));
 	$form_container->end();
@@ -392,7 +392,7 @@ if($mybb->input['action'] == "edit")
 						}
 						unset($val);
 
-						$mybb->input[$key] = implode(',', (array)$mybb->input['select'][$key]);
+						$mybb->input[$key] = implode(',', $mybb->input['select'][$key]);
 					}
 					else
 					{
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "edit")
 
 		$mybb->input = $profile_field;
 		$mybb->input['fieldtype'] = $type[0];
-		$mybb->input['options'] = $type[1];
+		$mybb->input['options'] = isset($type[1]) ? $type[1] : null;
 	}
 
 	if(empty($mybb->input['viewableby']))
@@ -668,7 +668,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-profile_fields");
 	}

@@ -283,16 +283,16 @@ if($mybb->input['action'] == "add")
 	$mybb->input['forcedownload'] = $mybb->get_input('forcedownload', MyBB::INPUT_INT);
 
 	$form_container = new FormContainer($lang->add_new_attachment_type);
-	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
-	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
-	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
-	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
-	$form_container->output_row($lang->forcedownload, $lang->forcedownload_desc, $form->generate_yes_no_radio('forcedownload', $mybb->input['forcedownload']), 'forcedownload');
+	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->get_input('extension'), array('id' => 'extension')), 'extension');
+	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->get_input('mimetype'), array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->get_input('maxsize'), array('id' => 'maxsize', 'min' => 0)), 'maxsize');
+	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->get_input('icon'), array('id' => 'icon')), 'icon');
+	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->get_input('enabled')), 'enabled');
+	$form_container->output_row($lang->forcedownload, $lang->forcedownload_desc, $form->generate_yes_no_radio('forcedownload', $mybb->get_input('forcedownload')), 'forcedownload');
 	$form_container->output_row($lang->available_to_groups, '', $groups_select_code, '', array(), array('id' => 'row_groups'));
 	$form_container->output_row($lang->available_in_forums, '', $forums_select_code, '', array(), array('id' => 'row_forums'));
-	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->input['avatarfile']), 'avatarfile');
+	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->get_input('avatarfile')), 'avatarfile');
 
 	$form_container->end();
 
@@ -588,7 +588,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-attachment_types");
 	}

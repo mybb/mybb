@@ -54,7 +54,7 @@ $plugins->run_hooks("admin_user_banning_begin");
 if($mybb->input['action'] == "prune")
 {
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "prune")
 if($mybb->input['action'] == "lift")
 {
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -170,13 +170,13 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	$user = get_user($ban['uid']);
-
-	if(!$ban['uid'])
+	if(empty($ban['uid']))
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$user = get_user($ban['uid']);
 
 	$plugins->run_hooks("admin_user_banning_edit");
 
@@ -314,14 +314,14 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['username'], $options);
 
 		// Are we searching a user?
-		if(isset($mybb->input['search']))
+		if(is_array($user) && isset($mybb->input['search']))
 		{
 			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
 			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
 		}
 		else
 		{
-			if(!$user['uid'])
+			if(empty($user['uid']))
 			{
 				$errors[] = $lang->error_invalid_username;
 			}
@@ -344,11 +344,11 @@ if(!$mybb->input['action'])
 				{
 					$errors[] = $lang->error_already_banned;
 				}
-			}
 
-			if($user['uid'] == $mybb->user['uid'])
-			{
-				$errors[] = $lang->error_ban_self;
+				if($user['uid'] == $mybb->user['uid'])
+				{
+					$errors[] = $lang->error_ban_self;
+				}
 			}
 
 			// No errors? Insert
