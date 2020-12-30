@@ -792,6 +792,8 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Make sure there isn't multiple posts (due to merge) that need to be verified
+		$old_message = $post['message'];
+
 		if ($this->method == "insert") 
 		{
 			$double_post = $this->verify_post_merge();
@@ -799,11 +801,9 @@ class PostDataHandler extends DataHandler
 
 		if($double_post !== true && $double_post['visible'] == 1)
 		{
-			$this->pid = $double_post['pid'];
-
 			$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
 		}
-		
+
 		// Verify all post assets.
 		if($this->method == "insert" || array_key_exists('uid', $post))
 		{
@@ -846,6 +846,9 @@ class PostDataHandler extends DataHandler
 		{
 			$this->verify_prefix();
 		}
+
+		// Revert message in case of double_post
+		$post['message'] = $old_message;
 
 		$plugins->run_hooks("datahandler_post_validate_post", $this);
 
