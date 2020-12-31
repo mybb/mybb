@@ -1494,6 +1494,12 @@ if($foruminfo['type'] != "c")
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
+	// Populate Forumsort
+	if($threadcount > 0)
+	{
+		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
+	}
+	
 	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
