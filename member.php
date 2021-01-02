@@ -2743,7 +2743,7 @@ if($mybb->input['action'] == "profile")
 		{
 			eval("\$manageban = \"".$templates->get("member_profile_modoptions_manageban")."\";");
 		}
-		else
+		elseif(modcp_can_manage_user($memprofile['uid']) && $mybb->usergroup['canbanusers'] == 1)
 		{
 			if(modcp_can_manage_user($memprofile['uid']) && $mybb->usergroup['canbanusers'] == 1)
 			{
