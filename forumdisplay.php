@@ -1126,6 +1126,8 @@ if($foruminfo['type'] != "c")
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
 	// Populate Forumsort
+	$forumsort = '';
+	
 	if($threadcount > 0)
 	{
 		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
