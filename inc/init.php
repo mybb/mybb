@@ -47,6 +47,9 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
+// Show errors triggered during initialization
+$error_handler->force_display_errors = true;
+
 if(!function_exists('json_encode') || !function_exists('json_decode'))
 {
 	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
@@ -238,6 +241,8 @@ require_once __DIR__.'/src/bootstrap.php';
 MyBB\app('config')->set(
 	array_dot($config)
 );
+
+$error_handler->force_display_errors = false;
 
 // Load plugins
 if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))

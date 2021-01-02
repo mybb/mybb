@@ -118,6 +118,13 @@ class errorHandler {
 	public $has_errors = false;
 
 	/**
+	 * Display errors regardless of related settings (useful during initialization stage)
+	 *
+	 * @var boolean
+	 */
+	public $force_display_errors = false;
+
+	/**
 	 * Initializes the error handler
 	 *
 	 */
@@ -401,7 +408,7 @@ class errorHandler {
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -418,7 +425,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
