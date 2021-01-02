@@ -2595,7 +2595,7 @@ if($mybb->input['action'] == "profile")
 		}
 
 		$memprofile['showeditprofile'] = false;
-		if($mybb->usergroup['caneditprofiles'] == 1)
+		if($mybb->usergroup['caneditprofiles'] == 1 && modcp_can_manage_user($memprofile['uid']))
 		{
 			$memprofile['showmanageuser'] = true;
 			$memprofile['showeditprofile'] = true;
