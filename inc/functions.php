@@ -1794,7 +1794,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
  */
 function is_moderator($fid=0, $action="", $uid=0)
 {
-	global $mybb, $cache;
+	global $mybb, $cache, $plugins;
 
 	if($uid == 0)
 	{
@@ -1807,6 +1807,9 @@ function is_moderator($fid=0, $action="", $uid=0)
 	}
 
 	$user_perms = user_permissions($uid);
+
+	$plugins->run_hooks("is_moderator");
+
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
