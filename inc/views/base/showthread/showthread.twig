@@ -490,7 +490,7 @@
                         {{ lang.comma }}
                     {% endif %}
                     {% if thread.inviscount and mybb.usergroup.canviewwolinvis %}
-                        {{ trans('users_browsing_forum_invis', thread.inviscount) }}
+                        {{ trans('users_browsing_thread_invis', thread.inviscount) }}
                     {% endif %}
                     {% if (thread.inviscount and thread.guestcount) or (thread.onlinemembers and thread.guestcount) %}
                         {{ lang.comma }}
