@@ -270,6 +270,8 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_config_report_reasons_delete_commit");
 
+		$cache->update_reportreasons();
+
 		// Log admin action
 		log_admin_action($reason['rid'], $reason['title']);
 
