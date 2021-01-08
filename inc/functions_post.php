@@ -74,8 +74,6 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_videocode'] = $forum['allowvideocode'];
 			$parser_options['me_username'] = $post['username'];
 			$parser_options['filter_badwords'] = 1;
-			$parser_options['allowautourl'] = 1;
-			$parser_options['allowautourl'] = $mybb->settings['bbcodesallowautourl'];
 			$id = 0;
 			break;
 		case 2: // Private message
@@ -89,8 +87,6 @@ function build_postbit($post, $post_type=0)
 			$parser_options['me_username'] = $post['username'];
 			$parser_options['filter_badwords'] = 1;
 			$id = $pmid;
-			$parser_options['allowautourl'] = 1;
-			$parser_options['allowautourl'] = $mybb->settings['bbcodesallowautourl'];
 			break;
 		case 3: // Announcement
 			global $announcementarray, $message;
@@ -102,8 +98,6 @@ function build_postbit($post, $post_type=0)
 			$parser_options['me_username'] = $post['username'];
 			$parser_options['filter_badwords'] = 1;
 			$id = $announcementarray['aid'];
-			$parser_options['allowautourl'] = 1;
-			$parser_options['allowautourl'] = $mybb->settings['bbcodesallowautourl'];
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
@@ -116,8 +110,6 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			$parser_options['allow_videocode'] = $forum['allowvideocode'];
 			$parser_options['filter_badwords'] = 1;
-			$parser_options['allowautourl'] = 1;
-			$parser_options['allowautourl'] = $mybb->settings['bbcodesallowautourl'];
 			break;
 	}
 

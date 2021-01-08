@@ -521,7 +521,7 @@ class postParser
 			}
 		}
 
-		if(!empty($this->options['allowautourl']))
+		if($mybb->settings['allowautourl'] == 1)
 		{
 			$message = $this->mycode_auto_url($message);
 		}
