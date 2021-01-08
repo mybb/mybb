@@ -301,6 +301,8 @@ if(!$mybb->input['action'])
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['dateline'] = my_date('relative', $log['dateline']);
 
+		$plugins->run_hooks("admin_tools_maillogs_log");
+
 		if($log['type'] == 1)
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
