@@ -1053,7 +1053,9 @@ class PostDataHandler extends DataHandler
 					$plugins->run_hooks("datahandler_post_insert_merge", $this);
 					
 					return $this->return_values;
-				} else {
+				}
+				else
+				{
 					$post['message'] = $_message;
 				}
 			}
