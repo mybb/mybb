@@ -1,7 +1,7 @@
 var Post = {
 	init: function () {
 		$(function () {
-			Post.fileInput = $("input[type='file']");
+			Post.fileInput = $("input[name='attachments[]']");
 			Post.dropZone = $('#dropzone').text(lang.drop_files);
 			Post.form = Post.fileInput.parents('form');
 
