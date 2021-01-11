@@ -307,6 +307,7 @@ $l['error_avatarurltoolong'] = "Sorry, but we cannot change your avatar as the n
 $l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height).";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
 $l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
+$l['error_avatarimagemissing'] = "Avatar image file is missing, please select one before attempting to upload.";
 $l['custom_usertitle'] = "Custom User Title";
 $l['new_custom_usertitle'] = "New Custom User Title";
 $l['custom_usertitle_note'] = "Here you can assign yourself a custom user title which will overwrite the one based on your display group. Leave blank to use your current user title.";
