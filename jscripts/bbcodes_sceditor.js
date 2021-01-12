@@ -151,9 +151,17 @@ $(function ($) {
 			var fontsize = 1,
 				scefontsize = $($elm).data('scefontsize'),
 				parsed = parseInt(scefontsize, 10),
-				size = parseInt($($elm).attr('size'), 10);
+				size = parseInt($($elm).attr('size'), 10),
+				iframe = $('.sceditor-container iframe'),
+				editor_body = $('body', iframe.contents());
 
-			if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
+			if ($($elm).css('font-size') == editor_body.css('font-size')) {
+				// Eliminate redundant [size] tags for unformatted text.
+				// Part of the fix for the browser-dependent bug of issue #4184.
+				// Also fixes the browser-dependent bug described here:
+				//   <https://community.mybb.com/thread-229726.html>
+				fontsize = -1;
+			} else if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
 				fontsize = mybbCmd.fsStr[size - 1];
 			} else if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
 				fontsize = scefontsize;
@@ -161,7 +169,7 @@ $(function ($) {
 				fontsize = parsed;
 			}
 
-			return '[size=' + fontsize + ']' + content + '[/size]';
+			return fontsize != -1 ? '[size=' + fontsize + ']' + content + '[/size]' : content;
 		},
 		html: function (token, attrs, content) {
 			var size = 0,
@@ -282,9 +290,26 @@ $(function ($) {
 			if (element.nodeName.toLowerCase() !== 'font' || !(font = $(element).attr('face')))
 				font = $(element).css('font-family');
 
+			var iframe = $('.sceditor-container iframe');
+			var editor_body = $('body', iframe.contents());
 
-			if (typeof font == 'string' && font != '' && font != 'defaultattr') {
-				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
+			if (typeof font == 'string' && font != '' && font != 'defaultattr'
+			    &&
+			    // Eliminate redundant [font] tags for unformatted text.
+			    // Part of the fix for the browser-dependent bug of issue #4184.
+			    font != editor_body.css('font-family')) {
+				font = font.trim();
+				// Strip all-enclosing double quotes from fonts so long as
+				// they are the only double quotes present...
+				if (font[0] == '"' && font[font.length-1] == '"' && (font.match(/"/g) || []).length == 2) {
+					font = font.substr(1, font.length-2);
+				}
+				// ...and then replace any other occurrence(s) of double quotes
+				// in fonts with single quotes.
+				// This is the client-side aspect of the fix for
+				// the browser-independent bug of issue #4182.
+				font = font.replace(/"/g, "'");
+				return '[font=' + font + ']' + content + '[/font]';
 			} else {
 				return content;
 			}
@@ -297,6 +322,33 @@ $(function ($) {
 			} else {
 				return content;
 			}
+		}
+	});
+
+	$.sceditor.formats.bbcode.set('color', {
+		format: function (element, content) {
+			var color, defaultColor;
+
+			var iframe = $('.sceditor-container iframe');
+			var editor_body = $('body', iframe.contents());
+
+			if (element.nodeName.toLowerCase() != 'font' || !(color = $(element).attr('color'))) {
+				color = $(element).css('color');
+			}
+
+			color = _normaliseColour(color);
+			defaultColor = _normaliseColour(editor_body.css('color'));
+
+			// Eliminate redundant [color] tags for unformatted text.
+			// Part of the fix for the browser-dependent bug of issue #4184.
+			return color != defaultColor
+			         ? '[color=' + color + ']' + content + '[/color]'
+				 : content;
+		},
+		html: function (token, attrs, content) {
+			return '<font color="' +
+				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), true) +
+				'">' + content + '</font>';
 		}
 	});
 
@@ -662,4 +714,62 @@ $(function ($) {
 			return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
 		}
 	});
+
+	/**
+	 * Converts a number 0-255 to hex.
+	 *
+	 * Will return 00 if number is not a valid number.
+	 *
+	 * Copied from the SCEditor's src/formats/bbcode.js file
+	 * where it is unfortunately defined as private.
+	 *
+	 * @param  {any} number
+	 * @return {string}
+	 */
+	function toHex(number) {
+		number = parseInt(number, 10);
+
+		if (isNaN(number)) {
+			return '00';
+		}
+
+		number = Math.max(0, Math.min(number, 255)).toString(16);
+
+		return number.length < 2 ? '0' + number : number;
+	}
+
+	/**
+	 * Normalises a CSS colour to hex #xxxxxx format
+	 *
+	 * Copied from the SCEditor's src/formats/bbcode.js file
+	 * where it is unfortunately defined as private.
+	 *
+	 * @param  {string} colorStr
+	 * @return {string}
+	 */
+	function _normaliseColour(colorStr) {
+		var match;
+
+		colorStr = colorStr || '#000';
+
+		// rgb(n,n,n);
+		if ((match =
+			colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
+			return '#' +
+				toHex(match[1]) +
+				toHex(match[2]) +
+				toHex(match[3]);
+		}
+
+		// expand shorthand
+		if ((match = colorStr.match(/#([0-f])([0-f])([0-f])\s*?$/i))) {
+			return '#' +
+				match[1] + match[1] +
+				match[2] + match[2] +
+				match[3] + match[3];
+		}
+
+		return colorStr;
+	}
+
 });
