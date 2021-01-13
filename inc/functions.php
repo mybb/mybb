@@ -1751,7 +1751,18 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 
 	$user_perms = user_permissions($uid);
 
-	$plugins->run_hooks("is_moderator");
+	$hook_args = array(
+		'fid' => $fid,
+		'action' => $action,
+		'uid' => $uid,
+		'user_perms' => &$user_perms',
+	);
+
+	$plugins->run_hooks("is_moderator", $hook_args);
+	
+	if (isset($hook_args['is_moderator'])) {
+		return true;
+	}
 
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
