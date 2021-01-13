@@ -1547,7 +1547,7 @@ if($mybb->input['action'] == "thread")
 		}
 		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 		{
-			$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
+			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
 		}
 
 		$onlinesep = '';
