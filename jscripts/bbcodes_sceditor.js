@@ -753,12 +753,19 @@ $(function ($) {
 		colorStr = colorStr || '#000';
 
 		// rgb(n,n,n);
-		if ((match =
-			colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
+		if ((match = colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
 			return '#' +
 				toHex(match[1]) +
 				toHex(match[2]) +
 				toHex(match[3]);
+		}
+
+		// rgba(n,n,n,f.p);
+		if ((match = colorStr.match(/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i))) {
+			return '#' +
+			toHex(match[1]) +
+			toHex(match[2]) +
+			toHex(match[3]);
 		}
 
 		// expand shorthand
