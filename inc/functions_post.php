@@ -17,7 +17,7 @@
  */
 function build_postbit($post, $post_type=0)
 {
-	global $db, $altbg, $theme, $mybb, $postcounter;
+	global $db, $altbg, $theme, $mybb, $postcounter, $profile_fields;
 	global $titlescache, $page, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
@@ -434,9 +434,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_purgespammer'] = true;
 		}
 
-		static $profile_fields = null;
-
-		if($profile_fields === null)
+		if(!isset($profile_fields))
 		{
 			$profile_fields = array();
 
