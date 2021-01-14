@@ -14,6 +14,18 @@ $langinfo['author'] = "MyBB Group";
 // The language authors website
 $langinfo['website'] = "https://mybb.com/";
 
+// The documentation site link
+//$langinfo['docs_link'] = "";
+
+// The documentation FAQs site link
+//$langinfo['common_issues_link'] = "";
+
+// The support website link
+//$langinfo['support_link'] = "";
+
+// The additional website name
+//$langinfo['additional_name'] = " ";
+
 // Compatible version of MyBB
 $langinfo['version'] = "1824";
 

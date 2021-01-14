@@ -533,13 +533,39 @@ class errorHandler {
 HTML;
 		}
 
-			$contact = <<<HTML
+		$additional_name = '';
+		$docs_link = 'https://docs.mybb.com';
+		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
+		$support_link = 'https://community.mybb.com/';
+
+		if(isset($lang->settings['docs_link']))
+		{
+			$docs_link = $lang->settings['docs_link'];
+		}
+
+		if(isset($lang->settings['common_issues_link']))
+		{
+			$common_issues_link = $lang->settings['common_issues_link'];
+		}
+
+		if(isset($lang->settings['support_link']))
+		{
+			$support_link = $lang->settings['support_link'];
+		}
+
+
+		if(isset($lang->settings['additional_name']))
+		{
+			$additional_name = $lang->settings['additional_name'];
+		}
+
+		$contact = <<<HTML
 <p>
 	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
 </p>
 
 <p>
-	<strong>If you are the site owner</strong>, please check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
+	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
 </p>
 HTML;
 
@@ -613,6 +639,7 @@ EOF;
 	</div>
 EOF;
 		}
+
 		exit(1);
 	}
 
