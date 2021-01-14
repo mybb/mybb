@@ -1812,7 +1812,6 @@ function is_moderator($fid=0, $action="", $uid=0)
 		'fid' => $fid,
 		'action' => $action,
 		'uid' => $uid,
-		'user_perms' => &$user_perms',
 	);
 
 	$plugins->run_hooks("is_moderator", $hook_args);
