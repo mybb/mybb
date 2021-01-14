@@ -643,6 +643,8 @@ if(!$mybb->input['action'])
 	{
 		$search_sql = '1=1';
 
+		$plugins->run_hooks("admin_forum_attachments_commit_start");
+
 		// Build the search SQL for users
 
 		// List of valid LIKE search fields
@@ -823,6 +825,8 @@ if(!$mybb->input['action'])
 			{
 				$mybb->input['order'] = "asc";
 			}
+
+			$plugins->run_hooks("admin_forum_attachments_commit");
 
 			$page->add_breadcrumb_item($lang->results);
 			$page->output_header($lang->index_find_attachments);
