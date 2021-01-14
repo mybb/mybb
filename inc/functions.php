@@ -1762,7 +1762,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 	
 	if(isset($hook_args['is_moderator']))
 	{
-		return true;
+		return (bool) $hook_args['is_moderator'];
 	}
 
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
