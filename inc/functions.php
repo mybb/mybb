@@ -1817,7 +1817,8 @@ function is_moderator($fid=0, $action="", $uid=0)
 
 	$plugins->run_hooks("is_moderator", $hook_args);
 	
-	if (isset($hook_args['is_moderator'])) {
+	if(isset($hook_args['is_moderator']))
+	{
 		return true;
 	}
 
