@@ -70,6 +70,9 @@ $l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this set
 $l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
 
 $l['error_format_dimension'] = "Defined {1} format is invalid.";
+$l['error_field_minnamelength'] = "Minimum name length can not be larger than maximum name length";
+$l['error_field_minpasswordlength'] = "Minimum password length can not be larger than maximum password length";
+$l['error_field_minpasswordlength_complex'] = "Minimum password length can not be less than 3 when using comples passwords";
 $l['error_field_postmaxavatarsize'] = "Maximum Avatar Dimensions";
 $l['error_field_useravatardims'] = "Default Avatar Dimensions";
 $l['error_field_maxavatardims'] = "Maximum Avatar Dimensions";
