@@ -1019,7 +1019,7 @@ function get_post_attachments($id, &$post)
 					}
 					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
-						if (forum_permissions($post['fid'])['candlattachments'])
+						if ($forumpermissions['candlattachments'])
 						{
 							eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 						} 
