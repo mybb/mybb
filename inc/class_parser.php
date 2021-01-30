@@ -12,15 +12,16 @@ use function MyBB\template;
  */
 /*
 options = array(
-    allow_html
-    allow_smilies
-    allow_mycode
-    nl2br
-    filter_badwords
-    me_username
-    shorten_urls
-    highlight
-    filter_cdata
+	allow_html
+	allow_smilies
+	allow_mycode
+	allow_url
+	nl2br
+	filter_badwords
+	me_username
+	shorten_urls
+	highlight
+	filter_cdata
 )
 */
 
@@ -453,8 +454,6 @@ class postParser
 			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
 		}
 
-		$message = $this->mycode_auto_url($message);
-
 		$message = str_replace('$', '&#36;', $message);
 
 		// Replace the rest
@@ -508,6 +507,11 @@ class postParser
 		else
 		{
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
+		}
+
+		if($mybb->settings['allowautourl'] == 1)
+		{
+			$message = $this->mycode_auto_url($message);
 		}
 
 		return $message;
@@ -1575,6 +1579,12 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
+
+		if($this->options['allow_url'] != 1)
+		{
+			return $message;
+		}
+
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
 		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);

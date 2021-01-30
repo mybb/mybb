@@ -2116,10 +2116,18 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowautourl">
+			<title>Automatically Parse URLs Into Links</title>
+			<description><![CDATA[Setting this to Yes will parse URLs as links.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="allowemailmycode">
 			<title>Allow Email MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Email MyCode.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2127,7 +2135,7 @@ min=1]]></optionscode>
 		<setting name="allowalignmycode">
 			<title>Allow Alignment MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Align MyCode.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2135,7 +2143,7 @@ min=1]]></optionscode>
 		<setting name="allowlistmycode">
 			<title>Allow List MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the List MyCode.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2143,7 +2151,7 @@ min=1]]></optionscode>
 		<setting name="allowcodemycode">
 			<title>Allow Code MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Code and PHP MyCodes.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2151,7 +2159,7 @@ min=1]]></optionscode>
 		<setting name="allowsymbolmycode">
 			<title>Allow Symbol MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2159,7 +2167,7 @@ min=1]]></optionscode>
 		<setting name="allowmemycode">
 			<title>Allow Me MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the /me and /slap MyCodes.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2167,7 +2175,7 @@ min=1]]></optionscode>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted images to guests. If No, a link will be shown instead.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2175,7 +2183,7 @@ min=1]]></optionscode>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted videos to guests. If No, a link will be shown instead.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
