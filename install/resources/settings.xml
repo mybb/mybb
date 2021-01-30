@@ -2113,8 +2113,8 @@ min=1]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="allowautourl">
-			<title>Automatically parse URL's into links</title>
-			<description><![CDATA[Setting this will disable the Automatic Parsing of URL's.]]></description>
+			<title>Automatically Parse URLs Into Links</title>
+			<description><![CDATA[Setting this to Yes will parse URLs as links.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
