@@ -13,7 +13,7 @@ options = array(
 	allow_html
 	allow_smilies
 	allow_mycode
-	allow_links
+	allow_url
 	nl2br
 	filter_badwords
 	me_username
