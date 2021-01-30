@@ -2490,6 +2490,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		}
 	}
+	elseif(!$mybb->settings['allowremoteavatars'] && !$_FILES['avatarupload']['name']) // missing avatar image
+	{
+		$avatar_error = $lang->error_avatarimagemissing;
+	}
 	elseif($mybb->settings['allowremoteavatars']) // remote avatar
 	{
 		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
