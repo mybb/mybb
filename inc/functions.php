@@ -5595,9 +5595,9 @@ function validate_date($date, $range = array(), $skipyear = false)
 	{
 		$date = preg_split('/[-\/\.]/', $date);
 	}
-	if(!isset($date[2]) && $skipyear)
+	if((!isset($date[2]) || empty($date[2])) && $skipyear)
 	{
-		$date[] = my_date('Y', TIME_NOW); // If the year is skipped append current year to validate
+		$date[2] = my_date('Y', TIME_NOW); // If the year is skipped append current year to validate
 	} else {
 		$skipyear = false; // Year provided, reset
 	}

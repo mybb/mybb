@@ -273,10 +273,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$bday = explode("-", $mybb->user['birthday']);
 			$mybb->input['bday3'] = $bday[2];
 		}
-		if(array_key_exists("invalid_returndate", $raw_errors) || array_key_exists("invalid_returndatebefore", $raw_errors))
-		{
-			$mybb->input['awayday'] = $mybb->input['awaymonth'] = $mybb->input['awayyear'] = "";
-		}
 
 		$errors = inline_error($errors);
 		$mybb->input['action'] = "profile";
