@@ -5585,8 +5585,8 @@ function my_wordwrap($message)
  * Checks the validity of a given date
  * 
  * @param mixed $date the date to validate, may be a string or an array of date parts with d:m:Y sequence (supported delimiters are -, /, .)
- * @param array range the range of 2 timestamps the date has to be in. If single stamp is passed, will be considered only not before, to set only not after: pass 0 as first value
- * @param bool whether year is allowed to be skipped. If yesr is actually skipped range comparison will not take place
+ * @param array $range the range of 2 timestamps the date has to be in. If single stamp is passed, will be considered only not before, to set only not after: pass 0 as first value
+ * @param bool $skipyear whether year is allowed to be skipped. If year is actually skipped range comparison will not take place
  * @return mixed bool or error type string for range comparison. Confirm a validation comparing return value as true only.
  */
 function validate_date($date, $range = array(), $skipyear = false)

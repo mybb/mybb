@@ -273,6 +273,10 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$bday = explode("-", $mybb->user['birthday']);
 			$mybb->input['bday3'] = $bday[2];
 		}
+		if(array_key_exists("invalid_returndate", $raw_errors) || array_key_exists("invalid_returndatebefore", $raw_errors))
+		{
+			$mybb->input['awayday'] = $mybb->input['awaymonth'] = $mybb->input['awayyear'] = "";
+		}
 
 		$errors = inline_error($errors);
 		$mybb->input['action'] = "profile";
@@ -422,6 +426,10 @@ if($mybb->input['action'] == "profile")
 			$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
 			$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
 			$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
+			if(empty($returndate[2]))
+			{
+				$returndate[2] = "";
+			}
 			$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 		}
 		else
