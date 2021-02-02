@@ -422,6 +422,15 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday_privacy");
 			return false;
 		}
+		else if ($birthdayprivacy == 'age')
+		{
+			$birthdayyear = &$this->data['birthday']['year'];
+			if(empty($birthdayyear))
+			{
+				$this->set_error("conflicted_birthday_privacy");
+				return false;
+			}
+		}
 		return true;
 	}
 

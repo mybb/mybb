@@ -247,9 +247,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		$raw_errors = $userhandler->get_errors();
 
 		// Set to stored value if invalid
-		if(array_key_exists("invalid_birthday_privacy", $raw_errors))
+		if(array_key_exists("invalid_birthday_privacy", $raw_errors) || array_key_exists("conflicted_birthday_privacy", $raw_errors))
 		{
 			$mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
+			$bday = explode("-", $mybb->user['birthday']);
+			$mybb->input['bday3'] = $bday[2];
 		}
 
 		$errors = inline_error($errors);
@@ -288,10 +290,10 @@ if($mybb->input['action'] == "profile")
 		{
 			$bday[1] = 0;
 		}
-		if(!isset($bday[2]))
-		{
-			$bday[2] = '';
-		}
+	}
+	if(!isset($bday[2]) || $bday[2] == 0)
+	{
+		$bday[2] = '';
 	}
 
 	$plugins->run_hooks('usercp_profile_start');
