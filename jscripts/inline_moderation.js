@@ -1,6 +1,24 @@
 var inlineModeration = {
 	init: function()
 	{
+		$(function(){
+			if($("#inlinemoderation_options_selector").length !== 0) {
+				$("#inlinemoderation_options_selector").on('change', function() {
+					$("#inlinemoderation_options").trigger('submit');
+				});
+
+				$("#inlinemoderation_options").on('submit', function(){
+					if($("#inlinemoderation_options_selector").val() == "") {
+						$.jGrowl(lang.select_tool, {theme:'jgrowl_error'});
+						return false;
+					} else if($('input[name^="inlinemod_"]:checked').length === 0) {
+						$.jGrowl(lang.selected_nil, {theme:'jgrowl_error'});
+						return false;
+					}
+				});
+			}
+		});
+		
 		if(!inlineType || !inlineId)
 		{
 			return false;

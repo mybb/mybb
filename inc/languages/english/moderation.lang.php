@@ -159,7 +159,7 @@ $l['purgespammer_invalid_user'] = "You have specified an invalid user.";
 $l['purgespammer_modlog'] = "Purged Spammer";
 
 $l['error_invalidpm'] = "Invalid PM";
-$l['error_nomergeposts'] = "You need to select one or more posts to be able to merge posts together.";
+$l['error_nomergeposts'] = "You need to select at least two or more posts to be able to merge posts together.";
 $l['error_cantsplitonepost'] = "You cannot split a thread that contains only one post.";
 $l['error_badmergeurl'] = "The URL for the thread to be merged seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";
 $l['error_badmovepostsurl'] = "The URL for the thread to move to seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";
