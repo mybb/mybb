@@ -5622,14 +5622,14 @@ function validate_date($date, $range = array(), $skipyear = false)
 	if(!empty($range) && !$skipyear)
 	{
 		$stamp = strtotime(implode('-', $date)); // Year of 4 digit & - as separator forces the format to be d-m-Y
-		if(isset($range[0]) && !empty(isset($range[0])) && is_numeric($range[0]) && (int)$range[0] == $range[0])
+		if(isset($range[0]) && !empty($range[0]) && is_numeric($range[0]) && (int)$range[0] == $range[0])
 		{
 			if((int)$range[0] > $stamp)
 			{
 				return 'before';
 			}
 		}
-		if(isset($range[1]) && !empty(isset($range[1])) && is_numeric($range[1]) && (int)$range[1] == $range[1])
+		if(isset($range[1]) && !empty($range[1]) && is_numeric($range[1]) && (int)$range[1] == $range[1])
 		{
 			if((int)$range[1] < $stamp)
 			{
