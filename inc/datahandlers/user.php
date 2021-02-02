@@ -851,15 +851,13 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 
-			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
-			if(!$returnday || !$returnmonth || !$returnyear)
+			// Validate the return date
+			$validate_awaydate = validate_date($user['away']['returndate'], array(TIME_NOW));
+			if($validate_awaydate !== true)
 			{
-				$this->set_error("missing_returndate");
+				$this->set_error("invalid_returndate" . $validate_awaydate);
 				return false;
 			}
-
-			// Validate the return date lengths
-			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);
 		}
 		return true;
 	}
