@@ -5595,15 +5595,21 @@ function validate_date($date, $range = array(), $skipyear = false)
 	{
 		$date = preg_split('/[-\/\.]/', $date);
 	}
+
 	if((!isset($date[2]) || empty($date[2])) && $skipyear)
 	{
-		$date[2] = my_date('Y', TIME_NOW); // If the year is skipped append current year to validate
-	} else {
+		$date[2] = '2000'; // If the year is skipped append a leap year to validate
+	}
+	else
+	{
 		$skipyear = false; // Year provided, reset
 	}
-	if (count($date) !== 3 || !is_numeric($date[0]) || !is_numeric($date[1]) || !is_numeric($date[2])) {
+
+	if (count($date) !== 3 || !is_numeric($date[0]) || !is_numeric($date[1]) || !is_numeric($date[2]))
+	{
 		return false;
 	}
+	
 	$date[0] = str_pad($date[0], 2, '0', STR_PAD_LEFT);
 	$date[1] = str_pad($date[1], 2, '0', STR_PAD_LEFT);
 

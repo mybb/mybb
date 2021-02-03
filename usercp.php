@@ -410,23 +410,18 @@ if($mybb->input['action'] == "profile")
 		$awaycheck = array('', '');
 		if($errors)
 		{
-			if($user['away'] == 1)
+			if($mybb->get_input('away', MyBB::INPUT_INT) == 1)
 			{
 				$awaycheck[1] = "checked=\"checked\"";
+				$returndate = array($mybb->get_input('awayday', MyBB::INPUT_INT), $mybb->get_input('awaymonth', MyBB::INPUT_INT), $mybb->get_input('awayyear', MyBB::INPUT_INT));
+				$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 			}
 			else
 			{
 				$awaycheck[0] = "checked=\"checked\"";
+				$returndate = array(0, 0, "");
+				$user['awayreason'] = '';
 			}
-			$returndate = array();
-			$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
-			$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
-			$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
-			if(empty($returndate[2]))
-			{
-				$returndate[2] = "";
-			}
-			$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 		}
 		else
 		{
@@ -453,18 +448,13 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 
-		$returndatesel = '';
+		$returndatesel = $selected = '';
 		for($day = 1; $day <= 31; ++$day)
 		{
 			if($returndate[0] == $day)
 			{
 				$selected = "selected=\"selected\"";
 			}
-			else
-			{
-				$selected = '';
-			}
-
 			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
 
