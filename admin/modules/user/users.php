@@ -806,11 +806,6 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->suspendmoderate_error;
 			}
 
-			if(isset($away_in_past))
-			{
-				$errors[] = $lang->error_acp_return_date_past;
-			}
-
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
