@@ -312,7 +312,7 @@ if($mybb->input['action'] == "profile")
 
 	$plugins->run_hooks("usercp_profile_start");
 
-	$bdaydaysel = '';
+	$bdaydaysel = $selected = '';
 	for($day = 1; $day <= 31; ++$day)
 	{
 		if($bday[0] == $day)
@@ -455,6 +455,11 @@ if($mybb->input['action'] == "profile")
 			{
 				$selected = "selected=\"selected\"";
 			}
+			else
+			{
+				$selected = '';
+			}
+			
 			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
 

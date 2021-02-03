@@ -2911,6 +2911,11 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$selected = "selected=\"selected\"";
 			}
+			else
+			{
+				$selected = '';
+			}
+			
 			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
 
