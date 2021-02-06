@@ -43,7 +43,7 @@ if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
 
-	if(!is_array($mybb->input['aids']))
+	if(!is_array($mybb->get_input('aids')))
 	{
 		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
 	}
@@ -313,6 +313,8 @@ if($mybb->input['action'] == "orphans")
 
 	// This process is quite intensive so we split it up in to 2 steps, one which scans the file system and the other which scans the database.
 
+	$mybb->input['step'] = $mybb->get_input('step', MyBB::INPUT_INT);
+
 	// Finished second step, show results
 	if($mybb->input['step'] == 3)
 	{
@@ -320,26 +322,26 @@ if($mybb->input['action'] == "orphans")
 
 		$reults = 0;
 		// Incoming attachments which exist as files but not in database
-		if($mybb->input['bad_attachments'])
+		if(!empty($mybb->input['bad_attachments']))
 		{
 			$bad_attachments = my_unserialize($mybb->input['bad_attachments']);
 			$results = count($bad_attachments);
 		}
 
 		$aids = array();
-		if($mybb->input['missing_attachment_files'])
+		if(!empty($mybb->input['missing_attachment_files']))
 		{
 			$missing_attachment_files = my_unserialize($mybb->input['missing_attachment_files']);
 			$aids = array_merge($aids, $missing_attachment_files);
 		}
 
-		if($mybb->input['missing_threads'])
+		if(!empty($mybb->input['missing_threads']))
 		{
 			$missing_threads = my_unserialize($mybb->input['missing_threads']);
 			$aids = array_merge($aids, $missing_threads);
 		}
 
-		if($mybb->input['incomplete_attachments'])
+		if(!empty($mybb->input['incomplete_attachments']))
 		{
 			$incomplete_attachments = my_unserialize($mybb->input['incomplete_attachments']);
 			$aids = array_merge($aids, $incomplete_attachments);
@@ -350,7 +352,7 @@ if($mybb->input['action'] == "orphans")
 			$aids[$key] = (int)$aid;
 		}
 
-		$results += count($aids);
+		$results = count($aids);
 
 		if($results == 0)
 		{
@@ -479,7 +481,7 @@ if($mybb->input['action'] == "orphans")
 		// Now send the user to the final page
 		$form = new Form("index.php?module=forum-attachments&amp;action=orphans&amp;step=3", "post", "redirect_form", 0, "");
 		// Scan complete
-		if($mybb->input['bad_attachments'])
+		if($mybb->get_input('bad_attachments'))
 		{
 			echo $form->generate_hidden_field("bad_attachments", $mybb->input['bad_attachments']);
 		}
@@ -573,7 +575,7 @@ if($mybb->input['action'] == "orphans")
 				}
 				closedir($dh);
 				// Any reamining to check?
-				if(count($attachments_to_check) > 0)
+				if(!empty($attachments_to_check))
 				{
 					$attachments_to_check = array_map(array($db, "escape_string"), $attachments_to_check);
 					$attachment_names = "'".implode("','", $attachments_to_check)."'";
@@ -637,9 +639,11 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_attachments_start");
 
-	if($mybb->request_method == "post" || $mybb->input['results'] == 1)
+	if($mybb->request_method == "post" || $mybb->get_input('results', MyBB::INPUT_INT) == 1)
 	{
 		$search_sql = '1=1';
+
+		$plugins->run_hooks("admin_forum_attachments_commit_start");
 
 		// Build the search SQL for users
 
@@ -647,7 +651,7 @@ if(!$mybb->input['action'])
 		$user_like_fields = array("filename", "filetype");
 		foreach($user_like_fields as $search_field)
 		{
-			if($mybb->input[$search_field])
+			if($mybb->get_input($search_field))
 			{
 				$search_sql .= " AND a.{$search_field} LIKE '%".$db->escape_string_like($mybb->input[$search_field])."%'";
 			}
@@ -699,7 +703,7 @@ if(!$mybb->input['action'])
 		$forum_cache = cache_forums();
 
 		// Searching for attachments in a specific forum, we need to fetch all child forums too
-		if($mybb->input['forum'])
+		if($mybb->get_input('forum'))
 		{
 			if(!is_array($mybb->input['forum']))
 			{
@@ -732,11 +736,11 @@ if(!$mybb->input['action'])
 			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
 		);
 
-		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
+		if(!empty($mybb->input['dateuploaded']) && $mybb->request_method == "post")
 		{
 			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
-		if($mybb->input['filesize'] && $mybb->request_method == "post")
+		if(!empty($mybb->input['filesize']) && $mybb->request_method == "post")
 		{
 			$direction_fields['filesize'] *= 1024;
 		}
@@ -744,7 +748,7 @@ if(!$mybb->input['action'])
 		foreach($direction_fields as $field_name => $field_content)
 		{
 			$direction_field = $field_name."_dir";
-			if($mybb->input[$field_name] && $mybb->input[$direction_field])
+			if(!empty($mybb->input[$field_name]) && !empty($mybb->input[$direction_field]))
 			{
 				switch($mybb->input[$direction_field])
 				{
@@ -822,6 +826,8 @@ if(!$mybb->input['action'])
 				$mybb->input['order'] = "asc";
 			}
 
+			$plugins->run_hooks("admin_forum_attachments_commit");
+
 			$page->add_breadcrumb_item($lang->results);
 			$page->output_header($lang->index_find_attachments);
 
@@ -855,15 +861,23 @@ if(!$mybb->input['action'])
 			}
 
 			// Need to draw pagination for this result set
+			$pagination = '';
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
-				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])
 					{
 						$pagination_url .= "&{$var}=".urlencode($mybb->input[$var]);
+					}
+				}
+				if(is_array($mybb->input['forum']) && !empty($mybb->input['forum']))
+				{
+					foreach($mybb->input['forum'] as $fid)
+					{
+						$pagination_url .= "&forum[]=".(int)$fid;
 					}
 				}
 				$pagination = draw_admin_pagination($mybb->input['page'], $mybb->input['perpage'], $num_results, $pagination_url);
@@ -895,9 +909,9 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=forum-attachments", "post");
 
 	$form_container = new FormContainer($lang->find_where);
-	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
-	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
+	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->get_input('filename'), array('id' => 'filename')), 'filename');
+	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->get_input('mimetype'), array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->get_input('forum', MyBB::INPUT_INT), array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
 	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->poster_is, "", $form->generate_select_box('user_types', array('0' => $lang->poster_is_either, '1' => $lang->poster_is_user, '-1' => $lang->poster_is_guest), $mybb->get_input('user_types', MyBB::INPUT_INT), array('id' => 'guests')), 'user_types');
 
@@ -912,9 +926,9 @@ if(!$mybb->input['action'])
 		"less_than" => $lang->less_than
 	);
 
-	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded', 'min' => 0))." {$lang->days_ago}", 'dateuploaded');
-	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize', 'min' => 0))." {$lang->kb}", 'dateuploaded');
-	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads', 'min' => 0))."", 'dateuploaded');
+	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->get_input('dateuploaded_dir'), array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->get_input('dateuploaded', MyBB::INPUT_INT), array('id' => 'dateuploaded', 'min' => 0))." {$lang->days_ago}", 'dateuploaded');
+	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->get_input('filesize_dir'), array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->get_input('filesize', MyBB::INPUT_INT), array('id' => 'filesize', 'min' => 0))." {$lang->kb}", 'dateuploaded');
+	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->get_input('downloads_dir'), array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->get_input('downloads', MyBB::INPUT_INT), array('id' => 'downloads', 'min' => 0))."", 'dateuploaded');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->display_options);
@@ -929,8 +943,8 @@ if(!$mybb->input['action'])
 		"asc" => $lang->asc,
 		"desc" => $lang->desc
 	);
-	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
+	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->get_input('order'), array('id' => 'order')), 'sortby');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->get_input('perpage', MyBB::INPUT_INT), array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);

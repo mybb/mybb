@@ -69,9 +69,9 @@ var Post = {
 		}
 
 		var id = 'message';
-		if(typeof $('textarea').sceditor != 'undefined')
+		if(typeof MyBBEditor !== 'undefined' && MyBBEditor !== null)
 		{
-			$('textarea').sceditor('instance').insert(json.message);
+			MyBBEditor.insert(json.message);
 		}
 		else
 		{
@@ -105,7 +105,7 @@ var Post = {
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
 					
-					var form = $('input[name=rem]').parents('form');
+					var form = $('input[name^=\'rem\']').parents('form');
 
 					if(use_xmlhttprequest != 1)
 					{
@@ -129,11 +129,29 @@ var Post = {
 							}
 							else if (data.success)
 							{
+								if($('[id^=attachment_]').length == 1){ 
+									$('input[name="updateattachment"]').hide(); 
+								}
+
 								$('#attachment_'+aid).hide(500, function()
 								{
+									var instance = MyBBEditor;
+									if(typeof MyBBEditor === 'undefined') {
+										instance = $('#message').sceditor('instance');
+									}
+
+									if(instance.sourceMode())
+									{
+										instance.setSourceEditorValue(instance.getSourceEditorValue(false).split('[attachment=' + aid + ']').join(''));
+									} else {
+										instance.setWysiwygEditorValue(instance.getWysiwygEditorValue(false).split('[attachment=' + aid + ']').join(''));
+									}
+
 									$(this).remove();
 								});
 							}
+							document.input.attachmentaid.value = '';
+							document.input.attachmentact.value = '';
 						}
 					});
 				}

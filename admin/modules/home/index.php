@@ -38,7 +38,6 @@ if($mybb->input['action'] == "version_check")
 		"last_check" => TIME_NOW
 	);
 
-	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)
@@ -55,7 +54,7 @@ if($mybb->input['action'] == "version_check")
 
 	$contents = trim($contents);
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	$latest_code = (int)$tree['mybb']['version_code']['value'];
@@ -63,21 +62,13 @@ if($mybb->input['action'] == "version_check")
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
-		$version_warn = 1;
 		$updated_cache['latest_version'] = $latest_version;
 		$updated_cache['latest_version_code'] = $latest_code;
-	}
-	else
-	{
-		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
-	}
-
-	if($version_warn)
-	{
 		$page->output_error("<p><em>{$lang->error_out_of_date}</em> {$lang->update_forum}</p>");
 	}
 	else
 	{
+		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
 		$page->output_success("<p><em>{$lang->success_up_to_date}</em></p>");
 	}
 
@@ -105,29 +96,13 @@ if($mybb->input['action'] == "version_check")
 
 		foreach($feed_parser->items as $item)
 		{
-			$description = $item['description'];
-			$content = $item['content'];
-
-			$description = $post_parser->parse_message($description, array(
-					'allow_html' => true,
-				)
-			);
-
-			$content = $post_parser->parse_message($content, array(
-					'allow_html' => true,
-				)
-			);
-
-			$description = preg_replace('#<img(.*)/>#', '', $description);
-			$content = preg_replace('#<img(.*)/>#', '', $content);
-
 			if(!isset($updated_cache['news'][2]))
 			{
 				$updated_cache['news'][] = array(
-					'title' => htmlspecialchars_uni($item['title']),
-					'description' => $description,
-					'link' => htmlspecialchars_uni($item['link']),
-					'author' => htmlspecialchars_uni($item['author']),
+					'title' => $item['title'],
+					'description' => $item['description'],
+					'link' => $item['link'],
+					'author' => $item['author'],
 					'dateline' => $item['date_timestamp'],
 				);
 			}
@@ -135,12 +110,14 @@ if($mybb->input['action'] == "version_check")
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
-				$stamp = my_date('relative', $item['date_timestamp']);
+				$stamp = my_date('relative', (int)$item['date_timestamp']);
 			}
 
 			$link = htmlspecialchars_uni($item['link']);
+			$title = htmlspecialchars_uni($item['title']);
+			$description = htmlspecialchars_uni(strip_tags($item['description']));
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>{$title}</strong></span><br /><br />{$description}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -253,13 +230,9 @@ elseif(!$mybb->input['action'])
 	$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
 	$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
 
-	// If report medium is MCP...
-	if($mybb->settings['reportmethod'] == "db")
-	{
-		// Get the number of reported posts that haven't been marked as read yet
-		$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
-		$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
-	}
+	// Get the number of reported posts that haven't been marked as read yet
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
+	$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
 
 	// Get the number and total file size of attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
@@ -292,6 +265,13 @@ elseif(!$mybb->input['action'])
 
 	$adminmessage = $cache->read("adminnotes");
 
+	if($adminmessage === false)
+	{
+		$adminmessage = array(
+			'adminmessage' => '',
+		);
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->mybb_server_stats, array("colspan" => 2));
 	$table->construct_header($lang->forum_stats, array("colspan" => 2));
@@ -305,14 +285,9 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(PHP_VERSION, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	if($mybb->settings['reportmethod'] == "db")
-	{
-		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
-	}
-	else
-	{
-		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}", array('width' => '25%'));
-	}
+
+	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
+	
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
@@ -356,11 +331,15 @@ elseif(!$mybb->input['action'])
 	{
 		foreach($update_check['news'] as $news_item)
 		{
-			$posted = my_date('relative', $news_item['dateline']);
-			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\" rel=\"noopener\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$posted = my_date('relative', (int)$news_item['dateline']);
+			$link = htmlspecialchars_uni($news_item['link']);
+			$title = htmlspecialchars_uni($news_item['title']);
+			$description = htmlspecialchars_uni(strip_tags($news_item['description']));
+
+			$table->construct_cell("<strong><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">{$title}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell($news_item['description']);
+			$table->construct_cell($description);
 			$table->construct_row();
 		}
 	}

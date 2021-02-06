@@ -19,7 +19,6 @@ function task_versioncheck($task)
 	);
 
 	// Check for the latest version
-	require_once MYBB_ROOT.'inc/class_xml.php';
 	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)
@@ -30,7 +29,7 @@ function task_versioncheck($task)
 
 	$contents = trim($contents);
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	$latest_code = (int)$tree['mybb']['version_code']['value'];
@@ -67,20 +66,11 @@ function task_versioncheck($task)
 				break;
 			}
 
-			$description = $item['description'];
-
-			$description = $post_parser->parse_message($description, array(
-					'allow_html' => true,
-				)
-			);
-
-			$description = preg_replace('#<img(.*)/>#', '', $description);
-
 			$updated_cache['news'][] = array(
-				'title' => htmlspecialchars_uni($item['title']),
-				'description' => $description,
-				'link' => htmlspecialchars_uni($item['link']),
-				'author' => htmlspecialchars_uni($item['author']),
+				'title' => $item['title'],
+				'description' => $item['description'],
+				'link' => $item['link'],
+				'author' => $item['author'],
 				'dateline' => $item['date_timestamp']
 			);
 		}

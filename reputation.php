@@ -865,7 +865,7 @@ if(!$mybb->input['action'])
 	");
 
 	// Gather a list of items that have post reputation
-	$reputation_cache = $post_cache = $post_reputation = array();
+	$reputation_cache = $post_cache = $post_reputation = $not_reportable = array();
 
 	while($reputation_vote = $db->fetch_array($query))
 	{
@@ -943,6 +943,21 @@ if(!$mybb->input['action'])
 	}
 
 	$reputation_votes = '';
+	if(!empty($reputation_cache) && $mybb->user['uid'] != 0)
+	{
+		$reputation_ids = implode(',', array_map('array_shift', $reputation_cache));
+		$query = $db->query("
+			SELECT id, reporters FROM ".TABLE_PREFIX."reportedcontent WHERE reportstatus != '1' AND id IN (".$reputation_ids.") AND type = 'reputation'
+		");
+		while($report = $db->fetch_array($query))
+		{
+			$reporters = my_unserialize($report['reporters']);
+			if(is_array($reporters) && in_array($mybb->user['uid'], $reporters))
+			{
+				$not_reportable[] =  $report['id'];
+			}
+		}
+	}
 
 	foreach($reputation_cache as $reputation_vote)
 	{
@@ -1025,7 +1040,7 @@ if(!$mybb->input['action'])
 		}
 
 		$report_link = '';
-		if($mybb->user['uid'] != 0)
+		if($mybb->user['uid'] != 0 && !in_array($reputation_vote['rid'], $not_reportable))
 		{
 			eval("\$report_link = \"".$templates->get("reputation_vote_report")."\";");
 		}

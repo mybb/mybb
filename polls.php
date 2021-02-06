@@ -917,8 +917,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 
-	$query = $db->simple_select("threads", "*", "poll='".(int)$poll['pid']."'");
-	$thread = $db->fetch_array($query);
+	$thread = get_thread($poll['tid']);
 
 	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{

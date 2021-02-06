@@ -128,7 +128,7 @@ class LoginDataHandler extends DataHandler
 	{
 		$this->get_login_data();
 
-		if(!$this->login_data['uid'])
+		if(empty($this->login_data) || !$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
@@ -309,9 +309,6 @@ class LoginDataHandler extends DataHandler
 		// Login to MyBB
 		my_setcookie('loginattempts', 1);
 		my_setcookie("sid", $session->sid, -1, true);
-
-		$ip_address = $db->escape_binary($session->packedip);
-		$db->delete_query("sessions", "ip = {$ip_address} AND sid != '{$session->sid}'");
 
 		$newsession = array(
 			"uid" => $user['uid'],

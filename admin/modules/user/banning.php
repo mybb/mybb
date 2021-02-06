@@ -54,7 +54,7 @@ $plugins->run_hooks("admin_user_banning_begin");
 if($mybb->input['action'] == "prune")
 {
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "prune")
 if($mybb->input['action'] == "lift")
 {
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -151,7 +151,6 @@ if($mybb->input['action'] == "lift")
 
 		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 
-		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Log admin action
@@ -171,13 +170,13 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	$user = get_user($ban['uid']);
-
-	if(!$ban['uid'])
+	if(empty($ban['uid']))
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$user = get_user($ban['uid']);
 
 	$plugins->run_hooks("admin_user_banning_edit");
 
@@ -238,8 +237,6 @@ if($mybb->input['action'] == "edit")
 			$db->update_query('users', $update_array, "uid = {$ban['uid']}");
 
 			$plugins->run_hooks("admin_user_banning_edit_commit");
-
-			$cache->update_banned();
 
 			// Log admin action
 			log_admin_action($ban['uid'], $user['username']);
@@ -317,14 +314,14 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['username'], $options);
 
 		// Are we searching a user?
-		if(isset($mybb->input['search']))
+		if(is_array($user) && isset($mybb->input['search']))
 		{
 			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
 			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
 		}
 		else
 		{
-			if(!$user['uid'])
+			if(empty($user['uid']))
 			{
 				$errors[] = $lang->error_invalid_username;
 			}
@@ -347,11 +344,11 @@ if(!$mybb->input['action'])
 				{
 					$errors[] = $lang->error_already_banned;
 				}
-			}
 
-			if($user['uid'] == $mybb->user['uid'])
-			{
-				$errors[] = $lang->error_ban_self;
+				if($user['uid'] == $mybb->user['uid'])
+				{
+					$errors[] = $lang->error_ban_self;
+				}
 			}
 
 			// No errors? Insert
@@ -403,8 +400,6 @@ if(!$mybb->input['action'])
 
 				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
 
-				$cache->update_banned();
-
 				// Log admin action
 				log_admin_action($user['uid'], $user['username'], $lifted);
 
@@ -423,9 +418,10 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
+	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
+		$current_page = $mybb->input['page'];
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);
@@ -449,7 +445,11 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
-	if($mybb->input['uid'] && !$mybb->input['username'])
+	$mybb->input['username'] = $mybb->get_input('username');
+	$mybb->input['reason'] = $mybb->get_input('reason');
+	$mybb->input['bantime'] = $mybb->get_input('bantime');
+
+	if(isset($mybb->input['uid']) && empty($mybb->input['username']))
 	{
 		$user = get_user($mybb->input['uid']);
 		$mybb->input['username'] = $user['username'];

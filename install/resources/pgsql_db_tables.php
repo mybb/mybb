@@ -85,10 +85,10 @@ $tables[] = "CREATE TABLE mybb_attachments (
   pid int NOT NULL default '0',
   posthash varchar(50) NOT NULL default '',
   uid int NOT NULL default '0',
-  filename varchar(120) NOT NULL default '',
+  filename varchar(255) NOT NULL default '',
   filetype varchar(120) NOT NULL default '',
   filesize int NOT NULL default '0',
-  attachname varchar(120) NOT NULL default '',
+  attachname varchar(255) NOT NULL default '',
   downloads int NOT NULL default '0',
   dateuploaded int NOT NULL default '0',
   visible smallint NOT NULL default '0',
@@ -976,6 +976,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canratemembers smallint NOT NULL default '0',
   canchangename smallint NOT NULL default '0',
   canbereported smallint NOT NULL default '0',
+  canbeinvisible smallint NOT NULL default '1',
   canchangewebsite smallint NOT NULL default '1',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
@@ -1033,7 +1034,6 @@ $tables[] = "CREATE TABLE mybb_users (
   lastpost int NOT NULL default '0',
   website varchar(200) NOT NULL default '',
   icq varchar(10) NOT NULL default '',
-  yahoo varchar(50) NOT NULL default '',
   skype varchar(75) NOT NULL default '',
   google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
@@ -1140,5 +1140,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes text NOT NULL default '',
 	PRIMARY KEY(wid)
 );";
-
 

@@ -323,9 +323,9 @@ if($mybb->input['action'] == "warn")
 		$custom_reason = htmlspecialchars_uni($mybb->get_input('custom_reason'));
 		$custom_points = $mybb->get_input('custom_points', MyBB::INPUT_INT);
 		$expires = $mybb->get_input('expires', MyBB::INPUT_INT);
-		if($mybb->get_input('expires_period', MyBB::INPUT_INT))
+		if($mybb->get_input('expires_period'))
 		{
-			$expires_period[$mybb->get_input('expires_period', MyBB::INPUT_INT)] = "selected=\"selected\"";
+			$expires_period[$mybb->get_input('expires_period')] = "selected=\"selected\"";
 		}
 	}
 	else

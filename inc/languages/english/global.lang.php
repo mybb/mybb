@@ -20,7 +20,7 @@ $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
-$l['bottomlinks_markread'] = "Mark All Forums Read";
+$l['bottomlinks_markread'] = "Mark all forums read";
 
 $l['welcome_usercp'] = "User CP";
 $l['welcome_modcp'] = "Mod CP";
@@ -308,9 +308,11 @@ $l['forumjump_wol'] = "Who's Online";
 $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
+$l['confirm_title'] = "Please Confirm";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
+$l['ratings_update_error'] = 'There was an error updating the rating.';
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
@@ -350,13 +352,13 @@ $l['days_short'] = "d";
 $l['hour'] = "Hour";
 $l['hour_short'] = "h";
 $l['hours'] = "Hours";
-$l['hours_short'] ="h";
+$l['hours_short'] = "h";
 $l['minute'] = "Minute";
-$l['minute_short'] ="m";
+$l['minute_short'] = "m";
 $l['minutes'] = "Minutes";
 $l['minutes_short'] = "m";
 $l['second'] = "Second";
-$l['second_short'] ="s";
+$l['second_short'] = "s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 
@@ -441,13 +443,16 @@ $l['select_theme'] = "Quick Theme Select";
 
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_nocaptcha'] = "Please solve the reCAPTCHA to verify that you're not a robot.";
+$l['invalid_hcaptcha'] = "Please solve the hCaptcha to verify that you're not a robot.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['image_verification'] = "Image Verification";
 $l['human_verification'] = "Human Verification";
 $l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
 $l['verification_note_nocaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
 $l['verification_subnote'] = "(case insensitive)";
-$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification. Please try again.";
+$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification by reCAPTCHA. Please try again.";
+$l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification by hCaptcha. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 $l['question_fetch_failure'] = 'There was an error fetching the new question.';
 
@@ -591,3 +596,5 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['use_default'] = "Use Default";

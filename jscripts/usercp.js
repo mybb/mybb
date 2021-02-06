@@ -199,7 +199,7 @@ var UserCP = {
 			type: 'post',
 			url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type,
 			data: { ajax: 1, add_username: type_add_username.val() },
-			async: false,
+			async: true,
 	        complete: function (request)
 	        {
 				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
@@ -247,7 +247,7 @@ var UserCP = {
 						type: 'post',
 						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
 						data: { ajax: 1 },
-						async: false
+						async: true
 					});
 				}
 			}

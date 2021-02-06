@@ -91,7 +91,7 @@ $lang->load('global');
 $lang->load('messages');
 
 // Wipe lockout cookie if enough time has passed
-if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+if(isset($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
 {
 	my_unsetcookie('lockoutexpiry');
 }
@@ -183,9 +183,8 @@ if(in_array($current_page, $valid))
 	if(isset($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -195,9 +194,8 @@ if(in_array($current_page, $valid))
 	else if(isset($mybb->input['tid']))
 	{
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
-		$fid = $db->fetch_field($query, 'fid');
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -206,10 +204,9 @@ if(in_array($current_page, $valid))
 	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
 	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
-		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
-		$fid = $db->fetch_field($query, 'fid');
+		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
 
-		if($fid)
+		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
 			$style = $forum_cache[$fid];
 			$load_from_forum = 1;
@@ -535,7 +532,7 @@ if($mybb->user['uid'] != 0)
 	{
 		eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
 	}
-    
+
 	if($mybb->usergroup['cansearch'] == 1)
 	{
 		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
@@ -630,7 +627,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 		$user['gid'] = (int)$user['gid'];
 
-		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
 		{
 			$showjoinnotice = true;
 			$gids .= ",'{$user['gid']}'";
@@ -661,9 +658,10 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $modnotice = '';
 $moderation_queue = array();
+$can_access_moderationqueue = false;
 
 // This user is a moderator, super moderator or administrator
-if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
+if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 {
 	// Only worth checking if we are here because we have ACP permissions and the other condition fails
 	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
@@ -738,15 +736,18 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 				{
 					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 				}
-				
+
 				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports', 1, 0).'";');
 			}
 		}
 	}
 }
 
-// Get awaiting moderation queue stats
-if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
+// Get awaiting moderation queue stats, except if the page is editpost.php,
+// because that page can make changes - (un)approving attachments, or deleting
+// unapproved attachments - that would invalidate anything generated here.
+// Just leave this queue notification blank for editpost.php.
+if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1)))
 {
 	$unapproved_posts = $unapproved_threads = 0;
 	$query = $db->simple_select("posts", "replyto", "visible = 0");
@@ -809,30 +810,30 @@ if(isset($lang->settings['charset']) && $lang->settings['charset'])
 $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == 1)
 {
-	// Fetch details on their ban
-	$query = $db->simple_select('banned', '*', "uid = '{$mybb->user['uid']}'", array('limit' => 1));
-	$ban = $db->fetch_array($query);
-
-	if($ban['uid'])
+	// Format their ban lift date and reason appropriately
+	if(!empty($mybb->user['banned']))
 	{
-		// Format their ban lift date and reason appropriately
-		$banlift = $lang->banned_lifted_never;
-		$reason = htmlspecialchars_uni($ban['reason']);
-
-		if($ban['lifted'] > 0)
+		if(!empty($mybb->user['banlifted']))
 		{
-			$banlift = my_date('normal', $ban['lifted']);
+			$banlift = my_date('normal', $mybb->user['banlifted']);
+		}
+		else
+		{
+			$banlift = $lang->banned_lifted_never;
 		}
 	}
-
-	if(empty($reason))
-	{
-		$reason = $lang->unknown;
-	}
-
-	if(empty($banlift))
+	else
 	{
 		$banlift = $lang->unknown;
+	}
+
+	if(!empty($mybb->user['banreason']))
+	{
+		$reason = htmlspecialchars_uni($mybb->user['banreason']);
+	}
+	else
+	{
+		$reason = $lang->unknown;
 	}
 
 	// Display a nice warning to the user
@@ -891,6 +892,7 @@ if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gra
 	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
 
+$awaitingusers = '';
 if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
@@ -1160,7 +1162,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 
-	if($referrer['uid'])
+	if(!empty($referrer) && $referrer['uid'])
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
 	}
@@ -1223,16 +1225,12 @@ if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->setting
 }
 
 // work out which items the user has collapsed
-$colcookie = '';
+$collapse = $collapsed = $collapsedimg = $collapsedthead = array();
+
 if(!empty($mybb->cookies['collapsed']))
 {
 	$colcookie = $mybb->cookies['collapsed'];
-}
 
-$collapse = $collapsed = $collapsedimg = array();
-
-if($colcookie)
-{
 	// Preserve and don't unset $collapse, will be needed globally throughout many pages
 	$collapse = explode("|", $colcookie);
 	foreach($collapse as $val)

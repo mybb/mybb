@@ -222,7 +222,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
-	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: contains, 1: starts with, 2: ends with
+	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: starts with, 1: ends with, 2: contains
 
 	// If the string is less than 2 characters, quit.
 	if(my_strlen($mybb->input['query']) < 2)
@@ -255,15 +255,15 @@ if($mybb->input['action'] == "get_users")
 	$likestring = $db->escape_string_like($mybb->input['query']);
 	if($search_type == 1)
 	{
-		$likestring .= '%';
+		$likestring = '%'.$likestring;
 	}
 	elseif($search_type == 2)
 	{
-		$likestring = '%'.$likestring;
+		$likestring = '%'.$likestring.'%';
 	}
 	else
 	{
-		$likestring = '%'.$likestring.'%';
+		$likestring .= '%';
 	}
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '{$likestring}'", $query_options);
@@ -307,8 +307,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 		// Fetch some of the information from the first post of this thread.
 		$query_options = array(
-			"order_by" => "dateline",
-			"order_dir" => "asc",
+			"order_by" => "dateline, pid",
 		);
 		$query = $db->simple_select("posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
 		$post = $db->fetch_array($query);
@@ -735,7 +734,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE {$from_tid}p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums}
-		ORDER BY p.dateline
+		ORDER BY p.dateline, p.pid
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{

@@ -94,6 +94,16 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
 				$this->handler = new apcCacheHandler();
 				break;
+			// APCu cache
+			case "apcu":
+				require_once MYBB_ROOT."/inc/cachehandlers/apcu.php";
+				$this->handler = new apcuCacheHandler();
+				break;
+			// Redis cache
+			case "redis":
+				require_once MYBB_ROOT."/inc/cachehandlers/redis.php";
+				$this->handler = new redisCacheHandler();
+				break;
 		}
 
 		if($this->handler instanceof CacheHandlerInterface)
@@ -561,7 +571,7 @@ class datacache
 	{
 		global $forum_cache, $db;
 
-		$this->built_forum_permissions = array(0);
+		$this->forum_permissions = $this->built_forum_permissions = array(0);
 
 		// Get our forum list
 		cache_forums(true);
@@ -618,7 +628,7 @@ class datacache
 					$perms = $permissions;
 					foreach($usergroups as $gid)
 					{
-						if($this->forum_permissions[$forum['fid']][$gid])
+						if(isset($this->forum_permissions[$forum['fid']][$gid]) && $this->forum_permissions[$forum['fid']][$gid])
 						{
 							$perms[$gid] = $this->forum_permissions[$forum['fid']][$gid];
 						}
@@ -676,6 +686,7 @@ class datacache
 		");
 
 		$most_posts = 0;
+		$topposter = array();
 		while($user = $db->fetch_array($query))
 		{
 			if($user['poststoday'] > $most_posts)
@@ -894,21 +905,21 @@ class datacache
 	 */
 	function update_reportedcontent()
 	{
-		global $db, $mybb;
+		global $db;
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
-		$num = $db->fetch_array($query);
+		$unreadcount = $db->fetch_field($query, 'unreadcount');
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
-		$total = $db->fetch_array($query);
-
-		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
-		$latest = $db->fetch_array($query);
+		$reportcount = $db->fetch_field($query, 'reportcount');
+		
+		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
+		$dateline = $db->fetch_field($query, 'dateline');
 
 		$reports = array(
-			"unread" => $num['unreadcount'],
-			"total" => $total['reportcount'],
-			"lastdateline" => $latest['dateline']
+			'unread' => $unreadcount,
+			'total' => $reportcount,
+			'lastdateline' => $dateline,
 		);
 
 		$this->update("reportedcontent", $reports);
@@ -1089,19 +1100,12 @@ class datacache
 		$this->update("most_viewed_threads", $threads);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	function update_banned()
 	{
-		global $db;
-
-		$bans = array();
-
-		$query = $db->simple_select("banned");
-		while($ban = $db->fetch_array($query))
-		{
-			$bans[$ban['uid']] = $ban;
-		}
-
-		$this->update("banned", $bans);
+		// "banned" cache removed
 	}
 
 	function update_birthdays()

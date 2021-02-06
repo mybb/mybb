@@ -197,7 +197,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 }
 elseif($mybb->input['action'] == "joinrequests")
 {
-	$users = "";
+	$users = $joinrequests = '';
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
 	$query = $db->query("
@@ -237,11 +237,13 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 		error_no_permission();
 	}
 
+	$users = $mybb->get_input('removeuser', MyBB::INPUT_ARRAY);
+
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	if(is_array($mybb->get_input('removeuser', MyBB::INPUT_ARRAY)))
+	if(!empty($users))
 	{
-		foreach($mybb->get_input('removeuser', MyBB::INPUT_ARRAY) as $uid)
+		foreach($users as $uid)
 		{
 			leave_usergroup($uid, $gid);
 		}
@@ -379,6 +381,7 @@ else
 			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
 	}
 
+	$removeable_count = 0;
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{
@@ -413,7 +416,16 @@ else
 		}
 
 		// Checkbox for user management - only if current user is allowed
-		$checkbox = '';
+		$checkbox = $disabled = '';
+		if($user['usergroup'] == $gid)
+		{
+			$disabled = 'disabled="disabled"';
+		}
+		else
+		{
+			++$removeable_count;
+		}
+
 		if($groupleader['canmanagemembers'] == 1)
 		{
 			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
@@ -427,12 +439,15 @@ else
 		eval("\$users = \"".$templates->get("managegroup_no_users")."\";");
 	}
 
-	$add_user = '';
-	$remove_users = '';
+	$add_user = $remove_users = $invite_user = '';
+
 	if($groupleader['canmanagemembers'] == 1)
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
-		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		if($removeable_count)
+		{
+			eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		}
 	}
 
 	if($usergroup['type'] == 5 && $groupleader['caninvitemembers'] == 1)

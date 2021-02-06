@@ -51,7 +51,7 @@ $l['error_invalidusername'] = "The username you have entered appears to be inval
 $l['error_invalidpassword'] = "The password you entered is incorrect. If you have forgotten your password, click <a href=\"member.php?action=lostpw\">here</a>. Otherwise, go back and try again.";
 $l['error_postflooding'] = "We are sorry but we cannot process your post. The administrator has specified you are only allowed to post once every {1} seconds.";
 $l['error_nopermission_guest_1'] = "You are either not logged in or do not have permission to view this page. This could be because one of the following reasons:";
-$l['error_nopermission_guest_2'] = "You are not logged in or registered. Please use the form at the bottom of this page to login.";
+$l['error_nopermission_guest_2'] = "You are not logged in or registered. Please login and retry the desired action.";
 $l['error_nopermission_guest_3'] = "You do not have permission to access this page. Are you trying to access administrative pages or a resource that you shouldn't be?  Check in the forum rules that you are allowed to perform this action.";
 $l['error_nopermission_guest_4'] = "Your account may have been disabled by an administrator, or it may be awaiting account activation.";
 $l['error_nopermission_guest_5'] = "You have accessed this page directly rather than using appropriate forms or links.";
@@ -82,6 +82,7 @@ $l['failed_login_wait'] = "You have failed to login within the required number o
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
 $l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
+$l['error_attach_filename_length'] = "The file name '{1}' exceeds the maximum file name length {2}. Please upload a file with a shorter file name.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
@@ -98,7 +99,7 @@ $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
 $l['emailsubject_changepassword'] = "Change of Password at {1}";
-$l['emailbit_viewthread'] = "&hellip; (visit the thread to read more&hellip;)";
+$l['emailbit_viewthread'] = "... (visit the thread to read more...)";
 
 $l['email_lostpw'] = "{1},
 
@@ -272,7 +273,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of new threads in this forum, visit the following URL in your browser:
-{7}/usercp.php?action=removesubscription&type=forum&fid={9}&my_post_key={10}
+{7}/usercp.php?action=removesubscription&type=forum&fid={9}
 
 ------------------------------------------";
 
@@ -348,7 +349,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{6}/usercp.php?action=removesubscription&tid={8}&my_post_key={9}
+{6}/usercp.php?action=removesubscription&tid={8}
 
 ------------------------------------------";
 $l['email_reachedpmquota'] = "{1},
@@ -493,7 +494,7 @@ There may also be other replies to this thread but you will not receive anymore 
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-[url]{5}/usercp.php?action=removesubscription&tid={7}&my_post_key={8}[/url]
+[url]{5}/usercp.php?action=removesubscription&tid={7}[/url]
 
 ------------------------------------------";
 

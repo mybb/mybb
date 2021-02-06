@@ -39,6 +39,7 @@ $l['group_selection_box'] = "Group Selection Box";
 $l['group_selection_single'] = "Single Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
+$l['prefix_selection_box'] = "Prefix Selection Box";
 $l['php'] = "Evaluated PHP";
 $l['type'] = "Type";
 $l['extra'] = "Extra";
@@ -89,6 +90,7 @@ $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
 $l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 666.<br />For more information on CHMODing, see the <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.";
+$l['error_admin_email_settings_empty'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Admin Email</strong> was not saved as the setting can not be empty, and must be a valid email address.</div>';
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
@@ -98,6 +100,7 @@ $l['success_settings_updated_hiddencaptchaimage'] = '<div class="smalltext" styl
 $l['success_settings_updated_username_method'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allowed Login Methods</b> setting was not updated due to multiple users using the same e-mail address at this time.</div>';
 $l['success_settings_updated_allowmultipleemails'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allow emails to be registered multiple times?</b> setting can\'t be enabled because the <b>Allowed Login Methods</b> setting allows users to login by e-mail address.</div>';
 $l['success_settings_updated_captchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>CAPTCHA Images for Registration &amp; Posting</strong> setting was reverted to <strong>MyBB Default Captcha</strong> due to the lack of public/private key(s).</div>';
+$l['success_settings_updated_minsearchword'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Minimum Search Word Length</strong> setting was set to match the database system configuration.</div>';
 $l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
 $l['success_setting_group_added'] = "The setting group has been created successfully.";
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";

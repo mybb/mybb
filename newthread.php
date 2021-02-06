@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'newthread.php');
 $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,postbit,post_attachments_attachment_unapproved,newreply_modoptions_close,newreply_modoptions_stick";
 $templatelist .= ",newthread_disablesmilies,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,postbit_warninglevel_formatted,postbit_icon";
 $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_signature,post_prefixselect_prefix,post_prefixselect_single,posticons_icon";
-$templatelist .= ",post_captcha_hidden,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,post_javascript,postbit_gotopost,newthread_postoptions,post_attachments_add,post_attachments_viewlink";
+$templatelist .= ",post_captcha_hidden,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_javascript,postbit_gotopost,newthread_postoptions,post_attachments_add,post_attachments_viewlink";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,post_captcha";
 $templatelist .= ",postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_reputation_formatted_link,post_attachments_update,postbit_offline,newreply_modoptions,newthread_multiquote_external";
@@ -35,7 +35,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -157,7 +157,7 @@ $errors = array();
 $maximageserror = $attacherror = '';
 
 // Handle attachments if we've got any.
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -180,12 +180,14 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$errors = $ret['errors'];
 	}
 
-	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
-	if(!$mybb->get_input('submit'))
+	// If we were dealing with an attachment but didn't click 'Post Thread' or 'Save as Draft', force the new thread page again.
+	if(!$mybb->get_input('submit') && !$mybb->get_input('savedraft'))
 	{
 		$mybb->input['action'] = "newthread";
 	}
 }
+
+detect_attachmentact();
 
 // Are we removing an attachment from the thread?
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && $mybb->get_input('attachmentact') == "remove")
@@ -298,8 +300,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$mybb->get_input('savedraft') && !$pid)
 	{
 		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.dateline>".(TIME_NOW-600));
-		$duplicate_check = $db->fetch_field($query, "pid");
-		if($duplicate_check)
+		if($db->num_rows($query) > 0)
 		{
 			error($lang->error_post_already_submitted);
 		}
@@ -565,7 +566,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-					ORDER BY p.dateline
+					ORDER BY p.dateline, p.pid
 				");
 				while($quoted_post = $db->fetch_array($query))
 				{
@@ -880,13 +881,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$closeoption = '';
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
+		if(is_moderator($fid, "canopenclosethreads"))
 		{
 			eval("\$closeoption = \"".$templates->get("newreply_modoptions_close")."\";");
 		}
 
 		$stickoption = '';
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
+		if(is_moderator($fid, "canstickunstickthreads"))
 		{
 			eval("\$stickoption = \"".$templates->get("newreply_modoptions_stick")."\";");
 		}
@@ -964,7 +965,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
-		
+
+		$link_viewattachments = '';
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -975,12 +977,14 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$lang->attach_usage = "";
 		}
-		
+
+		$attach_add_options = '';
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 		}
 
+		$attach_update_options = '';
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
 			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
@@ -1024,18 +1028,26 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == 1)
+ 			if($post_captcha->type == DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5)))
+			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
+			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
+			{
+				$post_captcha->build_hcaptcha();
+			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
+		}
+		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
+		{
+			$post_captcha->build_hcaptcha();
 		}
 
 		if($post_captcha->html)

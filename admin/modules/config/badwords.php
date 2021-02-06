@@ -59,7 +59,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	}
 	else
 	{
-		if(!is_object($parser))
+		if(!isset($parser) || !is_object($parser))
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-badwords");
 	}
@@ -287,10 +287,13 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=config-badwords&amp;action=add", "post", "add");
 
+	$mybb->input['badword'] = $mybb->get_input('badword');
+	$mybb->input['replacement'] = $mybb->get_input('replacement');
+
 	$form_container = new FormContainer($lang->add_bad_word);
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $mybb->input['badword'], array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', !$mybb->get_input('regex'), array('id' => 'regex')), 'regex');
+	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', !$mybb->get_input('regex', MyBB::INPUT_INT), array('id' => 'regex')), 'regex');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);

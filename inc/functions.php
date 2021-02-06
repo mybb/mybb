@@ -224,7 +224,7 @@ function run_shutdown()
 		// Loop through and run them all
 		foreach($shutdown_queries as $query)
 		{
-			$db->query($query);
+			$db->write_query($query);
 		}
 	}
 
@@ -253,7 +253,7 @@ function send_mail_queue($count=10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
+	if($mailcache !== false && $mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->update_mailqueue(0, TIME_NOW);
@@ -332,7 +332,7 @@ function parse_page($contents)
  */
 function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
-	global $mybb, $lang, $mybbadmin, $plugins;
+	global $mybb, $lang, $plugins;
 
 	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
@@ -346,11 +346,6 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
-		}
-		elseif(defined("IN_ADMINCP"))
-		{
-			$offset = (float)$mybbadmin['timezone'];
-			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
@@ -610,35 +605,51 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 }
 
 /**
- * Generates a unique code for POST requests to prevent XSS/CSRF attacks
+ * Generates a code for POST requests to prevent XSS/CSRF attacks.
+ * Unique for each user or guest session and rotated every 6 hours.
  *
+ * @param int $rotation_shift Adjustment of the rotation number to generate a past/future code
  * @return string The generated code
  */
-function generate_post_check()
+function generate_post_check($rotation_shift=0)
 {
 	global $mybb, $session;
+
+	$rotation_interval = 6 * 3600;
+	$rotation = floor(TIME_NOW / $rotation_interval) + $rotation_shift;
+
+	$seed = $rotation;
+
 	if($mybb->user['uid'])
 	{
-		return md5($mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate']);
+		$seed .= $mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate'];
 	}
-	// Guests get a special string
 	else
 	{
-		return md5($session->sid.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		$seed .= $session->sid;
 	}
+
+	$seed .= $mybb->settings['internal']['encryption_key'];
+
+	return md5($seed);
 }
 
 /**
- * Verifies a POST check code is valid, if not shows an error (silently returns false on silent parameter)
+ * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours)
  *
  * @param string $code The incoming POST check code
- * @param boolean $silent Silent mode or not (silent mode will not show the error to the user but returns false)
- * @return bool
+ * @param boolean $silent Don't show an error to the user
+ * @return bool|void Result boolean if $silent is true, otherwise shows an error to the user
  */
 function verify_post_check($code, $silent=false)
 {
 	global $lang;
-	if(generate_post_check() !== $code)
+	if(
+		generate_post_check() !== $code &&
+		generate_post_check(-1) !== $code &&
+		generate_post_check(-2) !== $code &&
+		generate_post_check(-3) !== $code
+	)
 	{
 		if($silent == true)
 		{
@@ -673,11 +684,11 @@ function get_parent_list($fid)
 	global $forum_cache;
 	static $forumarraycache;
 
-	if($forumarraycache[$fid])
+	if(!empty($forumarraycache[$fid]))
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forum_cache[$fid])
+	elseif(!empty($forum_cache[$fid]))
 	{
 		return $forum_cache[$fid]['parentlist'];
 	}
@@ -776,7 +787,7 @@ function get_child_list($fid)
 
 	foreach($forums_by_parent[$fid] as $forum)
 	{
-		$forums[] = $forum['fid'];
+		$forums[] = (int)$forum['fid'];
 		$children = get_child_list($forum['fid']);
 		if(is_array($children))
 		{
@@ -1031,12 +1042,21 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 {
-	global $theme, $templates, $lang, $mybb;
+	global $theme, $templates, $lang, $mybb, $plugins;
 
 	if($count <= $perpage)
 	{
 		return '';
 	}
+
+	$args = array(
+		'count' => &$count,
+		'perpage' => &$perpage,
+		'page' => &$page,
+		'url' => &$url,
+		'breadcrumb' => &$breadcrumb,
+	);
+	$plugins->run_hooks('multipage', $args);
 
 	$page = (int)$page;
 
@@ -1446,8 +1466,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
-			$level_permissions = $fpermcache[$fid][$gid];
-
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1464,6 +1482,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
+			}
+			else
+			{
+				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
@@ -1512,6 +1534,50 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 }
 
 /**
+ * Check whether password for given forum was validated for the current user
+ *
+ * @param array $forum The forum data
+ * @param bool $ignore_empty Whether to treat forum password configured as an empty string as validated
+ * @param bool $check_parents Whether to check parent forums using `parentlist`
+ * @return bool
+ */
+function forum_password_validated($forum, $ignore_empty=false, $check_parents=false)
+{
+	global $mybb, $forum_cache;
+
+	if($check_parents && isset($forum['parentlist']))
+	{
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+			if(!$forum_cache)
+			{
+				return false;
+			}
+		}
+
+		$parents = explode(',', $forum['parentlist']);
+		rsort($parents);
+
+		foreach($parents as $parent_id)
+		{
+			if($parent_id != $forum['fid'] && !forum_password_validated($forum_cache[$parent_id], true))
+			{
+				return false;
+			}
+		}
+	}
+
+	return ($ignore_empty && $forum['password'] === '') || (
+		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
+		my_hash_equals(
+			md5($mybb->user['uid'].$forum['password']),
+			$mybb->cookies['forumpass'][$forum['fid']]
+		)
+	);
+}
+
+/**
  * Check the password given on a certain forum for validity
  *
  * @param int $fid The forum ID
@@ -1549,19 +1615,18 @@ function check_forum_password($fid, $pid=0, $return=false)
 				continue;
 			}
 
-			if($forum_cache[$parent_id]['password'] != "")
+			if($forum_cache[$parent_id]['password'] !== "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
 
-	if(!empty($forum_cache[$fid]['password']))
+	if($forum_cache[$fid]['password'] !== '')
 	{
-		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password === $mybb->get_input('pwverify'))
+			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1574,7 +1639,7 @@ function check_forum_password($fid, $pid=0, $return=false)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			if(!forum_password_validated($forum_cache[$fid]))
 			{
 				$showform = true;
 			}
@@ -1663,14 +1728,14 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(empty($forum) || !is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
 		}
 
 		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
+		if(!empty($forum['users'][$uid]))
 		{
 			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
@@ -1695,7 +1760,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 		foreach($groups as $group)
 		{
-			if(!is_array($forum['usergroups'][$group]))
+			if(empty($forum['usergroups'][$group]) || !is_array($forum['usergroups'][$group]))
 			{
 				// There are no permissions set for this group
 				continue;
@@ -1729,7 +1794,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
  */
 function is_moderator($fid=0, $action="", $uid=0)
 {
-	global $mybb, $cache;
+	global $mybb, $cache, $plugins;
 
 	if($uid == 0)
 	{
@@ -1742,12 +1807,26 @@ function is_moderator($fid=0, $action="", $uid=0)
 	}
 
 	$user_perms = user_permissions($uid);
-	if($user_perms['issupermod'] == 1)
+
+	$hook_args = array(
+		'fid' => $fid,
+		'action' => $action,
+		'uid' => $uid,
+	);
+
+	$plugins->run_hooks("is_moderator", $hook_args);
+	
+	if(isset($hook_args['is_moderator']))
+	{
+		return (boolean) $hook_args['is_moderator'];
+	}
+
+	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
 		{
 			$forumpermissions = forum_permissions($fid);
-			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && empty($forumpermissions['canonlyviewownthreads']))
 			{
 				return true;
 			}
@@ -1803,6 +1882,62 @@ function is_moderator($fid=0, $action="", $uid=0)
 			}
 		}
 	}
+}
+
+/**
+ * Get an array of fids that the forum moderator has access to.
+ * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
+ *
+ * @param int $uid The user ID (0 assumes current user)
+ * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
+ */
+function get_moderated_fids($uid=0)
+{
+	global $mybb, $cache;
+
+	if($uid == 0)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	if($uid == 0)
+	{
+		return array();
+	}
+
+	$user_perms = user_permissions($uid);
+
+	if($user_perms['issupermod'] == 1)
+	{
+		return false;
+	}
+
+	$fids = array();
+
+	$modcache = $cache->read('moderators');
+	if(!empty($modcache))
+	{
+		$groups = explode(',', $user_perms['all_usergroups']);
+
+		foreach($modcache as $fid => $forum)
+		{
+			if(isset($forum['users'][$uid]) && $forum['users'][$uid]['mid'])
+			{
+				$fids[] = $fid;
+				continue;
+			}
+
+			foreach($groups as $group)
+			{
+				if(trim($group) != '' && isset($forum['usergroups'][$group]))
+				{
+					$fids[] = $fid;
+				}
+			}
+		}
+	}
+
+	return $fids;
 }
 
 /**
@@ -2675,15 +2810,28 @@ function update_forum_lastpost($fid)
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
-	$lastpost = $db->fetch_array($query);
 
-	$updated_forum = array(
-		"lastpost" => (int)$lastpost['lastpost'],
-		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => (int)$lastpost['lastposteruid'],
-		"lastposttid" => (int)$lastpost['tid'],
-		"lastpostsubject" => $db->escape_string($lastpost['subject'])
-	);
+	if($db->num_rows($query) > 0)
+	{
+		$lastpost = $db->fetch_array($query);
+
+		$updated_forum = array(
+			"lastpost" => (int)$lastpost['lastpost'],
+			"lastposter" => $db->escape_string($lastpost['lastposter']),
+			"lastposteruid" => (int)$lastpost['lastposteruid'],
+			"lastposttid" => (int)$lastpost['tid'],
+			"lastpostsubject" => $db->escape_string($lastpost['subject']),
+		);
+	}
+	else {
+		$updated_forum = array(
+			"lastpost" => 0,
+			"lastposter" => '',
+			"lastposteruid" => 0,
+			"lastposttid" => 0,
+			"lastpostsubject" => '',
+		);
+	}
 
 	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
@@ -2767,7 +2915,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
@@ -2779,7 +2927,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -3484,7 +3632,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if($subscription['tid'])
+		if(!empty($subscription) && $subscription['tid'])
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -3540,7 +3688,7 @@ function build_clickable_smilies()
 				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
 			}
 
-			$smilies = '';
+			$smilies = $smilie_icons = '';
 			$counter = 0;
 			$i = 0;
 
@@ -3789,7 +3937,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return '';
 	}
 
-	$default_selected = array();
+	$default_selected = array('all' => '', 'none' => '', 'any' => '');
 	$selected_pid = (int)$selected_pid;
 
 	if($selected_pid == 0)
@@ -3805,6 +3953,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$default_selected['any'] = ' selected="selected"';
 	}
 
+	$prefixselect_prefix = '';
 	foreach($prefixes as $prefix)
 	{
 		$selected = '';
@@ -4265,7 +4414,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$password_forums = $unviewable = array();
+	$unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4279,14 +4428,10 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		$pwverified = 1;
 
-		if($forum['password'] != "")
-		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
-			{
-				$pwverified = 0;
-			}
 
-			$password_forums[$forum['fid']] = $forum['password'];
+		if(!forum_password_validated($forum, true))
+		{
+			$pwverified = 0;
 		}
 		else
 		{
@@ -4294,9 +4439,10 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
+				if(!forum_password_validated($forum_cache[$parent], true))
 				{
 					$pwverified = 0;
+					break;
 				}
 			}
 		}
@@ -4696,10 +4842,7 @@ function send_page_headers()
 
 	if($mybb->settings['nocacheheaders'] == 1)
 	{
-		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-		header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Pragma: no-cache");
+		header("Cache-Control: no-cache, private");
 	}
 }
 
@@ -4718,7 +4861,7 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4729,7 +4872,7 @@ function mark_reports($id, $type="post")
 		case "threads":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4849,6 +4992,8 @@ function nice_time($stamp, $options=array())
 		), $options);
 	}
 
+	$nicetime = array();
+
 	if(!isset($options['years']) || $options['years'] !== false)
 	{
 		if($years == 1)
@@ -4933,7 +5078,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if(is_array($nicetime))
+	if(!empty($nicetime))
 	{
 		return implode(", ", $nicetime);
 	}
@@ -5028,6 +5173,11 @@ function leave_usergroup($uid, $leavegroup)
 
 	$user = get_user($uid);
 
+	if($user['usergroup'] == $leavegroup)
+	{
+		return false;
+	}
+
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
 	$donegroup = array();
@@ -5066,12 +5216,14 @@ function leave_usergroup($uid, $leavegroup)
  * Get the current location taking in to account different web serves and systems
  *
  * @param boolean $fields True to return as "hidden" fields
- * @param array $ignore Array of fields to ignore if first argument is true
+ * @param array $ignore Array of fields to ignore for returning "hidden" fields or URL being accessed
  * @param boolean $quick True to skip all inputs and return only the file path part of the URL
- * @return string The current URL being accessed
+ * @return string|array The current URL being accessed or form data if $fields is true
  */
 function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
+	global $mybb;
+
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
@@ -5103,14 +5255,13 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 		return $location;
 	}
 
+	if(!is_array($ignore))
+	{
+		$ignore = array($ignore);
+	}
+
 	if($fields == true)
 	{
-		global $mybb;
-
-		if(!is_array($ignore))
-		{
-			$ignore = array($ignore);
-		}
 
 		$form_html = '';
 		if(!empty($mybb->input))
@@ -5130,39 +5281,46 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	}
 	else
 	{
+		$parameters = array();
+
 		if(isset($_SERVER['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
+			$current_query_string = $_SERVER['QUERY_STRING'];
 		}
 		else if(isset($_ENV['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
+			$current_query_string = $_ENV['QUERY_STRING'];
+		} else
+		{
+			$current_query_string = '';
 		}
 
-		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
+		parse_str($current_query_string, $current_parameters);
+
+		foreach($current_parameters as $name => $value)
+		{
+			if(!in_array($name, $ignore))
+			{
+				$parameters[$name] = $value;
+			}
+		}
+
+		if($mybb->request_method === 'post')
 		{
 			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
 
 			foreach($post_array as $var)
 			{
-				if(isset($_POST[$var]))
+				if(isset($_POST[$var]) && !in_array($var, $ignore))
 				{
-					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
+					$parameters[$var] = $_POST[$var];
 				}
 			}
+		}
 
-			if(isset($addloc) && is_array($addloc))
-			{
-				if(strpos($location, "?") === false)
-				{
-					$location .= "?";
-				}
-				else
-				{
-					$location .= "&amp;";
-				}
-				$location .= implode("&amp;", $addloc);
-			}
+		if(!empty($parameters))
+		{
+			$location .= '?'.http_build_query($parameters, '', '&amp;');
 		}
 
 		return $location;
@@ -5190,11 +5348,6 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		$tid = 1;
 		$num_themes = 0;
 		$themeselect_option = '';
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
 	}
 
 	if(!is_array($tcache))
@@ -5627,7 +5780,7 @@ function update_first_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -5661,7 +5814,7 @@ function update_last_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
@@ -5678,7 +5831,7 @@ function update_last_post($tid)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.tid='$tid'
-			ORDER BY p.dateline ASC
+			ORDER BY p.dateline ASC, p.pid ASC
 			LIMIT 1
 		");
 		$firstpost = $db->fetch_array($query);
@@ -5796,6 +5949,33 @@ function my_strtolower($string)
 	}
 
 	return $string;
+}
+
+/**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for, case insensitive
+ *
+ * @param string $haystack String to look in (haystack)
+ * @param string $needle What to look for (needle)
+ * @param int $offset (optional) How much to offset
+ * @return int|bool false on needle not found, integer position if found
+ */
+function my_stripos($haystack, $needle, $offset=0)
+{
+	if($needle == '')
+	{
+		return false;
+	}
+
+	if(function_exists("mb_stripos"))
+	{
+		$position = mb_stripos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = stripos($haystack, $needle, $offset);
+	}
+
+	return $position;
 }
 
 /**
@@ -6269,7 +6449,7 @@ function get_forum($fid, $active_override=0)
 	global $cache;
 	static $forum_cache;
 
-	if(!isset($forum_cache) || is_array($forum_cache))
+	if(!isset($forum_cache) || !is_array($forum_cache))
 	{
 		$forum_cache = $cache->read("forums");
 	}
@@ -6561,6 +6741,8 @@ function rebuild_settings()
 	while($setting = $db->fetch_array($query))
 	{
 		$mybb->settings[$setting['name']] = $setting['value'];
+
+		$setting['name'] = addcslashes($setting['name'], "\\'");
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
@@ -6971,7 +7153,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 
-		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
+		eval("\$timezone_option = \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
 
 	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
@@ -7112,7 +7294,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
 			{
-				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+				preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 				if($matches)
 				{
@@ -7173,6 +7355,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 					'ssl' => array(
 						'verify_peer' => false,
 						'verify_peer_name' => false,
+						'peer_name' => $url_components['host'],
 					),
 				));
 			}
@@ -7184,11 +7367,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
 		}
 
-		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
 			return false;
 		}
+		@stream_set_timeout($fp, 10);
 		$headers = array();
 		if(!empty($post_body))
 		{
@@ -7237,7 +7420,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
-			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+			preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 			if($matches)
 			{
@@ -8312,6 +8495,7 @@ function trim_blank_chrs($string, $charlist="")
 	);
 
 	// Start from the beginning and work our way in
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8327,6 +8511,7 @@ function trim_blank_chrs($string, $charlist="")
 
 	// Start from the end and work our way in
 	$string = strrev($string);
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8388,7 +8573,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 /**
  * Obtain the version of GD installed.
  *
- * @return float Version of GD
+ * @return float|null Version of GD
  */
 function gd_version()
 {
@@ -8398,9 +8583,10 @@ function gd_version()
 	{
 		return $gd_version;
 	}
+
 	if(!extension_loaded('gd'))
 	{
-		return;
+		return null;
 	}
 
 	if(function_exists("gd_info"))
@@ -8738,7 +8924,19 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	if(file_exists($file_path))
 	{
-		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'file_dir_path'	=> &$file_dir_path
+			);
+			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
+		}
+
+		if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 
@@ -8976,4 +9174,26 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 	}
 
 	return $referrals;
+}
+
+/**
+ * Initialize the parser and store the XML data to be parsed.
+ *
+ * @param string $data
+ * @return MyBBXMLParser The constructed XML parser.
+ */
+function create_xml_parser($data)
+{
+	if(version_compare(PHP_VERSION, '8.0', '>='))
+	{
+		require_once MYBB_ROOT."inc/class_xmlparser.php";
+
+		return new MyBBXMLParser($data);
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_xml.php";
+
+		return new XMLParser($data);
+	}
 }
