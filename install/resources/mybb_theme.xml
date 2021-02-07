@@ -14187,7 +14187,7 @@ $(function() {
 	{$sourcemode}
 });
 </script>]]></template>
-		<template name="contact" version="1824"><![CDATA[<html>
+		<template name="contact" version="1825"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>
 {$headerinclude}
