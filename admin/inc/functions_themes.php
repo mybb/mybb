@@ -128,11 +128,11 @@ function import_theme_xml($xml, $options=array())
 
 	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
-	if(!empty($options['force_name_check']) && $existingtheme['tid'])
+	if(!empty($options['force_name_check']) && !empty($existingtheme['tid']))
 	{
 		return -3;
 	}
-	else if($existingtheme['tid'])
+	else if(!empty($existingtheme['tid']))
 	{
 		$options['tid'] = $existingtheme['tid'];
 	}
@@ -145,7 +145,7 @@ function import_theme_xml($xml, $options=array())
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && empty($options['no_templates']))
 	{
-		if($options['templateset'])
+		if(!empty($options['templateset']))
 		{
 			$sid = $options['templateset'];
 		}
@@ -238,7 +238,7 @@ function import_theme_xml($xml, $options=array())
 		{
 			$inherited_stylesheets = my_unserialize($db->fetch_field($query, "stylesheets"));
 
-			if(is_array($inherited_stylesheets['inherited']))
+			if(isset($inherited_stylesheets['inherited']) && is_array($inherited_stylesheets['inherited']))
 			{
 				$loop = 1;
 				foreach($inherited_stylesheets['inherited'] as $action => $stylesheets)
@@ -793,7 +793,9 @@ function get_css_properties($css, $id)
  */
 function parse_css_properties($values)
 {
-	$css_bits = array();
+	$css_bits = array(
+		'extra' => null,
+	);
 
 	if(!$values)
 	{
@@ -989,7 +991,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		foreach($parent_list as $theme_id)
 		{
-			if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+			if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 			{
 				$cdnpath = rtrim($mybb->settings['cdnpath'], '/\\').'/';
 				if(file_exists($cdnpath."cache/themes/theme{$theme_id}/{$stylesheet['name']}") && filemtime(
@@ -1371,7 +1373,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 		unset($theme);
 	}
 
-	if(!is_array($theme_cache[$parent]) || $ignoretid === $parent)
+	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]) || $ignoretid === $parent)
 	{
 		return null;
 	}

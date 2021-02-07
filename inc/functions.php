@@ -1794,7 +1794,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
  */
 function is_moderator($fid=0, $action="", $uid=0)
 {
-	global $mybb, $cache;
+	global $mybb, $cache, $plugins;
 
 	if($uid == 0)
 	{
@@ -1807,6 +1807,20 @@ function is_moderator($fid=0, $action="", $uid=0)
 	}
 
 	$user_perms = user_permissions($uid);
+
+	$hook_args = array(
+		'fid' => $fid,
+		'action' => $action,
+		'uid' => $uid,
+	);
+
+	$plugins->run_hooks("is_moderator", $hook_args);
+	
+	if(isset($hook_args['is_moderator']))
+	{
+		return (boolean) $hook_args['is_moderator'];
+	}
+
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
@@ -8922,7 +8936,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
 		}
 
-		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 

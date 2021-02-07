@@ -327,7 +327,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	$plugins->run_hooks("admin_user_groups_add_leader");
 
 	$user = get_user_by_username($mybb->input['username'], array('fields' => 'username'));
-	if(!$user['uid'])
+	if(empty($user['uid']))
 	{
 		$errors[] = $lang->error_invalid_username;
 	}
@@ -555,7 +555,7 @@ if($mybb->input['action'] == "delete_leader")
 	$group = $db->fetch_array($query);
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-groups");
 	}
@@ -682,12 +682,12 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			if($mybb->input['stars'] < 1)
+			if($mybb->get_input('stars') < 1)
 			{
 				$mybb->input['stars'] = 0;
 			}
 
-			if(!$mybb->input['starimage'])
+			if(!$mybb->get_input('starimage'))
 			{
 				$mybb->input['starimage'] = "images/star.png";
 			}
@@ -777,10 +777,10 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_user_group);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
-	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->get_input('namestyle'), array('id' => 'namestyle')), 'namestyle');
+	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->get_input('usertitle'), array('id' => 'usertitle')), 'usertitle');
 
 	$options[0] = $lang->do_not_copy_permissions;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
@@ -788,7 +788,7 @@ if($mybb->input['action'] == "add")
 	{
 		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
-	$form_container->output_row($lang->copy_permissions_from, $lang->copy_permissions_from_desc, $form->generate_select_box('copyfrom', $options, $mybb->input['copyfrom'], array('id' => 'copyfrom')), 'copyfrom');
+	$form_container->output_row($lang->copy_permissions_from, $lang->copy_permissions_from_desc, $form->generate_select_box('copyfrom', $options, $mybb->get_input('copyfrom'), array('id' => 'copyfrom')), 'copyfrom');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_user_group);
@@ -821,30 +821,30 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if(!trim($mybb->get_input('title')))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
+		if(my_strpos($mybb->get_input('namestyle'), "{username}") === false)
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
 
-		if($mybb->input['moderate'] == 1 && $mybb->input['invite'] == 1)
+		if($mybb->get_input('moderate') == 1 && $mybb->get_input('invite') == 1)
 		{
 			$errors[] = $lang->error_cannot_have_both_types;
 		}
 
 		if(!$errors)
 		{
-			if($mybb->input['joinable'] == 1)
+			if($mybb->get_input('joinable') == 1)
 			{
-				if($mybb->input['moderate'] == 1)
+				if($mybb->get_input('moderate') == 1)
 				{
 					$mybb->input['type'] = "4";
 				}
-				elseif($mybb->input['invite'] == 1)
+				elseif($mybb->get_input('invite') == 1)
 				{
 					$mybb->input['type'] = "5";
 				}
@@ -863,7 +863,7 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['type'] = 1;
 			}
 
-			if($mybb->input['stars'] < 1)
+			if($mybb->get_input('stars') < 1)
 			{
 				$mybb->input['stars'] = 0;
 			}
@@ -1284,7 +1284,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-groups");
 	}

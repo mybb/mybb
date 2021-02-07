@@ -45,12 +45,12 @@ if($mybb->input['action'] == "browse")
 
 	// Process search requests
 	$keywords = "";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$keywords = "&keywords=".urlencode($mybb->input['keywords']);
 	}
 
-	if($mybb->input['page'])
+	if($mybb->get_input('page'))
 	{
 		$url_page = "&page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -127,7 +127,7 @@ if($mybb->input['action'] == "browse")
 
 	$search = new Form("index.php?module=config-plugins&amp;action=browse", 'post', 'search_form');
 	echo "<div style=\"padding-bottom: 3px; margin-top: -9px; text-align: right;\">";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$default_class = '';
 		$value = htmlspecialchars_uni($mybb->input['keywords']);
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "check")
 				continue;
 			}
 			$plugininfo = $infofunc();
-			$plugininfo['guid'] = trim($plugininfo['guid']);
+			$plugininfo['guid'] = isset($plugininfo['guid']) ? trim($plugininfo['guid']) : null;
 			$plugininfo['codename'] = trim($plugininfo['codename']);
 
 			if($plugininfo['codename'] != "")
@@ -398,7 +398,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	}
 
 	$plugins_cache = $cache->read("plugins");
-	$active_plugins = $plugins_cache['active'];
+	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
 
 	require_once MYBB_ROOT."inc/plugins/$file";
 
@@ -447,7 +447,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 			call_user_func("{$codename}_deactivate");
 		}
 
-		if($mybb->input['uninstall'] == 1 && function_exists("{$codename}_uninstall"))
+		if($mybb->get_input('uninstall') == 1 && function_exists("{$codename}_uninstall"))
 		{
 			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;

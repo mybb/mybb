@@ -181,7 +181,10 @@ class DB_PgSQL implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
@@ -219,6 +222,10 @@ class DB_PgSQL implements DB_Base
 				if(strpos($single_connection['hostname'], ':') !== false)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
+				}
+				else
+				{
+					$single_connection['port'] = null;
 				}
 
 				if($single_connection['port'])
@@ -441,7 +448,7 @@ class DB_PgSQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			if($array !== null)
+			if($array !== null && $array !== false)
 			{
 				return $array[$field];
 			}

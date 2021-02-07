@@ -94,7 +94,7 @@ if($mybb->input['action'] == "dlbackup")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=tools-backupdb");
 	}
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "backup")
 
 	if($mybb->request_method == "post")
 	{
-		if(!is_array($mybb->input['tables']))
+		if(empty($mybb->input['tables']) || !is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_tables_not_selected, 'error');
 			admin_redirect("index.php?module=tools-backupdb&action=backup");
@@ -219,7 +219,11 @@ if($mybb->input['action'] == "backup")
 			{
 				$structure = $db->show_create_table($table).";\n";
 				$contents .= $structure;
-				clear_overflow($fp, $contents);
+
+				if(isset($fp))
+				{
+					clear_overflow($fp, $contents);
+				}
 			}
 
 			if($mybb->input['contents'] != 'structure')
@@ -255,7 +259,11 @@ if($mybb->input['action'] == "backup")
 					}
 					$insert .= ");\n";
 					$contents .= $insert;
-					clear_overflow($fp, $contents);
+
+					if(isset($fp))
+					{
+						clear_overflow($fp, $contents);
+					}
 				}
 				$db->free_result($query);
 			}
