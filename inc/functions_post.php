@@ -1017,7 +1017,20 @@ function get_post_attachments($id, &$post)
 					}
 					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
-						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						if ($forumpermissions['candlattachments'])
+						{
+							eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						} 
+						else 
+						{
+							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+							if($tcount == 5)
+							{
+								$thumblist .= "<br />";
+								$tcount = 0;
+							}
+							++$tcount;
+						}
 					}
 					else
 					{
