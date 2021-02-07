@@ -3823,7 +3823,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <td class="{$bgcolor} forumdisplay_announcement" style="white-space: nowrap; text-align: right"><span class="smalltext">{$postdate}</span></td>
 {$modann}
 </tr>]]></template>
-		<template name="forumdisplay_forumsort" version="1824"><![CDATA[<tr>
+		<template name="forumdisplay_forumsort" version="1825"><![CDATA[<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
 			<form action="forumdisplay.php" method="get">
 				<input type="hidden" name="fid" value="{$fid}" />
@@ -4040,7 +4040,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1824"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1825"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
