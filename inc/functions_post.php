@@ -1010,7 +1010,7 @@ function get_post_attachments($id, &$post)
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
 						{
-							$thumblist .= "<br />";
+							$post['thumblist'] .= "<br />";
 							$tcount = 0;
 						}
 						++$tcount;
@@ -1026,7 +1026,7 @@ function get_post_attachments($id, &$post)
 							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 							if($tcount == 5)
 							{
-								$thumblist .= "<br />";
+								$post['thumblist'] .= "<br />";
 								$tcount = 0;
 							}
 							++$tcount;
