@@ -56,11 +56,11 @@ $tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_
 $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
+$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
 
-	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
 		// For Announcements
@@ -416,7 +416,9 @@ if($mybb->input['action'] == "reports")
 	$plugins->run_hooks("modcp_reports_start");
 
 	// Reports
-	$reports = '';
+	$reports = $selectall = '';
+	$inlinecount = 0;
+
 	$query = $db->query("
 		SELECT r.*, u.username, rr.title
 		FROM ".TABLE_PREFIX."reportedcontent r
@@ -532,7 +534,6 @@ if($mybb->input['action'] == "reports")
 
 		$plugins->run_hooks('modcp_reports_intermediate');
 
-		$inlinecount = 0;
 		// Now that we have all of the information needed, display the reports
 		foreach($reportcache as $report)
 		{
@@ -1935,7 +1936,7 @@ if($mybb->input['action'] == "announcements")
 			foreach($global_announcements as $aid => $announcement)
 			{
 				$trow = alt_trow();
-				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+				if((isset($announcement['startdate']) && $announcement['startdate'] > TIME_NOW) || (isset($announcement['enddate']) && $announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
 					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 				}
@@ -2305,7 +2306,7 @@ if($mybb->input['action'] == "modqueue")
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
-			ORDER BY p.dateline DESC
+			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT {$start}, {$perpage}
 		");
 		$posts = '';
@@ -2945,8 +2946,12 @@ if($mybb->input['action'] == "editprofile")
 	$plugins->run_hooks("modcp_editprofile_start");
 
 	// Fetch profile fields
+	$user_fields = array();
 	$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
-	$user_fields = $db->fetch_array($query);
+	if($db->num_rows($query) > 0)
+	{
+		$user_fields = $db->fetch_array($query);
+	}
 
 	$requiredfields = '';
 	$customfields = '';
@@ -3675,6 +3680,7 @@ if($mybb->input['action'] == "ipsearch")
 
 	add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
 
+	$ipsearch_results = $ipaddressvalue = '';
 	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
 	if($mybb->input['ipaddress'])
 	{
@@ -3927,7 +3933,7 @@ if($mybb->input['action'] == "ipsearch")
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
 				WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
-				ORDER BY p.dateline desc
+				ORDER BY p.dateline DESC, p.pid DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
 			while($ipaddress = $db->fetch_array($query))
@@ -4267,6 +4273,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// Editing an existing ban
+	$existing_ban = false;
 	if($mybb->get_input('uid', MyBB::INPUT_INT))
 	{
 		// Get the users info from their uid
@@ -4278,7 +4285,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		");
 		$user = $db->fetch_array($query);
 
-		$existing_ban = false;
 		if($user['uid'])
 		{
 			$existing_ban = true;
@@ -4338,8 +4344,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	// If this is a new ban, we check the user isn't already part of a banned group
 	if(!$existing_ban && $user['uid'])
 	{
-		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-		if($db->fetch_field($query, "uid"))
+		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'", array('limit' => 1));
+		if($db->num_rows($query) > 0)
 		{
 			$errors[] = $lang->error_useralreadybanned;
 		}
@@ -4478,7 +4484,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Permission to edit this ban?
-	if($banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if(isset($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -4678,7 +4684,7 @@ if(!$mybb->input['action'])
 					FROM  ".TABLE_PREFIX."posts p
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-					ORDER BY p.dateline DESC
+					ORDER BY p.dateline DESC, p.pid DESC
 					LIMIT 1
 				");
 				$post = $db->fetch_array($query);
@@ -4798,11 +4804,11 @@ if(!$mybb->input['action'])
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
 				$data = my_unserialize($logitem['data']);
-				if($data['uid'])
+				if(isset($data['uid']))
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 				}
-				if($data['aid'])
+				if(isset($data['aid']))
 				{
 					$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 					$data['announcement'] = get_announcement_link($data['aid']);
@@ -4917,8 +4923,12 @@ if(!$mybb->input['action'])
 		eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
 	}
 
-	$modnotes = $cache->read("modnotes");
-	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
+	$modnotes = '';
+	$modnotes_cache = $cache->read("modnotes");
+	if($modnotes_cache !== false)
+	{
+		$modnotes = htmlspecialchars_uni($modnotes_cache['modmessage']);
+	}
 
 	$plugins->run_hooks("modcp_end");
 

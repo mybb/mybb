@@ -36,11 +36,21 @@ class session
 	public $is_spider = false;
 
 	/**
+	 * Request parameters that are to be ignored for location storage
+	 *
+	 * @var array
+	 */
+	public $ignore_parameters = array(
+		'my_post_key',
+		'logoutkey',
+	);
+
+	/**
 	 * Initialize a session
 	 */
 	function init()
 	{
-		global $db, $mybb, $cache;
+		global $db, $mybb, $cache, $plugins;
 
 		// Get our visitor's IP.
 		$this->ipaddress = get_ip();
@@ -59,11 +69,16 @@ class session
 			{
 				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
 				$session = $db->fetch_array($query);
-				if($session['sid'])
+				if(!empty($session) && $session['sid'])
 				{
 					$this->sid = $session['sid'];
 				}
 			}
+		}
+
+		if(isset($plugins))
+		{
+			$plugins->run_hooks('pre_session_load', $this);
 		}
 
 		// If we have a valid session id and user id, load that users session.
@@ -478,10 +493,10 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
-		
-		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(false, $this->ignore_parameters), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -527,10 +542,10 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
-		
-		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(false, $this->ignore_parameters), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;

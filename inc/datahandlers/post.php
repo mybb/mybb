@@ -591,8 +591,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit_start" => 0,
 				"limit" => 1,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
@@ -782,8 +781,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit" => 1,
 				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
@@ -1424,7 +1422,8 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Fetch the forum this thread is being made in
-		$forum = get_forum($thread['fid']);
+		$query = $db->simple_select("forums", "*", "fid='{$thread['fid']}'");
+		$forum = $db->fetch_array($query);
 
 		// This thread is being saved as a draft.
 		if($thread['savedraft'])
@@ -1635,11 +1634,6 @@ class PostDataHandler extends DataHandler
 					{
 						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, true);
 					}
-				}
-
-				if(!isset($forum['lastpost']))
-				{
-					$forum['lastpost'] = 0;
 				}
 
 				$done_users = array();

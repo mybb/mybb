@@ -273,7 +273,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -351,7 +351,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					log_moderator_action($modlogdata, $lang->post_deleted);
 				}
 
-				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
+				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline DESC, pid DESC"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
 				{
@@ -400,7 +400,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 
 	if($mybb->get_input('restore', MyBB::INPUT_INT) == 1)
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -865,7 +865,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline, pid"));
 	$firstcheck = $db->fetch_array($query);
 
 	$time = TIME_NOW;

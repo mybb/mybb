@@ -110,10 +110,10 @@ if($mybb->input['action'] == "add")
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
 		$form_container = new FormContainer($lang->add_new_section);
-		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->get_input('enabled')));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_section);
@@ -229,12 +229,12 @@ if($mybb->input['action'] == "add")
 		{
 			$sections[$section['sid']] = $section['name'];
 		}
-		$form_container->output_row($lang->section." <em>*</em>", "", $form->generate_select_box("sid", $sections, $mybb->input['sid'], array('id' => 'sid')), 'sid');
-		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->input['document'], array('id' => 'document')), 'document');
-		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->section." <em>*</em>", "", $form->generate_select_box("sid", $sections, $mybb->get_input('sid'), array('id' => 'sid')), 'sid');
+		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->get_input('document'), array('id' => 'document')), 'document');
+		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->get_input('enabled')));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_document);
@@ -252,10 +252,16 @@ if($mybb->input['action'] == "edit")
 	$plugins->run_hooks("admin_config_help_documents_edit");
 
 	// Edit a section
-	if($mybb->input['sid'] && !$mybb->input['hid'])
+	if(isset($mybb->input['sid']) && !$mybb->get_input('hid'))
 	{
 		$query = $db->simple_select("helpsections", "*", "sid = '".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 		$section = $db->fetch_array($query);
+
+		if(!$section['sid'])
+		{
+			flash_message($lang->error_missing_section_id, 'error');
+			admin_redirect("index.php?module=config-help_documents");
+		}
 
 		$plugins->run_hooks("admin_config_help_documents_edit_section");
 
@@ -358,13 +364,23 @@ if($mybb->input['action'] == "edit")
 	// Edit document
 	else
 	{
+		$query = $db->simple_select("helpdocs", "*", "hid = '".$mybb->get_input('hid', MyBB::INPUT_INT)."'");
+		$doc = $db->fetch_array($query);
+
+		// Invalid document?
+		if(!$doc['hid'])
+		{
+			flash_message($lang->error_missing_hid, 'error');
+			admin_redirect("index.php?module=config-help_documents");
+		}
+
 		$plugins->run_hooks("admin_config_help_documents_edit_page");
 
 		// Do edit?
+		$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
+
 		if($mybb->request_method == "post")
 		{
-			$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
-
 			if(empty($hid))
 			{
 				$errors[] = $lang->error_invalid_sid;
@@ -425,7 +441,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_document'] = array(
 			'title'	=> $lang->edit_document,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$hid,
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$doc['hid'],
 			'description' => $lang->edit_document_desc
 		);
 
@@ -437,8 +453,6 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("helpdocs", "*", "hid = '".$mybb->get_input('hid', MyBB::INPUT_INT)."'");
-			$doc = $db->fetch_array($query);
 			$mybb->input['hid'] = $doc['hid'];
 			$mybb->input['sid'] = $doc['sid'];
 			$mybb->input['name'] = $doc['name'];
@@ -483,7 +497,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-help_documents");
 	}

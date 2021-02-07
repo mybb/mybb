@@ -34,6 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	$stats_page_separator = '';
 	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
@@ -107,7 +108,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					++$anoncount;
 				}
@@ -115,7 +116,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					// If this usergroup can see anonymously logged-in users, mark them.
-					if($user['invisible'] == 1)
+					if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 					{
 						$invisiblemark = '*';
 					}
@@ -365,7 +366,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-	
+
 	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
@@ -414,7 +415,7 @@ if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
 }
 
 $excols = 'index';
-$permissioncache['-1'] = '1';
+$permissioncache = null;
 $bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.

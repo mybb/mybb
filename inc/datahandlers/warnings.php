@@ -397,7 +397,7 @@ class WarningsHandler extends DataHandler
 			$query = $db->simple_select("warninglevels", "*", "percentage<={$this->new_warning_level}", array("order_by" => "percentage", "order_dir" => "desc"));
 			$new_level = $db->fetch_array($query);
 
-			if($new_level['lid'])
+			if(!empty($new_level) && $new_level['lid'])
 			{
 				$expiration = 0;
 				$action = my_unserialize($new_level['action']);

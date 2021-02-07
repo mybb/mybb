@@ -485,7 +485,11 @@ class DB_MySQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
 		else
 		{
@@ -1042,7 +1046,7 @@ class DB_MySQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**

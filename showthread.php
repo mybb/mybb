@@ -51,7 +51,16 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$query = $db->simple_select("posts", "fid,tid,visible", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
 
-		if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
+		if(
+			empty($post) ||
+			(
+				$post['visible'] == 0 && !(
+					is_moderator($post['fid'], 'canviewunapprove') ||
+					($mybb->user['uid'] && $post['uid'] == $mybb->user['uid'] && $mybb->settings['showownunapproved'])
+				)
+			) ||
+			($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted'))
+		)
 		{
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
@@ -103,43 +112,47 @@ $thread['username'] = htmlspecialchars_uni($thread['username']);
 $forumpermissions = forum_permissions($thread['fid']);
 
 // Set here to fetch only approved/deleted posts (and then below for a moderator we change this).
+$visible_states = array("1");
+
 if($forumpermissions['canviewdeletionnotice'] != 0)
 {
-	$visibleonly = " AND visible IN (-1,1)";
-	$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
-}
-else
-{
-	$visibleonly = " AND visible=1";
-	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
+	$visible_states[] = "-1";
 }
 
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
 	$ismod = true;
-	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewdeleted") == true)
 	{
-		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
-		{
-			$visibleonly = " AND visible IN (0,1)";
-			$visibleonly2 = "AND p.visible IN (0,1) AND t.visible IN (0,1)";
-		}
-		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
-		{
-			$visibleonly = " AND visible IN (-1,1)";
-			$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
-		}
-		else
-		{
-			$visibleonly = " AND visible IN (-1,0,1)";
-			$visibleonly2 = "AND p.visible IN (-1,0,1) AND t.visible IN (-1,0,1)";
-		}
+		$visible_states[] = "-1";
+	}
+	if(is_moderator($fid, "canviewunapprove") == true)
+	{
+		$visible_states[] = "0";
 	}
 }
 else
 {
 	$ismod = false;
+}
+
+$visible_condition = "visible IN (".implode(',', array_unique($visible_states)).")";
+
+// Allow viewing own unapproved threads for logged in users
+if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+{
+	$own_unapproved = ' AND (%1$s'.$visible_condition.' OR (%1$svisible=0 AND %1$suid='.(int)$mybb->user['uid'].'))';
+
+	$visibleonly = sprintf($own_unapproved, null);
+	$visibleonly_p = sprintf($own_unapproved, 'p.');
+	$visibleonly_p_t = sprintf($own_unapproved, 'p.').sprintf($own_unapproved, 't.');
+}
+else
+{
+	$visibleonly = " AND ".$visible_condition;
+	$visibleonly_p = " AND p.".$visible_condition;
+	$visibleonly_p_t = "AND p.".$visible_condition." AND t.".$visible_condition;
 }
 
 // Make sure we are looking at a real thread here.
@@ -249,8 +262,7 @@ if($mybb->input['action'] == "newpost")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "asc"
+		"order_by" => "dateline, pid",
 	);
 
 	$lastread = (int)$lastread;
@@ -289,8 +301,8 @@ if($mybb->input['action'] == "lastpost")
 			SELECT p.pid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
-			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' {$visibleonly2}
-			ORDER BY p.dateline DESC
+			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' {$visibleonly_p_t}
+			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT 1
 		");
 		$pid = $db->fetch_field($query, "pid");
@@ -298,8 +310,7 @@ if($mybb->input['action'] == "lastpost")
 	else
 	{
 		$options = array(
-			'order_by' => 'dateline',
-			'order_dir' => 'desc',
+			'order_by' => 'dateline DESC, pid DESC',
 			'limit_start' => 0,
 			'limit' => 1
 		);
@@ -329,8 +340,7 @@ if($mybb->input['action'] == "nextnewest")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "desc"
+		"order_by" => "dateline DESC, pid DESC",
 	);
 	$query = $db->simple_select('posts', 'pid', "tid='{$nextthread['tid']}'", $options);
 
@@ -360,8 +370,7 @@ if($mybb->input['action'] == "nextoldest")
 	$options = array(
 		"limit_start" => 0,
 		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "desc"
+		"order_by" => "dateline DESC, pid DESC",
 	);
 	$query = $db->simple_select("posts", "pid", "tid='".$nextthread['tid']."'", $options);
 
@@ -691,7 +700,7 @@ if($mybb->input['action'] == "thread")
 	// Create the admin tools dropdown box.
 	if($ismod == true)
 	{
-		$closelinkch = $stickch = '';
+		$closeoption = $closelinkch = $stickch = '';
 
 		if($thread['closed'] == 1)
 		{
@@ -736,7 +745,7 @@ if($mybb->input['action'] == "thread")
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
-	$rating = '';
+	$rating = $ratethread = '';
 	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
 	{
 		$rated = 0;
@@ -771,27 +780,6 @@ if($mybb->input['action'] == "thread")
 		$ratingvotesav = $lang->sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
-	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
-	if($ismod && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
-	{
-		$visible = "AND p.visible IN (-1,1)";
-	}
-	elseif($ismod && is_moderator($fid, "canviewdeleted") == false && is_moderator($fid, "canviewunapprove") == true)
-	{
-		$visible = "AND p.visible IN (0,1)";
-	}
-	elseif($ismod && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == true)
-	{
-		$visible = "AND p.visible IN (-1,0,1)";
-	}
-	elseif($forumpermissions['canviewdeletionnotice'] != 0 && $ismod == false)
-	{
-		$visible = "AND p.visible IN (-1,1)";
-	}
-	else
-	{
-		$visible = "AND p.visible='1'";
-	}
 
 	// Can this user perform searches? If so, we can show them the "Search thread" form
 	if($forumpermissions['cansearch'] != 0)
@@ -807,22 +795,6 @@ if($mybb->input['action'] == "thread")
 		foreach($ignore_list as $uid)
 		{
 			$ignored_users[$uid] = 1;
-		}
-	}
-
-	// Fetch profile fields to display on postbit
-	$pfcache = $cache->read('profilefields');
-
-	if(is_array($pfcache))
-	{
-		foreach($pfcache as $profilefield)
-		{
-			if($profilefield['postbit'] != 1)
-			{
-				continue;
-			}
-
-			$profile_fields[$profilefield['fid']] = $profilefield;
 		}
 	}
 
@@ -859,7 +831,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$where = " ORDER BY dateline LIMIT 0, 1";
+			$where = " ORDER BY dateline, pid LIMIT 0, 1";
 		}
 		$query = $db->query("
 			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
@@ -868,7 +840,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
-			WHERE p.tid='$tid' $visible $where
+			WHERE p.tid='$tid' $visibleonly_p $where
 		");
 		$showpost = $db->fetch_array($query);
 
@@ -895,31 +867,30 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-        // Build the threaded post display tree.
-        $query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            WHERE p.tid='$tid'
-            $visible
-            ORDER BY p.dateline
-        ");
-        if(!is_array($postsdone))
-        {
-            $postsdone = array();
-        }
-        while($post = $db->fetch_array($query))
-        {
-            if(!$postsdone[$post['pid']])
-            {
-                if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
-                {
+		$multipage = '';
+
+		// Build the threaded post display tree.
+		$query = $db->query("
+			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid'
+			$visibleonly_p
+			ORDER BY p.dateline, p.pid
+		");
+		$postsdone = array();
+		while($post = $db->fetch_array($query))
+		{
+			if(empty($postsdone[$post['pid']]))
+			{
+				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
+				{
 					$postcounter = count($postsdone);
-                    $isfirst = 0;
-                }
-                $tree[$post['replyto']][$post['pid']] = $post;
-                $postsdone[$post['pid']] = 1;
-            }
-        }
+					$isfirst = 0;
+				}
+				$tree[$post['replyto']][$post['pid']] = $post;
+				$postsdone[$post['pid']] = 1;
+			}
+		}
 
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
@@ -945,7 +916,16 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0))
+			if(
+				empty($post) ||
+				(
+					$post['visible'] == 0 && !(
+						is_moderator($post['fid'], 'canviewunapprove') ||
+						($mybb->user['uid'] && $post['uid'] == $mybb->user['uid'] && $mybb->settings['showownunapproved'])
+					)
+				) ||
+				($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0)
+			)
 			{
 				$footer .= '<script type="text/javascript">$(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
 			}
@@ -955,7 +935,7 @@ if($mybb->input['action'] == "thread")
 					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
 					WHERE p.tid = '{$tid}'
 					AND p.dateline <= '{$post['dateline']}'
-					{$visible}
+					{$visibleonly_p}
 				");
 				$result = $db->fetch_field($query, "count");
 				if(($result % $perpage) == 0)
@@ -970,23 +950,23 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Recount replies if user is a moderator or can see the deletion notice to take into account unapproved/deleted posts.
-		if($ismod || $forumpermissions['canviewdeletionnotice'] != 0)
+		if($visible_states != array("1"))
 		{
-			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$cached_replies = $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts'];
+
+			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visibleonly_p");
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 
-			// The counters are wrong? Rebuild them
-			// This doesn't cover all cases however it is a good addition to the manual rebuild function
-			if($thread['replies'] != $cached_replies)
+			if(in_array('-1', $visible_states) && in_array('0', $visible_states))
 			{
-				require_once MYBB_ROOT."/inc/functions_rebuild.php";
-				rebuild_thread_counters($thread['tid']);
+				// The counters are wrong? Rebuild them
+				// This doesn't cover all cases however it is a good addition to the manual rebuild function
+				if($thread['replies'] != $cached_replies)
+				{
+					require_once MYBB_ROOT."/inc/functions_rebuild.php";
+					rebuild_thread_counters($thread['tid']);
+				}
 			}
-		}
-		elseif($forumpermissions['canviewdeletionnotice'] != 0)
-		{
-			$thread['replies'] += $thread['deletedposts'];
 		}
 
 		$postcount = (int)$thread['replies']+1;
@@ -1015,29 +995,29 @@ if($mybb->input['action'] == "thread")
 		$upper = $start+$perpage;
 
 		// Work out if we have terms to highlight
-        $highlight = "";
-        $threadmode = "";
-        if($mybb->seo_support == true)
-        {
-            if($mybb->get_input('highlight'))
-            {
-                $highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
-            }
+		$highlight = "";
+		$threadmode = "";
+		if($mybb->seo_support == true)
+		{
+			if($mybb->get_input('highlight'))
+			{
+				$highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
+			}
 
 			if($defaultmode != "linear")
 			{
-	            if($mybb->get_input('highlight'))
-	            {
-	                $threadmode = "&amp;mode=linear";
-	            }
-	            else
-	            {
-	                $threadmode = "?mode=linear";
-	            }
+				if($mybb->get_input('highlight'))
+				{
+					$threadmode = "&amp;mode=linear";
+				}
+				else
+				{
+					$threadmode = "?mode=linear";
+				}
 			}
-        }
-        else
-        {
+		}
+		else
+		{
 			if(!empty($mybb->input['highlight']))
 			{
 				if(is_array($mybb->input['highlight']))
@@ -1053,24 +1033,18 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 
-            if($defaultmode != "linear")
-            {
-                $threadmode = "&amp;mode=linear";
-            }
-        }
-
-        $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
-		
-		// Allow originator to see own unapproved posts
-		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
-		{
-			$visible .= " OR (p.tid='$tid' AND p.visible='0' AND p.uid=".$mybb->user['uid'].")";
+			if($defaultmode != "linear")
+			{
+				$threadmode = "&amp;mode=linear";
+			}
 		}
+
+		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
-		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visibleonly_p", array('order_by' => 'p.dateline, p.pid', 'limit_start' => $start, 'limit' => $perpage));
 		while($getid = $db->fetch_array($query))
 		{
 			// Set the ID of the first post on page to $pid if it doesn't hold any value
@@ -1115,7 +1089,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
 			WHERE $pids
-			ORDER BY p.dateline
+			ORDER BY p.dateline, p.pid
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -1289,7 +1263,7 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-	    	$posthash = md5($mybb->user['uid'].random_str());
+			$posthash = md5($mybb->user['uid'].random_str());
 		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
@@ -1321,6 +1295,7 @@ if($mybb->input['action'] == "thread")
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1492,7 +1467,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
-		if($db->fetch_field($query, 'tid'))
+		if($db->num_rows($query) > 0)
 		{
 			$add_remove_subscription = 'remove';
 			$add_remove_subscription_text = $lang->unsubscribe_thread;
@@ -1540,7 +1515,7 @@ if($mybb->input['action'] == "thread")
 				$doneusers[$user['uid']] = $user['time'];
 
 				$invisiblemark = '';
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					$invisiblemark = "*";
 					++$inviscount;
@@ -1572,7 +1547,7 @@ if($mybb->input['action'] == "thread")
 		}
 		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 		{
-			$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
+			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
 		}
 
 		$onlinesep = '';
@@ -1590,7 +1565,8 @@ if($mybb->input['action'] == "thread")
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
 
-	if($thread['visible'] == -1 )
+	$thread_deleted = 0;
+	if($thread['visible'] == -1)
 	{
 		$thread_deleted = 1;
 	}
@@ -1640,7 +1616,7 @@ function buildtree($replyto=0, $indent=0)
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
 
-			if($tree[$post['pid']])
+			if(!empty($tree[$post['pid']]))
 			{
 				$posts .= buildtree($post['pid'], $indent);
 			}

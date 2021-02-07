@@ -1,0 +1,21 @@
+name: PHP Syntax Check
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: ['ubuntu-latest']
+        php-versions: ['5.3', '7.4', '8.0'] # PHP 5.3 is the minimum available version, and we choose a version from each branch
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+      - name: Lint
+        run: |
+          find . -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v 'No syntax errors detected')

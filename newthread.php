@@ -35,7 +35,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -300,8 +300,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$mybb->get_input('savedraft') && !$pid)
 	{
 		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.dateline>".(TIME_NOW-600));
-		$duplicate_check = $db->fetch_field($query, "pid");
-		if($duplicate_check)
+		if($db->num_rows($query) > 0)
 		{
 			error($lang->error_post_already_submitted);
 		}
@@ -567,7 +566,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-					ORDER BY p.dateline
+					ORDER BY p.dateline, p.pid
 				");
 				while($quoted_post = $db->fetch_array($query))
 				{
@@ -882,13 +881,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$closeoption = '';
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
+		if(is_moderator($fid, "canopenclosethreads"))
 		{
 			eval("\$closeoption = \"".$templates->get("newreply_modoptions_close")."\";");
 		}
 
 		$stickoption = '';
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
+		if(is_moderator($fid, "canstickunstickthreads"))
 		{
 			eval("\$stickoption = \"".$templates->get("newreply_modoptions_stick")."\";");
 		}
@@ -966,7 +965,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
-		
+
+		$link_viewattachments = '';
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -977,12 +977,14 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$lang->attach_usage = "";
 		}
-		
+
+		$attach_add_options = '';
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 		}
 
+		$attach_update_options = '';
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
 			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
@@ -1026,24 +1028,24 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == 1)
+ 			if($post_captcha->type == DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5, 8)))
+			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(6, 7)))
+			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5, 8))))
+		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}
