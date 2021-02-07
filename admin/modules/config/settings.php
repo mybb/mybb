@@ -965,6 +965,28 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Validate minnamelength, maxnamelength, minpasswordlength (complex and regular) and maxpasswordlength
+		if ($gid == 9)
+		{
+			if ($mybb->input['upsetting']['minnamelength'] > 0 && $mybb->input['upsetting']['maxnamelength'] > 0 && $mybb->input['upsetting']['minnamelength'] > $mybb->input['upsetting']['maxnamelength'])
+			{
+				flash_message($lang->error_field_minnamelength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if ($mybb->input['upsetting']['minpasswordlength'] > 0 && $mybb->input['upsetting']['maxpasswordlength'] > 0 && $mybb->input['upsetting']['minpasswordlength'] > $mybb->input['upsetting']['maxpasswordlength'])
+			{
+				flash_message($lang->error_field_minpasswordlength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if ($mybb->input['upsetting']['requirecomplexpasswords'] && $mybb->input['upsetting']['minpasswordlength'] < 3)
+			{
+				flash_message($lang->error_field_minpasswordlength_complex, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+		}
+		
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
