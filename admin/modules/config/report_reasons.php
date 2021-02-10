@@ -219,7 +219,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$form_container = new FormContainer($lang->add_new_reason);
+	$form_container = new FormContainer($lang->edit_reason);
 	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->applies_to." <em>*</em>", '', generate_content_select());
 	$form_container->output_row($lang->requires_extra." <em>*</em>", $lang->requires_extra_desc, $form->generate_yes_no_radio('extra', $mybb->input['extra']));
