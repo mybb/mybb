@@ -1766,9 +1766,17 @@ if($mybb->input['action'] == 'editsig')
 			$sigimgcode = $lang->off;
 		}
 
+		if($mybb->settings['siglength'] == 0)
+		{
+			$siglength = $lang->unlimited;
+		}
+		else
+		{
+			$siglength = $mybb->settings['siglength'];
+		}
+
 		$sig = htmlspecialchars_uni($sig);
-		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml,
-			$mybb->settings['siglength']);
+		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $siglength);
 
 		if($mybb->settings['sigmycode'] != 0 && $mybb->settings['bbcodeinserter'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
