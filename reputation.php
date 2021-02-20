@@ -473,6 +473,8 @@ if($mybb->input['action'] == "delete")
 
 	$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 
+	$plugins->run_hooks("reputation_delete");
+
 	redirect("reputation.php?uid={$uid}", $lang->vote_deleted_message);
 }
 
