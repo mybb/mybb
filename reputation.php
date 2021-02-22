@@ -445,13 +445,14 @@ if($mybb->input['action'] == "delete")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
+	$rid = $mybb->get_input('rid', MyBB::INPUT_INT);
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
 	$query = $db->query("
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		WHERE rid = '".$mybb->get_input('rid', MyBB::INPUT_INT)."'
+		WHERE rid = '{$rid}'
 	");
 	$existing_reputation = $db->fetch_array($query);
 
@@ -460,9 +461,11 @@ if($mybb->input['action'] == "delete")
 	{
 		error_no_permission();
 	}
+	
+	$plugins->run_hooks("reputation_delete");
 
 	// Delete the specified reputation
-	$db->delete_query("reputation", "uid='{$uid}' AND rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
+	$db->delete_query("reputation", "uid='{$uid}' AND rid='{$rid}'");
 
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
@@ -472,8 +475,6 @@ if($mybb->input['action'] == "delete")
 	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $existing_reputation['username'], $existing_reputation['adduid']));
 
 	$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
-
-	$plugins->run_hooks("reputation_delete");
 
 	redirect("reputation.php?uid={$uid}", $lang->vote_deleted_message);
 }
