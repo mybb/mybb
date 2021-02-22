@@ -445,6 +445,7 @@ if($mybb->input['action'] == "delete")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
+
 	$rid = $mybb->get_input('rid', MyBB::INPUT_INT);
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
@@ -452,7 +453,7 @@ if($mybb->input['action'] == "delete")
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		WHERE rid = '{$rid}'
+		WHERE rid = '{$rid}' AND uid = '{$uid}'
 	");
 	$existing_reputation = $db->fetch_array($query);
 
