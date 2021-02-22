@@ -1341,14 +1341,8 @@ class postParser
 		{
 			$name = $email;
 		}
-		if(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
-		{
-			$email = $email;
-		}
-		elseif(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+\?(.*?)$/si", $email))
-		{
-			$email = htmlspecialchars_uni($email);
-		}
+
+		$email = $this->encode_url($email);
 
 		return template('parser/mycodes/email.twig', [
 			'email' => $email,
