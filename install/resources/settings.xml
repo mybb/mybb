@@ -868,6 +868,30 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="threadviewcountingspiders">
+			<title>Exclude views by spiders in thread view count?</title>
+			<description><![CDATA[Here you can turn off counting views by spiders in a thread view counter.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="threadviewcountingguests">
+			<title>Exclude views by guests in thread view count?</title>
+			<description><![CDATA[Here you can turn off counting views by guests in a thread view counter.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="threadviewcountingthreadauthors">
+			<title>Exclude views by thread author in thread view count?</title>
+			<description><![CDATA[Here you can turn off counting views by thread author in a thread view counter.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="member" title="Login and Registration Options" description="Here you can control various settings with relation to user account registration and login management." disporder="9" isdefault="1">
 		<setting name="disableregs">
