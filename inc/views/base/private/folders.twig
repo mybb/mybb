@@ -23,6 +23,11 @@
                             <input type="text" class="textbox" name="folder[{{ folder.fid }}]" value="{{ folder.foldername }}" maxlength="30" />
                             {% if folder.default %}
                                 <p class="field__description field__description--below">({{ folder.defaultname }} - {{ lang.cannot_be_removed }})</p>
+                            {% else %}
+                                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" form="inner-{{ folder.fid }}" />
+                                    <button type="submit" class="field__description field__description--below" name="submit" form="inner-{{ folder.fid }}"><i class="far fa-trash-alt"></i> Delete</button>
+                                    <input type="hidden" name="fid" value="{{ folder.fid }}" form="inner-{{ folder.fid }}" />
+                                    <input type="hidden" name="action" value="delete_folder" form="inner-{{ folder.fid }}" />
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -48,4 +53,9 @@
         </div>
         <input type="hidden" name="action" value="do_folders" />
     </form>
+    {% for folder in folderlist %}
+        {% if not folder.default %}
+        <form action="private.php" id="inner-{{ folder.fid }}" method="post"></form>
+        {% endif %}
+    {% endfor %}
 {% endblock messengerBody %}
