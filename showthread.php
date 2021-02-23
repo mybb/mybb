@@ -670,15 +670,32 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if($mybb->settings['delayedthreadviews'] == 1)
-	{
-		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+	$count_view = true; // By default, we count the view. Only if one of the below conditions is met do we not count it.
+	if($mybb->settings['threadviewcountexcludespiders'] == 1 && $session->is_spider == true)
+    {
+		$count_view = false;
 	}
-	else
-	{
-		$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+	if($mybb->settings['threadviewcountexcludeguests'] == 1 && $mybb->user['uid'] == 0)
+    {
+		$count_view = false;
 	}
-	++$thread['views'];
+	if($mybb->settings['threadviewcountexcludethreadauthor'] == 1 && $mybb->user['uid'] == $thread['uid'])
+	{
+		$count_view = false;
+	}
+	
+	if($count_view == true)
+	{
+		if($mybb->settings['delayedthreadviews'] == 1)
+		{
+			$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+		}
+		else
+		{
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+		}
+		++$thread['views'];		
+	}
 
 	// Work out the thread rating for this thread.
 	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
