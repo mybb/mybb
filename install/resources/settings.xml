@@ -878,7 +878,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="threadviewcountexcludeguests">
 			<title>Exclude views by guests in thread view count?</title>
-			<description><![CDATA[Here you can exclude views by gueststhread author from the thread view counter.]]></description>
+			<description><![CDATA[Here you can exclude views by guests from the thread view counter.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
