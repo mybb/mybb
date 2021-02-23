@@ -672,11 +672,11 @@ if($mybb->input['action'] == "thread")
 	// Increment the thread view.
 	$count_view = true; // By default, we count the view. Only if one of the below conditions is met do we not count it.
 	if($mybb->settings['threadviewcountexcludespiders'] == 1 && $session->is_spider == true)
-    {
+	{
 		$count_view = false;
 	}
 	if($mybb->settings['threadviewcountexcludeguests'] == 1 && $mybb->user['uid'] == 0)
-    {
+	{
 		$count_view = false;
 	}
 	if($mybb->settings['threadviewcountexcludethreadauthor'] == 1 && $mybb->user['uid'] == $thread['uid'])

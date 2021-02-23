@@ -870,7 +870,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="threadviewcountexcludespiders">
 			<title>Exclude views by spiders in thread view count?</title>
-			<description><![CDATA[Here you can turn off excluding views by spiders in the thread view counter.]]></description>
+			<description><![CDATA[Here you can exclude views by spiders from the thread view counter.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -878,7 +878,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="threadviewcountexcludeguests">
 			<title>Exclude views by guests in thread view count?</title>
-			<description><![CDATA[Here you can turn off excluding views by guests in the thread view counter.]]></description>
+			<description><![CDATA[Here you can exclude views by gueststhread author from the thread view counter.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -886,7 +886,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="threadviewcountexcludethreadauthors">
 			<title>Exclude views by thread author in thread view count?</title>
-			<description><![CDATA[Here you can turn off excluding views by thread author in the thread view counter.]]></description>
+			<description><![CDATA[Here you can exclude views by thread author from the thread view counter.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
