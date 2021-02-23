@@ -533,6 +533,8 @@ if($mybb->input['action'] == "delete")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$rid = $mybb->get_input('rid', MyBB::INPUT_INT);
+	
+	$plugins->run_hooks("reputation_delete_start");
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
 	$query = $db->query("
@@ -549,7 +551,7 @@ if($mybb->input['action'] == "delete")
 		error_no_permission();
 	}
 	
-	$plugins->run_hooks("reputation_delete");
+	$plugins->run_hooks("reputation_delete_end");
 
 	// Delete the specified reputation
 	$db->delete_query("reputation", "uid='{$uid}' AND rid='{$rid}'");
