@@ -33,7 +33,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgheight = $imgdesc[1];
 	$imgtype = $imgdesc[2];
 	$imgattr = $imgdesc[3];
-	$imgbits = $imgdesc['bits'];
+	$imgbits = isset($imgdesc['bits']) ? $imgdesc['bits'] : null;
 	$imgchan = isset($imgdesc['channels']) ? $imgdesc['channels'] : null;
 
 	if($imgwidth == 0 || $imgheight == 0)
