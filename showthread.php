@@ -670,7 +670,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if(!($mybb->settings['threadviewcountexcludespiders'] == 1 && $session->is_spider == true || $mybb->settings['threadviewcountexcludethreadauthor'] == 1 && $mybb->user['uid'] == $thread['uid'] || $mybb->settings['threadviewcountexcludethreadauthor'] == 1 && $mybb->user['uid'] == $thread['uid']))
+	if(!($mybb->settings['threadviewcountexcludespiders'] == 1 && $session->is_spider == true || $mybb->settings['threadviewcountexcludeguests'] == 1 && $mybb->user['uid'] == 0 || $mybb->settings['threadviewcountexcludethreadauthor'] == 1 && $mybb->user['uid'] == $thread['uid']))
 	{
 		if($mybb->settings['delayedthreadviews'] == 1)
 		{
