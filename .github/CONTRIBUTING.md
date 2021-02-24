@@ -29,24 +29,24 @@ If you need any help with sending your code contributions, the [GitHub Help site
 
 #### Maintenance/Legacy Branches
 - `master` Currently contains legacy code of MyBB 1.6.
-
 - `feature` Currently contains code for MyBB 1.8.
 
 #### Workflow for MyBB 1.9 and up
-- `master`
+MyBB development will follow the [gitflow branching strategy](https://nvie.com/posts/a-successful-git-branching-model/):
+- `main` &mdash; latest stable release for latest stable branch, or `main/*` for given older branch (e.g. _main/1.9_ for 1.9).
 
-  After the MyBB 1.9 release, `master` will contain code of latest stable release for latest stable branch, or `master/*` for given older branch (e.g. _master/1.9_ for 1.9).
+  - `hotfix/*` &mdash; quick releases for critical issues (e.g. _hotfix/1.10_).
 
-  -  `hotfix/*` (e.g. _hotfix/1.10_) Quick releases for critical issues. When ready, the hotfix branch is merged back to _master/*_ and _develop/*_ (or _release/*_, if one exists).
+    When ready, the hotfix branch is merged back to _main/*_ and _develop/*_ (or _release/*_, if one exists).
 
 
-- `develop/*` Contains current development version with changes that were applied after the last release.
+- `develop/*` &mdash; development codebase with changes that were applied after the last release.
 
-    - `release/*` (e.g. _release/3.2.1_) Release preparation - version numbers and other metadata.
+    - `release/*` &mdash; release preparation: version numbers and other metadata (e.g. _release/3.2.1_).
 
-      Immediately preceding the actual release, security patches are merged in and the release branch is merged back into _develop/*_ and _master/*_.
+      Prior to a release, security patches are merged in and the release branch is merged back into _develop/*_ and _main/*_.
 
-    - `feature/*` (e.g. *feature/custom-avatars*) New features being worked on. When completed and tested, the feature branch is merged back to _develop/*_.
+    - `feature/*` &mdash; new features being worked on (e.g. *feature/custom-avatars*) When completed and tested, the feature branch is merged back to _develop/*_.
 
 ### Issues
 Bugs and improvements to MyBB software packages are documented in corresponding _Issues_.
@@ -67,6 +67,7 @@ Triaged Issues usually have multiple [**Labels**](https://github.com/mybb/mybb/l
 - Type (`t:*`), what kind of problem or operation they are related to,
 - Involving (`i:*`), additional labels for specific modules, libraries, or types,
 - `3rdparty`, assigned to external code and other third-party solutions,
+- `dev-branch`, unreleased, development branch issues that don't affect behavior of stable versions and are irrelevant when upgrading,
 - [`easy-pick`](https://github.com/mybb/mybb/labels/easy-pick), used for simple issues for new contributors that don't require extensive MyBB knowledge to resolve.
 
 Labels are generally only used for Issues.
