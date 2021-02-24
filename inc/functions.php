@@ -7153,7 +7153,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 
-		eval("\$timezone_option = \"".$templates->get("usercp_options_timezone_option")."\";");
+		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
 
 	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
