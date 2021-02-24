@@ -124,7 +124,7 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_bad_word);
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $mybb->get_input('badword'), array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $mybb->get_input('replacement'), array('id' => 'replacement')), 'replacement');
-	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', $mybb->get_input('regex'), array('id' => 'regex')), 'regex');
+	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', $mybb->get_input('regex', MyBB::INPUT_INT), array('id' => 'regex')), 'regex');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);
