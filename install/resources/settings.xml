@@ -1038,7 +1038,7 @@ disabled=Disable this feature]]></optionscode>
 1=Email Only
 2=Both Username and Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
@@ -1858,7 +1858,7 @@ min=0]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="dayspruneregistered">
 			<title>Days registered before pruning by post count</title>
@@ -2048,7 +2048,7 @@ min=0]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
