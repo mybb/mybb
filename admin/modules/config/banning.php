@@ -206,6 +206,26 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
+	$query = $db->simple_select("banfilters", "COUNT(fid) AS filter", "type='{$type}'");
+	$total_rows = $db->fetch_field($query, "filter");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
 
 	if($mybb->input['type'] == "usernames")
@@ -255,7 +275,7 @@ if(!$mybb->input['action'])
 	}
 	$table->construct_header($lang->controls, array("width" => 1));
 
-	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array("order_by" => "filter", "order_dir" => "asc"));
+	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array('limit_start' => $start, 'limit' => 20, "order_by" => "filter", "order_dir" => "asc"));
 	while($filter = $db->fetch_array($query))
 	{
 		$filter['filter'] = htmlspecialchars_uni($filter['filter']);
@@ -292,6 +312,8 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($title);
+
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-banning&amp;type={$mybb->get_input('type')}&amp;page={page}");
 
 	$page->output_footer();
 }
