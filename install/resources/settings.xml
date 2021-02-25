@@ -868,28 +868,28 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="threadviewcountexcludespiders">
-			<title>Exclude views by spiders in thread view count?</title>
-			<description><![CDATA[Here you can exclude views by spiders from the thread view counter.]]></description>
+		<setting name="threadviewcountincludespiders">
+			<title>Increment Thread View Count on Spider Visits?</title>
+			<description><![CDATA[Here you can include views by spiders from the thread view counter.]]></description>
 			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>0</isdefault>
+		</setting>
+		<setting name="threadviewcountincludeguests">
+			<title>Increment Thread View Count on Guests Visits?</title>
+			<description><![CDATA[Here you can include views by guests from the thread view counter.]]></description>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>0</isdefault>
 		</setting>
-		<setting name="threadviewcountexcludeguests">
-			<title>Exclude views by guests in thread view count?</title>
-			<description><![CDATA[Here you can exclude views by guests from the thread view counter.]]></description>
-			<disporder>16</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
-		</setting>
-		<setting name="threadviewcountexcludethreadauthors">
-			<title>Exclude views by thread author in thread view count?</title>
-			<description><![CDATA[Here you can exclude views by thread author from the thread view counter.]]></description>
+		<setting name="threadviewcountincludethreadauthors">
+			<title>Increment Thread View Count on Thread Author Visits?</title>
+			<description><![CDATA[Here you can include views by thread author from the thread view counter.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>0</isdefault>
 		</setting>
 	</settinggroup>
