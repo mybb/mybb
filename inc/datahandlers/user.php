@@ -1855,20 +1855,23 @@ class UserDataHandler extends DataHandler
 			$parsed_sig = $this->data['signature'];
 		}
 
-		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
-		$sig_length = my_strlen($parsed_sig);
-
-		if($sig_length > $mybb->settings['siglength'])
+		if($mybb->settings['siglength'] > 0)
 		{
-			$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+			$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
+			$sig_length = my_strlen($parsed_sig);
 
-			if($sig_length - $mybb->settings['siglength'] > 1)
+			if($sig_length > $mybb->settings['siglength'])
 			{
-				$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
-			}
-			else
-			{
-				$this->set_error('sig_remove_chars_singular');
+				$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+
+				if($sig_length - $mybb->settings['siglength'] > 1)
+				{
+					$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
+				}
+				else
+				{
+					$this->set_error('sig_remove_chars_singular');
+				}
 			}
 		}
 
