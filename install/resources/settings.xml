@@ -868,7 +868,7 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="threadviewcountincludespiders">
+		<setting name="threadviews_countspiders">
 			<title>Increment Thread View Count on Spider Visits?</title>
 			<description><![CDATA[Here you can include views by spiders in the thread view counter.]]></description>
 			<disporder>15</disporder>
@@ -876,7 +876,7 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>0</isdefault>
 		</setting>
-		<setting name="threadviewcountincludeguests">
+		<setting name="threadviews_countguests">
 			<title>Increment Thread View Count on Guest Visits?</title>
 			<description><![CDATA[Here you can include views by guests in the thread view counter.]]></description>
 			<disporder>16</disporder>
@@ -884,7 +884,7 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>0</isdefault>
 		</setting>
-		<setting name="threadviewcountincludethreadauthors">
+		<setting name="threadviews_countthreadauthor">
 			<title>Increment Thread View Count on Thread Author Visits?</title>
 			<description><![CDATA[Here you can include views by the thread author in the thread view counter.]]></description>
 			<disporder>17</disporder>
