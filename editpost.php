@@ -931,18 +931,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
-	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
-	$php_post_max_size = return_bytes(ini_get('post_max_size'));
-
-	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
-	{
-		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
-	}
-	else
-	{
-		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
-	}
-
+	$php_max_upload_size = min(array_filter(array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')))));
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
