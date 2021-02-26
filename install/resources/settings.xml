@@ -1833,6 +1833,14 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[username]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="woldisplayspiders">
+			<title>Who's Online Displays Spiders?</title>
+			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="19" isdefault="1">
 		<setting name="enablepruning">
