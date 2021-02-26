@@ -1825,6 +1825,15 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[username]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="wolusersperpage">
+			<title>Users per Page</title>
+			<description><![CDATA[The number of users displayed per page.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[numeric
+min=0]]></optionscode>
+			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="19" isdefault="1">
 		<setting name="enablepruning">
