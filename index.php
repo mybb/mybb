@@ -115,7 +115,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				$doneusers[$user['uid']] = $user;
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			if($mybb->settings['wolorder'] == 'username')
 			{

@@ -280,7 +280,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				}
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			// The user is a search bot.
 			if($mybb->settings['wolorder'] == 'username')
