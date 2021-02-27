@@ -356,6 +356,26 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'security_questions');
 
+	$query = $db->simple_select("questions", "COUNT(qid) AS questions");
+	$total_rows = $db->fetch_field($query, "questions");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->question);
 	$table->construct_header($lang->answers, array("width" => "35%"));
@@ -364,7 +384,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->incorrect, array("width" => "5%", "class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
-	$query = $db->simple_select("questions", "*", "", array('order_by' => 'question'));
+	$query = $db->simple_select("questions", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'question'));
 	while($questions = $db->fetch_array($query))
 	{
 		$questions['question'] = htmlspecialchars_uni($questions['question']);
@@ -411,6 +431,8 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->security_questions);
+
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-questions&amp;page={page}");
 
 	$page->output_footer();
 }

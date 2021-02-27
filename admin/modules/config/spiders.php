@@ -273,12 +273,32 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, "spiders");
 
+	$query = $db->simple_select("spiders", "COUNT(sid) AS spiders");
+	$total_rows = $db->fetch_field($query, "spiders");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->bot);
 	$table->construct_header($lang->last_visit, array("class" => "align_center", "width" => 200));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150, "colspan" => 2));
 
-	$query = $db->simple_select("spiders", "*", "", array("order_by" => "lastvisit", "order_dir" => "desc"));
+	$query = $db->simple_select("spiders", "*", "", array('limit_start' => $start, 'limit' => 20, "order_by" => "lastvisit", "order_dir" => "desc"));
 	while($spider = $db->fetch_array($query))
 	{
 		$lastvisit = $lang->never;
@@ -303,5 +323,8 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->spiders_bots);
+
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-spiders&amp;page={page}");
+
 	$page->output_footer();
 }

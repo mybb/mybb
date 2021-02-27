@@ -684,6 +684,26 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'attachment_types');
 
+	$query = $db->simple_select("attachtypes", "COUNT(atid) AS attachtypes");
+	$total_rows = $db->fetch_field($query, "attachtypes");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->extension, array("colspan" => 2));
 	$table->construct_header($lang->mime_type);
@@ -691,7 +711,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->maximum_size, array("class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center"));
 
-	$query = $db->simple_select("attachtypes", "*", "", array('order_by' => 'extension'));
+	$query = $db->simple_select("attachtypes", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'extension'));
 	while($attachment_type = $db->fetch_array($query))
 	{
 		// Just show default icons in ACP
@@ -751,6 +771,7 @@ if(!$mybb->input['action'])
 
 	$table->output($lang->attachment_types);
 
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-attachment_types&amp;page={page}");
+
 	$page->output_footer();
 }
-
