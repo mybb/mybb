@@ -406,11 +406,31 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'mycode');
 
+	$query = $db->simple_select("mycode", "COUNT(cid) AS mycode");
+	$total_rows = $db->fetch_field($query, "mycode");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->title);
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'width' => 150));
 
-	$query = $db->simple_select("mycode", "*", "", array('order_by' => 'parseorder'));
+	$query = $db->simple_select("mycode", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'parseorder'));
 	while($mycode = $db->fetch_array($query))
 	{
 		if($mycode['active'] == 1)
@@ -446,6 +466,8 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->custom_mycode);
+
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-mycode&amp;page={page}");
 
 	$page->output_footer();
 }
