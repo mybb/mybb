@@ -21,7 +21,7 @@ Learn more on the MyBB development page:
 
 [**MyBB &mdash; Get Involved: Features & Development &rarr;**](https://mybb.com/get-involved/development/)
 
-If you need any help with sending your code contributions, the [GitHub Help site](https://help.github.com) is a good place to start.
+If you need any help with sending your code contributions, the [GitHub Help site](https://docs.github.com/en/github) is a good place to start. You can also get in touch with MyBB developers and the Community through our [support channels](https://mybb.com/support/).
 
 ## MyBB on GitHub
 
@@ -73,7 +73,8 @@ Triaged Issues usually have multiple [**Labels**](https://github.com/mybb/mybb/l
 Labels are generally only used for Issues.
 
 #### Milestones
-Issues can have specific [**Milestones**](https://github.com/mybb/mybb/milestones) assigned, meaning that they are expected to be addressed in given versions.
+Issues can have specific [**Milestones**](https://github.com/mybb/mybb/milestones) assigned, meaning that they are expected, or preferred to be addressed in given versions. Issues with assigned Milestones may still be postponed to prioritize other changes.
+
 
 #### Assignments
 Issues with personal assignments are expected to be handled by assigned developers. Similarly, the review process of Pull Requests can be directed by developers assigned to them.

@@ -7,6 +7,9 @@ MyBB is a **free and open source forum software** written in PHP with support fo
 
 [**Learn more at MyBB.com &rarr;**](https://mybb.com)
 
+#### Download
+Go to [**mybb.com/download**](https://mybb.com/download/) to download the latest stable, production-ready version of the MyBB forum software.
+
 #### Documentation
 Go to [**docs.mybb.com**](https://docs.mybb.com/) to view articles on usage, administration, and troubleshooting of MyBB.
 
@@ -19,8 +22,8 @@ Visit the [MyBB Community Forums](https://community.mybb.com) and join the [MyBB
 #### Security
 View [SECURITY.md](https://github.com/mybb/mybb/blob/feature/.github/SECURITY.md) for information on secure usage, incident recovery, and vulnerability reporting. To learn more about security research at MyBB, go to [**mybb.com/security**](https://mybb.com/get-involved/security/).
 
-### Get Involved
-View [CONTRIBUTING.md](https://github.com/mybb/mybb/blob/feature/.github/CONTRIBUTING.md) for information on branches, best practices for working with the code repository. To learn more about contributing to the MyBB Project, go to [**mybb.com/get-involved**](https://mybb.com/get-involved/).
+## Get Involved
+View [CONTRIBUTING.md](https://github.com/mybb/mybb/blob/feature/.github/CONTRIBUTING.md) for information on submitting changes, workflow, and best practices for working with the code repository. To learn more about contributing to the MyBB Project, go to [**mybb.com/get-involved**](https://mybb.com/get-involved/).
 
 ## Credits
 ### [Contributors](https://github.com/mybb/mybb/graphs/contributors)
