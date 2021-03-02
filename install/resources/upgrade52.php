@@ -42,4 +42,11 @@ function upgrade51_dbchanges()
 			$db->add_column("attachtypes", "forcedownload", "tinyint(1) NOT NULL default '0' AFTER enabled");
 			break;
 	}
+  
+	$added_tasks = sync_tasks();
+
+	echo "<p>Added {$added_tasks} new tasks.</p>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("52_done");
 }

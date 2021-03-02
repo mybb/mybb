@@ -250,9 +250,6 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 	$plugins->load();
 }
 
-// Set up any shutdown functions we need to run globally
-add_shutdown('send_mail_queue');
-
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))
 {

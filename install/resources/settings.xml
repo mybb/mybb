@@ -2315,6 +2315,15 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="mail_queue_limit">
+			<title>Messages to send from the mail queue</title>
+			<description><![CDATA[The number of messages to send from the mail queue every time the Send Mail Queue task is ran.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[numeric
+min=1]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
