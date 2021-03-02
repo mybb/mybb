@@ -7121,6 +7121,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 	$timezones = get_supported_timezones();
 
 	$selected = str_replace("+", "", $selected);
+	$timezone_option = '';
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
