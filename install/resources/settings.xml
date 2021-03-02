@@ -1836,10 +1836,17 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="wolusersperpage">
 			<title>Users Per Page</title>
 			<description><![CDATA[The number of users displayed per page. Set to 0 to use the default.]]></description>
-			<disporder>5</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
+		<setting name="woldisplayspiders">
+			<title>Who's Online Displays Spiders?</title>
+			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -2321,6 +2328,15 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="mail_queue_limit">
+			<title>Messages to send from the mail queue</title>
+			<description><![CDATA[The number of messages to send from the mail queue every time the Send Mail Queue task is ran.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[numeric
+min=1]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>

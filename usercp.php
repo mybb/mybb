@@ -4366,6 +4366,7 @@ if(!$mybb->input['action'])
 
 				$icon_cache = $cache->read("posticons");
 				$threadprefixes = build_prefixes();
+				$latest_subscribed_threads = '';
 
 				foreach($subscriptions as $thread)
 				{
@@ -4459,7 +4460,7 @@ if(!$mybb->input['action'])
 						$thread['username'] = htmlspecialchars_uni($thread['username']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
-						eval("\$latest_subscribed_threads = \"".$templates->get("usercp_latest_subscribed_threads")."\";");
+						eval("\$latest_subscribed_threads .= \"".$templates->get("usercp_latest_subscribed_threads")."\";");
 					}
 				}
 				eval("\$latest_subscribed = \"".$templates->get("usercp_latest_subscribed")."\";");
