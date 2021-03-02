@@ -1827,8 +1827,8 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="wolusersperpage">
 			<title>Users Per Page</title>
-			<description><![CDATA[The number of users displayed per page.]]></description>
-			<disporder>4</disporder>
+			<description><![CDATA[The number of users displayed per page. Set to 0 to use the default.]]></description>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>

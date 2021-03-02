@@ -41,6 +41,11 @@ if($mybb->get_input('action') == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
 	$invis_count = $db->fetch_field($query, "users");
 
+	if(!$mybb->settings['wolusersperpage'] || (int)$mybb->settings['wolusersperpage'] < 1)
+	{
+		$mybb->settings['wolusersperpage'] = 20;
+	}
+
 	// Add pagination
 	$perpage = $mybb->settings['wolusersperpage'];
 
