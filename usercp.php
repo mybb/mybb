@@ -3521,6 +3521,7 @@ if(!$mybb->input['action'])
 
 				$icon_cache = $cache->read("posticons");
 				$threadprefixes = build_prefixes();
+				$latest_subscribed_threads = '';
 
 				foreach($subscriptions as $thread)
 				{

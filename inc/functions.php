@@ -1758,7 +1758,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 	);
 
 	$plugins->run_hooks("is_moderator", $hook_args);
-	
+
 	if(isset($hook_args['is_moderator']))
 	{
 		return (boolean) $hook_args['is_moderator'];
@@ -6808,6 +6808,7 @@ function build_timezone_select($name, $selected = 0, $short = false)
 
 	$timezone_array = [];
 	$selected = str_replace("+", "", $selected);
+	$timezone_option = '';
 	foreach($timezones as $timezone => $label)
 	{
 		$timezone_item['timezone'] = $timezone;
