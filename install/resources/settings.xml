@@ -1841,6 +1841,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 min=0]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
+		</setting>
 		<setting name="woldisplayspiders">
 			<title>Who's Online Displays Spiders?</title>
 			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
