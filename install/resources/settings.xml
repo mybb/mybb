@@ -756,6 +756,15 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="maxthreadsubjectlenght">
+			<title>Max Length of Thread Subjects</title>
+			<description><![CDATA[The amount of characters before the rest of the thread subject is truncated in forum display page. Set to 0 for no limit.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[numeric
+min=0]]></optionscode>
+			<settingvalue><![CDATA[25]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="8" isdefault="1">
 		<setting name="postlayout">
