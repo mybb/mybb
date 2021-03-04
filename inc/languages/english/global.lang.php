@@ -344,7 +344,7 @@ $l['unapproved_attachment'] = "1 unapproved attachment";
 $l['unapproved_attachments'] = "{1} unapproved attachments";
 $l['unread_report'] = "1 unread report";
 $l['unread_reports'] = "{1} unread reports";
-$l['groupleader_notice'] = "Group Leader Notice: {1}.";
+$l['groupleader_notice'] = "Group Leader Notice:";
 $l['pending_joinrequest'] = "1 pending group membership join request.";
 $l['pending_joinrequests'] = "{1} pending group membership join requests.";
 
