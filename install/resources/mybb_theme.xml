@@ -4206,7 +4206,7 @@ $(".forumjump").on('change', function() {
 </div>]]></template>
 		<template name="global_remote_avatar_notice" version="1809"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=avatar">{$lang->remote_avatar_disabled_default_avatar}</a></div>]]></template>
 		<template name="global_unreadreports" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a>]]></template>
-		<template name="global_moderation_notice" version="1800"><![CDATA[<div class="pm_alert">{$moderation_text}</div>]]></template>
+		<template name="global_moderation_notice" version="1826"><![CDATA[<div class="red_alert">{$moderation_text}</div>]]></template>
 		<template name="global_modqueue" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=modqueue&type={$modqueue_type}">{$modqueue_message}</a>]]></template>
 		<template name="global_modqueue_notice" version="1820"><![CDATA[<div class="red_alert">{$moderation_queue}</div>]]></template>
 		<template name="global_awaiting_activation" version="1800"><![CDATA[<div class="red_alert">{$awaiting_message}</div>]]></template>
