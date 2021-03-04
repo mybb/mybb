@@ -756,9 +756,9 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="maxthreadsubjectlenght">
+		<setting name="maxthreadsubjectlength">
 			<title>Max Length of Thread Subjects</title>
-			<description><![CDATA[The amount of characters before the rest of the thread subject is truncated in forum display page. Set to 0 for no limit.]]></description>
+			<description><![CDATA[The number of characters to which to truncate thread subjects in forum display pages. Set to 0 for no limit.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
