@@ -312,10 +312,10 @@ function build_forumbits($pid=0, $depth=1)
 					$lastpost_link = get_thread_link($lastpost_data['lastposttid'], 0, "lastpost");
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
 					
-					// Max amount of characters before the rest of the thread subject is truncated
-					if(my_strlen($lastpost_subject) > $mybb->settings['maxthreadsubjectlenght'] && $mybb->settings['maxthreadsubjectlenght'] != 0)
+					// Max number of characters before the rest of the thread subject is truncated
+					if(my_strlen($lastpost_subject) > $mybb->settings['maxthreadsubjectlength'] && $mybb->settings['maxthreadsubjectlength'] != 0)
 					{
-						$lastpost_subject = my_substr($lastpost_subject, 0, $mybb->settings['maxthreadsubjectlenght']).$lang->truncated_symbol;
+						$lastpost_subject = my_substr($lastpost_subject, 0, $mybb->settings['maxthreadsubjectlength']).$lang->truncated_symbol;
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
