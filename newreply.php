@@ -1170,24 +1170,24 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			if($post_captcha->type == DEFAULT_CAPTCHA)
+			if($post_captcha->type == captcha::DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
+			elseif(in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
+			elseif(in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}

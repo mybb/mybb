@@ -1825,7 +1825,7 @@ if($mybb->input['action'] == "login")
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$login_captcha = new captcha(false, "post");
 
-		if($login_captcha->type == DEFAULT_CAPTCHA)
+		if($login_captcha->type == captcha::DEFAULT_CAPTCHA)
 		{
 			if(!$correct)
 			{
@@ -1836,11 +1836,11 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif(in_array($login_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
+		elseif(in_array($login_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)))
 		{
 			$login_captcha->build_recaptcha();
 		}
-		elseif(in_array($login_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
+		elseif(in_array($login_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 		{
 			$login_captcha->build_hcaptcha();
 		}
