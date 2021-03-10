@@ -3239,7 +3239,7 @@ switch($mybb->input['action'])
 				$confirm['pid'] = $post['pid'];
 				$confirm['fid'] = $forum['fid'];
 				$confirm['inlinetype'] = $mybb->get_input('inlinetype');
-				$confirm['searchid'] = $mybb->get_input('searchid');
+				$confirm['searchid'] = $mybb->get_input('searchid', MyBB::INPUT_INT);
 				$confirm['url'] = $mybb->get_input('url');
 				$confirm['subject'] = $thread['subject'];
 
