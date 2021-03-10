@@ -147,7 +147,7 @@ function import_theme_xml($xml, $options=array())
 	{
 		if(!empty($options['templateset']))
 		{
-			$sid = $options['templateset'];
+			$sid = (int)$options['templateset'];
 		}
 		else
 		{

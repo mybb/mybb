@@ -3157,10 +3157,10 @@ switch($mybb->input['action'])
 
 				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
 
-				$action = $mybb->input['action'];
-				$modtype = $mybb->get_input('modtype');
-				$inlinetype = $mybb->get_input('inlinetype');
-				$searchid = $mybb->get_input('searchid');
+				$action = $mybb->get_input('action', MyBB::INPUT_INT);
+				$modtype = htmlspecialchars_uni($mybb->get_input('modtype'));
+				$inlinetype = htmlspecialchars_uni($mybb->get_input('inlinetype'));
+				$searchid = $mybb->get_input('searchid', MyBB::INPUT_INT);
 				$url = htmlspecialchars_uni($mybb->get_input('url'));
 				$plugins->run_hooks('moderation_confirmation');
 
