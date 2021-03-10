@@ -196,7 +196,8 @@ else
 		// Exact
 		else
 		{
-			$search_query .= " AND u.username='{$username_like_query}'";
+			$username_esc = $db->escape_string($search_username); 
+			$search_query .= " AND u.username='{$username_esc}'";
 		}
 
 		$memberlist['search_url'] .= "&username=".urlencode($memberlist['username']);
