@@ -142,7 +142,7 @@ if($mybb->input['action'] == "lift")
 	{
 		$updated_group = array(
 			'usergroup' => $ban['oldgroup'],
-			'additionalgroups' => $ban['oldadditionalgroups'],
+			'additionalgroups' => $db->escape_string($ban['oldadditionalgroups']),
 			'displaygroup' => $ban['olddisplaygroup']
 		);
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
@@ -376,7 +376,7 @@ if(!$mybb->input['action'])
 					'uid' => $user['uid'],
 					'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 					'oldgroup' => $user['usergroup'],
-					'oldadditionalgroups' => $user['additionalgroups'],
+					'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 					'olddisplaygroup' => $user['displaygroup'],
 					'admin' => (int)$mybb->user['uid'],
 					'dateline' => TIME_NOW,

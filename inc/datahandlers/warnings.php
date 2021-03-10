@@ -467,7 +467,7 @@ class WarningsHandler extends DataHandler
 								"uid" => $user['uid'],
 								"gid" => $action['usergroup'],
 								"oldgroup" => $user['usergroup'],
-								"oldadditionalgroups" => $user['additionalgroups'],
+								"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
 								"olddisplaygroup" => $user['displaygroup'],
 								"admin" => $mybb->user['uid'],
 								"dateline" => TIME_NOW,
@@ -481,7 +481,7 @@ class WarningsHandler extends DataHandler
 								$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 								// Override new ban details with old group info
 								$new_ban['oldgroup'] = $existing_ban['oldgroup'];
-								$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
+								$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
 								$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
 							}
 
