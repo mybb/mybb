@@ -645,7 +645,7 @@ if($mybb->input['action'] == "export")
 		if($mybb->input['include_templates'] != 0)
 		{
 			$xml .= "\t<templates>\r\n";
-			$query = $db->simple_select("templates", "*", "sid='".$properties['templateset']."'");
+			$query = $db->simple_select("templates", "*", "sid='".(int)$properties['templateset']."'");
 			while($template = $db->fetch_array($query))
 			{
 				$template['template'] = str_replace(']]>', ']]]]><![CDATA[>', $template['template']);
@@ -757,7 +757,7 @@ if($mybb->input['action'] == "duplicate")
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
-			$sid = $properties['templateset'];
+			$sid = (int)$properties['templateset'];
 			$nprops = null;
 			if($mybb->input['duplicate_templates'])
 			{
@@ -1166,7 +1166,7 @@ if($mybb->input['action'] == "edit")
 		}
 		if($properties['templateset'])
 		{
-			$query = $db->simple_select("templatesets", "sid", "sid='".$properties['templateset']."'");
+			$query = $db->simple_select("templatesets", "sid", "sid='".(int)$properties['templateset']."'");
 			$ts_check = $db->fetch_field($query, "sid");
 			if(!$ts_check)
 			{
