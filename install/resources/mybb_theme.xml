@@ -3823,7 +3823,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <td class="{$bgcolor} forumdisplay_announcement" style="white-space: nowrap; text-align: right"><span class="smalltext">{$postdate}</span></td>
 {$modann}
 </tr>]]></template>
-		<template name="forumdisplay_forumsort" version="1826"><![CDATA[<tr>
+		<template name="forumdisplay_forumsort" version="1827"><![CDATA[<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
 			<form action="forumdisplay.php" method="get">
 				<input type="hidden" name="fid" value="{$fid}" />
@@ -4040,7 +4040,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1826"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1827"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -5049,11 +5049,11 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="member_profile_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="member_profile_warn" version="1400"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
-		<template name="member_profile_warninglevel" version="1826"><![CDATA[<tr>
+		<template name="member_profile_warninglevel" version="1827"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
 	<td class="{$bg_color}">{$warning_level}</td>
 </tr>]]></template>
-		<template name="member_profile_warninglevel_link" version="1826"><![CDATA[<tr>
+		<template name="member_profile_warninglevel_link" version="1827"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
 	<td class="{$bg_color}"><a href="warnings.php?uid={$memprofile['uid']}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
@@ -10317,7 +10317,7 @@ if(use_xmlhttprequest == "1")
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
-		<template name="private_quickreply" version="1826"><![CDATA[<br />
+		<template name="private_quickreply" version="1827"><![CDATA[<br />
 <form action="private.php" method="post" name="input">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="to" value="{$to}" />
@@ -10757,7 +10757,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 		<template name="private_tracking_unreadmessage_stop" version="1800"><![CDATA[<tr>
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
-		<template name="modal" version="1826"><![CDATA[<div class="modal">
+		<template name="modal" version="1827"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 		<table border="0" cellspacing="0" cellpadding="5" class="tborder">
 			<tr>
@@ -12871,7 +12871,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1826"><![CDATA[<html>
+		<template name="usercp_options" version="1827"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -13066,7 +13066,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_options_invisible" version="1826"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_options_invisible" version="1827"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->login_cookies_privacy}</strong></legend>
 <table cellspacing="0" cellpadding="2">
 <tr>
@@ -14145,9 +14145,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1826"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1827"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1826"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1827"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
@@ -14187,7 +14187,7 @@ $(function() {
 	{$sourcemode}
 });
 </script>]]></template>
-		<template name="contact" version="1826"><![CDATA[<html>
+		<template name="contact" version="1827"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>
 {$headerinclude}
@@ -14226,7 +14226,7 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1826"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1827"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
@@ -14368,7 +14368,7 @@ $(function() {
 </tr>]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
-	<template name="delete_attachments_button" version="1826"><![CDATA[
+	<template name="delete_attachments_button" version="1827"><![CDATA[
 		<div align="center">
 						<input type="hidden" name="action" value="do_attachments" />
 						<input type="submit" class="button" value="{$lang->delete_attachments}" />
