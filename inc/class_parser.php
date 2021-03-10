@@ -1581,8 +1581,8 @@ class postParser
 
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(www|ftp)(\.)(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))(?![^<>]*?>)#ius", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(www|ftp)(\.)(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))(?![^<>]*?>)#ius", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 
 		return $message;
