@@ -4845,28 +4845,19 @@ function join_usergroup($uid, $joingroup)
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
-	$usergroups = "";
-	$usergroups = $user['additionalgroups'].",".$joingroup;
-	$groupslist = "";
-	$groups = explode(",", $usergroups);
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
 
-	if(is_array($groups))
+	if(!in_array((int)$joingroup, $groups))
 	{
-		$comma = '';
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $gid != $user['usergroup'] && !isset($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+		$groups[] = (int)$joingroup;
+		$groups = array_diff($groups, array($user['usergroup']));
+		$groups = array_unique($groups);
 
-	// What's the point in updating if they're the same?
-	if($groupslist != $user['additionalgroups'])
-	{
+		$groupslist = implode(',', $groups);
+
 		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".(int)$uid."'");
 		return true;
 	}
@@ -4893,24 +4884,14 @@ function leave_usergroup($uid, $leavegroup)
 		return false;
 	}
 
-	$groupslist = $comma = '';
-	$usergroups = $user['additionalgroups'].",";
-	$donegroup = array();
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
+	$groups = array_diff($groups, array($leavegroup));
+	$groups = array_unique($groups);
 
-	$groups = explode(",", $user['additionalgroups']);
-
-	if(is_array($groups))
-	{
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $leavegroup != $gid && empty($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+	$groupslist = implode(',', $groups);
 
 	$dispupdate = "";
 	if($leavegroup == $user['displaygroup'])

@@ -320,7 +320,7 @@ if($mybb->input['action'] == "add")
 					unset($mybb->input['additionalgroups'][$key]);
 				}
 			}
-			$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+			$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
 		}
 		else
 		{
@@ -470,7 +470,7 @@ if($mybb->input['action'] == "edit")
 					unset($mybb->input['additionalgroups'][$key]);
 				}
 			}
-			$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+			$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
 		}
 		else
 		{
@@ -2584,7 +2584,7 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					$updated_group = array(
 						"usergroup" => $ban['oldgroup'],
-						"additionalgroups" => $ban['oldadditionalgroups'],
+						"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
 						"displaygroup" => $ban['olddisplaygroup']
 					);
 					$db->update_query("users", $updated_group, "uid = '".$ban['uid']."'");
@@ -2662,7 +2662,7 @@ if($mybb->input['action'] == "inline_edit")
 							'uid' => $user['uid'],
 							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 							'oldgroup' => $user['usergroup'],
-							'oldadditionalgroups' => $user['additionalgroups'],
+							'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 							'olddisplaygroup' => $user['displaygroup'],
 							'admin' => (int)$mybb->user['uid'],
 							'dateline' => TIME_NOW,

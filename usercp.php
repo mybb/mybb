@@ -3052,8 +3052,14 @@ if($mybb->input['action'] == "usergroups")
 
 	if($mybb->user['additionalgroups'])
 	{
-
-		$query = $db->simple_select("usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
+		$additionalgroups = implode(
+			',',
+			array_map(
+				'intval',
+				explode(',', $mybb->user['additionalgroups'])
+			)
+		);
+		$query = $db->simple_select("usergroups", "*", "gid IN (".$additionalgroups.") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
 		while($usergroup = $db->fetch_array($query))
 		{
 			$groupsmemberof[] = $usergroup;
@@ -3072,7 +3078,14 @@ if($mybb->input['action'] == "usergroups")
 	$existinggroups = $mybb->user['usergroup'];
 	if($mybb->user['additionalgroups'])
 	{
-		$existinggroups .= ",".$mybb->user['additionalgroups'];
+		$additionalgroups = implode(
+			',',
+			array_map(
+				'intval',
+				explode(',', $mybb->user['additionalgroups'])
+			)
+		);
+		$existinggroups .= ",".$additionalgroups;
 	}
 
 	$joinablegroups = [];

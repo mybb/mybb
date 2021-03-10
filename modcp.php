@@ -3608,7 +3608,7 @@ if($mybb->input['action'] == "liftban")
 
 	$updated_group = array(
 		'usergroup' => $ban['oldgroup'],
-		'additionalgroups' => $ban['oldadditionalgroups'],
+		'additionalgroups' => $db->escape_string($ban['oldadditionalgroups']),
 		'displaygroup' => $ban['olddisplaygroup']
 	);
 	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
@@ -3750,7 +3750,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'uid' => $user['uid'],
 				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'oldgroup' => (int)$user['usergroup'],
-				'oldadditionalgroups' => (string)$user['additionalgroups'],
+				'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 				'olddisplaygroup' => (int)$user['displaygroup'],
 				'admin' => (int)$mybb->user['uid'],
 				'dateline' => TIME_NOW,
