@@ -100,13 +100,16 @@ if($mybb->input['action'] == "copy")
 				}
 				$new_forum = $from_forum;
 				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
-				$new_forum['name'] = $db->escape_string($mybb->input['title']);
-				$new_forum['description'] = $db->escape_string($mybb->input['description']);
-				$new_forum['type'] = $db->escape_string($mybb->input['type']);
+				$new_forum['name'] = $mybb->input['title'];
+				$new_forum['description'] = $mybb->input['description'];
+				$new_forum['type'] = $mybb->input['type'];
 				$new_forum['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
-				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
-				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 				$new_forum['parentlist'] = '';
+
+				foreach($new_forum as $key => $value)
+				{
+					$new_forum[$key] = $db->escape_string($value);
+				}
 
 				$to = $db->insert_query("forums", $new_forum);
 
@@ -132,12 +135,15 @@ if($mybb->input['action'] == "copy")
 			{
 				$new_forum = $from_forum;
 				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
-				$new_forum['name'] = $db->escape_string($to_forum['name']);
-				$new_forum['description'] = $db->escape_string($to_forum['description']);
-				$new_forum['pid'] = $db->escape_string($to_forum['pid']);
-				$new_forum['parentlist'] = $db->escape_string($to_forum['parentlist']);
-				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
-				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
+				$new_forum['name'] = $to_forum['name'];
+				$new_forum['description'] = $to_forum['description'];
+				$new_forum['pid'] = $to_forum['pid'];
+				$new_forum['parentlist'] = $to_forum['parentlist'];
+
+				foreach($new_forum as $key => $value)
+				{
+					$new_forum[$key] = $db->escape_string($value);
+				}
 
 				$db->update_query("forums", $new_forum, "fid='{$to}'");
 			}
