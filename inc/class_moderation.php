@@ -1176,7 +1176,7 @@ class Moderation
 						'question' => $db->escape_string($poll['question']),
 						'dateline' => $poll['dateline'],
 						'options' => $db->escape_string($poll['options']),
-						'votes' => $poll['votes'],
+						'votes' => $db->escape_string($poll['votes']),
 						'numoptions' => $poll['numoptions'],
 						'numvotes' => $poll['numvotes'],
 						'timeout' => $poll['timeout'],
