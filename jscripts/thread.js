@@ -191,7 +191,7 @@ var Thread = {
 				rows: 12,
 				submit: lang.save_changes,
 				cancel: lang.cancel_edit,
-				placeholder: lang.no_message,
+				placeholder: "",
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
 				dataType: "json",
