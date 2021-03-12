@@ -144,16 +144,7 @@ function import_theme_xml($xml, $options=array())
 
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && empty($options['no_templates']))
-	{
-		if(!empty($options['templateset']))
-		{
-			$sid = (int)$options['templateset'];
-		}
-		else
-		{
-			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
-		}
-
+	{	
 		$templates = $theme['templates']['template'];
 		if(is_array($templates))
 		{
@@ -163,9 +154,8 @@ function import_theme_xml($xml, $options=array())
 				$templates = array($templates);
 			}
 		}
-
+		
 		$security_check = false;
-		$templatecache = array();
 		foreach($templates as $template)
 		{
 			if(check_template($template['value']))
@@ -173,7 +163,24 @@ function import_theme_xml($xml, $options=array())
 				$security_check = true;
 				break;
 			}
+		}
+		if($security_check == true)
+		{
+			return -4;
+		}
+		
+		if(!empty($options['templateset']))
+		{
+			$sid = (int)$options['templateset'];
+		}
+		else
+		{
+			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
+		}
 
+		$templatecache = array();
+		foreach($templates as $template)
+		{
 			$templatecache[] = array(
 				"title" => $db->escape_string($template['attributes']['name']),
 				"template" => $db->escape_string($template['value']),
@@ -181,11 +188,6 @@ function import_theme_xml($xml, $options=array())
 				"version" => $db->escape_string($template['attributes']['version']),
 				"dateline" => TIME_NOW
 			);
-		}
-
-		if($security_check == true)
-		{
-			return -4;
 		}
 
 		foreach($templatecache as $template)
