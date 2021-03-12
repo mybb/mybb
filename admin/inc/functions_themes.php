@@ -154,7 +154,8 @@ function import_theme_xml($xml, $options=array())
 				$templates = array($templates);
 			}
 		}
-		
+
+		// Security check
 		$security_check = false;
 		foreach($templates as $template)
 		{
@@ -164,11 +165,12 @@ function import_theme_xml($xml, $options=array())
 				break;
 			}
 		}
+
 		if($security_check == true)
 		{
 			return -4;
 		}
-		
+
 		if(!empty($options['templateset']))
 		{
 			$sid = (int)$options['templateset'];
