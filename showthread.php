@@ -561,7 +561,7 @@ if($mybb->input['action'] == "thread")
 			// Mark the option the user voted for.
 			if(!empty($votedfor[$number]))
 			{
-				$optionbg = "trow2";
+				$optionbg = "poll_votedfor";
 				$votestar = "*";
 			}
 			else
