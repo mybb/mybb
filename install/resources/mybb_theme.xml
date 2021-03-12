@@ -14239,7 +14239,6 @@ $(function() {
 <!--
 	lang.unknown_error = "{$lang->unknown_error}";
 	lang.confirm_title = "{$lang->confirm_title}";
-	lang.no_message = "{$lang->no_message}";
 
 	lang.select2_match = "{$lang->select2_match}";
 	lang.select2_matches = "{$lang->select2_matches}";
