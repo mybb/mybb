@@ -629,6 +629,11 @@ function generate_post_check($rotation_shift=0)
 		$seed .= $session->sid;
 	}
 
+	if(defined('IN_ADMINCP'))
+	{
+		$seed .= 'ADMINCP';
+	}
+
 	$seed .= $mybb->settings['internal']['encryption_key'];
 
 	return md5($seed);
