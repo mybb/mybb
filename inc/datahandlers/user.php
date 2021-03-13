@@ -332,9 +332,8 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 		$icq = (int)$icq;
-		return true;
 
-		if(my_strlen($user[$cfield]) > 10)
+		if(my_strlen($user['icq']) > 10)
 		{
 			$this->set_error("contact_field_icqerror");
 			return false;
@@ -348,8 +347,10 @@ class UserDataHandler extends DataHandler
 	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_google()
-	{	
-		if(my_strlen($user[$cfield]) > 75)
+	{
+		$user = &$this->data;
+
+		if(my_strlen($user['google']) > 75)
 		{
 			$this->set_error("contact_field_error");
 			return false;
@@ -363,8 +364,10 @@ class UserDataHandler extends DataHandler
 	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_skype()
-	{	
-		if(my_strlen($user[$cfield]) > 75)
+	{
+		$user = &$this->data;
+
+		if(my_strlen($user['skype']) > 75)
 		{
 			$this->set_error("contact_field_error");
 			return false;
