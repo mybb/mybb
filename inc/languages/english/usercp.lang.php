@@ -210,7 +210,9 @@ $l['website_url'] = "Your Website URL:";
 $l['birthdate'] = "Birthdate:";
 $l['contact_field_skype'] = "Skype ID:";
 $l['contact_field_google'] = "Google Hangouts ID:";
+
 $l['contact_field_error'] = "Sorry, but we cannot change your contact information as the ID specified is too long. Google Hangouts IDs and Skype IDs can be up to 75 characters long.";
+
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['away_information'] = "Away Information";
