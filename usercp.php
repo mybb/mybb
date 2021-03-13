@@ -226,28 +226,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
-		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
+		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
+		"icq" => $mybb->get_input('icq', MyBB::INPUT_INT),
+		"google" => $mybb->get_input('google'),
+		"skype" => $mybb->get_input('skype')
 	));
-	foreach(array('skype', 'google') as $cfield)
-	{
-		$csetting = 'allow'.$cfield.'field';
-		if($mybb->settings[$csetting] == '')
-		{
-			continue;
-		}
-
-		if(!is_member($mybb->settings[$csetting]))
-		{
-			continue;
-		}
-
-		$user[$cfield] = $mybb->get_input($cfield);
-
-		if(my_strlen($user[$cfield]) > 75)
-		{
-			error($lang->contact_field_error);
-		}
-	}
 
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{

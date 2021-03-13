@@ -324,7 +324,15 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_google()
 	{
+		global $mybb;
+
 		$user = &$this->data;
+
+		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield']))
+        {
+            $this->data['google'] = '';
+			return true;
+        }
 
 		if(my_strlen($user['google']) > 75)
 		{
@@ -341,7 +349,15 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_skype()
 	{
+		global $mybb;
+
 		$user = &$this->data;
+		
+		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield']))
+        {
+            $this->data['skype'] = '';
+			return true;
+        }
 
 		if(my_strlen($user['skype']) > 75)
 		{
