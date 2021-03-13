@@ -318,6 +318,38 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if an ICQ number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_icq()
+	{
+		global $mybb;
+
+		$icq = &$this->data['icq'];
+
+		if($mybb->settings['allowicqfield'] == '' || !is_member($mybb->settings['allowicqfield'], getuser($this->data['uid'])))
+		{
+			$icq = '';
+			return true;
+		}
+
+		if($icq != '' && !is_numeric($icq))
+		{
+			$this->set_error("invalid_icq_number");
+			return false;
+		}
+		$icq = (int)$icq;
+
+		if(my_strlen($user['icq']) > 10)
+		{
+			$this->set_error("contact_field_icqerror");
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Verifies if a Google Hangouts number is valid or not.
 	 *
 	 * @return boolean True when valid, false when invalid.
@@ -328,7 +360,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield']))
+		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield'], getuser($this->data['uid'])))
 		{
 			$this->data['google'] = '';
 			return true;
@@ -353,7 +385,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield']))
+		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield'], getuser($this->data['uid'])))
 		{
 			$this->data['skype'] = '';
 			return true;
