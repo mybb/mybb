@@ -15,7 +15,7 @@ options = array(
 	allow_html
 	allow_smilies
 	allow_mycode
-	allow_url
+	allow_auto_url
 	nl2br
 	filter_badwords
 	me_username
@@ -103,7 +103,7 @@ class postParser
 	 * Parses a message with the specified options.
 	 *
 	 * @param string $message The message to be parsed.
-	 * @param array $options Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
+	 * @param array $options Array of yes/no options
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options = array())
@@ -509,7 +509,10 @@ class postParser
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
 		}
 
-		if($mybb->settings['allowautourl'] == 1)
+		if(
+			(!isset($this->options['allow_auto_url']) || $this->options['allow_auto_url'] == 1) &&
+			$mybb->settings['allowautourl'] == 1
+		)
 		{
 			$message = $this->mycode_auto_url($message);
 		}
@@ -1573,11 +1576,6 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-
-		if($this->options['allow_url'] != 1)
-		{
-			return $message;
-		}
 
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
