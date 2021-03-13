@@ -328,7 +328,7 @@ class UserDataHandler extends DataHandler
 
 		$icq = &$this->data['icq'];
 
-		if($mybb->settings['allowicqfield'] == '' || !is_member($mybb->settings['allowicqfield']))
+		if($mybb->settings['allowicqfield'] == '' || !is_member($mybb->settings['allowicqfield'], getuser($this->data['uid'])))
 		{
 			$icq = '';
 			return true;
@@ -360,7 +360,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield']))
+		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield'], getuser($this->data['uid'])))
 		{
 			$this->data['google'] = '';
 			return true;
@@ -385,7 +385,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield']))
+		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield'], getuser($this->data['uid'])))
 		{
 			$this->data['skype'] = '';
 			return true;
