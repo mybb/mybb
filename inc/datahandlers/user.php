@@ -329,10 +329,10 @@ class UserDataHandler extends DataHandler
 		$icq = &$this->data['icq'];
 
 		if($mybb->settings['allowicqfield'] == '' || !is_member($mybb->settings['allowicqfield']))
-        {
-            $icq = '';
+		{
+			$icq = '';
 			return true;
-        }
+		}
 
 		if($icq != '' && !is_numeric($icq))
 		{
@@ -361,10 +361,10 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield']))
-        {
-            $this->data['google'] = '';
+		{
+			$this->data['google'] = '';
 			return true;
-        }
+		}
 
 		if(my_strlen($user['google']) > 75)
 		{
@@ -384,12 +384,12 @@ class UserDataHandler extends DataHandler
 		global $mybb;
 
 		$user = &$this->data;
-		
+
 		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield']))
-        {
-            $this->data['skype'] = '';
+		{
+			$this->data['skype'] = '';
 			return true;
-        }
+		}
 
 		if(my_strlen($user['skype']) > 75)
 		{
