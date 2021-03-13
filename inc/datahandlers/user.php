@@ -341,7 +341,7 @@ class UserDataHandler extends DataHandler
 		}
 		$icq = (int)$icq;
 
-		if(my_strlen($user['icq']) > 10)
+		if(my_strlen($icq) > 10)
 		{
 			$this->set_error("contact_field_icqerror");
 			return false;
