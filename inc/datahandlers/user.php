@@ -318,6 +318,36 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if a Google Hangouts number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_google()
+	{	
+		if(my_strlen($user[$cfield]) > 75)
+		{
+			$this->set_error("contact_field_error");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Verifies if a Skype number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_skype()
+	{	
+		if(my_strlen($user[$cfield]) > 75)
+		{
+			$this->set_error("contact_field_error");
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	* Verifies if a birthday is valid or not.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -999,6 +1029,16 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_website();
 		}
+
+		if($this->method == "insert" || array_key_exists('google', $user))
+		{
+			$this->verify_google();
+		}
+		if($this->method == "insert" || array_key_exists('skype', $user))
+		{
+			$this->verify_skype();
+		}
+
 		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
 			$this->verify_birthday();
