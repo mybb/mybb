@@ -891,10 +891,10 @@ if($mybb->input['action'] == "add")
 
 			$fid = $db->insert_query("forums", $insert_array);
 
-			$cache->update_forums();
-
 			$parentlist = make_parent_list($fid);
 			$db->update_query("forums", array("parentlist" => $parentlist), "fid='$fid'");
+
+			$cache->update_forums();
 
 			$inherit = $mybb->input['default_permissions'];
 
