@@ -1616,7 +1616,7 @@ class postParser
 					(?:www|ftp)\.								# common subdomain
 				)
 				(?P<link>
-					[^\/\"\s\<\[\.]+\.*[\w]+					# host
+					(?:[^\/\"\s\<\[\.]+\.)*[\w]+				# host
 					(?::[0-9]+)?								# port
 					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*)?	# path, query, fragment; exclude unencoded characters
 					[\w\/\)]
