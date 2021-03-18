@@ -316,8 +316,16 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
-		$output->print_footer("doupgrade");
+		if(end($version_history) == reset($key_order) && empty($mybb->input['force']))
+		{
+			$output->print_contents($lang->upgrade_not_needed);
+			$output->print_footer("finished");
+		}
+		else
+		{
+			$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
+			$output->print_footer("doupgrade");
+		}
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
