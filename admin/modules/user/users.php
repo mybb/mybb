@@ -2528,6 +2528,8 @@ if($mybb->input['action'] == "inline_edit")
 				}
 			}
 
+		$plugins->run_hooks("admin_user_multiactivate", $to_update);
+
 			if(isset($to_update) && is_array($to_update))
 			{
 				$sql_array = implode(",", $to_update);
@@ -2874,6 +2876,8 @@ if($mybb->input['action'] == "inline_edit")
 						}
 					}
 
+					$plugins->run_hooks("admin_user_multiprune_threads", $prune_array);
+
 					// No posts were found for the user, return error
 					if(!is_array($prune_array) || count($prune_array) == 0)
 					{
@@ -3024,6 +3028,14 @@ if($mybb->input['action'] == "inline_edit")
 					"additionalgroups" => $additionalgroups,
 					"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
 				);
+
+				// Create an admin_user_multiusergroup hook array
+				$hook_params = array(
+					"selected" => $selected,
+					"update_array" => $update_array
+				);
+
+				$hook_params = $plugins->run_hooks("admin_user_multiusergroup", $hook_params);
 
 				// Do the usergroup update for all those selected
 				// If the a selected user is a super admin, don't update that user
