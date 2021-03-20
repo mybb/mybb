@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1824">
+<theme name="MyBB Master Style" version="1827">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -13761,7 +13761,7 @@ if(use_xmlhttprequest == "1")
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
 		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="https://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
-		<template name="video_youtube_embed" version="1824"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_youtube_embed" version="1827"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="https://mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
