@@ -3031,8 +3031,8 @@ if($mybb->input['action'] == "inline_edit")
 
 				// Create an admin_user_multiusergroup hook array
 				$hook_params = array(
-					"selected" => $selected,
-					"update_array" => $update_array
+					"selected" => &$selected,
+					"update_array" => &$update_array
 				);
 
 				$hook_params = $plugins->run_hooks("admin_user_multiusergroup", $hook_params);
