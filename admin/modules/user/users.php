@@ -2528,7 +2528,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 			}
 
-		$plugins->run_hooks("admin_user_multiactivate", $to_update);
+			$plugins->run_hooks("admin_user_multiactivate", $to_update);
 
 			if(isset($to_update) && is_array($to_update))
 			{
