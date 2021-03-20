@@ -1124,7 +1124,9 @@ if($mybb->input['action'] == "change")
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
 				$lang->success_settings_updated .= $lang->success_settings_updated_username_method_conflict;
-			} else {
+			}
+			else
+			{
 				$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
 				if($db->num_rows($query))
 				{
