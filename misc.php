@@ -481,14 +481,14 @@ elseif($mybb->input['action'] == "help")
 						$section['expcolimage'] = "collapse_collapsed.png";
 						$section['expdisplay'] = "display: none;";
 						$section['expthead'] = " thead_collapsed";
-						$section['expaltext'] = "[+]";
+						$section['expaltext'] = $lang->expcol_expand;
 					}
 					else
 					{
 						$section['expcolimage'] = "collapse.png";
 						$section['expthead'] = '';
 						$section['expdisplay'] = '';
-						$section['expaltext'] = "[-]";
+						$section['expaltext'] = $lang->expcol_collapse;
 					}
 				}
 

@@ -1199,6 +1199,7 @@ if($mybb->input['action'] == "thread")
 
 		$thread['posthash'] = md5($mybb->user['uid'].random_str());
 		$thread['page'] = $page;
+		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	}
 
 	// If the user is a moderator, show the moderation tools.

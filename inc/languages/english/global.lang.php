@@ -614,6 +614,9 @@ $l['sfs_error_ip'] = 'IP';
 $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
+$l['expcol_collapse'] = '[-]';
+$l['expcol_expand'] = '[+]';
+
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
 
 $l['use_default'] = "Use Default";

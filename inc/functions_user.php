@@ -521,7 +521,7 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
-	$expaltext = (in_array("usercppms", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercppms", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
 	$tracking = '';
@@ -609,7 +609,7 @@ function usercp_menu_profile()
 		$collapsed['usercpprofile_e'] = '';
 	}
 
-	$expaltext = (in_array("usercpprofile", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpprofile", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
@@ -648,7 +648,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
-	$expaltext = (in_array("usercpmisc", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpmisc", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
