@@ -490,8 +490,8 @@ elseif($mybb->input['action'] == "help")
 						}
 					}
 					$expdisplay = '';
-					$sname = "sid_".$section['sid']."_c";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;")
+					$sname = "sid_".$section['sid']."_e";
+					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: none;")
 					{
 						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
