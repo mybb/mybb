@@ -1092,10 +1092,7 @@ if($colcookie)
 	unset($collapsed);
 	foreach($col as $key => $val)
 	{
-		$ex = $val."_e";
-		$co = $val."_c";
-		$collapsed[$co] = "display: show;";
-		$collapsed[$ex] = "display: none;";
+		$collapsed[$val."_e"] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
 		$collapsedthead[$val] = " thead_collapsed";
 	}

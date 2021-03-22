@@ -475,9 +475,8 @@ elseif($mybb->input['action'] == "help")
 							$section['helpdocs'][] = $helpdoc;
 						}
 					}
-
-					$sname = "sid_".$section['sid']."_c";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;")
+					$sname = "sid_".$section['sid']."_e";
+					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: none;")
 					{
 						$section['expcolimage'] = "collapse_collapsed.png";
 						$section['expdisplay'] = "display: none;";
