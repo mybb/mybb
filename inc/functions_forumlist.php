@@ -435,13 +435,13 @@ function build_forumbits($pid=0, $depth=1)
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
 				$expthead = " thead_collapsed";
-				$expaltext = "[+]";
+				$expaltext = $lang->expcol_expand;
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
 				$expthead = "";
-				$expaltext = "[-]";
+				$expaltext = $lang->expcol_collapse;
 			}
 
 			// Swap over the alternate backgrounds

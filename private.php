@@ -1232,7 +1232,7 @@ if($mybb->input['action'] == "read")
 		}
 
 		$postoptionschecked = $optionschecked; // Backwards compatability instead of correcting variable used in template
-		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
+		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
 

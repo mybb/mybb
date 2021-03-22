@@ -1264,7 +1264,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 			$posthash = md5($mybb->user['uid'].random_str());
-		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
+		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 
@@ -1286,7 +1286,7 @@ if($mybb->input['action'] == "thread")
 				$thread['notes'] = my_substr($thread['notes'], 0, 200)."... {$viewnotes}";
 			}
 
-			$expaltext = (in_array("threadnotes", $collapse)) ? "[+]" : "[-]";
+			$expaltext = (in_array("threadnotes", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 			eval("\$threadnotesbox = \"".$templates->get("showthread_threadnotes")."\";");
 		}
 

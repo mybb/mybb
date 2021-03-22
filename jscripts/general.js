@@ -691,9 +691,8 @@ var expandables = {
 			})
 			.parents(':eq(1)').toggleClass(element.parents(':eq(1)').hasClass('thead') ? 'thead_collapsed' : 'tcat_collapse_collapsed');
 			this.saveCollapsed(controls, expState);
-			return true;
 		}
-		return false;
+		return true;
 	},
 
 	saveCollapsed: function(id, add)
