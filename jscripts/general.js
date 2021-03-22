@@ -647,88 +647,53 @@ var Cookie = {
 	}
 };
 
-var Collapsible = {
-
+var expandables = {
 	init: function()
 	{
-		var collapsed = Cookie.get('collapsed');
-
-		if(collapsed)
+		var expanders = $(".expcolimage .expander");
+		if(expanders.length)
 		{
-			saved = collapsed.split("|");
-
-			for (var i = 0; i < saved.length; i++)
+			expanders.each(function()
 			{
-				var objValue = saved[i];
-				var savedCollapse = document.getElementById(objValue);
-
-				if (savedCollapse)
+        		var expander = $(this);
+				if(!expander || expander.attr("id") == false)
 				{
-					Tools.removeClass(savedCollapse, 'collapse--not-collapsed');
-					Tools.addClass(savedCollapse, 'collapse--collapsed');
+					return;
 				}
-			}
-		}
 
-		var collapses = document.querySelectorAll(".collapse");
-		if (collapses.length)
-		{
-			[].forEach.call(collapses, function(collapse) {
-				var toggle = collapse.querySelector('.collapse__toggle');
-				var control = collapse.getAttribute('id');
-
-				document.addEventListener('click', function(e)
+				expander.on('click', function()
 				{
-					if(e.target && (e.target === toggle || toggle.contains(e.target)))
-					{
-						Collapsible.expandCollapse(collapse, control);
-					}
+					expandables.expandCollapse($(this));
 				});
+
+				expander.css("cursor", MyBB.browser == "ie" ? "hand" : "pointer");
 			});
 		}
 	},
 
-	expandCollapse: function(collapse, controls)
+	expandCollapse: function(element)
 	{
-		if (Tools.hasClass(collapse, 'collapse--collapsed'))
-		{
-			Tools.removeClass(collapse, 'collapse--collapsed');
-			Tools.addClass(collapse, 'collapse--not-collapsed');
+		var controls = element.attr("id").replace("_img", ""),
+			expandedItem = $("#"+controls+"_e");
 
-			if (controls)
-			{
-				this.saveCollapsed(controls);
-			}
+		if(expandedItem.length)
+		{
+			var expState = + !expandedItem.is(":hidden"),
+				expcolImg = element.attr("src"),
+				expText = [lang.expcol_collapse, lang.expcol_expand];
+
+			expandedItem.toggle("fast", this.expCallback(controls, expState));
+
+			element.attr({
+				"alt": expText[expState],
+				"title": expText[expState],
+				"src": expState ? expcolImg.replace('collapse.', 'collapse_collapsed.') : expcolImg.replace('collapse_collapsed.', 'collapse.')
+			})
+			.parents(':eq(1)').toggleClass(element.parents(':eq(1)').hasClass('thead') ? 'thead_collapsed' : 'tcat_collapse_collapsed');
+			this.saveCollapsed(controls, expState);
+			return true;
 		}
-		else
-		{
-			Tools.removeClass(collapse, 'collapse--not-collapsed');
-			Tools.addClass(collapse, 'collapse--collapsed');
-
-			if (controls)
-			{
-				this.saveCollapsed(controls, 1);
-			}
-		}
-
-		return true;
-	},
-
-	toggleAllCollapses: function(collapses, setting)
-	{
-		[].forEach.call(collapses, function(collapse)
-		{
-			if (setting === 'open' && Tools.hasClass(collapse, 'collapse--collapsed'))
-			{
-				Tools.removeClass(collapse, 'collapse--collapsed');
-				Tools.addClass(collapse, 'collapse--not-collapsed');
-			}
-			else if (setting === 'close' && Tools.hasClass(collapse, 'collapse--not-collapsed'))
-			{
-				Tools.removeClass(collapse, 'collapse--not-collapsed');
-				Tools.addClass(collapse, 'collapse--collapsed');
-			}
-		});
+		return false;
 	},
 
 	saveCollapsed: function(id, add)
@@ -758,6 +723,12 @@ var Collapsible = {
 		}
 
 		Cookie.set('collapsed', newCollapsed.join("|"));
+	},
+
+	// Dummy callback function to override by theme developers
+	expCallback: function(id, state)
+	{
+		//console.log("id:"+id+" state:"+state);
 	}
 };
 
