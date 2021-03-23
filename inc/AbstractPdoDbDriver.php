@@ -300,10 +300,10 @@ abstract class AbstractPdoDbDriver implements DB_Base
 				$portSeparator = strpos($hostname, ':', $closingSquareBracket);
 
 				// there is no port specified
-				if ($portSeparator === false && strlen($hostname) > $portSeparator + 1) {
+				if ($portSeparator === false) {
 					return array($hostname, null);
 				} else {
-					$host = substr($hostname, $openingSquareBracket, $closingSquareBracket);
+					$host = substr($hostname, $openingSquareBracket, $closingSquareBracket + 1);
 					$port = (int) substr($hostname, $portSeparator + 1);
 
 					return array($host, $port);
@@ -315,7 +315,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 
 		// either an IPv4 address or a hostname
 		$portSeparator = strpos($hostname, ':', 0);
-		if ($portSeparator === false && strlen($hostname) > $portSeparator + 1) {
+		if ($portSeparator === false) {
 			return array($hostname, null);
 		} else {
 			$host = substr($hostname, 0, $portSeparator);
