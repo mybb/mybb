@@ -98,6 +98,19 @@ class postParser
 	public $clear_needed = false;
 
 	/**
+	 * Whether to validate the parser's HTML output. Validation errors will be logged/sent/displayed according to board settings.
+	 *
+	 * 0 - skip validation
+	 * 1 - validate if required PHP extensions (libxml, dom) are available
+	 * 2 - validate if required PHP extensions (libxml, dom) are available; block output on failure
+	 * 3 - always require validation; block output on failure
+	 *
+	 * @access public
+	 * @var int
+	 */
+	public $output_validation_policy = 1;
+
+	/**
 	 * Parses a message with the specified options.
 	 *
 	 * @param string $message The message to be parsed.
@@ -107,6 +120,8 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
+
+		$original_message = $message;
 
 		$this->clear_needed = false;
 
@@ -255,7 +270,14 @@ class postParser
 
 		$message = $plugins->run_hooks("parse_message_end", $message);
 
-		return $message;
+		if ($this->output_allowed($original_message, $message) === true)
+		{
+			return $message;
+		}
+		else
+		{
+			return '';
+		}
 	}
 
 	/**
@@ -1890,5 +1912,85 @@ class postParser
 		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		return $url;
+	}
+
+	/**
+	 * Determines whether the resulting HTML syntax is acceptable for output, according to the parser's validation policy.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool|null
+	 */
+	function output_allowed($source, $output)
+	{
+		if($this->output_validation_policy === 0)
+		{
+			return true;
+		}
+		else
+		{
+			$output_valid = $this->validate_output($source, $output);
+
+			if($this->output_validation_policy === 1)
+			{
+				return true;
+			}
+			if($this->output_validation_policy === 2)
+			{
+				return $output_valid === true || $output_valid === null;
+			}
+			else
+			{
+				return $output_valid === true;
+			}
+		}
+	}
+
+	/**
+	 * Validate HTML syntax and pass errors to the error handler.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool|null
+	 */
+	function validate_output($source, $output)
+	{
+		global $mybb, $error_handler;
+
+		if(extension_loaded('libxml') && extension_loaded('dom'))
+		{
+			libxml_use_internal_errors(true);
+
+			simplexml_load_string('<root>'.$output.'</root>');
+
+			$errors = libxml_get_errors();
+
+			libxml_use_internal_errors(false);
+
+			if($errors)
+			{
+				$data = array(
+					'sourceHtmlEntities' => htmlspecialchars_uni($source),
+					'outputHtmlEntities' => htmlspecialchars_uni($output),
+					'errors' => $errors,
+				);
+				$error_message = "Parser output validation failed.\n";
+				$error_message .= var_export($data, true);
+
+				$original_errortypemedium = $mybb->settings['errortypemedium'];
+
+				$mybb->settings['errortypemedium'] = 'none'; // suppress output of error details
+
+				$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__);
+
+				$mybb->settings['errortypemedium'] = $original_errortypemedium;
+			}
+
+			return empty($errors);
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
