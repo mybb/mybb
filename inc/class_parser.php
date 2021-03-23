@@ -1935,7 +1935,7 @@ class postParser
 			{
 				return true;
 			}
-			if($this->output_validation_policy === 2)
+			elseif($this->output_validation_policy === 2)
 			{
 				return $output_valid === true || $output_valid === null;
 			}
