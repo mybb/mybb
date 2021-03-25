@@ -101,9 +101,8 @@ class postParser
 	 * Whether to validate the parser's HTML output. Validation errors will be logged/sent/displayed according to board settings.
 	 *
 	 * 0 - skip validation
-	 * 1 - validate if required PHP extensions (libxml, dom) are available
-	 * 2 - validate if required PHP extensions (libxml, dom) are available; block output on failure
-	 * 3 - always require validation; block output on failure
+	 * 1 - validate and log errors
+	 * 2 - validate and log errors; block output on failure
 	 *
 	 * @access public
 	 * @var int
@@ -1919,7 +1918,7 @@ class postParser
 	 *
 	 * @param string $source The original MyCode.
 	 * @param string $output The output HTML code.
-	 * @return bool|null
+	 * @return bool
 	 */
 	function output_allowed($source, $output)
 	{
@@ -1935,10 +1934,6 @@ class postParser
 			{
 				return true;
 			}
-			elseif($this->output_validation_policy === 2)
-			{
-				return $output_valid === true || $output_valid === null;
-			}
 			else
 			{
 				return $output_valid === true;
@@ -1951,46 +1946,39 @@ class postParser
 	 *
 	 * @param string $source The original MyCode.
 	 * @param string $output The output HTML code.
-	 * @return bool|null
+	 * @return bool
 	 */
 	function validate_output($source, $output)
 	{
 		global $mybb, $error_handler;
 
-		if(extension_loaded('libxml') && extension_loaded('dom'))
+		libxml_use_internal_errors(true);
+
+		simplexml_load_string('<root>'.$output.'</root>');
+
+		$errors = libxml_get_errors();
+
+		libxml_use_internal_errors(false);
+
+		if($errors)
 		{
-			libxml_use_internal_errors(true);
+			$data = array(
+				'sourceHtmlEntities' => htmlspecialchars_uni($source),
+				'outputHtmlEntities' => htmlspecialchars_uni($output),
+				'errors' => $errors,
+			);
+			$error_message = "Parser output validation failed.\n";
+			$error_message .= var_export($data, true);
 
-			simplexml_load_string('<root>'.$output.'</root>');
+			$original_errortypemedium = $mybb->settings['errortypemedium'];
 
-			$errors = libxml_get_errors();
+			$mybb->settings['errortypemedium'] = 'none'; // suppress output of error details
 
-			libxml_use_internal_errors(false);
+			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__);
 
-			if($errors)
-			{
-				$data = array(
-					'sourceHtmlEntities' => htmlspecialchars_uni($source),
-					'outputHtmlEntities' => htmlspecialchars_uni($output),
-					'errors' => $errors,
-				);
-				$error_message = "Parser output validation failed.\n";
-				$error_message .= var_export($data, true);
-
-				$original_errortypemedium = $mybb->settings['errortypemedium'];
-
-				$mybb->settings['errortypemedium'] = 'none'; // suppress output of error details
-
-				$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__);
-
-				$mybb->settings['errortypemedium'] = $original_errortypemedium;
-			}
-
-			return empty($errors);
+			$mybb->settings['errortypemedium'] = $original_errortypemedium;
 		}
-		else
-		{
-			return null;
-		}
+
+		return empty($errors);
 	}
 }
