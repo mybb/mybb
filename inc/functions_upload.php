@@ -13,7 +13,7 @@
  * @since MyBB 1.8.27
  * @return int maximum allowed filesize
  */
-function get_phpuploadlimit()
+function get_php_upload_limit()
 {	
 	$maxsize = array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
 	$maxsize = array_filter($maxsize); // Remove empty values
@@ -21,10 +21,6 @@ function get_phpuploadlimit()
 	if(empty($maxsize))
 	{
 		return 0;
-	}
-	else if(count($maxsize) == 1)
-	{
-		return (int)$maxsize[0];
 	}
 	else
 	{

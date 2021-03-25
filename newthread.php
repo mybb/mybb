@@ -1125,7 +1125,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 
-	$php_max_upload_size = get_phpuploadlimit();
+	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
