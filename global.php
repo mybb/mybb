@@ -91,9 +91,12 @@ $lang->load('global');
 $lang->load('messages');
 
 // Wipe lockout cookie if enough time has passed
-if(isset($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+if(isset($mybb->cookies['lockoutexpiry'])
 {
-	my_unsetcookie('lockoutexpiry');
+	if($mybb->cookies['lockoutexpiry'] < TIME_NOW)
+	{
+		my_unsetcookie('lockoutexpiry');
+	}
 }
 
 // Run global_start plugin hook now that the basics are set up
@@ -944,7 +947,10 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 		$awaitingusers = '';
 	}
 }
-
+if(!isset($awaitingusers))
+{
+	   $awaitingusers = '';
+}
 $jsTemplates = array();
 foreach (array('modal', 'modal_button') as $template) {
 	eval('$jsTemplates["'.$template.'"] = "'.$templates->get($template, 1, 0).'";');
