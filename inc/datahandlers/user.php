@@ -1104,7 +1104,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad', 'regip', 'coppa_user');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad', 'regip', 'lastip', 'coppa_user');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1175,6 +1175,7 @@ class UserDataHandler extends DataHandler
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
 			"regip" => $db->escape_binary($user['regip']),
+			"lastip" => $db->escape_binary($user['lastip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => (int)$user['options']['showcodebuttons'],
 			"sourceeditor" => (int)$user['options']['sourceeditor'],
@@ -1394,6 +1395,10 @@ class UserDataHandler extends DataHandler
 		if(isset($user['regip']))
 		{
 			$this->user_update_data['regip'] = $db->escape_string($user['regip']);
+		}
+		if(isset($user['lastip']))
+		{
+			$this->user_update_data['lastip'] = $db->escape_string($user['lastip']);
 		}
 		if(isset($user['language']))
 		{
