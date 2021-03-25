@@ -91,7 +91,7 @@ $lang->load('global');
 $lang->load('messages');
 
 // Wipe lockout cookie if enough time has passed
-if(isset($mybb->cookies['lockoutexpiry'])
+if(isset($mybb->cookies['lockoutexpiry']))
 {
 	if($mybb->cookies['lockoutexpiry'] < TIME_NOW)
 	{
