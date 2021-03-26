@@ -8,6 +8,25 @@
  *
  */
 
+/**
+ * Get maximum upload filesize limit set in PHP
+ * @since MyBB 1.8.27
+ * @return int maximum allowed filesize
+ */
+function get_php_upload_limit()
+{	
+	$maxsize = array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
+	$maxsize = array_filter($maxsize); // Remove empty values
+
+	if(empty($maxsize))
+	{
+		return 0;
+	}
+	else
+	{
+		return (int)min($maxsize);
+	}
+}
 
 /**
  * Remove an attachment from a specific post

@@ -23,6 +23,7 @@ $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_m
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 
 // Load global language phrases
 $lang->load("newthread");
@@ -162,8 +163,6 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
-
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newthread");
 
 	if(!empty($ret['errors']))
@@ -186,8 +185,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment($pid, $mybb->get_input('posthash'), $mybb->get_input('attachmentaid', MyBB::INPUT_INT));
+
 	if(!$mybb->get_input('submit'))
 	{
 		$mybb->input['action'] = "newthread";
@@ -1072,18 +1071,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 
-	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
-	$php_post_max_size = return_bytes(ini_get('post_max_size'));
-
-	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
-	{
-		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
-	}
-	else
-	{
-		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
-	}
-
+	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
