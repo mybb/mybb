@@ -24,6 +24,7 @@ $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_m
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -217,8 +218,6 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
-
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
 
 	if(!empty($ret['errors']))
@@ -242,8 +241,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment($pid, $mybb->get_input('posthash'), $mybb->get_input('attachmentaid', MyBB::INPUT_INT));
+
 	if(!$mybb->get_input('submit'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
