@@ -61,14 +61,7 @@ function remove_attachment($pid, $posthash, $aid)
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
-	if(defined('IN_ADMINCP'))
-	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-	    $uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
@@ -119,14 +112,7 @@ function remove_attachments($pid, $posthash="")
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 
-	if(defined('IN_ADMINCP'))
-	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-	    $uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
