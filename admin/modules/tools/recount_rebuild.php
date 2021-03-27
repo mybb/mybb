@@ -363,10 +363,6 @@ function acp_rebuild_attachment_thumbnails()
 	$end = $start + $per_page;
 
 	$uploadspath = $mybb->settings['uploadspath'];
-	if(my_substr($uploadspath, 0, 1) == '.')
-	{
-		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
-	}
 
 	require_once MYBB_ROOT."inc/functions_image.php";
 

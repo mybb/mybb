@@ -851,10 +851,6 @@ if(!$mybb->input['action'])
 	}
 
 	$uploadspath = $mybb->settings['uploadspath'];
-	if(my_substr($uploadspath, 0, 1) == '.')
-	{
-		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
-	}
 	if(is_writable($uploadspath))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
