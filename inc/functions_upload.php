@@ -14,7 +14,7 @@
  * @return int maximum allowed filesize
  */
 function get_php_upload_limit()
-{	
+{
 	$maxsize = array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
 	$maxsize = array_filter($maxsize); // Remove empty values
 
@@ -61,14 +61,7 @@ function remove_attachment($pid, $posthash, $aid)
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
-	if(defined('IN_ADMINCP'))
-	{
-		$uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-		$uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
@@ -119,14 +112,7 @@ function remove_attachments($pid, $posthash="")
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 
-	if(defined('IN_ADMINCP'))
-	{
-		$uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-		$uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
@@ -203,7 +189,7 @@ function remove_avatars($uid, $exclude="")
 
 /**
  * Create the attachment directory index file.
- * 
+ *
  * @param string $path The path to the attachment directory to create the file in.
  */
 function create_attachment_index($path)
@@ -820,7 +806,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 							$update_attachment = true;
 						}
 					}
-					
+
 					if(!$exists && $mybb->get_input('updateattachment') && $mybb->get_input('updateconfirmed', MyBB::INPUT_INT) != 1)
 					{
 						$ret['errors'][] = $lang->sprintf($lang->error_updatefailed, $filename);

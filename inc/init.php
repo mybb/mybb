@@ -208,6 +208,12 @@ $settings['bbname_orig'] = $settings['bbname'];
 $settings['bbname'] = strip_tags($settings['bbname']);
 $settings['orig_bblanguage'] = $settings['bblanguage'];
 
+// Adjust a relative upload path to an absolute one
+if(my_substr($settings['uploadspath'], 0, 1) != "/")
+{
+	$settings['uploadspath'] = MYBB_ROOT.$settings['uploadspath'];
+}
+
 // Fix for people who for some specify a trailing slash on the board URL
 if(substr($settings['bburl'], -1) == "/")
 {
