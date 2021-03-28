@@ -188,7 +188,7 @@ $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet."
 $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the correct file extension, for example, {1}<em>.css</em>";
 $l['error_invalid_parent_theme'] = "The selected parent theme does not exist. Please select a valid parent theme.";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
-$l['error_invalid_color'] = "The defined color set \"{1}\" is either having invalid character(s) or not in prescribed format. Only alpha-numeric characters are allowed for naming separated by '='.";
+$l['error_invalid_color'] = "The defined color set \"{1}\" is either having invalid character(s) or not in prescribed format. Only numbers and unicode characters are allowed for naming separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
 $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
