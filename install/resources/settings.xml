@@ -401,7 +401,7 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
-			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers).]]></description>
+			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers). Please note that unless the set path starting with a dot ".", the path will be converted to absolute. Default value: "./uploads"]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
@@ -409,7 +409,6 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
-			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is recommended that it stay on]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
