@@ -401,7 +401,7 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
-			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers). If the path starts with a dot "." it will be converted to an absolute path. Default value: "./uploads" (relative path).]]></description>
+			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers). If the path does not start with a forward slash "/" it will be converted to an absolute path. Default value: "./uploads" (relative path).]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
