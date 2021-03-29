@@ -1118,29 +1118,35 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Administrator is changing the login method.
-		if(
-			$mybb->settings['username_method'] == 1 ||
-			$mybb->settings['username_method'] == 2 ||
-			(
-				isset($mybb->input['upsetting']['username_method']) &&
-				(
-					$mybb->input['upsetting']['username_method'] == 1 ||
-					$mybb->input['upsetting']['username_method'] == 2
-				)
-			)
-		)
+		if((int)$mybb->input['upsetting']['username_method'] > 0)
 		{
-			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
-			if($db->num_rows($query))
+			if((int)$mybb->settings['allowmultipleemails'] == 1)
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
-				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method_conflict;
 			}
 			else
 			{
-				$mybb->input['upsetting']['allowmultipleemails'] = 0;
-				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+				$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
+				if($db->num_rows($query))
+				{
+					$mybb->input['upsetting']['username_method'] = 0;
+					$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				}
 			}
+		}
+
+		// Administrator is changing registration email allowance
+		if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->input['upsetting']['allowmultipleemails'] !== 0)
+		{
+			$mybb->input['upsetting']['allowmultipleemails'] = 0;
+			$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+		}
+
+		// Reset conflict silently, if by chance
+		if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->settings['allowmultipleemails'] == 1)
+		{
+			$mybb->input['upsetting']['allowmultipleemails'] = 0;
 		}
 
 		// reject dangerous/unsupported upload paths
