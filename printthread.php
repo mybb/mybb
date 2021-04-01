@@ -157,12 +157,12 @@ while($postrow = $db->fetch_array($query))
 		$parser_options['allow_smilies'] = 0;
 	}
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_videocode'] = 0;
 	}

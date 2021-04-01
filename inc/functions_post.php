@@ -492,7 +492,7 @@ function build_postbit($post, $post_type=0)
 							$field_parser_options['nl2br'] = 0;
 						}
 
-						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 						{
 							$field_parser_options['allow_imgcode'] = 0;
 						}
@@ -693,12 +693,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -738,9 +738,10 @@ function build_postbit($post, $post_type=0)
 	}
 	if(!$post_type || $post_type == 2)
 	{
-		$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
+			$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
+
 			if($show_ips == "show")
 			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
@@ -789,12 +790,12 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_videocode'] = 0;
 	}
@@ -832,7 +833,7 @@ function build_postbit($post, $post_type=0)
 			$sig_parser['nofollow_on'] = 1;
 		}
 
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 		{
 			$sig_parser['allow_imgcode'] = 0;
 		}
@@ -1092,6 +1093,9 @@ function return_bytes($val) {
 	}
 
 	$last = strtolower($val[strlen($val)-1]);
+
+	$val = intval($val);
+
 	switch($last)
 	{
 		case 'g':
@@ -1102,7 +1106,7 @@ function return_bytes($val) {
 			$val *= 1024;
 	}
 
-	return intval($val);
+	return $val;
 }
 
 /**

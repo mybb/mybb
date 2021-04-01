@@ -780,18 +780,21 @@ function get_child_list($fid)
 			}
 		}
 	}
-	if(!is_array($forums_by_parent[$fid]))
+	if(isset($forums_by_parent[$fid]))
 	{
-		return $forums;
-	}
-
-	foreach($forums_by_parent[$fid] as $forum)
-	{
-		$forums[] = (int)$forum['fid'];
-		$children = get_child_list($forum['fid']);
-		if(is_array($children))
+		if(!is_array($forums_by_parent[$fid]))
 		{
-			$forums = array_merge($forums, $children);
+			return $forums;
+		}
+
+		foreach($forums_by_parent[$fid] as $forum)
+		{
+			$forums[] = (int)$forum['fid'];
+			$children = get_child_list($forum['fid']);
+			if(is_array($children))
+			{
+				$forums = array_merge($forums, $children);
+			}
 		}
 	}
 	return $forums;
@@ -1002,7 +1005,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 	}
 
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
-	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && (!$mybb->user['uid'] || !$mybb->user['showredirect'] == 1)))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -2129,10 +2132,9 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 {
 	global $mybb;
 
-	$cookie = $mybb->cookies['mybb'];
-	if(isset($cookie[$name]))
+	if(isset($mybb->cookies['mybb'][$name]))
 	{
-		$newcookie = my_unserialize($cookie[$name]);
+		$newcookie = my_unserialize($mybb->cookies['mybb'][$name]);
 	}
 	else
 	{
@@ -6591,7 +6593,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		}
 	}
 	// This user has a cookie lockout, show waiting time
-	elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
+	elseif(!empty($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] > $now)
 	{
 		if($fatal)
 		{
@@ -6606,7 +6608,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		return false;
 	}
 
-	if($mybb->settings['failedlogincount'] > 0 && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
+	if($mybb->settings['failedlogincount'] > 0 && isset($attempts['loginattempts']) && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
 	{
 		// Set the expiry dateline if not set yet
 		if($attempts['loginlockoutexpiry'] == 0)
@@ -6662,6 +6664,11 @@ function login_attempt_check($uid = 0, $fatal = true)
 
 			return 0;
 		}
+	}
+
+	if(!isset($attempts['loginattempts']))
+	{
+		$attempts['loginattempts'] = 0;
 	}
 
 	// User can attempt another login

@@ -367,6 +367,19 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		$stats = $cache->read('stats');
 	}
 
+	if(!isset($collapsedthead['boardstats']))
+	{
+		$collapsedthead['boardstats'] = '';
+	}
+	if(!isset($collapsedimg['boardstats']))
+	{
+		$collapsedimg['boardstats'] = '';
+	}
+	if(!isset($collapsed['boardstats_e']))
+	{
+		$collapsed['boardstats_e'] = '';
+	}
+
 	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }

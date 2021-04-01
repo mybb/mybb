@@ -173,7 +173,16 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 		$existing_reputation = $db->fetch_array($query);
-		$rid = $existing_reputation['rid'];
+
+		if($existing_reputation)
+		{
+			$rid = $existing_reputation['rid'];
+		}
+		else
+		{
+			$rid = 0;
+		}
+
 		$was_post = true;
 	}
 
@@ -209,7 +218,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		}
 
 		// We have the correct post, but has the user given too much reputation to another in the same thread?
-		if(!$message && $was_post && $mybb->usergroup['maxreputationsperthread'] != 0)
+		if(!$message && !empty($was_post) && $mybb->usergroup['maxreputationsperthread'] != 0)
 		{
 			$timesearch = TIME_NOW - (60 * 60 * 24);
 			$query = $db->query("
@@ -951,7 +960,7 @@ if(!$mybb->input['action'])
 	$reputation_votes = '';
 	if(!empty($reputation_cache) && $mybb->user['uid'] != 0)
 	{
-		$reputation_ids = implode(',', array_map('array_shift', $reputation_cache));
+		$reputation_ids = implode(',', array_column($reputation_cache, 'rid'));
 		$query = $db->query("
 			SELECT id, reporters FROM ".TABLE_PREFIX."reportedcontent WHERE reportstatus != '1' AND id IN (".$reputation_ids.") AND type = 'reputation'
 		");
