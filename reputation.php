@@ -455,7 +455,7 @@ if($mybb->input['action'] == "delete")
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		WHERE rid = '{$rid}' AND uid = '{$uid}'
+		WHERE r.rid = '{$rid}' AND r.uid = '{$uid}'
 	");
 	$existing_reputation = $db->fetch_array($query);
 
