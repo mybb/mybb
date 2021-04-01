@@ -71,7 +71,7 @@ var UserCP = {
 				}
 			}
 		}
-		
+
 		// Center it on the page
 		$("#buddyselect_container").css({"top": "50%", "left": "50%", "position": "fixed", "display": "block", "z-index": "1000", "text-align": "left", "margin-left": -$("#buddyselect_container").outerWidth() / 2 + 'px', "margin-top": -$("#buddyselect_container").outerHeight() / 2 + 'px'});
 		$('input[id^=checkbox_]').prop('checked', false); // Reset all checkboxes
@@ -208,3 +208,11 @@ var UserCP = {
 		return false;
 	}
 };
+
+$(function(){
+	$(document).on('keydown', function(e) { 
+		if (e.keyCode == 27 && $('#buddyselect_container').is(':visible')) { 
+			$('#buddyselect_container').hide();
+		}
+	});
+});
