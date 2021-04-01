@@ -209,9 +209,12 @@ var UserCP = {
 	}
 };
 
-$(function(){
-	$(document).on('keydown', function(e) { 
-		if (e.keyCode == 27 && $('#buddyselect_container').is(':visible')) { 
+$(function()
+{
+	$(document).on('keydown', function(e)
+	{ 
+		if (e.keyCode == 27 && $('#buddyselect_container').is(':visible'))
+		{ 
 			$('#buddyselect_container').hide();
 		}
 	});
