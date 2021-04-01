@@ -72,8 +72,8 @@ var UserCP = {
 			}
 		}
 
-		// Center it on the page
-		$("#buddyselect_container").css({"top": "50%", "left": "50%", "position": "fixed", "display": "block", "z-index": "1000", "text-align": "left", "margin-left": -$("#buddyselect_container").outerWidth() / 2 + 'px', "margin-top": -$("#buddyselect_container").outerHeight() / 2 + 'px'});
+		// Center it on the page (this should be in usercp.css)
+		$("#buddyselect_container").css({"top": "50%", "left": "50%", "position": "fixed", "display": "block", "z-index": "1000", "text-align": "left", "transform": "translate(-50%, -50%)"});
 		$('input[id^=checkbox_]').prop('checked', false); // Reset all checkboxes
 
 		var listedBuddies = $(this.buddy_field).select2("data");
