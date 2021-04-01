@@ -1,6 +1,16 @@
 var UserCP = {
 	init: function()
 	{
+		$(function()
+		{
+			$(document).on('keydown', function(e)
+			{ 
+				if (e.keyCode == 27 && $('#buddyselect_container').is(':visible'))
+				{ 
+					$('#buddyselect_container').hide();
+				}
+			});
+		});
 	},
 
 	regenBuddySelected: function()
@@ -74,7 +84,9 @@ var UserCP = {
 
 		// Center it on the page (this should be in usercp.css)
 		$("#buddyselect_container").css({"top": "50%", "left": "50%", "position": "fixed", "display": "block", "z-index": "1000", "text-align": "left", "transform": "translate(-50%, -50%)"});
-		$('input[id^=checkbox_]').prop('checked', false); // Reset all checkboxes
+		
+		// Reset all checkboxes initially
+		$('input[id^=checkbox_]').prop('checked', false);
 
 		var listedBuddies = $(this.buddy_field).select2("data");
 		$.each(listedBuddies, function()
@@ -92,7 +104,7 @@ var UserCP = {
 		UserCP.regenBuddySelected();
 	},
 
-	// Deprecated method, since MyBB 1.8.27
+	// Deprecated function since MyBB 1.8.27
 	selectBuddy: function(uid, username)
 	{
 		UserCP.regenBuddySelected();
@@ -111,8 +123,7 @@ var UserCP = {
 					newbuddies.push({ id: buddy, text: buddy });
 				}
 			});
-			$(this.buddy_field).select2("data", newbuddies);
-			$(this.buddy_field).select2("focus");
+			$(this.buddy_field).select2("data", newbuddies).select2("focus");
 		}
 		$("#buddyselect_container").hide();
 	},
@@ -210,13 +221,4 @@ var UserCP = {
 	}
 };
 
-$(function()
-{
-	$(document).on('keydown', function(e)
-	{ 
-		if (e.keyCode == 27 && $('#buddyselect_container').is(':visible'))
-		{ 
-			$('#buddyselect_container').hide();
-		}
-	});
-});
+UserCP.init();
