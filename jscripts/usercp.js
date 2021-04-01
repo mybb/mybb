@@ -77,7 +77,8 @@ var UserCP = {
 		$('input[id^=checkbox_]').prop('checked', false); // Reset all checkboxes
 
 		var listedBuddies = $(this.buddy_field).select2("data");
-		$.each(listedBuddies, function(){
+		$.each(listedBuddies, function()
+		{
 			var username = this.text;			
 			$('input[id^=checkbox_]').each(function()
 			{
