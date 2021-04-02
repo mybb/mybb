@@ -1,6 +1,29 @@
 var UserCP = {
 	init: function()
 	{
+		$(function()
+		{
+			$(document).on('keydown', function(e)
+			{ 
+				if (e.keyCode == 27 && $('#buddyselect_container').is(':visible'))
+				{ 
+					$('#buddyselect_container').hide();
+				}
+			});
+		});
+	},
+
+	regenBuddySelected: function()
+	{
+		var selectedBuddies = [];
+		$('input[id^=checkbox_]').each(function()
+		{
+			if($(this).is(':checked'))
+			{
+				selectedBuddies.push($(this).parent().text().trim());
+			}
+		})
+		$("#buddyselect_buddies").text(selectedBuddies.join(', '));
 	},
 
 	openBuddySelect: function(field)
@@ -53,113 +76,54 @@ var UserCP = {
 						buddyselect_container.remove();
 					}
 					var container = $("<div />");
-					container.attr("id", "buddyselect_container");
-					container.hide();
-					container.html(request.responseText);
+					container.attr("id", "buddyselect_container").html(request.responseText).hide();
 					$("body").append(container);
 				}
 			}
 		}
-		else
+
+		// Center it on the page (this should be in usercp.css)
+		$("#buddyselect_container").css({"top": "50%", "left": "50%", "position": "fixed", "display": "block", "z-index": "1000", "text-align": "left", "transform": "translate(-50%, -50%)"});
+		
+		// Reset all checkboxes initially
+		$('input[id^=checkbox_]').prop('checked', false);
+
+		var listedBuddies = $(this.buddy_field).select2("data");
+		$.each(listedBuddies, function()
 		{
-			buddyselect_container.hide();
-			$("#buddyselect_container input:checked").each(function()
+			var username = this.text;			
+			$('input[id^=checkbox_]').each(function()
 			{
-				$(this).attr("checked", false);
+				if($(this).parent().text().trim() == username)
+				{
+					$(this).prop('checked', true);
+				}
 			});
-			$("#buddyselect_buddies").html("");
-			container = buddyselect_container;
-		}
+		});
 
-		// Clone off screen
-		var clone = container.clone(true);
-		$("body").append(clone);
-		clone.css("width", "300px")
-			 .css("top", "-10000px")
-		     .css("display", "block")
-		     .remove();
-
-		// Center it on the page
-		$("#buddyselect_container").css("top", "50%")
-		                           .css("left", "50%")
-		                           .css("position", "fixed")
-		                           .css("display", "block")
-		                           .css("z-index", "1000")
-		                           .css("text-align", "left")
-                                   .css("margin-left", -$("#buddyselect_container").outerWidth() / 2 + 'px')
-                                   .css("margin-top", -$("#buddyselect_container").outerHeight() / 2 + 'px');
+		UserCP.regenBuddySelected();
 	},
 
+	// Deprecated function since MyBB 1.8.27
 	selectBuddy: function(uid, username)
 	{
-		var checkbox = $("#checkbox_"+uid);
-		var buddyselect_buddies_uid = $("#buddyselect_buddies_"+uid);
-		var buddyselect_buddies = $("#buddyselect_buddies");
-		// Buddy already in list - remove
-		if(buddyselect_buddies_uid.length)
-		{
-			buddyselect_buddies_uid.remove();
-			var buddies = buddyselect_buddies.text();
-			if(buddies.charAt(0) == ",")
-			{
-				first_buddy = buddyselect_buddies.children()[0];
-				first_buddy.innerHTML = first_buddy.innerHTML.substr(1, first_buddy.innerHTML.length);
-			}
-		}
-		// Add buddy to list
-		else
-		{
-			var buddies = buddyselect_buddies.text();
-			if(buddies != "")
-			{
-				username = ", "+username;
-			}
-			var buddy = $("<span />");
-			buddy.attr("id", "buddyselect_buddies_"+uid)
-			     .html(username);
-			buddyselect_buddies.append(buddy);
-		}
+		UserCP.regenBuddySelected();
 	},
 
 	closeBuddySelect: function(canceled)
 	{
 		if(canceled != true)
 		{
-			var buddies = $("#buddyselect_buddies").text();
-			existing_buddies = $(this.buddy_field).select2("data");
-			if(existing_buddies.length)
+			var buddies = $("#buddyselect_buddies").text().split(","), newbuddies = [];
+			$.each(buddies, function(index, buddy)
 			{
-				// We already have stuff in our text box we must merge it with the new array we're going to create from the selected buddies
-				// We don't need to care about having dupes because Select2 treats items by ID and we two items have the same ID, there are no dupes because only one exists
-				// ^At least according to my tests :D (Pirata Nervo - so blame me for that if something goes wrong)
-				var newbuddies = [];
-				exp_buddies = buddies.split(",");
-				$.each(exp_buddies, function(index, buddy)
+				buddy = buddy.trim();
+				if(buddy !== "")
 				{
-					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					
-					var newbuddy = { id: buddy, text: buddy };
-					newbuddies.push(newbuddy);
-				});
-				
-				// Merge both
-				var newarray = $.merge(existing_buddies, newbuddies);
-				
-				// Update data
-				$(this.buddy_field).select2("data", newarray);
-				
-			}
-			else
-			{
-				var newbuddies = [];
-				exp_buddies = buddies.split(",");
-				$.each(exp_buddies, function(index, value ){
-					var newbuddy = { id: value.replace(/,\s?/g, ", "), text: value.replace(/,\s?/g, ", ") };
-					newbuddies.push(newbuddy);
-				});
-				$(this.buddy_field).select2("data", newbuddies);
-			}
-			$(this.buddy_field).select2("focus");
+					newbuddies.push({ id: buddy, text: buddy });
+				}
+			});
+			$(this.buddy_field).select2("data", newbuddies).select2("focus");
 		}
 		$("#buddyselect_container").hide();
 	},
@@ -256,3 +220,5 @@ var UserCP = {
 		return false;
 	}
 };
+
+UserCP.init();
