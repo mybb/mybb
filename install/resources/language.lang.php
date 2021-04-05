@@ -343,6 +343,7 @@ $l['done_whats_next'] = '<div class="error"><p><strong>Switching from another fo
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";
+$l['upgrade_not_needed'] = '<p>The upgrade process is not needed for this version.</p><p>If you believe this may be an error, you can <a href="upgrade.php?force=1">force the upgrade</a>. Otherwise, please press Next to lock the installer.</p>';
 $l['upgrade_welcome'] = "<p>Welcome to the upgrade wizard for MyBB {1}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We strongly recommend that you also obtain a complete backup of your database and files before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.  Also, ensure that your backups are complete before proceeding.</p><p>Make sure you only click Next ONCE on each step of the upgrade process. Pages may take a while to load depending on the size of your forum.</p><p>Once you are ready, please select your old version below and click Next to continue.</p>";
 $l['upgrade_templates_reverted'] = 'Templates Reverted';
 $l['upgrade_templates_reverted_success'] = "<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>";
