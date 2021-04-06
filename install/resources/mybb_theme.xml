@@ -11508,7 +11508,7 @@ if(use_xmlhttprequest == "1")
 		<tr>
 			<td class="thead">
 				<div class="float_right">
-					<span class="smalltext"><strong><a href="javascript:void(0)" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
+					<span class="smalltext"><strong><a href="showthread.php?mode={$thread_toggle}&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->thread_toggle}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
 					<strong>{$thread['displayprefix']}{$thread['subject']}</strong>
@@ -11556,15 +11556,6 @@ if(use_xmlhttprequest == "1")
 	<br class="clear" />
 	{$usersbrowsing}
 	{$footer}
-	<div id="thread_modes_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->linear}</a></div><div class="popup_item_container"><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->threaded}</a></div></div>
-	<script type="text/javascript">
-	// <!--
-		if(use_xmlhttprequest == "1")
-		{
-			$("#thread_modes").popupMenu();
-		}
-	// -->
-	</script>
 	<script type="text/javascript">
 		var thread_deleted = "{$thread_deleted}";
 		if(thread_deleted == "1")
