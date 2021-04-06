@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1824">
+<theme name="MyBB Master Style" version="1827">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -10281,13 +10281,13 @@ if(use_xmlhttprequest == "1")
 	<strong>{$lang->reached_warning}</strong><br />
 	{$lang->reached_warning2}
 </div>]]></template>
-		<template name="private_messagebit" version="1808"><![CDATA[<tr>
-	<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgstatus}.png" alt="{$msgalt}" title="{$msgalt}" /></td>
-	<td align="center" class="trow2" width="1%">{$icon}</td>
-	<td class="trow1" width="35%"><a class="{$msgstatus}" href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
-	<td align="center" class="trow2">{$tofromusername}</td>
-	<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
-	<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
+		<template name="private_messagebit" version="1827"><![CDATA[<tr>
+	<td class="{$bgcolor}" align="center" width="2%"><img src="{$theme['imgdir']}/{$msgstatus}.png" alt="{$msgalt}" title="{$msgalt}" /></td>
+	<td class="{$bgcolor}" align="center" width="2%">{$icon}</td>
+	<td class="{$bgcolor}" width="35%"><a class="{$msgstatus}" href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
+	<td class="{$bgcolor}" align="center">{$tofromusername}</td>
+	<td class="{$bgcolor}" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
+	<td class="{$bgcolor}" align="center" width="2%"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_messagebit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" align="center" valign="middle" />]]></template>
@@ -10465,7 +10465,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1823"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1827"></script>
 </head>
 <body>
 {$header}
@@ -11464,7 +11464,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1822"><![CDATA[<html>
+		<template name="showthread" version="1827"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11491,7 +11491,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1822"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1827"></script>
 </head>
 <body>
 	{$header}
@@ -11508,7 +11508,7 @@ if(use_xmlhttprequest == "1")
 		<tr>
 			<td class="thead">
 				<div class="float_right">
-					<span class="smalltext"><strong><a href="javascript:void(0)" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
+					<span class="smalltext"><strong><a href="showthread.php?mode={$thread_toggle}&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->thread_toggle}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
 					<strong>{$thread['displayprefix']}{$thread['subject']}</strong>
@@ -11556,15 +11556,6 @@ if(use_xmlhttprequest == "1")
 	<br class="clear" />
 	{$usersbrowsing}
 	{$footer}
-	<div id="thread_modes_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->linear}</a></div><div class="popup_item_container"><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->threaded}</a></div></div>
-	<script type="text/javascript">
-	// <!--
-		if(use_xmlhttprequest == "1")
-		{
-			$("#thread_modes").popupMenu();
-		}
-	// -->
-	</script>
 	<script type="text/javascript">
 		var thread_deleted = "{$thread_deleted}";
 		if(thread_deleted == "1")
@@ -12327,7 +12318,7 @@ if(use_xmlhttprequest == "1")
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1823"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1827"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
@@ -13761,7 +13752,7 @@ if(use_xmlhttprequest == "1")
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
 		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="https://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
-		<template name="video_youtube_embed" version="1824"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_youtube_embed" version="1827"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="https://mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>

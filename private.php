@@ -2296,6 +2296,7 @@ if(!$mybb->input['action'])
 
 	if($db->num_rows($query) > 0)
 	{
+		$bgcolor = alt_trow(true);
 		while($message = $db->fetch_array($query))
 		{
 			$msgalt = $msgstatus = '';
@@ -2428,6 +2429,7 @@ if(!$mybb->input['action'])
 			$plugins->run_hooks("private_message");
 
 			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
+			$bgcolor = alt_trow();
 		}
 	}
 	else

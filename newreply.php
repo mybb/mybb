@@ -24,6 +24,7 @@ $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_m
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -217,8 +218,6 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
-
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
 
 	if(!empty($ret['errors']))
@@ -242,8 +241,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment($pid, $mybb->get_input('posthash'), $mybb->get_input('attachmentaid', MyBB::INPUT_INT));
+
 	if(!$mybb->get_input('submit'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
@@ -1175,24 +1174,24 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			if($post_captcha->type == DEFAULT_CAPTCHA)
+			if($post_captcha->type == captcha::DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
+			elseif(in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
+			elseif(in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}
@@ -1463,18 +1462,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
-	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
-	$php_post_max_size = return_bytes(ini_get('post_max_size'));
-
-	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
-	{
-		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
-	}
-	else
-	{
-		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
-	}
-
+	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 

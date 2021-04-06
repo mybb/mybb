@@ -64,7 +64,7 @@ $l['delete_revert'] = "Delete / Revert";
 $l['local_file'] = "Local File";
 $l['url'] = "URL";
 $l['import_from'] = "Import from";
-$l['import_from_desc'] = "Select a file to import. You can either import the theme file from your computer or from a URL.";
+$l['import_from_desc'] = "Select a file to import. You can either import the theme file from your computer or from a URL. Remember to use themes from <strong>safe and trusted sources only</strong>.";
 $l['parent_theme'] = "Parent Theme";
 $l['parent_theme_desc'] = "Select the theme this theme should be a child of.";
 $l['new_name'] = "New Name";
@@ -188,7 +188,7 @@ $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet."
 $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the correct file extension, for example, {1}<em>.css</em>";
 $l['error_invalid_parent_theme'] = "The selected parent theme does not exist. Please select a valid parent theme.";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
-$l['error_invalid_color'] = "The defined color set \"{1}\" is either having invalid character(s) or not in prescribed format. Only alpha-numeric characters are allowed for naming separated by '='.";
+$l['error_invalid_color'] = "The defined color set \"{1}\" either has invalid character(s) or is not in the prescribed format. Only numbers, Unicode letters, and underscores are allowed in a color's name and its value, which must be separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
 $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
