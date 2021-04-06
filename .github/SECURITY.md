@@ -30,3 +30,8 @@ Documented unaddressed, and anticipated vulnerabilities can lead to damage and/o
 ### Technical Details of Known Issues
 - ##### [ACP XSS issues (#3126)](https://github.com/mybb/mybb/issues/3126)
   MyBB series 1.x up to 1.8.x has XSS security issues affecting the Admin Control Panel (ACP).
+
+- ##### `eval()`-based template system ([#3689](https://github.com/mybb/mybb/issues/3689))
+  MyBB series 1.x up to 1.8.x use `eval()` statements to combine HTML Templates and variables with dynamic content. While Templates that may contain function calls are rejected on creation and modification in the Admin CP, no checks are otherwise performed, and write access to the forum's database may enable an adversary to execute PHP code.
+
+  Additionally, the access scope of variables accessible in Templates is not limited, which may lead to disclosure of sensitive information through maliciously crafted or improperly constructed Themes.
