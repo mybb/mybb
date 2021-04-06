@@ -961,11 +961,26 @@ if($mybb->input['action'] == "change")
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key?
 		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey']))
 		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey']))
+		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(8)) && (!$mybb->input['upsetting']['recaptchaprivatekey'] || !$mybb->input['upsetting']['recaptchapublickey'] || !$mybb->input['upsetting']['recaptchascore']))
+		   || (in_array($mybb->settings['captchaimage'], array(8)) && (!$mybb->settings['recaptchaprivatekey'] || !$mybb->settings['recaptchapublickey'] || !$mybb->settings['recaptchascore']))
 		   || (isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(6, 7)) && (!$mybb->input['upsetting']['hcaptchaprivatekey'] || !$mybb->input['upsetting']['hcaptchapublickey']))
 		   || (in_array($mybb->settings['captchaimage'], array(6, 7)) && (!$mybb->settings['hcaptchaprivatekey'] || !$mybb->settings['hcaptchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
+		}
+
+		// If using fulltext then enforce minimum word length given by database
+		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
+		{
+			// Attempt to determine minimum word length from MySQL for fulltext searches
+			$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
+			$min_length = $db->fetch_field($query, 'Value');
+			if(is_numeric($min_length) && $mybb->input['upsetting']['minsearchword'] < $min_length)
+			{
+				$mybb->input['upsetting']['minsearchword'] = $min_length;
+				$lang->success_settings_updated .= $lang->success_settings_updated_minsearchword;
+			}
 		}
 
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
@@ -1025,6 +1040,13 @@ if($mybb->input['action'] == "change")
 			{
 				$forum_group_select[] = $multisetting['name'];
 			}
+		}
+
+		// Verify for admin email that can't be empty
+		if(isset($mybb->input['upsetting']['adminemail']) && !validate_email_format($mybb->input['upsetting']['adminemail']))
+		{
+			unset($mybb->input['upsetting']['adminemail']);
+			$lang->success_settings_updated .= $lang->error_admin_email_settings_empty;
 		}
 
 		// Administrator is changing the login method.
@@ -1863,8 +1885,8 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchaprivatekey, #row_setting_recaptchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchascore"), /(8)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',

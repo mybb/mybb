@@ -1177,7 +1177,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5)))
+			elseif(in_array($post_captcha->type, array(4, 5, 8)))
 			{
 				$post_captcha->build_recaptcha();
 			}
@@ -1186,7 +1186,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(4, 5, 8))))
 		{
 			$post_captcha->build_recaptcha();
 		}

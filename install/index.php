@@ -2326,7 +2326,7 @@ function install_done()
 		'referrer' => 0,
 		'buddylist' => '',
 		'ignorelist' => '',
-		'pmfolders' => '',
+		'pmfolders' => "0**$%%$1**$%%$2**$%%$3**$%%$4**",
 		'notepad' => '',
 		'showredirect' => 1,
 		'usernotes' => ''

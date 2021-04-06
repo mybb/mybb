@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1823">
+<theme name="MyBB Master Style" version="1824">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1819" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1823" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -1510,7 +1510,7 @@ a.button.report_user_button span {
 	opacity: 0.9;
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-	zoom: 1;
+	transform: scale(1);
 	width: 250px;
 	padding: 10px;
 	margin: 10px;
@@ -1550,7 +1550,7 @@ a.button.report_user_button span {
 	opacity: 0.9;
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-	zoom: 1;
+	transform: scale(1);
 	width: 250px;
 	padding: 10px;
 	margin: 10px;
@@ -3639,38 +3639,13 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </div>
 <br />]]></template>
 		<template name="error_inline_item" version="1818"><![CDATA[<li>{$error}</li>]]></template>
-		<template name="error_nopermission" version="1818"><![CDATA[{$lang->error_nopermission_guest_1}
+		<template name="error_nopermission" version="1823"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
-<li>{$lang->error_nopermission_guest_2}</li>
+<li>{$lang->error_nopermission_guest_2} <a href="member.php?action=login">{$lang->login}</a> | <a href="member.php?action=register">{$lang->need_reg}</a></li>
 <li>{$lang->error_nopermission_guest_3}</li>
 <li>{$lang->error_nopermission_guest_4}</li>
 <li>{$lang->error_nopermission_guest_5}</li>
-</ol>
-<form action="member.php" method="post">
-<input type="hidden" name="action" value="do_login" />
-<input type="hidden" name="url" value="{$redirect_url}" />
-<input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><span class="smalltext"><strong>{$lang->login}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang_username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->password}</strong></td>
-<td class="trow2"><input type="password" class="textbox" name="password" tabindex="2" /></td>
-</tr>
-<tr>
-<td class="trow1" colspan="2" align="center"><label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {$lang->remember_me}</label></td>
-</tr>
-<tr>
-<td class="trow2" colspan="2"><span class="smalltext float_right" style="padding-top: 3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}" tabindex="3" /></td>
-</tr>
-</table>
-</form>
-<br />]]></template>
+</ol>]]></template>
 		<template name="error_nopermission_loggedin" version="1600"><![CDATA[{$lang->error_nopermission_user_1}
 <ol>
 	<li>{$lang->error_nopermission_user_2}</li>
@@ -4929,6 +4904,21 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
+		<template name="member_profile_adminoptions_manageban" version="1823"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
+</tr>
+<tr>
+<td class="trow1">
+<ul>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;action=lift&amp;uid={$uid}">{$lang->admin_lift_ban_in_acp}</a></li>
+</ul>
+</td>
+</tr>
+</table>
+<br />]]></template>
 		<template name="member_profile_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="member_profile_away" version="1801"><![CDATA[<fieldset>
 <legend><strong>{$lang->away_note}</strong></legend>
@@ -5058,9 +5048,13 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="member_profile_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="member_profile_warn" version="1400"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
-		<template name="member_profile_warninglevel" version="1600"><![CDATA[<tr>
+		<template name="member_profile_warninglevel" version="1825"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
-	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
+	<td class="{$bg_color}">{$warning_level}</td>
+</tr>]]></template>
+		<template name="member_profile_warninglevel_link" version="1825"><![CDATA[<tr>
+	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
+	<td class="{$bg_color}"><a href="warnings.php?uid={$memprofile['uid']}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_website" version="1813"><![CDATA[<tr>
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
@@ -10466,7 +10460,7 @@ if(use_xmlhttprequest == "1")
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send" version="1821"><![CDATA[<html>
+		<template name="private_send" version="1823"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -12083,10 +12077,7 @@ if(use_xmlhttprequest == "1")
 						{$attachments}
 					</table>
 					<br />
-					<div align="center">
-						<input type="hidden" name="action" value="do_attachments" />
-						<input type="submit" class="button" value="{$lang->delete_attachments}" />
-					</div>
+					{$delete_button}
 				</form>
 				{$multipage}
 				<br />
@@ -12327,7 +12318,7 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1821"><![CDATA[<html>
+		<template name="usercp_editlists" version="1823"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
@@ -12875,7 +12866,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1809"><![CDATA[<html>
+		<template name="usercp_options" version="1825"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -12895,16 +12886,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td width="50%" class="trow1" valign="top">
-<fieldset class="trow2">
-<legend><strong>{$lang->login_cookies_privacy}</strong></legend>
-<table cellspacing="0" cellpadding="2">
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
-<td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
-</tr>
-</table>
-</fieldset>
-<br />
+{$canbeinvisible}
 <fieldset class="trow2">
 <legend><strong>{$lang->messaging_notification}</strong></legend>
 <table cellspacing="0" cellpadding="2">
@@ -13079,6 +13061,16 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_options_invisible" version="1825"><![CDATA[<fieldset class="trow2">
+<legend><strong>{$lang->login_cookies_privacy}</strong></legend>
+<table cellspacing="0" cellpadding="2">
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
+<td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
+</tr>
+</table>
+</fieldset>
+<br />]]></template>
 		<template name="usercp_options_date_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$dateformat}</option>]]></template>
 		<template name="usercp_options_language" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>
@@ -13441,6 +13433,75 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
+		<template name="usercp_removesubscription_forum" version="1823"><![CDATA[<html>
+<head>
+<title>{$lang->unsubscribe_from_forum}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="removesubscription" />
+<input type="hidden" name="type" value="forum" />
+<input type="hidden" name="fid" value="{$forum['fid']}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->unsubscribe_from_forum}</strong></td>
+</tr>
+<tr>
+<td class="trow1" valign="top">{$lang->unsubscribe_from_forum_desc}</td>
+</tr>
+</table>
+<br />
+<div style="text-align: center;">
+	<input type="submit" class="button" name="submit" value="{$lang->do_unsubscribe_forum}" tabindex="3" accesskey="s" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="usercp_removesubscription_thread" version="1823"><![CDATA[<html>
+<head>
+<title>{$lang->unsubscribe_from_thread}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="removesubscription" />
+<input type="hidden" name="tid" value="{$thread['tid']}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->unsubscribe_from_thread}</strong></td>
+</tr>
+<tr>
+<td class="trow1" valign="top">{$lang->unsubscribe_from_thread_desc} <a href="usercp.php?action=addsubscription&tid={$thread['tid']}&my_post_key={$mybb->post_code}">{$lang->unsubscribe_change_notificaton}</a></td>
+</tr>
+</table>
+<br />
+<div style="text-align: center;">
+	<input type="submit" class="button" name="submit" value="{$lang->do_unsubscribe_thread}" tabindex="3" accesskey="s" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
 		<template name="usercp_resendactivation" version="1800"><![CDATA[<br />(<a href="member.php?action=resendactivation">{$lang->resend_activation}</a>)]]></template>
 		<template name="usercp_subscriptions" version="1817"><![CDATA[<html>
@@ -13695,7 +13756,7 @@ if(use_xmlhttprequest == "1")
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
 		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="https://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
-		<template name="video_youtube_embed" version="1807"><![CDATA[<iframe width="560" height="315" src="//www.youtube.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_youtube_embed" version="1824"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="https://mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
@@ -14079,16 +14140,16 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1823"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1824"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1823"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1824"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
-	bbcodeTrim: true,
+	bbcodeTrim: false,
 	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
@@ -14300,5 +14361,10 @@ $(function() {
 </tr>]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
+	<template name="delete_attachments_button" version="1825"><![CDATA[		
+		<div align="center">
+						<input type="hidden" name="action" value="do_attachments" />
+						<input type="submit" class="button" value="{$lang->delete_attachments}" />
+					</div>]]></template>
 	</templates>
 </theme>

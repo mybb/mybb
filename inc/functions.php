@@ -610,35 +610,51 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 }
 
 /**
- * Generates a unique code for POST requests to prevent XSS/CSRF attacks
+ * Generates a code for POST requests to prevent XSS/CSRF attacks.
+ * Unique for each user or guest session and rotated every 6 hours.
  *
+ * @param int $rotation_shift Adjustment of the rotation number to generate a past/future code
  * @return string The generated code
  */
-function generate_post_check()
+function generate_post_check($rotation_shift=0)
 {
 	global $mybb, $session;
+
+	$rotation_interval = 6 * 3600;
+	$rotation = floor(TIME_NOW / $rotation_interval) + $rotation_shift;
+
+	$seed = $rotation;
+
 	if($mybb->user['uid'])
 	{
-		return md5($mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate']);
+		$seed .= $mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate'];
 	}
-	// Guests get a special string
 	else
 	{
-		return md5($session->sid.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		$seed .= $session->sid;
 	}
+
+	$seed .= $mybb->settings['internal']['encryption_key'];
+
+	return md5($seed);
 }
 
 /**
- * Verifies a POST check code is valid, if not shows an error (silently returns false on silent parameter)
+ * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours)
  *
  * @param string $code The incoming POST check code
- * @param boolean $silent Silent mode or not (silent mode will not show the error to the user but returns false)
- * @return bool
+ * @param boolean $silent Don't show an error to the user
+ * @return bool|void Result boolean if $silent is true, otherwise shows an error to the user
  */
 function verify_post_check($code, $silent=false)
 {
 	global $lang;
-	if(generate_post_check() !== $code)
+	if(
+		generate_post_check() !== $code &&
+		generate_post_check(-1) !== $code &&
+		generate_post_check(-2) !== $code &&
+		generate_post_check(-3) !== $code
+	)
 	{
 		if($silent == true)
 		{
@@ -776,7 +792,7 @@ function get_child_list($fid)
 
 	foreach($forums_by_parent[$fid] as $forum)
 	{
-		$forums[] = $forum['fid'];
+		$forums[] = (int)$forum['fid'];
 		$children = get_child_list($forum['fid']);
 		if(is_array($children))
 		{
@@ -1855,6 +1871,62 @@ function is_moderator($fid=0, $action="", $uid=0)
 			}
 		}
 	}
+}
+
+/**
+ * Get an array of fids that the forum moderator has access to.
+ * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
+ * 
+ * @param int $uid The user ID (0 assumes current user)
+ * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
+ */
+function get_moderated_fids($uid=0)
+{
+	global $mybb, $cache;
+
+	if($uid == 0)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	if($uid == 0)
+	{
+		return array();
+	}
+
+	$user_perms = user_permissions($uid);
+
+	if($user_perms['issupermod'] == 1)
+	{
+		return false;
+	}
+
+	$fids = array();
+
+	$modcache = $cache->read('moderators');
+	if(!empty($modcache))
+	{
+		$groups = explode(',', $user_perms['all_usergroups']);
+
+		foreach($modcache as $fid => $forum)
+		{
+			if(isset($forum['users'][$uid]) && $forum['users'][$uid]['mid'])
+			{
+				$fids[] = $fid;
+				continue;
+			}
+
+			foreach($groups as $group)
+			{
+				if(trim($group) != '' && isset($forum['usergroups'][$group]))
+				{
+					$fids[] = $fid;
+				}
+			}
+		}
+	}
+
+	return $fids;
 }
 
 /**
@@ -5117,12 +5189,14 @@ function leave_usergroup($uid, $leavegroup)
  * Get the current location taking in to account different web serves and systems
  *
  * @param boolean $fields True to return as "hidden" fields
- * @param array $ignore Array of fields to ignore if first argument is true
+ * @param array $ignore Array of fields to ignore for returning "hidden" fields or URL being accessed
  * @param boolean $quick True to skip all inputs and return only the file path part of the URL
- * @return string The current URL being accessed
+ * @return string|array The current URL being accessed or form data if $fields is true
  */
 function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
+	global $mybb;
+
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
@@ -5154,14 +5228,13 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 		return $location;
 	}
 
+	if(!is_array($ignore))
+	{
+		$ignore = array($ignore);
+	}
+
 	if($fields == true)
 	{
-		global $mybb;
-
-		if(!is_array($ignore))
-		{
-			$ignore = array($ignore);
-		}
 
 		$form_html = '';
 		if(!empty($mybb->input))
@@ -5181,39 +5254,46 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	}
 	else
 	{
+		$parameters = array();
+
 		if(isset($_SERVER['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
+			$current_query_string = $_SERVER['QUERY_STRING'];
 		}
 		else if(isset($_ENV['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
+			$current_query_string = $_ENV['QUERY_STRING'];
+		} else
+		{
+			$current_query_string = '';
 		}
 
-		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
+		parse_str($current_query_string, $current_parameters);
+
+		foreach($current_parameters as $name => $value)
+		{
+			if(!in_array($name, $ignore))
+			{
+				$parameters[$name] = $value;
+			}
+		}
+
+		if($mybb->request_method === 'post')
 		{
 			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
 
 			foreach($post_array as $var)
 			{
-				if(isset($_POST[$var]))
+				if(isset($_POST[$var]) && !in_array($var, $ignore))
 				{
-					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
+					$parameters[$var] = $_POST[$var];
 				}
 			}
+		}
 
-			if(isset($addloc) && is_array($addloc))
-			{
-				if(strpos($location, "?") === false)
-				{
-					$location .= "?";
-				}
-				else
-				{
-					$location .= "&amp;";
-				}
-				$location .= implode("&amp;", $addloc);
-			}
+		if(!empty($parameters))
+		{
+			$location .= '?'.http_build_query($parameters, '', '&amp;');
 		}
 
 		return $location;

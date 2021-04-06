@@ -43,6 +43,7 @@ class captcha
 	 * 5 = reCAPTCHA invisible
 	 * 6 = hCaptcha
 	 * 7 = hCaptcha invisible
+	 * 8 = reCAPTCHA v3
 	 *
 	 * @var int
 	 */
@@ -122,10 +123,14 @@ class captcha
 			{
 				$this->captcha_template .= "_hcaptcha_invisible";
 			}
+			elseif($this->type == 8)
+			{
+				$this->captcha_template .= "_recaptcha_invisible";
+			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if(in_array($this->type, array(4, 5)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
+		if(in_array($this->type, array(4, 5, 8)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
 		{
 			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";
@@ -300,6 +305,40 @@ class captcha
 					$answer = json_decode($response, true);
 
 					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_nocaptcha);
+					}
+				}
+			}
+		}
+		elseif($this->type == 8)
+		{
+			$response = $mybb->input['g-recaptcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_nocaptcha);
+			}
+			else
+			{
+				// We have a reCAPTCHA invisible to handle
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['recaptchaprivatekey'],
+					'score' => $mybb->settings['recaptchascore'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				if($response === false)
+				{
+					$this->set_error($lang->invalid_nocaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+
+					if($answer['success'] != 'true' || $answer['score'] < $mybb->settings['recaptchascore'])
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_nocaptcha);

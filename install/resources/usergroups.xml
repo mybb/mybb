@@ -149,6 +149,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[1]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -240,6 +241,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -332,6 +334,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -423,6 +426,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[1]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
@@ -514,6 +518,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -605,6 +610,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
