@@ -289,7 +289,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				}
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			// The user is a search bot.
 			if($mybb->settings['wolorder'] == 'username')
@@ -684,6 +684,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 							$isimage = false;
 						}
 						$attachment['icon'] = get_attachment_icon($ext);
+						if(!$attachment['dateuploaded'])
+						{
+							$attachment['dateuploaded'] = $announcement['dateline'];
+						}
+						$attachdate = my_date('normal', $attachment['dateuploaded']);
 						// Support for [attachment=id] code
 						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
 						{

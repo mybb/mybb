@@ -440,6 +440,15 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday_privacy");
 			return false;
 		}
+		else if ($birthdayprivacy == 'age')
+		{
+			$birthdayyear = &$this->data['birthday']['year'];
+			if(empty($birthdayyear))
+			{
+				$this->set_error("conflicted_birthday_privacy");
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -603,7 +612,7 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		// Does the referrer exist or not?
-		if($mybb->settings['usereferrals'] == 1 && $user['referrer'] != '')
+		if($mybb->settings['usereferrals'] == 1 && !empty($user['referrer']))
 		{
 			$referrer = get_user_by_username($user['referrer']);
 
@@ -633,6 +642,11 @@ class UserDataHandler extends DataHandler
 		global $mybb;
 
 		$options = &$this->data['options'];
+
+		if(!is_array($options))
+		{
+			$options = array();
+		}
 
 		// Verify yes/no options.
 		$this->verify_yesno_option($options, 'allownotices', 1);
@@ -680,15 +694,15 @@ class UserDataHandler extends DataHandler
 			{
 				$options['dstcorrection'] = 0;
 			}
-		}
 
-		if($options['dstcorrection'] == 1)
-		{
-			$options['dst'] = 1;
-		}
-		elseif($options['dstcorrection'] == 0)
-		{
-			$options['dst'] = 0;
+			if($options['dstcorrection'] == 1)
+			{
+				$options['dst'] = 1;
+			}
+			elseif($options['dstcorrection'] == 0)
+			{
+				$options['dst'] = 0;
+			}
 		}
 
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded" && $options['threadmode'] != ''))
@@ -881,7 +895,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($user['style'])
+		if(!empty($user['style']))
 		{
 			$theme = get_theme($user['style']);
 
@@ -927,7 +941,7 @@ class UserDataHandler extends DataHandler
 
 		$timezones = get_supported_timezones();
 
-		if(!array_key_exists($user['timezone'], $timezones))
+		if(!isset($user['timezone']) || !array_key_exists($user['timezone'], $timezones))
 		{
 			$user['timezone'] = $mybb->settings['timezoneoffset'];
 			return false;
@@ -1090,7 +1104,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad', 'regip', 'lastip', 'coppa_user');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1098,7 +1112,16 @@ class UserDataHandler extends DataHandler
 				$user[$value] = '';
 			}
 		}
-		
+
+		$array = array('subscriptionmethod', 'dstcorrection');
+		foreach($array as $value)
+		{
+			if(!isset($user['options'][$value]))
+			{
+				$user['options'][$value] = '';
+			}
+		}
+
 		// If user is being created from ACP, there is no last visit or last active
 		if(defined('IN_ADMINCP'))
 		{
@@ -1152,6 +1175,7 @@ class UserDataHandler extends DataHandler
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
 			"regip" => $db->escape_binary($user['regip']),
+			"lastip" => $db->escape_binary($user['lastip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => (int)$user['options']['showcodebuttons'],
 			"sourceeditor" => (int)$user['options']['sourceeditor'],
@@ -1161,7 +1185,6 @@ class UserDataHandler extends DataHandler
 			"awaydate" => (int)$user['away']['date'],
 			"returndate" => $user['away']['returndate'],
 			"awayreason" => $db->escape_string($user['away']['awayreason']),
-			"notepad" => $db->escape_string($user['notepad']),
 			"referrer" => (int)$user['referrer_uid'],
 			"referrals" => 0,
 			"buddylist" => '',
@@ -1372,6 +1395,10 @@ class UserDataHandler extends DataHandler
 		if(isset($user['regip']))
 		{
 			$this->user_update_data['regip'] = $db->escape_string($user['regip']);
+		}
+		if(isset($user['lastip']))
+		{
+			$this->user_update_data['lastip'] = $db->escape_string($user['lastip']);
 		}
 		if(isset($user['language']))
 		{
@@ -1787,6 +1814,11 @@ class UserDataHandler extends DataHandler
 	{
 		global $mybb, $parser;
 
+		if(!isset($this->data['signature']))
+		{
+			return true;
+		}
+
 		if(!isset($parser))
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
@@ -1828,20 +1860,23 @@ class UserDataHandler extends DataHandler
 			$parsed_sig = $this->data['signature'];
 		}
 
-		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
-		$sig_length = my_strlen($parsed_sig);
-
-		if($sig_length > $mybb->settings['siglength'])
+		if($mybb->settings['siglength'] > 0)
 		{
-			$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+			$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
+			$sig_length = my_strlen($parsed_sig);
 
-			if($sig_length - $mybb->settings['siglength'] > 1)
+			if($sig_length > $mybb->settings['siglength'])
 			{
-				$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
-			}
-			else
-			{
-				$this->set_error('sig_remove_chars_singular');
+				$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+
+				if($sig_length - $mybb->settings['siglength'] > 1)
+				{
+					$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
+				}
+				else
+				{
+					$this->set_error('sig_remove_chars_singular');
+				}
 			}
 		}
 

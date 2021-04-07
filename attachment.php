@@ -181,7 +181,14 @@ else
 		case "image/png":
 		case "text/plain":
 			header("Content-type: {$attachment['filetype']}");
-			$disposition = "inline";
+			if($attachtypes[$ext]['forcedownload'])
+			{
+				$disposition = "attachment";
+			}
+			else
+			{
+				$disposition = "inline";
+			}
 			break;
 
 		default:

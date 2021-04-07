@@ -308,6 +308,7 @@ $l['forumjump_wol'] = "Who's Online";
 $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
+$l['confirm_title'] = "Please Confirm";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
@@ -517,6 +518,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
 $l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_sendmailqueue_ran'] = 'The send mail queue task sent up to {1} messages.';
 
 $l['dismiss_notice'] = "Dismiss this notice";
 
@@ -595,3 +597,5 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['use_default'] = "Use Default";

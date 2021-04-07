@@ -8,6 +8,25 @@
  *
  */
 
+/**
+ * Get maximum upload filesize limit set in PHP
+ * @since MyBB 1.8.27
+ * @return int maximum allowed filesize
+ */
+function get_php_upload_limit()
+{	
+	$maxsize = array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
+	$maxsize = array_filter($maxsize); // Remove empty values
+
+	if(empty($maxsize))
+	{
+		return 0;
+	}
+	else
+	{
+		return (int)min($maxsize);
+	}
+}
 
 /**
  * Remove an attachment from a specific post
@@ -462,7 +481,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND ".$uploaded_query);
 	$prevattach = $db->fetch_array($query);
-	if($prevattach['aid'] && $update_attachment == false)
+	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == false)
 	{
 		if(!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
 		{
@@ -638,7 +657,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 	$attacharray = $plugins->run_hooks("upload_attachment_do_insert", $attacharray);
 
-	if($prevattach['aid'] && $update_attachment == true)
+	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == true)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
@@ -784,7 +803,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 				if($FILE['size'] > 0)
 				{
 					$filename = $db->escape_string($FILE['name']);
-					$exists = $aid[$filename];
+					$exists = !empty($aid[$filename]);
 
 					$update_attachment = false;
 					if($action == "editpost")
@@ -842,7 +861,7 @@ function delete_uploaded_file($path = '')
 	$path = ltrim($path, '/');
 	$cdn_path = realpath($cdn_base_path . '/' . $path);
 
-	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
 	{
 		$deleted = $deleted && @unlink($cdn_path);
 	}
@@ -878,7 +897,7 @@ function delete_upload_directory($path = '')
 	$path = ltrim($path, '/');
 	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
 
-	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
 	{
 		$deleted = $deleted && @rmdir($cdn_path);
 	}

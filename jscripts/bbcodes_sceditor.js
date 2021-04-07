@@ -83,26 +83,40 @@ $(function ($) {
 
 				return '<' + type + '>' + content + '</' + type + '>';
 			},
-
-			breakAfter: false
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ul', {
-			format: '[list]{0}[/list]'
+			format: '[list]{0}[/list]',
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ol', {
 			format: function ($elm, content) {
 				var type = ($($elm).attr('type') === 'a' ? 'a' : '1');
 
 				return '[list=' + type + ']' + content + '[/list]';
-			}
+			},
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('li', {
 			format: '[*]{0}',
-			excludeClosing: true
+			isInline: false,
+			skipLastLineBreak: true,
 		})
 		.set('*', {
+			html: '<li>{0}</li>',
+			isInline: false,
 			excludeClosing: true,
-			isInline: true
+			skipLastLineBreak: true,
+			breakAfter: false,
 		});
 
 	$.sceditor.command
@@ -134,41 +148,48 @@ $(function ($) {
 	// Update size tag to use xx-small-xx-large instead of 1-7
 	$.sceditor.formats.bbcode.set('size', {
 		format: function ($elm, content) {
-			var fontSize,
-				size = $($elm).attr('size');
+			var fontsize = 1,
+				scefontsize = $($elm).data('scefontsize'),
+				parsed = parseInt(scefontsize, 10),
+				size = parseInt($($elm).attr('size'), 10),
+				iframe = $('.sceditor-container iframe'),
+				editor_body = $('body', iframe.contents());
 
-			if (!size) {
-				fontSize = $($elm).css('fontSize');
-				// Most browsers return px value but IE returns 1-7
-				if (fontSize.indexOf('px') > -1) {
-					// convert size to an int
-					fontSize = parseInt(fontSize);
-					size = 1;
-					$.each(mybbCmd.fSize, function (i, val) {
-						if (fontSize > val) size = i + 2;
-					});
-				} else {
-					size = (~~fontSize) + 1;
-				}
-				size = (size >= 7) ? mybbCmd.fsStr[6] : ((size <= 1) ? mybbCmd.fsStr[0] : mybbCmd.fsStr[size - 1]);
-			} else {
-				size = mybbCmd.fsStr[size - 1];
+			if ($($elm).css('font-size') == editor_body.css('font-size')) {
+				// Eliminate redundant [size] tags for unformatted text.
+				// Part of the fix for the browser-dependent bug of issue #4184.
+				// Also fixes the browser-dependent bug described here:
+				//   <https://community.mybb.com/thread-229726.html>
+				fontsize = -1;
+			} else if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
+				fontsize = mybbCmd.fsStr[size - 1];
+			} else if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
+				fontsize = scefontsize;
+			} else if (!isNaN(parsed)) {
+				fontsize = parsed;
 			}
-			return '[size=' + size + ']' + content + '[/size]';
+
+			return fontsize != -1 ? '[size=' + fontsize + ']' + content + '[/size]' : content;
 		},
 		html: function (token, attrs, content) {
-			var size = $.inArray(attrs.defaultattr, mybbCmd.fsStr) + 1;
-			if (!isNaN(attrs.defaultattr)) {
+			var size = 0,
+				units = "",
+				parsed = parseInt(attrs.defaultattr, 10);
+			if (!isNaN(parsed)) {
 				size = attrs.defaultattr;
-				if (size > 7)
-					size = 7;
-				if (size < 1)
+				if (size < 1) {
 					size = 1;
+				} else if (size > 50) {
+					size = 50;
+				}
+				units = "pt";
+			} else {
+				var fsStrPos = $.inArray(attrs.defaultattr, mybbCmd.fsStr);
+				if (fsStrPos !== -1) {
+					size = attrs.defaultattr;
+				}
 			}
-			if (size < 0) {
-				size = 0;
-			}
-			return '<font data-scefontsize="' + $.sceditor.escapeEntities(attrs.defaultattr) + '" size="' + size + '">' + content + '</font>';
+			return '<font data-scefontsize="' + $.sceditor.escapeEntities(attrs.defaultattr) + '" style="font-size: ' + size + units + ';">' + content + '</font>';
 		}
 	});
 
@@ -182,7 +203,7 @@ $(function ($) {
 				};
 
 			for (var i = 1; i <= 7; i++)
-				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').on('click', clickFunc));
+				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font style="font-size: ' + mybbCmd.fsStr[i-1] + '">' + i + '</font></a>').on('click', clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content.get(0));
 		},
@@ -269,9 +290,26 @@ $(function ($) {
 			if (element.nodeName.toLowerCase() !== 'font' || !(font = $(element).attr('face')))
 				font = $(element).css('font-family');
 
+			var iframe = $('.sceditor-container iframe');
+			var editor_body = $('body', iframe.contents());
 
-			if (typeof font == 'string' && font != '' && font != 'defaultattr') {
-				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
+			if (typeof font == 'string' && font != '' && font != 'defaultattr'
+			    &&
+			    // Eliminate redundant [font] tags for unformatted text.
+			    // Part of the fix for the browser-dependent bug of issue #4184.
+			    font != editor_body.css('font-family')) {
+				font = font.trim();
+				// Strip all-enclosing double quotes from fonts so long as
+				// they are the only double quotes present...
+				if (font[0] == '"' && font[font.length-1] == '"' && (font.match(/"/g) || []).length == 2) {
+					font = font.substr(1, font.length-2);
+				}
+				// ...and then replace any other occurrence(s) of double quotes
+				// in fonts with single quotes.
+				// This is the client-side aspect of the fix for
+				// the browser-independent bug of issue #4182.
+				font = font.replace(/"/g, "'");
+				return '[font=' + font + ']' + content + '[/font]';
 			} else {
 				return content;
 			}
@@ -284,6 +322,33 @@ $(function ($) {
 			} else {
 				return content;
 			}
+		}
+	});
+
+	$.sceditor.formats.bbcode.set('color', {
+		format: function (element, content) {
+			var color, defaultColor;
+
+			var iframe = $('.sceditor-container iframe');
+			var editor_body = $('body', iframe.contents());
+
+			if (element.nodeName.toLowerCase() != 'font' || !(color = $(element).attr('color'))) {
+				color = $(element).css('color');
+			}
+
+			color = _normaliseColour(color);
+			defaultColor = _normaliseColour(editor_body.css('color'));
+
+			// Eliminate redundant [color] tags for unformatted text.
+			// Part of the fix for the browser-dependent bug of issue #4184.
+			return color != defaultColor
+			         ? '[color=' + color + ']' + content + '[/color]'
+				 : content;
+		},
+		html: function (token, attrs, content) {
+			return '<font color="' +
+				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), true) +
+				'">' + content + '</font>';
 		}
 	});
 
@@ -493,7 +558,7 @@ $(function ($) {
 				'</div>' +
 				'<div>' +
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
-				'<input type="text" id="videourl" value="http://" />' +
+				'<input type="text" id="videourl" placeholder="http://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -649,4 +714,69 @@ $(function ($) {
 			return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
 		}
 	});
+
+	/**
+	 * Converts a number 0-255 to hex.
+	 *
+	 * Will return 00 if number is not a valid number.
+	 *
+	 * Copied from the SCEditor's src/formats/bbcode.js file
+	 * where it is unfortunately defined as private.
+	 *
+	 * @param  {any} number
+	 * @return {string}
+	 */
+	function toHex(number) {
+		number = parseInt(number, 10);
+
+		if (isNaN(number)) {
+			return '00';
+		}
+
+		number = Math.max(0, Math.min(number, 255)).toString(16);
+
+		return number.length < 2 ? '0' + number : number;
+	}
+
+	/**
+	 * Normalises a CSS colour to hex #xxxxxx format
+	 *
+	 * Copied from the SCEditor's src/formats/bbcode.js file
+	 * where it is unfortunately defined as private.
+	 *
+	 * @param  {string} colorStr
+	 * @return {string}
+	 */
+	function _normaliseColour(colorStr) {
+		var match;
+
+		colorStr = colorStr || '#000';
+
+		// rgb(n,n,n);
+		if ((match = colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
+			return '#' +
+				toHex(match[1]) +
+				toHex(match[2]) +
+				toHex(match[3]);
+		}
+
+		// rgba(n,n,n,f.p);
+		if ((match = colorStr.match(/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i))) {
+			return '#' +
+			toHex(match[1]) +
+			toHex(match[2]) +
+			toHex(match[3]);
+		}
+
+		// expand shorthand
+		if ((match = colorStr.match(/#([0-f])([0-f])([0-f])\s*?$/i))) {
+			return '#' +
+				match[1] + match[1] +
+				match[2] + match[2] +
+				match[3] + match[3];
+		}
+
+		return colorStr;
+	}
+
 });

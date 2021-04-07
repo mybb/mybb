@@ -1046,7 +1046,7 @@ disabled=Disable this feature]]></optionscode>
 1=Email Only
 2=Both Username and Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
@@ -1415,7 +1415,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="maxquotedepth">
 			<title>Maximum Nested Quote Tags</title>
-			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
+			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable the limit.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
@@ -1786,7 +1786,7 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="maxpmquotedepth">
 			<title>Maximum PM Nested Quote Tags</title>
-			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a PM, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect PMs already sent. Set to 0 to disable.]]></description>
+			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a PM, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect PMs already sent. Set to 0 to disable the limit.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
@@ -1833,6 +1833,23 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[username]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="wolusersperpage">
+			<title>Users Per Page</title>
+			<description><![CDATA[The number of users displayed per page. Set to 0 to use the default.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[numeric
+min=0]]></optionscode>
+			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="woldisplayspiders">
+			<title>Who's Online Displays Spiders?</title>
+			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="19" isdefault="1">
 		<setting name="enablepruning">
@@ -1866,7 +1883,7 @@ min=0]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="dayspruneregistered">
 			<title>Days registered before pruning by post count</title>
@@ -2056,7 +2073,7 @@ min=0]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>0</isdefault>
+			<isdefault>1</isdefault>
 		</setting>
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
@@ -2124,10 +2141,18 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowautourl">
+			<title>Automatically Parse URLs Into Links</title>
+			<description><![CDATA[Setting this to Yes will parse URLs as links.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="allowemailmycode">
 			<title>Allow Email MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Email MyCode.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2135,7 +2160,7 @@ min=1]]></optionscode>
 		<setting name="allowalignmycode">
 			<title>Allow Alignment MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Align MyCode.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2143,7 +2168,7 @@ min=1]]></optionscode>
 		<setting name="allowlistmycode">
 			<title>Allow List MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the List MyCode.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2151,7 +2176,7 @@ min=1]]></optionscode>
 		<setting name="allowcodemycode">
 			<title>Allow Code MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Code and PHP MyCodes.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2159,7 +2184,7 @@ min=1]]></optionscode>
 		<setting name="allowsymbolmycode">
 			<title>Allow Symbol MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2167,7 +2192,7 @@ min=1]]></optionscode>
 		<setting name="allowmemycode">
 			<title>Allow Me MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the /me and /slap MyCodes.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2175,7 +2200,7 @@ min=1]]></optionscode>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted images to guests. If No, a link will be shown instead.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2183,7 +2208,7 @@ min=1]]></optionscode>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted videos to guests. If No, a link will be shown instead.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2306,6 +2331,15 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="mail_queue_limit">
+			<title>Messages to send from the mail queue</title>
+			<description><![CDATA[The number of messages to send from the mail queue every time the Send Mail Queue task is ran.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[numeric
+min=1]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
@@ -2417,7 +2451,6 @@ delete=Delete]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
-		</setting>
 		</setting>
 		<setting name="purgespammerbanip">
 			<title>Add banned IP filter</title>

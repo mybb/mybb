@@ -31,7 +31,7 @@ if($mybb->input['action'] == "delete_post_tool")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
 	}
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "delete_thread_tool")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-mod_tools");
 	}
@@ -2299,8 +2299,8 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->send_private_message);
-	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
-	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->get_input('pm_message'), array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->get_input('pm_subject'), array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
