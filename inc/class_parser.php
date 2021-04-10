@@ -1957,7 +1957,7 @@ class postParser
 
 		libxml_use_internal_errors(true);
 
-		simplexml_load_string('<root>'.$output.'</root>');
+		simplexml_load_string('<root>'.$output.'</root>', 'SimpleXMLElement', 524288 /* LIBXML_PARSEHUGE */);
 
 		$errors = libxml_get_errors();
 
