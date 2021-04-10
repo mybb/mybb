@@ -1253,6 +1253,7 @@ class postParser
 			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
 		$alt = $this->encode_url($alt);
+		$alt = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $alt); // fix & but allow unicode
 
 		$alt = $lang->sprintf($lang->posted_image, $alt);
 		$width = $height = '';
