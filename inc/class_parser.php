@@ -98,7 +98,8 @@ class postParser
 	public $clear_needed = false;
 
 	/**
-	 * Whether to validate the parser's HTML output. Validation errors will be logged/sent/displayed according to board settings.
+	 * Whether to validate the parser's HTML output when `allow_html` is disabled.
+	 * Validation errors will be logged/sent/displayed according to board settings.
 	 *
 	 * 0 - skip validation
 	 * 1 - validate and log errors
@@ -1915,7 +1916,8 @@ class postParser
 	}
 
 	/**
-	 * Determines whether the resulting HTML syntax is acceptable for output, according to the parser's validation policy.
+	 * Determines whether the resulting HTML syntax is acceptable for output,
+	 * according to the parser's validation policy and HTML support.
 	 *
 	 * @param string $source The original MyCode.
 	 * @param string $output The output HTML code.
@@ -1923,7 +1925,7 @@ class postParser
 	 */
 	function output_allowed($source, $output)
 	{
-		if($this->output_validation_policy === 0)
+		if($this->output_validation_policy === 0 || !empty($this->options['allow_html']))
 		{
 			return true;
 		}
