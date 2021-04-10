@@ -928,7 +928,7 @@ class postParser
 
 		if($delete_quote)
 		{
-			$username = my_substr($username, 0, my_strlen($username)-1);
+			$username = my_substr($username, 0, my_strlen($username)-1, true);
 		}
 
 		if(!empty($this->options['allow_html']))
