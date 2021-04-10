@@ -1955,6 +1955,13 @@ class postParser
 	{
 		global $mybb, $error_handler;
 
+		$ignored_error_codes = array(
+			'XML_ERR_INVALID_CHAR' => 9,
+			'XML_ERR_UNDECLARED_ENTITY' => 26,
+			'XML_ERR_ATTRIBUTE_WITHOUT_VALUE' => 41,
+			'XML_ERR_TAG_NAME_MISMATCH' => 76, // the parser may output tags closed in different levels and siblings
+		);
+
 		libxml_use_internal_errors(true);
 
 		simplexml_load_string('<root>'.$output.'</root>', 'SimpleXMLElement', 524288 /* LIBXML_PARSEHUGE */);
@@ -1963,7 +1970,13 @@ class postParser
 
 		libxml_use_internal_errors(false);
 
-		if($errors)
+		if(
+			$errors &&
+			array_diff(
+				array_column($errors, 'code'),
+				$ignored_error_codes
+			)
+		)
 		{
 			$data = array(
 				'sourceHtmlEntities' => htmlspecialchars_uni($source),
