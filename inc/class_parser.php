@@ -98,17 +98,28 @@ class postParser
 	public $clear_needed = false;
 
 	/**
+	 * Don't validate parser output
+	 */
+	const VALIDATION_DISABLE = 0;
+
+	/**
+	 * Validate parser output and log errors
+	 */
+	const VALIDATION_REPORT_ONLY = 1;
+
+	/**
+	 * Validate parser output, log errors, and block output on failure
+	 */
+	const VALIDATION_REQUIRE = 2;
+
+	/**
 	 * Whether to validate the parser's HTML output when `allow_html` is disabled.
 	 * Validation errors will be logged/sent/displayed according to board settings.
 	 *
-	 * 0 - skip validation
-	 * 1 - validate and log errors
-	 * 2 - validate and log errors; block output on failure
-	 *
 	 * @access public
-	 * @var int
+	 * @var self::VALIDATION_*
 	 */
-	public $output_validation_policy = 1;
+	public $output_validation_policy = self::VALIDATION_REPORT_ONLY;
 
 	/**
 	 * Parses a message with the specified options.
@@ -1925,7 +1936,7 @@ class postParser
 	 */
 	function output_allowed($source, $output)
 	{
-		if($this->output_validation_policy === 0 || !empty($this->options['allow_html']))
+		if($this->output_validation_policy === self::VALIDATION_DISABLE || !empty($this->options['allow_html']))
 		{
 			return true;
 		}
@@ -1933,7 +1944,7 @@ class postParser
 		{
 			$output_valid = $this->validate_output($source, $output);
 
-			if($this->output_validation_policy === 1)
+			if($this->output_validation_policy === self::VALIDATION_REPORT_ONLY)
 			{
 				return true;
 			}
