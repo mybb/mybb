@@ -9460,7 +9460,9 @@ if(use_xmlhttprequest == "1")
 <tr style="display: none;">
 	<td class="trow1" colspan="3">
 		<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
-		<div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;"></div>
+		<div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;">
+			<div style="pointer-events: none;"</div>
+		</div>
 	</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>

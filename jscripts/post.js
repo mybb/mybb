@@ -2,23 +2,30 @@ var Post = {
 	init: function () {
 		$(function () {
 			Post.fileInput = $("input[name='attachments[]']");
-			Post.dropZone = $('#dropzone').text(lang.drop_files);
+			Post.dropZone = $('#dropzone');
+			Post.dropZone.find('div').text(lang.drop_files);
 			Post.form = Post.fileInput.parents('form');
 
 			Post.form.on('submit', Post.checkAttachments);
 			Post.fileInput.on('change', Post.addAttachments);
 
-			Post.dropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+			Post.dropZone.on('drag', function (e) {
 				e.preventDefault();
-				e.stopPropagation();
 			});
 
-			Post.dropZone.on('dragover dragenter', function () {
-				$(this).addClass('activated').text(lang.upload_initiate);
+			Post.dropZone.on('dragstart',  function (e) {
+				e.preventDefault();
+				e.originalEvent.dataTransfer.setData('text/plain', '');
 			});
 
-			Post.dropZone.on('dragleave dragend', function () {
-				$(this).removeClass('activated').text(lang.drop_files);
+			Post.dropZone.on('dragover dragenter', function (e) {
+				e.preventDefault();
+				$(this).addClass('activated').find('div').text(lang.upload_initiate);
+			});
+
+			Post.dropZone.on('dragleave dragend', function (e) {
+				e.preventDefault();
+				$(this).removeClass('activated').find('div').text(lang.drop_files);
 			});
 
 			Post.dropZone.on('click', function () {
@@ -26,6 +33,7 @@ var Post = {
 			});
 
 			Post.dropZone.on('drop', function (e) {
+				e.preventDefault();
 				$(this).removeClass('activated');
 				var files = e.originalEvent.dataTransfer.files;
 				Post.fileInput.prop('files', files).trigger('change');
@@ -221,10 +229,10 @@ var Post = {
 						if (e.lengthComputable) {
 							var completed = parseFloat((e.loaded / e.total) * 100).toFixed(2);
 							$('#upload_bar').css('width', completed + '%');
-							Post.dropZone.text(completed + '%');
+							Post.dropZone.find('div').text(completed + '%');
 							if (e.loaded === e.total) {
 								$('#upload_bar').css('width', '0%');
-								Post.dropZone.text(lang.drop_files);
+								Post.dropZone.find('div').text(lang.drop_files);
 							}
 						}
 					}, false);
