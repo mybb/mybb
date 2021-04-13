@@ -1964,7 +1964,7 @@ class postParser
 	 */
 	function validate_output($source, $output)
 	{
-		global $mybb, $error_handler;
+		global $error_handler;
 
 		$ignored_error_codes = array(
 			// entities may be broken through smilie parsing; cache_smilies() method workaround doesn't cover all entities
@@ -2000,13 +2000,7 @@ class postParser
 			$error_message = "Parser output validation failed.\n";
 			$error_message .= var_export($data, true);
 
-			$original_errortypemedium = $mybb->settings['errortypemedium'];
-
-			$mybb->settings['errortypemedium'] = 'none'; // suppress output of error details
-
-			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__);
-
-			$mybb->settings['errortypemedium'] = $original_errortypemedium;
+			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__, false);
 		}
 
 		return empty($errors);
