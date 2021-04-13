@@ -1967,8 +1967,11 @@ class postParser
 		global $mybb, $error_handler;
 
 		$ignored_error_codes = array(
+			// entities may be broken through smilie parsing; cache_smilies() method workaround doesn't cover all entities
+			'XML_ERR_INVALID_DEC_CHARREF' => 7,
 			'XML_ERR_INVALID_CHAR' => 9,
-			'XML_ERR_UNDECLARED_ENTITY' => 26,
+
+			'XML_ERR_UNDECLARED_ENTITY' => 26, // unrecognized HTML entities
 			'XML_ERR_ATTRIBUTE_WITHOUT_VALUE' => 41,
 			'XML_ERR_TAG_NAME_MISMATCH' => 76, // the parser may output tags closed in different levels and siblings
 		);
