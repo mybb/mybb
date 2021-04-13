@@ -820,15 +820,25 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 							$update_attachment = true;
 						}
 					}
-
-					$attachedfile = upload_attachment($FILE, $update_attachment);
-
-					if(!empty($attachedfile['error']))
+					
+					if(!$exists && $mybb->get_input('updateattachment') && $mybb->get_input('updateconfirmed', MyBB::INPUT_INT) != 1)
 					{
-						$ret['errors'][] = $attachedfile['error'];
-						$mybb->input['action'] = $action;
+						$ret['errors'][] = $lang->sprintf($lang->error_updatefailed, $filename);
 					}
+					else
+					{
+						$attachedfile = upload_attachment($FILE, $update_attachment);
 
+						if(!empty($attachedfile['error']))
+						{
+							$ret['errors'][] = $attachedfile['error'];
+							$mybb->input['action'] = $action;
+						}
+						else if(isset($attachedfile['aid']) && $mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+						{
+							$ret['success'][] = array($attachedfile['aid'], get_attachment_icon(get_extension($filename)), $filename, get_friendly_size($FILE['size']));
+						}
+					}
 				}
 				else
 				{

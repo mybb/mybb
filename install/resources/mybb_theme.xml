@@ -9439,9 +9439,9 @@ if(use_xmlhttprequest == "1")
 </table>]]></template>
 		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_viewlink" version="1816"><![CDATA[<a href="usercp.php?action=attachments">{$lang->view_attachments}</a>]]></template>
-		<template name="post_attachments_attachment" version="1820"><![CDATA[<tr id="attachment_{$attachment['aid']}">
+		<template name="post_attachments_attachment" version="1827"><![CDATA[<tr id="attachment_{$attachment['aid']}">
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
-<td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
+<td class="trow2" width="60%" style="white-space: nowrap"><span class="attachment_filename">{$attachment['filename']}</span> ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="1823"><![CDATA[<input type="submit" class="button" name="approveattach_{$attachment['aid']}" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
@@ -9453,10 +9453,18 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1818"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1827"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
 <td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
+</tr>
+<tr style="display: none;">
+	<td class="trow1" colspan="3">
+		<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
+		<div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;">
+			<div style="pointer-events: none;"</div>
+		</div>
+	</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
 		<template name="post_captcha" version="1821"><![CDATA[<tr id="captcha_trow">
@@ -9592,14 +9600,23 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1823"><![CDATA[
+		<template name="post_javascript" version="1827"><![CDATA[
 			<script type="text/javascript">
+				lang.add_attachment = "{$lang->add_attachment}";
+				lang.update_attachment = "{$lang->update_attachment}";
+				lang.update_confirm = "{$lang->update_confirm}";
+				lang.attachment_missing = "{$lang->attachment_missing}";
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
+				lang.attachment_max_allowed_files = "{$lang->attachment_max_allowed_files}";
+				lang.error_maxattachpost = "{$lang->error_maxattachpost}";
+				lang.drop_files = "{$lang->drop_files}";
+				lang.upload_initiate = "{$lang->upload_initiate}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
+				mybb_max_file_uploads = {$mybb->settings['maxattachments']};
 			</script>
-			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1823"></script>
+			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1827"></script>
 			]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>

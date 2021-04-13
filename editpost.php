@@ -211,6 +211,34 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "editpost");
 
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		if(isset($ret['success']))
+		{
+			$attachment = array('aid'=>'{1}', 'icon'=>'{2}', 'filename'=>'{3}', 'size'=>'{4}');
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+			}
+			// Moderating options
+			$attach_mod_options = '';
+			if(is_moderator($fid))
+			{
+				eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_unapprove")."\";");
+			}
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
+			$ret['template'] = $attemplate;
+
+			$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+			$usage = $db->fetch_array($query);
+			$ret['usage'] = get_friendly_size($usage['ausage']);
+		}
+
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode($ret);
+		exit();
+	}
 
 	if(!empty($ret['errors']))
 	{
@@ -253,8 +281,11 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => true, "usage" => get_friendly_size($usage['ausage'])));
 		exit();
 	}
 
@@ -911,7 +942,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	$post_javascript = \MyBB\template('misc/post_javascript.twig', [
 		'php_max_upload_size' => $php_max_upload_size,
-        'php_max_file_uploads' => $php_max_file_uploads,
+		'php_max_file_uploads' => $php_max_file_uploads,
 	]);
 
 	$plugins->run_hooks("editpost_end");
