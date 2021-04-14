@@ -508,7 +508,7 @@ div.sceditor-group {
 .ie6 .sceditor-button, .ie7 .sceditor-button {
     float: none!important;
     display: inline;
-    zoom: 1;
+    transform: scale(1);
 }
 .ie6 .sceditor-button {
     padding: 0;

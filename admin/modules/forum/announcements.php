@@ -53,17 +53,17 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if(!trim($mybb->get_input('title')))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(!trim($mybb->input['message']))
+		if(!trim($mybb->get_input('message')))
 		{
 			$errors[] = $lang->error_missing_message;
 		}
 
-		if(!trim($mybb->input['fid']))
+		if(!trim($mybb->get_input('fid')))
 		{
 			$errors[] = $lang->error_missing_forum;
 		}
@@ -116,6 +116,8 @@ if($mybb->input['action'] == "add")
 		{
 			if(isset($mybb->input['preview']))
 			{
+				$lang->load('global', true);
+
 				$parser_options = array();
 				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
 				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
@@ -126,7 +128,7 @@ if($mybb->input['action'] == "add")
 				$parser_options['filter_badwords'] = 1;
 
 				// Set up the message parser if it doesn't already exist.
-				if(!is_object($parser))
+				if(!isset($parser) || !is_object($parser))
 				{
 					require_once MYBB_ROOT."inc/class_parser.php";
 					$parser = new postParser;
@@ -308,24 +310,24 @@ if($mybb->input['action'] == "add")
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 
-	$startdatemonth .= "<option value=\"01\" {$startmonthsel['01']}>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" {$endmonthsel['01']}>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" {$startmonthsel['02']}>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" {$endmonthsel['02']}>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" {$startmonthsel['03']}>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" {$endmonthsel['03']}>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" {$startmonthsel['04']}>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" {$endmonthsel['04']}>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" {$startmonthsel['05']}>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" {$endmonthsel['05']}>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" {$startmonthsel['06']}>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" {$endmonthsel['06']}>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" {$startmonthsel['07']}>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" {$endmonthsel['07']}>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" {$startmonthsel['08']}>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" {$endmonthsel['08']}>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" {$startmonthsel['09']}>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" {$endmonthsel['09']}>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"01\" {$startmonthsel['1']}>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" {$endmonthsel['1']}>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" {$startmonthsel['2']}>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" {$endmonthsel['2']}>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" {$startmonthsel['3']}>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" {$endmonthsel['3']}>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" {$startmonthsel['4']}>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" {$endmonthsel['4']}>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" {$startmonthsel['5']}>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" {$endmonthsel['5']}>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" {$startmonthsel['6']}>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" {$endmonthsel['6']}>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" {$startmonthsel['7']}>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" {$endmonthsel['7']}>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" {$startmonthsel['8']}>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" {$endmonthsel['8']}>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" {$startmonthsel['9']}>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" {$endmonthsel['9']}>{$lang->september}</option>\n";
 	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
 	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
 	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
@@ -498,6 +500,8 @@ if($mybb->input['action'] == "edit")
 		{
 			if(isset($mybb->input['preview']))
 			{
+				$lang->load('global', true);
+
 				$parser_options = array();
 				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
 				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
@@ -508,7 +512,7 @@ if($mybb->input['action'] == "edit")
 				$parser_options['filter_badwords'] = 1;
 
 				// Set up the message parser if it doesn't already exist.
-				if(!is_object($parser))
+				if(!isset($parser) || !is_object($parser))
 				{
 					require_once MYBB_ROOT."inc/class_parser.php";
 					$parser = new postParser;
@@ -569,6 +573,12 @@ if($mybb->input['action'] == "edit")
 
 	$form = new Form("index.php?module=forum-announcements&amp;action=edit", "post");
 	echo $form->generate_hidden_field("aid", $mybb->input['aid']);
+
+	// Months
+	for($i = 1; $i <= 12; ++$i)
+	{
+		$endmonthsel[$i] = $startmonthsel[$i] = '';
+	}
 
 	if($errors || isset($mybb->input['preview']))
 	{
@@ -662,6 +672,8 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
+	$startdateday = $enddateday = $startdatemonth = $enddatemonth = '';
+
 	for($i = 1; $i <= 31; ++$i)
 	{
 		if($startday == $i)
@@ -683,24 +695,24 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$startdatemonth .= "<option value=\"01\" {$startmonthsel['01']}>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" {$endmonthsel['01']}>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" {$startmonthsel['02']}>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" {$endmonthsel['02']}>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" {$startmonthsel['03']}>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" {$endmonthsel['03']}>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" {$startmonthsel['04']}>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" {$endmonthsel['04']}>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" {$startmonthsel['05']}>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" {$endmonthsel['05']}>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" {$startmonthsel['06']}>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" {$endmonthsel['06']}>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" {$startmonthsel['07']}>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" {$endmonthsel['07']}>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" {$startmonthsel['08']}>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" {$endmonthsel['08']}>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" {$startmonthsel['09']}>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" {$endmonthsel['09']}>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"01\" {$startmonthsel['1']}>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" {$endmonthsel['1']}>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" {$startmonthsel['2']}>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" {$endmonthsel['2']}>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" {$startmonthsel['3']}>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" {$endmonthsel['3']}>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" {$startmonthsel['4']}>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" {$endmonthsel['4']}>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" {$startmonthsel['5']}>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" {$endmonthsel['5']}>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" {$startmonthsel['6']}>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" {$endmonthsel['6']}>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" {$startmonthsel['7']}>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" {$endmonthsel['7']}>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" {$startmonthsel['8']}>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" {$endmonthsel['8']}>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" {$startmonthsel['9']}>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" {$endmonthsel['9']}>{$lang->september}</option>\n";
 	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
 	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
 	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
@@ -793,7 +805,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=forum-announcements");
 	}

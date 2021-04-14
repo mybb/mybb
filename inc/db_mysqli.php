@@ -190,7 +190,7 @@ class DB_MySQLi implements DB_Base
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 
@@ -485,7 +485,11 @@ class DB_MySQLi implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**
@@ -1035,7 +1039,7 @@ class DB_MySQLi implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**

@@ -47,7 +47,6 @@ $mybb->config = &$config;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
-require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
@@ -317,8 +316,16 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
-		$output->print_footer("doupgrade");
+		if(end($version_history) == reset($key_order) && empty($mybb->input['force']))
+		{
+			$output->print_contents($lang->upgrade_not_needed);
+			$output->print_footer("finished");
+		}
+		else
+		{
+			$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
+			$output->print_footer("doupgrade");
+		}
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
@@ -491,7 +498,7 @@ function upgradethemes()
 
 	// Now deal with the master templates
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
@@ -910,7 +917,7 @@ function sync_settings($redo=0)
 		}
 	}
 	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
-	$parser = new XMLParser($settings_xml);
+	$parser = create_xml_parser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 	$settinggroupnames = array();
@@ -1078,7 +1085,7 @@ function sync_tasks($redo=0)
 
 	require_once MYBB_ROOT."inc/functions_task.php";
 	$task_file = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-	$parser = new XMLParser($task_file);
+	$parser = create_xml_parser($task_file);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 

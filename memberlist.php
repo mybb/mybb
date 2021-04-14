@@ -57,6 +57,7 @@ if($mybb->get_input('action') == "search")
 		}
 	}
 
+	$referrals_option = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
@@ -221,7 +222,8 @@ else
 		// Exact
 		else
 		{
-			$search_query .= " AND u.username='{$username_like_query}'";
+			$username_esc = $db->escape_string($search_username); 
+			$search_query .= " AND u.username='{$username_esc}'";
 		}
 
 		$search_url .= "&username=".urlencode($search_username);
@@ -408,7 +410,6 @@ else
 			}
 
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
-			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';
@@ -516,6 +517,12 @@ else
 	if(!$users)
 	{
 		eval("\$users = \"".$templates->get("memberlist_error")."\";");
+	}
+
+	$referrals_option = '';
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 	}
 
 	$plugins->run_hooks("memberlist_end");

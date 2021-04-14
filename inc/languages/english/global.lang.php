@@ -122,8 +122,12 @@ $l['insert_attachment_post'] = "Insert Into Post";
 $l['new_attachment'] = "New Attachment:";
 $l['add_attachment'] = "Add Attachment";
 $l['update_attachment'] = "Update Attachment";
+$l['attachment_missing'] = "Please select one or more files before attempting to attach.";
 $l['attachment_too_many_files'] = "You can upload a maximum of {1} files at once.";
-$l['attachment_too_big_upload'] = "You can upload a maximum of {1} bytes at once.";
+$l['attachment_max_allowed_files'] = "You can attach {1} more file(s) to this post.";
+$l['attachment_too_big_upload'] = "You can upload a maximum of {1} MB at once.";
+$l['drop_files'] = "Click or drop some files here to upload...";
+$l['upload_initiate'] = "Release to initiate upload...";
 $l['post_preview'] = "Preview";
 $l['change_user'] = "change user";
 $l['post_icon'] = "Post Icon:";
@@ -308,6 +312,7 @@ $l['forumjump_wol'] = "Who's Online";
 $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
+$l['confirm_title'] = "Please Confirm";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
@@ -327,8 +332,9 @@ $l['unapproved_attachment'] = "1 unapproved attachment";
 $l['unapproved_attachments'] = "{1} unapproved attachments";
 $l['unread_report'] = "1 unread report";
 $l['unread_reports'] = "{1} unread reports";
-$l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
-$l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
+$l['groupleader_notice'] = "Group Leader Notice:";
+$l['pending_joinrequest'] = "1 pending group membership join request.";
+$l['pending_joinrequests'] = "{1} pending group membership join requests.";
 
 $l['search_user'] = "Search for a user";
 
@@ -351,13 +357,13 @@ $l['days_short'] = "d";
 $l['hour'] = "Hour";
 $l['hour_short'] = "h";
 $l['hours'] = "Hours";
-$l['hours_short'] ="h";
+$l['hours_short'] = "h";
 $l['minute'] = "Minute";
-$l['minute_short'] ="m";
+$l['minute_short'] = "m";
 $l['minutes'] = "Minutes";
 $l['minutes_short'] = "m";
 $l['second'] = "Second";
-$l['second_short'] ="s";
+$l['second_short'] = "s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 
@@ -442,13 +448,16 @@ $l['select_theme'] = "Quick Theme Select";
 
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_nocaptcha'] = "Please solve the reCAPTCHA to verify that you're not a robot.";
+$l['invalid_hcaptcha'] = "Please solve the hCaptcha to verify that you're not a robot.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['image_verification'] = "Image Verification";
 $l['human_verification'] = "Human Verification";
 $l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
 $l['verification_note_nocaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
 $l['verification_subnote'] = "(case insensitive)";
-$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification. Please try again.";
+$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification by reCAPTCHA. Please try again.";
+$l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification by hCaptcha. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 $l['question_fetch_failure'] = 'There was an error fetching the new question.';
 
@@ -514,6 +523,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
 $l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_sendmailqueue_ran'] = 'The send mail queue task sent up to {1} messages.';
 
 $l['dismiss_notice'] = "Dismiss this notice";
 
@@ -592,3 +602,5 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['use_default'] = "Use Default";

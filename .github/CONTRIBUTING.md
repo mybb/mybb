@@ -21,7 +21,7 @@ Learn more on the MyBB development page:
 
 [**MyBB &mdash; Get Involved: Features & Development &rarr;**](https://mybb.com/get-involved/development/)
 
-If you need any help with sending your code contributions, the [GitHub Help site](https://help.github.com) is a good place to start.
+If you need any help with sending your code contributions, the [GitHub Help site](https://docs.github.com/en/github) is a good place to start. You can also get in touch with MyBB developers and the Community through our [support channels](https://mybb.com/support/).
 
 ## MyBB on GitHub
 
@@ -29,24 +29,24 @@ If you need any help with sending your code contributions, the [GitHub Help site
 
 #### Maintenance/Legacy Branches
 - `master` Currently contains legacy code of MyBB 1.6.
-
 - `feature` Currently contains code for MyBB 1.8.
 
 #### Workflow for MyBB 1.9 and up
-- `master`
+MyBB development will follow the [gitflow branching strategy](https://nvie.com/posts/a-successful-git-branching-model/):
+- `main` &mdash; latest stable release for latest stable branch, or `main/*` for given older branch (e.g. _main/1.9_ for 1.9).
 
-  After the MyBB 1.9 release, `master` will contain code of latest stable release for latest stable branch, or `master/*` for given older branch (e.g. _master/1.9_ for 1.9).
+  - `hotfix/*` &mdash; quick releases for critical issues (e.g. _hotfix/1.10_).
 
-  -  `hotfix/*` (e.g. _hotfix/1.10_) Quick releases for critical issues. When ready, the hotfix branch is merged back to _master/*_ and _develop/*_ (or _release/*_, if one exists).
+    When ready, the hotfix branch is merged back to _main/*_ and _develop/*_ (or _release/*_, if one exists).
 
 
-- `develop/*` Contains current development version with changes that were applied after the last release.
+- `develop/*` &mdash; development codebase with changes that were applied after the last release.
 
-    - `release/*` (e.g. _release/3.2.1_) Release preparation - version numbers and other metadata.
+    - `release/*` &mdash; release preparation: version numbers and other metadata (e.g. _release/3.2.1_).
 
-      Immediately preceding the actual release, security patches are merged in and the release branch is merged back into _develop/*_ and _master/*_.
+      Prior to a release, security patches are merged in and the release branch is merged back into _develop/*_ and _main/*_.
 
-    - `feature/*` (e.g. *feature/custom-avatars*) New features being worked on. When completed and tested, the feature branch is merged back to _develop/*_.
+    - `feature/*` &mdash; new features being worked on (e.g. *feature/custom-avatars*) When completed and tested, the feature branch is merged back to _develop/*_.
 
 ### Issues
 Bugs and improvements to MyBB software packages are documented in corresponding _Issues_.
@@ -64,15 +64,17 @@ Triaged Issues usually have multiple [**Labels**](https://github.com/mybb/mybb/l
 - Branch (`b:*`), the x.**Y** release branches they are related to,
 - Priority (`p:*`), how important they are (1 per Issue),
 - Status (`s:*`), what stage the development is currently in (1 per Issue),
-- Type (`t:*`), what kind of problem or operation they are related to.
-- Involving (`i:*`), additional labels for specific modules, libraries, or types.
+- Type (`t:*`), what kind of problem or operation they are related to,
+- Involving (`i:*`), additional labels for specific modules, libraries, or types,
 - `3rdparty`, assigned to external code and other third-party solutions,
+- `dev-branch`, unreleased, development branch issues that don't affect behavior of stable versions and are irrelevant when upgrading,
 - [`easy-pick`](https://github.com/mybb/mybb/labels/easy-pick), used for simple issues for new contributors that don't require extensive MyBB knowledge to resolve.
 
 Labels are generally only used for Issues.
 
 #### Milestones
-Issues can have specific [**Milestones**](https://github.com/mybb/mybb/milestones) assigned, meaning that they are expected to be addressed in given versions.
+Issues can have specific [**Milestones**](https://github.com/mybb/mybb/milestones) assigned, meaning that they are expected, or preferred to be addressed in given versions. Issues with assigned Milestones may still be postponed to prioritize other changes.
+
 
 #### Assignments
 Issues with personal assignments are expected to be handled by assigned developers. Similarly, the review process of Pull Requests can be directed by developers assigned to them.
@@ -85,9 +87,9 @@ Pull Requests (PRs) should only be sent for [confirmed Issues](https://github.co
 
 All changes made in Pull Requests must follow the development standards:
 - for MyBB 1.8, see [MyBB Documentation &rsaquo; Development Standards](https://docs.mybb.com/1.8/development/standards/),
-- for MyBB 1.9 and later, follow the [PSR-2 standard](https://www.php-fig.org/psr/psr-2/).
+- for MyBB 1.9 and later, follow the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
 
-Use imperative mood in the title and reference the Issue ID in the message. If possible, use the `Resolve #ID Issue title` format (e.g. _Resolve #123 Wrong error message_).
+Use imperative mood in the title, summarizing changes the Pull Request introduces, and reference the Issue ID in the message.
 
 Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
 ```

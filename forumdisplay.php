@@ -152,10 +152,10 @@ else
 
 $subforums = '';
 $child_forums = build_forumbits($fid, 2);
-$forums = $child_forums['forum_list'];
 
-if($forums)
+if(!empty($child_forums) && !empty($child_forums['forum_list']))
 {
+	$forums = $child_forums['forum_list'];
 	$lang->sub_forums_in = $lang->sprintf($lang->sub_forums_in, $foruminfo['name']);
 	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
@@ -177,11 +177,13 @@ if($mybb->settings['enableforumjump'] != 0)
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
+$newthread = '';
 if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
 
+$searchforum = '';
 if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 {
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
@@ -302,7 +304,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		{
 			$doneusers[$user['uid']] = $user['time'];
 			++$membercount;
-			if($user['invisible'] == 1)
+			if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 			{
 				$invisiblemark = "*";
 				++$inviscount;
@@ -607,8 +609,39 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many threads are there?
-	$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
-	$threadcount = $db->fetch_field($query, "threads");
+	if ($useronly === "" && $datecutsql === "" && $prefixsql === "")
+	{
+		$threadcount = 0;
+
+		$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid=".(int)$fid);
+		$forum_threads = $db->fetch_array($query);
+
+		if(in_array(1, $visible_states))
+		{
+			$threadcount += $forum_threads['threads'];
+		}
+
+		if(in_array(-1, $visible_states))
+		{
+			$threadcount += $forum_threads['deletedthreads'];
+		}
+
+		if(in_array(0, $visible_states))
+		{
+			$threadcount += $forum_threads['unapprovedthreads'];
+		}
+		elseif($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' AND t.visible=0 AND t.uid=".(int)$mybb->user['uid']);
+			$threadcount += $db->fetch_field($query, "threads");
+		}
+	}
+	else
+	{
+		$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
+
+		$threadcount = $db->fetch_field($query, "threads");
+	}
 }
 
 // How many pages are there?
@@ -694,6 +727,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
+$ratingcol = $ratingsort = '';
 if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
@@ -954,8 +988,12 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadc
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
+	$forum_read = 0;
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$forum_read = $db->fetch_field($query, "dateline");
+	if($db->num_rows($query) > 0)
+	{
+		$forum_read = $db->fetch_field($query, "dateline");
+	}
 
 	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
@@ -1339,6 +1377,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		}
 		else
 		{
+			$thread['start_datetime'] = my_date('relative', $thread['dateline']);
 			eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 		}
 	}
@@ -1454,7 +1493,7 @@ if($mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
 
-	if($db->fetch_field($query, 'fid'))
+	if($db->num_rows($query) > 0)
 	{
 		$add_remove_subscription = 'remove';
 		$add_remove_subscription_text = $lang->unsubscribe_forum;
@@ -1486,6 +1525,14 @@ if($foruminfo['type'] != "c")
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
+	// Populate Forumsort
+	$forumsort = '';
+	
+	if($threadcount > 0)
+	{
+		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
+	}
+	
 	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));

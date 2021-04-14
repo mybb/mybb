@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.22";
+	public $version = "1.8.27";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1822;
+	public $version_code = 1827;
 
 	/**
 	 * The current working directory.
@@ -559,6 +559,10 @@ class MyBB {
 				break;
 			case "apc_load_error":
 				$message = "APC needs to be configured with PHP to use the APC cache support.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
+			case "apcu_load_error":
+				$message = "APCu needs to be configured with PHP to use the APCu cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			case "eaccelerator_load_error":

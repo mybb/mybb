@@ -34,6 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	$stats_page_separator = '';
 	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
@@ -68,25 +69,18 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				location1, COUNT(DISTINCT ip) AS guestcount
 			FROM
 				".TABLE_PREFIX."sessions
-			WHERE uid = 0 AND time > $timesearch
+			WHERE uid = 0 AND location1 != 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch
 			GROUP BY location1
 		");
 
 		while($location = $db->fetch_array($query))
 		{
-			$guestcount += $location['guestcount'];
-
-			if($location['location1'])
-			{
-				$forum_viewers[$location['location1']] += $location['guestcount'];
-			}
+			$forum_viewers[$location['location1']] += $location['guestcount'];
 		}
 	}
-	else
-	{
-		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
-		$guestcount = $db->fetch_field($query, "guestcount");
-	}
+
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
+	$guestcount = $db->fetch_field($query, "guestcount");
 
 	$query = $db->query("
 		SELECT
@@ -101,7 +95,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
 
-	// Loop through all users.
+	// Loop through all users and spiders.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
@@ -114,7 +108,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
+				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 				{
 					++$anoncount;
 				}
@@ -122,7 +116,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					// If this usergroup can see anonymously logged-in users, mark them.
-					if($user['invisible'] == 1)
+					if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 					{
 						$invisiblemark = '*';
 					}
@@ -140,7 +134,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			if($mybb->settings['wolorder'] == 'username')
 			{
@@ -372,7 +366,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-	
+
 	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
@@ -421,7 +415,7 @@ if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
 }
 
 $excols = 'index';
-$permissioncache['-1'] = '1';
+$permissioncache = null;
 $bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.

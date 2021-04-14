@@ -212,6 +212,10 @@ class DefaultTable
 			foreach($this->_headers as $key => $data)
 			{
 				$table .= "\t\t\t<th";
+				if(!isset($data['extra']['class']))
+				{
+					$data['extra']['class'] = '';
+				}
 				if($key == 0)
 				{
 					$data['extra']['class'] .= " first";
@@ -220,7 +224,7 @@ class DefaultTable
 				{
 					$data['extra']['class'] .= " last";
 				}
-				if(isset($data['extra']['class']))
+				if(!empty($data['extra']['class']))
 				{
 					$table .= " class=\"".$data['extra']['class']."\"";
 				}
