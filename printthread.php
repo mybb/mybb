@@ -133,16 +133,42 @@ else
 	$visible = "AND p.visible='1'";
 }
 
+$postrow_cache = $attachcache = array();
+
 $query = $db->query("
 	SELECT u.*, u.username AS userusername, p.*
 	FROM ".TABLE_PREFIX."posts p
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 	WHERE p.tid='$tid' {$visible}
-	ORDER BY p.dateline
+	ORDER BY p.dateline, p.pid
 	LIMIT {$start}, {$perpage}
 ");
+
 while($postrow = $db->fetch_array($query))
 {
+	$postrow_cache[$postrow['pid']] = $postrow;
+}
+
+$pids = implode("','", array_keys($postrow_cache));
+
+// Get the attachments for all posst.
+if($mybb->settings['enableattachments'] || is_moderator($fid, 'caneditposts'))
+{
+	$queryAttachments = $db->simple_select("attachments", "*", "pid IN ('{$pids}')");
+
+	while($attachment = $db->fetch_array($queryAttachments))
+	{
+		$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+	}
+}
+
+foreach($postrow_cache as $postrow)
+{
+	if(empty($postrow['pid']))
+	{
+		continue;
+	}
+
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
 		"allow_mycode" => $forum['allowmycode'],
@@ -178,18 +204,8 @@ while($postrow = $db->fetch_array($query))
 	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
-	
-	$attachcache = array();
-	if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
-	{
-		// Get the attachments for this post.
-		$queryAttachments = $db->simple_select("attachments", "*", "pid=".$postrow['pid']);
-		while($attachment = $db->fetch_array($queryAttachments))
-		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-		}
-	}
-	if($mybb->settings['enableattachments'] != 0)
+
+	if($mybb->settings['enableattachments'] == 1 && !empty($attachcache[$postrow['pid']]) && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 	{
 		get_post_attachments($postrow['pid'], $postrow);
 	}
