@@ -1429,6 +1429,12 @@ a.button.report_user_button span {
 	display: none;
 }
 
+.poll_votedfor {
+	background: #efefef;
+	border: 1px solid;
+	border-color: #fff #ddd #ddd #fff;
+}
+
 .posticons_label {
 	white-space: nowrap;
 }
