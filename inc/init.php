@@ -209,7 +209,9 @@ $settings['bbname'] = strip_tags($settings['bbname']);
 $settings['orig_bblanguage'] = $settings['bblanguage'];
 
 // Adjust a relative upload path to an absolute one
-if(my_substr($settings['uploadspath'], 0, 1) != "/")
+$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+$char1 = my_substr($settings['uploadspath'], 0, 1);
+if($char1 != '/' && !($iswin && ($char1 == '\\' || preg_match('(^[a-zA-Z]:\\\\)', $settings['uploadspath']))))
 {
 	$settings['uploadspath'] = MYBB_ROOT.$settings['uploadspath'];
 }
