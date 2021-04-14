@@ -60,6 +60,7 @@ $lang->load('language');
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT."inc/AbstractPdoDbDriver.php";
 
 // Prevent any shut down functions from running
 $done_shutdown = 1;
@@ -120,6 +121,26 @@ if(class_exists('PDO'))
 			'short_title' => 'SQLite',
 			'structure_file' => 'sqlite_db_tables.php',
 			'population_file' => 'pgsql_db_inserts.php'
+		);
+	}
+
+	if (in_array('pgsql', $supported_dbs)) {
+		$dboptions['pgsql_pdo'] = array(
+			'class' => 'PostgresPdoDbDriver',
+			'title' => 'PostgreSQL (PDO)',
+			'short_title' => 'PostgreSQL (PDO)',
+			'structure_file' => 'pgsql_db_tables.php',
+			'population_file' => 'pgsql_db_inserts.php'
+		);
+	}
+
+	if (in_array('mysql', $supported_dbs)) {
+		$dboptions['mysql_pdo'] = array(
+			'class' => 'MysqlPdoDbDriver',
+			'title' => 'MySQL (PDO)',
+			'short_title' => 'MySQL (PDO)',
+			'structure_file' => 'mysql_db_tables.php',
+			'population_file' => 'mysql_db_inserts.php'
 		);
 	}
 }
@@ -1423,8 +1444,14 @@ function create_tables()
 		case "pgsql":
 			$db = new DB_PgSQL;
 			break;
+		case "pgsql_pdo":
+			$db = new PostgresPdoDbDriver();
+			break;
 		case "mysqli":
 			$db = new DB_MySQLi;
+			break;
+		case "mysql_pdo":
+			$db = new MysqlPdoDbDriver();
 			break;
 		default:
 			$db = new DB_MySQL;
@@ -2474,7 +2501,7 @@ function install_done()
 /**
  * @param array $config
  *
- * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite
+ * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite|PostgresPdoDbDriver|MysqlPdoDbDriver
  */
 function db_connection($config)
 {
@@ -2487,8 +2514,14 @@ function db_connection($config)
 		case "pgsql":
 			$db = new DB_PgSQL;
 			break;
+		case "pgsql_pdo":
+			$db = new PostgresPdoDbDriver();
+			break;
 		case "mysqli":
 			$db = new DB_MySQLi;
+			break;
+		case "mysql_pdo":
+			$db = new MysqlPdoDbDriver();
 			break;
 		default:
 			$db = new DB_MySQL;

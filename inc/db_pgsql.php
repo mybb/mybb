@@ -454,10 +454,8 @@ class DB_PgSQL implements DB_Base
 			}
 			return null;
 		}
-		else
-		{
-			return pg_fetch_result($query, $row, $field);
-		}
+
+		return pg_fetch_result($query, $row, $field);
 	}
 
 	/**

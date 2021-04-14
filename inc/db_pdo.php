@@ -8,25 +8,28 @@
  *
  */
 
-class dbpdoEngine {
-
+class dbpdoEngine
+{
 	/**
 	 * The database class to store PDO objects
 	 *
 	 * @var PDO
 	 */
-	public $db;
+	private $db;
 
 	/**
 	 * The last query resource that ran
 	 *
 	 * @var PDOStatement
 	 */
-	public $last_query = "";
+	public $last_query;
 
-	public $seek_array = array();
-
-	public $queries = 0;
+	/**
+	 * Array used to seek through result sets. This is used when using the `fetch_field` method with a row specified.
+	 *
+	 * @var array Array keyed by object hashes for {@see PDOStatement} instances.
+	 */
+	private $seek_array = array();
 
 	/**
 	 * Connect to the database.
@@ -35,35 +38,40 @@ class dbpdoEngine {
 	 * @param string $username The database username. (depends on DSN)
 	 * @param string $password The database user's password. (depends on DSN)
 	 * @param array $driver_options The databases driver options (optional)
+	 *
+	 * @throws Exception Thrown when failing to connect to the database.
 	 */
 	function __construct($dsn, $username = "", $password = "", $driver_options = array())
 	{
 		try
 		{
+			$driver_options = array_merge(
+				$driver_options,
+				array(
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+					PDO::ATTR_EMULATE_PREPARES => false,
+				)
+			);
+
 			$this->db = new PDO($dsn, $username, $password, $driver_options);
 		}
 		catch(PDOException $exception)
 		{
-			die('Connection failed: '.$exception->getMessage());
+			throw new Exception('Unable to connect to database server');
 		}
-
-		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
 	/**
 	 * Query the database.
 	 *
 	 * @param string $string The query SQL.
+	 *
 	 * @return PDOStatement The query data.
 	 */
-	function query($string)
+	public function query($string)
 	{
-		++$this->queries;
-
 		$query = $this->db->query($string, PDO::FETCH_BOTH);
 		$this->last_query = $query;
-
-		$query->guid = $this->queries;
 
 		return $query;
 	}
@@ -75,7 +83,7 @@ class dbpdoEngine {
 	 * @param int $resulttype One of PDO's constants: FETCH_ASSOC, FETCH_BOUND, FETCH_CLASS, FETCH_INTO, FETCH_LAZY, FETCH_NAMED, FETCH_NUM, FETCH_OBJ or FETCH_BOTH
 	 * @return array The array of results.
 	 */
-	function fetch_array($query, $resulttype=PDO::FETCH_BOTH)
+	public function fetch_array($query, $resulttype=PDO::FETCH_BOTH)
 	{
 		switch($resulttype)
 		{
@@ -93,9 +101,11 @@ class dbpdoEngine {
 				break;
 		}
 
-		if($this->seek_array[$query->guid])
+		$hash = spl_object_hash($query);
+
+		if(isset($this->seek_array[$hash]))
 		{
-			$array = $query->fetch($resulttype, $this->seek_array[$query->guid]['offset'], $this->seek_array[$query->guid]['row']);
+			$array = $query->fetch($resulttype, $this->seek_array[$hash]['offset'], $this->seek_array[$hash]['row']);
 		}
 		else
 		{
@@ -111,9 +121,11 @@ class dbpdoEngine {
 	 * @param PDOStatement $query The query resource.
 	 * @param int $row The pointer to move the row to.
 	 */
-	function seek($query, $row)
+	public function seek($query, $row)
 	{
-		$this->seek_array[$query->guid] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
+		$hash = spl_object_hash($query);
+
+		$this->seek_array[$hash] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
 	}
 
 	/**
@@ -122,7 +134,7 @@ class dbpdoEngine {
 	 * @param PDOStatement $query The query resource.
 	 * @return int The number of rows in the result.
 	 */
-	function num_rows($query)
+	public function num_rows($query)
 	{
 		if(stripos($query->queryString, 'SELECT') !== false)
 		{
@@ -139,10 +151,10 @@ class dbpdoEngine {
 	/**
 	 * Return the last id number of inserted data.
 	 *
-	 * @param string $name The name of the insert id to check. (Optional)
+	 * @param string|null $name The name of the insert id to check. (Optional)
 	 * @return int The id number.
 	 */
-	function insert_id($name="")
+	public function insert_id($name=null)
 	{
 		return $this->db->lastInsertId($name);
 	}
@@ -153,16 +165,14 @@ class dbpdoEngine {
 	 * @param PDOStatement $query The query resource.
 	 * @return int The error number of the current error.
 	 */
-	function error_number($query)
+	public function error_number($query)
 	{
 		if(!method_exists($query, "errorCode"))
 		{
 			return 0;
 		}
 
-		$errorcode = $query->errorCode();
-
-		return $errorcode;
+		return $query->errorCode();
 	}
 
 	/**
@@ -171,12 +181,13 @@ class dbpdoEngine {
 	 * @param PDOStatement $query The query resource.
 	 * @return array The error string of the current error.
 	 */
-	function error_string($query)
+	public function error_string($query)
 	{
 		if(!method_exists($query, "errorInfo"))
 		{
 			return $this->db->errorInfo();
 		}
+
 		return $query->errorInfo();
 	}
 
@@ -186,7 +197,7 @@ class dbpdoEngine {
 	 * @param PDOStatement $query
 	 * @return int The number of affected rows.
 	 */
-	function affected_rows($query)
+	public function affected_rows($query)
 	{
 		return $query->rowCount();
 	}
@@ -197,7 +208,7 @@ class dbpdoEngine {
 	 * @param PDOStatement $query The query resource.
 	 * @return int The number of fields.
 	 */
-	function num_fields($query)
+	public function num_fields($query)
 	{
 		return $query->columnCount();
 	}
@@ -208,11 +219,11 @@ class dbpdoEngine {
 	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
-	function escape_string($string)
+	public function escape_string($string)
 	{
 		$string = $this->db->quote($string);
 
-		// Remove ' from the begginging of the string and at the end of the string, because we already use it in insert_query
+		// Remove ' from the beginning of the string and at the end of the string, because we already use it in insert_query
 		$string = substr($string, 1);
 		$string = substr($string, 0, -1);
 
@@ -225,9 +236,9 @@ class dbpdoEngine {
 	 * @param string $attribute The attribute to check.
 	 * @return string The value of the attribute.
 	 */
-	function get_attribute($attribute)
+	public function get_attribute($attribute)
 	{
-		$attribute = $this->db->getAttribute(constant("PDO::".$attribute.""));
+		$attribute = $this->db->getAttribute(constant("PDO::{$attribute}"));
 
 		return $attribute;
 	}

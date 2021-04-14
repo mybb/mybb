@@ -141,7 +141,13 @@ class DB_SQLite implements DB_Base
 
 		require_once MYBB_ROOT."inc/db_pdo.php";
 
-		$this->db = new dbpdoEngine("sqlite:{$config['database']}");
+		try {
+			$this->db = new dbpdoEngine("sqlite:{$config['database']}");
+		} catch (Exception $ex) {
+			$this->error("[READ] Unable to open the SQLite database");
+
+			return false;
+		}
 
 		$query_time = get_execution_time();
 
