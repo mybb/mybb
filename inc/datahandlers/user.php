@@ -328,7 +328,7 @@ class UserDataHandler extends DataHandler
 
 		$icq = &$this->data['icq'];
 
-		if($mybb->settings['allowicqfield'] == '' || !is_member($mybb->settings['allowicqfield'], getuser($this->data['uid'])))
+		if(!is_member($mybb->settings['allowicqfield'], get_user($this->data['uid'])))
 		{
 			$icq = '';
 			return true;
