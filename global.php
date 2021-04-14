@@ -647,8 +647,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 			}
 			else
 			{
-				$total_joinrequests = my_number_format($total_joinrequests);
-				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
+				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, my_number_format($total_joinrequests));
 			}
 
 			eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
