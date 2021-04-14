@@ -1176,12 +1176,17 @@ if($mybb->input['action'] == "change")
 					continue;
 				}
 
-				$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+				$realpath = $mybb->input['upsetting'][$field];
 
-				if ($realpath === false) {
-					unset($mybb->input['upsetting'][$field]);
-					continue;
+				// Adjust a relative upload path to an absolute one
+				$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+				$char1 = my_substr($realpath, 0, 1);
+				if($char1 != '/' && !($iswin && ($char1 == '\\' || preg_match('(^[a-zA-Z]:\\\\)', $realpath))))
+				{
+					$realpath = MYBB_ROOT.$realpath;
 				}
+
+				$realpath = realpath($realpath);
 
 				foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
 				{
