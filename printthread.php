@@ -166,10 +166,12 @@ while($postrow = $db->fetch_array($query))
 	$postrow_cache[$postrow['pid']] = $postrow;
 }
 
+$postrow_cache = array_filter($postrow_cache);
+
 $pids = implode("','", array_keys($postrow_cache));
 
 // Get the attachments for all posst.
-if($mybb->settings['enableattachments'] || is_moderator($fid, 'caneditposts'))
+if($mybb->settings['enableattachments'])
 {
 	$queryAttachments = $db->simple_select("attachments", "*", "pid IN ('{$pids}')");
 
@@ -181,11 +183,6 @@ if($mybb->settings['enableattachments'] || is_moderator($fid, 'caneditposts'))
 
 foreach($postrow_cache as $postrow)
 {
-	if(empty($postrow['pid']))
-	{
-		continue;
-	}
-
 	if($postrow['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
