@@ -422,7 +422,7 @@ class DefaultForm
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if((!is_array($selected) || !empty($selected)) && ((string)$value == (string)$selected || (is_array($selected) && in_array((string)$value, $selected))))
+			if((!is_array($selected) || !empty($selected)) && ((is_array($selected) && in_array((string)$value, $selected)) || (!is_array($selected) && (string)$value === (string)$selected)))
 			{
 				$select_add = " selected=\"selected\"";
 			}
@@ -477,7 +477,7 @@ class DefaultForm
 			}
 		}
 
-		if($options['main_option'] && $is_first)
+		if(isset($options['main_option']) && $is_first)
 		{
 			$select_add = '';
 			if($selected == -1)
@@ -594,17 +594,17 @@ class DefaultForm
 		$select .= ">\n";
 
 		$groups_cache = $cache->read('usergroups');
-		
+
 		if(!is_array($selected))
 		{
 			$selected = array($selected);
 		}
-			
+
 		foreach($groups_cache as $group)
 		{
 			$selected_add = "";
-			
-			
+
+
 			if(in_array($group['gid'], $selected))
 			{
 				$selected_add = " selected=\"selected\"";
@@ -617,7 +617,7 @@ class DefaultForm
 
 		return $select;
 	}
-	
+
 	/**
 	 * Generate a prefix selection box.
 	 *
@@ -648,17 +648,17 @@ class DefaultForm
 		}
 		$select .= ">\n";
 		$prefix_cache = $cache->read('threadprefixes');
-		
+
 		if(!is_array($selected))
 		{
 			$selected = array($selected);
 		}
-			
+
 		foreach($prefix_cache as $prefix)
 		{
 			$selected_add = "";
-			
-			
+
+
 			if(in_array($prefix['pid'], $selected))
 			{
 				$selected_add = " selected=\"selected\"";

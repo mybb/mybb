@@ -118,6 +118,13 @@ class errorHandler {
 	public $has_errors = false;
 
 	/**
+	 * Display errors regardless of related settings (useful during initialization stage)
+	 *
+	 * @var boolean
+	 */
+	public $force_display_errors = false;
+
+	/**
 	 * Initializes the error handler
 	 *
 	 */
@@ -165,7 +172,7 @@ class errorHandler {
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
 		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
-			$mybb->settings['errortypemedium'] = "both";
+			$mybb->settings['errortypemedium'] = "none";
 		}
 
 		if(defined("IN_TASK"))
@@ -416,12 +423,12 @@ class errorHandler {
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
-
+		
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -438,7 +445,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
@@ -532,6 +539,56 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
+		$contact_site_owner = '';
+		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
+		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+		{
+			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+			{
+				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+			}
+
+			$contact_site_owner = <<<HTML
+ If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.
+HTML;
+		}
+
+		$additional_name = '';
+		$docs_link = 'https://docs.mybb.com';
+		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
+		$support_link = 'https://community.mybb.com/';
+
+		if(isset($lang->settings['docs_link']))
+		{
+			$docs_link = $lang->settings['docs_link'];
+		}
+
+		if(isset($lang->settings['common_issues_link']))
+		{
+			$common_issues_link = $lang->settings['common_issues_link'];
+		}
+
+		if(isset($lang->settings['support_link']))
+		{
+			$support_link = $lang->settings['support_link'];
+		}
+
+
+		if(isset($lang->settings['additional_name']))
+		{
+			$additional_name = $lang->settings['additional_name'];
+		}
+
+		$contact = <<<HTML
+<p>
+	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
+</p>
+
+<p>
+	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
+</p>
+HTML;
+
 		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -572,7 +629,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
+				<p id="footer">{$contact}</p>
 			</div>
 		</div>
 	</div>
@@ -597,11 +654,12 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
+			<p id="mybb_error_footer">{$contact}</p>
 		</div>
 	</div>
 EOF;
 		}
+
 		exit(1);
 	}
 

@@ -44,13 +44,13 @@ if($mybb->get_input('action') == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
 	$invis_count = $db->fetch_field($query, "users");
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	if(!$mybb->settings['wolusersperpage'] || (int)$mybb->settings['wolusersperpage'] < 1)
 	{
-		$mybb->settings['threadsperpage'] = 20;
+		$mybb->settings['wolusersperpage'] = 20;
 	}
 
 	// Add pagination
-	$perpage = $mybb->settings['threadsperpage'];
+	$perpage = $mybb->settings['wolusersperpage'];
 
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
@@ -75,7 +75,7 @@ if($mybb->get_input('action') == "today")
 	while($online = $db->fetch_array($query))
 	{
 		$invisiblemark = '';
-		if($online['invisible'] == 1)
+		if($online['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 		{
 			$invisiblemark = "*";
 		}

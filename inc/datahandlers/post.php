@@ -591,8 +591,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit_start" => 0,
 				"limit" => 1,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
@@ -782,8 +781,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit" => 1,
 				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
@@ -1004,52 +1002,62 @@ class PostDataHandler extends DataHandler
 			// Only combine if they are both invisible (mod queue'd forum) or both visible
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
-				$this->pid = $double_post['pid'];
+				$_message = $post['message'];
 
 				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
-				$update_query = array(
-					"message" => $db->escape_string($double_post['message'])
-				);
-				$update_query['edituid'] = (int)$post['uid'];
-				$update_query['edittime'] = TIME_NOW;
-				$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
-
-				if($draft_check)
+				
+				if ($this->validate_post())
 				{
-					$db->delete_query("posts", "pid='".$post['pid']."'");
-				}
-
-				if($post['posthash'])
-				{
-					// Assign any uploaded attachments with the specific posthash to the merged post.
-					$post['posthash'] = $db->escape_string($post['posthash']);
-
-					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-					$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-					if($attachmentcount > 0)
-					{
-						// Update forum count
-						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-					}
-
-					$attachmentassign = array(
-						"pid" => $double_post['pid'],
-						"posthash" => ''
+					$this->pid = $double_post['pid'];
+					
+					$update_query = array(
+						"message" => $db->escape_string($double_post['message'])
 					);
-					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					$update_query['edituid'] = (int)$post['uid'];
+					$update_query['edittime'] = TIME_NOW;
+					$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+					
+					if($draft_check)
+					{
+						$db->delete_query("posts", "pid='".$post['pid']."'");
+					}
+					
+					if($post['posthash'])
+					{
+						// Assign any uploaded attachments with the specific posthash to the merged post.
+						$post['posthash'] = $db->escape_string($post['posthash']);
+						
+						$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+						$attachmentcount = $db->fetch_field($query, "attachmentcount");
+						
+						if($attachmentcount > 0)
+						{
+							// Update forum count
+							update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+						}
+						
+						$attachmentassign = array(
+							"pid" => $double_post['pid'],
+							"posthash" => ''
+						);
+						$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					}
+					
+					// Return the post's pid and whether or not it is visible.
+					$this->return_values = array(
+						"pid" => $double_post['pid'],
+						"visible" => $visible,
+						"merge" => true
+					);
+					
+					$plugins->run_hooks("datahandler_post_insert_merge", $this);
+					
+					return $this->return_values;
 				}
-
-				// Return the post's pid and whether or not it is visible.
-				$this->return_values = array(
-					"pid" => $double_post['pid'],
-					"visible" => $visible,
-					"merge" => true
-				);
-
-				$plugins->run_hooks("datahandler_post_insert_merge", $this);
-
-				return $this->return_values;
+				else
+				{
+					$post['message'] = $_message;
+				}
 			}
 		}
 
@@ -1246,8 +1254,7 @@ class PostDataHandler extends DataHandler
 				{
 					$emailsubject = $lang->sprintf($emailsubject, $subject);
 
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid']);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
@@ -1261,10 +1268,9 @@ class PostDataHandler extends DataHandler
 				}
 				elseif($subscribedmember['notification'] == 2)
 				{
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 					$pm = array(
 						'subject' => array('pmsubject_subscription', $subject),
-						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code),
+						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid']),
 						'touid' => $subscribedmember['uid'],
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
@@ -1426,7 +1432,8 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Fetch the forum this thread is being made in
-		$forum = get_forum($thread['fid']);
+		$query = $db->simple_select("forums", "*", "fid='{$thread['fid']}'");
+		$forum = $db->fetch_array($query);
 
 		// This thread is being saved as a draft.
 		if($thread['savedraft'])
@@ -1639,11 +1646,6 @@ class PostDataHandler extends DataHandler
 					}
 				}
 
-				if(!isset($forum['lastpost']))
-				{
-					$forum['lastpost'] = 0;
-				}
-
 				$done_users = array();
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
@@ -1738,8 +1740,7 @@ class PostDataHandler extends DataHandler
 					}
 					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
 
-					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid']);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
