@@ -61,6 +61,7 @@ if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 's
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 switch($config['database']['type'])
@@ -71,8 +72,14 @@ switch($config['database']['type'])
 	case "pgsql":
 		$db = new DB_PgSQL;
 		break;
+	case "pgsql_pdo":
+		$db = new PostgresPdoDbDriver();
+		break;
 	case "mysqli":
 		$db = new DB_MySQLi;
+		break;
+	case "mysql_pdo":
+		$db = new MysqlPdoDbDriver();
 		break;
 	default:
 		$db = new DB_MySQL;
