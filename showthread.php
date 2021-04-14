@@ -734,15 +734,30 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if($mybb->settings['delayedthreadviews'] == 1)
+	if(
+		(
+			$mybb->user['uid'] == 0 &&
+			(
+				($session->is_spider == true && $mybb->settings['threadviews_countspiders'] == 1) ||
+				($session->is_spider == false && $mybb->settings['threadviews_countguests'] == 1)
+			)
+		) ||
+		(
+			$mybb->user['uid'] != 0 &&
+			($mybb->settings['threadviews_countthreadauthor'] == 1 || $mybb->user['uid'] != $thread['uid'])
+		)
+	)
 	{
-		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+		if($mybb->settings['delayedthreadviews'] == 1)
+		{
+			$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+		}
+		else
+		{
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+		}
+		++$thread['views'];
 	}
-	else
-	{
-		$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
-	}
-	++$thread['views'];
 
 	// Work out the thread rating for this thread.
 	$rating = $ratethread = '';
