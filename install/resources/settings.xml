@@ -1539,7 +1539,7 @@ min=1]]></optionscode>
 		</setting>
 		<setting name="attachimagestock">
 			<title>Stock Image Path</title>
-			<description><![CDATA[Select an stock image to use for image attachments when users have no permission to download.]]></description>
+			<description><![CDATA[Select a default image to use for image attachments when users have no permission to download.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/attachment_stock.svg]]></settingvalue>
