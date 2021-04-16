@@ -561,7 +561,7 @@ if($mybb->input['action'] == "thread")
 			// Mark the option the user voted for.
 			if(!empty($votedfor[$number]))
 			{
-				$optionbg = "trow2";
+				$optionbg = "trow2 poll_votedfor";
 				$votestar = "*";
 			}
 			else
@@ -734,15 +734,30 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if($mybb->settings['delayedthreadviews'] == 1)
+	if(
+		(
+			$mybb->user['uid'] == 0 &&
+			(
+				($session->is_spider == true && $mybb->settings['threadviews_countspiders'] == 1) ||
+				($session->is_spider == false && $mybb->settings['threadviews_countguests'] == 1)
+			)
+		) ||
+		(
+			$mybb->user['uid'] != 0 &&
+			($mybb->settings['threadviews_countthreadauthor'] == 1 || $mybb->user['uid'] != $thread['uid'])
+		)
+	)
 	{
-		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+		if($mybb->settings['delayedthreadviews'] == 1)
+		{
+			$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+		}
+		else
+		{
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+		}
+		++$thread['views'];
 	}
-	else
-	{
-		$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
-	}
-	++$thread['views'];
 
 	// Work out the thread rating for this thread.
 	$rating = $ratethread = '';
@@ -822,6 +837,7 @@ if($mybb->input['action'] == "thread")
 	$threadexbox = '';
 	if($mybb->get_input('mode') == 'threaded')
 	{
+		$thread_toggle = 'linear';
 		$isfirst = 1;
 
 		// Are we linked to a specific pid?
@@ -899,6 +915,7 @@ if($mybb->input['action'] == "thread")
 	}
 	else // Linear display
 	{
+		$thread_toggle = 'threaded';
 		$threadexbox = '';
 		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
@@ -1102,6 +1119,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$plugins->run_hooks("showthread_linear");
 	}
+	$lang->thread_toggle = $lang->{$thread_toggle};
 
 	// Show the similar threads table if wanted.
 	$similarthreads = '';

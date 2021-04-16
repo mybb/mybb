@@ -333,6 +333,10 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				else
 				{
 					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+					if (file_exists(MYBB_ROOT.$page_stylesheet))
+					{
+						$stylesheet_url .= "?t=".filemtime(MYBB_ROOT.$page_stylesheet);
+					}
 				}
 
 				if($mybb->settings['minifycss'])
@@ -647,8 +651,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 			}
 			else
 			{
-				$total_joinrequests = my_number_format($total_joinrequests);
-				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
+				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, my_number_format($total_joinrequests));
 			}
 
 			eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');

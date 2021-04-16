@@ -174,6 +174,29 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newthread");
 
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		if(isset($ret['success']))
+		{
+			$attachment = array('aid'=>'{1}', 'icon'=>'{2}', 'filename'=>'{3}', 'size'=>'{4}');
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+			}
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
+			$ret['template'] = $attemplate;
+
+			$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+			$usage = $db->fetch_array($query);
+			$ret['usage'] = get_friendly_size($usage['ausage']);
+		}
+		
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode($ret);
+		exit();
+	}
+
 	if(!empty($ret['errors']))
 	{
 		$errors = $ret['errors'];
@@ -203,8 +226,11 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => true, "usage" => get_friendly_size($usage['ausage'])));
 		exit();
 	}
 }
@@ -1027,24 +1053,24 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == DEFAULT_CAPTCHA)
+ 			if($post_captcha->type == captcha::DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3)))
+			elseif(in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE)))
+			elseif(in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(NOCAPTCHA_RECAPTCHA, RECAPTCHA_INVISIBLE, RECAPTCHA_V3))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(HCAPTCHA, HCAPTCHA_INVISIBLE))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
 		}

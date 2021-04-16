@@ -1388,7 +1388,7 @@ class DB_MySQLi implements DB_Base
 			$not_null = '';
 		}
 
-		if($new_default_value !== null)
+		if($new_default_value !== false)
 		{
 			$default = "DEFAULT ".$new_default_value;
 		}
@@ -1397,7 +1397,7 @@ class DB_MySQLi implements DB_Base
 			$default = '';
 		}
 
-		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null}");
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null} {$default}");
 	}
 
 	/**
