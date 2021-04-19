@@ -1045,7 +1045,19 @@ if($mybb->input['action'] == "edit")
 	$tabs = $plugins->run_hooks("admin_user_groups_edit_graph_tabs", $tabs);
 	$page->output_tab_control($tabs);
 
-	echo "<div id=\"tab_general\">";
+	echo "<div id=\"tab_general\">
+	<script type=\"text/javascript\">
+		$(function(){
+			$('input[name=\"moderate\"]').parents(\".group_settings_bit\").addClass(\"joinable_dependent\");
+			$('input[name=\"invite\"]').parents(\".group_settings_bit\").addClass(\"joinable_dependent\");
+			if($('input[name=\"joinable\"]').prop(\"checked\") == false){
+				$(\".joinable_dependent\").hide();
+			}
+			$('input[name=\"joinable\"]').on('change', function() {
+				$(\".joinable_dependent\").slideToggle();
+			})
+		});
+	</script>";
 	$form_container = new FormContainer($lang->general);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
