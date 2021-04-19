@@ -50,11 +50,6 @@
 	}, autoUpload = function (file, postEmbed) {
 		let form = new FormData(), endPoint = '';
 	
-		// Reset upload to local if key is not provided
-		if (!postEmbed.clientKey.trim()) {
-			postEmbed.host = 'local';
-		}
-	
 		form.append('image', file);
 		let settings = {
 			method: 'post',
@@ -87,7 +82,7 @@
 					}
 				} else if (result.errors) {
 					// xmlhttp_error(); jGrowl it?
-				} else {				
+				} else {
 					throw 'Upload error';
 				}
 			});
@@ -95,7 +90,21 @@
 	}, dragDropHandler = {
 		allowedTypes: ['image/jpeg', 'image/png'],
 		isAllowed: function (file) {
-			return true;
+			if(!postEmbed.enabled || dragDropHandler.allowedTypes.indexOf(file.type) < 0) {
+				return false;
+			}
+
+			// Reset upload to local if key is not provided
+			if (!postEmbed.clientKey.trim()) {
+				postEmbed.host = 'local';
+			}
+			
+			const supportedAPIs = ['imgur', 'imgbb'];
+			
+			if((supportedAPIs.indexOf(postEmbed.host) > -1) || (postEmbed.host === 'local' && use_xmlhttprequest == "1")) {
+				return true;
+			}
+			return false;
 		},
 		handlePaste: true,
 		handleFile: function (file, createPlaceholder) {
@@ -106,8 +115,7 @@
 				placeholder.cancel();
 			});
 		}
-	},
-	editorOpts = {
+	}, editorOpts = {
 		plugins: "undo, dragdrop",
 		format: "bbcode",
 		bbcodeTrim: false,
