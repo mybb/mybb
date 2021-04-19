@@ -45,7 +45,7 @@ function upgrade51_dbchanges()
 
 	// Change default values for these settings for the guest group only
 	$db->update_query('usergroups', array(
-		'editposts' => 0,
+		'caneditposts' => 0,
 		'candeleteposts' => 0,
 		'candeletethreads' => 0,
 		'caneditattachments' => 0,
