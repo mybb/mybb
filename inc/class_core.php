@@ -607,7 +607,41 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxposts", "edittimelimit", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
+$groupzerogreater = array(
+	'maxposts',
+	'attachquota',
+	'edittimelimit',
+	'maxreputationsperthread',
+	'maxreputationsperuser',
+	'maxreputationsday',
+	'maxwarningsday',
+	'pmquota',
+	'maxpmrecipients',
+	'maxemails',
+);
+$groupzerolesser = array(
+	'canusesigxposts',
+	'emailfloodtime',
+);
+$groupxgreater = array(
+	'reputationpower' => 0,
+);
+$grouppermbyswitch = array(
+	'maxposts' => array('canpostthreads', 'canpostreplys'),
+	'attachquota' => 'canpostattachments',
+	'edittimelimit' => 'caneditposts',
+	'canusesigxposts' => 'canusesig',
+	'reputationpower' => 'cangivereputations',
+	'maxreputationsperthread' => 'cangivereputations',
+	'maxreputationsperuser' => 'cangivereputations',
+	'maxreputationsday' => 'cangivereputations',
+	'maxwarningsday' => 'canwarnusers',
+	'pmquota' => 'canusepms',
+	'maxpmrecipients' => 'canusepms',
+	'maxemails' => 'cansendemail',
+	'emailfloodtime' => 'cansendemail',
+);
+
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.
