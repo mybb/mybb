@@ -47,6 +47,65 @@
 				'html': '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			}
 		}
+	}, autoUpload = function (file, postEmbed) {
+		let form = new FormData(), endPoint = '';
+	
+		// Reset upload to local if key is not provided
+		if (!postEmbed.clientKey.trim()) {
+			postEmbed.host = 'local';
+		}
+	
+		form.append('image', file);
+		let settings = {
+			method: 'post',
+			body: form
+		};
+	
+		if (postEmbed.host == "imgur") {
+			endPoint = 'https://api.imgur.com/3/image';
+			settings['headers'] = new Headers({
+				'authorization': 'Client-ID ' + postEmbed.clientKey
+			});
+		} else if (postEmbed.host == "imgbb") {
+			endPoint = 'https://api.imgbb.com/1/upload?key=' + postEmbed.clientKey;
+		} else { // Fallback to local
+			endPoint = 'xmlhttp.php?action=upload_local&my_post_key=' + my_post_key;
+		}
+	
+		if (endPoint.length > 0) {
+			return fetch(endPoint, settings).then(function (response) {
+				return response.json();
+			}).then(function (result) {
+				if (result.success) {
+					switch (postEmbed.host) {
+						case 'imgur':
+							return result.data.link;
+						case 'imgbb':
+							return result.data.url;
+						default:
+							return result.data.url;
+					}
+				} else if (result.errors) {
+					// xmlhttp_error(); jGrowl it?
+				} else {				
+					throw 'Upload error';
+				}
+			});
+		}
+	}, dragDropHandler = {
+		allowedTypes: ['image/jpeg', 'image/png'],
+		isAllowed: function (file) {
+			return true;
+		},
+		handlePaste: true,
+		handleFile: function (file, createPlaceholder) {
+			var placeholder = createPlaceholder();
+			autoUpload(file, postEmbed).then(function (url) {
+				placeholder.insert('<img src=\'' + url + '\' />');
+			}).catch(function () {
+				placeholder.cancel();
+			});
+		}
 	},
 	editorOpts = {
 		plugins: "undo, dragdrop",
@@ -55,6 +114,7 @@
 		locale: "mybblang",
 		width: "100%",
 		enablePasteFiltering: true,
+		dragdrop: dragDropHandler,
 		autoUpdate: true,
 		emoticonsCompat: true
 	};
