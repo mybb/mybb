@@ -252,7 +252,7 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 
 		if (empty($ext) && in_array($filetype, $allowed)) // Its a blob
 		{
-			$ext = array_flip($allowed)[$filetype];
+			$ext = array_search($filetype, $allowed);
 			$filename .= ".{$ext}";
 		}
 
