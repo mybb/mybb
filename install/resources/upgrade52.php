@@ -42,6 +42,17 @@ function upgrade51_dbchanges()
 			$db->add_column("attachtypes", "forcedownload", "tinyint(1) NOT NULL default '0' AFTER enabled");
 			break;
 	}
+
+	// Change default values for these settings for the guest group only
+	$db->update_query('usergroups', array(
+		'caneditposts' => 0,
+		'candeleteposts' => 0,
+		'candeletethreads' => 0,
+		'caneditattachments' => 0,
+		'canviewdeletionnotice' => 0
+	), "gid = 1");
+
+	$cache->update_usergroups();
   
 	$added_tasks = sync_tasks();
 
