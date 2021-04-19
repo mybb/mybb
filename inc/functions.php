@@ -3443,7 +3443,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_php" => "PHP",
 			"editor_maximize" => "Maximize"
 		);
-		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
+		$editor_language = "{\n";
 
 		$editor_lang_strings = $plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
 
@@ -3454,7 +3454,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			$i++;
 			$js_lang_string = str_replace("\"", "\\\"", $key);
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
-			$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
+			$editor_language .= "\t\t\"{$js_lang_string}\": \"{$string}\"";
 
 			if($i < $editor_languages_count)
 			{
@@ -3464,7 +3464,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			$editor_language .= "\n";
 		}
 
-		$editor_language .= "}})(jQuery);";
+		$editor_language .= "\t}";
 
 		if(defined("IN_ADMINCP"))
 		{
@@ -3592,11 +3592,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
 				$code = "code,php,";
-			}
-
-			if($mybb->user['sourceeditor'] == 1)
-			{
-				$sourcemode = "MyBBEditor.sourceMode(true);";
 			}
 
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
