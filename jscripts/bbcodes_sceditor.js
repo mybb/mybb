@@ -64,7 +64,7 @@
 		} else if (postEmbed.host == "imgbb") {
 			endPoint = 'https://api.imgbb.com/1/upload?key=' + postEmbed.clientKey;
 		} else { // Fallback to local
-			endPoint = 'xmlhttp.php?action=upload_local&my_post_key=' + my_post_key;
+			endPoint = 'xmlhttp.php?action=upload_postembed&my_post_key=' + my_post_key;
 		}
 	
 		if (endPoint.length > 0) {
@@ -82,6 +82,7 @@
 					}
 				} else if (result.errors) {
 					// xmlhttp_error(); jGrowl it?
+					console.log(result.errors);
 				} else {
 					throw 'Upload error';
 				}

@@ -218,6 +218,100 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 	xmlhttp_error($lang->error_boardclosed);
 }
 
+if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "post")
+{	
+	if (!verify_post_check($mybb->get_input('my_post_key'), true))
+	{
+		xmlhttp_error($lang->invalid_post_code);
+	}
+
+	if (isset($_FILES["image"]))
+	{
+		require_once MYBB_ROOT . "inc/functions_upload.php";
+
+		// Check if file was uploaded without errors
+		if ($_FILES["image"]["error"] !== 0)
+		{
+			xmlhttp_error(check_parse_php_upload_err($_FILES["image"]));
+		}
+
+		$allowed = array("jpg" => "image/jpeg", "jpeg" => "image/jpeg", "png" => "image/png");
+
+		$filename = $_FILES["image"]["name"];
+		$filetype = $_FILES["image"]["type"];
+		$filesize = $_FILES["image"]["size"];
+
+		// Verify MIME type of the file
+		if (!in_array($filetype, $allowed))
+		{
+			xmlhttp_error("Invalid MIME type.");
+		}
+
+		// Verify file extension
+		$ext = my_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+		if (empty($ext) && in_array($filetype, $allowed)) // Its a blob
+		{
+			$ext = array_flip($allowed)[$filetype];
+			$filename .= ".{$ext}";
+		}
+
+		if (!array_key_exists($ext, $allowed))
+		{
+			xmlhttp_error("Invalid format.");
+		}
+
+		$php_max_upload_size = get_php_upload_limit();
+		if ($php_max_upload_size > 0 && $filesize > $php_max_upload_size)
+		{
+			xmlhttp_error("Data is larger than the allowed size limit.");
+		}
+		
+		$post_embeds = 'post_embeds';
+		$destination = $mybb->settings['uploadspath'];
+		// Check if the post_embeds directory exists, if not, create it
+		if(!@is_dir($destination."/".$post_embeds))
+		{
+			if($mybb->safemode == false)
+			{
+				@mkdir($destination."/".$post_embeds);
+				if(@is_dir($destination."/".$post_embeds)) // If not, upload ditectory is destination
+				{
+					$destination .= "/".$post_embeds;
+					$index = @fopen($destination."/index.html", 'w');
+					@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
+					@fclose($index);
+				}
+			}
+		}
+		else
+		{
+			$destination .= "/".$post_embeds;
+		}
+	
+		$filename = $mybb->user['uid'] . '_' . TIME_NOW . '_' . $filename; // Prepend some basic data for future reference
+
+		// Check whether file exists before uploading it
+		if (!file_exists($destination . "/" . $filename))
+		{
+			$uploaded = upload_file($_FILES["image"], $destination, $filename);
+
+			if (isset($uploaded['error'])) {
+				xmlhttp_error($uploaded['error']);
+			}
+
+			$result['data']['url'] = $mybb->settings['bburl'] . "/" . $destination . "/" . $filename;
+			$result['success'] = 'true';
+			die(json_encode($result));
+		}
+		else
+		{
+			xmlhttp_error($filename . " already exists.");
+		}
+	}
+	xmlhttp_error("Invalid data.");
+}
+
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
 {
