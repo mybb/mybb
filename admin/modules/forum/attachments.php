@@ -232,7 +232,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 		foreach($mybb->input['orphaned_files'] as $file)
 		{
 			$file = str_replace('..', '', $file);
-			$path = MYBB_ROOT.$mybb->settings['uploadspath']."/".$file;
+			$path = $mybb->settings['uploadspath']."/".$file;
 			$real_path = realpath($path);
 
 			if($real_path === false || strpos(str_replace('\\', '/', $real_path), str_replace('\\', '/', realpath(MYBB_ROOT)).'/') !== 0 || $real_path == realpath(MYBB_ROOT.'install/lock'))
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 				continue;
 			}
 
-			if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".$file))
+			if(!@unlink($mybb->settings['uploadspath']."/".$file))
 			{
 				$error_count++;
 			}
@@ -375,7 +375,7 @@ if($mybb->input['action'] == "orphans")
 		{
 			foreach($bad_attachments as $file)
 			{
-				$file_path = MYBB_ROOT.$mybb->settings['uploadspath']."/".$file;
+				$file_path = $mybb->settings['uploadspath']."/".$file;
 
 				if(file_exists($file_path))
 				{
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "orphans")
 		while($attachment = $db->fetch_array($query))
 		{
 			// Check if the attachment exists in the file system
-			if(!file_exists(MYBB_ROOT.$mybb->settings['uploadspath']."/{$attachment['attachname']}"))
+			if(!file_exists($mybb->settings['uploadspath']."/{$attachment['attachname']}"))
 			{
 				$missing_attachment_files[$attachment['aid']] = $attachment['aid'];
 			}
@@ -522,7 +522,7 @@ if($mybb->input['action'] == "orphans")
 		{
 			global $db, $mybb, $bad_attachments, $attachments_to_check;
 
-			$real_dir = MYBB_ROOT.$mybb->settings['uploadspath'];
+			$real_dir = $mybb->settings['uploadspath'];
 			$false_dir = "";
 			if($dir)
 			{
@@ -968,7 +968,7 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 	// Check if the attachment exists in the file system
 	$checked = false;
 	$title = $cell_class = '';
-	if(!file_exists(MYBB_ROOT.$mybb->settings['uploadspath']."/{$attachment['attachname']}"))
+	if(!file_exists($mybb->settings['uploadspath']."/{$attachment['attachname']}"))
 	{
 		$cell_class = "bad_attachment";
 		$title = $lang->error_not_found;
