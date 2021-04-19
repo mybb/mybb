@@ -490,19 +490,19 @@ elseif($mybb->input['action'] == "help")
 						}
 					}
 					$expdisplay = '';
-					$sname = "sid_".$section['sid']."_c";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;")
+					$sname = "sid_".$section['sid']."_e";
+					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: none;")
 					{
 						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 						$expthead = " thead_collapsed";
-						$expaltext = "[+]";
+						$expaltext = $lang->expcol_expand;
 					}
 					else
 					{
 						$expcolimage = "collapse.png";
 						$expthead = "";
-						$expaltext = "[-]";
+						$expaltext = $lang->expcol_collapse;
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
