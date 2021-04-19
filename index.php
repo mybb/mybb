@@ -380,7 +380,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		$collapsed['boardstats_e'] = '';
 	}
 
-	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("boardstats", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 

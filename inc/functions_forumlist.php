@@ -429,19 +429,19 @@ function build_forumbits($pid=0, $depth=1)
 
 			// Check if this category is either expanded or collapsed and hide it as necessary.
 			$expdisplay = '';
-			$collapsed_name = "cat_{$forum['fid']}_c";
-			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			$collapsed_name = "cat_{$forum['fid']}_e";
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: none;")
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
 				$expthead = " thead_collapsed";
-				$expaltext = "[+]";
+				$expaltext = $lang->expcol_expand;
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
 				$expthead = "";
-				$expaltext = "[-]";
+				$expaltext = $lang->expcol_collapse;
 			}
 
 			// Swap over the alternate backgrounds

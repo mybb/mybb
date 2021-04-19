@@ -1045,7 +1045,19 @@ if($mybb->input['action'] == "edit")
 	$tabs = $plugins->run_hooks("admin_user_groups_edit_graph_tabs", $tabs);
 	$page->output_tab_control($tabs);
 
-	echo "<div id=\"tab_general\">";
+	echo "<div id=\"tab_general\">
+	<script type=\"text/javascript\">
+		$(function(){
+			$('input[name=\"moderate\"]').parents(\".group_settings_bit\").addClass(\"joinable_dependent\");
+			$('input[name=\"invite\"]').parents(\".group_settings_bit\").addClass(\"joinable_dependent\");
+			if($('input[name=\"joinable\"]').prop(\"checked\") == false){
+				$(\".joinable_dependent\").hide();
+			}
+			$('input[name=\"joinable\"]').on('change', function() {
+				$(\".joinable_dependent\").slideToggle();
+			})
+		});
+	</script>";
 	$form_container = new FormContainer($lang->general);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -1134,15 +1146,19 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");
 
-	$editing_options = array(
-		$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),
-		$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
-		$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
-		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
-		$form->generate_check_box("canviewdeletionnotice", 1, $lang->can_view_deletion_notices, array("checked" => $mybb->input['canviewdeletionnotice'])),
-		"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50', 'min' => 0))
-	);
-	$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
+	// Remove these options if the group being editied is Guest (GID=1)
+	if($usergroup['gid'] != 1) 
+	{
+		$editing_options = array(
+			$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),
+			$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
+			$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
+			$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
+			$form->generate_check_box("canviewdeletionnotice", 1, $lang->can_view_deletion_notices, array("checked" => $mybb->input['canviewdeletionnotice'])),
+			"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50', 'min' => 0))
+		);
+		$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
+	}
 
 	$form_container->end();
 	echo "</div>";

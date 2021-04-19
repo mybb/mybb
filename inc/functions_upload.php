@@ -61,14 +61,7 @@ function remove_attachment($pid, $posthash, $aid)
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
-	if(defined('IN_ADMINCP'))
-	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-	    $uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
@@ -119,14 +112,7 @@ function remove_attachments($pid, $posthash="")
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 
-	if(defined('IN_ADMINCP'))
-	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
-	}
-	else
-	{
-	    $uploadpath = $mybb->settings['uploadspath'];
-	}
+	$uploadpath = $mybb->settings['uploadspath'];
 
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
@@ -616,12 +602,12 @@ function upload_attachment($attachment, $update_attachment=false)
 		if(function_exists("finfo_open"))
 		{
 			$file_info = finfo_open(FILEINFO_MIME);
-			list($mime, ) = explode(';', finfo_file($file_info, MYBB_ROOT.$file_path), 1);
+			list($mime, ) = explode(';', finfo_file($file_info, $file_path), 1);
 			finfo_close($file_info);
 		}
 		else if(function_exists("mime_content_type"))
 		{
-			$mime = mime_content_type(MYBB_ROOT.$file_path);
+			$mime = mime_content_type($file_path);
 		}
 
 		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))

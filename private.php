@@ -1249,7 +1249,7 @@ if($mybb->input['action'] == "read")
 			$collapsed['quickreply_e'] = '';
 		}
 
-		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
+		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
 
