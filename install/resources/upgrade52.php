@@ -44,7 +44,15 @@ function upgrade51_dbchanges()
 	}
 
 	// Change default values for these settings for the guest group only
-	$db->update_colum("UPDATE ".TABLE_PREFIX."usergroups SET can editposts = 0, candeleteposts = 0, candeletethreads = 0, caneditattachments = 0, canviewdeletionnotice = 0 WHERE gid = 1 ");
+	$db->update_query('usergroups', array(
+		'editposts' => 0,
+		'candeleteposts' => 0,
+		'candeletethreads' => 0,
+		'caneditattachments' => 0,
+		'canviewdeletionnotice' => 0
+	), "gid = 1");
+
+	$cache->update_usergroups();
   
 	$added_tasks = sync_tasks();
 
