@@ -14166,10 +14166,10 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/dragdrop.js?ver=1827"></script>
 <script type="text/javascript">
 	let postEmbed = {
-			enable = {$mybb->settings['postembed_enable']},
-			host = {$mybb->settings['postembed_host']},
-			clientKey = {$mybb->settings['postembed_key']}
-		}
+		enable = {$mybb->settings['postembed']},
+		host = {$mybb->settings['postembedhost']},
+		clientKey = {$mybb->settings['postembedkey']}
+	};
 </script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_ehandler.js?ver=1827"></script>
 <script type="text/javascript">
