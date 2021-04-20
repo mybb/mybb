@@ -830,7 +830,7 @@ if(!$mybb->input['action'])
 		$table->output($lang->existing_db_backups);
 	}
 
-	$writable_directories = array(
+	$writables = array(
 		'config_file' => 'inc/config.php',
 		'settings_file' => 'inc/settings.php',
 		'file_upload_dir' => ltrim($mybb->settings['uploadspath'], MYBB_ROOT . '.'),
@@ -846,7 +846,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->file);
 	$table->construct_header($lang->location, array("colspan" => 2, 'width' => 250));
 
-	foreach ($writable_directories as $langvar => $path)
+	foreach ($writables as $langvar => $path)
 	{
 		$table->construct_cell("<strong>{$lang->{$langvar}}</strong>");
 		$table->construct_cell('./' . trim($path, '/'));
