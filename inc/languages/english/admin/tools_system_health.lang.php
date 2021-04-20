@@ -50,6 +50,7 @@ $l['not_writable'] = "Not Writable";
 $l['please_chmod_777'] = "Please CHMOD to 777.";
 $l['chmod_info'] = "Please change the CHMOD settings to the ones specified with the file below. For more information on CHMODing, see the";
 $l['file'] = "File";
+$l['checked_path'] = "Scrutinized Files / Directories";
 $l['location'] = "Location";
 $l['status_chmod'] = "CHMOD Status";
 $l['settings_file'] = "Settings File";

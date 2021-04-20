@@ -843,7 +843,7 @@ if(!$mybb->input['action'])
 
 	$errors = 0; // Reset errors
 	$table = new Table;
-	$table->construct_header($lang->file);
+	$table->construct_header($lang->checked_path);
 	$table->construct_header($lang->location);
 	$table->construct_header($lang->status_chmod, array('width' => 250));
 
