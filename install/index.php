@@ -1222,9 +1222,9 @@ function requirements_check()
 	  {
 		  $postembedsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		  @fclose($postembedswritable);
-		  @my_chmod(MYBB_ROOT.'uploads/avatars', '0777');
-		  @my_chmod(MYBB_ROOT.'uploads/avatars/test.write', '0777');
-		  @unlink(MYBB_ROOT.'uploads/avatars/test.write');
+		  @my_chmod(MYBB_ROOT.'uploads/postembeds', '0777');
+		  @my_chmod(MYBB_ROOT.'uploads/postembeds/test.write', '0777');
+		  @unlink(MYBB_ROOT.'uploads/postembeds/test.write');
 	  }
   
 	// Output requirements page
