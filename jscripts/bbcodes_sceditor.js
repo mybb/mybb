@@ -80,10 +80,10 @@
 						default:
 							return result.data.url;
 					}
-				} else if (result.errors) {
-					// xmlhttp_error(); jGrowl it?
-					console.log(result.errors);
 				} else {
+					if (result.errors) {
+						// xmlhttp_error(); jGrowl it?
+					}
 					throw 'Upload error';
 				}
 			});

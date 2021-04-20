@@ -244,7 +244,7 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 		// Verify MIME type of the file
 		if (!in_array($filetype, $allowed))
 		{
-			xmlhttp_error("Invalid MIME type.");
+			xmlhttp_error(true); //Invalid MIME type.
 		}
 
 		// Verify file extension
@@ -258,26 +258,26 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 
 		if (!array_key_exists($ext, $allowed))
 		{
-			xmlhttp_error("Invalid format.");
+			xmlhttp_error(true); //Invalid format.
 		}
 
 		$php_max_upload_size = get_php_upload_limit();
 		if ($php_max_upload_size > 0 && $filesize > $php_max_upload_size)
 		{
-			xmlhttp_error("Data is larger than the allowed size limit.");
+			xmlhttp_error(true); // Data is larger than the allowed size limit.
 		}
 		
-		$post_embeds = 'post_embeds';
+		$post_embeds = $mybb->settings['postembedpath'];
 		$destination = $mybb->settings['uploadspath'];
-		// Check if the post_embeds directory exists, if not, create it
-		if(!@is_dir($destination."/".$post_embeds))
+		// Check if the postembeds directory exists, if not, create it
+		if(!@is_dir($post_embeds))
 		{
 			if($mybb->safemode == false)
 			{
-				@mkdir($destination."/".$post_embeds);
-				if(@is_dir($destination."/".$post_embeds)) // If not, upload ditectory is destination
+				@mkdir($post_embeds);
+				if(@is_dir($post_embeds)) // If not, upload ditectory is destination
 				{
-					$destination .= "/".$post_embeds;
+					$destination = $post_embeds;
 					$index = @fopen($destination."/index.html", 'w');
 					@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
 					@fclose($index);
@@ -286,7 +286,7 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 		}
 		else
 		{
-			$destination .= "/".$post_embeds;
+			$destination = $post_embeds;
 		}
 	
 		$filename = $mybb->user['uid'] . '_' . TIME_NOW . '_' . $filename; // Prepend some basic data for future reference
@@ -297,7 +297,7 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 			$uploaded = upload_file($_FILES["image"], $destination, $filename);
 
 			if (isset($uploaded['error'])) {
-				xmlhttp_error($uploaded['error']);
+				xmlhttp_error(true); // $uploaded['error'] returns magic numbers
 			}
 
 			$result['data']['url'] = $mybb->settings['bburl'] . "/" . $destination . "/" . $filename;
@@ -306,10 +306,10 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 		}
 		else
 		{
-			xmlhttp_error($filename . " already exists.");
+			xmlhttp_error(true); //$filename . " already exists".
 		}
 	}
-	xmlhttp_error("Invalid data.");
+	xmlhttp_error(true); //Invalid data.
 }
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
