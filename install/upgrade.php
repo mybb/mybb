@@ -273,11 +273,14 @@ else
 		{
 			$db->drop_table("upgrade_data");
 		}
+
+		$collation = $db->build_create_table_collation();
+		
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
 			UNIQUE (title)
-		);");
+		) ENGINE=MyISAM{$collation};");
 
 		$dh = opendir(INSTALL_ROOT."resources");
 
