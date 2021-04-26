@@ -3171,7 +3171,7 @@ switch($mybb->input['action'])
 				$action = $mybb->get_input('action', MyBB::INPUT_INT);
 				$modtype = htmlspecialchars_uni($mybb->get_input('modtype'));
 				$inlinetype = htmlspecialchars_uni($mybb->get_input('inlinetype'));
-				$searchid = $mybb->get_input('searchid', MyBB::INPUT_INT);
+				$searchid = htmlspecialchars_uni($mybb->get_input('searchid'));
 				$url = htmlspecialchars_uni($mybb->get_input('url'));
 				$plugins->run_hooks('moderation_confirmation');
 
