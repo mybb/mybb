@@ -746,20 +746,6 @@ if($mybb->input['action'] == "send")
 			$post[$key] = $groupscache[$post['usergroup']][$field];
 		}
 
-		// Set up posthandler.
-		require_once MYBB_ROOT."inc/datahandlers/post.php";
-		$posthandler = new postDataHandler();
-
-		$valid_subject = $posthandler->verify_subject($post);
-		$valid_message = $posthandler->verify_message($post);
-
-		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_subject || !$valid_message)
-		{
-			$send_errors = $posthandler->get_friendly_errors();
-			$send_errors = inline_error($send_errors);
-		}
-
 		$postbit = build_postbit($post, 2);
 	}
 	elseif(!$send_errors)
