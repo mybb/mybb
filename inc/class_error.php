@@ -147,9 +147,10 @@ class errorHandler {
 	 * @param string $message The error message
 	 * @param string $file The error file
 	 * @param integer $line The error line
+	 * @param boolean $allow_output Whether or not output is permitted
 	 * @return boolean True if parsing was a success, otherwise assume a error
 	 */
-	function error($type, $message, $file=null, $line=0)
+	function error($type, $message, $file=null, $line=0, $allow_output=true)
 	{
 		global $mybb;
 
@@ -202,38 +203,41 @@ class errorHandler {
 			$this->email_error($type, $message, $file, $line);
 		}
 
-		// SQL Error
-		if($type == MYBB_SQL)
+		if($allow_output === true)
 		{
-			$this->output_error($type, $message, $file, $line);
-		}
-		else
-		{
-			// Do we have a PHP error?
-			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
+			// SQL Error
+			if($type == MYBB_SQL)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
-			// PHP Error
 			else
 			{
-				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
+				// Do we have a PHP error?
+				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
+					$this->output_error($type, $message, $file, $line);
 				}
+				// PHP Error
 				else
 				{
-					global $templates;
-
-					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
+					if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 					{
-						$this->warnings .= $warning;
-						$this->warnings .= $this->generate_backtrace();
+						echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 					}
 					else
 					{
-						echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+						global $templates;
+
+						$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+						if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
+						{
+							$this->warnings .= $warning;
+							$this->warnings .= $this->generate_backtrace();
+						}
+						else
+						{
+							echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+						}
 					}
 				}
 			}

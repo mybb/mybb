@@ -100,6 +100,30 @@ class postParser
 	public $clear_needed = false;
 
 	/**
+	 * Don't validate parser output
+	 */
+	const VALIDATION_DISABLE = 0;
+
+	/**
+	 * Validate parser output and log errors
+	 */
+	const VALIDATION_REPORT_ONLY = 1;
+
+	/**
+	 * Validate parser output, log errors, and block output on failure
+	 */
+	const VALIDATION_REQUIRE = 2;
+
+	/**
+	 * Whether to validate the parser's HTML output when `allow_html` is disabled.
+	 * Validation errors will be logged/sent/displayed according to board settings.
+	 *
+	 * @access public
+	 * @var self::VALIDATION_*
+	 */
+	public $output_validation_policy = self::VALIDATION_REPORT_ONLY;
+
+	/**
 	 * Parses a message with the specified options.
 	 *
 	 * @param string $message The message to be parsed.
@@ -109,6 +133,8 @@ class postParser
 	function parse_message($message, $options = array())
 	{
 		global $plugins, $mybb;
+
+		$original_message = $message;
 
 		$this->clear_needed = false;
 
@@ -242,7 +268,14 @@ class postParser
 
 		$message = $plugins->run_hooks('parse_message_end', $message);
 
-		return $message;
+		if ($this->output_allowed($original_message, $message) === true)
+		{
+			return $message;
+		}
+		else
+		{
+			return '';
+		}
 	}
 
 	/**
@@ -1210,6 +1243,7 @@ class postParser
 			$image['alt'] = my_substr($image['alt'], 0, 40).'...'.my_substr($image['alt'], -10);
 		}
 		$alt = $this->encode_url($alt);
+		$alt = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $alt); // fix & but allow unicode
 
 		$image['width'] = $image['height'] = '';
 		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
@@ -1849,5 +1883,86 @@ class postParser
 		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		return $url;
+	}
+
+	/**
+	 * Determines whether the resulting HTML syntax is acceptable for output,
+	 * according to the parser's validation policy and HTML support.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool
+	 */
+	function output_allowed($source, $output)
+	{
+		if($this->output_validation_policy === self::VALIDATION_DISABLE || !empty($this->options['allow_html']))
+		{
+			return true;
+		}
+		else
+		{
+			$output_valid = $this->validate_output($source, $output);
+
+			if($this->output_validation_policy === self::VALIDATION_REPORT_ONLY)
+			{
+				return true;
+			}
+			else
+			{
+				return $output_valid === true;
+			}
+		}
+	}
+
+	/**
+	 * Validate HTML syntax and pass errors to the error handler.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool
+	 */
+	function validate_output($source, $output)
+	{
+		global $error_handler;
+
+		$ignored_error_codes = array(
+			// entities may be broken through smilie parsing; cache_smilies() method workaround doesn't cover all entities
+			'XML_ERR_INVALID_DEC_CHARREF' => 7,
+			'XML_ERR_INVALID_CHAR' => 9,
+
+			'XML_ERR_UNDECLARED_ENTITY' => 26, // unrecognized HTML entities
+			'XML_ERR_ATTRIBUTE_WITHOUT_VALUE' => 41,
+			'XML_ERR_TAG_NAME_MISMATCH' => 76, // the parser may output tags closed in different levels and siblings
+		);
+
+		libxml_use_internal_errors(true);
+		@libxml_disable_entity_loader(true);
+
+		simplexml_load_string('<root>'.$output.'</root>', 'SimpleXMLElement', 524288 /* LIBXML_PARSEHUGE */);
+
+		$errors = libxml_get_errors();
+
+		libxml_use_internal_errors(false);
+
+		if(
+			$errors &&
+			array_diff(
+				array_column($errors, 'code'),
+				$ignored_error_codes
+			)
+		)
+		{
+			$data = array(
+				'sourceHtmlEntities' => htmlspecialchars_uni($source),
+				'outputHtmlEntities' => htmlspecialchars_uni($output),
+				'errors' => $errors,
+			);
+			$error_message = "Parser output validation failed.\n";
+			$error_message .= var_export($data, true);
+
+			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__, false);
+		}
+
+		return empty($errors);
 	}
 }
