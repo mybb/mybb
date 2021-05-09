@@ -349,7 +349,7 @@ class MyBB {
 
 				// Fixes conflicts with one board having a prefix and another that doesn't on the same domain
 				// Gives priority to our cookies over others (overwrites them)
-				if($this->cookies[$key])
+				if(isset($this->cookies[$key]))
 				{
 					unset($this->cookies[$key]);
 				}

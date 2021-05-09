@@ -33,6 +33,16 @@ if($mybb->usergroup['canviewmemberlist'] == 0)
 	error_no_permission();
 }
 
+$orderarrow = $sort_selected = array(
+	'regdate' => '',
+	'lastvisit' => '',
+	'reputation' => '',
+	'postnum' => '',
+	'threadnum' => '',
+	'referrals' => '',
+	'username' => ''
+);
+
 // Showing advanced search page?
 if($mybb->get_input('action') == "search")
 {
@@ -182,13 +192,13 @@ else
 		$username_like_query = $db->escape_string_like($memberlist['username']);
 
 		// Name begins with
-		if($mybb->input['username_match'] == "begins")
+		if($mybb->get_input('username_match') == "begins")
 		{
 			$search_query .= " AND u.username {$like} '".$username_like_query."%'";
 			$memberlist['search_url'] .= "&username_match=begins";
 		}
 		// Just contains
-		else if($mybb->input['username_match'] == "contains")
+		else if($mybb->get_input('username_match') == "contains")
 		{
 			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
 			$search_url .= "&username_match=contains";
@@ -399,7 +409,7 @@ else
 		}
 
 		$user['userstars'] = '';
-		if(!empty($user['starimage']))
+		if(!empty($user['starimage']) && isset($user['stars']))
 		{
 			// Only display stars if we have an image to use...
 			$user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);

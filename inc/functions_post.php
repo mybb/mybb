@@ -672,12 +672,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_quote'] = true;
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 &&
-			($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) &&
-			($thread['closed'] != 1 || is_moderator($fid, 'canpostclosedthreads')) &&
-			$mybb->settings['multiquote'] != 0 &&
-			$forum['open'] != 0 &&
-			!$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			$post['button_multiquote'] = true;
 		}
@@ -784,7 +779,6 @@ function build_postbit($post, $post_type=0)
 	}
 
 	if($mybb->user['showimages'] != 1 &&
-		$mybb->user['uid'] != 0 ||
 		$mybb->settings['guestimages'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{
@@ -792,7 +786,6 @@ function build_postbit($post, $post_type=0)
 	}
 
 	if($mybb->user['showvideos'] != 1 &&
-		$mybb->user['uid'] != 0 ||
 		$mybb->settings['guestvideos'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{
@@ -1090,6 +1083,9 @@ function return_bytes($val) {
 	}
 
 	$last = strtolower($val[strlen($val)-1]);
+
+	$val = intval($val);
+
 	switch($last)
 	{
 		case 'g':
@@ -1100,7 +1096,7 @@ function return_bytes($val) {
 			$val *= 1024;
 	}
 
-	return intval($val);
+	return $val;
 }
 
 /**

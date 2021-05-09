@@ -497,7 +497,24 @@ class UserDataHandler extends DataHandler
 					$profilefield['editableby'] = -1;
 				}
 
-				if(!is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
+				if(isset($user['usergroup']))
+				{
+					$usergroup = $user['usergroup'];
+				}
+				else
+				{
+					$usergroup = '';
+				}
+				if(isset($user['additionalgroups']))
+				{
+					$additionalgroups = $user['additionalgroups'];
+				}
+				else
+				{
+					$additionalgroups = '';
+				}
+
+				if(!is_member($profilefield['editableby'], array('usergroup' => $usergroup, 'additionalgroups' => $additionalgroups)))
 				{
 					continue;
 				}
@@ -1437,7 +1454,7 @@ class UserDataHandler extends DataHandler
 		{
 			$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);
-			if(!$fields['ufid'])
+			if(empty($fields['ufid']))
 			{
 				$user_fields = array(
 					'ufid' => $user['uid']

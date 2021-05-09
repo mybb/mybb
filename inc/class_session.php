@@ -350,6 +350,7 @@ class session
 		$mybb->user['uid'] = 0;
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
+		$mybb->user['invisible'] = 0;
 
 		// Has this user visited before? Lastvisit need updating?
 		if(isset($mybb->cookies['mybb']['lastvisit']))

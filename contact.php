@@ -77,7 +77,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 	$last_email = $db->fetch_array($query);
 
 	// Users last email was within the flood time, show the error
-	if($last_email['mid'])
+	if(!empty($last_email['mid']))
 	{
 		$remaining_time = ($mybb->usergroup['emailfloodtime'] * 60) - (TIME_NOW - $last_email['dateline']);
 

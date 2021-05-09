@@ -797,7 +797,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	$headerMessages['pmnotice']['class'] = 'pm_alert';
 }
 
-if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
+if(isset($mybb->user['avatartype']) && ($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
 {
 	$headerMessages[] = [
 		'message' => $lang->remote_avatar_disabled_default_avatar

@@ -303,7 +303,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
 			}
 
-			$db->delete_query("questionsessions", "sid='{$sid}'");
+			$db->delete_query("questionsessions", "sid='{$question_id}'");
 		}
 	}
 
@@ -1747,7 +1747,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$errors = $loginhandler->get_friendly_errors();
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
+		if($mybb->settings['failedcaptchalogincount'] > 0 && (isset($user['loginattempts']) && $user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;
@@ -2047,7 +2047,7 @@ if($mybb->input['action'] == "profile")
 			$sig_parser['nofollow_on'] = 1;
 		}
 
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 		{
 			$sig_parser['allow_imgcode'] = 0;
 		}
@@ -2494,7 +2494,7 @@ if($mybb->input['action'] == "profile")
 						$parser_options['nl2br'] = 0;
 					}
 
-					if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+					if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 					{
 						$parser_options['allow_imgcode'] = 0;
 					}

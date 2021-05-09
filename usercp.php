@@ -251,7 +251,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		{
 			$mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
 			$bday = explode("-", $mybb->user['birthday']);
-			$mybb->input['bday3'] = $bday[2];
+
+			if(isset($bday[2]))
+			{
+				$mybb->input['bday3'] = $bday[2];
+			}
 		}
 
 		$errors = inline_error($errors);
@@ -1826,7 +1830,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 		$avatar = upload_avatar();
-		if($avatar['error'])
+		if(!empty($avatar['error']))
 		{
 			$error = $avatar['error'];
 		}
@@ -2802,6 +2806,10 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 		$tidin = implode(",", $tidin);
 		$db->delete_query("threads", "tid IN ($tidin) AND visible='-2' AND uid='".$mybb->user['uid']."'");
 		$tidinp = "OR tid IN ($tidin)";
+	}
+	else
+	{
+		$tidinp = '';
 	}
 	if($pidin || $tidinp)
 	{

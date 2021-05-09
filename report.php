@@ -201,6 +201,7 @@ if(empty($error) &&
 			$reason = $db->fetch_array($query);
 
 			$new_report['reasonid'] = $reason['rid'];
+			$new_report['reason'] = '';
 
 			if($reason['extra'])
 			{
@@ -273,7 +274,7 @@ else
 	}
 }
 
-if($mybb->input['no_modal'])
+if($mybb->get_input('no_modal'))
 {
 	$template = 'report/report_reasons.twig';
 	if($report_info['has_errors'])
