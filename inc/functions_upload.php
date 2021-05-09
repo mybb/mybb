@@ -217,7 +217,7 @@ function upload_avatar($avatar=array(), $uid=0)
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$avatar['name'] || !$avatar['tmp_name'])
+	if(empty($avatar['name']) || empty($avatar['tmp_name']))
 	{
 		$avatar = $_FILES['avatarupload'];
 	}
@@ -248,7 +248,7 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	$filename = "avatar_".$uid.".".$ext;
 	$file = upload_file($avatar, $avatarpath, $filename);
-	if($file['error'])
+	if(!empty($file['error']))
 	{
 		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;

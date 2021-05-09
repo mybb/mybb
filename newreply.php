@@ -204,7 +204,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 
 $errors = array();
 $maximageserror = $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && !empty($_FILES['attachments']))))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -457,6 +457,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/functions_indicators.php";
 	mark_thread_read($tid, $fid);
 
+	$json_data = '';
+
 	// Check captcha image
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
@@ -516,7 +518,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
-		$closed = $postinfo['closed'];
+
+		if(isset($postinfo['closed']))
+		{
+			$closed = $postinfo['closed'];
+		}
+		else
+		{
+			$closed = '';
+		}
 
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
@@ -1294,12 +1304,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$parser_options['allow_smilies'] = 0;
 			}
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_imgcode'] = 0;
 			}
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_videocode'] = 0;
 			}

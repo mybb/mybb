@@ -903,7 +903,7 @@ class postParser
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
-		if((int)$match[1])
+		if(isset($match[1]) && (int)$match[1])
 		{
 			$pid = (int)$match[1];
 			$url = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
@@ -922,7 +922,7 @@ class postParser
 
 		unset($match);
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
-		if((int)$match[1])
+		if(isset($match[1]) && (int)$match[1])
 		{
 			if($match[1] < TIME_NOW)
 			{

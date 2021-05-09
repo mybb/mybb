@@ -181,7 +181,7 @@ else
 		case "image/png":
 		case "text/plain":
 			header("Content-type: {$attachment['filetype']}");
-			if($attachtypes[$ext]['forcedownload'])
+			if(!empty($attachtypes[$ext]['forcedownload']))
 			{
 				$disposition = "attachment";
 			}

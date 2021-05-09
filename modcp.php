@@ -2700,7 +2700,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 		// Those with javascript turned off will be able to select both - cheeky!
 		// Check to make sure we're not moderating AND suspending posting
-		if(isset($extra_user_updates) && $extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
+		if(isset($extra_user_updates) && !empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
 		{
 			$errors[] = $lang->suspendmoderate_error;
 		}
@@ -2956,7 +2956,7 @@ if($mybb->input['action'] == "editprofile")
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
 			}
-			else
+			elseif(isset($user_fields[$field]))
 			{
 				$userfield = $user_fields[$field];
 			}
@@ -4446,7 +4446,7 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
-		if($banned['username'])
+		if(!empty($banned['username']))
 		{
 			$username = $banned['username'] = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
@@ -4458,7 +4458,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Permission to edit this ban?
-	if(isset($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if(!empty($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}

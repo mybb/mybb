@@ -187,7 +187,7 @@ class PMDataHandler extends DataHandler
 				// No recipients? Skip query
 				if(empty($pm[$recipient_type]))
 				{
-					if($recipient_type == 'to' && !$pm['saveasdraft'])
+					if($recipient_type == 'to' && empty($pm['saveasdraft']))
 					{
 						$this->set_error("no_recipients");
 						return false;

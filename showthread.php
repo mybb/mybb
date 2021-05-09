@@ -543,12 +543,12 @@ if($mybb->input['action'] == "thread")
 				"filter_badwords" => 1
 			);
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_imgcode'] = 0;
 			}
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_videocode'] = 0;
 			}
@@ -687,7 +687,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])))
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		}
@@ -1223,7 +1223,7 @@ if($mybb->input['action'] == "thread")
 
 	// Decide whether or not to show quick reply.
 	$quickreply = '';
-	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])))
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc", "limit" => 1));
 		$last_pid = $db->fetch_field($query, "pid");
@@ -1282,18 +1282,32 @@ if($mybb->input['action'] == "thread")
 		}
 
 			$posthash = md5($mybb->user['uid'].random_str());
+
+		if(!isset($collapsedthead['quickreply']))
+		{
+			$collapsedthead['quickreply'] = '';
+		}
+		if(!isset($collapsedimg['quickreply']))
+		{
+			$collapsedimg['quickreply'] = '';
+		}
+		if(!isset($collapsed['quickreply_e']))
+		{
+			$collapsed['quickreply_e'] = '';
+		}
+
 		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 
 	$moderationoptions = '';
+	$threadnotesbox = $viewnotes = '';
 
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{
 		$customthreadtools = $customposttools = $standardthreadtools = $standardposttools = '';
 
-		$threadnotesbox = $viewnotes = '';
 		if(!empty($thread['notes']))
 		{
 			$thread['notes'] = nl2br(htmlspecialchars_uni($thread['notes']));
@@ -1492,6 +1506,10 @@ if($mybb->input['action'] == "thread")
 		}
 
 		eval("\$addremovesubscription = \"".$templates->get("showthread_subscription")."\";");
+	}
+	else
+	{
+		$addremovesubscription = '';
 	}
 
 	$classic_header = '';

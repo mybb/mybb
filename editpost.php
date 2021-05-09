@@ -502,6 +502,8 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 	}
 }
 
+$postoptions = array();
+
 if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -683,6 +685,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
 
+		$link_viewattachments = '';
+
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -693,6 +697,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$lang->attach_usage = "";
 		}
+
+		$attach_update_options = '';
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
