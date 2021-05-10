@@ -14266,6 +14266,7 @@ var editorElm = "#{$bind}",
 	var imagepath = "{$theme['imgdir']}";
   	var yes_confirm = "{$lang->yes}";
 	var no_confirm = "{$lang->no}";
+	var MyBBEditor = null;
 	var spinner_image = "{$theme['imgdir']}/spinner.gif";
 	var spinner = "<img src='" + spinner_image +"' alt='' />";
 	var modal_zindex = 9999;
