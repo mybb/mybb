@@ -1543,7 +1543,7 @@ imgbb=Upload to ImgBB
 		</setting>
 		<setting name="postembedpath">
 			<title>Post Embeds Upload Path</title>
-			<description><![CDATA[Specify the path where you want your post embed image files to be uploaded (<b>must be CHMOD 777</b> for upload to work).]]></description>
+			<description><![CDATA[Specify the path where you want your post embed image files to be uploaded (<b>must be CHMOD 777</b> and a relative path under domain root for upload and embed to work).]]></description>
 			<disporder>28</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/postembeds]]></settingvalue>
