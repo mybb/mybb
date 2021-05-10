@@ -227,6 +227,7 @@ if ($mybb->input['action'] == "upload_postembed" && $mybb->request_method == "po
 
 	if (isset($_FILES["image"]))
 	{
+		require_once MYBB_ROOT . "inc/functions_post.php";
 		require_once MYBB_ROOT . "inc/functions_upload.php";
 
 		// Check if file was uploaded without errors
