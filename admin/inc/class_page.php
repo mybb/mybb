@@ -1065,7 +1065,7 @@ var editorElm = "#{$bind}",
 		toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source"
 	};
 </script>
-<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1827"></script>
+<script type="text/javascript" src="../jscripts/editor.js?ver=1827"></script>
 EOF;
 	}
 }
