@@ -945,6 +945,7 @@ if($mybb->input['action'] == "edit")
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1827"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/plugins/dragdrop.js?ver=1827"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 

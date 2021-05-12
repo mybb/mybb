@@ -1056,13 +1056,14 @@ EOF;
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: "undo",
+	plugins: "undo,dragdrop",
 	format: "bbcode",
 	bbcodeTrim: true,
 	style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,
+	dragdrop: {allowedTypes: []},
 	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {

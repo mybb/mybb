@@ -14163,10 +14163,11 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1827"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/dragdrop.js?ver=1827"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: "undo",
+	plugins: "undo,dragdrop",
 	format: "bbcode",
 	bbcodeTrim: false,
 	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
@@ -14174,6 +14175,7 @@ opt_editor = {
 	locale: "mybblang",
 	width: "100%",
 	enablePasteFiltering: true,
+	dragdrop: {allowedTypes: []},
 	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
