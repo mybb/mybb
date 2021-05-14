@@ -830,93 +830,42 @@ if(!$mybb->input['action'])
 		$table->output($lang->existing_db_backups);
 	}
 
-	if(is_writable(MYBB_ROOT.'inc/settings.php'))
+	$writables = array(
+		'config_file' => 'inc/config.php',
+		'settings_file' => 'inc/settings.php',
+		'file_upload_dir' => ltrim($mybb->settings['uploadspath'], MYBB_ROOT . '.'),
+		'avatar_upload_dir' => ltrim($mybb->settings['avataruploadpath'], MYBB_ROOT . '.'),
+		'language_files' => 'inc/languages',
+		'backup_dir' => $config['admin_dir'] . '/backups',
+		'cache_dir' => 'cache',
+		'themes_dir' => 'cache/themes'
+	);
+
+	$errors = 0; // Reset errors
+	$table = new Table;
+	$table->construct_header($lang->checked_path);
+	$table->construct_header($lang->location);
+	$table->construct_header($lang->status_chmod, array('width' => 250));
+
+	foreach ($writables as $langvar => $path)
 	{
-		$message_settings = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_settings = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
+		$table->construct_cell("<strong>{$lang->{$langvar}}</strong>");
+		$table->construct_cell('./' . trim($path, '/'));
+
+		if (is_writable(MYBB_ROOT . $path))
+		{
+			$table->construct_cell("<span style=\"color: green;\">{$lang->writable}</span>");
+		}
+		else
+		{
+			$table->construct_cell("<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}");
+			++$errors;
+		}
+
+		$table->construct_row();
 	}
 
-	if(is_writable(MYBB_ROOT.'inc/config.php'))
-	{
-		$message_config = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_config = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	$uploadspath = $mybb->settings['uploadspath'];
-	if(is_writable($uploadspath))
-	{
-		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_upload = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	$avataruploadpath = $mybb->settings['avataruploadpath'];
-	if(my_substr($avataruploadpath, 0, 1) == '.')
-	{
-		$avataruploadpath = MYBB_ROOT . $mybb->settings['avataruploadpath'];
-	}
-	if(is_writable($avataruploadpath))
-	{
-		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_avatar = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	if(is_writable(MYBB_ROOT.'inc/languages/'))
-	{
-		$message_language = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_language = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	if(is_writable(MYBB_ROOT.$config['admin_dir'].'/backups/'))
-	{
-		$message_backup = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_backup = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	if(is_writable(MYBB_ROOT.'/cache/'))
-	{
-		$message_cache = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_cache = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	if(is_writable(MYBB_ROOT.'/cache/themes/'))
-	{
-		$message_themes = "<span style=\"color: green;\">{$lang->writable}</span>";
-	}
-	else
-	{
-		$message_themes = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
-		++$errors;
-	}
-
-	if($errors)
+	if ($errors)
 	{
 		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.</em></p>");
 	}
@@ -924,50 +873,6 @@ if(!$mybb->input['action'])
 	{
 		$page->output_success("<p><em>{$lang->success_chmod}</em></p>");
 	}
-
-	$table = new Table;
-	$table->construct_header($lang->file);
-	$table->construct_header($lang->location, array("colspan" => 2, 'width' => 250));
-
-	$table->construct_cell("<strong>{$lang->config_file}</strong>");
-	$table->construct_cell("./inc/config.php");
-	$table->construct_cell($message_config);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->settings_file}</strong>");
-	$table->construct_cell("./inc/settings.php");
-	$table->construct_cell($message_settings);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->file_upload_dir}</strong>");
-	$table->construct_cell($mybb->settings['uploadspath']);
-	$table->construct_cell($message_upload);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->avatar_upload_dir}</strong>");
-	$table->construct_cell($mybb->settings['avataruploadpath']);
-	$table->construct_cell($message_avatar);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->language_files}</strong>");
-	$table->construct_cell("./inc/languages");
-	$table->construct_cell($message_language);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->backup_dir}</strong>");
-	$table->construct_cell('./'.$config['admin_dir'].'/backups');
-	$table->construct_cell($message_backup);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->cache_dir}</strong>");
-	$table->construct_cell('./cache');
-	$table->construct_cell($message_cache);
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->themes_dir}</strong>");
-	$table->construct_cell('./cache/themes');
-	$table->construct_cell($message_themes);
-	$table->construct_row();
 
 	$plugins->run_hooks("admin_tools_system_health_output_chmod_list");
 
