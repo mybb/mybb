@@ -664,6 +664,15 @@ form #message {
 	background: #f5f5f5;
 }
 
+/* Inhibit the drag-n-drop target visibility while we are inhibiting
+ * drag-n-drop itself until @effone's drag-n-drop PR is merged
+ * (planned for 1.9).
+ */
+div.sceditor-dnd-cover {
+	border: none !important;
+	z-index:-999 !important;
+}
+
 .popup_menu {
 	background: #fff;
 	border: 1px solid #ccc;
