@@ -266,7 +266,7 @@ class pluginSystem
 		$pluginInfo = $infoFunc();
 
 		// No compatibility set or compatibility = * - assume compatible
-		if(!$pluginInfo['compatibility'] || $pluginInfo['compatibility'] == "*")
+		if(empty($pluginInfo['compatibility']) || $pluginInfo['compatibility'] == "*")
 		{
 			return true;
 		}
