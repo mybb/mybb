@@ -627,12 +627,12 @@ function build_plugin_list($plugin_list)
 
 	foreach($plugin_list as $plugininfo)
 	{
-		if($plugininfo['website'])
+		if(!empty($plugininfo['website']))
 		{
 			$plugininfo['name'] = "<a href=\"".$plugininfo['website']."\">".$plugininfo['name']."</a>";
 		}
 
-		if($plugininfo['authorsite'])
+		if(!empty($plugininfo['authorsite']))
 		{
 			$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 		}
