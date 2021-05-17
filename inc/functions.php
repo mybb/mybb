@@ -9040,3 +9040,26 @@ function create_xml_parser($data)
 		return new XMLParser($data);
 	}
 }
+
+/**
+ * Make a filesystem path absolute.
+ *
+ * Returns as-is paths which are already absolute.
+ *
+ * @param string $path The input path. Can be either absolute or relative.
+ * @param string $base The absolute base to which to append $path if $path is
+ *                     relative. Must end in DIRECTORY_SEPARATOR or a forward
+ *                     slash.
+ * @return string An absolute filesystem path corresponding to the input path.
+ */
+function mk_path_abs($path, $base = MYBB_ROOT)
+{
+	$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	$char1 = my_substr($path, 0, 1);
+	if($char1 != '/' && !($iswin && ($char1 == '\\' || preg_match('(^[a-zA-Z]:\\\\)', $path))))
+	{
+		$path = $base.$path;
+	}
+
+	return $path;
+}

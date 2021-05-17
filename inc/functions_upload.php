@@ -61,23 +61,23 @@ function remove_attachment($pid, $posthash, $aid)
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
-	$uploadpath = $mybb->settings['uploadspath'];
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 	if($db->fetch_field($query, "numreferences") == 0)
 	{
-		delete_uploaded_file($uploadpath."/".$attachment['attachname']);
+		delete_uploaded_file($uploadspath_abs."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
-			delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
+			delete_uploaded_file($uploadspath_abs."/".$attachment['thumbnail']);
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
 		$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
-		if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadpath."/".$date_directory[0]))
+		if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadspath_abs."/".$date_directory[0]))
 		{
-			delete_upload_directory($uploadpath."/".$date_directory[0]);
+			delete_upload_directory($uploadspath_abs."/".$date_directory[0]);
 		}
 	}
 
@@ -112,7 +112,7 @@ function remove_attachments($pid, $posthash="")
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 
-	$uploadpath = $mybb->settings['uploadspath'];
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
@@ -130,17 +130,17 @@ function remove_attachments($pid, $posthash="")
 		$query2 = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 		if($db->fetch_field($query2, "numreferences") == 0)
 		{
-			delete_uploaded_file($uploadpath."/".$attachment['attachname']);
+			delete_uploaded_file($uploadspath_abs."/".$attachment['attachname']);
 			if($attachment['thumbnail'])
 			{
-				delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
+				delete_uploaded_file($uploadspath_abs."/".$attachment['thumbnail']);
 			}
 
 			$date_directory = explode('/', $attachment['attachname']);
 			$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
-			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadpath."/".$date_directory[0]))
+			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadspath_abs."/".$date_directory[0]))
 			{
-				delete_upload_directory($uploadpath."/".$date_directory[0]);
+				delete_upload_directory($uploadspath_abs."/".$date_directory[0]);
 			}
 		}
 	}
@@ -491,22 +491,23 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 	$month_dir = '';
 	if($mybb->safemode == false)
 	{
 		// Check if the attachment directory (YYYYMM) exists, if not, create it
 		$month_dir = gmdate("Ym");
-		if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+		if(!@is_dir($uploadspath_abs."/".$month_dir))
 		{
-			@mkdir($mybb->settings['uploadspath']."/".$month_dir);
+			@mkdir($uploadspath_abs."/".$month_dir);
 			// Still doesn't exist - oh well, throw it in the main directory
-			if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+			if(!@is_dir($uploadspath_abs."/".$month_dir))
 			{
 				$month_dir = '';
 			}
 			else
 			{
-				create_attachment_index($mybb->settings['uploadspath']."/".$month_dir);
+				create_attachment_index($uploadspath_abs."/".$month_dir);
 			}
 		}
 	}
@@ -514,12 +515,12 @@ function upload_attachment($attachment, $update_attachment=false)
 	// All seems to be good, lets move the attachment!
 	$filename = "post_".$mybb->user['uid']."_".TIME_NOW."_".md5(random_str()).".attach";
 
-	$file = upload_file($attachment, $mybb->settings['uploadspath']."/".$month_dir, $filename);
+	$file = upload_file($attachment, $uploadspath_abs."/".$month_dir, $filename);
 
 	// Failed to create the attachment in the monthly directory, just throw it in the main directory
 	if(!empty($file['error']) && $month_dir)
 	{
-		$file = upload_file($attachment, $mybb->settings['uploadspath'].'/', $filename);
+		$file = upload_file($attachment, $uploadspath_abs.'/', $filename);
 	}
 	elseif($month_dir)
 	{
@@ -542,7 +543,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 
 	// Lets just double check that it exists
-	if(!file_exists($mybb->settings['uploadspath']."/".$filename))
+	if(!file_exists($uploadspath_abs."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail.$lang->error_uploadfailed_lost;
 		return $ret;
@@ -595,10 +596,10 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 
 		// Check if the uploaded file type matches the correct image type (returned by getimagesize)
-		$img_dimensions = @getimagesize($mybb->settings['uploadspath']."/".$filename);
+		$img_dimensions = @getimagesize($uploadspath_abs."/".$filename);
 
 		$mime = "";
-		$file_path = $mybb->settings['uploadspath']."/".$filename;
+		$file_path = $uploadspath_abs."/".$filename;
 		if(function_exists("finfo_open"))
 		{
 			$file_info = finfo_open(FILEINFO_MIME);
@@ -612,7 +613,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
 		{
-			delete_uploaded_file($mybb->settings['uploadspath']."/".$filename);
+			delete_uploaded_file($uploadspath_abs."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;
 			return $ret;
 		}
@@ -621,7 +622,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 		$attacharray = $plugins->run_hooks("upload_attachment_thumb_start", $attacharray);
 
-		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+		$thumbnail = generate_thumbnail($uploadspath_abs."/".$filename, $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
 		if($thumbnail['filename'])
 		{
@@ -653,17 +654,17 @@ function upload_attachment($attachment, $update_attachment=false)
 		$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($prevattach['attachname'])."'");
 		if($db->fetch_field($query, "numreferences") == 0)
 		{
-			delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['attachname']);
+			delete_uploaded_file($uploadspath_abs."/".$prevattach['attachname']);
 			if($prevattach['thumbnail'])
 			{
-				delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
+				delete_uploaded_file($uploadspath_abs."/".$prevattach['thumbnail']);
 			}
 
 			$date_directory = explode('/', $prevattach['attachname']);
 			$query_indir = $db->simple_select("attachments", "COUNT(aid) as indir", "attachname LIKE '".$db->escape_string_like($date_directory[0])."/%'");
-			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+			if($db->fetch_field($query_indir, 'indir') == 0 && @is_dir($uploadspath_abs."/".$date_directory[0]))
 			{
-				delete_upload_directory($mybb->settings['uploadspath']."/".$date_directory[0]);
+				delete_upload_directory($uploadspath_abs."/".$date_directory[0]);
 			}
 		}
 

@@ -362,7 +362,7 @@ function acp_rebuild_attachment_thumbnails()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	$uploadspath = $mybb->settings['uploadspath'];
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
 	require_once MYBB_ROOT."inc/functions_image.php";
 
@@ -373,7 +373,7 @@ function acp_rebuild_attachment_thumbnails()
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
-			$thumbnail = generate_thumbnail($uploadspath."/".$attachment['attachname'], $uploadspath, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+			$thumbnail = generate_thumbnail($uploadspath_abs."/".$attachment['attachname'], $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
 			{
 				$thumbnail['filename'] = "SMALL";

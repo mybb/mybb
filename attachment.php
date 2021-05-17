@@ -120,11 +120,13 @@ if(!isset($mybb->input['thumbnail'])) // Only increment the download count if th
 // basename isn't UTF-8 safe. This is a workaround.
 $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
+$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
+
 $plugins->run_hooks("attachment_end");
 
 if(isset($mybb->input['thumbnail']))
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['thumbnail']))
+	if(!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
 	{
 		error($lang->error_invalidattachment);
 	}
@@ -153,7 +155,7 @@ if(isset($mybb->input['thumbnail']))
 
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
 	header("Content-type: ".$type);
-	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
+	$thumb = $uploadspath_abs."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
 	$handle = fopen($thumb, 'rb');
 	while(!feof($handle))
@@ -164,7 +166,7 @@ if(isset($mybb->input['thumbnail']))
 }
 else
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
+	if(!file_exists($uploadspath_abs."/".$attachment['attachname']))
 	{
 		error($lang->error_invalidattachment);
 	}
@@ -218,8 +220,8 @@ else
 	}
 
 	header("Content-length: {$attachment['filesize']}");
-	header("Content-range: bytes=0-".($attachment['filesize'] - 1)."/".$attachment['filesize']);
-	$handle = fopen($mybb->settings['uploadspath']."/".$attachment['attachname'], 'rb');
+	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
+	$handle = fopen($uploadspath_abs."/".$attachment['attachname'], 'rb');
 	while(!feof($handle))
 	{
 		echo fread($handle, 8192);
