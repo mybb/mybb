@@ -440,7 +440,12 @@ class PostDataHandler extends DataHandler
 		$thread = $db->fetch_array($query);
 
 		// Check to see if the same author has posted within the merge post time limit
-		if($thread && ((int)$mybb->settings['postmergemins'] != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > ((int)$mybb->settings['postmergemins']*60))
+		if(
+			!$thread || (
+				((int)$mybb->settings['postmergemins'] != 0 && trim($mybb->settings['postmergemins']) != "") &&
+				(TIME_NOW-$thread['lastpost']) > ((int)$mybb->settings['postmergemins']*60)
+			)
+		)
 		{
 			return true;
 		}
