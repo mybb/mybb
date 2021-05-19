@@ -193,6 +193,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 			$reason = $db->fetch_array($query);
 
 			$new_report['reasonid'] = $reason['rid'];
+			$new_report['reason'] = '';
 
 			if($reason['extra'])
 			{
@@ -274,7 +275,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	if($mybb->input['no_modal'])
+	if($mybb->get_input('no_modal'))
 	{
 		echo $report_reasons;
 		exit;

@@ -82,7 +82,7 @@ class CustomModeration extends Moderation
 		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
-			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
+			$deleted_thread = $this->execute_post_moderation($tids, $post_options, $pids);
 		}
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
@@ -98,14 +98,15 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Inline Post Moderation
 	 *
+	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
 	 * @param array $post_options Moderation information
 	 * @param array $pids Post IDs
-	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
+	 *
 	 * @return boolean true
 	 */
-	function execute_post_moderation($post_options=array(), $pids=array(), $tid)
+	function execute_post_moderation($tid, $post_options=array(), $pids=array())
 	{
-		global $db, $mybb, $lang;
+		global $db, $mybb, $lang, $plugins;
 
 		if(is_array($tid))
 		{
@@ -116,6 +117,15 @@ class CustomModeration extends Moderation
 
 		// Get the information about thread
 		$thread = get_thread($tid);
+		$author = get_user($thread['uid']);
+
+		$args = array(
+			'post_options' => &$post_options,
+			'pids' => &$pids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_post_moderation_start", $args);
 
 		// If deleting posts, only do that
 		if($post_options['deleteposts'] == 1)
@@ -199,8 +209,24 @@ class CustomModeration extends Moderation
 					// Enter in a subject if a predefined one does not exist.
 					$post_options['splitpostsnewsubject'] = "{$lang->split_thread_subject} {$thread['subject']}";
 				}
-				$new_subject = str_ireplace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
-				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_subject);
+
+				$find = array('{username}', '{author}', '{subject}');
+				$replace = array($mybb->user['username'], $author['username'], $thread['subject']);
+
+				$new_subject = str_ireplace($find, $replace, $post_options['splitpostsnewsubject']);
+
+				$args = array(
+					'post_options' => &$post_options,
+					'pids' => &$pids,
+					'thread' => &$thread,
+					'new_subject' => &$new_subject,
+				);
+
+				$plugins->run_hooks("class_custommoderation_splitposts", $args);
+
+				$new_thread_subject = $new_subject;
+				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_thread_subject);
+
 				if($post_options['splitpostsclose'] == 'close') // Close new thread
 				{
 					$this->close_threads($new_tid);
@@ -222,24 +248,38 @@ class CustomModeration extends Moderation
 					require_once MYBB_ROOT."inc/datahandlers/post.php";
 					$posthandler = new PostDataHandler("insert");
 
+					$find = array('{username}', '{author}', '{subject}');
+					$replace = array($mybb->user['username'], $author['username'], $new_thread_subject);
+
 					if(empty($post_options['splitpostsreplysubject']))
 					{
-						$post_options['splitpostsreplysubject'] = 'RE: '.$new_subject;
+						$new_subject = 'RE: '.$new_thread_subject;
 					}
 					else
 					{
-						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $post_options['splitpostsreplysubject']);
-						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
+						$new_subject = str_ireplace($find, $replace, $post_options['splitpostsreplysubject']);
 					}
+
+					$new_message = str_ireplace($find, $replace, $post_options['splitpostsaddreply']);
+
+					$args = array(
+						'post_options' => &$post_options,
+						'pids' => &$pids,
+						'thread' => &$thread,
+						'new_subject' => &$new_subject,
+						'new_message' => &$new_message,
+					);
+
+					$plugins->run_hooks("class_custommoderation_splitpostsaddreply", $args);
 
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
 						"fid" => $post_options['splitposts'],
-						"subject" => $post_options['splitpostsreplysubject'],
+						"subject" => $new_subject,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
-						"message" => $post_options['splitpostsaddreply'],
+						"message" => $new_message,
 						"ipaddress" => my_inet_pton(get_ip()),
 					);
 					// Set up the post options from the input.
@@ -258,6 +298,15 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
+
+		$args = array(
+			'post_options' => &$post_options,
+			'pids' => &$pids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_post_moderation_end", $args);
+
 		return true;
 	}
 
@@ -270,11 +319,19 @@ class CustomModeration extends Moderation
 	 */
 	function execute_thread_moderation($thread_options=array(), $tids=array())
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		$tid = (int)$tids[0]; // Take the first thread to get thread data from
 		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
+
+		$args = array(
+			'thread_options' => &$thread_options,
+			'tids' => &$tids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_thread_moderation_start", $args);
 
 		// If deleting threads, only do that
 		if($thread_options['deletethread'] == 1)
@@ -385,7 +442,11 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+				$query = $db->query("
+					SELECT u.uid, u.username, t.fid, t.subject, t.tid, t.firstpost, t.closed FROM ".TABLE_PREFIX."threads t
+					LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+					WHERE tid IN ($tid_list) AND closed NOT LIKE 'moved|%'
+				");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 
 				// Loop threads adding a reply to each one
@@ -393,15 +454,29 @@ class CustomModeration extends Moderation
 				{
 					$posthandler = new PostDataHandler("insert");
 
+					$find = array('{username}', '{author}', '{subject}');
+					$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
+
 					if(empty($thread_options['replysubject']))
 					{
 						$new_subject = 'RE: '.$thread['subject'];
 					}
 					else
 					{
-						$new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
-						$new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
+						$new_subject = str_ireplace($find, $replace, $thread_options['replysubject']);
 					}
+
+					$new_message = str_ireplace($find, $replace, $thread_options['addreply']);
+
+					$args = array(
+						'thread_options' => &$thread_options,
+						'tids' => &$tids,
+						'thread' => &$thread,
+						'new_subject' => &$new_subject,
+						'new_message' => &$new_message,
+					);
+
+					$plugins->run_hooks("class_custommoderation_addreply", $args);
 
 					// Set the post data that came from the input to the $post array.
 					$post = array(
@@ -411,7 +486,7 @@ class CustomModeration extends Moderation
 						"subject" => $new_subject,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
-						"message" => $thread_options['addreply'],
+						"message" => $new_message,
 						"ipaddress" => my_inet_pton(get_ip()),
 					);
 
@@ -478,18 +553,46 @@ class CustomModeration extends Moderation
 			$tid_list = implode(',', $tids);
 			
 			// For each thread, we send a PM to the author
-			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
-			while($uid = $db->fetch_field($query, 'uid'))
+			$query = $db->query("
+				SELECT u.uid, u.username, t.subject FROM ".TABLE_PREFIX."threads t
+				LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+				WHERE tid IN ($tid_list)
+			");
+			while($thread = $db->fetch_array($query))
 			{
+				$find = array('{username}', '{author}', '{subject}');
+				$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
+
+				$pm_subject = str_ireplace($find, $replace, $thread_options['pm_subject']);
+				$pm_message = str_ireplace($find, $replace, $thread_options['pm_message']);
+
+				$args = array(
+					'thread_options' => &$thread_options,
+					'tids' => &$tids,
+					'thread' => &$thread,
+					'pm_subject' => &$pm_subject,
+					'pm_message' => &$pm_message,
+				);
+
+				$plugins->run_hooks("class_custommoderation_pm", $args);
+
 				// Let's send our PM
 				$pm = array(
-					'subject' => $thread_options['pm_subject'],
-					'message' => $thread_options['pm_message'],
-					'touid' => $uid
+					'subject' => $pm_subject,
+					'message' => $pm_message,
+					'touid' => $thread['uid']
 				);
 				send_pm($pm, $mybb->user['uid'], 1);
 			}
 		}
+
+		$args = array(
+			'thread_options' => &$thread_options,
+			'tids' => &$tids,
+			'thread' => &$thread,
+		);
+
+		$plugins->run_hooks("class_custommoderation_execute_thread_moderation_end", $args);
 		
 		return true;
 	}

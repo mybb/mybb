@@ -122,18 +122,18 @@ if($mybb->input['action'] == "add")
 		$mybb->input['showclickable'] = 1;
 	}
 
-	if(!$mybb->input['disporder'])
+	if(!$mybb->get_input('disporder'))
 	{
 		$query = $db->simple_select("smilies", "max(disporder) as dispordermax");
 		$mybb->input['disporder'] = $db->fetch_field($query, "dispordermax")+1;
 	}
 
 	$form_container = new FormContainer($lang->add_smilie);
-	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find')), 'find');
-	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
+	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->get_input('find'), array('id' => 'find')), 'find');
+	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->get_input('image'), array('id' => 'image')), 'image');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->get_input('showclickable')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_smilie);
@@ -281,7 +281,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-smilies");
 	}
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "add_multiple")
 	}
 
 	$form_container = new FormContainer($lang->add_multiple_smilies);
-	$form_container->output_row($lang->path_to_images, $lang->path_to_images_desc, $form->generate_text_box('pathfolder', $mybb->input['pathfolder'], array('id' => 'pathfolder')), 'pathfolder');
+	$form_container->output_row($lang->path_to_images, $lang->path_to_images_desc, $form->generate_text_box('pathfolder', $mybb->get_input('pathfolder'), array('id' => 'pathfolder')), 'pathfolder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->show_smilies);
@@ -543,7 +543,7 @@ if($mybb->input['action'] == "mass_edit")
 			$disporder = (int)$mybb->input['disporder'][$sid];
 
 			$sid = (int)$sid;
-			if($mybb->input['delete'][$sid] == 1)
+			if(!empty($mybb->input['delete'][$sid]))
 			{
 				// Dirty hack to get the disporder working. Note: this doesn't work in every case
 				unset($mybb->input['disporder'][$sid]);
@@ -627,7 +627,7 @@ if($mybb->input['action'] == "mass_edit")
 		$mybb->input['showclickable'] = 1;
 	}
 
-	if(!$mybb->input['disporder'])
+	if(!$mybb->get_input('disporder'))
 	{
 		$query = $db->simple_select("smilies", "max(disporder) as dispordermax");
 		$mybb->input['disporder'] = $db->fetch_field($query, "dispordermax")+1;
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "mass_edit")
 		$form_container->output_cell($form->generate_text_area("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
 		$form_container->output_cell($form->generate_numeric_field("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'min' => 0)));
 		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
-		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->input['delete']), array("class" => "align_center"));
+		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->get_input('delete')), array("class" => "align_center"));
 		$form_container->construct_row();
 	}
 

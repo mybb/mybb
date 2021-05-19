@@ -150,7 +150,6 @@ $l['show_redirect'] = "Show friendly redirect pages.";
 $l['thread_view_options'] = "Thread View Options";
 $l['thread_mode'] = "Thread View Mode:";
 $l['thread_mode_desc'] = "The style of threads shown to you. Selecting 'Use Default' will use the boards default mode.";
-$l['use_default'] = "Use Default";
 $l['threaded'] = "Threaded";
 $l['linear'] = "Linear";
 $l['show_classic_postbit'] = "Display posts in classic mode.";
@@ -306,6 +305,7 @@ $l['error_avatarurltoolong'] = "Sorry, but we cannot change your avatar as the n
 $l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height).";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
 $l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
+$l['error_avatarimagemissing'] = "Avatar image file is missing, please select one before attempting to upload.";
 $l['custom_usertitle'] = "Custom User Title";
 $l['new_custom_usertitle'] = "New Custom User Title: (leave blank to use existing)";
 $l['custom_usertitle_note'] = "Here you can assign yourself a custom user title which will overwrite the one based on your display group.";
@@ -398,6 +398,7 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_close'] = " Closed thread.";
+$l['goto_first_unread'] = "Go to first unread post";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 

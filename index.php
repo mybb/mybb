@@ -34,6 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	$stats_page_separator = '';
 	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
@@ -133,7 +134,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			if($mybb->settings['wolorder'] == 'username')
 			{
@@ -365,8 +366,21 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-	
-	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
+
+	if(!isset($collapsedthead['boardstats']))
+	{
+		$collapsedthead['boardstats'] = '';
+	}
+	if(!isset($collapsedimg['boardstats']))
+	{
+		$collapsedimg['boardstats'] = '';
+	}
+	if(!isset($collapsed['boardstats_e']))
+	{
+		$collapsed['boardstats_e'] = '';
+	}
+
+	$expaltext = (in_array("boardstats", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 

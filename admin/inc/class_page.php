@@ -383,7 +383,7 @@ lang.saved = \"{$lang->saved}\";
 			$login_container_width = " style=\"width: ".(410+((int)$lang->login_field_width))."px;\"";
 		}
 
-		$login_page .= <<<EOF
+		$login_page = <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
@@ -853,7 +853,7 @@ EOF;
 			$target = '';
 		}
 		echo "\t</ul>\n";
-		if($tabs[$active]['description'])
+		if(!empty($tabs[$active]['description']))
 		{
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
@@ -912,7 +912,7 @@ EOF;
 	 */
 	function build_codebuttons_editor($bind, $editor_language, $smilies)
 	{
-		global $lang, $mybb, $smiliecache, $cache;
+		global $lang, $mybb, $smiliecache, $smiliecount, $cache;
 
 		// Smilies
 		$emoticon = "";

@@ -132,6 +132,9 @@ else
 {
 	$visible = "AND p.visible='1'";
 }
+
+$postrow_cache = $attachcache = array();
+
 $query = $db->query("
 	SELECT u.*, u.username AS userusername, p.*
 	FROM ".TABLE_PREFIX."posts p
@@ -140,7 +143,28 @@ $query = $db->query("
 	ORDER BY p.dateline, p.pid
 	LIMIT {$start}, {$perpage}
 ");
+
 while($postrow = $db->fetch_array($query))
+{
+	$postrow_cache[$postrow['pid']] = $postrow;
+}
+
+$postrow_cache = array_filter($postrow_cache);
+
+$pids = implode("','", array_keys($postrow_cache));
+
+// Get the attachments for all posst.
+if($mybb->settings['enableattachments'])
+{
+	$queryAttachments = $db->simple_select("attachments", "*", "pid IN ('{$pids}')");
+
+	while($attachment = $db->fetch_array($queryAttachments))
+	{
+		$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+	}
+}
+
+foreach($postrow_cache as $postrow)
 {
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
@@ -157,12 +181,12 @@ while($postrow = $db->fetch_array($query))
 		$parser_options['allow_smilies'] = 0;
 	}
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_videocode'] = 0;
 	}
@@ -177,6 +201,12 @@ while($postrow = $db->fetch_array($query))
 	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
+
+	if($mybb->settings['enableattachments'] == 1 && !empty($attachcache[$postrow['pid']]) && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
+	{
+		get_post_attachments($postrow['pid'], $postrow);
+	}
+
 	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
 }

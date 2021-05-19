@@ -188,7 +188,14 @@ if($mybb->input['action'] == "results")
 			ORDER BY pid, disporder
 		");
 
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		if(isset($mybb->cookies['mybb']['forumread']))
+		{
+			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		}
+		else
+		{
+			$forumsread = array();
+		}
 	}
 	else
 	{
@@ -206,17 +213,25 @@ if($mybb->input['action'] == "results")
 	{
 		if($mybb->user['uid'] == 0)
 		{
-			if($forumsread[$forum['fid']])
+			if(!empty($forumsread[$forum['fid']]))
 			{
 				$forum['lastread'] = $forumsread[$forum['fid']];
 			}
 		}
-		$readforums[$forum['fid']] = $forum['lastread'];
+
+		if(isset($forum['lastread']))
+		{
+			$readforums[$forum['fid']] = $forum['lastread'];
+		}
+		else
+		{
+			$readforums[$forum['fid']] = '';
+		}
 	}
 	$fpermissions = forum_permissions();
 
 	// Inline Mod Column for moderators
-	$inlinemodcol = $inlinecookie = '';
+	$inlinemodcol = $inlinecookie = $inline_edit_js = '';
 	$is_mod = $is_supermod = $show_inline_moderation = false;
 	if($mybb->usergroup['issupermod'])
 	{
@@ -446,7 +461,14 @@ if($mybb->input['action'] == "results")
 			}
 			else
 			{
-				$forum_read = $forumsread[$thread['fid']];
+				if(isset($forumsread[$thread['fid']]))
+				{
+					$forum_read = $forumsread[$thread['fid']];
+				}
+				else
+				{
+					$forum_read = '';
+				}
 			}
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
@@ -652,6 +674,9 @@ if($mybb->input['action'] == "results")
 			$upper = $threadcount;
 		}
 
+		$selectall = '';
+		$inlinemod = '';
+
 		// Inline Thread Moderation Options
 		if($show_inline_moderation)
 		{
@@ -664,23 +689,43 @@ if($mybb->input['action'] == "results")
 			eval("\$selectall = \"".$templates->get("search_threads_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = '';
-			switch($db->type)
+			$forum_stats = $cache->read("forumsdisplay");
+
+			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
 			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
-					break;
-				default:
-					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
+				$gids = explode(',', $mybb->user['additionalgroups']);
+				$gids[] = $mybb->user['usergroup'];
+				$gids = array_filter(array_unique($gids));
+				$gidswhere = '';
+
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+						}
+						break;
+					default:
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+						}
+				}
+
+				$query = $db->simple_select("modtools", "tid, name", "type = 't' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
+
+				while($tool = $db->fetch_array($query))
+				{
+					eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
+				}
 			}
 
-			while($tool = $db->fetch_array($query))
-			{
-				$tool['name'] = htmlspecialchars_uni($tool['name']);
-				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
-			}
 			// Build inline moderation dropdown
-			if(!empty($customthreadtools))
+			if($customthreadtools)
 			{
 				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
 			}
@@ -880,7 +925,15 @@ if($mybb->input['action'] == "results")
 			$isnew = 0;
 			$donenew = 0;
 			$last_read = 0;
-			$post['thread_lastread'] = $readthreads[$post['tid']];
+
+			if(isset($readthreads[$post['tid']]))
+			{
+				$post['thread_lastread'] = $readthreads[$post['tid']];
+			}
+			else
+			{
+				$post['thread_lastread'] = '';
+			}
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 			{
@@ -894,7 +947,14 @@ if($mybb->input['action'] == "results")
 			}
 			else
 			{
-				$forum_read = $forumsread[$post['fid']];
+				if(isset($forumsread[$post['fid']]))
+				{
+					$forum_read = $forumsread[$post['fid']];
+				}
+				else
+				{
+					$forum_read = '';
+				}
 			}
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forum_read)
@@ -1042,6 +1102,9 @@ if($mybb->input['action'] == "results")
 			$upper = $postcount;
 		}
 
+		$selectall = '';
+		$inlinemod = '';
+
 		// Inline Post Moderation Options
 		if($show_inline_moderation)
 		{
@@ -1054,23 +1117,44 @@ if($mybb->input['action'] == "results")
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 
-			$customthreadtools = $customposttools = '';
-			switch($db->type)
+			$customposttools = '';
+			$forum_stats = $cache->read("forumsdisplay");
+
+			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
 			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
-					break;
-				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
+				$gids = explode(',', $mybb->user['additionalgroups']);
+				$gids[] = $mybb->user['usergroup'];
+				$gids = array_filter(array_unique($gids));
+				$gidswhere = '';
+
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+						}
+						break;
+					default:
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+						}
+				}
+
+				$query = $db->simple_select("modtools", "tid, name", "type = 'p' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
+
+				while($tool = $db->fetch_array($query))
+				{
+					eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
+				}
 			}
 
-			while($tool = $db->fetch_array($query))
-			{
-				eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
-			}
 			// Build inline moderation dropdown
-			if(!empty($customposttools))
+			if($customposttools)
 			{
 				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
 			}
@@ -1138,8 +1222,8 @@ elseif($mybb->input['action'] == "findguest")
 	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
-			$pids .= $comma.$pid;
-			$comma = ',';
+		$pids .= $comma.$pid;
+		$comma = ',';
 	}
 
 	$tids = '';
@@ -1147,8 +1231,8 @@ elseif($mybb->input['action'] == "findguest")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1218,8 +1302,8 @@ elseif($mybb->input['action'] == "finduser")
 	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
-			$pids .= $comma.$pid;
-			$comma = ',';
+		$pids .= $comma.$pid;
+		$comma = ',';
 	}
 
 	$tids = '';
@@ -1227,8 +1311,8 @@ elseif($mybb->input['action'] == "finduser")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1288,8 +1372,8 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1368,8 +1452,8 @@ elseif($mybb->input['action'] == "getnew")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1458,8 +1542,8 @@ elseif($mybb->input['action'] == "getdaily")
 	$query = $db->simple_select("threads", "tid", $where_sql);
 	while($tid = $db->fetch_field($query, "tid"))
 	{
-			$tids .= $comma.$tid;
-			$comma = ',';
+		$tids .= $comma.$tid;
+		$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1499,7 +1583,7 @@ elseif($mybb->input['action'] == "do_search")
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
-		if($last_search['sid'])
+		if(!empty($last_search['sid']))
 		{
 			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			if($remaining_time == 1)
@@ -1529,7 +1613,7 @@ elseif($mybb->input['action'] == "do_search")
 		"matchusername" => $mybb->get_input('matchusername', MyBB::INPUT_INT),
 		"postdate" => $mybb->get_input('postdate', MyBB::INPUT_INT),
 		"pddir" => $mybb->get_input('pddir', MyBB::INPUT_INT),
-		"forums" => $mybb->input['forums'],
+		"forums" => $mybb->get_input('forums', MyBB::INPUT_ARRAY),
 		"findthreadst" => $mybb->get_input('findthreadst', MyBB::INPUT_INT),
 		"numreplies" => $mybb->get_input('numreplies', MyBB::INPUT_INT),
 		"threadprefix" => $mybb->get_input('threadprefix', MyBB::INPUT_ARRAY)
@@ -1630,20 +1714,23 @@ else if($mybb->input['action'] == "thread")
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 
-		// We shouldn't show remaining time if time is 0 or under.
-		$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
-		// Users last search was within the flood time, show the error.
-		if($last_search['sid'] && $remaining_time > 0)
+		if($last_search)
 		{
-			if($remaining_time == 1)
+			// We shouldn't show remaining time if time is 0 or under.
+			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
+			// Users last search was within the flood time, show the error.
+			if($remaining_time > 0)
 			{
-				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+				if($remaining_time == 1)
+				{
+					$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+				}
+				else
+				{
+					$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+				}
+				error($lang->error_searchflooding);
 			}
-			else
-			{
-				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
-			}
-			error($lang->error_searchflooding);
 		}
 	}
 

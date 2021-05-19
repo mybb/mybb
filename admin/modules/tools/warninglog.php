@@ -112,7 +112,7 @@ if($mybb->input['action'] == "view")
 
 	$user_link = build_profile_link(htmlspecialchars_uni($user['username']), $user['uid'], "_blank");
 
-	if(is_array($warn_errors))
+	if(isset($warn_errors) && is_array($warn_errors))
 	{
 		$page->output_inline_error($warn_errors);
 		$mybb->input['reason'] = htmlspecialchars_uni($mybb->input['reason']);
@@ -204,7 +204,7 @@ if($mybb->input['action'] == "view")
 		$form_container = new FormContainer($lang->revoke_warning);
 		echo $form->generate_hidden_field('action', 'do_revoke');
 		echo $form->generate_hidden_field('wid', $warning['wid']);
-		$form_container->output_row("", $lang->revoke_warning_desc, $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+		$form_container->output_row("", $lang->revoke_warning_desc, $form->generate_text_area('reason', $mybb->get_input('reason'), array('id' => 'reason')), 'reason');
 
 		$form_container->end();
 		$buttons[] = $form->generate_submit_button($lang->revoke_warning);
@@ -246,6 +246,11 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'warning_logs');
 
+	if(empty($mybb->input['filter']))
+	{
+		$mybb->input['filter'] = array();
+	}
+
 	// Filter options
 	$where_sql = '';
 	if(!empty($mybb->input['filter']['username']))
@@ -254,7 +259,7 @@ if(!$mybb->input['action'])
 
 		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
 	}
-	if($mybb->input['filter']['uid'])
+	if(!empty($mybb->input['filter']['uid']))
 	{
 		$search['uid'] = (int)$mybb->input['filter']['uid'];
 		$where_sql .= " AND w.uid='{$search['uid']}'";
@@ -270,7 +275,7 @@ if(!$mybb->input['action'])
 
 		$mybb->input['filter']['mod_uid'] = (int)$mod_user['uid'];
 	}
-	if($mybb->input['filter']['mod_uid'])
+	if(!empty($mybb->input['filter']['mod_uid']))
 	{
 		$search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
 		$where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
@@ -280,13 +285,18 @@ if(!$mybb->input['action'])
 			$mybb->input['search']['mod_username'] = $mod_user['username'];
 		}
 	}
-	if($mybb->input['filter']['reason'])
+	if(!empty($mybb->input['filter']['reason']))
 	{
 		$search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
 	}
 	$sortbysel = array();
-	switch($mybb->input['filter']['sortby'])
+	$sortby_input = '';
+	if(!empty($mybb->input['filter']['sortby']))
+	{
+		$sortby_input = $mybb->input['filter']['sortby'];
+	}
+	switch($sortby_input)
 	{
 		case "username":
 			$sortby = "u.username";
@@ -304,9 +314,8 @@ if(!$mybb->input['action'])
 			$sortby = "w.dateline";
 			$sortbysel['dateline'] = ' selected="selected"';
 	}
-	$order = $mybb->input['filter']['order'];
 	$ordersel = array();
-	if($order != "asc")
+	if(empty($mybb->input['filter']['order']) || $mybb->input['filter']['order'] != "asc")
 	{
 		$order = "desc";
 		$ordersel['desc'] = ' selected="selected"';
@@ -469,12 +478,26 @@ if(!$mybb->input['action'])
 		'desc' => $lang->desc
 	);
 
+	$user_filters = array();
+	$input_filters = $mybb->get_input('filter', MyBB::INPUT_ARRAY);
+	foreach(array('username', 'mod_username', 'reason', 'sortby') as $key)
+	{
+		if(isset($input_filters[$key]))
+		{
+			$user_filters[$key] = $input_filters[$key];
+		}
+		else
+		{
+			$user_filters[$key] = null;
+		}
+	}
+
 	$form = new Form("index.php?module=tools-warninglog", "post");
 	$form_container = new FormContainer($lang->filter_warning_logs);
-	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $mybb->input['filter']['username'], array('id' => 'filter_username')), 'filter_username');
-	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
-	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $mybb->input['filter']['reason'], array('id' => 'filter_reason')), 'filter_reason');
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
+	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $user_filters['username'], array('id' => 'filter_username')), 'filter_username');
+	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $user_filters['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
+	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $user_filters['reason'], array('id' => 'filter_reason')), 'filter_reason');
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $user_filters['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page', 'min' => 1)), 'filter_per_page');
 
 	$form_container->end();

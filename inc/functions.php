@@ -176,6 +176,7 @@ function run_shutdown()
 		{
 			// Load DB interface
 			require_once MYBB_ROOT."inc/db_base.php";
+			require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
@@ -186,8 +187,14 @@ function run_shutdown()
 				case "pgsql":
 					$db = new DB_PgSQL;
 					break;
+				case "pgsql_pdo":
+					$db = new PostgresPdoDbDriver();
+					break;
 				case "mysqli":
 					$db = new DB_MySQLi;
+					break;
+				case "mysql_pdo":
+					$db = new MysqlPdoDbDriver();
 					break;
 				default:
 					$db = new DB_MySQL;
@@ -253,7 +260,7 @@ function send_mail_queue($count=10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
+	if($mailcache !== false && $mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->update_mailqueue(0, TIME_NOW);
@@ -332,7 +339,7 @@ function parse_page($contents)
  */
 function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
-	global $mybb, $lang, $mybbadmin, $plugins;
+	global $mybb, $lang, $plugins;
 
 	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
@@ -346,11 +353,6 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
-		}
-		elseif(defined("IN_ADMINCP"))
-		{
-			$offset = (float)$mybbadmin['timezone'];
-			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
@@ -634,6 +636,11 @@ function generate_post_check($rotation_shift=0)
 		$seed .= $session->sid;
 	}
 
+	if(defined('IN_ADMINCP'))
+	{
+		$seed .= 'ADMINCP';
+	}
+
 	$seed .= $mybb->settings['internal']['encryption_key'];
 
 	return md5($seed);
@@ -689,11 +696,11 @@ function get_parent_list($fid)
 	global $forum_cache;
 	static $forumarraycache;
 
-	if($forumarraycache[$fid])
+	if(!empty($forumarraycache[$fid]))
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forum_cache[$fid])
+	elseif(!empty($forum_cache[$fid]))
 	{
 		return $forum_cache[$fid]['parentlist'];
 	}
@@ -785,18 +792,21 @@ function get_child_list($fid)
 			}
 		}
 	}
-	if(!is_array($forums_by_parent[$fid]))
+	if(isset($forums_by_parent[$fid]))
 	{
-		return $forums;
-	}
-
-	foreach($forums_by_parent[$fid] as $forum)
-	{
-		$forums[] = (int)$forum['fid'];
-		$children = get_child_list($forum['fid']);
-		if(is_array($children))
+		if(!is_array($forums_by_parent[$fid]))
 		{
-			$forums = array_merge($forums, $children);
+			return $forums;
+		}
+
+		foreach($forums_by_parent[$fid] as $forum)
+		{
+			$forums[] = (int)$forum['fid'];
+			$children = get_child_list($forum['fid']);
+			if(is_array($children))
+			{
+				$forums = array_merge($forums, $children);
+			}
 		}
 	}
 	return $forums;
@@ -1007,7 +1017,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 	}
 
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
-	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && (!$mybb->user['uid'] || !$mybb->user['showredirect'] == 1)))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -1286,7 +1296,7 @@ function user_permissions($uid=null)
  */
 function usergroup_permissions($gid=0)
 {
-	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
+	global $cache, $groupscache, $grouppermignore, $groupzerogreater, $groupzerolesser, $groupxgreater, $grouppermbyswitch;
 
 	if(!is_array($groupscache))
 	{
@@ -1303,6 +1313,37 @@ function usergroup_permissions($gid=0)
 
 	$usergroup = array();
 	$usergroup['all_usergroups'] = $gid;
+
+	// Get those switch permissions from the first valid group.
+	$permswitches_usergroup = array();
+	$grouppermswitches = array();
+	foreach(array_values($grouppermbyswitch) as $permvalue)
+	{
+		if(is_array($permvalue))
+		{
+			foreach($permvalue as $perm)
+			{
+				$grouppermswitches[] = $perm;
+			}
+		}
+		else
+		{
+			$grouppermswitches[] = $permvalue;
+		}
+	}
+	$grouppermswitches = array_unique($grouppermswitches);
+	foreach($groups as $gid)
+	{
+		if(trim($gid) == "" || empty($groupscache[$gid]))
+		{
+			continue;
+		}
+		foreach($grouppermswitches as $perm)
+		{
+			$permswitches_usergroup[$perm] = $groupscache[$gid][$perm];
+		}
+		break;	// Only retieve the first available group's permissions as how following action does.
+	}
 
 	foreach($groups as $gid)
 	{
@@ -1324,10 +1365,116 @@ function usergroup_permissions($gid=0)
 					$permbit = "";
 				}
 
-				// 0 represents unlimited for numerical group permissions (i.e. private message limit) so take that into account.
-				if(in_array($perm, $groupzerogreater) && ($access == 0 || $permbit === 0))
+				// permission type: 0 not a numerical permission, otherwise a numerical permission.
+				// Positive value is for `greater is more` permission, negative for `lesser is more`.
+				$perm_is_numerical = 0;
+				$perm_numerical_lowerbound = 0;
+
+				// 0 represents unlimited for most numerical group permissions (i.e. private message limit) so take that into account.
+				if(in_array($perm, $groupzerogreater))
 				{
-					$usergroup[$perm] = 0;
+					// 1 means a `0 or greater` permission. Value 0 means unlimited.
+					$perm_is_numerical = 1;
+				}
+				// Less is more for some numerical group permissions (i.e. post count required for using signature) so take that into account, too.
+				else if(in_array($perm, $groupzerolesser))
+				{
+					// -1 means a `0 or lesser` permission. Value 0 means unlimited.
+					$perm_is_numerical = -1;
+				}
+				// Greater is more, but with a lower bound.
+				else if(array_key_exists($perm, $groupxgreater))
+				{
+					// 2 means a general `greater` permission. Value 0 just means 0.
+					$perm_is_numerical = 2;
+					$perm_numerical_lowerbound = $groupxgreater[$perm];
+				}
+
+				if($perm_is_numerical != 0)
+				{
+					$update_current_perm = true;
+
+					// Ensure it's an integer.
+					$access = (int)$access;
+					// Check if this permission should be activatived by another switch permission in current group.
+					if(array_key_exists($perm, $grouppermbyswitch))
+					{
+						if(!is_array($grouppermbyswitch[$perm]))
+						{
+							$grouppermbyswitch[$perm] = array($grouppermbyswitch[$perm]);
+						}
+
+						$update_current_perm = $group_current_perm_enabled = $group_perm_enabled = false;
+						foreach($grouppermbyswitch[$perm] as $permswitch)
+						{
+							if(!isset($groupscache[$gid][$permswitch]))
+							{
+								continue;
+							}
+							$permswitches_current = $groupscache[$gid][$permswitch];
+
+							// Determin if the permission is enabled by switches from current group.
+							if($permswitches_current == 1 || $permswitches_current == "yes") // Keep yes/no for compatibility?
+							{
+								$group_current_perm_enabled = true;
+							}
+							// Determin if the permission is enabled by switches from previously handled groups.
+							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							{
+								$group_perm_enabled = true;
+							}
+						}
+
+						// Set this permission if not set yet.
+						if(!isset($usergroup[$perm]))
+						{
+							$usergroup[$perm] = $access;
+						}
+
+						// If current group's setting enables the permission, we may need to update the user's permission.
+						if($group_current_perm_enabled)
+						{
+							// Only update this permission if both its switch and current group switch are on.
+							if($group_perm_enabled)
+							{
+								$update_current_perm = true;
+							}
+							// Override old useless value with value from current group.
+							else
+							{
+								$usergroup[$perm] = $access;
+							}
+						}
+					}
+
+					// No switch controls this permission, or permission needs an update.
+					if($update_current_perm)
+					{
+						switch($perm_is_numerical)
+						{
+							case 1:
+							case -1:
+								if($access == 0 || $permbit === 0)
+								{
+									$usergroup[$perm] = 0;
+									break;
+								}
+							default:
+								if($perm_is_numerical > 0 && $access > $permbit || $perm_is_numerical < 0 && $access < $permbit)
+								{
+									$usergroup[$perm] = $access;
+								}
+								break;
+						}
+					}
+
+					// Maybe oversubtle, database uses Unsigned on them, but enables usage of permission value with a lower bound.
+					if($usergroup[$perm] < $perm_numerical_lowerbound)
+					{
+						$usergroup[$perm] = $perm_numerical_lowerbound;
+					}
+
+					// Work is done for numerical permissions.
 					continue;
 				}
 
@@ -1336,6 +1483,11 @@ function usergroup_permissions($gid=0)
 					$usergroup[$perm] = $access;
 				}
 			}
+		}
+
+		foreach($permswitches_usergroup as $perm => $value)
+		{
+			$permswitches_usergroup[$perm] = $usergroup[$perm];
 		}
 	}
 
@@ -1471,8 +1623,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
-			$level_permissions = $fpermcache[$fid][$gid];
-
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1489,6 +1639,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
+			}
+			else
+			{
+				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
@@ -1731,14 +1885,14 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(empty($forum) || !is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
 		}
 
 		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
+		if(!empty($forum['users'][$uid]))
 		{
 			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
@@ -1763,7 +1917,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 		foreach($groups as $group)
 		{
-			if(!is_array($forum['usergroups'][$group]))
+			if(empty($forum['usergroups'][$group]) || !is_array($forum['usergroups'][$group]))
 			{
 				// There are no permissions set for this group
 				continue;
@@ -1797,7 +1951,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
  */
 function is_moderator($fid=0, $action="", $uid=0)
 {
-	global $mybb, $cache;
+	global $mybb, $cache, $plugins;
 
 	if($uid == 0)
 	{
@@ -1810,12 +1964,26 @@ function is_moderator($fid=0, $action="", $uid=0)
 	}
 
 	$user_perms = user_permissions($uid);
-	if($user_perms['issupermod'] == 1)
+
+	$hook_args = array(
+		'fid' => $fid,
+		'action' => $action,
+		'uid' => $uid,
+	);
+
+	$plugins->run_hooks("is_moderator", $hook_args);
+	
+	if(isset($hook_args['is_moderator']))
+	{
+		return (boolean) $hook_args['is_moderator'];
+	}
+
+	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
 		{
 			$forumpermissions = forum_permissions($fid);
-			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && empty($forumpermissions['canonlyviewownthreads']))
 			{
 				return true;
 			}
@@ -1876,7 +2044,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 /**
  * Get an array of fids that the forum moderator has access to.
  * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
- * 
+ *
  * @param int $uid The user ID (0 assumes current user)
  * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
  */
@@ -2118,10 +2286,9 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 {
 	global $mybb;
 
-	$cookie = $mybb->cookies['mybb'];
-	if(isset($cookie[$name]))
+	if(isset($mybb->cookies['mybb'][$name]))
 	{
-		$newcookie = my_unserialize($cookie[$name]);
+		$newcookie = my_unserialize($mybb->cookies['mybb'][$name]);
 	}
 	else
 	{
@@ -2799,15 +2966,28 @@ function update_forum_lastpost($fid)
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
-	$lastpost = $db->fetch_array($query);
 
-	$updated_forum = array(
-		"lastpost" => (int)$lastpost['lastpost'],
-		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => (int)$lastpost['lastposteruid'],
-		"lastposttid" => (int)$lastpost['tid'],
-		"lastpostsubject" => $db->escape_string($lastpost['subject'])
-	);
+	if($db->num_rows($query) > 0)
+	{
+		$lastpost = $db->fetch_array($query);
+
+		$updated_forum = array(
+			"lastpost" => (int)$lastpost['lastpost'],
+			"lastposter" => $db->escape_string($lastpost['lastposter']),
+			"lastposteruid" => (int)$lastpost['lastposteruid'],
+			"lastposttid" => (int)$lastpost['tid'],
+			"lastpostsubject" => $db->escape_string($lastpost['subject']),
+		);
+	}
+	else {
+		$updated_forum = array(
+			"lastpost" => 0,
+			"lastposter" => '',
+			"lastposteruid" => 0,
+			"lastposttid" => 0,
+			"lastpostsubject" => '',
+		);
+	}
 
 	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
@@ -3608,7 +3788,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if($subscription['tid'])
+		if(!empty($subscription) && $subscription['tid'])
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -3664,7 +3844,7 @@ function build_clickable_smilies()
 				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
 			}
 
-			$smilies = '';
+			$smilies = $smilie_icons = '';
 			$counter = 0;
 			$i = 0;
 
@@ -3913,7 +4093,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return '';
 	}
 
-	$default_selected = array();
+	$default_selected = array('all' => '', 'none' => '', 'any' => '');
 	$selected_pid = (int)$selected_pid;
 
 	if($selected_pid == 0)
@@ -3929,6 +4109,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$default_selected['any'] = ' selected="selected"';
 	}
 
+	$prefixselect_prefix = '';
 	foreach($prefixes as $prefix)
 	{
 		$selected = '';
@@ -4836,7 +5017,7 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4847,7 +5028,7 @@ function mark_reports($id, $type="post")
 		case "threads":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4967,6 +5148,8 @@ function nice_time($stamp, $options=array())
 		), $options);
 	}
 
+	$nicetime = array();
+
 	if(!isset($options['years']) || $options['years'] !== false)
 	{
 		if($years == 1)
@@ -5051,7 +5234,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if(is_array($nicetime))
+	if(!empty($nicetime))
 	{
 		return implode(", ", $nicetime);
 	}
@@ -5103,28 +5286,19 @@ function join_usergroup($uid, $joingroup)
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
-	$usergroups = "";
-	$usergroups = $user['additionalgroups'].",".$joingroup;
-	$groupslist = "";
-	$groups = explode(",", $usergroups);
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
 
-	if(is_array($groups))
+	if(!in_array((int)$joingroup, $groups))
 	{
-		$comma = '';
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $gid != $user['usergroup'] && !isset($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+		$groups[] = (int)$joingroup;
+		$groups = array_diff($groups, array($user['usergroup']));
+		$groups = array_unique($groups);
 
-	// What's the point in updating if they're the same?
-	if($groupslist != $user['additionalgroups'])
-	{
+		$groupslist = implode(',', $groups);
+
 		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".(int)$uid."'");
 		return true;
 	}
@@ -5151,24 +5325,14 @@ function leave_usergroup($uid, $leavegroup)
 		return false;
 	}
 
-	$groupslist = $comma = '';
-	$usergroups = $user['additionalgroups'].",";
-	$donegroup = array();
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
+	$groups = array_diff($groups, array($leavegroup));
+	$groups = array_unique($groups);
 
-	$groups = explode(",", $user['additionalgroups']);
-
-	if(is_array($groups))
-	{
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $leavegroup != $gid && empty($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+	$groupslist = implode(',', $groups);
 
 	$dispupdate = "";
 	if($leavegroup == $user['displaygroup'])
@@ -5321,11 +5485,6 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		$tid = 1;
 		$num_themes = 0;
 		$themeselect_option = '';
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
 	}
 
 	if(!is_array($tcache))
@@ -6588,7 +6747,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		}
 	}
 	// This user has a cookie lockout, show waiting time
-	elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
+	elseif(!empty($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] > $now)
 	{
 		if($fatal)
 		{
@@ -6603,7 +6762,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		return false;
 	}
 
-	if($mybb->settings['failedlogincount'] > 0 && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
+	if($mybb->settings['failedlogincount'] > 0 && isset($attempts['loginattempts']) && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
 	{
 		// Set the expiry dateline if not set yet
 		if($attempts['loginlockoutexpiry'] == 0)
@@ -6659,6 +6818,11 @@ function login_attempt_check($uid = 0, $fatal = true)
 
 			return 0;
 		}
+	}
+
+	if(!isset($attempts['loginattempts']))
+	{
+		$attempts['loginattempts'] = 0;
 	}
 
 	// User can attempt another login
@@ -7099,6 +7263,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 	$timezones = get_supported_timezones();
 
 	$selected = str_replace("+", "", $selected);
+	$timezone_option = '';
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
@@ -7345,11 +7510,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
 		}
 
-		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
 			return false;
 		}
+		@stream_set_timeout($fp, 10);
 		$headers = array();
 		if(!empty($post_body))
 		{
@@ -8473,6 +8638,7 @@ function trim_blank_chrs($string, $charlist="")
 	);
 
 	// Start from the beginning and work our way in
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8488,6 +8654,7 @@ function trim_blank_chrs($string, $charlist="")
 
 	// Start from the end and work our way in
 	$string = strrev($string);
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8549,7 +8716,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 /**
  * Obtain the version of GD installed.
  *
- * @return float Version of GD
+ * @return float|null Version of GD
  */
 function gd_version()
 {
@@ -8559,9 +8726,10 @@ function gd_version()
 	{
 		return $gd_version;
 	}
+
 	if(!extension_loaded('gd'))
 	{
-		return;
+		return null;
 	}
 
 	if(function_exists("gd_info"))
@@ -8911,7 +9079,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
 		}
 
-		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 
@@ -9149,4 +9317,49 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 	}
 
 	return $referrals;
+}
+
+/**
+ * Initialize the parser and store the XML data to be parsed.
+ *
+ * @param string $data
+ * @return MyBBXMLParser The constructed XML parser.
+ */
+function create_xml_parser($data)
+{
+	if(version_compare(PHP_VERSION, '8.0', '>='))
+	{
+		require_once MYBB_ROOT."inc/class_xmlparser.php";
+
+		return new MyBBXMLParser($data);
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_xml.php";
+
+		return new XMLParser($data);
+	}
+}
+
+/**
+ * Make a filesystem path absolute.
+ *
+ * Returns as-is paths which are already absolute.
+ *
+ * @param string $path The input path. Can be either absolute or relative.
+ * @param string $base The absolute base to which to append $path if $path is
+ *                     relative. Must end in DIRECTORY_SEPARATOR or a forward
+ *                     slash.
+ * @return string An absolute filesystem path corresponding to the input path.
+ */
+function mk_path_abs($path, $base = MYBB_ROOT)
+{
+	$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	$char1 = my_substr($path, 0, 1);
+	if($char1 != '/' && !($iswin && ($char1 == '\\' || preg_match('(^[a-zA-Z]:\\\\)', $path))))
+	{
+		$path = $base.$path;
+	}
+
+	return $path;
 }

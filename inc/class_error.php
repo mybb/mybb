@@ -118,6 +118,13 @@ class errorHandler {
 	public $has_errors = false;
 
 	/**
+	 * Display errors regardless of related settings (useful during initialization stage)
+	 *
+	 * @var boolean
+	 */
+	public $force_display_errors = false;
+
+	/**
 	 * Initializes the error handler
 	 *
 	 */
@@ -140,9 +147,10 @@ class errorHandler {
 	 * @param string $message The error message
 	 * @param string $file The error file
 	 * @param integer $line The error line
+	 * @param boolean $allow_output Whether or not output is permitted
 	 * @return boolean True if parsing was a success, otherwise assume a error
 	 */
-	function error($type, $message, $file=null, $line=0)
+	function error($type, $message, $file=null, $line=0, $allow_output=true)
 	{
 		global $mybb;
 
@@ -195,38 +203,41 @@ class errorHandler {
 			$this->email_error($type, $message, $file, $line);
 		}
 
-		// SQL Error
-		if($type == MYBB_SQL)
+		if($allow_output === true)
 		{
-			$this->output_error($type, $message, $file, $line);
-		}
-		else
-		{
-			// Do we have a PHP error?
-			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
+			// SQL Error
+			if($type == MYBB_SQL)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
-			// PHP Error
 			else
 			{
-				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
+				// Do we have a PHP error?
+				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
+					$this->output_error($type, $message, $file, $line);
 				}
+				// PHP Error
 				else
 				{
-					global $templates;
-
-					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
+					if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 					{
-						$this->warnings .= $warning;
-						$this->warnings .= $this->generate_backtrace();
+						echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 					}
 					else
 					{
-						echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+						global $templates;
+
+						$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+						if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
+						{
+							$this->warnings .= $warning;
+							$this->warnings .= $this->generate_backtrace();
+						}
+						else
+						{
+							echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+						}
 					}
 				}
 			}
@@ -421,7 +432,7 @@ class errorHandler {
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -438,7 +449,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
@@ -546,13 +557,39 @@ class errorHandler {
 HTML;
 		}
 
-			$contact = <<<HTML
+		$additional_name = '';
+		$docs_link = 'https://docs.mybb.com';
+		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
+		$support_link = 'https://community.mybb.com/';
+
+		if(isset($lang->settings['docs_link']))
+		{
+			$docs_link = $lang->settings['docs_link'];
+		}
+
+		if(isset($lang->settings['common_issues_link']))
+		{
+			$common_issues_link = $lang->settings['common_issues_link'];
+		}
+
+		if(isset($lang->settings['support_link']))
+		{
+			$support_link = $lang->settings['support_link'];
+		}
+
+
+		if(isset($lang->settings['additional_name']))
+		{
+			$additional_name = $lang->settings['additional_name'];
+		}
+
+		$contact = <<<HTML
 <p>
 	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
 </p>
 
 <p>
-	<strong>If you are the site owner</strong>, please check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
+	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
 </p>
 HTML;
 
@@ -626,6 +663,7 @@ EOF;
 	</div>
 EOF;
 		}
+
 		exit(1);
 	}
 

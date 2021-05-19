@@ -333,7 +333,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
-	if(!$subscription['tid'])
+	if(empty($subscription) || !$subscription['tid'])
 	{
 		$insert_array = array(
 			'uid' => (int)$uid,
@@ -407,7 +407,7 @@ function add_subscribed_forum($fid, $uid=0)
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(!$fsubscription['fid'])
+	if(empty($fsubscription) || !$fsubscription['fid'])
 	{
 		$insert_array = array(
 			'fid' => $fid,
@@ -489,7 +489,7 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
-	$expaltext = (in_array("usercppms", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercppms", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
 	$tracking = '';
@@ -577,7 +577,7 @@ function usercp_menu_profile()
 		$collapsed['usercpprofile_e'] = '';
 	}
 
-	$expaltext = (in_array("usercpprofile", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpprofile", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
@@ -616,7 +616,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
-	$expaltext = (in_array("usercpmisc", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpmisc", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
@@ -763,7 +763,8 @@ function generate_question($old_qid=0)
 	{
 		$order_by = 'RAND()';
 	}
-	
+
+	$excl_old = '';
 	if($old_qid)
 	{
 		$excl_old = ' AND qid != '.(int)$old_qid;

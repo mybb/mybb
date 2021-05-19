@@ -47,6 +47,9 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
+// Show errors triggered during initialization
+$error_handler->force_display_errors = true;
+
 if(!function_exists('json_encode') || !function_exists('json_decode'))
 {
 	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
@@ -111,6 +114,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 
@@ -122,8 +126,14 @@ switch($config['database']['type'])
 	case "pgsql":
 		$db = new DB_PgSQL;
 		break;
+	case "pgsql_pdo":
+		$db = new PostgresPdoDbDriver();
+		break;
 	case "mysqli":
 		$db = new DB_MySQLi;
+		break;
+	case "mysql_pdo":
+		$db = new MysqlPdoDbDriver();
 		break;
 	default:
 		$db = new DB_MySQL;
@@ -233,14 +243,13 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 	}
 }
 
+$error_handler->force_display_errors = false;
+
 // Load plugins
 if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }
-
-// Set up any shutdown functions we need to run globally
-add_shutdown('send_mail_queue');
 
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))

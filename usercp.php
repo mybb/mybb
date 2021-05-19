@@ -280,9 +280,15 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		$raw_errors = $userhandler->get_errors();
 
 		// Set to stored value if invalid
-		if(array_key_exists("invalid_birthday_privacy", $raw_errors))
+		if(array_key_exists("invalid_birthday_privacy", $raw_errors) || array_key_exists("conflicted_birthday_privacy", $raw_errors))
 		{
 			$mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
+			$bday = explode("-", $mybb->user['birthday']);
+
+			if(isset($bday[2]))
+			{
+				$mybb->input['bday3'] = $bday[2];
+			}
 		}
 
 		$errors = inline_error($errors);
@@ -315,10 +321,10 @@ if($mybb->input['action'] == "profile")
 		{
 			$bday[1] = 0;
 		}
-		if(!isset($bday[2]))
-		{
-			$bday[2] = '';
-		}
+	}
+	if(!isset($bday[2]) || $bday[2] == 0)
+	{
+		$bday[2] = '';
 	}
 
 	$plugins->run_hooks("usercp_profile_start");
@@ -879,9 +885,9 @@ if($mybb->input['action'] == "options")
 	{
 		if(isset($user['invisible']) && $user['invisible'] == 1)
 		{
-			$invisiblecheck .= "checked=\"checked\"";
+			$invisiblecheck = "checked=\"checked\"";
 		}
-		elseif($user['invisible'] != 0)
+		else
 		{
 			$invisiblecheck = "";
 		}
@@ -1703,12 +1709,14 @@ if($mybb->input['action'] == "subscriptions")
 
 			if($mybb->settings['threadreadcut'] > 0)
 			{
-				$forum_read = $readforums[$thread['fid']];
-
 				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-				if($forum_read == 0 || $forum_read < $read_cutoff)
+				if(empty($readforums[$thread['fid']]) || $readforums[$thread['fid']] < $read_cutoff)
 				{
 					$forum_read = $read_cutoff;
+				}
+				else
+				{
+					$forum_read = $readforums[$thread['fid']];
 				}
 			}
 
@@ -1720,7 +1728,7 @@ if($mybb->input['action'] == "subscriptions")
 
 			if($thread['lastpost'] > $cutoff)
 			{
-				if($thread['lastread'])
+				if(!empty($thread['lastread']))
 				{
 					$lastread = $thread['lastread'];
 				}
@@ -1779,6 +1787,7 @@ if($mybb->input['action'] == "subscriptions")
 
 			// Build last post info
 			$lastpostdate = my_date('relative', $thread['lastpost']);
+			$lastposteruid = $thread['lastposteruid'];
 			if(!$lastposteruid && !$thread['lastposter'])
 			{
 				$lastposter = htmlspecialchars_uni($lang->guest);
@@ -1787,7 +1796,6 @@ if($mybb->input['action'] == "subscriptions")
 			{
 				$lastposter = htmlspecialchars_uni($thread['lastposter']);
 			}
-			$lastposteruid = $thread['lastposteruid'];
 
 			// Don't link to guest's profiles (they have no profile).
 			if($lastposteruid == 0)
@@ -2427,8 +2435,18 @@ if($mybb->input['action'] == "editsig")
 		{
 			$sigimgcode = $lang->off;
 		}
+
+		if($mybb->settings['siglength'] == 0)
+		{
+			$siglength = $lang->unlimited;
+		}
+		else
+		{
+			$siglength = $mybb->settings['siglength'];
+		}
+
 		$sig = htmlspecialchars_uni($sig);
-		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
+		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $siglength);
 
 		if($mybb->settings['sigmycode'] != 0 && $mybb->settings['bbcodeinserter'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
@@ -2470,7 +2488,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 		$avatar = upload_avatar();
-		if($avatar['error'])
+		if(!empty($avatar['error']))
 		{
 			$avatar_error = $avatar['error'];
 		}
@@ -2487,6 +2505,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			);
 			$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		}
+	}
+	elseif(!$mybb->settings['allowremoteavatars'] && !$_FILES['avatarupload']['name']) // missing avatar image
+	{
+		$avatar_error = $lang->error_avatarimagemissing;
 	}
 	elseif($mybb->settings['allowremoteavatars']) // remote avatar
 	{
@@ -3204,7 +3226,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
 				echo "\$(\"#buddylink\").remove();\n";
-				
+
 				if($mybb->get_input('manage') == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
@@ -3333,7 +3355,6 @@ if($mybb->input['action'] == "editlists")
 
 				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
 
-				echo $sentrequests;
 				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
 			}
 			else
@@ -3345,7 +3366,7 @@ if($mybb->input['action'] == "editlists")
 		exit;
 	}
 
-	$received_rows = '';
+	$received_rows = $bgcolor = '';
 	$query = $db->query("
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."buddyrequests r
@@ -3367,7 +3388,7 @@ if($mybb->input['action'] == "editlists")
 
 	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
 
-	$sent_rows = '';
+	$sent_rows = $bgcolor = '';
 	$query = $db->query("
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."buddyrequests r
@@ -3489,6 +3510,10 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 		$tidin = implode(",", $tidin);
 		$db->delete_query("threads", "tid IN ($tidin) AND visible='-2' AND uid='".$mybb->user['uid']."'");
 		$tidinp = "OR tid IN ($tidin)";
+	}
+	else
+	{
+		$tidinp = '';
 	}
 	if($pidin || $tidinp)
 	{
@@ -3613,7 +3638,7 @@ if($mybb->input['action'] == "usergroups")
 		if($mybb->get_input('do') == "joingroup" && $usergroup['type'] == 4)
 		{
 			$reasonlength = my_strlen($mybb->get_input('reason'));
-			
+
 			if($reasonlength > 250) // Reason field is varchar(250) in database
 			{
 				error($lang->sprintf($lang->joinreason_too_long, ($reasonlength - 250)));
@@ -3752,7 +3777,11 @@ if($mybb->input['action'] == "usergroups")
 	$usergroup = $usergroups[$mybb->user['usergroup']];
 	$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 	$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
-	$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
+	if($usergroup['description'])
+	{
+		$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
+		eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
+	}
 	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
@@ -3772,7 +3801,14 @@ if($mybb->input['action'] == "usergroups")
 	$showmemberof = false;
 	if($mybb->user['additionalgroups'])
 	{
-		$query = $db->simple_select("usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
+		$additionalgroups = implode(
+			',',
+			array_map(
+				'intval',
+				explode(',', $mybb->user['additionalgroups'])
+			)
+		);
+		$query = $db->simple_select("usergroups", "*", "gid IN (".$additionalgroups.") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
@@ -3827,7 +3863,14 @@ if($mybb->input['action'] == "usergroups")
 	$existinggroups = $mybb->user['usergroup'];
 	if($mybb->user['additionalgroups'])
 	{
-		$existinggroups .= ",".$mybb->user['additionalgroups'];
+		$additionalgroups = implode(
+			',',
+			array_map(
+				'intval',
+				explode(',', $mybb->user['additionalgroups'])
+			)
+		);
+		$existinggroups .= ",".$additionalgroups;
 	}
 
 	$joinablegroups = $joinablegrouplist = '';
@@ -3998,6 +4041,7 @@ if($mybb->input['action'] == "attachments")
 		++$processedattachments;
 	}
 
+	$multipage = '';
 	if($processedattachments >= $perpage || $page > 1)
 	{
 		$query = $db->query("
@@ -4257,6 +4301,7 @@ if(!$mybb->input['action'])
 	$mybb->user['posts'] = my_number_format($mybb->user['postnum']);
 
 	// Build referral link
+	$referral_info = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		$referral_link = $lang->sprintf($lang->referral_link, $settings['bburl'], $mybb->user['uid']);
@@ -4302,7 +4347,7 @@ if(!$mybb->input['action'])
 		while($subscription = $db->fetch_array($query))
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
-			if($forumpermissions['canview'] != 0 && $forumpermissions['canviewthreads'] != 0 && ($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid']))
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && (empty($forumpermissions['canonlyviewownthreads'])|| $subscription['uid'] == $mybb->user['uid']))
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -4342,6 +4387,7 @@ if(!$mybb->input['action'])
 
 				$icon_cache = $cache->read("posticons");
 				$threadprefixes = build_prefixes();
+				$latest_subscribed_threads = '';
 
 				foreach($subscriptions as $thread)
 				{
@@ -4382,14 +4428,14 @@ if(!$mybb->input['action'])
 							$icon = "&nbsp;";
 						}
 
-						if($thread['doticon'])
+						if(!isset($thread['doticon']))
 						{
 							$folder = "dot_";
 							$folder_label .= $lang->icon_dot;
 						}
 
 						// Check to see which icon we display
-						if($thread['lastread'] && $thread['lastread'] < $thread['lastpost'])
+						if(!empty($thread['lastread']) && $thread['lastread'] < $thread['lastpost'])
 						{
 							$folder .= "new";
 							$folder_label .= $lang->icon_new;
@@ -4538,7 +4584,7 @@ if(!$mybb->input['action'])
 		$latest_threads_threads = '';
 		foreach($threadcache as $thread)
 		{
-			$plugins->run_hooks("usercp_latest_threads_thread"); 
+			$plugins->run_hooks("usercp_latest_threads_thread");
 			if($thread['tid'])
 			{
 				$bgcolor = alt_trow();
@@ -4600,7 +4646,7 @@ if(!$mybb->input['action'])
 				$cutoff = 0;
 				if($thread['lastpost'] > $cutoff)
 				{
-					if($thread['lastread'])
+					if(!empty($thread['lastread']))
 					{
 						$lastread = $thread['lastread'];
 					}

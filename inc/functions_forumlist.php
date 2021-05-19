@@ -110,7 +110,7 @@ function build_forumbits($pid=0, $depth=1)
 					}
 				}
 
-				if($private_forums[$forum['fid']]['lastpost'])
+				if(!empty($private_forums[$forum['fid']]['lastpost']))
 				{
 					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
 
@@ -168,7 +168,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
-				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
+				if(isset($forum_info['lastpost']['lastpost']) && $forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
 				{
 					$lastpost_data = $forum_info['lastpost'];
 
@@ -429,19 +429,19 @@ function build_forumbits($pid=0, $depth=1)
 
 			// Check if this category is either expanded or collapsed and hide it as necessary.
 			$expdisplay = '';
-			$collapsed_name = "cat_{$forum['fid']}_c";
-			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			$collapsed_name = "cat_{$forum['fid']}_e";
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: none;")
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
 				$expthead = " thead_collapsed";
-				$expaltext = "[+]";
+				$expaltext = $lang->expcol_expand;
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
 				$expthead = "";
-				$expaltext = "[-]";
+				$expaltext = $lang->expcol_collapse;
 			}
 
 			// Swap over the alternate backgrounds
