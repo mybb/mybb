@@ -1954,7 +1954,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	if($mybb->input['exporttype'] == "html")
 	{
 		// Gather global stylesheet for HTML
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
+		$css_tid = empty($theme['tid']) ? '' : "'". (int)$theme['tid'] ."',";
+		$query = $db->simple_select("themestylesheets", "stylesheet", "tid in ({$css_tid}'2','1') AND name = 'global.css'", array('order_by' => 'tid', 'order_dir' => 'DESC', 'limit' => 1));
 		$css = $db->fetch_field($query, "stylesheet");
 	}
 
