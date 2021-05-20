@@ -2544,6 +2544,7 @@ if($mybb->input['action'] == "profile")
 		{
 			$memprofile['perm_ban'] = true;
 			$memprofile['banlength'] = $lang->permanent;
+			$memprofile['banned_class'] = "normal_banned";
 		}
 		else
 		{
@@ -2572,6 +2573,7 @@ if($mybb->input['action'] == "profile")
 				$memprofile['banned_class'] = "normal_banned";
 			}
 		}
+		eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
 
 		$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
 	}
