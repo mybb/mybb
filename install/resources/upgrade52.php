@@ -20,7 +20,7 @@
 
 @set_time_limit(0);
 
-function upgrade51_dbchanges()
+function upgrade52_dbchanges()
 {
 	global $output, $cache, $db, $mybb;
 
