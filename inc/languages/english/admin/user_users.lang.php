@@ -254,6 +254,9 @@ $l['suspend_for'] = "Suspend for:";
 $l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
 $l['suspend_length'] = "<p><small>Remaining Suspension: <span style=\"color: {2};\">{1}</span>.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
 
+$l['suspend_privatemessaging'] = "Suspend Private Messaging";
+$l['suspend_pm_info'] = "Suspend {1} from sending/receiving private messages.";
+
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendposting_error'] = "You selected to suspend this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
