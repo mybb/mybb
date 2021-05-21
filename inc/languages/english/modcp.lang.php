@@ -247,6 +247,7 @@ $l['mod_notes'] = "Moderator Notes";
 $l['moderation'] = "Moderator Options";
 $l['moderate_posts'] = "Moderate this user's posts";
 $l['suspend_posts'] = "Suspend this user's posting privileges";
+$l['suspend_pm'] = "Suspend this user's private messaging privileges";
 $l['modpost_length'] = "Moderate for:";
 $l['suspost_length'] = "Suspend for:";
 

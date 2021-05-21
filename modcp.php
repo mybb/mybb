@@ -2612,7 +2612,7 @@ if($mybb->input['action'] == "do_editprofile")
 			remove_avatars($user['uid']);
 		}
 
-		// Moderator "Options" (suspend signature, suspend/moderate posting)
+		// Moderator "Options" (suspend signature, suspend/moderate posting, suspend private messaging)
 		$moderator_options = array(
 			1 => array(
 				"action" => "suspendsignature", // The moderator action we're performing
@@ -2634,6 +2634,13 @@ if($mybb->input['action'] == "do_editprofile")
 				"time" => "suspost_time",
 				"update_field" => "suspendposting",
 				"update_length" => "suspensiontime"
+			),
+			4 => array(
+				"action" => "suspendprivatemessaging",
+				"period" => "suspm_period",
+				"time" => "suspm_time",
+				"update_field" => "suspendpm",
+				"update_length" => "pmsuspensiontime"
 			)
 		);
 
@@ -2700,7 +2707,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 		// Those with javascript turned off will be able to select both - cheeky!
 		// Check to make sure we're not moderating AND suspending posting
-		if(isset($extra_user_updates) && !empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
+		if(isset($extra_user_updates) && !empty($extra_user_updates['moderateposts']))
 		{
 			$errors[] = $lang->suspendmoderate_error;
 		}
@@ -3151,6 +3158,18 @@ if($mybb->input['action'] == "editprofile")
 		$suspost_checked = '';
 	}
 
+	// Do we mark the suspend posts box?
+	if($user['suspendpm'] || ($mybb->get_input('suspendpm', MyBB::INPUT_INT) && !empty($errors)))
+	{
+		$suspm_check = 1;
+		$suspm_checked = "checked=\"checked\"";
+	}
+	else
+	{
+		$suspm_check = 0;
+		$suspm_checked = '';
+	}
+
 	$moderator_options = array(
 		1 => array(
 			"action" => "suspendsignature", // The input action for this option
@@ -3172,6 +3191,13 @@ if($mybb->input['action'] == "editprofile")
 			"time" => "suspost_time",
 			"length" => "suspensiontime",
 			"select_option" => "suspost"
+		),
+		4 => array(
+			"action" => "suspendprivatemessaging",
+			"option" => "suspendpm",
+			"time" => "suspm_time",
+			"length" => "pmsuspensiontime",
+			"select_option" => "suspendprivatemessaging"
 		)
 	);
 
@@ -3183,8 +3209,8 @@ if($mybb->input['action'] == "editprofile")
 		"never" => $lang->expire_permanent
 	);
 
-	$suspendsignature_info = $moderateposts_info = $suspendposting_info = '';
-	$action_options = $modpost_options = $suspost_options = '';
+	$suspendsignature_info = $moderateposts_info = $suspendposting_info = $suspendpm_info = '';
+	$action_options = $modpost_options = $suspost_options = $suspm_options = '';
 	$modopts = array();
 	foreach($moderator_options as $option)
 	{
@@ -3217,6 +3243,9 @@ if($mybb->input['action'] == "editprofile")
 				case "suspendposting":
 					eval("\$suspendposting_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
 					break;
+				case "suspendpm":
+					eval("\$suspendpm_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
+					break;
 			}
 		}
 
@@ -3248,6 +3277,9 @@ if($mybb->input['action'] == "editprofile")
 				break;
 			case "suspendposting":
 				eval("\$suspost_options = \"".$templates->get("modcp_editprofile_select")."\";");
+				break;
+			case "suspendpm":
+				eval("\$suspm_options = \"".$templates->get("modcp_editprofile_select")."\";");
 				break;
 		}
 	}
