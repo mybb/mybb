@@ -3197,7 +3197,7 @@ if($mybb->input['action'] == "editprofile")
 			"option" => "suspendpm",
 			"time" => "suspm_time",
 			"length" => "pmsuspensiontime",
-			"select_option" => "suspendprivatemessaging"
+			"select_option" => "suspm"
 		)
 	);
 

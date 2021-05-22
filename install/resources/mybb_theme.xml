@@ -6787,6 +6787,7 @@ if(use_xmlhttprequest == "1")
 <!--
 	var mod_posts = '{$modpost_check}';
 	var susp_posts = '{$suspost_check}';
+	var susp_pm = '{$suspm_check}';
 // -->
 </script>
 </head>
@@ -6982,13 +6983,13 @@ if(use_xmlhttprequest == "1")
 								<fieldset class="trow1">
 									<legend><strong>{$lang->signature}</strong></legend>
 									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-<tr>
-<td class="trow1" width="80%">
-<textarea rows="15" cols="70" id="signature" name="signature">{$user['signature']}</textarea>
-{$codebuttons}
-</td>
-</tr>
-{$suspend_signature}
+										<tr>
+											<td class="trow1" width="80%">
+												<textarea rows="15" cols="70" id="signature" name="signature">{$user['signature']}</textarea>
+												{$codebuttons}
+											</td>
+										</tr>
+										{$suspend_signature}
 									</table>
 								</fieldset>
 							</td>
