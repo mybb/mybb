@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1823" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1827" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
