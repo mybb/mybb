@@ -267,11 +267,20 @@ else
 		{
 			$db->drop_table("upgrade_data");
 		}
+
+		$collation = $db->build_create_table_collation();
+		
+		$engine = '';
+		if($db->type == "mysql" || $db->type == "mysqli")
+		{
+			$engine = 'ENGINE=MyISAM';
+		}
+		
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
 			UNIQUE (title)
-		);");
+		) {$engine}{$collation};");
 
 		$dh = opendir(INSTALL_ROOT."resources");
 
