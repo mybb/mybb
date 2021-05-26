@@ -3158,7 +3158,7 @@ if($mybb->input['action'] == "editprofile")
 		$suspost_checked = '';
 	}
 
-	// Do we mark the suspend posts box?
+	// Do we mark the suspend pms box?
 	if($user['suspendpm'] || ($mybb->get_input('suspendpm', MyBB::INPUT_INT) && !empty($errors)))
 	{
 		$suspm_check = 1;
