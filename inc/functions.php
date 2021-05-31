@@ -606,7 +606,7 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 	$mail = &get_my_mailhandler();
 
 	// If MyBB's built-in SMTP mail handler is used, set the keep alive bit accordingly.
-	if(isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp' && $keep_alive == true && !empty($mail->keep_alive))
+	if($keep_alive == true && isset($mail->keep_alive) && isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp')
 	{
 		require_once MYBB_ROOT . "inc/class_mailhandler.php";
 		require_once MYBB_ROOT . "inc/mailhandlers/smtp.php";
