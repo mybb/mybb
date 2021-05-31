@@ -637,7 +637,7 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 		'continue_process' => &$continue_process,
 	);
 
-	$my_mail_parameters = $plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+	$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
 
 	// Build the mail message.
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
