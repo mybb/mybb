@@ -571,6 +571,7 @@ function &get_my_mailhandler($use_buitlin = false)
 
 		$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
 
+		// If no plugin creates the mail handler, resort to use the built-in one.
 		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
 		{
 			$my_mailhandler = &get_my_mailhandler(true);
@@ -600,7 +601,6 @@ function &get_my_mailhandler($use_buitlin = false)
 function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "text", $message_text = "", $return_email = "")
 {
 	global $mybb, $plugins;
-	static $mail;
 
 	// Get our mail handler.
 	$mail = &get_my_mailhandler();
