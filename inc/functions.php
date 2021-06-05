@@ -552,6 +552,65 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 }
 
 /**
+ * Get a mail handler instance, a MyBB's built-in SMTP / PHP mail hander or one created by a plugin.
+ * @param bool $use_buitlin Whether to use MyBB's built-in mail handler.
+ *
+ * @return object A MyBB built-in mail handler or one created by plugin(s).
+ */
+function &get_my_mailhandler($use_buitlin = false)
+{
+	global $mybb, $plugins;
+	static $my_mailhandler;
+	static $my_mailhandler_builtin;
+
+	if($use_buitlin)
+	{
+		// If our built-in mail handler doesn't exist, create it.
+		if(!is_object($my_mailhandler_builtin))
+		{
+			require_once MYBB_ROOT . "inc/class_mailhandler.php";
+
+			// Using SMTP.
+			if(isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp')
+			{
+				require_once MYBB_ROOT . "inc/mailhandlers/smtp.php";
+				$my_mailhandler_builtin = new SmtpMail();
+			}
+			// Using PHP mail().
+			else
+			{
+				require_once MYBB_ROOT . "inc/mailhandlers/php.php";
+				$my_mailhandler_builtin = new PhpMail();
+				if(!empty($mybb->settings['mail_parameters']))
+				{
+					$my_mailhandler_builtin->additional_parameters = $mybb->settings['mail_parameters'];
+				}
+			}
+		}
+
+		$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+
+		return $my_mailhandler_builtin;
+	}
+
+	// If our mail handler doesn't exist, create it.
+	if(!is_object($my_mailhandler))
+	{
+		require_once MYBB_ROOT . "inc/class_mailhandler.php";
+
+		$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+
+		// If no plugin has ever created the mail handler, resort to use the built-in one.
+		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
+		{
+			$my_mailhandler = &get_my_mailhandler(true);
+		}
+	}
+
+	return $my_mailhandler;
+}
+
+/**
  * Sends an email using PHP's mail function, formatting it appropriately.
  *
  * @param string $to Address the email should be addressed to.
@@ -564,51 +623,63 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
  * @param string $format The format of the email to be sent (text or html). text is default
  * @param string $message_text The text message of the email if being sent in html format, for email clients that don't support html
  * @param string $return_email The email address to return to. Defaults to admin return email address.
- * @return bool
+ * @return bool True if the mail is sent, false otherwise.
  */
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
-	global $mybb;
-	static $mail;
+	global $mybb, $plugins;
 
-	// Does our object not exist? Create it
-	if(!is_object($mail))
+	// Get our mail handler.
+	$mail = &get_my_mailhandler();
+
+	// If MyBB's built-in SMTP mail handler is used, set the keep alive bit accordingly.
+	if($keep_alive == true && isset($mail->keep_alive) && isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp')
 	{
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
-
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
-	}
-
-	// Using SMTP based mail
-	if($mybb->settings['mail_handler'] == 'smtp')
-	{
-		if($keep_alive == true)
+		require_once MYBB_ROOT . "inc/class_mailhandler.php";
+		require_once MYBB_ROOT . "inc/mailhandlers/smtp.php";
+		if($mail instanceof MailHandler && $mail instanceof SmtpMail)
 		{
 			$mail->keep_alive = true;
 		}
 	}
 
-	// Using PHP based mail()
-	else
+	// Following variables will help sequential plugins to determine how to process plugin hooks.
+	// Mark this variable true if the hooked plugin has sent the mail, otherwise don't modify it.
+	$is_mail_sent = false;
+	// Mark this variable false if the hooked plugin doesn't suggest sequential plugins to continue processing.
+	$continue_process = true;
+
+	$my_mail_parameters = array(
+		'to' => &$to,
+		'subject' => &$subject,
+		'message' => &$message,
+		'from' => &$from,
+		'charset' => &$charset,
+		'headers' => &$headers,
+		'keep_alive' => &$keep_alive,
+		'format' => &$format,
+		'message_text' => &$message_text,
+		'return_email' => &$return_email,
+		'is_mail_sent' => &$is_mail_sent,
+		'continue_process' => &$continue_process,
+	);
+
+	$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+
+	// Build the mail message.
+	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
+
+	$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+
+	// Check if the hooked plugins still suggest to send the mail.
+	if($continue_process)
 	{
-		if($mybb->settings['mail_parameters'] != '')
-		{
-			$mail->additional_parameters = $mybb->settings['mail_parameters'];
-		}
+		$is_mail_sent = $mail->send();
 	}
 
-	// Build and send
-	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
-	return $mail->send();
+	$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+
+	return $is_mail_sent;
 }
 
 /**
