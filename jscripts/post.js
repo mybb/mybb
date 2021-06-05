@@ -51,9 +51,12 @@ var Post = {
 
 					if (typeof MyBBEditor !== 'undefined' && MyBBEditor !== null) {
 						MyBBEditor.bind('valuechanged', function () {
-							MyBBEditor.val(
-								MyBBEditor.val().replace(/\[img]data:[a-z/]+;base64,[A-Za-z0-9+\/]+={0,2}\[\/img]/, '')
-							);
+							var oldValue = MyBBEditor.val();
+							var newValue = oldValue.replace(/\[img]data:[a-z/]+;base64,[A-Za-z0-9+\/]+={0,2}\[\/img]/, '');
+
+							if (oldValue !== newValue) {
+								MyBBEditor.val(newValue);
+							}
 						});
 					}
 				}).observe($message, {attributes: true});
