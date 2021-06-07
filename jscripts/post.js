@@ -41,6 +41,26 @@ var Post = {
 
 			Post.fileInput.parents().eq(1).hide();
 			Post.dropZone.parents().eq(1).show();
+
+			// prevent SCEditor from inserting [img] with data URI
+			var $message = document.querySelector('#message');
+
+			if ($message !== null) {
+				new MutationObserver(function () {
+					// run once #message is hidden by SCEditor, and the MyBBEditor instance becomes available
+
+					if (typeof MyBBEditor !== 'undefined' && MyBBEditor !== null) {
+						MyBBEditor.bind('valuechanged', function () {
+							var oldValue = MyBBEditor.val();
+							var newValue = oldValue.replace(/\[img]data:[a-z/]+;base64,[A-Za-z0-9+\/]+={0,2}\[\/img]/, '');
+
+							if (oldValue !== newValue) {
+								MyBBEditor.val(newValue);
+							}
+						});
+					}
+				}).observe($message, {attributes: true});
+			}
 		});
 	},
 
