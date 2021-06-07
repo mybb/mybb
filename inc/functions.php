@@ -1052,7 +1052,7 @@ function redirect($url, $message = "", $title = "", $force_redirect = false)
 	}
 
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
-	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && (!$mybb->user['uid'] || !$mybb->user['showredirect'] == 1)))
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && (!$mybb->user['uid'] || $mybb->user['showredirect'] == 1)))
 	{
 		$url = str_replace("&amp;", "&", $url);
 
