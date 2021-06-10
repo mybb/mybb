@@ -4290,27 +4290,63 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
-		$visible = "AND t.visible != 0";
-		if(is_moderator() == true)
+		$where = array(
+			"s.uid='{$mybb->user['uid']}'",
+			"t.lastposteruid!='{$mybb->user['uid']}'"
+		);
+
+		$where_visible = [
+			"t.visible='1'"
+		];
+
+		if($unviewable = get_unviewable_forums(true))
 		{
-			$visible = '';
+			$where[] = "t.fid NOT IN ({$unviewable})";
 		}
+
+		if($inactive = get_inactive_forums())
+		{
+			$where[] = "t.fid NOT IN ({$inactive})";
+		}
+
+		$visible_perms = fetch_forum_visible_permissions();
+
+		if(!empty($visible_perms['all']))
+		{
+			$where_visible[] = "t.fid IN (".implode(',', $visible_perms['all']).")";
+		}
+
+		if(!empty($visible_perms['unapproved_only']))
+		{
+			$where_visible[] = "(t.fid IN (".implode(',', $visible_perms['unapproved_only']).") AND t.visible='0')";
+		}
+
+		if(!empty($visible_perms['deleted_only']))
+		{
+			$where_visible[] = "(t.fid IN (".implode(',', $visible_perms['deleted_only']).") AND t.visible='-1')";
+		}
+
+		$where[] = '('.implode(' OR ', $where_visible).')';
+
+		$where = implode(' AND ', $where);
 
 		$query = $db->query("
 			SELECT s.*, t.*, t.username AS threadusername, u.username
 			FROM ".TABLE_PREFIX."threadsubscriptions s
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE s.uid='".$mybb->user['uid']."' {$visible}
+			WHERE {$where}
 			ORDER BY t.lastpost DESC
 			LIMIT 0, 10
 		");
 
 		$fpermissions = forum_permissions();
+
 		while($subscription = $db->fetch_array($query))
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
-			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && (empty($forumpermissions['canonlyviewownthreads'])|| $subscription['uid'] == $mybb->user['uid']))
+
+			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}

@@ -4445,6 +4445,85 @@ function get_unviewable_forums($only_readable_threads=false)
 }
 
 /**
+ * Fetch the forum visible permissions for a specific forum, user or group
+ *
+ * @param int $fid The forum ID to build permissions for (0 builds for all forums)
+ * @param int $uid The user to build the permissions for (0 will select the uid automatically)
+ * @param int $gid The group of the user to build permissions for (0 will fetch it)
+ * @return array Forum visible states for the specific forum or forums
+ */
+function fetch_forum_visible_permissions($fid=0, $uid=0, $gid=0)
+{
+	global $mybb;
+
+	$forum_visible_states = array();
+
+	$forumpermissions = forum_permissions($fid, $uid, $gid);
+
+	$returnData = array(
+		'all' => array(),
+		'deleted_only' => array(),
+		'unapproved_only' => array(),
+	);
+
+	$forum_visible_states[-1] = [1, -1];
+
+	$forum_visible_states[-10] = [1, 0];
+
+	foreach($forumpermissions as $fid => $fpermissions)
+	{
+		if(!isset($forum_visible_states[$fid]))
+		{
+			$forum_visible_states[$fid] = array(1);
+		}
+
+		if($fpermissions['canviewdeletionnotice'])
+		{
+			$forum_visible_states[$fid][] = -1;
+		}
+
+		if(is_moderator($fid))
+		{
+			if(is_moderator($fid, 'canviewdeleted') == true)
+			{
+				$forum_visible_states[$fid][] = -1;
+			}
+
+			if(is_moderator($fid, 'canviewunapprove') == true)
+			{
+				$forum_visible_states[$fid][] = 0;
+			}
+		}
+
+		$forum_visible_states[$fid] = array_unique($forum_visible_states[$fid]);
+	}
+
+	foreach($forum_visible_states as $fid => $visible_status)
+	{
+		if(count(array_intersect(array(1, 0, -1), $visible_status)) === count(array(1, 0, -1)))
+		{
+			$returnData['all'][] = $fid;
+
+			continue;
+		}
+
+		if(count(array_intersect(array(1, 0), $visible_status)) === count(array(1, 0)))
+		{
+			$returnData['unapproved_only'][] = $fid;
+
+			continue;
+		}
+
+		if(count(array_intersect(array(1, -1), $visible_status)) === count(array(1, -1)))
+		{
+			$returnData['deleted_only'][] = $fid;
+		}
+	}
+
+	return $returnData;
+}
+
+/**
  * Fixes mktime for dates earlier than 1970
  *
  * @param string $format The date format to use
