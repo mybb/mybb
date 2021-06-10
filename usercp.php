@@ -4291,42 +4291,10 @@ if(!$mybb->input['action'])
 	if($db->num_rows($query))
 	{
 		$where = array(
-			"s.uid='{$mybb->user['uid']}'",
-			"t.lastposteruid!='{$mybb->user['uid']}'"
+			"s.uid={$mybb->user['uid']}",
+			"t.lastposteruid!={$mybb->user['uid']}",
+			get_visible_where('t')
 		);
-
-		$where_visible = [
-			"t.visible='1'"
-		];
-
-		if($unviewable = get_unviewable_forums(true))
-		{
-			$where[] = "t.fid NOT IN ({$unviewable})";
-		}
-
-		if($inactive = get_inactive_forums())
-		{
-			$where[] = "t.fid NOT IN ({$inactive})";
-		}
-
-		$visible_perms = fetch_forum_visible_permissions();
-
-		if(!empty($visible_perms['all']))
-		{
-			$where_visible[] = "t.fid IN (".implode(',', $visible_perms['all']).")";
-		}
-
-		if(!empty($visible_perms['unapproved_only']))
-		{
-			$where_visible[] = "(t.fid IN (".implode(',', $visible_perms['unapproved_only']).") AND t.visible='0')";
-		}
-
-		if(!empty($visible_perms['deleted_only']))
-		{
-			$where_visible[] = "(t.fid IN (".implode(',', $visible_perms['deleted_only']).") AND t.visible='-1')";
-		}
-
-		$where[] = '('.implode(' OR ', $where_visible).')';
 
 		$where = implode(' AND ', $where);
 
