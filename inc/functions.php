@@ -4466,10 +4466,6 @@ function fetch_forum_visible_permissions($fid=0, $uid=0, $gid=0)
 		'unapproved_only' => array(),
 	);
 
-	$forum_visible_states[-1] = [1, -1];
-
-	$forum_visible_states[-10] = [1, 0];
-
 	foreach($forumpermissions as $fid => $fpermissions)
 	{
 		if(!isset($forum_visible_states[$fid]))
