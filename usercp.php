@@ -32,6 +32,7 @@ $templatelist .= ",usercp_addsubscription_thread,forumdisplay_password,forumdisp
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
