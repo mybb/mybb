@@ -1581,7 +1581,7 @@ if($mybb->input['action'] == "subscriptions")
 		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE s.uid='".$mybb->user['uid']."' and t.visible >= 0 {$visible}
+		WHERE {$where}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
@@ -1589,7 +1589,7 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid']))
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid'])
 		{
 			// Hmm, you don't have permission to view this thread - unsubscribe!
 			$del_subscriptions[] = $subscription['sid'];
@@ -4511,17 +4511,7 @@ if(!$mybb->input['action'])
 	$fpermissions = forum_permissions();
 	while($thread = $db->fetch_array($query))
 	{
-		// Moderated, and not moderator?
-		if($thread['visible'] == 0 && is_moderator($thread['fid'], "canviewunapprove") === false)
-		{
-			continue;
-		}
-
-		$forumpermissions = $fpermissions[$thread['fid']];
-		if($forumpermissions['canview'] != 0 || $forumpermissions['canviewthreads'] != 0)
-		{
-			$threadcache[$thread['tid']] = $thread;
-		}
+		$threadcache[$thread['tid']] = $thread;
 	}
 
 	$latest_threads = '';
