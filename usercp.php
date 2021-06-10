@@ -1514,18 +1514,29 @@ if($mybb->input['action'] == "subscriptions")
 	$plugins->run_hooks("usercp_subscriptions_start");
 
 	// Thread visiblity
-	$visible = "AND t.visible != 0";
-	if(is_moderator() == true)
+	$where = array(
+		"s.uid={$mybb->user['uid']}",
+		get_visible_where('t')
+	);
+
+	if($unviewable_forums = get_unviewable_forums(true))
 	{
-		$visible = '';
+		$where[] = "t.fid NOT IN ({$unviewable_forums})";
 	}
+
+	if($inactive_forums = get_inactive_forums())
+	{
+		$where[] = "t.fid NOT IN ({$inactive_forums})";
+	}
+
+	$where = implode(' AND ', $where);
 
 	// Do Multi Pages
 	$query = $db->query("
-		SELECT COUNT(ts.tid) as threads
-		FROM ".TABLE_PREFIX."threadsubscriptions ts
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
-		WHERE ts.uid = '".$mybb->user['uid']."' AND t.visible >= 0 {$visible}
+		SELECT COUNT(s.tid) as threads
+		FROM ".TABLE_PREFIX."threadsubscriptions s
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = s.tid)
+		WHERE {$where}
 	");
 	$threadcount = $db->fetch_field($query, "threads");
 
@@ -4296,6 +4307,16 @@ if(!$mybb->input['action'])
 			get_visible_where('t')
 		);
 
+		if($unviewable_forums = get_unviewable_forums(true))
+		{
+			$where[] = "t.fid NOT IN ({$unviewable_forums})";
+		}
+	
+		if($inactive_forums = get_inactive_forums())
+		{
+			$where[] = "t.fid NOT IN ({$inactive_forums})";
+		}
+
 		$where = implode(' AND ', $where);
 
 		$query = $db->query("
@@ -4458,31 +4479,28 @@ if(!$mybb->input['action'])
 	}
 
 	// User's Latest Threads
+	$where = array(
+		"t.uid={$mybb->user['uid']}",
+		get_visible_where('t')
+	);
 
-	// Get unviewable forums
-	$f_perm_sql = '';
-	$unviewable_forums = get_unviewable_forums();
-	$inactiveforums = get_inactive_forums();
-	if($unviewable_forums)
+	if($unviewable_forums = get_unviewable_forums(true))
 	{
-		$f_perm_sql = " AND t.fid NOT IN ($unviewable_forums)";
-	}
-	if($inactiveforums)
-	{
-		$f_perm_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where[] = "t.fid NOT IN ({$unviewable_forums})";
 	}
 
-	$visible = " AND t.visible != 0";
-	if(is_moderator() == true)
+	if($inactive_forums = get_inactive_forums())
 	{
-		$visible = '';
+		$where[] = "t.fid NOT IN ({$inactive_forums})";
 	}
+
+	$where = implode(' AND ', $where);
 
 	$query = $db->query("
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible}{$f_perm_sql}
+		WHERE {$where}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");
