@@ -152,7 +152,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		if($user['location1'])
 		{
-			++$forum_viewers[$user['location1']];
+			if(isset($forum_viewers[$user['location1']]))
+			{
+				++$forum_viewers[$user['location1']];
+			}
+			else
+			{
+				$forum_viewers[$user['location1']] = 1;
+			}
 		}
 	}
 

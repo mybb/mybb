@@ -788,7 +788,7 @@ $(function() {
 		$fields_array = $db->show_fields_from("forumpermissions");
 		foreach($fields_array as $field)
 		{
-			if(!in_array($field['field'], $hidefields) && (strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false))
+			if(!in_array($field['Field'], $hidefields) && (strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false))
 			{
 				if(array_key_exists($field['Field'], $groups))
 				{
