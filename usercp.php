@@ -4365,8 +4365,6 @@ if(!$mybb->input['action'])
 
 			if($subscriptions)
 			{
-				$latest_subscribed_threads = '';
-
 				if($mybb->settings['dotfolders'] != 0)
 				{
 					$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
