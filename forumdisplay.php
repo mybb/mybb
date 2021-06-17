@@ -83,9 +83,9 @@ if($mybb->user['uid'] == 0)
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 
-	if(is_array($forumsread) && empty($forumsread))
-	{
-		if(isset($mybb->cookies['mybb']['readallforums']))
+ 	if(is_array($forumsread) && empty($forumsread))
+ 	{
+ 		if(isset($mybb->cookies['mybb']['readallforums']))
 		{
 			$forumsread[$fid] = $mybb->cookies['mybb']['lastvisit'];
 		}
@@ -93,7 +93,7 @@ if($mybb->user['uid'] == 0)
 		{
 			$forumsread = [];
 		}
-	}
+ 	}
 
 	$query = $db->simple_select("forums", "*", "active != 0", ["order_by" => "pid, disporder"]);
 }

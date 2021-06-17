@@ -86,6 +86,16 @@ if($pmid > 0)
 
 // Get some navigation if we need it
 $mybb->input['action'] = $mybb->get_input('action');
+switch($mybb->input['action'])
+{
+	case "reports":
+		add_breadcrumb($lang->reported_posts);
+		break;
+	case "allreports":
+		add_breadcrumb($lang->all_reported_posts);
+		break;
+
+}
 
 if(isset($thread))
 {
@@ -438,9 +448,16 @@ switch($mybb->input['action'])
 			'approveunapprovethread' => $lang->approve_unapprove_thread
 		);
 
-		$forum_stats = $cache->read("forumsdisplay");
-
-		if(is_moderator($fid, 'canusecustomtools') && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$fid]['modtools'])))
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+				break;
+			default:
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+		}
+		while($tool = $db->fetch_array($query))
 		{
 			$actions['modtool_'.$tool['tid']] = $tool['name'];
 		}
@@ -3264,7 +3281,7 @@ switch($mybb->input['action'])
 				}
 
 				$custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids);
-				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
@@ -3295,7 +3312,7 @@ switch($mybb->input['action'])
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tid);
-				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($ret == 'forum')
 				{
@@ -3341,7 +3358,7 @@ switch($mybb->input['action'])
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids, $pids);
-				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
