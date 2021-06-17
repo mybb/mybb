@@ -689,43 +689,23 @@ if($mybb->input['action'] == "results")
 			eval("\$selectall = \"".$templates->get("search_threads_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = '';
-			$forum_stats = $cache->read("forumsdisplay");
-
-			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
+			switch($db->type)
 			{
-				$gids = explode(',', $mybb->user['additionalgroups']);
-				$gids[] = $mybb->user['usergroup'];
-				$gids = array_filter(array_unique($gids));
-				$gidswhere = '';
-
-				switch($db->type)
-				{
-					case "pgsql":
-					case "sqlite":
-						foreach($gids as $gid)
-						{
-							$gid = (int)$gid;
-							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
-						}
-						break;
-					default:
-						foreach($gids as $gid)
-						{
-							$gid = (int)$gid;
-							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
-						}
-				}
-
-				$query = $db->simple_select("modtools", "tid, name", "type = 't' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
-
-				while($tool = $db->fetch_array($query))
-				{
-					eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
-				}
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
+					break;
+				default:
+					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
 			}
 
+			while($tool = $db->fetch_array($query))
+			{
+				$tool['name'] = htmlspecialchars_uni($tool['name']);
+				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
+			}
 			// Build inline moderation dropdown
-			if($customthreadtools)
+			if(!empty($customthreadtools))
 			{
 				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
 			}
@@ -1117,44 +1097,23 @@ if($mybb->input['action'] == "results")
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 
-			$customposttools = '';
-			$forum_stats = $cache->read("forumsdisplay");
-
-			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
+			$customthreadtools = $customposttools = '';
+			switch($db->type)
 			{
-				$gids = explode(',', $mybb->user['additionalgroups']);
-				$gids[] = $mybb->user['usergroup'];
-				$gids = array_filter(array_unique($gids));
-				$gidswhere = '';
-
-				switch($db->type)
-				{
-					case "pgsql":
-					case "sqlite":
-						foreach($gids as $gid)
-						{
-							$gid = (int)$gid;
-							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
-						}
-						break;
-					default:
-						foreach($gids as $gid)
-						{
-							$gid = (int)$gid;
-							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
-						}
-				}
-
-				$query = $db->simple_select("modtools", "tid, name", "type = 'p' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
-
-				while($tool = $db->fetch_array($query))
-				{
-					eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
-				}
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
+					break;
+				default:
+					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
 			}
 
+			while($tool = $db->fetch_array($query))
+			{
+				eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
+			}
 			// Build inline moderation dropdown
-			if($customposttools)
+			if(!empty($customposttools))
 			{
 				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
 			}
