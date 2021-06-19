@@ -448,14 +448,6 @@ table {
 	color: #999;
 }
 
-.lastpost_subject {
-	display: inline-block;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	width: 200px;
-}
-
 .post.unapproved_post .post_author {
 	border-bottom-color: #ffb8be;
 }
@@ -3757,8 +3749,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <br />]]></template>
 		<template name="forumbit_depth1_cat_subforum" version="1400"><![CDATA[<tr>
 <td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$sub_forums}]]></template>
-		<template name="forumbit_depth1_forum_lastpost" version="1827"><![CDATA[<span class="lastpost_subject smalltext">
-<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$full_lastpost_subject}</strong></a>
+		<template name="forumbit_depth1_forum_lastpost" version="1800"><![CDATA[<span class="smalltext">
+<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
 		<template name="forumbit_depth2_cat" version="1804"><![CDATA[<tr>
 <td class="{$bgcolor}" align="center" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
@@ -3778,8 +3770,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <td class="{$bgcolor}" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth2_forum_lastpost" version="1827"><![CDATA[<span class="lastpost_subject smalltext">
-<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$full_lastpost_subject}</strong></a>
+		<template name="forumbit_depth2_forum_lastpost" version="1800"><![CDATA[<span class="smalltext">
+<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
 		<template name="forumbit_depth2_forum_lastpost_hidden" version="1800"><![CDATA[<div style="text-align: center;">-</div>]]></template>
 		<template name="forumbit_depth2_forum_lastpost_never" version="1800"><![CDATA[<div style="text-align: center;">{$lang->lastpost_never}</div>]]></template>
