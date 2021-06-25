@@ -333,8 +333,8 @@ $l['unapproved_attachments'] = "{1} unapproved attachments";
 $l['unread_report'] = "1 unread report";
 $l['unread_reports'] = "{1} unread reports";
 $l['groupleader_notice'] = "Group Leader Notice:";
-$l['pending_joinrequest'] = "1 pending group membership join request.";
-$l['pending_joinrequests'] = "{1} pending group membership join requests.";
+$l['pending_joinrequest'] = "1 pending group membership join request";
+$l['pending_joinrequests'] = "{1} pending group membership join requests";
 
 $l['search_user'] = "Search for a user";
 
