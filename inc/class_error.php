@@ -171,9 +171,14 @@ class errorHandler {
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		if(!isset($mybb->settings['errortypemedium']) || !in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
 			$mybb->settings['errortypemedium'] = "none";
+		}
+
+		if(!isset($mybb->settings['errorlogmedium']))
+		{
+			$mybb->settings['errorlogmedium'] = 'none';
 		}
 
 		if(defined("IN_TASK"))
@@ -382,7 +387,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if(!$mybb->settings['adminemail'])
+		if(empty($mybb->settings['adminemail']))
 		{
 			return false;
 		}
@@ -423,7 +428,7 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
-		if(!$mybb->settings['bbname'])
+		if(empty($mybb->settings['bbname']))
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
