@@ -109,6 +109,12 @@ if(empty($config['admin_dir']))
 // Load Settings
 $settings = array();
 
+if(file_exists(MYBB_ROOT."inc/settings.php"))
+{
+	require_once MYBB_ROOT."inc/settings.php";
+	$mybb->settings = $settings;
+}
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -176,12 +182,7 @@ $lang->set_path(MYBB_ROOT."inc/languages");
 $cache->cache();
 
 // Load Settings
-if(file_exists(MYBB_ROOT."inc/settings.php"))
-{
-	require_once MYBB_ROOT."inc/settings.php";
-}
-
-if(!file_exists(MYBB_ROOT."inc/settings.php") || empty($settings))
+if(empty($settings))
 {
 	rebuild_settings();
 }
