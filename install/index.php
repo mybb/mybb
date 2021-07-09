@@ -2453,6 +2453,10 @@ function install_done()
 	$cache->update_threadprefixes();
 	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
+	$cache->update("mostonline", array(
+		'numusers' => 0,
+		'time' => 0,
+    ));
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$cache->update_default_theme();
 	$cache->update_reportreasons(true);
