@@ -154,8 +154,8 @@ class errorHandler {
 	{
 		global $mybb;
 
-		// Error reporting turned off (either globally or by @ before erroring statement)
-		if(error_reporting() == 0)
+		// Error reporting turned off for this type
+		if((error_reporting() & $type) == 0)
 		{
 			return true;
 		}
