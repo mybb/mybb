@@ -42,6 +42,7 @@ if($mybb->settings['statsenabled'] != 0)
 	eval('$statspage = "'.$templates->get('index_statspage').'";');
 }
 
+$onlinecount = null;
 $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
@@ -347,7 +348,7 @@ if($mybb->settings['showindexstats'] != 0)
 
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
-	if($onlinecount > $mostonline['numusers'])
+	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;

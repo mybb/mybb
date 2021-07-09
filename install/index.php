@@ -1691,13 +1691,13 @@ function create_tables()
 		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
 		$val = preg_replace('#;$#', $db->build_create_table_collation().";", $val);
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
-		if($match[1])
+		if(!empty($match[1]))
 		{
 			$db->drop_table($match[1], false, false);
 			echo $lang->sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);
-		if($match[1])
+		if(!empty($match[1]))
 		{
 			echo $lang->done . "<br />\n";
 		}

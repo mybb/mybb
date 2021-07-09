@@ -196,7 +196,7 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
 			$cache_data = $db->fetch_array($query);
 
-			if(!$cache_data['title'])
+			if(empty($cache_data['title']))
 			{
 				$data = false;
 			}

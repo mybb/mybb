@@ -385,6 +385,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$updatepost = array(
 			"pid" => $post['pid'],
 			"tid" => $thread['tid'],
+			"fid" => $forum['fid'],
 			"prefix" => $thread['prefix'],
 			"subject" => $subject,
 			"edit_uid" => $mybb->user['uid']

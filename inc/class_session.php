@@ -434,6 +434,8 @@ class session
 		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybb->user['displaygroup'] = $mybb->user['usergroup'];
+		$mybb->user['additionalgroups'] = '';
+		$mybb->user['invisible'] = 0;
 
 		// Set spider language
 		if($spider['language'] && $lang->language_exists($spider['language']))
@@ -522,13 +524,14 @@ class session
 			$db->delete_query("sessions", "uid='{$uid}'");
 			$onlinedata['uid'] = $uid;
 		}
-		// Is a spider - delete all other spider references
-		else if($this->is_spider == true)
-		{
-			$db->delete_query("sessions", "sid='{$this->sid}'");
-		}
 		else
 		{
+			// Is a spider - delete all other spider references
+			if($this->is_spider == true)
+			{
+				$db->delete_query("sessions", "sid='{$this->sid}'");
+			}
+
 			$onlinedata['uid'] = 0;
 		}
 
