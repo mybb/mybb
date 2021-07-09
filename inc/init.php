@@ -180,27 +180,7 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 
 if(!file_exists(MYBB_ROOT."inc/settings.php") || empty($settings))
 {
-	if(function_exists('rebuild_settings'))
-	{
-		rebuild_settings();
-	}
-	else
-	{
-		$options = array(
-			"order_by" => "title",
-			"order_dir" => "ASC"
-		);
-
-		$query = $db->simple_select("settings", "value, name", "", $options);
-
-		$settings = array();
-		while($setting = $db->fetch_array($query))
-		{
-			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
-			$settings[$setting['name']] = $setting['value'];
-		}
-		$db->free_result($query);
-	}
+	rebuild_settings();
 }
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
