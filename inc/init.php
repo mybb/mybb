@@ -106,6 +106,9 @@ if(empty($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
+// Load Settings
+$settings = array();
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
