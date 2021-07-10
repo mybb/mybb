@@ -154,8 +154,8 @@ class errorHandler {
 	{
 		global $mybb;
 
-		// Error reporting turned off (either globally or by @ before erroring statement)
-		if(error_reporting() == 0)
+		// Error reporting turned off for this type
+		if((error_reporting() & $type) == 0)
 		{
 			return true;
 		}
@@ -171,9 +171,14 @@ class errorHandler {
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		if(!isset($mybb->settings['errortypemedium']) || !in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
 			$mybb->settings['errortypemedium'] = "none";
+		}
+
+		if(!isset($mybb->settings['errorlogmedium']))
+		{
+			$mybb->settings['errorlogmedium'] = 'none';
 		}
 
 		if(defined("IN_TASK"))
@@ -382,7 +387,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if(!$mybb->settings['adminemail'])
+		if(empty($mybb->settings['adminemail']))
 		{
 			return false;
 		}
@@ -423,7 +428,7 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
-		if(!$mybb->settings['bbname'])
+		if(empty($mybb->settings['bbname']))
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
@@ -545,9 +550,24 @@ class errorHandler {
 
 		$contact_site_owner = '';
 		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+		if(
+			!empty($mybb->settings['contactlink']) &&
+			!empty($mybb->settings['contact']) &&
+			!$is_in_contact &&
+			(
+				$mybb->settings['contactlink'] == "contact.php" &&
+				(
+					($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
+					$mybb->user['uid'] > 0
+				)
+			) ||
+			$mybb->settings['contactlink'] != "contact.php"
+		)
 		{
-			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+			if(
+				!my_validate_url($mybb->settings['contactlink'], true, true) &&
+				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+			)
 			{
 				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}

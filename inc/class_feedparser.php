@@ -137,9 +137,13 @@ class FeedParser
 				$item['title'] = $feed_item['title']['value'];
 			}
 
-			if(array_key_exists("description", $feed_item))
+			if(isset($feed_item['description']['value']))
 			{
 				$item['description'] = $feed_item['description']['value'];
+			}
+			else
+			{
+				$item['description'] = '';
 			}
 
 			if(array_key_exists("link", $feed_item))

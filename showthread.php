@@ -617,17 +617,18 @@ if($mybb->input['action'] == "thread")
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
 		if(isset($alreadyvoted) || isset($showresults) || isset($nopermission))
 		{
-			if($alreadyvoted)
+			$undovote = '';
+
+			if(isset($alreadyvoted))
 			{
 				$pollstatus = $lang->already_voted;
 
-				$undovote = '';
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
 					eval("\$undovote = \"".$templates->get("showthread_poll_undovote")."\";");
 				}
 			}
-			elseif($nopermission)
+			elseif(isset($nopermission))
 			{
 				$pollstatus = $lang->no_voting_permission;
 			}
