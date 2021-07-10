@@ -340,7 +340,6 @@ $l['redirect_avatarupdated'] = "Your avatar has been successfully changed.<br />
 $l['error_noavatar'] = "You did not choose an avatar. Please go back and do so now. If you don't want an avatar, select the \"No avatar\" option.";
 $l['error_avatartype'] = "Invalid file type. An uploaded avatar must be in GIF, JPEG, BMP or PNG format.";
 $l['error_alreadyingroup'] = "The user specified is already a part of the user group.";
-$l['error_usercp_return_date_past'] = "You cannot return in the past!";
 $l['error_avatarresizefailed'] = "Your avatar was unable to be resized so that it is within the required dimensions.";
 $l['error_avataruserresize'] = "You can also try checking the 'attempt to resize my avatar' check box and uploading the same image again.";
 $l['avatar_auto_resize_note'] = "If your avatar is too large, it will automatically be resized.";
