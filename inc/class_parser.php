@@ -400,14 +400,6 @@ class postParser
 			++$callback_count;
 		}
 
-		if($mybb->settings['allowfontmycode'] == 1)
-		{
-			$callback_mycode['font']['regex'] = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
-			$callback_mycode['font']['replacement'] = array($this, 'mycode_parse_font_callback');
-
-			++$nestable_count;
-		}
-
 		if($mybb->settings['allowalignmycode'] == 1)
 		{
 			$nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
@@ -511,6 +503,15 @@ class postParser
 		}
 
 		$message = str_replace('$', '&#36;', $message);
+
+		// Convert nestable font tags, replacing double-quotes in the list of fonts with single quotes (replacement performed in the callback).
+		if($mybb->settings['allowfontmycode']) {
+			$font_regex = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
+			while(preg_match($font_regex, $message))
+			{
+				$message = preg_replace_callback($font_regex, array($this, 'mycode_parse_font_callback'), $message);
+			}
+		}
 
 		// Replace the rest
 		if($this->mycode_cache['standard_count'] > 0)
