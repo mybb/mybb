@@ -1,4 +1,4 @@
-$(function ($) {
+; (function ($) {
 	'use strict';
 
 	var mybbCmd = {
@@ -47,6 +47,85 @@ $(function ($) {
 				'html': '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			}
 		}
+	}, autoUpload = function (file, postEmbed) {
+		let form = new FormData(), endPoint = '';
+	
+		form.append('image', file);
+		let settings = {
+			method: 'post',
+			body: form
+		};
+	
+		if (postEmbed.host == "imgur") {
+			endPoint = 'https://api.imgur.com/3/image';
+			settings['headers'] = new Headers({
+				'authorization': 'Client-ID ' + postEmbed.clientKey
+			});
+		} else if (postEmbed.host == "imgbb") {
+			endPoint = 'https://api.imgbb.com/1/upload?key=' + postEmbed.clientKey;
+		} else { // Fallback to local
+			endPoint = 'xmlhttp.php?action=upload_postembed&my_post_key=' + my_post_key;
+		}
+	
+		if (endPoint.length > 0) {
+			return fetch(endPoint, settings).then(function (response) {
+				return response.json();
+			}).then(function (result) {
+				if (result.success) {
+					switch (postEmbed.host) {
+						case 'imgur':
+							return result.data.link;
+						case 'imgbb':
+							return result.data.url;
+						default:
+							return result.data.url;
+					}
+				} else {
+					if (result.errors) {
+						// xmlhttp_error(); jGrowl it?
+					}
+					throw 'Upload error';
+				}
+			});
+		}
+	}, dragDropHandler = {
+		allowedTypes: ['image/jpeg', 'image/png'],
+		isAllowed: function (file) {
+			if(!postEmbed.enabled || dragDropHandler.allowedTypes.indexOf(file.type) < 0) {
+				return false;
+			}
+
+			// Reset upload to local if key is not provided
+			if (!postEmbed.clientKey.trim()) {
+				postEmbed.host = 'local';
+			}
+			
+			const supportedAPIs = ['imgur', 'imgbb'];
+			
+			if((supportedAPIs.indexOf(postEmbed.host) > -1) || (postEmbed.host === 'local' && use_xmlhttprequest == "1")) {
+				return true;
+			}
+			return false;
+		},
+		handlePaste: true,
+		handleFile: function (file, createPlaceholder) {
+			var placeholder = createPlaceholder();
+			autoUpload(file, postEmbed).then(function (url) {
+				placeholder.insert('<img src=\'' + url + '\' />');
+			}).catch(function () {
+				placeholder.cancel();
+			});
+		}
+	}, editorOpts = {
+		plugins: "undo, dragdrop",
+		format: "bbcode",
+		bbcodeTrim: false,
+		locale: "mybblang",
+		width: "100%",
+		enablePasteFiltering: true,
+		dragdrop: dragDropHandler,
+		autoUpdate: true,
+		emoticonsCompat: true
 	};
 
 	// Add custom MyBB CSS
@@ -203,7 +282,7 @@ $(function ($) {
 				};
 
 			for (var i = 1; i <= 7; i++)
-				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font style="font-size: ' + mybbCmd.fsStr[i-1] + '">' + i + '</font></a>').on('click', clickFunc));
+				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font style="font-size: ' + mybbCmd.fsStr[i - 1] + '">' + i + '</font></a>').on('click', clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content.get(0));
 		},
@@ -294,15 +373,15 @@ $(function ($) {
 			var editor_body = $('body', iframe.contents());
 
 			if (typeof font == 'string' && font != '' && font != 'defaultattr'
-			    &&
-			    // Eliminate redundant [font] tags for unformatted text.
-			    // Part of the fix for the browser-dependent bug of issue #4184.
-			    font != editor_body.css('font-family')) {
+				&&
+				// Eliminate redundant [font] tags for unformatted text.
+				// Part of the fix for the browser-dependent bug of issue #4184.
+				font != editor_body.css('font-family')) {
 				font = font.trim();
 				// Strip all-enclosing double quotes from fonts so long as
 				// they are the only double quotes present...
-				if (font[0] == '"' && font[font.length-1] == '"' && (font.match(/"/g) || []).length == 2) {
-					font = font.substr(1, font.length-2);
+				if (font[0] == '"' && font[font.length - 1] == '"' && (font.match(/"/g) || []).length == 2) {
+					font = font.substr(1, font.length - 2);
 				}
 				// ...and then replace any other occurrence(s) of double quotes
 				// in fonts with single quotes.
@@ -342,8 +421,8 @@ $(function ($) {
 			// Eliminate redundant [color] tags for unformatted text.
 			// Part of the fix for the browser-dependent bug of issue #4184.
 			return color != defaultColor
-			         ? '[color=' + color + ']' + content + '[/color]'
-				 : content;
+				? '[color=' + color + ']' + content + '[/color]'
+				: content;
 		},
 		html: function (token, attrs, content) {
 			return '<font color="' +
@@ -600,15 +679,15 @@ $(function ($) {
 			var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
 				? '=' + width + 'x' + height
 				: ''
-			;
+				;
 
 			if (align === 'left' || align === 'right')
-				attrs += ' align='+align
+				attrs += ' align=' + align
 
 			return '[img' + attrs + ']' + url + '[/img]';
 		},
 		html: function (token, attrs, content) {
-			var	width, height, match,
+			var width, height, match,
 				align = attrs.align,
 				attribs = '';
 
@@ -616,7 +695,7 @@ $(function ($) {
 			if (attrs.defaultattr) {
 				match = attrs.defaultattr.split(/x/i);
 
-				width  = match[0];
+				width = match[0];
 				height = (match.length === 2 ? match[1] : match[0]);
 
 				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
@@ -662,12 +741,12 @@ $(function ($) {
 				var url = $content.find('#image').val(),
 					width = $content.find('#width').val(),
 					height = $content.find('#height').val()
-				;
+					;
 
 				var attrs = width !== undefined && height !== undefined && width > 0 && height > 0
 					? '=' + width + 'x' + height
 					: ''
-				;
+					;
 
 				if (url)
 					editor.insert('[img' + attrs + ']' + url + '[/img]');
@@ -694,7 +773,7 @@ $(function ($) {
 		.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
 
 	// Remove code and quote if in partial mode
-	if (partialmode) {
+	if (partialMode) {
 		$.sceditor.formats.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
 		$.sceditor.command
 			.set('quote', {
@@ -715,68 +794,78 @@ $(function ($) {
 		}
 	});
 
-	/**
-	 * Converts a number 0-255 to hex.
-	 *
-	 * Will return 00 if number is not a valid number.
-	 *
-	 * Copied from the SCEditor's src/formats/bbcode.js file
-	 * where it is unfortunately defined as private.
-	 *
-	 * @param  {any} number
-	 * @return {string}
-	 */
-	function toHex(number) {
-		number = parseInt(number, 10);
+	// Initiate the editor
+	if (typeof MyBBEditor === 'undefined') { // Possible while in ACP
+		var MyBBEditor = null;
+	}
+	$.sceditor.locale["mybblang"] = editorLang;
+	$.extend(editorOpts, optEditor);
+	$(editorElm).sceditor(editorOpts);
 
-		if (isNaN(number)) {
-			return '00';
-		}
+	MyBBEditor = $(editorElm).sceditor("instance");
+	MyBBEditor.sourceMode(!!sourceMode);
+})(jQuery);
 
-		number = Math.max(0, Math.min(number, 255)).toString(16);
+/**
+ * Converts a number 0-255 to hex.
+ *
+ * Will return 00 if number is not a valid number.
+ *
+ * Copied from the SCEditor's src/formats/bbcode.js file
+ * where it is unfortunately defined as private.
+ *
+ * @param  {any} number
+ * @return {string}
+ */
+function toHex(number) {
+	number = parseInt(number, 10);
 
-		return number.length < 2 ? '0' + number : number;
+	if (isNaN(number)) {
+		return '00';
 	}
 
-	/**
-	 * Normalises a CSS colour to hex #xxxxxx format
-	 *
-	 * Copied from the SCEditor's src/formats/bbcode.js file
-	 * where it is unfortunately defined as private.
-	 *
-	 * @param  {string} colorStr
-	 * @return {string}
-	 */
-	function _normaliseColour(colorStr) {
-		var match;
+	number = Math.max(0, Math.min(number, 255)).toString(16);
 
-		colorStr = colorStr || '#000';
+	return number.length < 2 ? '0' + number : number;
+}
 
-		// rgb(n,n,n);
-		if ((match = colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
-			return '#' +
-				toHex(match[1]) +
-				toHex(match[2]) +
-				toHex(match[3]);
-		}
+/**
+ * Normalises a CSS colour to hex #xxxxxx format
+ *
+ * Copied from the SCEditor's src/formats/bbcode.js file
+ * where it is unfortunately defined as private.
+ *
+ * @param  {string} colorStr
+ * @return {string}
+ */
+function _normaliseColour(colorStr) {
+	var match;
 
-		// rgba(n,n,n,f.p);
-		if ((match = colorStr.match(/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i))) {
-			return '#' +
+	colorStr = colorStr || '#000';
+
+	// rgb(n,n,n);
+	if ((match = colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
+		return '#' +
 			toHex(match[1]) +
 			toHex(match[2]) +
 			toHex(match[3]);
-		}
-
-		// expand shorthand
-		if ((match = colorStr.match(/#([0-f])([0-f])([0-f])\s*?$/i))) {
-			return '#' +
-				match[1] + match[1] +
-				match[2] + match[2] +
-				match[3] + match[3];
-		}
-
-		return colorStr;
 	}
 
-});
+	// rgba(n,n,n,f.p);
+	if ((match = colorStr.match(/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i))) {
+		return '#' +
+			toHex(match[1]) +
+			toHex(match[2]) +
+			toHex(match[3]);
+	}
+
+	// expand shorthand
+	if ((match = colorStr.match(/#([0-f])([0-f])([0-f])\s*?$/i))) {
+		return '#' +
+			match[1] + match[1] +
+			match[2] + match[2] +
+			match[3] + match[3];
+	}
+
+	return colorStr;
+}

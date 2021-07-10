@@ -515,6 +515,7 @@ $l['task_logcleanup_ran'] = "The log cleanup task successfully ran and pruned an
 $l['task_promotions_ran'] = "The promotions task successfully ran.";
 $l['task_threadviews_ran'] = "The thread views task successfully ran.";
 $l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
+$l['task_postembedscleanup_ran'] = "The orphan post embed images cleanup task successfully ran.";
 $l['task_massmail_ran'] = "The mass mail task successfully ran.";
 $l['task_userpruning_ran'] = "The user pruning task successfully ran.";
 $l['task_delayedmoderation_ran'] = "The delayed moderation task successfully ran.";

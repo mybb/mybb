@@ -14161,46 +14161,27 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="codebuttons" version="1827"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1827"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/dragdrop.js?ver=1827"></script>
 <script type="text/javascript">
-var partialmode = {$mybb->settings['partialmode']},
-opt_editor = {
-	plugins: "undo",
-	format: "bbcode",
-	bbcodeTrim: false,
-	style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
-	rtl: {$lang->settings['rtl']},
-	locale: "mybblang",
-	width: "100%",
-	enablePasteFiltering: true,
-	autoUpdate: true,
-	emoticonsEnabled: {$emoticons_enabled},
-	emoticons: {
-		// Emoticons to be included in the dropdown
-		dropdown: {
-			{$dropdownsmilies}
+var editorElm = "#{$bind}",
+	sourceMode = {$mybb->user['sourceeditor']},
+	partialMode = {$mybb->settings['partialmode']},
+	editorLang = {$editor_language},
+	postEmbed = { enabled: {$mybb->settings['postembed']}, host: "{$mybb->settings['postembedhost']}", clientKey: "{$mybb->settings['postembedkey']}" },
+	optEditor = {
+		style: "{$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{$theme['editortheme']}?ver=1823",
+		rtl: {$lang->settings['rtl']},
+		emoticonsEnabled: {$emoticons_enabled},
+		emoticons: {
+			dropdown: { {$dropdownsmilies} }, // Emoticons to be included in the dropdown
+			more: { {$moresmilies} }, // Emoticons to be included in the more section
+			hidden: { {$hiddensmilies} } // Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
 		},
-		// Emoticons to be included in the more section
-		more: {
-			{$moresmilies}
-		},
-		// Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
-		hidden: {
-			{$hiddensmilies}
-		}
-	},
-	emoticonsCompat: true,
-	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
-};
-{$editor_language}
-$(function() {
-	$("#{$bind}").sceditor(opt_editor);
-
-	MyBBEditor = $("#{$bind}").sceditor("instance");
-	{$sourcemode}
-});
-</script>]]></template>
+		toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source"
+	};
+</script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor.js?ver=1827"></script>]]></template>
 		<template name="contact" version="1827"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>

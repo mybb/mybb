@@ -872,6 +872,21 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
+	$postembedpath = $mybb->settings['postembedpath'];
+	if(my_substr($postembedpath, 0, 1) == '.')
+	{
+		$postembedpath = MYBB_ROOT . $mybb->settings['postembedpath'];
+	}
+	if(is_writable($postembedpath))
+	{
+		$message_postembed = "<span style=\"color: green;\">{$lang->writable}</span>";
+	}
+	else
+	{
+		$message_postembed = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+		++$errors;
+	}
+
 	if(is_writable(MYBB_ROOT.'inc/languages/'))
 	{
 		$message_language = "<span style=\"color: green;\">{$lang->writable}</span>";
@@ -943,6 +958,11 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->avatar_upload_dir}</strong>");
 	$table->construct_cell($mybb->settings['avataruploadpath']);
 	$table->construct_cell($message_avatar);
+	$table->construct_row();
+
+	$table->construct_cell("<strong>{$lang->postembed_upload_dir}</strong>");
+	$table->construct_cell($mybb->settings['postembedpath']);
+	$table->construct_cell($message_postembed);
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->language_files}</strong>");

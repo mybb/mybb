@@ -1513,6 +1513,42 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="postembed">
+			<title>Handle Pasting / Dropping Images in Editor</title>
+			<description><![CDATA[If enabled the image data / files pasted or dropped in editor will be uploaded as image to embed in post.]]></description>
+			<disporder>25</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="postembedhost">
+			<title>Post Embed Image Host</title>
+			<description><![CDATA[Select where to upload the images pasted or dropped in editor.]]></description>
+			<disporder>26</disporder>
+			<optionscode><![CDATA[select
+local=Upload locally
+imgur=Upload to Imgur
+imgbb=Upload to ImgBB
+]]></optionscode>
+			<settingvalue><![CDATA[local]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="postembedkey">
+			<title>Image Host Client ID</title>
+			<description><![CDATA[Enter your client ID obtained from host to use image upload API. Leaving this field blank will fallback to local image upload.]]></description>
+			<disporder>27</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="postembedpath">
+			<title>Post Embeds Upload Path</title>
+			<description><![CDATA[Specify the path where you want your post embed image files to be uploaded (<b>must be CHMOD 777</b> and a relative path under domain root for upload and embed to work).]]></description>
+			<disporder>28</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[./uploads/postembeds]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
