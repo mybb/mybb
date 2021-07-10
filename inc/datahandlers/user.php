@@ -324,7 +324,15 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_icq()
 	{
+		global $mybb;
+
 		$icq = &$this->data['icq'];
+
+		if(!is_member($mybb->settings['allowicqfield'], get_user($this->data['uid'])))
+		{
+			$icq = '';
+			return true;
+		}
 
 		if($icq != '' && !is_numeric($icq))
 		{
@@ -332,6 +340,62 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 		$icq = (int)$icq;
+
+		if(my_strlen($icq) > 10)
+		{
+			$this->set_error("contact_field_icqerror");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Verifies if a Google Hangouts number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_google()
+	{
+		global $mybb;
+
+		$user = &$this->data;
+
+		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield'], getuser($this->data['uid'])))
+		{
+			$this->data['google'] = '';
+			return true;
+		}
+
+		if(my_strlen($user['google']) > 75)
+		{
+			$this->set_error("contact_field_error");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Verifies if a Skype number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_skype()
+	{
+		global $mybb;
+
+		$user = &$this->data;
+
+		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield'], getuser($this->data['uid'])))
+		{
+			$this->data['skype'] = '';
+			return true;
+		}
+
+		if(my_strlen($user['skype']) > 75)
+		{
+			$this->set_error("contact_field_error");
+			return false;
+		}
 		return true;
 	}
 
@@ -1020,6 +1084,14 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('icq', $user))
 		{
 			$this->verify_icq();
+		}
+		if($this->method == "insert" || array_key_exists('google', $user))
+		{
+			$this->verify_google();
+		}
+		if($this->method == "insert" || array_key_exists('skype', $user))
+		{
+			$this->verify_skype();
 		}
 		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
