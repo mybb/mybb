@@ -9459,7 +9459,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1827"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1828"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
 <td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
@@ -9468,7 +9468,7 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" colspan="3">
 		<div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
 		<div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;">
-			<div style="pointer-events: none;"</div>
+			<div style="pointer-events: none;"></div>
 		</div>
 	</td>
 </tr>]]></template>
