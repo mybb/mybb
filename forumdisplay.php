@@ -867,8 +867,11 @@ else
 	$announcementlist = '';
 }
 
-$tids = $threadcache = array();
-$icon_cache = $cache->read("posticons");
+$tids = $threadCache = array();
+if($mybb->settings['allowposticons'] == 1)
+{
+	$icon_cache = $cache->read("posticons");
+}
 
 if($fpermissions['canviewthreads'] != 0)
 {
@@ -893,6 +896,11 @@ if($fpermissions['canviewthreads'] != 0)
 		if($thread['numratings'] > 0 && $ratings == false)
 		{
 			$ratings = true; // Looks for ratings in the forum
+		}
+
+		if($mybb->settings['allowposticons'] == 1)
+		{
+			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
