@@ -34,7 +34,8 @@ $l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0
 $l['ban_ip_address'] = "Ban IP Address";
 
 $l['error_missing_ban_input'] = "You did not enter a value to ban.";
-$l['error_invalid_filter'] = "The specified filter does not exist.";
+$l['error_invalid_filter'] = "The specified filter is not valid.";
+$l['error_filter_not_found'] = "The specified filter does not exist.";
 $l['error_filter_already_banned'] = "The filter you entered is already banned.";
 
 $l['success_ip_banned'] = "The IP address has been banned successfully.";
