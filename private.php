@@ -37,7 +37,7 @@ if($mybb->settings['enablepms'] == 0)
 	error($lang->pms_disabled);
 }
 
-if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 0)
+if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 0 || $mybb->user['suspendpm'])
 {
 	error_no_permission();
 }
