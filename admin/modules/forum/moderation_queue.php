@@ -45,7 +45,7 @@ if($mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 
-	if(is_array($mybb->get_input('threads')))
+	if($mybb->get_input('threads', MyBB::INPUT_ARRAY))
 	{
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
@@ -83,7 +83,7 @@ if($mybb->request_method == "post")
 		flash_message($lang->success_threads, 'success');
 		admin_redirect("index.php?module=forum-moderation_queue&type=threads");
 	}
-	else if(is_array($mybb->input['posts']))
+	else if($mybb->get_input('posts', MyBB::INPUT_ARRAY))
 	{
 		$posts_to_approve = $posts_to_delete = array();
 		// Fetch posts
@@ -127,7 +127,7 @@ if($mybb->request_method == "post")
 		admin_redirect("index.php?module=forum-moderation_queue&type=posts");
 
 	}
-	else if(is_array($mybb->input['attachments']))
+	else if($mybb->get_input('attachments', MyBB::INPUT_ARRAY))
 	{
 		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments']))).")");
 		while($attachment = $db->fetch_array($query))
