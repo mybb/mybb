@@ -106,6 +106,15 @@ if(empty($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
+// Load Settings
+$settings = array();
+
+if(file_exists(MYBB_ROOT."inc/settings.php"))
+{
+	require_once MYBB_ROOT."inc/settings.php";
+	$mybb->settings = $settings;
+}
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -173,34 +182,9 @@ $lang->set_path(MYBB_ROOT."inc/languages");
 $cache->cache();
 
 // Load Settings
-if(file_exists(MYBB_ROOT."inc/settings.php"))
+if(empty($settings))
 {
-	require_once MYBB_ROOT."inc/settings.php";
-}
-
-if(!file_exists(MYBB_ROOT."inc/settings.php") || empty($settings))
-{
-	if(function_exists('rebuild_settings'))
-	{
-		rebuild_settings();
-	}
-	else
-	{
-		$options = array(
-			"order_by" => "title",
-			"order_dir" => "ASC"
-		);
-
-		$query = $db->simple_select("settings", "value, name", "", $options);
-
-		$settings = array();
-		while($setting = $db->fetch_array($query))
-		{
-			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
-			$settings[$setting['name']] = $setting['value'];
-		}
-		$db->free_result($query);
-	}
+	rebuild_settings();
 }
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
