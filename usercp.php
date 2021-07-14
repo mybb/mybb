@@ -4343,6 +4343,7 @@ if(!$mybb->input['action'])
 			LIMIT 0, 10
 		");
 
+		$subscriptions = array();
 		$fpermissions = forum_permissions();
 		while($subscription = $db->fetch_array($query))
 		{
@@ -4353,7 +4354,7 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		if(is_array($subscriptions))
+		if($subscriptions)
 		{
 			$tids = implode(",", array_keys($subscriptions));
 

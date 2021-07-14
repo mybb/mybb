@@ -1940,7 +1940,7 @@ EOF;
 			}
 
 			$group_desc_lang_var = "setting_group_{$group['name']}_desc";
-			if($lang->$group_desc_lang_var)
+			if(isset($lang->$group_desc_lang_var))
 			{
 				$group_desc = htmlspecialchars_uni($lang->$group_desc_lang_var);
 			}
