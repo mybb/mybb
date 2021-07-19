@@ -241,11 +241,18 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 
-	$hiddencount = $today_bdays = 0;
+	$hiddencount = 0;
+	$today_bdays = array();
 	if(isset($bdaycache[$bdaydate]))
 	{
-		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
-		$today_bdays = $bdaycache[$bdaydate]['users'];
+		if(isset($bdaycache[$bdaydate]['hiddencount']))
+		{
+			$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		}
+		if(isset($bdaycache[$bdaydate]['users']))
+		{
+			$today_bdays = $bdaycache[$bdaydate]['users'];
+		}
 	}
 
 	$comma = '';
@@ -286,7 +293,7 @@ if($mybb->settings['showbirthdays'] != 0)
 				}
 
 				// If this user's display group can't be seen in the birthday list, skip it
-				if($groupscache[$bdayuser['displaygroup']] && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
+				if(isset($groupscache[$bdayuser['displaygroup']]) && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
 				{
 					continue;
 				}
