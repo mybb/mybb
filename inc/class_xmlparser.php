@@ -46,7 +46,7 @@ class MyBBXMLParser {
 	/**
 	 * Build a tree based structure based from the parsed data
 	 *
-	 * @return array The tree based structure
+	 * @return array|false The tree based structure
 	 */
 	function get_tree()
 	{

@@ -13,7 +13,7 @@
 *
 * @param int $pid The parent forum to fetch the child forums for (0 assumes all)
 * @param int $depth The depth to return forums with.
-* @return array Array of information regarding the child forums of this parent forum
+* @return array|void Array of information regarding the child forums of this parent forum
 */
 function build_forumbits($pid=0, $depth=1)
 {
