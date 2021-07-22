@@ -1158,7 +1158,7 @@ if($mybb->input['action'] == "do_undovote")
 	$votesarray = explode("||~|~||", $poll['votes']);
 	if(count($votesarray) > $poll['numoptions'])
 	{
-		$votesarray = array_slice(0, $poll['numoptions']);
+		$votesarray = array_slice($poll['numoptions'], 0, $poll['numoptions']);
 	}
 
 	if($poll['multiple'] == 1)
