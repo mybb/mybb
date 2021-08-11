@@ -45,13 +45,20 @@ if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
 
-	if(!is_array($mybb->get_input('aids')))
+	if(isset($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
+		if(!is_array($mybb->input['aids']))
+		{
+			$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
+		}
+		else
+		{
+			$mybb->input['aids'] = array_map("intval", $mybb->input['aids']);
+		}
 	}
 	else
 	{
-		$mybb->input['aids'] = array_map("intval", $mybb->input['aids']);
+		$mybb->input['aids'] = array();
 	}
 
 	if(count($mybb->input['aids']) < 1)
