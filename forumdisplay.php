@@ -215,6 +215,7 @@ $done_moderators = array(
 
 $moderators = '';
 $parentlistexploded = explode(",", $parentlist);
+$comma = '';
 
 foreach($parentlistexploded as $mfid)
 {
