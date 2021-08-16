@@ -56,7 +56,7 @@ function task_usercleanup($task)
 	{
 		$updated_user = array(
 			"usergroup" => $ban['oldgroup'],
-			"additionalgroups" => $ban['oldadditionalgroups'],
+			"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
 			"displaygroup" => $ban['olddisplaygroup']
 		);
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");

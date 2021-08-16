@@ -327,7 +327,7 @@ if($mybb->input['action'] == "results")
 	while($row = $db->fetch_array($users_query))
 	{
 		$recipients = my_unserialize($row['recipients']);
-		if(is_array($recipients['to']) && count($recipients['to']))
+		if(isset($recipients['to']) && is_array($recipients['to']) && count($recipients['to']))
 		{
 			$get_users = array_merge($get_users, $recipients['to']);
 		}
@@ -393,7 +393,10 @@ if($mybb->input['action'] == "results")
 			// Sent Items or Drafts Folder Check
 			$recipients = my_unserialize($message['recipients']);
 			$to_users = $bcc_users = '';
-			if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
+			if(
+				isset($recipients['to']) &&
+				(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
+			)
 			{
 				foreach($recipients['to'] as $uid)
 				{
@@ -769,20 +772,6 @@ if($mybb->input['action'] == "send")
 			$post[$key] = $groupscache[$post['usergroup']][$field];
 		}
 
-		// Set up posthandler.
-		require_once MYBB_ROOT."inc/datahandlers/post.php";
-		$posthandler = new postDataHandler();
-		
-		$valid_subject = $posthandler->verify_subject($post);
-		$valid_message = $posthandler->verify_message($post);
-		
-		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_subject || !$valid_message)
-		{
-			$send_errors = $posthandler->get_friendly_errors();
-			$send_errors = inline_error($send_errors);
-		}
-
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
@@ -1111,7 +1100,7 @@ if($mybb->input['action'] == "read")
 	// Fetch the recipients for this message
 	$pm['recipients'] = my_unserialize($pm['recipients']);
 
-	if(is_array($pm['recipients']['to']))
+	if(isset($pm['recipients']['to']) && is_array($pm['recipients']['to']))
 	{
 		$uid_sql = implode(',', $pm['recipients']['to']);
 	}
@@ -1232,7 +1221,21 @@ if($mybb->input['action'] == "read")
 		}
 
 		$postoptionschecked = $optionschecked; // Backwards compatability instead of correcting variable used in template
-		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
+
+		if(!isset($collapsedthead['quickreply']))
+		{
+			$collapsedthead['quickreply'] = '';
+		}
+		if(!isset($collapsedimg['quickreply']))
+		{
+			$collapsedimg['quickreply'] = '';
+		}
+		if(!isset($collapsed['quickreply_e']))
+		{
+			$collapsed['quickreply_e'] = '';
+		}
+
+		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
 
@@ -2044,7 +2047,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	if($mybb->input['exporttype'] == "html")
 	{
 		// Gather global stylesheet for HTML
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
+		$css_tid = empty($theme['tid']) ? '' : "'". (int)$theme['tid'] ."',";
+		$query = $db->simple_select("themestylesheets", "stylesheet", "tid in ({$css_tid}'2','1') AND name = 'global.css'", array('order_by' => 'tid', 'order_dir' => 'DESC', 'limit' => 1));
 		$css = $db->fetch_field($query, "stylesheet");
 	}
 
@@ -2296,6 +2300,7 @@ if(!$mybb->input['action'])
 
 	if($db->num_rows($query) > 0)
 	{
+		$bgcolor = alt_trow(true);
 		while($message = $db->fetch_array($query))
 		{
 			$msgalt = $msgstatus = '';
@@ -2428,6 +2433,7 @@ if(!$mybb->input['action'])
 			$plugins->run_hooks("private_message");
 
 			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
+			$bgcolor = alt_trow();
 		}
 	}
 	else

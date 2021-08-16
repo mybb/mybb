@@ -965,15 +965,55 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Validate minnamelength, maxnamelength, minpasswordlength (complex and regular) and maxpasswordlength
+		if ($gid == 9)
+		{
+			if (
+				isset($mybb->input['upsetting']['minnamelength'], $mybb->input['upsetting']['maxnamelength']) &&
+				$mybb->input['upsetting']['minnamelength'] > 0 && $mybb->input['upsetting']['maxnamelength'] > 0 &&
+				$mybb->input['upsetting']['minnamelength'] > $mybb->input['upsetting']['maxnamelength'])
+			{
+				flash_message($lang->error_field_minnamelength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if (
+				isset($mybb->input['upsetting']['minpasswordlength'], $mybb->input['upsetting']['maxpasswordlength']) &&
+				$mybb->input['upsetting']['minpasswordlength'] > 0 && $mybb->input['upsetting']['maxpasswordlength'] > 0 &&
+				$mybb->input['upsetting']['minpasswordlength'] > $mybb->input['upsetting']['maxpasswordlength']
+			)
+			{
+				flash_message($lang->error_field_minpasswordlength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if (
+				isset($mybb->input['upsetting']['minpasswordlength'], $mybb->input['upsetting']['requirecomplexpasswords']) &&
+				$mybb->input['upsetting']['requirecomplexpasswords'] && $mybb->input['upsetting']['minpasswordlength'] < 3
+			)
+			{
+				flash_message($lang->error_field_minpasswordlength_complex, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+		}
+		
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
 		$set_captcha_image = false;
-		if(isset($mybb->input['upsetting']['captchaimage']))
+		if(isset(
+			$mybb->input['upsetting']['captchaimage'],
+			$mybb->input['upsetting']['recaptchaprivatekey'],
+			$mybb->input['upsetting']['recaptchapublickey'],
+			$mybb->input['upsetting']['recaptchascore'],
+			$mybb->input['upsetting']['hcaptchaprivatekey'],
+			$mybb->input['upsetting']['hcaptchapublickey']
+		))
 		{
 			$captchaimage = $mybb->input['upsetting']['captchaimage'];
 			$recaptchaprivatekey = $mybb->input['upsetting']['recaptchaprivatekey'];
 			$recaptchapublickey = $mybb->input['upsetting']['recaptchapublickey'];
+			$recaptchascore = $mybb->input['upsetting']['recaptchascore'];
 			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
 			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
 
@@ -1096,28 +1136,37 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Administrator is changing the login method.
-		if(
-			$mybb->settings['username_method'] == 1 ||
-			$mybb->settings['username_method'] == 2 ||
-			(
-				isset($mybb->input['upsetting']['username_method']) &&
-				(
-					$mybb->input['upsetting']['username_method'] == 1 ||
-					$mybb->input['upsetting']['username_method'] == 2
-				)
-			)
-		)
+		if(isset($mybb->input['upsetting']['username_method']) && (int)$mybb->input['upsetting']['username_method'] > 0)
 		{
-			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
-			if($db->num_rows($query))
+			if((int)$mybb->settings['allowmultipleemails'] == 1)
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
-				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method_conflict;
 			}
 			else
 			{
+				$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
+				if($db->num_rows($query))
+				{
+					$mybb->input['upsetting']['username_method'] = 0;
+					$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				}
+			}
+		}
+
+		if(isset($mybb->input['upsetting']['username_method'], $mybb->input['upsetting']['allowmultipleemails']))
+		{
+			// Administrator is changing registration email allowance
+			if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->input['upsetting']['allowmultipleemails'] !== 0)
+			{
 				$mybb->input['upsetting']['allowmultipleemails'] = 0;
 				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
+
+			// Reset conflict silently, if by chance
+			if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->settings['allowmultipleemails'] == 1)
+			{
+				$mybb->input['upsetting']['allowmultipleemails'] = 0;
 			}
 		}
 
@@ -1148,9 +1197,10 @@ if($mybb->input['action'] == "change")
 					continue;
 				}
 
-				$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+				$realpath = realpath(mk_path_abs($mybb->input['upsetting'][$field]));
 
-				if ($realpath === false) {
+				if ($realpath === false)
+				{
 					unset($mybb->input['upsetting'][$field]);
 					continue;
 				}

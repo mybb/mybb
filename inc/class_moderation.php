@@ -1175,7 +1175,7 @@ class Moderation
 						'question' => $db->escape_string($poll['question']),
 						'dateline' => $poll['dateline'],
 						'options' => $db->escape_string($poll['options']),
-						'votes' => $poll['votes'],
+						'votes' => $db->escape_string($poll['votes']),
 						'numoptions' => $poll['numoptions'],
 						'numvotes' => $poll['numvotes'],
 						'timeout' => $poll['timeout'],
@@ -2767,17 +2767,31 @@ class Moderation
 		$tid_list = implode(',', $tids);
 
 		// Get original subject
-		$query = $db->simple_select("threads", "subject, tid", "tid IN ($tid_list)");
+		$query = $db->query("
+			SELECT u.uid, u.username, t.tid, t.subject FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
+			WHERE tid IN ($tid_list)
+		");
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
-			$subject = str_replace('{username}', $mybb->user['username'], $format);
-			$subject = str_replace('{subject}', $thread['subject'], $subject);
-			$new_subject = array(
-				"subject" => $db->escape_string($subject)
+			$find = array('{username}', 'author', '{subject}');
+			$replace = array($mybb->user['username'], $thread['username'], $thread['subject']);
+
+			$new_subject = str_ireplace($find, $replace, $format);
+
+			$args = array(
+				'thread' => &$thread,
+				'new_subject' => &$new_subject,
 			);
-			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'");
-			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'");
+
+			$plugins->run_hooks("class_moderation_change_thread_subject_newsubject", $args);
+
+			$update_subject = array(
+				"subject" => $db->escape_string($new_subject)
+			);
+			$db->update_query("threads", $update_subject, "tid='{$thread['tid']}'");
+			$db->update_query("posts", $update_subject, "tid='{$thread['tid']}' AND replyto='0'");
 		}
 
 		$arguments = array("tids" => $tids, "format" => $format);

@@ -333,6 +333,10 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				else
 				{
 					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+					if (file_exists(MYBB_ROOT.$page_stylesheet))
+					{
+						$stylesheet_url .= "?t=".filemtime(MYBB_ROOT.$page_stylesheet);
+					}
 				}
 
 				if($mybb->settings['minifycss'])
@@ -567,7 +571,7 @@ else
 			break;
 	}
 
-	if($mybb->cookies['lockoutexpiry'])
+	if(!empty($mybb->cookies['lockoutexpiry']))
 	{
 		$secsleft = (int)($mybb->cookies['lockoutexpiry'] - TIME_NOW);
 		$hoursleft = floor($secsleft / 3600);
@@ -647,8 +651,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 			}
 			else
 			{
-				$total_joinrequests = my_number_format($total_joinrequests);
-				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
+				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, my_number_format($total_joinrequests));
 			}
 
 			eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
@@ -887,7 +890,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 }
 
 $remote_avatar_notice = '';
-if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
+if(isset($mybb->user['avatartype']) && ($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
 {
 	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
@@ -1020,7 +1023,16 @@ if($mybb->settings['showlanguageselect'] != 0)
 $theme_select = $theme_options = '';
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+	if(isset($mybb->user['style']))
+	{
+		$selected = $mybb->user['style'];
+	}
+	else
+	{
+		$selected = -1;
+	}
+
+	$theme_options = build_theme_select("theme", $selected, 0, '', false, true);
 
 	if(!empty($theme_options))
 	{
@@ -1235,10 +1247,7 @@ if(!empty($mybb->cookies['collapsed']))
 	$collapse = explode("|", $colcookie);
 	foreach($collapse as $val)
 	{
-		$ex = $val."_e";
-		$co = $val."_c";
-		$collapsed[$co] = "display: show;";
-		$collapsed[$ex] = "display: none;";
+		$collapsed[$val."_e"] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
 		$collapsedthead[$val] = " thead_collapsed";
 	}

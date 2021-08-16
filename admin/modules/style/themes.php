@@ -675,7 +675,7 @@ if($mybb->input['action'] == "export")
 		if($mybb->input['include_templates'] != 0)
 		{
 			$xml .= "\t<templates>\r\n";
-			$query = $db->simple_select("templates", "*", "sid='".$properties['templateset']."'");
+			$query = $db->simple_select("templates", "*", "sid='".(int)$properties['templateset']."'");
 			while($template = $db->fetch_array($query))
 			{
 				$template['template'] = str_replace(']]>', ']]]]><![CDATA[>', $template['template']);
@@ -787,7 +787,7 @@ if($mybb->input['action'] == "duplicate")
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
-			$sid = $properties['templateset'];
+			$sid = (int)$properties['templateset'];
 			$nprops = null;
 			if($mybb->get_input('duplicate_templates'))
 			{
@@ -1125,7 +1125,7 @@ if($mybb->input['action'] == "edit")
 			foreach($colors as $color)
 			{
 				$color = trim($color);
-				if(preg_match('/^[a-z0-9]+={1}[a-z0-9]+$/i', $color))
+				if(preg_match('(^((\p{L}|\p{Nd}|_)+)={1}((\p{L}|\p{Nd}|_)+)$)u', $color))
 				{
 					$color = explode("=", $color);
 					$properties['colors'][$color[0]] = $color[1];
@@ -1178,7 +1178,7 @@ if($mybb->input['action'] == "edit")
 			'properties' => $db->escape_string(my_serialize($properties))
 		);
 
-		// perform validation
+		// Perform validation
 		if(!$update_array['name'])
 		{
 			$errors[] = $lang->error_missing_name;
@@ -1205,7 +1205,7 @@ if($mybb->input['action'] == "edit")
 		}
 		if($properties['templateset'])
 		{
-			$query = $db->simple_select("templatesets", "sid", "sid='".$properties['templateset']."'");
+			$query = $db->simple_select("templatesets", "sid", "sid='".(int)$properties['templateset']."'");
 			$ts_check = $db->fetch_field($query, "sid");
 			if(!$ts_check)
 			{
@@ -1334,7 +1334,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_default_theme();
 		}
 
-		// normalize for consistency
+		// Normalize for consistency
 		update_theme_stylesheet_list($theme['tid'], false, true);
 
 		flash_message($lang->success_stylesheet_order_updated, 'success');

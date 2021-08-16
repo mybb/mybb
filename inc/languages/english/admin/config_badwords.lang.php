@@ -24,6 +24,7 @@ $l['error_replacement_word_invalid'] = "A replacement word cannot be equivalent 
 $l['save_bad_word'] = "Save Filter";
 $l['no_bad_words'] = "There are no word filters currently set at this time.";
 $l['add_bad_word'] = "Add a Filter";
+$l['add_bad_word_desc'] = "Here you can add a word filter and its replacement.";
 
 $l['error_missing_bad_word'] = "You did not enter a word filter.";
 $l['error_invalid_regex'] = "The specified regular expression is invalid.";

@@ -320,7 +320,7 @@ if($mybb->input['action'] == "add")
 					unset($mybb->input['additionalgroups'][$key]);
 				}
 			}
-			$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+			$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
 		}
 		else
 		{
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "edit")
 					unset($mybb->input['additionalgroups'][$key]);
 				}
 			}
-			$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+			$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
 		}
 		else
 		{
@@ -943,7 +943,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1825"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1827"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -2496,6 +2496,8 @@ if($mybb->input['action'] == "inline_edit")
 				}
 			}
 
+			$plugins->run_hooks("admin_user_multiactivate", $to_update);
+
 			if(isset($to_update) && is_array($to_update))
 			{
 				$sql_array = implode(",", $to_update);
@@ -2552,7 +2554,7 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					$updated_group = array(
 						"usergroup" => $ban['oldgroup'],
-						"additionalgroups" => $ban['oldadditionalgroups'],
+						"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
 						"displaygroup" => $ban['olddisplaygroup']
 					);
 					$db->update_query("users", $updated_group, "uid = '".$ban['uid']."'");
@@ -2630,7 +2632,7 @@ if($mybb->input['action'] == "inline_edit")
 							'uid' => $user['uid'],
 							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 							'oldgroup' => $user['usergroup'],
-							'oldadditionalgroups' => $user['additionalgroups'],
+							'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 							'olddisplaygroup' => $user['displaygroup'],
 							'admin' => (int)$mybb->user['uid'],
 							'dateline' => TIME_NOW,
@@ -2842,6 +2844,8 @@ if($mybb->input['action'] == "inline_edit")
 						}
 					}
 
+					$plugins->run_hooks("admin_user_multiprune_threads", $prune_array);
+
 					// No posts were found for the user, return error
 					if(!is_array($prune_array) || count($prune_array) == 0)
 					{
@@ -2992,6 +2996,14 @@ if($mybb->input['action'] == "inline_edit")
 					"additionalgroups" => $additionalgroups,
 					"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
 				);
+
+				// Create an admin_user_multiusergroup hook array
+				$hook_params = array(
+					"selected" => &$selected,
+					"update_array" => &$update_array
+				);
+
+				$hook_params = $plugins->run_hooks("admin_user_multiusergroup", $hook_params);
 
 				// Do the usergroup update for all those selected
 				// If the a selected user is a super admin, don't update that user

@@ -609,8 +609,39 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many threads are there?
-	$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
-	$threadcount = $db->fetch_field($query, "threads");
+	if ($useronly === "" && $datecutsql === "" && $prefixsql === "")
+	{
+		$threadcount = 0;
+
+		$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid=".(int)$fid);
+		$forum_threads = $db->fetch_array($query);
+
+		if(in_array(1, $visible_states))
+		{
+			$threadcount += $forum_threads['threads'];
+		}
+
+		if(in_array(-1, $visible_states))
+		{
+			$threadcount += $forum_threads['deletedthreads'];
+		}
+
+		if(in_array(0, $visible_states))
+		{
+			$threadcount += $forum_threads['unapprovedthreads'];
+		}
+		elseif($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' AND t.visible=0 AND t.uid=".(int)$mybb->user['uid']);
+			$threadcount += $db->fetch_field($query, "threads");
+		}
+	}
+	else
+	{
+		$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
+
+		$threadcount = $db->fetch_field($query, "threads");
+	}
 }
 
 // How many pages are there?
@@ -1494,6 +1525,14 @@ if($foruminfo['type'] != "c")
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
+	// Populate Forumsort
+	$forumsort = '';
+	
+	if($threadcount > 0)
+	{
+		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
+	}
+	
 	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));

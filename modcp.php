@@ -60,86 +60,60 @@ $numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
-
 	while($forum = $db->fetch_array($query))
 	{
+		$moderated_forums[] = $forum['fid'];
+		$children = get_child_list($forum['fid']);
+		if(is_array($children))
+		{
+			$moderated_forums = array_merge($moderated_forums, $children);
+		}
+	}
+	$moderated_forums = array_unique($moderated_forums);
+
+	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
+	foreach($moderated_forums as $moderated_forum)
+	{
 		// For Announcements
-		if($forum['canmanageannouncements'] == 1)
+		if(is_moderator($moderated_forum, 'canmanageannouncements'))
 		{
 			++$numannouncements;
 		}
 
 		// For the Mod Queues
-		if($forum['canapproveunapprovethreads'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapprovethreads'))
 		{
-			$flist_queue_threads .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_threads .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_threads .= ",'{$moderated_forum}'";
 			++$nummodqueuethreads;
 		}
 
-		if($forum['canapproveunapproveposts'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveposts'))
 		{
-			$flist_queue_posts .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_posts .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_posts .= ",'{$moderated_forum}'";
 			++$nummodqueueposts;
 		}
 
-		if($forum['canapproveunapproveattachs'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveattachs'))
 		{
-			$flist_queue_attach .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_attach .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_attach .= ",'{$moderated_forum}'";
 			++$nummodqueueattach;
 		}
 
 		// For Reported posts
-		if($forum['canmanagereportedposts'] == 1)
+		if(is_moderator($moderated_forum, 'canmanagereportedposts'))
 		{
-			$flist_reports .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_reports .= ",'".implode("','", $children)."'";
-			}
+			$flist_reports .= ",'{$moderated_forum}'";
 			++$numreportedposts;
 		}
 
 		// For the Mod Log
-		if($forum['canviewmodlog'] == 1)
+		if(is_moderator($moderated_forum, 'canviewmodlog'))
 		{
-			$flist_modlog .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_modlog .= ",'".implode("','", $children)."'";
-			}
+			$flist_modlog .= ",'{$moderated_forum}'";
 			++$nummodlogs;
 		}
 
-		$flist .= ",'{$forum['fid']}'";
-
-		$children = get_child_list($forum['fid']);
-		if(!empty($children))
-		{
-			$flist .= ",'".implode("','", $children)."'";
-		}
-		$moderated_forums[] = $forum['fid'];
+		$flist .= ",'{$moderated_forum}'";
 	}
 	if($flist_queue_threads)
 	{
@@ -263,13 +237,13 @@ $plugins->run_hooks("modcp_nav");
 
 if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
 {
-	$expaltext = (in_array("modcpforums", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("modcpforums", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
 }
 
 if(!empty($nav_editprofile) || !empty($nav_banning) || !empty($nav_warninglogs) || !empty($nav_ipsearch))
 {
-	$expaltext = (in_array("modcpusers", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("modcpusers", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_users = \"".$templates->get("modcp_nav_users")."\";");
 }
 
@@ -2726,7 +2700,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 		// Those with javascript turned off will be able to select both - cheeky!
 		// Check to make sure we're not moderating AND suspending posting
-		if(isset($extra_user_updates) && $extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
+		if(isset($extra_user_updates) && !empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
 		{
 			$errors[] = $lang->suspendmoderate_error;
 		}
@@ -2982,7 +2956,7 @@ if($mybb->input['action'] == "editprofile")
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
 			}
-			else
+			elseif(isset($user_fields[$field]))
 			{
 				$userfield = $user_fields[$field];
 			}
@@ -4248,7 +4222,7 @@ if($mybb->input['action'] == "liftban")
 
 	$updated_group = array(
 		'usergroup' => $ban['oldgroup'],
-		'additionalgroups' => $ban['oldadditionalgroups'],
+		'additionalgroups' => $db->escape_string($ban['oldadditionalgroups']),
 		'displaygroup' => $ban['olddisplaygroup']
 	);
 	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
@@ -4390,7 +4364,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'uid' => $user['uid'],
 				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'oldgroup' => (int)$user['usergroup'],
-				'oldadditionalgroups' => (string)$user['additionalgroups'],
+				'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 				'olddisplaygroup' => (int)$user['displaygroup'],
 				'admin' => (int)$mybb->user['uid'],
 				'dateline' => TIME_NOW,
@@ -4472,7 +4446,7 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
-		if($banned['username'])
+		if(!empty($banned['username']))
 		{
 			$username = $banned['username'] = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
@@ -4484,7 +4458,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Permission to edit this ban?
-	if(isset($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if(!empty($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}

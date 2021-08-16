@@ -208,6 +208,35 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "editpost");
 
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		if(isset($ret['success']))
+		{
+			$attachment = array('aid'=>'{1}', 'icon'=>'{2}', 'filename'=>'{3}', 'size'=>'{4}');
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+			}
+			// Moderating options
+			$attach_mod_options = '';
+			if(is_moderator($fid))
+			{
+				eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_unapprove")."\";");
+			}
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
+			$ret['template'] = $attemplate;
+
+			$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+			$usage = $db->fetch_array($query);
+			$ret['usage'] = get_friendly_size($usage['ausage']);
+		}
+		
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode($ret);
+		exit();
+	}
+
 	if(!empty($ret['errors']))
 	{
 		$errors = $ret['errors'];
@@ -253,8 +282,11 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => true, "usage" => get_friendly_size($usage['ausage'])));
 		exit();
 	}
 
@@ -470,6 +502,8 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 	}
 }
 
+$postoptions = array();
+
 if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -651,6 +685,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
 
+		$link_viewattachments = '';
+
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -661,6 +697,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$lang->attach_usage = "";
 		}
+
+		$attach_update_options = '';
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
@@ -931,18 +969,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
-	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
-	$php_post_max_size = return_bytes(ini_get('post_max_size'));
-
-	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
-	{
-		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
-	}
-	else
-	{
-		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
-	}
-
+	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 

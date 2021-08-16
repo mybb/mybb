@@ -122,8 +122,12 @@ $l['insert_attachment_post'] = "Insert Into Post";
 $l['new_attachment'] = "New Attachment:";
 $l['add_attachment'] = "Add Attachment";
 $l['update_attachment'] = "Update Attachment";
+$l['attachment_missing'] = "Please select one or more files before attempting to attach.";
 $l['attachment_too_many_files'] = "You can upload a maximum of {1} files at once.";
-$l['attachment_too_big_upload'] = "You can upload a maximum of {1} bytes at once.";
+$l['attachment_max_allowed_files'] = "You can attach {1} more file(s) to this post.";
+$l['attachment_too_big_upload'] = "You can upload a maximum of {1} MB at once.";
+$l['drop_files'] = "Click or drop some files here to upload...";
+$l['upload_initiate'] = "Release to initiate upload...";
 $l['post_preview'] = "Preview";
 $l['change_user'] = "change user";
 $l['post_icon'] = "Post Icon:";
@@ -328,8 +332,9 @@ $l['unapproved_attachment'] = "1 unapproved attachment";
 $l['unapproved_attachments'] = "{1} unapproved attachments";
 $l['unread_report'] = "1 unread report";
 $l['unread_reports'] = "{1} unread reports";
-$l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
-$l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
+$l['groupleader_notice'] = "Group Leader Notice:";
+$l['pending_joinrequest'] = "1 pending group membership join request.";
+$l['pending_joinrequests'] = "{1} pending group membership join requests.";
 
 $l['search_user'] = "Search for a user";
 
@@ -518,6 +523,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
 $l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_sendmailqueue_ran'] = 'The send mail queue task sent up to {1} messages.';
 
 $l['dismiss_notice'] = "Dismiss this notice";
 
@@ -594,6 +600,9 @@ $l['sfs_error_username'] = 'username';
 $l['sfs_error_ip'] = 'IP';
 $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
+
+$l['expcol_collapse'] = '[-]';
+$l['expcol_expand'] = '[+]';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
 

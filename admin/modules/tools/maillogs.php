@@ -301,6 +301,8 @@ if(!$mybb->input['action'])
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['dateline'] = my_date('relative', $log['dateline']);
 
+		$plugins->run_hooks("admin_tools_maillogs_log");
+
 		if($log['type'] == 1)
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
@@ -335,6 +337,10 @@ if(!$mybb->input['action'])
 		{
 			$log['find_from'] = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 		}
+		else
+		{
+			$log['find_from'] = '';
+		}
 
 		if(!$log['from_username'] && $log['fromuid'] > 0)
 		{
@@ -353,6 +359,10 @@ if(!$mybb->input['action'])
 		if($log['touid'] > 0)
 		{
 			$log['find_to'] = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>";
+		}
+		else
+		{
+			$log['find_to'] = '';
 		}
 
 		if(!$log['to_username'] && $log['touid'] > 0)
