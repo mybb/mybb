@@ -145,7 +145,7 @@ $mybb->input['action'] = $mybb->get_input('action');
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 

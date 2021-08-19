@@ -497,7 +497,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 {
 	$plugins->run_hooks("admin_logout");
 
-	if(verify_post_check($mybb->input['my_post_key']))
+	if(verify_post_check($mybb->get_input('my_post_key')))
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 		my_unsetcookie('adminsid');
@@ -810,7 +810,7 @@ if($mybb->request_method == "post")
 	if($post_verify == true)
 	{
 		// If the post key does not match we switch the action to GET and set a message to show the user
-		if(!verify_post_check($mybb->input['my_post_key'], true))
+		if(!verify_post_check($mybb->get_input('my_post_key'), true))
 		{
 			$mybb->request_method = "get";
 			$page->show_post_verify_error = true;

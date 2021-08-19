@@ -1561,7 +1561,7 @@ if($mybb->input['action'] == "resend")
 
 if($mybb->input['action'] == "cancel")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=user-users");

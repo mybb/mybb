@@ -3568,7 +3568,7 @@ if($mybb->input['action'] == "usergroups")
 	if($mybb->get_input('leavegroup', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
-		verify_post_check($mybb->input['my_post_key']);
+		verify_post_check($mybb->get_input('my_post_key'));
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', MyBB::INPUT_INT).",") === false)
 		{
