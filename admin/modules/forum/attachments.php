@@ -712,7 +712,7 @@ if(!$mybb->input['action'])
 		$forum_cache = cache_forums();
 
 		// Searching for attachments in a specific forum, we need to fetch all child forums too
-		if($mybb->get_input('forum'))
+		if(!empty($mybb->input['forum']))
 		{
 			if(!is_array($mybb->input['forum']))
 			{
