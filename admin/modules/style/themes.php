@@ -1628,7 +1628,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->colors_manage);
 
-	if(!$properties['colors'] || !is_array($properties['colors']))
+	if(empty($properties['colors']) || !is_array($properties['colors']))
 	{
 		$color_setting = $lang->colors_no_color_setting;
 	}
