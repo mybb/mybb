@@ -779,11 +779,11 @@ class datacache
 			$this->moderators[$moderator['fid']]['usergroups'][$moderator['id']] = $moderator;
 		}
 
-		if(is_array($this->moderators))
+		foreach(array_keys($this->moderators) as $fid)
 		{
-			foreach(array_keys($this->moderators) as $fid)
+			if(isset($this->moderators[$fid]['users']))
 			{
-				uasort($this->moderators[$fid], 'sort_moderators_by_usernames');
+				uasort($this->moderators[$fid]['users'], 'sort_moderators_by_usernames');
 			}
 		}
 
