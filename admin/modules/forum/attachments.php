@@ -522,7 +522,7 @@ if($mybb->input['action'] == "orphans")
 		 */
 		function scan_attachments_directory($dir="")
 		{
-			global $db, $mybb, $bad_attachments, $attachments_to_check;
+			global $db, $mybb, $bad_attachments, $attachments_to_check, $uploadspath_abs;
 
 			$real_dir = $uploadspath_abs;
 			$false_dir = "";
