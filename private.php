@@ -1602,6 +1602,7 @@ if($mybb->input['action'] == "empty")
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
+		$unread = ''; 
 		$fid = $folderinfo[0];
 		if($folderinfo[0] == "1")
 		{
