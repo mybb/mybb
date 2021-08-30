@@ -1488,6 +1488,15 @@ elseif($mybb->input['action'] == "do_search")
 		$resulttype = "posts";
 	}
 
+	if(isset($mybb->input['forums']) && is_array($mybb->input['forums']))
+	{
+		$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
+	}
+	else
+	{
+		$forums = array($mybb->get_input('forums'));
+	}
+
 	$search_data = array(
 		"keywords" => $mybb->input['keywords'],
 		"author" => $mybb->get_input('author'),
@@ -1495,7 +1504,7 @@ elseif($mybb->input['action'] == "do_search")
 		"matchusername" => $mybb->get_input('matchusername', MyBB::INPUT_INT),
 		"postdate" => $mybb->get_input('postdate', MyBB::INPUT_INT),
 		"pddir" => $mybb->get_input('pddir', MyBB::INPUT_INT),
-		"forums" => $mybb->get_input('forums', MyBB::INPUT_ARRAY),
+		"forums" => $forums,
 		"findthreadst" => $mybb->get_input('findthreadst', MyBB::INPUT_INT),
 		"numreplies" => $mybb->get_input('numreplies', MyBB::INPUT_INT),
 		"threadprefix" => $mybb->get_input('threadprefix', MyBB::INPUT_ARRAY)

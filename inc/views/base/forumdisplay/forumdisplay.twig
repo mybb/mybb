@@ -285,7 +285,7 @@
                             <form action="search.php">
                                 <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" />
                                 <input type="hidden" name="action" value="do_search" />
-                                <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
+                                <input type="hidden" name="forums[]" value="{{ foruminfo.fid }}" />
                                 <input type="hidden" name="postthread" value="1" />
                                 <button type="submit" class="button button--inline">
                                     {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}

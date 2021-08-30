@@ -3978,7 +3978,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
 	<input type="text" class="textbox" name="keywords" /> {$gobutton}
 	<input type="hidden" name="action" value="do_search" />
-	<input type="hidden" name="forums" value="{$fid}" />
+	<input type="hidden" name="forums[]" value="{$fid}" />
 	<input type="hidden" name="postthread" value="1" />
 	</form><br />]]></template>
 		<template name="forumdisplay_sticky_sep" version="120"><![CDATA[<tr>
