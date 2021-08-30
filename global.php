@@ -1227,7 +1227,7 @@ if($mybb->usergroup['canview'] != 1)
 if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->settings['emailkeep'] != 1)
 {
 	if(
-		!(THIS_SCRIPT == 'usercp.php' && in_array($mybb->get_input('action'), array('email', 'do_email'))) ||
+		!(THIS_SCRIPT == 'usercp.php' && in_array($mybb->get_input('action'), array('email', 'do_email'))) &&
 		!(THIS_SCRIPT == 'member.php' && $mybb->get_input('action') == 'activate')
 	)
 	{
