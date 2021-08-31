@@ -1767,7 +1767,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-users");
 	}
 
-	if($user['uid'] == $mybb->input['uid'])
+	if($mybb->user['uid'] == $mybb->input['uid'])
 	{
 		flash_message($lang->error_delete_self, 'error');
 		admin_redirect("index.php?module=user-users");
