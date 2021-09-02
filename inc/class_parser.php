@@ -582,8 +582,17 @@ class postParser
 			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
+				if(isset($theme['imgdir']))
+				{
+					$imgdir = $theme['imgdir'];
+				}
+				else
+				{
+					$imgdir = '';
+				}
+
 				$smilie['find'] = explode("\n", $smilie['find']);
-				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = str_replace("{theme}", $imgdir, $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 

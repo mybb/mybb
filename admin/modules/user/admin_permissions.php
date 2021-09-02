@@ -297,6 +297,11 @@ if($mybb->input['action'] == "edit")
 		$form_container = new FormContainer("{$module['name']}");
 		foreach($module['permissions'] as $action => $title)
 		{
+			if(!isset($permission_data[$key][$action]))
+			{
+				$permission_data[$key][$action] = 0;
+			}
+
 			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', (int)$permission_data[$key][$action], array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
@@ -473,7 +478,7 @@ if(!$mybb->input['action'])
 
 			// Build a list of group memberships that have access to the Admin CP
 			// Primary usergroup?
-			if($usergroups[$admin['usergroup']]['cancp'] == 1)
+			if(!empty($usergroups[$admin['usergroup']]) && $usergroups[$admin['usergroup']]['cancp'] == 1)
 			{
 				$usergroup_list[] = "<i>".htmlspecialchars_uni($usergroups[$admin['usergroup']]['title'])."</i>";
 			}
