@@ -1930,7 +1930,7 @@ EOF;
 		while($group = $db->fetch_array($query))
 		{
 			$group_lang_var = "setting_group_{$group['name']}";
-			if($lang->$group_lang_var)
+			if(isset($lang->$group_lang_var))
 			{
 				$group_title = htmlspecialchars_uni($lang->$group_lang_var);
 			}
