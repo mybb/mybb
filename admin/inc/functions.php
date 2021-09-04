@@ -359,7 +359,10 @@ function check_admin_permissions($action, $error = true)
 	{
 		$func = $action['module']."_admin_permissions";
 		$permissions = $func();
-		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
+		if(
+			!empty($permissions['permissions'][$action['action']]) &&
+			empty($mybb->admin['permissions'][$action['module']][$action['action']])
+		)
 		{
 			if($error)
 			{
