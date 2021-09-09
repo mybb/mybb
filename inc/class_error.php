@@ -203,14 +203,14 @@ class errorHandler {
 			$this->email_error($type, $message, $file, $line);
 		}
 
-		if($allow_output === true && $mybb->settings['errortypemedium'] != "none")
+		if($allow_output === true)
 		{
 			// SQL Error
 			if($type == MYBB_SQL)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
-			else
+			elseif(in_array($mybb->settings['errortypemedium'], array('warning', 'both')))
 			{
 				global $templates;
 

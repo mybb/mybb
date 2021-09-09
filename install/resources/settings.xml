@@ -438,7 +438,7 @@ both=Log and email errors
 		</setting>
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
-			<description><![CDATA[The type of errors to show. It is recommended you hide errors and warnings on a production forum and log them instead.]]></description>
+			<description><![CDATA[The type of errors to show with detailed information. It is recommended you hide errors and warnings on a production forum and log them instead.]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
