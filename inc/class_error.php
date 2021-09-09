@@ -217,14 +217,10 @@ class errorHandler {
 				{
 					$this->output_error($type, $message, $file, $line);
 				}
-				// PHP Error
+				// PHP Warning
 				else
 				{
-					if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
-					{
-						echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
-					}
-					else
+					if(in_array($mybb->settings['errortypemedium'], array('warning', 'both')))
 					{
 						global $templates;
 
