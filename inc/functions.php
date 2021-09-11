@@ -1635,6 +1635,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
+			$level_permissions = array();
+
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
