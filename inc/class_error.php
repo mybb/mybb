@@ -137,11 +137,24 @@ class errorHandler {
 			$error_types = $error_types & ~$bit;
 		}
 		error_reporting($error_types);
-		set_error_handler(array(&$this, "error"), $error_types);
+		set_error_handler(array(&$this, "error_callback"), $error_types);
 	}
 
 	/**
-	 * Parses a error for processing.
+	 * Passes relevant arguments for error processing.
+	 *
+	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
+	 * @param string $message The error message
+	 * @param string $file The error file
+	 * @param integer $line The error line
+	 */
+	function error_callback($type, $message, $file=null, $line=0)
+	{
+		return $this->error($type, $message, $file, $line);
+	}
+
+	/**
+	 * Processes an error.
 	 *
 	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
 	 * @param string $message The error message
