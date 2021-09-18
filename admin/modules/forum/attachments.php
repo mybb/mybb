@@ -41,6 +41,8 @@ $plugins->run_hooks("admin_forum_attachments_begin");
 
 $uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
+$default_perpage = 20;
+
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
@@ -790,7 +792,7 @@ if(!$mybb->input['action'])
 			$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 			if(!$mybb->input['perpage'])
 			{
-				$mybb->input['perpage'] = 20;
+				$mybb->input['perpage'] = $default_perpage;
 			}
 
 			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
@@ -946,7 +948,12 @@ if(!$mybb->input['action'])
 		"desc" => $lang->desc
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->get_input('order'), array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->get_input('perpage', MyBB::INPUT_INT), array('id' => 'perpage', 'min' => 1)), 'perpage');
+	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
+	if(!$perpage)
+	{
+		$perpage = $default_perpage;
+	}
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);
