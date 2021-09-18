@@ -2385,7 +2385,7 @@ if($mybb->input['action'] == "search")
 
 		if(!empty($mybb->input['profile_fields']))
 		{
-			$admin_view['custom_profile_fields'] = $mybb->get_input('profile_fields');
+			$admin_view['custom_profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 		}
 
 		$plugins->run_hooks("admin_user_users_search_commit");
