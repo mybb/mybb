@@ -45,13 +45,20 @@ if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
 
-	if(!is_array($mybb->get_input('aids')))
+	if(isset($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
+		if(!is_array($mybb->input['aids']))
+		{
+			$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
+		}
+		else
+		{
+			$mybb->input['aids'] = array_map("intval", $mybb->input['aids']);
+		}
 	}
 	else
 	{
-		$mybb->input['aids'] = array_map("intval", $mybb->input['aids']);
+		$mybb->input['aids'] = array();
 	}
 
 	if(count($mybb->input['aids']) < 1)
@@ -705,7 +712,7 @@ if(!$mybb->input['action'])
 		$forum_cache = cache_forums();
 
 		// Searching for attachments in a specific forum, we need to fetch all child forums too
-		if($mybb->get_input('forum'))
+		if(!empty($mybb->input['forum']))
 		{
 			if(!is_array($mybb->input['forum']))
 			{
