@@ -104,6 +104,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
   maxsize int NOT NULL default '0',
   icon varchar(100) NOT NULL default '',
   enabled smallint NOT NULL default '1',
+  forcedownload smallint NOT NULL default '0',
   groups text NOT NULL default '-1',
   forums text NOT NULL default '-1',
   avatarfile smallint NOT NULL default '0',
@@ -976,6 +977,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canratemembers smallint NOT NULL default '0',
   canchangename smallint NOT NULL default '0',
   canbereported smallint NOT NULL default '0',
+  canbeinvisible smallint NOT NULL default '1',
   canchangewebsite smallint NOT NULL default '1',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
@@ -1139,5 +1141,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes text NOT NULL default '',
 	PRIMARY KEY(wid)
 );";
-
 

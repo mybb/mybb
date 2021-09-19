@@ -50,8 +50,11 @@ function remove_message_quotes(&$text, $rmdepth=null)
 	{
 		$soffsets[] = $match[1];
 	}
+	$first_token = 0;
+	if(isset($soffsets[0])) {
+		$first_token = $soffsets[0];
+	}
 	// whilst we loop, also remove unnecessary end tokens at the start of string
-	$first_token = $soffsets[0];
 	foreach($ematches[0] as $id => $match)
 	{
 		if($match[1] > $first_token)
@@ -142,11 +145,11 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		$newtext .= substr($text, $cpy_start, $region[0]-$cpy_start);
 		$cpy_start = $region[1]+8; // 8 = strlen('[/quote]')
 		// clean up newlines
-		$next_char = $text{$region[1]+8};
+		$next_char = $text[$region[1]+8];
 		if($next_char == "\r" || $next_char == "\n")
 		{
 			++$cpy_start;
-			if($next_char == "\r" && $text{$region[1]+9} == "\n")
+			if($next_char == "\r" && $text[$region[1]+9] == "\n")
 			{
 				++$cpy_start;
 			}
@@ -180,7 +183,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 	}
 
 	// Swap username over if we have a registered user
-	if($quoted_post['userusername'])
+	if(isset($quoted_post['userusername']))
 	{
 		$quoted_post['username'] = $quoted_post['userusername'];
 	}

@@ -47,6 +47,9 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
+// Show errors triggered during initialization
+$error_handler->force_display_errors = true;
+
 if(!function_exists('json_encode') || !function_exists('json_decode'))
 {
 	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
@@ -103,6 +106,15 @@ if(empty($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
+// Load Settings
+$settings = array();
+
+if(file_exists(MYBB_ROOT."inc/settings.php"))
+{
+	require_once MYBB_ROOT."inc/settings.php";
+	$mybb->settings = $settings;
+}
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -111,6 +123,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 
@@ -122,8 +135,14 @@ switch($config['database']['type'])
 	case "pgsql":
 		$db = new DB_PgSQL;
 		break;
+	case "pgsql_pdo":
+		$db = new PostgresPdoDbDriver();
+		break;
 	case "mysqli":
 		$db = new DB_MySQLi;
+		break;
+	case "mysql_pdo":
+		$db = new MysqlPdoDbDriver();
 		break;
 	default:
 		$db = new DB_MySQL;
@@ -163,34 +182,9 @@ $lang->set_path(MYBB_ROOT."inc/languages");
 $cache->cache();
 
 // Load Settings
-if(file_exists(MYBB_ROOT."inc/settings.php"))
+if(empty($settings))
 {
-	require_once MYBB_ROOT."inc/settings.php";
-}
-
-if(!file_exists(MYBB_ROOT."inc/settings.php") || empty($settings))
-{
-	if(function_exists('rebuild_settings'))
-	{
-		rebuild_settings();
-	}
-	else
-	{
-		$options = array(
-			"order_by" => "title",
-			"order_dir" => "ASC"
-		);
-
-		$query = $db->simple_select("settings", "value, name", "", $options);
-
-		$settings = array();
-		while($setting = $db->fetch_array($query))
-		{
-			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
-			$settings[$setting['name']] = $setting['value'];
-		}
-		$db->free_result($query);
-	}
+	rebuild_settings();
 }
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
@@ -233,14 +227,13 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 	}
 }
 
+$error_handler->force_display_errors = false;
+
 // Load plugins
 if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }
-
-// Set up any shutdown functions we need to run globally
-add_shutdown('send_mail_queue');
 
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))

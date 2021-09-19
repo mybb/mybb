@@ -77,9 +77,10 @@ if($report_type == 'post')
 			$button = '#post_'.$id.' .postbit_report';
 		}
 
-		// Password protected forums ......... yhummmmy!
 		$id3 = $forum['fid'];
-		check_forum_password($forum['parentlist']);
+
+		// Password protected forums ......... yhummmmy!
+		check_forum_password($forum['fid']);
 	}
 }
 else if($report_type == 'profile')
@@ -192,6 +193,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 			$reason = $db->fetch_array($query);
 
 			$new_report['reasonid'] = $reason['rid'];
+			$new_report['reason'] = '';
 
 			if($reason['extra'])
 			{
@@ -273,7 +275,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	if($mybb->input['no_modal'])
+	if($mybb->get_input('no_modal'))
 	{
 		echo $report_reasons;
 		exit;

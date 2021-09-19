@@ -70,6 +70,9 @@ $l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this set
 $l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
 
 $l['error_format_dimension'] = "Defined {1} format is invalid.";
+$l['error_field_minnamelength'] = "Minimum name length can not be larger than maximum name length";
+$l['error_field_minpasswordlength'] = "Minimum password length can not be larger than maximum password length";
+$l['error_field_minpasswordlength_complex'] = "Minimum password length can not be less than 3 when using complex passwords";
 $l['error_field_postmaxavatarsize'] = "Maximum Avatar Dimensions";
 $l['error_field_useravatardims'] = "Default Avatar Dimensions";
 $l['error_field_maxavatardims'] = "Maximum Avatar Dimensions";
@@ -90,15 +93,18 @@ $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
 $l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 666.<br />For more information on CHMODing, see the <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.";
+$l['error_admin_email_settings_empty'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Admin Email</strong> was not saved as the setting can not be empty, and must be a valid email address.</div>';
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
 $l['success_setting_deleted'] = "The selected setting has been deleted successfully.";
 $l['success_settings_updated'] = "The settings have been updated successfully.";
 $l['success_settings_updated_hiddencaptchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Hidden CAPTCHA field</strong> setting was reverted to <strong>{1}</strong> due to a conflict with the <strong>{2}</strong> field in the registration form.</div>';
+$l['success_settings_updated_username_method_conflict'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allowed Login Methods</b> setting was not updated due to emails to be registered multiple times is allowed currently.</div>';
 $l['success_settings_updated_username_method'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allowed Login Methods</b> setting was not updated due to multiple users using the same e-mail address at this time.</div>';
 $l['success_settings_updated_allowmultipleemails'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allow emails to be registered multiple times?</b> setting can\'t be enabled because the <b>Allowed Login Methods</b> setting allows users to login by e-mail address.</div>';
 $l['success_settings_updated_captchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>CAPTCHA Images for Registration &amp; Posting</strong> setting was reverted to <strong>MyBB Default Captcha</strong> due to the lack of public/private key(s).</div>';
+$l['success_settings_updated_minsearchword'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Minimum Search Word Length</strong> setting was set to match the database system configuration.</div>';
 $l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
 $l['success_setting_group_added'] = "The setting group has been created successfully.";
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";

@@ -151,6 +151,86 @@ function get_unsearchable_forums($pid=0, $first=1)
 }
 
 /**
+ * Build query condition for threads/posts the user is allowed to see.
+ * Will return for example:
+ *  - visible = 1 - for normal users
+ *  - visible >= -1 - for admins & super mods
+ *  - (visible = 1 OR (visible = ? AND fid IN ...)) - for forum moderators
+ * 
+ * @param string $table_alias The alias of the table eg t to use t.visible instead of visible
+ * @return string the query condition 
+ */
+function get_visible_where($table_alias = null)
+{
+	global $db, $mybb;
+
+	$aliasdot = '';
+	if(!empty($table_alias))
+	{
+		$aliasdot = $table_alias.'.';
+	}
+
+	if($mybb->usergroup['issupermod'] == 1)
+	{
+		// Super moderators (and admins)
+		return "{$aliasdot}visible >= -1";
+	}
+	elseif(is_moderator())
+	{
+		// Normal moderators
+		$unapprove_forums = array();
+		$deleted_forums = array();
+		$unapproved_where = "({$aliasdot}visible = 1";
+		
+		$moderated_fids = get_moderated_fids($mybb->user['uid']);
+
+		if($moderated_fids !== false)
+		{
+			foreach($moderated_fids as $fid)
+			{
+				if(!is_moderator($fid))
+				{
+					// Shouldn't occur.
+					continue;
+				}
+	
+				// Use moderates this forum
+				$modperms = get_moderator_permissions($fid, $mybb->user['uid']);
+	
+				if($modperms['canviewunapprove'] == 1)
+				{
+					$unapprove_forums[] = $fid;
+				}
+	
+				if($modperms['canviewdeleted'] == 1)
+				{
+					$deleted_forums[] = $fid;
+				}
+			}
+	
+			if(!empty($unapprove_forums))
+			{
+				$unapproved_where .= " OR ({$aliasdot}visible = 0 AND {$aliasdot}fid IN(".implode(',', $unapprove_forums)."))";
+			}
+			if(!empty($deleted_forums))
+			{
+				$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
+			}
+			$unapproved_where .= ')';
+	
+			return $unapproved_where;
+		}
+	}
+
+	// Normal users
+	if($mybb->user['uid'] > 0 && $mybb->settings['showownunapproved'] == 1)
+	{
+		return "({$aliasdot}visible = 1 OR ({$aliasdot}visible = 0 AND {$aliasdot}uid = {$mybb->user['uid']}))";
+	}
+	return "{$aliasdot}visible = 1";
+}
+
+/**
  * Build a array list of the forums this user cannot search due to password protection
  *
  * @param array $fids the fids to check (leave blank to check all forums)
@@ -199,7 +279,7 @@ function get_password_protected_forums($fids=array())
  */
 function clean_keywords($keywords)
 {
-	global $db;
+	global $db, $lang;
 
 	$keywords = my_strtolower($keywords);
 	$keywords = $db->escape_string_like($keywords);
@@ -213,11 +293,18 @@ function clean_keywords($keywords)
 	if(my_strpos($keywords, "or") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 2);
+		$keywords = " ".$keywords;
 	}
 
 	if(my_strpos($keywords, "and") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 3);
+		$keywords = " ".$keywords;
+	}
+
+	if(!$keywords)
+	{
+		error($lang->error_nosearchterms);
 	}
 
 	return $keywords;
@@ -1234,7 +1321,7 @@ function perform_search_mysql($search)
 		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
-	$visiblesql = $post_visiblesql = $plain_post_visiblesql = "";
+	$visiblesql = $post_visiblesql = $plain_post_visiblesql = $unapproved_where_t = $unapproved_where_p = "";
 	if(isset($search['visible']))
 	{
 		if($search['visible'] == 1)
@@ -1269,6 +1356,10 @@ function perform_search_mysql($search)
 		}
 	}
 
+	// Moderators can view unapproved threads and deleted threads from forums they moderate
+	$unapproved_where_t = get_visible_where('t');
+	$unapproved_where_p = get_visible_where('p');
+
 	// Searching a specific thread?
 	$tidsql = '';
 	if(!empty($search['tid']))
@@ -1294,7 +1385,7 @@ function perform_search_mysql($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND ({$unapproved_where_t}) AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -1311,7 +1402,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$visiblesql} {$post_visiblesql} AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$visiblesql} {$post_visiblesql} AND ({$unapproved_where_t}) AND ({$unapproved_where_p}) AND t.closed NOT LIKE 'moved|%' {$message_lookin}
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
@@ -1381,19 +1472,12 @@ function perform_search_mysql_ft($search)
 
 	$keywords = clean_keywords_ft($search['keywords']);
 
-	// Attempt to determine minimum word length from MySQL for fulltext searches
-	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
-	$min_length = $db->fetch_field($query, 'Value');
-	if(is_numeric($min_length))
-	{
-		$mybb->settings['minsearchword'] = $min_length;
-	}
-	// Otherwise, could not fetch - default back to MySQL fulltext default setting
-	else
+	if($mybb->settings['minsearchword'] < 1)
 	{
 		$mybb->settings['minsearchword'] = 4;
 	}
 
+	$message_lookin = $subject_lookin = '';
 	if($keywords)
 	{
 		$keywords_exp = explode("\"", $keywords);
@@ -1480,7 +1564,7 @@ function perform_search_mysql_ft($search)
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = '';
+	$datecut = $thread_datecut = $post_datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -1589,7 +1673,7 @@ function perform_search_mysql_ft($search)
 		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
-	$visiblesql = $post_visiblesql = $plain_post_visiblesql = "";
+	$visiblesql = $post_visiblesql = $plain_post_visiblesql = $unapproved_where_t = $unapproved_where_p = "";
 	if(isset($search['visible']))
 	{
 		if($search['visible'] == 1)
@@ -1624,7 +1708,12 @@ function perform_search_mysql_ft($search)
 		}
 	}
 
+	// Moderators can view unapproved threads and deleted threads from forums they moderate
+	$unapproved_where_t = get_visible_where('t');
+	$unapproved_where_p = get_visible_where('p');
+
 	// Searching a specific thread?
+	$tidsql = '';
 	if($search['tid'])
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
@@ -1648,7 +1737,7 @@ function perform_search_mysql_ft($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND ({$unapproved_where_t}) AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -1665,7 +1754,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$post_visiblesql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$post_visiblesql} {$visiblesql} AND ({$unapproved_where_t}) AND {$unapproved_where_p} AND t.closed NOT LIKE 'moved|%' {$message_lookin}
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))

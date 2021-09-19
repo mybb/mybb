@@ -98,10 +98,10 @@ if($mybb->input['action'] == "addgroup")
 	}
 
 	$form_container = new FormContainer($lang->add_new_setting_group);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
-	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting_group);
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "deletegroup")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
@@ -389,14 +389,14 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_setting);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -405,10 +405,10 @@ if($mybb->input['action'] == "add")
 			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
 		}
 	}
-	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
+	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->get_input('gid'), array('id' => 'gid')), 'gid');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
 
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 
 	$setting_types = array(
 		"text" => $lang->text,
@@ -430,9 +430,9 @@ if($mybb->input['action'] == "add")
 		//"php" => $lang->php // Internal Use Only
 	);
 
-	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
-	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
+	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->get_input('type'), array('id' => 'type')), 'type');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->get_input('extra'), array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
+	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->get_input('value'), array('id' => 'value')), 'value');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting);
@@ -602,7 +602,11 @@ if($mybb->input['action'] == "edit")
 		$setting_data = $setting;
 		$type = explode("\n", $setting['optionscode'], 2);
 		$setting_data['type'] = trim($type[0]);
-		$setting_data['extra'] = trim($type[1]);
+
+		if(isset($type[1]))
+		{
+			$setting_data['extra'] = trim($type[1]);
+		}
 	}
 
 	$form_container = new FormContainer($lang->modify_setting);
@@ -613,7 +617,7 @@ if($mybb->input['action'] == "edit")
 	while($group = $db->fetch_array($query))
 	{
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -650,7 +654,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', !empty($setting_data['extra']) ? $setting_data['extra'] : null, array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
 	$form_container->output_row($lang->value, '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
@@ -677,7 +681,7 @@ if($mybb->input['action'] == "delete")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$setting['sid'])
+	if(empty($setting['sid']))
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -691,7 +695,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
@@ -805,7 +809,7 @@ if($mybb->input['action'] == "manage")
 		// Make setting group row
 		// Translated?
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(!empty($lang->$group_lang_var))
 		{
 			$group_title = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -830,12 +834,12 @@ if($mybb->input['action'] == "manage")
 		$table->construct_row(array('class' => 'alt_row', 'no_alt_row' => 1));
 
 		// Make rows for each setting in the group
-		if(is_array($settings_cache[$group['gid']]))
+		if(isset($settings_cache[$group['gid']]) && is_array($settings_cache[$group['gid']]))
 		{
 			foreach($settings_cache[$group['gid']] as $setting)
 			{
 				$setting_lang_var = "setting_{$setting['name']}";
-				if($lang->$setting_lang_var)
+				if(!empty($lang->$setting_lang_var))
 				{
 					$setting_title = htmlspecialchars_uni($lang->$setting_lang_var);
 				}
@@ -915,7 +919,10 @@ if($mybb->input['action'] == "change")
 		);
 
 		$is_current_hiddencaptcha_wrong = in_array($mybb->settings['hiddencaptchaimagefield'], $disallowed_fields);
-		if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields) || $is_current_hiddencaptcha_wrong)
+		if(
+			(isset($mybb->input['upsetting']['hiddencaptchaimagefield']) && in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields)) ||
+			$is_current_hiddencaptcha_wrong
+		)
 		{
 			if(isset($mybb->input['upsetting']['hiddencaptchaimagefield']) && $mybb->input['upsetting']['hiddencaptchaimagefield'] != $mybb->settings['hiddencaptchaimagefield'] && !$is_current_hiddencaptcha_wrong)
 			{
@@ -958,12 +965,108 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		// Validate minnamelength, maxnamelength, minpasswordlength (complex and regular) and maxpasswordlength
+		if ($gid == 9)
 		{
-			$mybb->input['upsetting']['captchaimage'] = 1;
+			if (
+				isset($mybb->input['upsetting']['minnamelength'], $mybb->input['upsetting']['maxnamelength']) &&
+				$mybb->input['upsetting']['minnamelength'] > 0 && $mybb->input['upsetting']['maxnamelength'] > 0 &&
+				$mybb->input['upsetting']['minnamelength'] > $mybb->input['upsetting']['maxnamelength'])
+			{
+				flash_message($lang->error_field_minnamelength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if (
+				isset($mybb->input['upsetting']['minpasswordlength'], $mybb->input['upsetting']['maxpasswordlength']) &&
+				$mybb->input['upsetting']['minpasswordlength'] > 0 && $mybb->input['upsetting']['maxpasswordlength'] > 0 &&
+				$mybb->input['upsetting']['minpasswordlength'] > $mybb->input['upsetting']['maxpasswordlength']
+			)
+			{
+				flash_message($lang->error_field_minpasswordlength, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+
+			if (
+				isset($mybb->input['upsetting']['minpasswordlength'], $mybb->input['upsetting']['requirecomplexpasswords']) &&
+				$mybb->input['upsetting']['requirecomplexpasswords'] && $mybb->input['upsetting']['minpasswordlength'] < 3
+			)
+			{
+				flash_message($lang->error_field_minpasswordlength_complex, 'error');
+				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+			}
+		}
+		
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		
+		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
+		$set_captcha_image = false;
+		if(isset(
+			$mybb->input['upsetting']['captchaimage'],
+			$mybb->input['upsetting']['recaptchaprivatekey'],
+			$mybb->input['upsetting']['recaptchapublickey'],
+			$mybb->input['upsetting']['recaptchascore'],
+			$mybb->input['upsetting']['hcaptchaprivatekey'],
+			$mybb->input['upsetting']['hcaptchapublickey']
+		))
+		{
+			$captchaimage = $mybb->input['upsetting']['captchaimage'];
+			$recaptchaprivatekey = $mybb->input['upsetting']['recaptchaprivatekey'];
+			$recaptchapublickey = $mybb->input['upsetting']['recaptchapublickey'];
+			$recaptchascore = $mybb->input['upsetting']['recaptchascore'];
+			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
+			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
+
+			if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+			{
+				$set_captcha_image = true;
+			}
+			else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+			{
+				$set_captcha_image = true;
+			}
+			else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+			{
+				$set_captcha_image = true;
+			}
+		}
+
+		//Checking settings for reCAPTCHA or hCaptcha and public/private key not set?
+		$captchaimage = $mybb->settings['captchaimage'];
+		$recaptchaprivatekey = $mybb->settings['recaptchaprivatekey'];
+		$recaptchapublickey = $mybb->settings['recaptchapublickey'];
+		$recaptchascore = $mybb->settings['recaptchascore'];
+		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
+		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
+
+		if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
+		{
+			$set_captcha_image = true;
+		}
+		else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
+		{
+			$set_captcha_image = true;
+		}
+		else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+		{
+			$set_captcha_image = true;
+		}
+		if($set_captcha_image){
+			$mybb->input['upsetting']['captchaimage'] = captcha::DEFAULT_CAPTCHA;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
+		}
+
+		// If using fulltext then enforce minimum word length given by database
+		if(isset($mybb->input['upsetting']['minsearchword']) && $mybb->input['upsetting']['minsearchword'] > 0 && $mybb->input['upsetting']['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
+		{
+			// Attempt to determine minimum word length from MySQL for fulltext searches
+			$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
+			$min_length = $db->fetch_field($query, 'Value');
+			if(is_numeric($min_length) && $mybb->input['upsetting']['minsearchword'] < $min_length)
+			{
+				$mybb->input['upsetting']['minsearchword'] = $min_length;
+				$lang->success_settings_updated .= $lang->success_settings_updated_minsearchword;
+			}
 		}
 
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
@@ -1025,19 +1128,45 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Administrator is changing the login method.
-		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		// Verify for admin email that can't be empty
+		if(isset($mybb->input['upsetting']['adminemail']) && !validate_email_format($mybb->input['upsetting']['adminemail']))
 		{
-			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
-			if($db->num_rows($query))
+			unset($mybb->input['upsetting']['adminemail']);
+			$lang->success_settings_updated .= $lang->error_admin_email_settings_empty;
+		}
+
+		// Administrator is changing the login method.
+		if(isset($mybb->input['upsetting']['username_method']) && (int)$mybb->input['upsetting']['username_method'] > 0)
+		{
+			if((int)$mybb->settings['allowmultipleemails'] == 1)
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
-				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method_conflict;
 			}
 			else
 			{
+				$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
+				if($db->num_rows($query))
+				{
+					$mybb->input['upsetting']['username_method'] = 0;
+					$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+				}
+			}
+		}
+
+		if(isset($mybb->input['upsetting']['username_method'], $mybb->input['upsetting']['allowmultipleemails']))
+		{
+			// Administrator is changing registration email allowance
+			if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->input['upsetting']['allowmultipleemails'] !== 0)
+			{
 				$mybb->input['upsetting']['allowmultipleemails'] = 0;
 				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
+
+			// Reset conflict silently, if by chance
+			if((int)$mybb->settings['username_method'] > 0 && (int)$mybb->settings['allowmultipleemails'] == 1)
+			{
+				$mybb->input['upsetting']['allowmultipleemails'] = 0;
 			}
 		}
 
@@ -1058,28 +1187,31 @@ if($mybb->input['action'] == "change")
 
 		foreach($fields as $field)
 		{
-			if(
-				isset($mybb->input['upsetting'][$field]) &&
-				is_string($mybb->input['upsetting'][$field]) &&
-				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			if(isset($mybb->input['upsetting'][$field]))
 			{
-				unset($mybb->input['upsetting'][$field]);
-				continue;
-			}
-
-			$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
-
-			if ($realpath === false) {
-				unset($mybb->input['upsetting'][$field]);
-				continue;
-			}
-
-			foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
-			{
-				if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+				if(
+					is_string($mybb->input['upsetting'][$field]) &&
+					strpos($mybb->input['upsetting'][$field], '://') !== false)
 				{
 					unset($mybb->input['upsetting'][$field]);
-					continue 2;
+					continue;
+				}
+
+				$realpath = realpath(mk_path_abs($mybb->input['upsetting'][$field]));
+
+				if ($realpath === false)
+				{
+					unset($mybb->input['upsetting'][$field]);
+					continue;
+				}
+
+				foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
+				{
+					if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+					{
+						unset($mybb->input['upsetting'][$field]);
+						continue 2;
+					}
 				}
 			}
 		}
@@ -1132,7 +1264,11 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Check if we need to create our fulltext index after changing the search mode
-		if($mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] && $mybb->input['upsetting']['searchtype'] == "fulltext")
+		if(
+			isset($mybb->input['upsetting']['searchtype']) &&
+			$mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] &&
+			$mybb->input['upsetting']['searchtype'] == "fulltext"
+		)
 		{
 			if(!$db->is_fulltext("posts") && $db->supports_fulltext_boolean("posts"))
 			{
@@ -1189,40 +1325,29 @@ if($mybb->input['action'] == "change")
 		// Search
 
 		// Search for settings
-		$search = $db->escape_string_like($mybb->input['search']);
-		$query = $db->query("
-			SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
-			FROM ".TABLE_PREFIX."settings s
-			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
-			ORDER BY s.disporder
-		");
-		while($setting = $db->fetch_array($query))
+		$search = trim($mybb->input['search']);
+		if(!empty($search))
 		{
-			$lang_var = "setting_{$setting['name']}";
-			if(isset($lang->$lang_var))
+			$query = $db->query("
+				SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
+				FROM ".TABLE_PREFIX."settings s
+				LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
+				ORDER BY s.disporder
+			");
+			while($setting = $db->fetch_array($query))
 			{
-				$setting["title"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_{$setting['name']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["description"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gtitle"] = $lang->$lang_var;
-			}
-			$lang_var = "setting_group_{$setting['gname']}_desc";
-			if(isset($lang->$lang_var))
-			{
-				$setting["gdescription"] = $lang->$lang_var;
-			}
-			$lang_var = $setting["title"] . " " . $setting["description"] . " " . $setting["gtitle"] . " " . $setting["gdescription"];
-			$search = mb_convert_encoding($search, mb_detect_encoding($setting["title"], "auto"));
-			if (mb_stripos($lang_var, $search))
-			{
-				$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				$search_in = $setting['name'] . ' ' . $setting['title'] . ' ' . $setting['description'] . ' ' . $setting['gname'] . ' ' . $setting['gtitle'] . ' ' . $setting['gdescription'];
+				foreach(array("setting_{$setting['name']}", "setting_{$setting['name']}_desc", "setting_group_{$setting['gname']}", "setting_group_{$setting['gname']}_desc") as $search_in_lang_key)
+				{
+					if(!empty($lang->$search_in_lang_key))
+					{
+						$search_in .= ' ' . $lang->$search_in_lang_key;
+					}
+				}
+				if(my_stripos($search_in, $search) !== false)
+				{
+					$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+				}
 			}
 		}
 		if(!count($cache_settings))
@@ -1255,7 +1380,7 @@ if($mybb->input['action'] == "change")
 			$page->output_header($lang->board_settings." - {$lang->settings_search}");
 		}
 	}
-	elseif($mybb->input['gid'])
+	elseif(($mybb->get_input('gid')))
 	{
 		// Group listing
 		// Cache groups
@@ -1394,7 +1519,7 @@ if($mybb->input['action'] == "change")
 				$folders = array();
 				while($folder = readdir($dir))
 				{
-					if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
+					if($folder != "." && $folder != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
 					{
 						$folders[$folder] = ucfirst($folder);
 					}
@@ -1857,7 +1982,7 @@ function print_setting_peekers()
 	$peekers = array(
 		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errortypemedium, #row_setting_errorloglocation"), 1, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
 		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
 		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
@@ -1872,7 +1997,12 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchascore"), /(8)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchapublickey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
@@ -1890,7 +2020,6 @@ function print_setting_peekers()
 		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
 		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
 		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
-		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',

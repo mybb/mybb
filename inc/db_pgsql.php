@@ -181,7 +181,10 @@ class DB_PgSQL implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
@@ -194,7 +197,7 @@ class DB_PgSQL implements DB_Base
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 
@@ -219,6 +222,10 @@ class DB_PgSQL implements DB_Base
 				if(strpos($single_connection['hostname'], ':') !== false)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
+				}
+				else
+				{
+					$single_connection['port'] = null;
 				}
 
 				if($single_connection['port'])
@@ -441,12 +448,14 @@ class DB_PgSQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null && $array !== false)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
-		else
-		{
-			return pg_fetch_result($query, $row, $field);
-		}
+
+		return pg_fetch_result($query, $row, $field);
 	}
 
 	/**
@@ -962,7 +971,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**

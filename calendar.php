@@ -1432,12 +1432,12 @@ if($mybb->input['action'] == "event")
 		"allow_videocode" => $calendar['allowvideocode']
 	);
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$event_parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$event_parser_options['allow_videocode'] = 0;
 	}
@@ -1781,12 +1781,12 @@ if($mybb->input['action'] == "dayview")
 				"allow_videocode" => $calendar['allowvideocode']
 			);
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$event_parser_options['allow_imgcode'] = 0;
 			}
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$event_parser_options['allow_videocode'] = 0;
 			}
@@ -2548,19 +2548,18 @@ if(!$mybb->input['action'])
 			// Is the current day
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{
-				$day_class = "trow_sep";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_currentday")."\";");
 			}
 			// Not in this month
 			else if($in_month == 0)
 			{
-				$day_class = "trow1";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
 			}
 			// Just a normal day in this month
 			else
 			{
-				$day_class = "trow2";
+				eval("\$day_bits .= \"".$templates->get("calendar_weekrow_thismonth")."\";");
 			}
-			eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
 			$day_birthdays = $day_events = "";
 			++$day;
 		}
