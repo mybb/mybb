@@ -302,7 +302,7 @@ class captcha
 				}
 			}
 		}
-		elseif($this->type == captcha::HCAPTCHA_INVISIBLE)
+		elseif($this->type == captcha::RECAPTCHA_V3)
 		{
 			$response = $mybb->input['g-recaptcha-response'];
 			if(!$response || strlen($response) == 0)
