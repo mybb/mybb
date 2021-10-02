@@ -98,17 +98,17 @@ if($mybb->user['uid'] == 0)
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 
-	if(is_array($forumsread) && empty($forumsread))
-	{
-		if(isset($mybb->cookies['mybb']['readallforums']))
+ 	if(is_array($forumsread) && empty($forumsread))
+ 	{
+ 		if(isset($mybb->cookies['mybb']['readallforums']))
 		{
 			$forumsread[$fid] = $mybb->cookies['mybb']['lastvisit'];
 		}
 		else
 		{
-			$forumsread = array();
+ 			$forumsread = array();
 		}
-	}
+ 	}
 
 	$query = $db->simple_select("forums", "*", "active != 0", array("order_by" => "pid, disporder"));
 }
@@ -517,14 +517,14 @@ switch(my_strtolower($mybb->input['order']))
 {
 	case "asc":
 		$sortordernow = "asc";
-		$ordersel['asc'] = ' selected="selected"';
+        $ordersel['asc'] = ' selected="selected"';
 		$oppsort = $lang->desc;
 		$oppsortnext = "desc";
 		break;
 	default:
-		$sortordernow = "desc";
+        $sortordernow = "desc";
 		$ordersel['desc'] = ' selected="selected"';
-		$oppsort = $lang->asc;
+        $oppsort = $lang->asc;
 		$oppsortnext = "asc";
 		break;
 }
@@ -1391,8 +1391,8 @@ if(!empty($threadcache) && is_array($threadcache))
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
-			$gidswhere = '';
 
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1400,17 +1400,17 @@ if(!empty($threadcache) && is_array($threadcache))
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name', "(',' || forums || ',' LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere}) AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 					break;
 				default:
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+						$gidswhere .= " OR CONCAT(',',`groups`,',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',', forums, ',') LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere}) AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 					break;
 			}
 

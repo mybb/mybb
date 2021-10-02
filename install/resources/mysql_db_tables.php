@@ -103,6 +103,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
   maxsize int(15) unsigned NOT NULL default '0',
   icon varchar(100) NOT NULL default '',
   enabled tinyint(1) NOT NULL default '1',
+  forcedownload tinyint(1) NOT NULL default '0',
   `groups` TEXT NOT NULL,
   forums TEXT NOT NULL,
   avatarfile tinyint(1) NOT NULL default '0',

@@ -266,7 +266,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 
 		$this->database = $config['database'];
 
-		if (version_compare('PHP_VERSION', '5.3.6', '<') === true) {
+		if (version_compare(PHP_VERSION, '5.3.6', '<') === true) {
 			// character set in DSN was ignored before PHP 5.3.6, so we must SET NAMES
 			$this->setCharacterSet($this->db_encoding);
 		}
@@ -336,7 +336,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	 */
 	public function setCharacterSet($characterSet)
 	{
-		$query = "SET NAMES {$characterSet}";
+		$query = "SET NAMES '{$characterSet}'";
 
 		self::execIgnoreError($this->read_link, $query);
 

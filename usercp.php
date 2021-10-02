@@ -32,6 +32,7 @@ $templatelist .= ",usercp_addsubscription_thread,forumdisplay_password,forumdisp
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
@@ -1520,18 +1521,29 @@ if($mybb->input['action'] == "subscriptions")
 	$plugins->run_hooks("usercp_subscriptions_start");
 
 	// Thread visiblity
-	$visible = "AND t.visible != 0";
-	if(is_moderator() == true)
+	$where = array(
+		"s.uid={$mybb->user['uid']}",
+		get_visible_where('t')
+	);
+
+	if($unviewable_forums = get_unviewable_forums(true))
 	{
-		$visible = '';
+		$where[] = "t.fid NOT IN ({$unviewable_forums})";
 	}
+
+	if($inactive_forums = get_inactive_forums())
+	{
+		$where[] = "t.fid NOT IN ({$inactive_forums})";
+	}
+
+	$where = implode(' AND ', $where);
 
 	// Do Multi Pages
 	$query = $db->query("
-		SELECT COUNT(ts.tid) as threads
-		FROM ".TABLE_PREFIX."threadsubscriptions ts
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
-		WHERE ts.uid = '".$mybb->user['uid']."' AND t.visible >= 0 {$visible}
+		SELECT COUNT(s.tid) as threads
+		FROM ".TABLE_PREFIX."threadsubscriptions s
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = s.tid)
+		WHERE {$where}
 	");
 	$threadcount = $db->fetch_field($query, "threads");
 
@@ -1575,7 +1587,7 @@ if($mybb->input['action'] == "subscriptions")
 		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE s.uid='".$mybb->user['uid']."' and t.visible >= 0 {$visible}
+		WHERE {$where}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
@@ -1583,7 +1595,7 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid']))
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid'])
 		{
 			// Hmm, you don't have permission to view this thread - unsubscribe!
 			$del_subscriptions[] = $subscription['sid'];
@@ -4327,28 +4339,42 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
-		$visible = "AND t.visible != 0";
-		if(is_moderator() == true)
+		$where = array(
+			"s.uid={$mybb->user['uid']}",
+			"t.lastposteruid!={$mybb->user['uid']}",
+			get_visible_where('t')
+		);
+
+		if($unviewable_forums = get_unviewable_forums(true))
 		{
-			$visible = '';
+			$where[] = "t.fid NOT IN ({$unviewable_forums})";
 		}
+	
+		if($inactive_forums = get_inactive_forums())
+		{
+			$where[] = "t.fid NOT IN ({$inactive_forums})";
+		}
+
+		$where = implode(' AND ', $where);
 
 		$query = $db->query("
 			SELECT s.*, t.*, t.username AS threadusername, u.username
 			FROM ".TABLE_PREFIX."threadsubscriptions s
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE s.uid='".$mybb->user['uid']."' {$visible}
+			WHERE {$where}
 			ORDER BY t.lastpost DESC
 			LIMIT 0, 10
 		");
 
 		$subscriptions = array();
 		$fpermissions = forum_permissions();
+
 		while($subscription = $db->fetch_array($query))
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
-			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && (empty($forumpermissions['canonlyviewownthreads'])|| $subscription['uid'] == $mybb->user['uid']))
+
+			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -4491,31 +4517,28 @@ if(!$mybb->input['action'])
 	}
 
 	// User's Latest Threads
+	$where = array(
+		"t.uid={$mybb->user['uid']}",
+		get_visible_where('t')
+	);
 
-	// Get unviewable forums
-	$f_perm_sql = '';
-	$unviewable_forums = get_unviewable_forums();
-	$inactiveforums = get_inactive_forums();
-	if($unviewable_forums)
+	if($unviewable_forums = get_unviewable_forums(true))
 	{
-		$f_perm_sql = " AND t.fid NOT IN ($unviewable_forums)";
-	}
-	if($inactiveforums)
-	{
-		$f_perm_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where[] = "t.fid NOT IN ({$unviewable_forums})";
 	}
 
-	$visible = " AND t.visible != 0";
-	if(is_moderator() == true)
+	if($inactive_forums = get_inactive_forums())
 	{
-		$visible = '';
+		$where[] = "t.fid NOT IN ({$inactive_forums})";
 	}
+
+	$where = implode(' AND ', $where);
 
 	$query = $db->query("
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible}{$f_perm_sql}
+		WHERE {$where}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");
@@ -4525,17 +4548,7 @@ if(!$mybb->input['action'])
 	$fpermissions = forum_permissions();
 	while($thread = $db->fetch_array($query))
 	{
-		// Moderated, and not moderator?
-		if($thread['visible'] == 0 && is_moderator($thread['fid'], "canviewunapprove") === false)
-		{
-			continue;
-		}
-
-		$forumpermissions = $fpermissions[$thread['fid']];
-		if($forumpermissions['canview'] != 0 || $forumpermissions['canviewthreads'] != 0)
-		{
-			$threadcache[$thread['tid']] = $thread;
-		}
+		$threadcache[$thread['tid']] = $thread;
 	}
 
 	$latest_threads = '';
