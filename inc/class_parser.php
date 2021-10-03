@@ -302,8 +302,8 @@ class postParser
 		global $cache, $lang, $mybb;
 		$this->mycode_cache = array();
 
-		$standard_mycode = $callback_mycode = $nestable_mycode = array();
-		$standard_count = $callback_count = $nestable_count = 0;
+		$standard_mycode = $callback_mycode = $nestable_mycode = $nestable_callback_mycode = array();
+		$standard_count = $callback_count = $nestable_count = $nestable_callback_count = 0;
 
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
@@ -387,20 +387,20 @@ class postParser
 			++$callback_count;
 		}
 
-		if($mybb->settings['allowfontmycode'] == 1)
-		{
-			$callback_mycode['font']['regex'] = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
-			$callback_mycode['font']['replacement'] = array($this, 'mycode_parse_font_callback');
-
-			++$nestable_count;
-		}
-
 		if($mybb->settings['allowalignmycode'] == 1)
 		{
 			$nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
 			$nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>";
 
 			++$nestable_count;
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$nestable_callback_mycode['font']['regex'] = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
+			$nestable_callback_mycode['font']['replacement'] = array($this, 'mycode_parse_font_callback');
+
+			++$nestable_callback_count;
 		}
 
 		$custom_mycode = $cache->read("mycode");
@@ -435,15 +435,22 @@ class postParser
 			$this->mycode_cache['nestable'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
 		}
 
-		// Assign the nestable MyCode to the cache.
+		// Assign the callback MyCode to the cache.
 		foreach($callback_mycode as $code)
 		{
 			$this->mycode_cache['callback'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
 		}
 
+		// Assign the nestable callback MyCode to the cache.
+		foreach($nestable_callback_mycode as $code)
+		{
+			$this->mycode_cache['nestable_callback'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
+		}
+
 		$this->mycode_cache['standard_count'] = $standard_count;
 		$this->mycode_cache['callback_count'] = $callback_count;
 		$this->mycode_cache['nestable_count'] = $nestable_count;
+		$this->mycode_cache['nestable_callback_count'] = $nestable_callback_count;
 	}
 
 	/**
@@ -511,6 +518,23 @@ class postParser
 				while(preg_match($mycode['find'], $message))
 				{
 					$message = preg_replace($mycode['find'], $mycode['replacement'], $message);
+				}
+			}
+		}
+
+		// Replace the nestable callback mycodes
+		if($this->mycode_cache['nestable_callback_count'] > 0)
+		{
+			foreach($this->mycode_cache['nestable_callback'] as $replace)
+			{
+				while(preg_match($replace['find'], $message))
+				{
+					$message_org = $message;
+					$message = preg_replace_callback($replace['find'], $replace['replacement'], $message);
+					if ($message_org == $message)
+					{
+						break;
+					}
 				}
 			}
 		}
