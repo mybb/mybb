@@ -121,7 +121,7 @@ class postParser
 	 * @access public
 	 * @var self::VALIDATION_*
 	 */
-	public $output_validation_policy = self::VALIDATION_REPORT_ONLY;
+	public $output_validation_policy = self::VALIDATION_REQUIRE;
 
 	/**
 	 * Parses a message with the specified options.
