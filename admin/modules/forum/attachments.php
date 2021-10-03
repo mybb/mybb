@@ -41,6 +41,13 @@ $plugins->run_hooks("admin_forum_attachments_begin");
 
 $uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
+$default_perpage = 20;
+$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
+if(!$perpage)
+{
+	$perpage = $default_perpage;
+}
+
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_forum_attachments_delete");
@@ -794,16 +801,10 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
-			if(!$mybb->input['perpage'])
-			{
-				$mybb->input['perpage'] = 20;
-			}
-
 			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 			if($mybb->input['page'])
 			{
-				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];
+				$start = ($mybb->input['page'] - 1) * $perpage;
 			}
 			else
 			{
@@ -862,7 +863,7 @@ if(!$mybb->input['action'])
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 				WHERE {$search_sql}
 				ORDER BY {$sort_field} {$mybb->input['order']}
-				LIMIT {$start}, {$mybb->input['perpage']}
+				LIMIT {$start}, {$perpage}
 			");
 			while($attachment = $db->fetch_array($query))
 			{
@@ -871,7 +872,7 @@ if(!$mybb->input['action'])
 
 			// Need to draw pagination for this result set
 			$pagination = '';
-			if($num_results > $mybb->input['perpage'])
+			if($num_results > $perpage)
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
 				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
@@ -889,7 +890,7 @@ if(!$mybb->input['action'])
 						$pagination_url .= "&forum[]=".(int)$fid;
 					}
 				}
-				$pagination = draw_admin_pagination($mybb->input['page'], $mybb->input['perpage'], $num_results, $pagination_url);
+				$pagination = draw_admin_pagination($mybb->input['page'], $perpage, $num_results, $pagination_url);
 			}
 
 			echo $pagination;
@@ -953,7 +954,7 @@ if(!$mybb->input['action'])
 		"desc" => $lang->desc
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->get_input('order'), array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->get_input('perpage', MyBB::INPUT_INT), array('id' => 'perpage', 'min' => 1)), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);
