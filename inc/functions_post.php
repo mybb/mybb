@@ -162,7 +162,7 @@ function build_postbit($post, $post_type=0)
 		}
 		$post_extra_style = 'border-top-width: 0;';
 	}
-	elseif($mybb->input['mode'] == 'threaded')
+	elseif($mybb->get_input('mode') == "threaded")
 	{
 		$post_extra_style = 'border-top-width: 0;';
 	}
@@ -677,10 +677,17 @@ function build_postbit($post, $post_type=0)
 			$post['button_multiquote'] = true;
 		}
 
-		$skip_report = my_unserialize($post['reporters']);
-		if(is_array($skip_report))
+		if(isset($post['reporters']))
 		{
-			$skip_report[] = 0;
+			$skip_report = my_unserialize($post['reporters']);
+			if(is_array($skip_report))
+			{
+				$skip_report[] = 0;
+			}
+			else
+			{
+				$skip_report = array(0);
+			}
 		}
 		else
 		{

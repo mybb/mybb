@@ -133,7 +133,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		if($user['location1'])
 		{
-			++$forum_viewers[$user['location1']];
+			if(isset($forum_viewers[$user['location1']]))
+			{
+				++$forum_viewers[$user['location1']];
+			}
+			else
+			{
+				$forum_viewers[$user['location1']] = 1;
+			}
 		}
 	}
 
@@ -248,7 +255,7 @@ if($mybb->settings['showbirthdays'] != 0)
 				}
 
 				// If this user's display group can't be seen in the birthday list, skip it
-				if($groupscache[$bdayuser['displaygroup']] && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
+				if(isset($groupscache[$bdayuser['displaygroup']]) && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
 				{
 					continue;
 				}
@@ -294,7 +301,7 @@ if($mybb->settings['showindexstats'] != 0)
 
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
-	if($onlinecount > $mostonline['numusers'])
+	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;

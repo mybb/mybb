@@ -196,7 +196,7 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
 			$cache_data = $db->fetch_array($query);
 
-			if(!$cache_data['title'])
+			if(empty($cache_data['title']))
 			{
 				$data = false;
 			}
@@ -619,7 +619,7 @@ class datacache
 	private function build_forum_permissions($permissions = array(), $pid = 0)
 	{
 		$usergroups = array_keys($this->read("usergroups", true));
-		if($this->forum_permissions_forum_cache[$pid])
+		if(!empty($this->forum_permissions_forum_cache[$pid]))
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)
 			{
@@ -632,7 +632,7 @@ class datacache
 						{
 							$perms[$gid] = $this->forum_permissions[$forum['fid']][$gid];
 						}
-						if($perms[$gid])
+						if(!empty($perms[$gid]))
 						{
 							$perms[$gid]['fid'] = $forum['fid'];
 							$this->built_forum_permissions[$forum['fid']][$gid] = $perms[$gid];
@@ -779,11 +779,11 @@ class datacache
 			$this->moderators[$moderator['fid']]['usergroups'][$moderator['id']] = $moderator;
 		}
 
-		if(is_array($this->moderators))
+		foreach(array_keys($this->moderators) as $fid)
 		{
-			foreach(array_keys($this->moderators) as $fid)
+			if(isset($this->moderators[$fid]['users']))
 			{
-				uasort($this->moderators[$fid], 'sort_moderators_by_usernames');
+				uasort($this->moderators[$fid]['users'], 'sort_moderators_by_usernames');
 			}
 		}
 
@@ -1130,12 +1130,24 @@ class datacache
 
 			if($bday['birthdayprivacy'] != 'all')
 			{
-				++$birthdays[$bday['bday']]['hiddencount'];
+				if(isset($birthdays[$bday['bday']]['hiddencount']))
+				{
+					++$birthdays[$bday['bday']]['hiddencount'];
+				}
+				else
+				{
+					$birthdays[$bday['bday']]['hiddencount'] = 1;
+				}
 				continue;
 			}
 
 			// We don't need any excess caleries in the cache
 			unset($bday['birthdayprivacy']);
+
+			if(!isset($birthdays[$bday['bday']]['users']))
+			{
+				$birthdays[$bday['bday']]['users'] = array();
+			}
 
 			$birthdays[$bday['bday']]['users'][] = $bday;
 		}

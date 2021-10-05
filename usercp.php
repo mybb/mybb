@@ -2876,7 +2876,7 @@ if($mybb->input['action'] == "usergroups")
 	if($mybb->get_input('leavegroup', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
-		verify_post_check($mybb->input['my_post_key']);
+		verify_post_check($mybb->get_input('my_post_key'));
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', MyBB::INPUT_INT).",") === false)
 		{
@@ -3522,6 +3522,7 @@ if(!$mybb->input['action'])
             LIMIT 0, 10
         ");
 
+		$subscriptions = array();
 		$fpermissions = forum_permissions();
 
 		while($subscription = $db->fetch_array($query))
@@ -3534,7 +3535,7 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		if(is_array($subscriptions))
+		if($subscriptions)
 		{
 			$tids = implode(",", array_keys($subscriptions));
 

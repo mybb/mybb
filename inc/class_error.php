@@ -167,8 +167,8 @@ class errorHandler {
 	{
 		global $mybb;
 
-		// Error reporting turned off (either globally or by @ before erroring statement)
-		if(error_reporting() == 0)
+		// Error reporting turned off for this type
+		if((error_reporting() & $type) == 0)
 		{
 			return true;
 		}
@@ -184,9 +184,22 @@ class errorHandler {
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
-			$mybb->settings['errortypemedium'] = "none";
+			$errortypemedium = $mybb->settings['errortypemedium'];
+		}
+		else
+		{
+			$errortypemedium = "none";
+		}
+
+		if(isset($mybb->settings['errorlogmedium']))
+		{
+			$errorlogmedium = $mybb->settings['errorlogmedium'];
+		}
+		else
+		{
+			$errorlogmedium = 'none';
 		}
 
 		if(defined("IN_TASK"))
@@ -205,13 +218,13 @@ class errorHandler {
 		}
 
 		// Saving error to log file.
-		if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
+		if($errorlogmedium == "log" || $errorlogmedium == "both")
 		{
 			$this->log_error($type, $message, $file, $line);
 		}
 
 		// Are we emailing the Admin a copy?
-		if($mybb->settings['errorlogmedium'] == "mail" || $mybb->settings['errorlogmedium'] == "both")
+		if($errorlogmedium == "mail" || $errorlogmedium == "both")
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
@@ -224,12 +237,12 @@ class errorHandler {
 				$this->output_error($type, $message, $file, $line);
 			}
 			// PHP Error
-			elseif(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
+			elseif(strpos(strtolower($this->error_types[$type]), 'warning') === false)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
 			// PHP Warning
-			elseif(in_array($mybb->settings['errortypemedium'], array('warning', 'both')))
+			elseif(in_array($errortypemedium, array('warning', 'both')))
 			{
 				global $templates;
 
@@ -292,7 +305,14 @@ class errorHandler {
 
 		if(!$message)
 		{
-			$message = $lang->unknown_user_trigger;
+			if(isset($lang->unknown_user_trigger))
+			{
+				$message = $lang->unknown_user_trigger;
+			}
+			else
+			{
+				$message .= 'An unknown error has been triggered.';
+			}
 		}
 
 		if(in_array($type, $this->mybb_error_types))
@@ -342,7 +362,7 @@ class errorHandler {
 		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
-		if(trim($mybb->settings['errorloglocation']) != "")
+		if(isset($mybb->settings['errorloglocation']) && trim($mybb->settings['errorloglocation']) != "")
 		{
 			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
@@ -365,7 +385,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if(!$mybb->settings['adminemail'])
+		if(empty($mybb->settings['adminemail']))
 		{
 			return false;
 		}
@@ -406,16 +426,38 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
-		if(!$mybb->settings['bbname'])
+		if(isset($mybb->settings['bbname']))
 		{
-			$mybb->settings['bbname'] = "MyBB";
+			$bbname = $mybb->settings['bbname'];
 		}
-		
+		else
+		{
+			$bbname = "MyBB";
+		}
+
+		// For some reason in the installer this setting is set to "<"
+		$accepted_error_types = array('both', 'error', 'warning', 'none');
+		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		{
+			$errortypemedium = $mybb->settings['errortypemedium'];
+		}
+		else
+		{
+			$errortypemedium = "none";
+		}
+
+		$show_details = (
+			$this->force_display_errors ||
+			in_array($errortypemedium, array('both', 'error')) ||
+			defined("IN_INSTALL") ||
+			defined("IN_UPGRADE")
+		);
+
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($show_details)
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -432,7 +474,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($show_details)
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
@@ -528,9 +570,27 @@ class errorHandler {
 
 		$contact_site_owner = '';
 		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+		if(
+			!empty($mybb->settings['contactlink']) &&
+			(
+				!empty($mybb->settings['contact']) &&
+				!$is_in_contact &&
+				(
+					$mybb->settings['contactlink'] == "contact.php" &&
+					(
+						!isset($mybb->user['uid']) ||
+						($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
+						$mybb->user['uid'] > 0
+					)
+				) ||
+				$mybb->settings['contactlink'] != "contact.php"
+			)
+		)
 		{
-			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+			if(
+				!my_validate_url($mybb->settings['contactlink'], true, true) &&
+				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+			)
 			{
 				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}
@@ -582,14 +642,23 @@ HTML;
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
-			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
+
+			$file_name = basename($_SERVER['SCRIPT_FILENAME']);
+			if(function_exists('htmlspecialchars_uni'))
+			{
+				$file_name = htmlspecialchars_uni($file_name);
+			}
+			else
+			{
+				$file_name = htmlspecialchars($file_name);
+			}
 
 			echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{$mybb->settings['bbname']} - Internal Error</title>
+	<title>{$bbname} - Internal Error</title>
 	<style type="text/css">
 		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
 		a:link { color: #026CB1; text-decoration: none;	}

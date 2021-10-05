@@ -297,6 +297,10 @@ else if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $myb
 {
 	$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 }
+else
+{
+	$redirect_url = '';
+}
 
 $plugins->run_hooks('contact_end');
 

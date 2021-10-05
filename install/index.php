@@ -1691,13 +1691,13 @@ function create_tables()
 		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
 		$val = preg_replace('#;$#', $db->build_create_table_collation().";", $val);
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
-		if($match[1])
+		if(!empty($match[1]))
 		{
 			$db->drop_table($match[1], false, false);
 			echo $lang->sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);
-		if($match[1])
+		if(!empty($match[1]))
 		{
 			echo $lang->done . "<br />\n";
 		}
@@ -2452,6 +2452,10 @@ function install_done()
 	$cache->update_threadprefixes();
 	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
+	$cache->update("mostonline", array(
+		'numusers' => 0,
+		'time' => 0,
+    ));
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$cache->update_default_theme();
 	$cache->update_reportreasons(true);

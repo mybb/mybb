@@ -2227,7 +2227,7 @@ if($mybb->input['action'] == "modqueue")
 if($mybb->input['action'] == "do_editprofile")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($mybb->usergroup['caneditprofiles'] == 0)
 	{

@@ -220,8 +220,8 @@ class captcha
 			$fields['names']['string'] = "imagestring";
 
 			// Values
-			$fields['hash'] = $db->escape_string($mybb->input['imagehash']);
-			$fields['string'] = $db->escape_string($mybb->input['imagestring']);
+			$field['hash'] = $db->escape_string($mybb->get_input('imagehash'));
+			$field['string'] = $db->escape_string($mybb->get_input('imagestring'));
 		}
 		elseif($this->type == 3)
 		{
@@ -246,8 +246,8 @@ class captcha
 		if($this->type == captcha::DEFAULT_CAPTCHA)
 		{
 			// We have a normal CAPTCHA to handle
-			$imagehash = $db->escape_string($mybb->input['imagehash']);
-			$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
+			$imagehash = $db->escape_string($mybb->get_input('imagehash'));
+			$imagestring = $db->escape_string(my_strtolower($mybb->get_input('imagestring')));
 
 			switch($db->type)
 			{
@@ -271,7 +271,7 @@ class captcha
 		}
 		elseif(in_array($this->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)))
 		{
-			$response = $mybb->input['g-recaptcha-response'];
+			$response = $mybb->get_input('g-recaptcha-response');
 			if(!$response || strlen($response) == 0)
 			{
 				$this->set_error($lang->invalid_nocaptcha);
@@ -304,7 +304,7 @@ class captcha
 		}
 		elseif($this->type == captcha::RECAPTCHA_V3)
 		{
-			$response = $mybb->input['g-recaptcha-response'];
+			$response = $mybb->get_input('g-recaptcha-response');
 			if(!$response || strlen($response) == 0)
 			{
 				$this->set_error($lang->invalid_nocaptcha);
@@ -338,7 +338,7 @@ class captcha
 		}
 		elseif(in_array($this->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 		{
-			$response = $mybb->input['h-captcha-response'];
+			$response = $mybb->get_input('h-captcha-response');
 			if(!$response || strlen($response) == 0)
 			{
 				$this->set_error($lang->invalid_hcaptcha);
@@ -387,7 +387,7 @@ class captcha
 		if($this->type == captcha::DEFAULT_CAPTCHA)
 		{
 			// We have a normal CAPTCHA to handle
-			$imagehash = $db->escape_string($mybb->input['imagehash']);
+			$imagehash = $db->escape_string($mybb->get_input('imagehash'));
 			if($imagehash)
 			{
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");

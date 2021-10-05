@@ -5731,6 +5731,11 @@ function update_last_post($tid)
 	);
 	$lastpost = $db->fetch_array($query);
 
+	if(!$lastpost)
+	{
+		return false;
+	}
+
 	if(empty($lastpost['username']))
 	{
 		$lastpost['username'] = $lastpost['postusername'];
