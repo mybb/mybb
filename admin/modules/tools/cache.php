@@ -79,7 +79,7 @@ if($mybb->input['action'] == 'view')
 
 if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-cache");
@@ -162,7 +162,7 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 
 if($mybb->input['action'] == "rebuild_all")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-cache");

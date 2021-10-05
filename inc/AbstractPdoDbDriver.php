@@ -178,7 +178,9 @@ abstract class AbstractPdoDbDriver implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if (isset($config['encoding'])) {
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach (array('read', 'write') as $type) {

@@ -59,6 +59,7 @@
 			<module name="user">
 				<permission name="tab">0</permission>
 				<permission name="users">0</permission>
+				<permission name="awaiting_activation">0</permission>
 				<permission name="groups">0</permission>
 				<permission name="titles">0</permission>
 				<permission name="banning">0</permission>
@@ -127,6 +128,7 @@
 			<module name="user">
 				<permission name="tab">1</permission>
 				<permission name="users">1</permission>
+				<permission name="awaiting_activation">1</permission>
 				<permission name="groups">1</permission>
 				<permission name="titles">1</permission>
 				<permission name="banning">1</permission>
@@ -195,6 +197,7 @@
 			<module name="user">
 				<permission name="tab">1</permission>
 				<permission name="users">1</permission>
+				<permission name="awaiting_activation">1</permission>
 				<permission name="groups">1</permission>
 				<permission name="titles">1</permission>
 				<permission name="banning">1</permission>

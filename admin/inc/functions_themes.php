@@ -1563,7 +1563,7 @@ function upgrade_css_120_to_140($css)
 
 	foreach($to_add as $class_id => $array)
 	{
-		if($already_parsed[$class_id])
+		if(isset($already_parsed[$class_id]))
 		{
 			$already_parsed[$class_id]++;
 			$class_id .= "_".$already_parsed[$class_id];

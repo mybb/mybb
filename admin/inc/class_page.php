@@ -757,7 +757,7 @@ EOF;
 		}
 		$build_menu .= "</ul>\n</div>";
 
-		if($sub_menu)
+		if(!empty($sub_menu))
 		{
 			$this->_build_submenu($sub_menu_title, $sub_menu);
 		}

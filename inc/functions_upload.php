@@ -68,7 +68,7 @@ function remove_attachment($pid, $posthash, $aid)
 	if($db->fetch_field($query, "numreferences") == 0)
 	{
 		delete_uploaded_file($uploadspath_abs."/".$attachment['attachname']);
-		if($attachment['thumbnail'])
+		if($attachment['thumbnail'] && $attachment['thumbnail'] !== 'SMALL')
 		{
 			delete_uploaded_file($uploadspath_abs."/".$attachment['thumbnail']);
 		}
@@ -624,7 +624,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 		$thumbnail = generate_thumbnail($uploadspath_abs."/".$filename, $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
-		if($thumbnail['filename'])
+		if(!empty($thumbnail['filename']))
 		{
 			$attacharray['thumbnail'] = $thumbnail['filename'];
 		}

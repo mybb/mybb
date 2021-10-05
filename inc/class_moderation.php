@@ -254,10 +254,18 @@ class Moderation
 			{
 				foreach($userposts as $uid => $subtract)
 				{
-					$update_array = array(
-						"postnum" => "-{$subtract['num_posts']}",
-						"threadnum" => "-{$subtract['num_threads']}",
-					);
+					$update_array = array();
+
+					if(isset($subtract['num_posts']))
+					{
+						$update_array['postnum'] = "-{$subtract['num_posts']}";
+					}
+
+					if(isset($subtract['num_threads']))
+					{
+						$update_array['threadnum'] = "-{$subtract['num_threads']}";
+					}
+
 					update_user_counters($uid, $update_array);
 				}
 			}

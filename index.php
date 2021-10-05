@@ -42,6 +42,7 @@ if($mybb->settings['statsenabled'] != 0)
 	eval('$statspage = "'.$templates->get('index_statspage').'";');
 }
 
+$onlinecount = null;
 $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
@@ -152,7 +153,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		if($user['location1'])
 		{
-			++$forum_viewers[$user['location1']];
+			if(isset($forum_viewers[$user['location1']]))
+			{
+				++$forum_viewers[$user['location1']];
+			}
+			else
+			{
+				$forum_viewers[$user['location1']] = 1;
+			}
 		}
 	}
 
@@ -233,11 +241,18 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 
-	$hiddencount = $today_bdays = 0;
+	$hiddencount = 0;
+	$today_bdays = array();
 	if(isset($bdaycache[$bdaydate]))
 	{
-		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
-		$today_bdays = $bdaycache[$bdaydate]['users'];
+		if(isset($bdaycache[$bdaydate]['hiddencount']))
+		{
+			$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		}
+		if(isset($bdaycache[$bdaydate]['users']))
+		{
+			$today_bdays = $bdaycache[$bdaydate]['users'];
+		}
 	}
 
 	$comma = '';
@@ -278,7 +293,7 @@ if($mybb->settings['showbirthdays'] != 0)
 				}
 
 				// If this user's display group can't be seen in the birthday list, skip it
-				if($groupscache[$bdayuser['displaygroup']] && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
+				if(isset($groupscache[$bdayuser['displaygroup']]) && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
 				{
 					continue;
 				}
@@ -340,7 +355,7 @@ if($mybb->settings['showindexstats'] != 0)
 
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
-	if($onlinecount > $mostonline['numusers'])
+	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;

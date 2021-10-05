@@ -626,7 +626,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == 'toggle_status')
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect('index.php?module=config-attachment_types');
