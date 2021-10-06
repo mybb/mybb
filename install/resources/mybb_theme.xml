@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1827">
+<theme name="MyBB Master Style" version="1828">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -3974,7 +3974,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_searchforum" version="1822"><![CDATA[<form action="search.php">
+		<template name="forumdisplay_searchforum" version="1828"><![CDATA[<form action="search.php">
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
 	<input type="text" class="textbox" name="keywords" /> {$gobutton}
 	<input type="hidden" name="action" value="do_search" />
