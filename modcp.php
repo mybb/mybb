@@ -2814,7 +2814,7 @@ if($mybb->input['action'] == "editprofile")
 		{
 			if($title['posts'] <= $user['postnum'])
 			{
-				$defaulttitle = $title['title'];
+				$defaulttitle = htmlspecialchars_uni($title['title']);
 				break;
 			}
 		}
