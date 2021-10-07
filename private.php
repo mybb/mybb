@@ -1598,10 +1598,11 @@ if($mybb->input['action'] == "empty")
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = $unread = '';
+	$folderlist = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
+		$unread = ''; 
 		$fid = $folderinfo[0];
 		if($folderinfo[0] == "1")
 		{
