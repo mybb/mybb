@@ -220,7 +220,7 @@ $comma = '';
 foreach($parentlistexploded as $mfid)
 {
 	// This forum has moderators
-	if(is_array($moderatorcache[$mfid]))
+	if(isset($moderatorcache[$mfid]) && is_array($moderatorcache[$mfid]))
 	{
 		// Fetch each moderator from the cache and format it, appending it to the list
 		foreach($moderatorcache[$mfid] as $modtype)

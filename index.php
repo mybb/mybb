@@ -76,7 +76,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		while($location = $db->fetch_array($query))
 		{
-			$forum_viewers[$location['location1']] += $location['guestcount'];
+			if(isset($forum_viewers[$location['location1']]))
+			{
+				$forum_viewers[$location['location1']] += $location['guestcount'];
+			}
+			else
+			{
+				$forum_viewers[$location['location1']] = $location['guestcount'];
+			}
 		}
 	}
 
