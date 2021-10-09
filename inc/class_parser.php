@@ -2047,8 +2047,10 @@ class postParser
 			$error_message .= var_export($data, true);
 
 			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__, false);
-		}
 
-		return empty($errors);
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
