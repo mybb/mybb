@@ -162,9 +162,9 @@ function build_forumbits($pid=0, $depth=1)
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
 
-				if(!empty($forum_info['counters']['viewing']))
+				if(!empty($forum_info['counters']['viewers']))
 				{
-					$forum['viewers'] += $forum_info['counters']['viewing'];
+					$forum['viewers'] += $forum_info['counters']['viewers'];
 				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
