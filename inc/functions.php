@@ -2004,7 +2004,16 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 					continue;
 				}
 
-				$perms[$action] = max($perm[$action], $perms[$action]);
+				// Figure out the usergroup permissions
+				if($value == 0)
+				{
+					// The usergroup doesn't have permission to set this action
+					$perms[$action] = 0;
+				}
+				else
+				{
+					$perms[$action] = max($perm[$action], $perms[$action]);
+				}
 			}
 		}
 	}
