@@ -1180,6 +1180,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
+	else
+	{
+		$attachbox = '';
+	}
 
 	// If the user is logged in, provide a save draft button.
 	if($mybb->user['uid'])

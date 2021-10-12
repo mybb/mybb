@@ -1023,6 +1023,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		$bgcolor = alt_trow();
 	}
+	else
+	{
+		$attachbox = '';
+	}
 
 	if($mybb->user['uid'])
 	{
