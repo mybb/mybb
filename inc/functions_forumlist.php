@@ -151,6 +151,11 @@ function build_forumbits($pid=0, $depth=1)
 				$showlockicon = 1;
 			}
 
+			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
+			{
+				$forum['viewers'] = $forum_viewers[$forum['fid']];
+			}
+
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
@@ -203,11 +208,6 @@ function build_forumbits($pid=0, $depth=1)
 			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
 			{
 				$parent_lastpost = $lastpost_data;
-			}
-
-			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
-			{
-				$forum['viewers'] = $forum_viewers[$forum['fid']];
 			}
 
 			// Increment the counters for the parent forum (returned later)
