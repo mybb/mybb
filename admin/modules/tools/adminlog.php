@@ -483,7 +483,11 @@ function get_admin_log_action($logitem)
 			{
 				$lang_string = 'admin_log_tools_backupdb_backup_download';
 			}
-			$logitem['data'][1] = '...'.substr($logitem['data'][1], -20);
+
+			if(isset($logitem['data'][1]))
+			{
+				$logitem['data'][1] = '...'.substr($logitem['data'][1], -20);
+			}
 			break;
 		case 'admin_log_tools_backupdb_dlbackup': // Download backup
 			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);

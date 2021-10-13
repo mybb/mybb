@@ -41,6 +41,7 @@ function build_forumbits($pid=0, $depth=1)
 	{
 		foreach($parent as $forum)
 		{
+			$forum['viewers'] = 0;
 			$subforums = $sub_forums = '';
 			$lastpost_data = array(
 				'lastpost' => 0,
@@ -234,11 +235,16 @@ function build_forumbits($pid=0, $depth=1)
 			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $showlockicon);
 
 			// Fetch the number of unapproved threads and posts for this forum
-			$unapproved = get_forum_unapproved($forum);
-
 			if($hideinfo == true)
 			{
-				unset($unapproved);
+				$unapproved = array(
+					"unapproved_posts" => '',
+					"unapproved_threads" => '',
+				);
+			}
+			else
+			{
+				$unapproved = get_forum_unapproved($forum);
 			}
 
 			// Sanitize name and description of forum.

@@ -51,16 +51,20 @@ $mybb->input['action'] = $mybb->get_input('action');
 
 usercp_menu();
 
-$server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
-
-if(my_strpos($server_http_referer, $mybb->settings['bburl'].'/') !== 0)
+$server_http_referer = '';
+if(isset($_SERVER['HTTP_REFERER']))
 {
-	if(my_strpos($server_http_referer, '/') === 0)
+	$server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
+
+	if(my_strpos($server_http_referer, $mybb->settings['bburl'].'/') !== 0)
 	{
-		$server_http_referer = my_substr($server_http_referer, 1);
+		if(my_strpos($server_http_referer, '/') === 0)
+		{
+			$server_http_referer = my_substr($server_http_referer, 1);
+		}
+		$url_segments = explode('/', $server_http_referer);
+		$server_http_referer = $mybb->settings['bburl'].'/'.end($url_segments);
 	}
-	$url_segments = explode('/', $server_http_referer);
-	$server_http_referer = $mybb->settings['bburl'].'/'.end($url_segments);
 }
 
 $plugins->run_hooks("usercp_start");

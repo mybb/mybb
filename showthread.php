@@ -1193,6 +1193,10 @@ if($mybb->input['action'] == "thread")
 					$similar_thread['threadprefix'] = $prefix['displaystyle'].'&nbsp;';
 				}
 			}
+			else
+			{
+				$similar_thread['threadprefix'] = '';
+			}
 
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);
 			$similar_thread['subject'] = htmlspecialchars_uni($similar_thread['subject']);

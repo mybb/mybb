@@ -716,6 +716,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
+	else
+	{
+		$attachbox = '';
+	}
 	if(!$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
 	{
 		$message = $post['message'];
