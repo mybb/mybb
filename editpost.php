@@ -709,8 +709,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
-	if(!$mybb->get_input('attachmentaid',
-			MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
+	if(!$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
 	{
 		$editpost['message'] = $post['message'];
 		$editpost['subject'] = $post['subject'];

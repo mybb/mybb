@@ -42,6 +42,7 @@ function build_forumbits($pid=0, $depth=1)
 	{
 		foreach($parent as $forum)
 		{
+			$forum['viewers'] = 0;
 			$subforums = $sub_forums = '';
 			$forum['last_post'] = array(
 				'lastpost' => 0,
