@@ -159,6 +159,11 @@ SQL;
 				$showlockicon = 1;
 			}
 
+			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
+			{
+				$forum['viewers'] = $forum_viewers[$forum['fid']];
+			}
+
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
@@ -170,9 +175,9 @@ SQL;
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
 
-				if(!empty($forum_info['counters']['viewing']))
+				if(!empty($forum_info['counters']['viewers']))
 				{
-					$forum['viewers'] += $forum_info['counters']['viewing'];
+					$forum['viewers'] += $forum_info['counters']['viewers'];
 				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
@@ -211,11 +216,6 @@ SQL;
 			if((!isset($parent_lastpost) || $forum['last_post']['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
 			{
 				$parent_lastpost = $forum['last_post'];
-			}
-
-			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
-			{
-				$forum['viewers'] = $forum_viewers[$forum['fid']];
 			}
 
 			// Increment the counters for the parent forum (returned later)
