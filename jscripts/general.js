@@ -11,7 +11,7 @@ var MyBB = {
 
 	pageLoaded: function()
 	{
-		Collapsible.init();
+		expandables.init();
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
