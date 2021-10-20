@@ -3776,18 +3776,22 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$subscription_method = 0;
 	}
 
-	// Return user default if no thread id available, in case
-	if(!(int)$tid || (int)$tid <= 0)
-	{
-		return $subscription_methods[$subscription_method];
-	}
-
-	// If method not predefined set using data from database
+	// First check for a subscription method in $postoptions. Return it if found.
+	// e.g., When previewing a new thread, we want the user's choice
+	// of radio button to carry over.
 	if(isset($postoptions['subscriptionmethod']))
 	{
 		$method = trim($postoptions['subscriptionmethod']);
 		return (in_array($method, $subscription_methods)) ? $method : $subscription_methods[0];
 	}
+	// Next, check for a thread ID. If we don't have one,
+	// then return the user's default subscription method.
+	else if(!(int)$tid || (int)$tid <= 0)
+	{
+		return $subscription_methods[$subscription_method];
+	}
+	// Otherwise, try to pull any subscription for the user to this thread
+	// out of the database.
 	else
 	{
 		global $db;
