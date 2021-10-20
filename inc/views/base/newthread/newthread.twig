@@ -190,10 +190,10 @@
 
                 {{ captcha|raw }}
 
+                {% if newthread.showattachments %}
+                    {% include 'misc/attachments.twig' %}
+                {% endif %}
             </div>
-            {% if newthread.showattachments %}
-                {% include 'misc/attachments.twig' %}
-            {% endif %}
             <div class="form__submit">
                 <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
                     {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
