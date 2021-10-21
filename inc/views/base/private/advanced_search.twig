@@ -40,7 +40,9 @@
                         <select multiple="multiple" name="folder[]" id="folder">
                             <option selected="selected">{{ lang.all_folders }}</option>
                             {% for folder in folders %}
+                                {% if folder.id != 1 %}
                                 <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

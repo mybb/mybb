@@ -18,10 +18,10 @@
                 <div class="row row--form field">{{ lang.empty_note|raw }}</div>
                 <div class="row row--form field">
                     <h3 class="field__name">{{ lang.empty_these_folders }}</h3>
-                    {% for folder in folderlist %}
+                    {% for folder in folders %}
                         <div class="option-field option-field--compact">
                             <label>
-                                <input type="checkbox" class="option-field__input checkbox" name="empty[{{ folder.fid }}]" value="1" />
+                                <input type="checkbox" class="option-field__input checkbox" name="empty[{{ folder.id }}]" value="1" />
                                 <span class="option-field__name option-field__name--inline">{{ folder.foldername }}</span>
                                 <span class="option-field__description option-field__description--inline">({{ folder.foldercount }} {% if folder.foldercount == 1 %}{{ lang.empty_message }}{% else %}{{ lang.empty_messages }}{% endif %})</span>
                             </label>
