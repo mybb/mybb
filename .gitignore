@@ -28,6 +28,7 @@ error.log
 .vscode
 .history
 .idea
+.editorconfig
 
 # Generic OS stuff
 .DS_Store
@@ -48,5 +49,3 @@ Thumbs.db
 *.orig
 
 inc/vendor
-
-.idea
