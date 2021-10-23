@@ -1529,7 +1529,7 @@ if($foruminfo['type'] != "c")
 	// Populate Forumsort
 	$forumsort = '';
 	
-	if($threadcount > 0)
+	if($threadcount >= 0)
 	{
 		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
 	}
