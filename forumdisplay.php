@@ -1528,12 +1528,8 @@ if($foruminfo['type'] != "c")
 
 	// Populate Forumsort
 	$forumsort = '';
-	
-	if($threadcount >= 0)
-	{
-		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
-	}
-	
+	eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
+
 	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
