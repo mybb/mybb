@@ -8,8 +8,10 @@
                     <div class="language">
                         <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                            {% for name, field in mybb.input if name != 'language' and name is not iterable and value is not iterable and value %}
-                                <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                            {% for name, field in mybb.input %}
+                                {% if name != 'language' and name is not iterable and value is not iterable and value %}
+                                    <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                                {% endif %}
                             {% endfor %}
                             <div class="select-field">
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
@@ -32,8 +34,10 @@
                         <form method="post" action="{{ mybb.settings.footer.themeselect.current_url }}" id="theme_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% if mybb.settings.footer.themeselect.options %}
-                                {% for name, field in mybb.input if name != 'theme' and name is not iterable and value is not iterable and value %}
-                                    <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                                {% for name, field in mybb.input %}
+                                    {% if name != 'theme' and name is not iterable and value is not iterable and value %}
+                                        <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                                    {% endif %}
                                 {% endfor %}
                             {% endif %}
                             <div class="select-field">

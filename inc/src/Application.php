@@ -222,7 +222,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      *
      * @return string|bool
      */
-    public function environment()
+    public function environment(...$environments)
     {
         if (func_num_args() > 0) {
             $patterns = is_array(func_get_arg(0)) ? func_get_arg(0) : func_get_args();
@@ -701,10 +701,107 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      *
      * @return string
      */
-    public function basePath()
+    public function basePath($path = '')
     {
         return $this->basePath;
     }
+
+    /**
+     * Get the path to the bootstrap directory.
+     *
+     * @param  string  $path Optionally, a path to append to the bootstrap path
+     * @return string
+     */
+    public function bootstrapPath($path = '')
+	{
+        return '';
+	}
+
+    /**
+     * Get the path to the application configuration files.
+     *
+     * @param  string  $path Optionally, a path to append to the config path
+     * @return string
+     */
+    public function configPath($path = '')
+	{
+        return '';
+	}
+
+    /**
+     * Get the path to the database directory.
+     *
+     * @param  string  $path Optionally, a path to append to the database path
+     * @return string
+     */
+    public function databasePath($path = '')
+	{
+        return '';
+	}
+
+    /**
+     * Get the path to the resources directory.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    public function resourcePath($path = '')
+	{
+        return '';
+	}
+
+    /**
+     * Get the path to the storage directory.
+     *
+     * @return string
+     */
+    public function storagePath()
+	{
+        return '';
+	}
+
+    /**
+     * Get the current application locale.
+     *
+     * @return string
+     */
+    public function getLocale()
+	{
+        return '';
+	}
+
+    /**
+     * Get the application namespace.
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function getNamespace()
+	{
+        return '';
+	}
+
+    /**
+     * Set the current application locale.
+     *
+     * @param  string  $locale
+     * @return void
+     */
+    public function setLocale($locale)
+	{
+        return '';
+	}
+
+    /**
+     * Determine if middleware has been disabled for the application.
+     *
+     * @return bool
+     */
+    public function shouldSkipMiddleware()
+	{
+        return '';
+	}
 
     /**
      * Get the path to the cached services.php file.
