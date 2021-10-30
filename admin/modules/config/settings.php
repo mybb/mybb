@@ -306,11 +306,7 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			if($mybb->input['type'] == "custom")
-			{
-				$options_code = $mybb->input['extra'];
-			}
-			else if($mybb->input['extra'])
+			if($mybb->input['extra'])
 			{
 				$options_code = "{$mybb->input['type']}\n{$mybb->input['extra']}";
 			}
@@ -513,11 +509,7 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			if($mybb->input['type'] == "custom")
-			{
-				$options_code = $mybb->input['extra'];
-			}
-			else if($mybb->input['extra'])
+			if($mybb->input['extra'])
 			{
 				$options_code = "{$mybb->input['type']}\n{$mybb->input['extra']}";
 			}
