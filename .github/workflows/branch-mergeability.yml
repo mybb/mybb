@@ -10,8 +10,8 @@ jobs:
       HEAD_REF: ${{ github.ref }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       COMMITS: ${{ github.event.pull_request.commits }}
-      COMPARE_REF: develop/1.9
-    name: develop/1.9
+      COMPARE_REF: dev-1.9
+    name: dev-1.9
     runs-on: ubuntu-latest
     steps:
     - run: |
