@@ -1,8 +1,6 @@
-<img align="left" src="https://raw.githubusercontent.com/mybb/mybb/feature/images/logo.png" height="80">
+<img align="left" src="https://raw.githubusercontent.com/mybb/mybb-website-theme/master/assets/images/logomark-blue-400h.png" height="80">
 
 # MyBB
-[![Build Status on Travis CI](https://travis-ci.org/mybb/mybb.svg?branch=develop%2F1.9)](https://travis-ci.org/mybb/mybb)
-
 MyBB is a **free and open source forum software** written in PHP with support for MySQL/PostgreSQL/SQLite, licensed under [GNU LGPL v3](https://mybb.com/about/license).
 
 [**Learn more at MyBB.com &rarr;**](https://mybb.com)
