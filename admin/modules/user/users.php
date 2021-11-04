@@ -2575,40 +2575,49 @@ if($mybb->input['action'] == "inline_edit")
 			{
 				admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No'
 			}
-
-			if($mybb->request_method == "post")
-			{
-				$sql_array = implode(",", $selected);
-				$query = $db->simple_select("banned", "*", "uid IN (".$sql_array.")");
-				$to_be_unbanned = $db->num_rows($query);
-				while($ban = $db->fetch_array($query))
-				{
-					$updated_group = array(
-						"usergroup" => $ban['oldgroup'],
-						"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
-						"displaygroup" => $ban['olddisplaygroup']
-					);
-					$db->update_query("users", $updated_group, "uid = '".$ban['uid']."'");
-					$db->delete_query("banned", "uid = '".$ban['uid']."'");
-				}
-
-				$cache->update_moderators();
-
-				$mybb->input['action'] = "inline_lift";
-				log_admin_action($to_be_unbanned);
-				my_unsetcookie("inlinemod_useracp");
-
-				$lang->success_ban_lifted = $lang->sprintf($lang->success_ban_lifted, my_number_format($to_be_unbanned));
-				flash_message($lang->success_ban_lifted, 'success');
-				admin_redirect("index.php?module=user-users".$vid_url);
-			}
 			else
 			{
-				$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift", $lang->confirm_multilift);
-			}
+				if($mybb->input['processed'] == 1)
+				{
+					require_once MYBB_ROOT."inc/datahandlers/user.php";
 
+					$sql_array = implode(",", $selected);
+					$query = $db->simple_select("banned", "*", "uid IN (".$sql_array.")");
+					$to_be_unbanned = $db->num_rows($query);
+					while($ban = $db->fetch_array($query))
+					{
+						$userhandler = new UserDataHandler("update");
+
+						$userhandler->set_data($ban);
+
+						$userhandler->lift_ban();
+					}
+
+					$cache->update_moderators();
+
+					$mybb->input['action'] = "inline_lift";
+					log_admin_action($to_be_unbanned);
+					my_unsetcookie("inlinemod_useracp");
+
+					$lang->success_ban_lifted = $lang->sprintf($lang->success_ban_lifted, my_number_format($to_be_unbanned));
+					flash_message($lang->success_ban_lifted, 'success');
+					admin_redirect("index.php?module=user-users".$vid_url);
+				}
+
+				$to_be_deleted = count($selected);
+				$lang->confirm_multidelete = $lang->sprintf($lang->confirm_multidelete, my_number_format($to_be_deleted));
+				$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key={$mybb->post_code}&amp;processed=1", $lang->confirm_multilift);
+			}
 			break;
 		case 'multiban':
+			// Fetch banned groups
+			$query = $db->simple_select("usergroups", "gid,title", "isbannedgroup=1", array('order_by' => 'title'));
+			$banned_groups = array();
+			while($group = $db->fetch_array($query))
+			{
+				$banned_groups[$group['gid']] = $group['title'];
+			}
+
 			if($mybb->input['processed'] == 1)
 			{
 				// We've posted ban information!
@@ -2619,6 +2628,12 @@ if($mybb->input['action'] == "inline_edit")
 				while($user = $db->fetch_array($query))
 				{
 					$bannedcache[] = "u_".$user['uid'];
+				}
+
+				if(count($banned_groups) == 1)
+				{
+					$group = array_keys($banned_groups);
+					$mybb->input['usergroup'] = $group[0];
 				}
 
 				// Collect the users
@@ -2633,7 +2648,18 @@ if($mybb->input['action'] == "inline_edit")
 					$lifted = ban_date2timestamp($mybb->input['bantime']);
 				}
 
-				$reason = my_substr($mybb->input['reason'], 0, 255);
+				if(empty($mybb->input['reason']))
+				{
+					// We need to supply the datahandler with a ban reason else it'll error out, so this reason would be used if the ban reason field is left blank
+					$reason = "Bad User";
+				}
+				else
+				{
+					$reason = my_substr($mybb->input['reason'], 0, 255);
+				}
+
+				// Set up user handler.
+				require_once MYBB_ROOT."inc/datahandlers/user.php";
 
 				$banned_count = 0;
 				while($user = $db->fetch_array($query))
@@ -2647,43 +2673,51 @@ if($mybb->input['action'] == "inline_edit")
 					if(is_array($bannedcache) && in_array("u_".$user['uid'], $bannedcache))
 					{
 						// User already has a ban, update it!
-						$update_array = array(
-							"admin" => (int)$mybb->user['uid'],
-							"dateline" => TIME_NOW,
-							"bantime" => $db->escape_string($mybb->input['bantime']),
-							"lifted" => $db->escape_string($lifted),
-							"reason" => $db->escape_string($reason)
+						$userhandler = new UserDataHandler("update");
+
+						$userdata = array(
+							'uid' => $user['uid'],
+							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
+							'dateline' => TIME_NOW,
+							'bantime' => $db->escape_string($mybb->input['bantime']),
+							'lifted' => $db->escape_string($lifted),
+							'reason' => $db->escape_string($reason),
 						);
-						$db->update_query("banned", $update_array, "uid = '".$user['uid']."'");
+
+						$userhandler->set_data($userdata);
+
+						if(!$userhandler->validate_ban())
+						{
+							$errors = $userhandler->get_friendly_errors();
+						}
+
+						$userhandler->update_ban();
 					}
 					else
 					{
 						// Not currently banned - insert the ban
-						$insert_array = array(
+						$userhandler = new UserDataHandler("insert");
+
+						$userdata = array(
 							'uid' => $user['uid'],
 							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
-							'oldgroup' => $user['usergroup'],
-							'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
-							'olddisplaygroup' => $user['displaygroup'],
-							'admin' => (int)$mybb->user['uid'],
-							'dateline' => TIME_NOW,
+							'usergroup' => $user['usergroup'],
+							'additionalgroups' => $user['additionalgroups'],
+							'displaygroup' => $user['displaygroup'],
 							'bantime' => $db->escape_string($mybb->input['bantime']),
 							'lifted' => $db->escape_string($lifted),
-							'reason' => $db->escape_string($reason)
+							'reason' => $db->escape_string($reason),
 						);
-						$db->insert_query('banned', $insert_array);
+
+						$userhandler->set_data($userdata);
+
+						if(!$userhandler->validate_ban())
+						{
+							$errors = $userhandler->get_friendly_errors();
+						}
+
+						$userhandler->insert_ban();
 					}
-
-					// Moved the user to the 'Banned' Group
-					$update_array = array(
-						'usergroup' => 7,
-						'displaygroup' => 0,
-						'additionalgroups' => '',
-					);
-					$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
-
-					$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
-					$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
 					++$banned_count;
 				}
@@ -2717,8 +2751,13 @@ if($mybb->input['action'] == "inline_edit")
 			echo $form->generate_hidden_field('inline_action', 'multiban');
 			echo $form->generate_hidden_field('processed', '1');
 
-			$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
+			$form_container = new FormContainer($lang->mass_ban);
 			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
+			if(count($banned_groups) > 1)
+			{
+				$form_container->output_row($lang->ban_group, "", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['gid'], array('id' => 'usergroup')), 'usergroup');
+			}
+
 			$ban_times = fetch_ban_times();
 			foreach($ban_times as $time => $period)
 			{
@@ -3885,6 +3924,7 @@ function build_users_view($view)
 <select name="inline_action">
 	<option value="multiactivate">'.$lang->inline_activate.'</option>
 	<option value="multiban">'.$lang->inline_ban.'</option>
+	<option value="multilift">'.$lang->inline_lift.'</option>
 	<option value="multiusergroup">'.$lang->inline_usergroup.'</option>
 	<option value="multidelete">'.$lang->inline_delete.'</option>
 	<option value="multiprune">'.$lang->inline_prune.'</option>

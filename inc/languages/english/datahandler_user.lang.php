@@ -48,3 +48,11 @@ $l['userdata_too_many_sig_images2'] = "<strong>Note:</strong> The maximum amount
 $l['userdata_sig_too_long'] = "You cannot update your signature because it is too long. The maximum length for signatures is {1} characters. ";
 $l['userdata_sig_remove_chars_plural'] = "Please remove {1} characters and try again.";
 $l['userdata_sig_remove_chars_singular'] = "Please remove 1 character and try again.";
+
+$l['userdata_invalid_username'] = "The username you have entered is invalid and does not exist.";
+$l['userdata_no_perm_to_ban'] = "You do not have permission to ban this user.";
+$l['userdata_already_banned'] = "This user already belongs to a banned group and cannot be added to a new one.";
+$l['userdata_no_ban_group'] = "You did not select a valid group to move this user to.";
+$l['userdata_ban_self'] = "You cannot ban yourself.";
+$l['userdata_no_reason'] = "You did not enter a reason to ban this user.";
+$l['userdata_reason_too_long'] = "The reason you entered is too long. The maximum length for ban reason is 255 characters.";

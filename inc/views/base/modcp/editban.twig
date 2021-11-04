@@ -1,13 +1,13 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ lang.ban_user }} - {{ mybb.settings.bbname }}</title>
+    <title>{{ lang.edit_ban }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
     <header class="page-header">
         <h1 class="title title--page">
-            {{ lang.ban_user }}
+            {{ lang.edit_ban }}
         </h1>
     </header>
 {% endblock %}
@@ -15,13 +15,14 @@
 {% block moderationBody %}
     {{ errors|raw }}
     <form action="modcp.php" method="post">
-        <input type="hidden" name="action" value="do_banuser" />
+        <input type="hidden" name="action" value="do_editban" />
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="uid" value="{{ banned.uid }}" />
         <section class="block block--form form">
             <div class="section section--form">
                 <div class="row row--form field">
-                    <h3 class="field__name"><label for="username">{{ lang.ban_username }}</label></h3>
-                    <input type="text" class="user-select-field" name="username" id="username" value="{{ banned.username }}" size="25" />
+                    <h3 class="field__name">{{ lang.ban_username }}</h3>
+                    <p class="field__value">{{ banned.username }}</p>
                 </div>
                 <div class="row row--form field">
                     <h3 class="field__name"><label for="banreason">{{ lang.ban_reason }}</label></h3>
@@ -56,8 +57,8 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--big" name="updateban">
-                    {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.ban }}</span>
+                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.edit_ban }}</span>
                 </button>
             </div>
         </section>

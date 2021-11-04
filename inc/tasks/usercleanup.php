@@ -51,16 +51,15 @@ function task_usercleanup($task)
 	}
 
 	// Expire bans
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$query = $db->simple_select("banned", "*", "lifted!=0 AND lifted<".TIME_NOW);
 	while($ban = $db->fetch_array($query))
 	{
-		$updated_user = array(
-			"usergroup" => $ban['oldgroup'],
-			"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
-			"displaygroup" => $ban['olddisplaygroup']
-		);
-		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
-		$db->delete_query("banned", "uid='{$ban['uid']}'");
+		$userhandler = new UserDataHandler("update");
+
+		$userhandler->set_data($ban);
+
+		$userhandler->lift_ban();
 	}
 
 	$cache->update_moderators();

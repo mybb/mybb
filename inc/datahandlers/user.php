@@ -49,6 +49,13 @@ class UserDataHandler extends DataHandler
 	public $user_update_data = array();
 
 	/**
+	 * Array of data used to update a ban.
+	 *
+	 * @var array
+	 */
+	public $ban_update_data = array();
+
+	/**
 	 * User ID currently being manipulated by the datahandlers.
 	 *
 	 * @var int
@@ -1867,6 +1874,224 @@ class UserDataHandler extends DataHandler
 		{
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	* Validate if user can be banned.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
+	function validate_ban()
+	{
+		global $db, $mybb, $cache, $plugins;
+
+		$ban = &$this->data;
+
+		if(empty($ban['uid']))
+		{
+			$this->set_error('invalid_username');
+		}
+
+		if($ban['uid'] == $mybb->user['uid'])
+		{
+			$this->set_error('ban_self');
+		}
+
+		// Have permissions to ban this user?
+		require_once MYBB_ROOT."inc/functions_modcp.php";
+		if(!modcp_can_manage_user($ban['uid']))
+		{
+			$this->set_error('no_perm_to_ban');
+		}
+
+		if($this->method == "insert")
+		{
+			$query = $db->simple_select("banned", "uid", "uid='{$ban['uid']}'");
+			if($db->fetch_field($query, "uid"))
+			{
+				$this->set_error('already_banned');
+			}
+		}
+
+		// Get PRIMARY usergroup information
+		$usergroups = $cache->read("usergroups");
+		if(!empty($usergroups[$ban['usergroup']]) && $usergroups[$ban['usergroup']]['isbannedgroup'] == 1)
+		{
+			$this->set_error('already_banned');
+		}
+
+		// Check banned group
+		if(empty($usergroups[$ban['gid']]) || empty($usergroups[$ban['gid']]['isbannedgroup']))
+		{
+			$this->set_error('no_ban_group');
+		}
+
+		if(empty($ban['reason']))
+		{
+			$this->set_error('no_reason');
+		}
+
+		if(my_strlen($ban['reason']) > 255)
+		{
+			$this->set_error('reason_too_long');
+		}
+
+		$plugins->run_hooks("datahandler_user_validate_ban", $this);
+
+		// We are done validating, return.
+		$this->set_validated(true);
+		if(count($this->get_errors()) > 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	/**
+	* Inserts a ban into the database.
+	*
+	* @return array
+	*/
+	function insert_ban()
+	{
+		global $db, $cache, $mybb, $plugins;
+
+		// Yes, validating is required.
+		if(!$this->get_validated())
+		{
+			die("The user needs to be validated before inserting it into the DB.");
+		}
+		if(count($this->get_errors()) > 0)
+		{
+			die("The user is not valid.");
+		}
+
+		$ban = &$this->data;
+
+		$insert_array = array(
+			'uid' => (int)$ban['uid'],
+			'gid' => (int)$ban['gid'],
+			'oldgroup' => (int)$ban['usergroup'],
+			'oldadditionalgroups' => $db->escape_string($ban['additionalgroups']),
+			'olddisplaygroup' => (int)$ban['displaygroup'],
+			'admin' => (int)$mybb->user['uid'],
+			'dateline' => TIME_NOW,
+			'bantime' => $db->escape_string($ban['bantime']),
+			'lifted' => $db->escape_string($ban['lifted']),
+			'reason' => $db->escape_string($ban['reason'])
+		);
+		$db->insert_query('banned', $insert_array);
+
+		// Move the user to the banned group
+		$update_array = array(
+			'usergroup' => (int)$ban['gid'],
+			'displaygroup' => 0,
+			'additionalgroups' => '',
+		);
+
+		$db->delete_query("forumsubscriptions", "uid = '{$ban['uid']}'");
+		$db->delete_query("threadsubscriptions", "uid = '{$ban['uid']}'");
+
+		$plugins->run_hooks('datahandler_user_insert_ban', $this);
+
+		$db->update_query('users', $update_array, "uid = '{$ban['uid']}'");
+
+		return true;
+	}
+
+	/**
+	* Updates a ban in the database.
+	*
+	* @return bool
+	*/
+	function update_ban()
+	{
+		global $db, $plugins, $cache;
+
+		// Yes, validating is required.
+		if(!$this->get_validated())
+		{
+			die("The user needs to be validated before inserting it into the DB.");
+		}
+		if(count($this->get_errors()) > 0)
+		{
+			die("The user is not valid.");
+		}
+
+		$ban = &$this->data;
+		$ban['uid'] = (int)$ban['uid'];
+
+		// Set up the update data.
+		if(isset($ban['gid']))
+		{
+			$this->ban_update_data['gid'] = (int)$ban['gid'];
+		}
+		if(isset($ban['dateline']))
+		{
+			$this->ban_update_data['dateline'] = (int)$ban['dateline'];
+		}
+		if(isset($ban['bantime']))
+		{
+			$this->ban_update_data['bantime'] = $db->escape_string($ban['bantime']);
+		}
+		if(isset($ban['lifted']))
+		{
+			$this->ban_update_data['lifted'] = $db->escape_string($ban['lifted']);
+		}
+		if(isset($ban['reason']))
+		{
+			$this->ban_update_data['reason'] = $db->escape_string($ban['reason']);
+		}
+
+		$plugins->run_hooks('datahandler_user_update_ban', $this);
+
+		if(count($this->ban_update_data) > 0)
+		{
+			// Actual updating happens here.
+			$db->update_query("banned", $this->ban_update_data, "uid='{$ban['uid']}'");
+		}
+
+		// Move the user to the banned group
+		$update_array = array(
+			'usergroup' => (int)$ban['gid'],
+			'displaygroup' => 0,
+			'additionalgroups' => '',
+		);
+
+		$db->update_query('users', $update_array, "uid = '{$ban['uid']}'");
+
+		return true;
+	}
+
+	/**
+	* Lift a ban from a user.
+	*
+	* @return array
+	*/
+	function lift_ban()
+	{
+		global $db, $cache, $plugins;
+
+		$ban = &$this->data;
+		$ban['uid'] = (int)$ban['uid'];
+
+		$updated_group = array(
+			'usergroup' => (int)$ban['oldgroup'],
+			'additionalgroups' => $db->escape_string($ban['oldadditionalgroups']),
+			'displaygroup' => (int)$ban['olddisplaygroup']
+		);
+		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
+
+		$db->delete_query("banned", "uid='{$ban['uid']}'");
+
+		$plugins->run_hooks('datahandler_user_lift_ban', $this);
+
+		$cache->update_moderators();
+
 		return true;
 	}
 }
