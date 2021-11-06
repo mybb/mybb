@@ -869,9 +869,9 @@ if($mybb->input['action'] == "subscriptions")
 
 	// Do Multi Pages
 	$query = $db->query("
-        SELECT COUNT(ts.tid) as threads
-        FROM ".TABLE_PREFIX."threadsubscriptions ts
-        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
+        SELECT COUNT(s.tid) as threads
+        FROM ".TABLE_PREFIX."threadsubscriptions s
+        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = s.tid)
         WHERE {$where}
     ");
 	$threadcount = $db->fetch_field($query, "threads");
