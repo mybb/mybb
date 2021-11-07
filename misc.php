@@ -476,20 +476,7 @@ elseif($mybb->input['action'] == "help")
 						}
 					}
 					$sname = "sid_".$section['sid']."_e";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: none;")
-					{
-						$section['expcolimage'] = "collapse_collapsed.png";
-						$section['expdisplay'] = "display: none;";
-						$section['expthead'] = " thead_collapsed";
-						$section['expaltext'] = $lang->expcol_expand;
-					}
-					else
-					{
-						$section['expcolimage'] = "collapse.png";
-						$section['expthead'] = '';
-						$section['expdisplay'] = '';
-						$section['expaltext'] = $lang->expcol_collapse;
-					}
+					$section['collapsed'] = isset($collapsed[$sname]) && $collapsed[$sname];
 				}
 
 				$sections[] = $section;

@@ -1078,26 +1078,17 @@ if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->setting
 
 // work out which items the user has collapsed
 $colcookie = '';
-if(!empty($mybb->cookies['collapsed']))
-{
+if (!empty($mybb->cookies['collapsed'])) {
 	$colcookie = $mybb->cookies['collapsed'];
 }
 
-$collapse = $collapsed = $collapsedimg = array();
-
-if($colcookie)
-{
+$collapsed = [];
+if ($colcookie) {
 	$col = explode("|", $colcookie);
-	if(!is_array($col))
-	{
-		$col[0] = $colcookie; // only one item
-	}
-	unset($collapsed);
-	foreach($col as $key => $val)
-	{
-		$collapsed[$val."_e"] = "display: none;";
-		$collapsedimg[$val] = "_collapsed";
-		$collapsedthead[$val] = " thead_collapsed";
+	if (is_array($col)) {
+		foreach ($col as $key => $val) {
+			$collapsed[$val . "_e"] = true;
+		}
 	}
 }
 

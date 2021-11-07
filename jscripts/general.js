@@ -11,7 +11,7 @@ var MyBB = {
 
 	pageLoaded: function()
 	{
-		Collapsible.init();
+		expandables.init();
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
@@ -650,48 +650,42 @@ var Cookie = {
 var expandables = {
 	init: function()
 	{
-		var expanders = $(".expcolimage .expander");
+		var expanders = $(".collapse");
 		if(expanders.length)
 		{
 			expanders.each(function()
 			{
-        		var expander = $(this);
+        var expander = $(this);
 				if(!expander || expander.attr("id") == false)
 				{
 					return;
 				}
 
-				expander.on('click', function()
+				var toggle = $(expander.find('.collapse__toggle')[0]);
+				toggle.on('click', function()
 				{
-					expandables.expandCollapse($(this));
+					expandables.expandCollapse(expander);
 				});
-
-				expander.css("cursor", MyBB.browser == "ie" ? "hand" : "pointer");
 			});
 		}
 	},
 
 	expandCollapse: function(element)
 	{
-		var controls = element.attr("id").replace("_img", ""),
-			expandedItem = $("#"+controls+"_e");
-
-		if(expandedItem.length)
+		var expState = + !element.hasClass("collapse--collapsed");
+		if(expState)
 		{
-			var expState = + !expandedItem.is(":hidden"),
-				expcolImg = element.attr("src"),
-				expText = [lang.expcol_collapse, lang.expcol_expand];
-
-			expandedItem.toggle("fast", this.expCallback(controls, expState));
-
-			element.attr({
-				"alt": expText[expState],
-				"title": expText[expState],
-				"src": expState ? expcolImg.replace('collapse.', 'collapse_collapsed.') : expcolImg.replace('collapse_collapsed.', 'collapse.')
-			})
-			.parents(':eq(1)').toggleClass(element.parents(':eq(1)').hasClass('thead') ? 'thead_collapsed' : 'tcat_collapse_collapsed');
-			this.saveCollapsed(controls, expState);
+			element.removeClass('collapse--not-collapsed');
+			element.addClass('collapse--collapsed');
 		}
+		else
+		{
+			element.removeClass('collapse--collapsed');
+			element.addClass('collapse--not-collapsed');
+		}
+		var id = element.attr('id');
+		this.saveCollapsed(id, expState);
+
 		return true;
 	},
 
