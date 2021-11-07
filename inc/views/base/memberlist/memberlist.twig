@@ -38,65 +38,66 @@
             {{ multipage|raw }}
         </div>
 
-    <form method="post" action="memberlist.php">
-        <section class="form" id="member-search">
-            <div class="section section--form">
-                <h3 class="title title--section">{{ lang.search_members }}</h3>
-                <div class="section__container">
-                    <div class="row row--form field">
-                        <h4 class="field__name"><label for="username">{{ lang.username }}</label></h4>
-                        <input type="text" class="" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{{ memberlist.username }}" />
-                    </div>
-                    <div class="row row--form field">
-                        <h4 class="field__name"><label for="website">{{ lang.website }}</label></h4>
-                        <input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{{ memberlist.website }}" />
+        <form method="post" action="memberlist.php">
+            <section class="form" id="member-search">
+                <div class="section section--form">
+                    <h3 class="title title--section">{{ lang.search_members }}</h3>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h4 class="field__name"><label for="username">{{ lang.username }}</label></h4>
+                            <input type="text" class="" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{{ memberlist.username }}" />
+                        </div>
+                        <div class="row row--form field">
+                            <h4 class="field__name"><label for="website">{{ lang.website }}</label></h4>
+                            <input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{{ memberlist.website }}" />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="section section--form">
-                <h3 class="title title--section"><label for="sort">{{ lang.sort_by }}</label></h3>
-                <div class="section__container">
-                    <div class="row row--form field">
-                        <div class="select-field">
-                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                            <select name="sort" id="sort" style="width: 99%;">
-                                <option value="username"{% if memberlist.sort.username %} selected="selected"{% endif %}>{{ lang.sort_by_username }}</option>
-                                <option value="regdate"{% if memberlist.sort.regdate %} selected="selected"{% endif %}>{{ lang.sort_by_regdate }}</option>
-                                <option value="lastvisit"{% if memberlist.sort.lastvisit %} selected="selected"{% endif %}>{{ lang.sort_by_lastvisit }}</option>
-                                <option value="postnum"{% if memberlist.sort.postnum %} selected="selected"{% endif %}>{{ lang.sort_by_posts }}</option>
-                                <option value="threadnum"{% if memberlist.sort.threadnum %} selected="selected"{% endif %}>{{ lang.sort_by_threads }}</option>
-                                {% if mybb.settings.usereferrals %}
-                                    <option value="referrals"{% if memberlist.sort.referrals %} selected="selected"{% endif %}>{{ lang.sort_by_referrals }}</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                        <div class="field__block">
-                            <div class="segmented-control">
-                                <span class="segmented-control__option">
-                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} />
-                                    <label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
-                                </span>
-                                <span class="segmented-control__option">
-                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} />
-                                    <label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
-                                </span>
+                <div class="section section--form">
+                    <h3 class="title title--section"><label for="sort">{{ lang.sort_by }}</label></h3>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <div class="select-field">
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                <select name="sort" id="sort" style="width: 99%;">
+                                    <option value="username"{% if memberlist.sort.username %} selected="selected"{% endif %}>{{ lang.sort_by_username }}</option>
+                                    <option value="regdate"{% if memberlist.sort.regdate %} selected="selected"{% endif %}>{{ lang.sort_by_regdate }}</option>
+                                    <option value="lastvisit"{% if memberlist.sort.lastvisit %} selected="selected"{% endif %}>{{ lang.sort_by_lastvisit }}</option>
+                                    <option value="postnum"{% if memberlist.sort.postnum %} selected="selected"{% endif %}>{{ lang.sort_by_posts }}</option>
+                                    <option value="threadnum"{% if memberlist.sort.threadnum %} selected="selected"{% endif %}>{{ lang.sort_by_threads }}</option>
+                                    {% if mybb.settings.usereferrals %}
+                                        <option value="referrals"{% if memberlist.sort.referrals %} selected="selected"{% endif %}>{{ lang.sort_by_referrals }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="field__block">
+                                <div class="segmented-control">
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} />
+                                        <label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
+                                    </span>
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} />
+                                        <label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form__submit">
-                <button type="submit" class="button">
-                    {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.search }}</span>
-                </button>
-                <a href="memberlist.php?action=search" class="button button--secondary">
-                    {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.advanced_search }}</span>
-                </a>
-            </div>
-        </section>
-    </form>
+                <div class="form__submit">
+                    <button type="submit" class="button">
+                        {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.search }}</span>
+                    </button>
+                    <a href="memberlist.php?action=search" class="button button--secondary">
+                        {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.advanced_search }}</span>
+                    </a>
+                </div>
+            </section>
+        </form>
+    </div>
 
     <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
     <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>

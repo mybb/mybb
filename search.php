@@ -314,7 +314,7 @@ if($mybb->input['action'] == "results")
 			$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 		}
 
-		$pages = ceil($threadcount / $perpage);
+		$pages = ceil($results['threadcount'] / $perpage);
 		if($page > $pages)
 		{
 			$start = 0;
@@ -795,7 +795,7 @@ if($mybb->input['action'] == "results")
 
 		$posts = [];
 
-		$pages = ceil($postcount / $perpage);
+		$pages = ceil($results['postcount'] / $perpage);
 		if($page > $pages)
 		{
 			$start = 0;

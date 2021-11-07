@@ -137,6 +137,7 @@ else
 }
 
 $child_forums = build_forumbits($fid, 2);
+$subforums = '';
 if(!empty($child_forums) && !empty($child_forums['forum_list']))
 {
     $subforums = $child_forums['forum_list'];
@@ -224,7 +225,11 @@ if($mybb->settings['browsingthisforum'] != 0)
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
 	$usersBrowsing = [];
-	$usersBrowsingCounter = [];
+	$usersBrowsingCounter = [
+		'guests' => 0,
+		'members' => 0,
+		'invisible' => 0,
+	];
 
 	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location1 = $fid AND nopermission != 1");
 	$usersBrowsingCounter['guests'] = $db->fetch_field($query, 'guestcount');
@@ -775,7 +780,8 @@ if($fpermissions['canviewthreads'] != 0)
 			$ratings = true; // Looks for ratings in the forum
 		}
 
-		$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+		//todo thread icons need some work after introducing theme system. Currently missing $theme settings
+		//$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 		if($thread['moved'] != 0)
@@ -883,6 +889,7 @@ else
 	}
 }
 
+$customTools = [];
 if(!empty($threadCache) && is_array($threadCache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
@@ -1087,7 +1094,6 @@ if(!empty($threadCache) && is_array($threadCache))
 		$threadCache[$k] = $thread;
 	}
 
-	$customTools = [];
 	if($modpermissions['ismod'] && $modpermissions["canusecustomtools"] && $hasModTools)
 	{
 		$gids = explode(',', $mybb->user['additionalgroups']);

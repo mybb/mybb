@@ -178,13 +178,15 @@ if($mybb->settings['statstopreferrer'] == 1 && isset($statistics['top_referrer']
 	// Only show this if we have anything more the 0 referrals
 	if($statistics['top_referrer']['referrals'] > 0)
 	{
-		$stats['top_referrer_user'] = build_profile_link(htmlspecialchars_uni($statistics['top_referrer']['username']),
-			$statistics['top_referrer']['uid']);
+		$stats['top_referrer_user'] = build_profile_link(
+			htmlspecialchars_uni($statistics['top_referrer']['username']),
+			$statistics['top_referrer']['uid']
+		);
 		$stats['top_referrer_count'] = my_number_format($statistics['top_referrer']['referrals']);
 	}
 	else
 	{
-		$stats['$top_referrer_user'] = false;
+		$stats['top_referrer_user'] = false;
 	}
 }
 
@@ -224,7 +226,6 @@ $stats['newest_user'] = build_profile_link($stats['lastusername'], $stats['lastu
 $plugins->run_hooks("stats_end");
 
 output_page(\MyBB\template('stats/stats.twig', [
-	'top_referer' => $top_referrer,
 	'stats' => $stats,
 	'most_replied_to_threads' => $most_replied_to_threads,
 	'most_viewed_threads' => $most_viewed_threads,

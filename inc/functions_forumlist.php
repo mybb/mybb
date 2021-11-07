@@ -292,6 +292,7 @@ SQL;
 			// Set template type basing on the category/forum type
 			$forumcat = ($forum['type'] == 'c') ? 'cat' : 'forum';
 
+			$lastpost = '';
 			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
@@ -345,13 +346,13 @@ SQL;
 			}
 
 			// Moderator column is not off
+			$moderators = [];
 			if($mybb->settings['modlist'] != 0)
 			{
 				$done_moderators = [
 					"users" => [],
 					"groups" => []
 				];
-				$moderators = [];
 				// Fetch list of moderators from this forum and its parents
 				$parentlistexploded = explode(',', $forum['parentlist']);
 				foreach($parentlistexploded as $mfid)
@@ -402,12 +403,10 @@ SQL;
 			$forum_list .= \MyBB\template('forumbit/depth_'.$depth.'/'.$forumcat.'.twig', [
 				'forum' => $forum,
 				'collapsed' => $collapsed,
-				'modlist' => $modlist,
 				'sub_forums' => $sub_forums,
 				'lightbulb' => $lightbulb,
 				'lastpost' => $lastpost,
 				'moderators' => $moderators,
-				'unapproved' => $unapproved
 			]);
 		}
 	}

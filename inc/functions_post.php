@@ -872,6 +872,7 @@ function build_postbit($post, $post_type=0)
 	$icon_cache = $cache->read('posticons');
 
 	$post['showicon'] = false;
+	$icon = [];
 	if(isset($post['icon']) &&
 		$post['icon'] > 0 &&
 		$icon_cache[$post['icon']])
