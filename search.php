@@ -807,6 +807,7 @@ if($mybb->input['action'] == "results")
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
             LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+            LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
             WHERE p.pid IN (".$db->escape_string($search['posts']).")
             ORDER BY $sortfield $order
             LIMIT $start, $perpage
