@@ -1,7 +1,7 @@
 {% if thread.rating == 'moved' %}
     <td class="{{ class }}" style="text-align: center;">-</td>
 {% elseif thread.rating == 'normal' %}
-    {% set currentAverage %}{{ trans(lang.rating_votes_average, thread.numratings, thread.averagerating) }}{% endset %}
+    {% set currentAverage %}{{ trans('rating_votes_average', thread.numratings, thread.averagerating) }}{% endset %}
     {% set notRatedClass = (thread.rated is empty) ? ' start_rating_notrated' : '' %}
     <td align="center" class="{{ class }}" id="rating_table_{{ thread.tid }}">
         <ul class="star_rating{{ notRatedClass }}" id="rating_thread_{{ thread.tid }}">
