@@ -1082,13 +1082,7 @@ if(!empty($threadCache) && is_array($threadCache))
 
 		$plugins->run_hooks('forumdisplay_thread_end');
 
-		if($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
-		{
-		}
-		else
-		{
-			$thread['start_datetime'] = my_date('relative', $thread['dateline']);
-		}
+		$thread['start_datetime'] = my_date('relative', $thread['dateline']);
 
 		$threadCache[$k] = $thread;
 	}

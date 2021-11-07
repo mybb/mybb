@@ -89,7 +89,7 @@
                 {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
             </span>
         {% endif %}
-        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ thread.start_datetime }}</p>
+        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ thread.start_datetime|raw }}</p>
     </div>
     {% if thread.moved %}
         <div class="thread__column thread__column--replies">&nbsp;</div>
