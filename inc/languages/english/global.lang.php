@@ -19,6 +19,7 @@ $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_markread'] = "Mark all forums read";
+$l['bottomlinks_help'] = "Help";
 
 $l['welcome_usercp'] = "My Account";
 $l['welcome_modcp'] = "Moderation";
