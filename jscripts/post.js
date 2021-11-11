@@ -283,7 +283,7 @@ var Post = {
 								.replace('{2}', message[1])
 								.replace('{3}', message[2])
 								.replace('{4}', message[3]))
-								.find('.tcat>strong').text(data.usage);
+								.find('strong').text(data.usage);
 						});
 					}
 

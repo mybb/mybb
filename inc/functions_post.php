@@ -978,29 +978,29 @@ function get_post_attachments($id, &$post)
 {
 	global $attachcache, $mybb, $forumpermissions, $lang;
 
-	$attached['validationcount'] = 0;
+	$attached = [
+		'validationcount' => 0
+	];
+	$post['hasattachments'] = false;
 
 	if(!isset($forumpermissions))
 	{
 		$forumpermissions = forum_permissions($post['fid']);
 	}
 
-	$post['hasattachments'] = (isset($attachcache[$id]) && is_array($attachcache[$id]));
-	if(!$post['hasattachments'])
+	if(!(isset($attachcache[$id]) && is_array($attachcache[$id])))
 	{
-		return $attached;
+		return [];
 	}
 
-	foreach($attachcache[$id] as $aid => $attachment)
-	{
-		if(!$attachment['visible'])
-		{
+	foreach($attachcache[$id] as $aid => $attachment) {
+		if(!$attachment['visible']) {
 			$attached['validationcount']++;
 			continue;
 		}
 
 		$ext = get_extension($attachment['filename']);
-		$isimage = in_array($ext, ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
+		$isImage = in_array($ext, ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
 
 		$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 		$attachment['icon'] = get_attachment_icon($ext);
@@ -1014,63 +1014,67 @@ function get_post_attachments($id, &$post)
 			// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 			// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
 			// Show as download for all other cases
-			if($attachment['thumbnail'] != 'SMALL' &&
-				$attachment['thumbnail'] != '' &&
-				$mybb->settings['attachthumbnails'] == 'yes')
-			{
-				$attbit = \MyBB\template('postbit/postbit_attached_thumbnail.twig', [
+			if (
+				$attachment['thumbnail'] != 'SMALL'
+				&& $attachment['thumbnail'] != ''
+				&& $mybb->settings['attachthumbnails'] == 'yes'
+			) {
+				$attachmentBit = \MyBB\template('postbit/postbit_attached_thumbnail.twig', [
 					'thumb' => $attachment,
 				]);
-			}
-			elseif((($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == 'no') &&
-				$isimage)
-			{
-				$attbit = \MyBB\template('postbit/postbit_attached_image.twig', [
+			} elseif (
+				$isImage
+				&& (
+					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+					|| $mybb->settings['attachthumbnails'] == 'no'
+				)
+			) {
+				$attachmentBit = \MyBB\template('postbit/postbit_attached_image.twig', [
 					'image' => $attachment,
 				]);
-			}
-			else
-			{
-				$attbit = \MyBB\template('postbit/postbit_attached_image.twig', [
+			} else {
+				$attachmentBit = \MyBB\template('postbit/postbit_attachment.twig', [
 					'attachment' => $attachment,
 				]);
 			}
 
-			$post['message'] = preg_replace("#\[attachment={$attachment['aid']}]#si", $attbit, $post['message']);
-		}
-		else
-		{
+			$post['message'] = preg_replace("#\[attachment={$attachment['aid']}]#si", $attachmentBit, $post['message']);
+		} else {
+			$post['hasattachments'] = true;
 			// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 			// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
 			// Show as download for all other cases
-			if($attachment['thumbnail'] != 'SMALL' &&
-				$attachment['thumbnail'] != '' &&
-				$mybb->settings['attachthumbnails'] == 'yes')
-			{
+			if (
+				$attachment['thumbnail'] != 'SMALL'
+				&& $attachment['thumbnail'] != ''
+				&& $mybb->settings['attachthumbnails'] == 'yes'
+			) {
 				$attached['thumbs'][] = $attachment;
-			}
-			elseif((($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == 'no') &&
-				$isimage)
-			{
+			} elseif (
+				$isImage
+				 && (
+					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+					|| $mybb->settings['attachthumbnails'] == 'no'
+				)
+			) {
 				$attached['images'][] = $attachment;
-			}
-			else
-			{
+			} else {
 				$attached['attachments'][] = $attachment;
 			}
 		}
 	}
 
-	if($attached['validationcount'] > 0 &&
-		is_moderator($post['fid'], 'canviewunapprove'))
-	{
+	if (
+		$attached['validationcount'] > 0
+		&& is_moderator($post['fid'], 'canviewunapprove')
+	) {
 		$post['showunapproved'] = true;
+		$post['hasattachments'] = true;
 
-		$lang->postbit_unapproved_attachment_language = $lang->postbit_unapproved_attachment;
-		if($attached['validationcount'] > 1)
-		{
-			$lang->postbit_unapproved_attachment_language = $lang->sprintf($lang->postbit_unapproved_attachments, $attached['validationcount']);
-		}
+		$lang->postbit_unapproved_attachment_language =
+			$attached['validationcount'] > 1
+				? $lang->sprintf($lang->postbit_unapproved_attachments, $attached['validationcount'])
+				: $lang->postbit_unapproved_attachment;
 	}
 
 	return $attached;
