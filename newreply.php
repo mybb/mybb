@@ -226,7 +226,6 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				'showinsert' => ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 			];
 			$ret['template'] = \MyBB\template('misc/attachments_attachment.twig', [
-				'forum' => $forum,
 				'attachment' => $attachment,
 			]);
 
