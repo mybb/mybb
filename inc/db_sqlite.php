@@ -963,13 +963,10 @@ class DB_SQLite implements DB_Base
 	 */
 	function show_fields_from($table)
 	{
-		global $db;
-
-		$query = $db->write_query("PRAGMA TABLE_INFO('".$db->table_prefix.$table."')");
+		$query = $this->write_query("PRAGMA TABLE_INFO('".$this->table_prefix.$table."')");
 		$field_info = array();
-		while($field = $db->fetch_array($query))
+		while($field = $this->fetch_array($query))
 		{
-			// The pk field may not exist in early SQLite 3.x versions.
 			if(!empty($field['pk']))
 			{
 				$field['_key'] = 'PRI';
@@ -981,7 +978,7 @@ class DB_SQLite implements DB_Base
 				$field['_extra'] = '';
 			}
 
-			// SQLite allows NULLs in most PRIMARY KEY columns due to a bug in early versions, even in an INTEGER PRIMARY KEY column, read https://sqlite.org/lang_createtable.html for details. We won't fix this for consistency among other DBMS.
+			// SQLite allows NULLs in most PRIMARY KEY columns due to a bug in early versions, even in an INTEGER PRIMARY KEY column, read https://sqlite.org/lang_createtable.html for details. We won't fix this for consistency among other database engines.
 			$field['_nullable'] = $field['notnull'] ? 'NO' : 'YES';
 
 			$field_info[] = array(
@@ -993,6 +990,7 @@ class DB_SQLite implements DB_Base
 				'Extra' => $field['_extra'],
 			);
 		}
+		$query->closeCursor();
 		return $field_info;
 	}
 
