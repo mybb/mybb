@@ -1146,19 +1146,37 @@ class DB_PgSQL implements DB_Base
 		$primary_key = $this->fetch_field($query, 'column_name');
 
 		$query = $this->write_query("
-			SELECT column_name as Field, data_type as Extra
+			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
 		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
-			if($field['field'] == $primary_key)
+			if($field['column_name'] == $primary_key)
 			{
-				$field['extra'] = 'auto_increment';
+				$field['_key'] = 'PRI';
+				$field['_extra'] = 'auto_increment';
+			}
+			else
+			{
+				$field['_key'] = '';
+				$field['_extra'] = '';
 			}
 
-			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
+			if(!is_null($field['character_maximum_length']))
+			{
+				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
+			}
+
+			$field_info[] = array(
+				'Field' => $field['column_name'],
+				'Type' => $field['data_type'],
+				'Null' => $field['is_nullable'],
+				'Key' => $field['_key'],
+				'Default' => $field['column_default'],
+				'Extra' => $field['_extra'],
+			);
 		}
 
 		return $field_info;
