@@ -920,8 +920,7 @@ class DB_SQLite implements DB_Base
 	 */
 	function optimize_table($table)
 	{
-		$query = $this->query("VACUUM ".$this->table_prefix.$table."");
-		$query->closeCursor();
+		// SQLite doesn't support table level optimization. TODO: implement an optimize_database() function using query `VACUUM $db_name`.
 	}
 
 	/**
