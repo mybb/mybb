@@ -920,7 +920,8 @@ class DB_SQLite implements DB_Base
 	 */
 	function optimize_table($table)
 	{
-		// SQLite doesn't support table level optimization. TODO: implement an optimize_database() function using query `VACUUM $db_name`.
+		// SQLite doesn't support table level optimization.
+		// Using `VACUUM [main | $db_name]` may also be blocked by any opened query cursor, hence generating an error.
 	}
 
 	/**
