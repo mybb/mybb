@@ -1146,7 +1146,7 @@ class DB_PgSQL implements DB_Base
 		$primary_key = $this->fetch_field($query, 'column_name');
 
 		$query = $this->write_query("
-			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length
+			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length, numeric_precision, numeric_precision_radix, numeric_scale
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
@@ -1164,9 +1164,15 @@ class DB_PgSQL implements DB_Base
 				$field['_extra'] = '';
 			}
 
+			// bit, character, text fields.
 			if(!is_null($field['character_maximum_length']))
 			{
 				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
+			}
+			// numeric/decimal fields.
+			else if($field['numeric_precision_radix'] == 10)
+			{
+				$field['data_type'] .= '('.(int)$field['numeric_precision'].','.(int)$field['numeric_scale'].')';
 			}
 
 			$field_info[] = array(
