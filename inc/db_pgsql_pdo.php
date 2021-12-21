@@ -470,8 +470,12 @@ HTML;
 			$table_prefix = $this->table_prefix;
 		}
 
+		$table_prefix_bak = $this->table_prefix;
+		$this->table_prefix = $table_prefix;
+		$fields = array_column($this->show_fields_from($table_prefix.$table), 'Field');
+
 		if ($hard == false) {
-			if($this->table_exists($table))
+			if($this->table_exists($table_prefix.$table))
 			{
 				$this->write_query("DROP TABLE {$table_prefix}{$table}");
 			}
@@ -479,11 +483,24 @@ HTML;
 			$this->write_query("DROP TABLE {$table_prefix}{$table}");
 		}
 
-		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
-		$field = $this->fetch_field($query, 'column_name');
+		$this->table_prefix = $table_prefix_bak;
 
-		if ($field) {
-			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
+		if(!empty($fields)) {
+			foreach ($fields as &$field) {
+				$field = "{$table_prefix}{$table}_{$field}_seq";
+			}
+			unset($field);
+
+			if (version_compare($this->get_version(), '8.2.0', '>=')) {
+				$fields = implode(', ', $fields);
+				$this->write_query("DROP SEQUENCE IF EXISTS {$fields}");
+			} else {
+				$fields = "'" . implode("', '", $fields) . "'";
+				$query = $this->query("SELECT sequence_name as field FROM information_schema.sequences WHERE sequence_name in ({$fields}) AND sequence_schema = 'public'");
+				while ($row = $this->fetch_array($query)) {
+					$this->write_query("DROP SEQUENCE {$row['field']}");
+				}
+			}
 		}
 	}
 
