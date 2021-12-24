@@ -471,7 +471,7 @@ HTML;
 		}
 
 		$table_prefix_bak = $this->table_prefix;
-		$this->table_prefix = $table_prefix;
+		$this->table_prefix = '';
 		$fields = array_column($this->show_fields_from($table_prefix.$table), 'Field');
 
 		if ($hard == false) {
