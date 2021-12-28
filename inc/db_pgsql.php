@@ -1156,11 +1156,18 @@ class DB_PgSQL implements DB_Base
 			if($field['column_name'] == $primary_key)
 			{
 				$field['_key'] = 'PRI';
-				$field['_extra'] = 'auto_increment';
 			}
 			else
 			{
 				$field['_key'] = '';
+			}
+
+			if(stripos($field['column_default'], 'nextval') !== false)
+			{
+				$field['_extra'] = 'auto_increment';
+			}
+			else
+			{
 				$field['_extra'] = '';
 			}
 
