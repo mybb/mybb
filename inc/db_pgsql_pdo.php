@@ -409,24 +409,24 @@ HTML;
 
 		$field_info = array();
 		while ($field = $this->fetch_array($query)) {
-			if($field['column_name'] == $primary_key) {
+			if ($field['column_name'] == $primary_key) {
 				$field['_key'] = 'PRI';
 			} else {
 				$field['_key'] = '';
 			}
 
-			if(stripos($field['column_default'], 'nextval') !== false) {
+			if (stripos($field['column_default'], 'nextval') !== false) {
 				$field['_extra'] = 'auto_increment';
 			} else {
 				$field['_extra'] = '';
 			}
 
 			// bit, character, text fields.
-			if(!is_null($field['character_maximum_length'])) {
+			if (!is_null($field['character_maximum_length'])) {
 				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
 			}
 			// numeric/decimal fields.
-			else if($field['numeric_precision_radix'] == 10 && !is_null($field['numeric_precision']) && !is_null($field['numeric_scale'])) {
+			else if ($field['numeric_precision_radix'] == 10 && !is_null($field['numeric_precision']) && !is_null($field['numeric_scale'])) {
 				$field['data_type'] .= '('.(int)$field['numeric_precision'].','.(int)$field['numeric_scale'].')';
 			}
 
