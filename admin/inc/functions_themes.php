@@ -6,9 +6,6 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- */
-
-/**
  * Import an entire theme (stylesheets, properties & templates) from an XML file.
  *
  * @param string $xml The contents of the XML file
@@ -503,24 +500,6 @@ function resync_stylesheet($stylesheet)
 }
 
 /**
- * @deprecated
- * @param string $url
- *
- * @return string
- */
-function fix_css_urls($url)
-{
-	if(!preg_match("#^([a-z0-9]+\:|/)#i", $url) && strpos($url, "../../../") === false)
-	{
-		return "url(../../../{$url})";
-	}
-	else
-	{
-		return "url({$url})";
-	}
-}
-
-/**
  * @param array $matches Matches.
  *
  * @return string
@@ -530,16 +509,6 @@ function fix_css_urls_callback($matches)
 	return fix_css_urls($matches[2]);
 }
 
-/**
- * @deprecated
- * @param string $url
- *
- * @return string
- */
-function unfix_css_urls($url)
-{
-	return str_replace("../../../", "", $url);
-}
 
 /**
  * Build a theme based on the specified parameters.
@@ -1510,6 +1479,7 @@ function upgrade_css_120_to_140($css)
 		}
 	}
 
+	// MD5 is not the safest method to use.
 	$to_add = array(
 		md5('.trow_selected td') => array("class_name" => '.trow_selected td', "values" => 'background: #FFFBD9;'),
 		md5('blockquote') => array("class_name" => 'blockquote', "values" => "border: 1px solid #ccc;\n\tmargin: 0;\n\tbackground: #fff;\n\tpadding: 4px;"),
