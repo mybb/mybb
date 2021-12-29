@@ -16,11 +16,6 @@ $(function ($) {
 				'url': 'https://www.facebook.com/video/embed?video_id=',
 				'html': '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
-			'Liveleak': {
-				'match': /liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/,
-				'url': 'http://www.liveleak.com/ll_embed?i=',
-				'html': '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
-			},
 			'MetaCafe': {
 				'match': /metacafe\.com\/watch\/([^\/]+)/,
 				'url': 'http://www.metacafe.com/embed/',
