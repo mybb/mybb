@@ -168,7 +168,7 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 <tr>
 <td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[video=youtube]</span>https://www.youtube.com/watch?v=dQw4w9WgXcQ<span style=\"font-weight: bold; color: #ff0000;\">[/video]</span></td>
 <td class=\"trow1\"><iframe src=\"//www.youtube.com/embed/dQw4w9WgXcQ\" allowfullscreen=\"\" width=\"460\" height=\"255\" frameborder=\"0\"></iframe></td>
-<td class=\"trow1\">Currently accepts Dailymotion, Facebook, LiveLeak, Metacafe, Mixer, MySpace TV, Twitch, Vimeo, Yahoo Videos and YouTube.</td>
+<td class=\"trow1\">Currently accepts Dailymotion, Facebook, Metacafe, Mixer, MySpace TV, Twitch, Vimeo, Yahoo Videos and YouTube.</td>
 </tr>
 </tbody></table>
 <br /><br />In addition, administrators may have created more MyCodes for use. Please contact an administrator to find out if there are any and on how to use them.";
