@@ -1494,11 +1494,6 @@ class postParser
 			$fragments = explode("&", $parsed_url['fragment']);
 		}
 
-		if($video == "liveleak")
-		{
-			// The query part can start with any alphabet, but set only 'i' to catch in index key later
-			$parsed_url['query'] = "i".substr($parsed_url['query'], 1);
-		}
 
 		$queries = explode("&", $parsed_url['query']);
 

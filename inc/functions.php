@@ -3666,7 +3666,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
 			"editor_facebook" => "Facebook",
-			"editor_liveleak" => "LiveLeak",
 			"editor_insertvideo" => "Insert a video",
 			"editor_php" => "PHP",
 			"editor_maximize" => "Maximize"
