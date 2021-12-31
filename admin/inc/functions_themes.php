@@ -1106,6 +1106,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
  */
 function make_parent_theme_list($tid)
 {
+	// Shouldnt be defined explicitly?
 	static $themes_by_parent;
 
 	$themes = array();
