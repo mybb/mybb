@@ -13773,7 +13773,6 @@ if(use_xmlhttprequest == "1")
 		<template name="video_metacafe_embed" version="1827"><![CDATA[<iframe src="http://www.metacafe.com/embed/{$id}/" width="440" height="248" allowfullscreen="true" frameborder=0></iframe>]]></template>
 		<template name="video_dailymotion_embed" version="1827"><![CDATA[<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/{$id}" allowfullscreen="true"></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
-		
 		<template name="video_myspacetv_embed" version="1827"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>]]></template>
 		<template name="video_youtube_embed" version="1827"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen="true"></iframe>]]></template>
 		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="https://mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
