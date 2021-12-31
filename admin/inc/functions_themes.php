@@ -509,7 +509,6 @@ function fix_css_urls_callback($matches)
 	return fix_css_urls($matches[2]);
 }
 
-
 /**
  * Build a theme based on the specified parameters.
  *
