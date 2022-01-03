@@ -52,7 +52,7 @@ Options -MultiViews +FollowSymlinks -Indexes
 </IfModule>
 
 #
-# If Apache is compiled with built in mod_deflade/GZIP support
+# If Apache is compiled with built in mod_deflate/GZIP support
 # then GZIP Javascript, CSS, HTML and XML so they're sent to
 # the client faster.
 #
