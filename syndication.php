@@ -69,14 +69,9 @@ $unviewable = '';
 $plugins->run_hooks('syndication_start');
 
 // If there are any, add SQL to exclude them.
-if($unviewableforums)
+if(($unviewableforums) && ($inactiveforums))
 {
 	$unviewable .= " AND fid NOT IN($unviewableforums)";
-}
-
-if($inactiveforums)
-{
-	$unviewable .= " AND fid NOT IN($inactiveforums)";
 }
 
 // If there are no forums to syndicate, syndicate all viewable.
