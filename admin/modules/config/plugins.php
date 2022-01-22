@@ -504,7 +504,7 @@ if($mybb->input['action'] == "delete")
 	require_once MYBB_ROOT."inc/plugins/$file";
 
 	$delete_func = $codename."_delete";
-	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() != 1)
+	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() !== true)
 	{
 		flash_message($lang->error_plugin_delete_function, 'error');
 		admin_redirect('index.php?module=config-plugins');
@@ -746,7 +746,7 @@ function build_plugin_list($plugin_list)
 			$uninstall_button = true;
 		}
 
-		if(function_exists($delete_func) && !empty($delete_func()) && (is_array($delete_func()) || $delete_func() == 1))
+		if(function_exists($delete_func) && (is_array($delete_func()) || $delete_func() === true))
 		{
 			$delete_button = true;
 		}
@@ -840,7 +840,7 @@ function delete_plugin_files($codename=false)
 	require_once $pluginpath;
 
 	$delete_func = $codename."_delete";
-	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() != 1)
+	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() !== true)
 	{
 		return false;
 	}
@@ -848,7 +848,7 @@ function delete_plugin_files($codename=false)
 	$files = $delete_func();
 	$delfiles = array();
 
-	if(is_array($files))
+	if(is_array($files) && !empty($files))
 	{
 		foreach($files as $file)
 		{
