@@ -77,7 +77,7 @@ function hello_info()
 		'website'		=> 'https://mybb.com',
 		'author'		=> 'MyBB Group',
 		'authorsite'	=> 'https://mybb.com',
-		'version'		=> '2.0',
+		'version'		=> '2.1',
 		'compatibility'	=> '18*',
 		'codename'		=> 'hello'
 	);
@@ -437,6 +437,21 @@ function hello_uninstall()
 	{
 		$db->drop_table('hello_messages');
 	}
+}
+
+/*
+ * _delete():
+ *    Called whenever a plugin is to be deleted. This should remove uploaded files of the plugin
+ *    from the server. If it does not exist or is empty, delete button is not shown.
+ *    Alias {lang} gets all translations of defined language file.
+*/
+function hello_delete()
+{
+	return array(
+		'inc/languages/{lang}/hello.lang.php',
+		'inc/languages/{lang}/admin/hello.lang.php',
+		'inc/plugins/hello.php'
+	);
 }
 
 /*

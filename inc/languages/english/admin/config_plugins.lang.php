@@ -30,6 +30,9 @@ $l['no_inactive_plugins'] = "There are no inactive plugins available.";
 
 $l['plugin_incompatible'] = "This plugin is incompatible with MyBB {1}";
 
+$l['plugin_delete_confirm'] = "Confirm plugin deletion";
+$l['plugin_delete_confirm_message'] = "Do you want to remove the selected plugin and its files from the server?";
+
 $l['recommended_plugins_for_mybb'] = "Recommended Plugins for MyBB {1}";
 $l['browse_results_for_mybb'] = "Browse Results for MyBB {1}";
 $l['search_for_plugins'] = "Search for Plugins";
@@ -44,9 +47,14 @@ $l['error_no_pids'] = "Error code 2: No plugin ids specified.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB modifications server. Please try again in a few minutes.";
 $l['error_invalid_plugin'] = "The selected plugin does not exist.";
 $l['error_no_results_found'] = "No results were found for the specified keywords.";
+$l['error_plugin_delete'] = "Sorry, an unknown error occurred during plugin deletion. Please try again or contact the plugin author.";
+$l['error_plugin_still_activated'] = "The selected plugin is still activated and cannot be deleted.";
+$l['error_plugin_still_installed'] = "The selected plugin is still installed and cannot be deleted.";
+$l['error_plugin_delete_function'] = "The selected plugin cannot be deleted because the relevant function is missing or empty.";
 
 $l['success_plugins_up_to_date'] = "Congratulations, all of your plugins are up to date.";
 $l['success_plugin_activated'] = "The selected plugin has been activated successfully.";
 $l['success_plugin_deactivated'] = "The selected plugin has been deactivated successfully.";
 $l['success_plugin_installed'] = "The selected plugin has been installed and activated successfully.";
 $l['success_plugin_uninstalled'] = "The selected plugin has been uninstalled successfully.";
+$l['success_plugin_deleted'] = "The selected plugin has been deleted successfully.";

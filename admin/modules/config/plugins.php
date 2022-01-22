@@ -477,6 +477,81 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	admin_redirect("index.php?module=config-plugins");
 }
 
+// Delete files of a specific plugin
+if($mybb->input['action'] == "delete")
+{
+	if(!verify_post_check($mybb->get_input('my_post_key')))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=config-plugins");
+	}
+
+	$plugins->run_hooks("admin_config_plugins_delete");
+
+
+	$codename = $mybb->input['plugin'];
+	$codename = str_replace(array(".", "/", "\\"), "", $codename);
+	$file = basename($codename.".php");
+	$filepath = "inc/plugins/{$file}";
+
+	// Check if the file exists and throw an error if it doesn't
+	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
+	{
+		flash_message($lang->error_invalid_plugin, 'error');
+		admin_redirect("index.php?module=config-plugins");
+	}
+
+	require_once MYBB_ROOT."inc/plugins/$file";
+
+	$delete_func = $codename."_delete";
+	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() !== true)
+	{
+		flash_message($lang->error_plugin_delete_function, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+
+	$plugins_cache = $cache->read("plugins");
+	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
+	if(isset($active_plugins[$codename]))
+	{
+		flash_message($lang->error_plugin_still_activated, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+
+	$installed_func = "{$codename}_is_installed";
+	if(function_exists($installed_func) && $installed_func() != false)
+	{
+		flash_message($lang->error_plugin_still_installed, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+
+	if($mybb->request_method != 'post')
+	{
+		$page->output_confirm_action("index.php?module=config-plugins&amp;action=delete&amp;plugin={$codename}", $lang->plugin_delete_confirm_message, $lang->plugin_delete_confirm);
+	}
+
+	if(!isset($mybb->input['no']))
+	{
+		$deleted = delete_plugin_files($codename);
+
+		if(!$deleted)
+		{
+			flash_message($lang->error_plugin_delete, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		// Log admin action
+		log_admin_action($codename, 'delete');
+
+		flash_message($lang->success_plugin_deleted, 'success');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	else
+	{
+		admin_redirect("index.php?module=config-plugins");
+	}
+}
+
 if(!$mybb->input['action'])
 {
 	$page->output_header($lang->plugins);
@@ -603,7 +678,7 @@ function get_plugins_list()
 	$dir = @opendir(MYBB_ROOT."inc/plugins/");
 	if($dir)
 	{
-		while($file = readdir($dir))
+		while(false !== ($file = readdir($dir)))
 		{
 			$ext = get_extension($file);
 			if($ext == "php")
@@ -649,10 +724,12 @@ function build_plugin_list($plugin_list)
 		$installed_func = "{$plugininfo['codename']}_is_installed";
 		$install_func = "{$plugininfo['codename']}_install";
 		$uninstall_func = "{$plugininfo['codename']}_uninstall";
+		$delete_func = "{$plugininfo['codename']}_delete";
 
 		$installed = true;
 		$install_button = false;
 		$uninstall_button = false;
+		$delete_button = false;
 
 		if(function_exists($installed_func) && $installed_func() != true)
 		{
@@ -669,6 +746,11 @@ function build_plugin_list($plugin_list)
 			$uninstall_button = true;
 		}
 
+		if(function_exists($delete_func) && !empty($delete_func()) && (is_array($delete_func()) || $delete_func() === true))
+		{
+			$delete_button = true;
+		}
+
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 
 		// Plugin is not installed at all
@@ -680,7 +762,17 @@ function build_plugin_list($plugin_list)
 			}
 			else
 			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
+				if($delete_button)
+				{
+					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "width" => 150));
+					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=delete&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->delete}</a>", array("class" => "align_center", "width" => 150));
+				}
+				else
+				{
+					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
+				}
+
+
 			}
 		}
 		// Plugin is activated and installed
@@ -708,14 +800,105 @@ function build_plugin_list($plugin_list)
 				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
 				if($uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					if($delete_button && !function_exists($installed_func))
+					{
+						$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=delete&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->delete}</a>", array("class" => "align_center", "width" => 150));
+					}
+					else
+					{
+						$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					}
 				}
 				else
 				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+					if($delete_button)
+					{
+						$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=delete&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->delete}</a>", array("class" => "align_center", "width" => 150));
+					}
+					else
+					{
+						$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+					}
 				}
 			}
 		}
 		$table->construct_row();
 	}
+}
+
+/**
+ * @return bool
+ */
+function delete_plugin_files($codename=false)
+{
+	if(!$codename)
+	{
+		return false;
+	}
+
+	$pluginpath = MYBB_ROOT."inc/plugins/".basename($codename.".php");
+	require_once $pluginpath;
+
+	$delete_func = $codename."_delete";
+	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() !== true)
+	{
+		return false;
+	}
+
+	$files = $delete_func();
+	$delfiles = array();
+
+	if(is_array($files))
+	{
+		foreach($files as $file)
+		{
+			if(preg_match('/inc\/languages\/\{lang\}\//i', $file))
+			{
+				$file = preg_replace('/\{lang\}/i', '*', $file);
+				$delfiles = array_merge($delfiles, glob(MYBB_ROOT.$file));
+			}
+			else
+			{
+				$delfiles[] = MYBB_ROOT.$file;
+			}
+		}
+	}
+
+	if(!in_array($pluginpath, $delfiles))
+	{
+		array_push($delfiles, $pluginpath);
+	}
+
+	// Check files exist and delete files
+	foreach($delfiles as $key => $file)
+	{
+		if(is_writable($file) !== true || is_link($file))
+		{
+			continue;
+		}
+
+		if(is_dir($file))
+		{
+			// Check folder to delete is empty
+			$dirfiles = array_diff(@scandir($file), array('.','..'));
+			if(empty($dirfiles))
+			{
+				@rmdir($file);
+			}
+		}
+		else
+		{
+			@unlink($file);
+		}
+	}
+
+	// Check main plugin file is deleted
+	if(@file_exists($pluginpath))
+	{
+		return false;
+	}
+
+	unset($delfiles);
+
+	return true;
 }
