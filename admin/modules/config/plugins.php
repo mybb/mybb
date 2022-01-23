@@ -524,6 +524,12 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_plugin_still_installed, 'error');
 		admin_redirect('index.php?module=config-plugins');
 	}
+	
+	if(delete_plugin_files($codename, true) != false)
+	{
+		flash_message($lang->error_plugin_files_unwritable, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
 
 	if($mybb->request_method != 'post')
 	{
@@ -532,11 +538,11 @@ if($mybb->input['action'] == "delete")
 
 	if(!isset($mybb->input['no']))
 	{
-		$deleted = delete_plugin_files($codename);
+		$message = delete_plugin_files($codename);
 
-		if(!$deleted)
+		if($message)
 		{
-			flash_message($lang->error_plugin_delete, 'error');
+			flash_message($message, 'error');
 			admin_redirect('index.php?module=config-plugins');
 		}
 
@@ -746,7 +752,7 @@ function build_plugin_list($plugin_list)
 			$uninstall_button = true;
 		}
 
-		if(function_exists($delete_func) && (is_array($delete_func()) || $delete_func() === true))
+		if(function_exists($delete_func) && (is_array($delete_func()) || $delete_func() === true) && delete_plugin_files($plugininfo['codename'], true) !== true)
 		{
 			$delete_button = true;
 		}
@@ -827,13 +833,14 @@ function build_plugin_list($plugin_list)
 }
 
 /**
- * @return bool
+ * @return bool or string
  */
-function delete_plugin_files($codename=false)
+function delete_plugin_files($codename=false, $check_only=false)
 {
+	global $lang;
 	if(!$codename)
 	{
-		return false;
+		return $lang->error_invalid_plugin;
 	}
 
 	$pluginpath = MYBB_ROOT."inc/plugins/".basename($codename.".php");
@@ -842,7 +849,7 @@ function delete_plugin_files($codename=false)
 	$delete_func = $codename."_delete";
 	if(!function_exists($delete_func) || function_exists($delete_func) && !is_array($delete_func()) && $delete_func() !== true)
 	{
-		return false;
+		return $lang->error_plugin_delete_function;
 	}
 
 	$files = $delete_func();
@@ -869,36 +876,56 @@ function delete_plugin_files($codename=false)
 		array_push($delfiles, $pluginpath);
 	}
 
-	// Check files exist and delete files
+	// Check for unwritable files
+	$unwritable_files = array();
 	foreach($delfiles as $key => $file)
 	{
 		if(is_writable($file) !== true || is_link($file))
 		{
-			continue;
+			$unwritable_files[] = $file;
+		}
+	}
+
+	$delfiles = array_diff($delfiles, $unwritable_files);
+
+	if($check_only)
+	{
+		$unwritable = false;
+		if(empty($delfiles))
+		{
+			$unwritable = true;
+		}
+		return $unwritable;
+
+		unset($delfiles, $unwritable_files);
+	}
+	else
+	{
+		if(empty($delfiles))
+		{
+			return $lang->error_plugin_files_unwritable;
 		}
 
-		if(is_dir($file))
+		// Delete files
+		foreach($delfiles as $key => $file)
 		{
-			// Check folder to delete is empty
-			$dirfiles = array_diff(@scandir($file), array('.','..'));
-			if(empty($dirfiles))
+			if(is_dir($file))
 			{
-				@rmdir($file);
+				// Check folder to delete is empty
+				$dirfiles = array_diff(@scandir($file), array('.','..'));
+				if(empty($dirfiles))
+				{
+					@rmdir($file);
+				}
+			}
+			else
+			{
+				@unlink($file);
 			}
 		}
-		else
-		{
-			@unlink($file);
-		}
-	}
 
-	// Check main plugin file is deleted
-	if(@file_exists($pluginpath))
-	{
+		unset($delfiles, $unwritable_files);
+
 		return false;
 	}
-
-	unset($delfiles);
-
-	return true;
 }
