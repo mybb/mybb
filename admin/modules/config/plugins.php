@@ -219,7 +219,7 @@ if($mybb->input['action'] == "check")
 			}
 			$plugininfo = $infofunc();
 			$plugininfo['guid'] = isset($plugininfo['guid']) ? trim($plugininfo['guid']) : null;
-			$plugininfo['codename'] = isset($plugininfo['guid']) ? trim($plugininfo['codename']) : null;
+			$plugininfo['codename'] = isset($plugininfo['codename']) ? trim($plugininfo['codename']) : null;
 
 			if($plugininfo['codename'] != "")
 			{
