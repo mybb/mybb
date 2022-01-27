@@ -549,6 +549,7 @@ function get_birthdays($months, $day=0)
 	global $db;
 
 	$year = my_date("Y");
+	$feb_fix = 0;
 
 	if(!is_array($months))
 	{
