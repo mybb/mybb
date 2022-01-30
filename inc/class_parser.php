@@ -1476,8 +1476,6 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		static $bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
-
 		// Check URL is a valid URL first, as `parse_url` doesn't check validity.
 		if(false === filter_var($url, FILTER_VALIDATE_URL))
 		{
@@ -1490,6 +1488,7 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);		
 		$fragments = array();
 		if($parsed_url['fragment'])
 		{
