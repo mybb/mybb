@@ -1476,6 +1476,8 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
+
 		// Check URL is a valid URL first, as `parse_url` doesn't check validity.
 		if(false === filter_var($url, FILTER_VALIDATE_URL))
 		{
@@ -1611,7 +1613,6 @@ class postParser
 					// Channel (livestream) embed with URL like: https://twitch.tv/waypoint
 					$id = 'channel='.$path[1];
 				}
-				$parent_domain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 				break;
 			default:
 				return "[video={$video}]{$url}[/video]";
