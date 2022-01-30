@@ -1488,7 +1488,8 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);		
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
+
 		$fragments = array();
 		if($parsed_url['fragment'])
 		{
