@@ -207,7 +207,7 @@ class StopForumSpamChecker
 				continue;
 			}
 
-			if($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
+			if($setting == 'stopforumspam_check_ips' && $mybb->settings[$setting])
 			{
 				$settingsenabled[] = $lang->sfs_error_ip;
 				continue;
