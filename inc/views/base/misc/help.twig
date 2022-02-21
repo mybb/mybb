@@ -10,13 +10,13 @@
             <h1 class="title title--page">{{ lang.help_docs }}</h1>
         </header>
         {% for section in sections %}
-            <section class="block collapse {% if section.expdisplay == 'display: show;' %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="sid_{{ section.sid }}_img">
+            <section class="block collapse {% if section.collapsed %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="sid_{{ section.sid }}">
                 <div class="title title--major title--nested">
                     <h1 class="title__name">{{ section.name }}</h1>
                     <p class="title__description">{{ section.description }}</p>
                     <span class="collapse__toggle">
-                        {{ include('partials/icon.twig', {icon: 'minus-square', class: 'collapse__icon collapse__icon--collapse'}, with_context = false) }}
-                        {{ include('partials/icon.twig', {icon: 'plus-square', class: 'collapse__icon collapse__icon--expand'}, with_context = false) }}
+                        {{ include('partials/icon.twig', {icon: 'minus-square', class: 'collapse__icon collapse__icon--collapse', title: lang.expcol_collapse}, with_context = false) }}
+                        {{ include('partials/icon.twig', {icon: 'plus-square', class: 'collapse__icon collapse__icon--expand', title: lang.expcol_expand}, with_context = false) }}
                     </span>
                 </div>
                 <div class="collapse__content">
