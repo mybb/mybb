@@ -3710,6 +3710,7 @@ if($mybb->input['action'] == "banuser")
 	$plugins->run_hooks('modcp_banuser_start');
 
 	// Coming back to this page from an error?
+	$banned = [];
 	if($errors)
 	{
 		$errors = inline_error($errors);
