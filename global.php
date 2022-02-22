@@ -725,6 +725,8 @@ if(isset($lang->settings['charset']) && $lang->settings['charset'])
 $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == 1)
 {
+	$query = $db->simple_select('banned', '*', "uid='{$mybb->user['uid']}'");
+	$ban = $db->fetch_array($query);
 	// Format their ban lift date and reason appropriately
 	if(!empty($mybb->user['banned']))
 	{
