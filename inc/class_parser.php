@@ -1725,8 +1725,12 @@ class postParser
 			$message = "[*]{$message}";
 		}
 
-		$message = preg_replace("#[^\S\n\r]*\[\*\]\s*#", "</li>\n<li>", $message);
-		$message .= "</li>";
+		$message = preg_split("#[^\S\n\r]*\[\*\]\s*#", $message);
+		if(isset($message[0]) && trim($message[0]) == '')
+		{
+			array_shift($message);
+		}
+		$message = '<li>'.implode("</li>\n<li>", $message)."</li>\n";
 
 		if($type)
 		{
