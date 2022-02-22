@@ -3949,7 +3949,7 @@ if($mybb->input['action'] == "editban")
 		if($group['isbannedgroup'])
 		{
 			$group['selected'] = false;
-			if(isset($banned['usergroup']) && $banned['usergroup'] == $group['gid'])
+			if(isset($banned['gid']) && $banned['gid'] == $group['gid'])
 			{
 				$group['selected'] = true;
 			}
