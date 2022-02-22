@@ -1,1 +1,6 @@
-<div>{{ attachment.icon|raw }}&nbsp;&nbsp;<a href="attachment.php?aid={{ attachment.aid }}" target="_blank" title="{{ attachment.date }}">{{ attachment.filename }}</a> ({{ lang.postbit_attachment_size }} {{ attachment.filesize }} / {{ lang.postbit_attachment_downloads }} {{ attachment.downloads }})</div>
+<div>{{ attachment.icon|raw }}&nbsp;&nbsp;
+    <a href="attachment.php?aid={{ attachment.aid }}" target="_blank" title="{{ attachment.date }}">
+        {{ attachment.filename }}
+    </a>
+    ({{ lang.postbit_attachment_size }} {{ attachment.filesize }} / {{ lang.postbit_attachment_downloads }} {{ attachment.downloads }})
+</div>

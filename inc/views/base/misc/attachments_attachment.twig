@@ -1,0 +1,32 @@
+<div class="row row--form field uploaded-attachment" id="attachment_{{ attachment.aid }}">
+    <div class="uploaded-attachment__details">
+        <span class="uploaded-attachment__icon">{{ attachment.icon|raw }}</span>
+        <span class="uploaded-attachment__file-name">
+            {% if attachment.visible %}
+                {{ attachment.filename }}
+            {% else %}
+                <a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a>
+            {% endif %}
+        </span>
+        <span class="uploaded-attachment__file-size">({{ attachment.size }})</span>
+    </div>
+    <div class="uploaded-attachment__buttons">
+        {% if attachment.showmodapproval %}
+            {% if attachment.visible %}
+                <input type="submit" class="button button--danger" name="unapproveattach_{{ attachment.aid }}" value="{{ lang.unapprove_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'unapprove');" />
+            {% else %}
+                <input type="submit" class="button button--success" name="approveattach_{{ attachment.aid }}" value="{{ lang.approve_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'approve');" />
+            {% endif %}
+        {% endif %}
+        <button type="submit" class="button button--secondary" name="rem_{{ attachment.aid }}" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
+            {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+            <span class="button__text">{{ lang.remove_attachment }}</span>
+        </button>
+        {% if attachment.showinsert %}
+            <button type="button" class="button" name="insert" value="insert" onclick="$('#message').sceditor('instance').insertText('[attachment={{ attachment.aid }}]'); return false;">
+                {{ include('partials/icon.twig', {icon: 'long-arrow-alt-up', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.insert_attachment_post }}</span>
+            </button>
+        {% endif %}
+    </div>
+</div>
