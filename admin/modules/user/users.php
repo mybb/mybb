@@ -2755,7 +2755,7 @@ if($mybb->input['action'] == "inline_edit")
 			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 			if(count($banned_groups) > 1)
 			{
-				$form_container->output_row($lang->ban_group, "", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['gid'], array('id' => 'usergroup')), 'usergroup');
+				$form_container->output_row($lang->ban_group, "", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 			}
 
 			$ban_times = fetch_ban_times();
@@ -2779,7 +2779,7 @@ if($mybb->input['action'] == "inline_edit")
 		case 'multidelete':
 			if($mybb->get_input('no'))
 			{
-				admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No
+				admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No'
 			}
 			else
 			{

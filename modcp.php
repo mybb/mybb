@@ -3722,7 +3722,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Generate the banned times dropdown
-	$liftlist = [];
+	$liftlist = $lifttime = [];
 	foreach($bantimes as $time => $title)
 	{
 		$lifttime['selected'] = false;
@@ -3750,7 +3750,7 @@ if($mybb->input['action'] == "banuser")
 		$liftlist[] = $lifttime;
 	}
 
-	$bangroups = [];
+	$bangroups = $banned = [];
 	$banned['numgroups'] = $banned['banned_group'] = 0;
 	$groupscache = $cache->read("usergroups");
 
@@ -3800,7 +3800,7 @@ if($mybb->input['action'] == "do_editban" && $mybb->request_method == "post")
         SELECT b.*, u.uid, u.username, u.usergroup, u.additionalgroups, u.displaygroup
         FROM ".TABLE_PREFIX."banned b
         LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
-        WHERE b.uid='{$mybb->input['uid']}'
+        WHERE b.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'
     ");
 	$user = $db->fetch_array($query);
 
@@ -3882,7 +3882,7 @@ if($mybb->input['action'] == "editban")
         SELECT b.*, u.username, u.uid
         FROM ".TABLE_PREFIX."banned b
         LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
-        WHERE b.uid='{$mybb->input['uid']}'
+        WHERE b.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'
     ");
 	$banned = $db->fetch_array($query);
 
@@ -3911,7 +3911,7 @@ if($mybb->input['action'] == "editban")
 	}
 
 	// Generate the banned times dropdown
-	$liftlist = [];
+	$liftlist = $lifttime = [];
 	foreach($bantimes as $time => $title)
 	{
 		$lifttime['selected'] = false;
@@ -3939,7 +3939,7 @@ if($mybb->input['action'] == "editban")
 		$liftlist[] = $lifttime;
 	}
 
-	$bangroups = [];
+	$bangroups = $banned = [];
 	$banned['numgroups'] = $banned['banned_group'] = 0;
 	$groupscache = $cache->read("usergroups");
 

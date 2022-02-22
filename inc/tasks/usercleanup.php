@@ -10,7 +10,7 @@
 
 function task_usercleanup($task)
 {
-	global $db, $lang, $cache, $plugins;
+	global $db, $lang, $plugins;
 
 	// Expire any old warnings
 	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -61,8 +61,6 @@ function task_usercleanup($task)
 
 		$userhandler->lift_ban();
 	}
-
-	$cache->update_moderators();
 
 	if(is_object($plugins))
 	{

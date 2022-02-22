@@ -1963,11 +1963,11 @@ class UserDataHandler extends DataHandler
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{
-			die("The user needs to be validated before inserting it into the DB.");
+			die("The ban needs to be validated before inserting it into the DB.");
 		}
 		if(count($this->get_errors()) > 0)
 		{
-			die("The user is not valid.");
+			die("The ban is not valid.");
 		}
 
 		$ban = &$this->data;
@@ -2015,11 +2015,11 @@ class UserDataHandler extends DataHandler
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{
-			die("The user needs to be validated before inserting it into the DB.");
+			die("The ban needs to be validated before inserting it into the DB.");
 		}
 		if(count($this->get_errors()) > 0)
 		{
-			die("The user is not valid.");
+			die("The ban is not valid.");
 		}
 
 		$ban = &$this->data;
