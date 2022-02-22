@@ -3664,9 +3664,9 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		'usergroup' => $user['usergroup'],
 		'additionalgroups' => $user['additionalgroups'],
 		'displaygroup' => $user['displaygroup'],
-		'bantime' => $db->escape_string($mybb->input['liftafter']),
-		'lifted' => $db->escape_string($lifted),
-		'reason' => $db->escape_string($mybb->input['banreason']),
+		'bantime' => $mybb->input['liftafter'],
+		'lifted' => $lifted,
+		'reason' => $mybb->input['banreason'],
 	);
 
 	$userhandler->set_data($userdata);
@@ -3750,7 +3750,7 @@ if($mybb->input['action'] == "banuser")
 		$liftlist[] = $lifttime;
 	}
 
-	$bangroups = $banned = [];
+	$bangroups = [];
 	$banned['numgroups'] = $banned['banned_group'] = 0;
 	$groupscache = $cache->read("usergroups");
 
@@ -3833,9 +3833,9 @@ if($mybb->input['action'] == "do_editban" && $mybb->request_method == "post")
 		'uid' => $user['uid'],
 		'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 		'dateline' => TIME_NOW,
-		'bantime' => $db->escape_string($mybb->input['liftafter']),
-		'lifted' => $db->escape_string($lifted),
-		'reason' => $db->escape_string($mybb->input['banreason']),
+		'bantime' => $mybb->input['liftafter'],
+		'lifted' => $lifted,
+		'reason' => $mybb->input['banreason'],
 	);
 
 	$userhandler->set_data($userdata);
@@ -3939,7 +3939,7 @@ if($mybb->input['action'] == "editban")
 		$liftlist[] = $lifttime;
 	}
 
-	$bangroups = $banned = [];
+	$bangroups = [];
 	$banned['numgroups'] = $banned['banned_group'] = 0;
 	$groupscache = $cache->read("usergroups");
 

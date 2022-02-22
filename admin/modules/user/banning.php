@@ -202,9 +202,9 @@ if($mybb->input['action'] == "edit")
 			'uid' => $ban['uid'],
 			'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 			'dateline' => TIME_NOW,
-			'bantime' => $db->escape_string($mybb->input['bantime']),
-			'lifted' => $db->escape_string($lifted),
-			'reason' => $db->escape_string($mybb->input['reason']),
+			'bantime' => $mybb->input['bantime'],
+			'lifted' => $lifted,
+			'reason' => $mybb->input['reason'],
 		);
 
 		$userhandler->set_data($userdata);
@@ -330,9 +330,9 @@ if(!$mybb->input['action'])
 				'usergroup' => $user['usergroup'],
 				'additionalgroups' => $user['additionalgroups'],
 				'displaygroup' => $user['displaygroup'],
-				'bantime' => $db->escape_string($mybb->input['bantime']),
-				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($mybb->input['reason']),
+				'bantime' => $mybb->input['bantime'],
+				'lifted' => $lifted,
+				'reason' => $mybb->input['reason'],
 			);
 
 			$userhandler->set_data($userdata);
