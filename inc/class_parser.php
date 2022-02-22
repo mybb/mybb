@@ -1675,6 +1675,13 @@ class postParser
 	*/
 	function mycode_auto_url_callback($matches=array())
 	{
+		// If we matched a preexisting link (the part of the regexes in mycode_auto_url() before the pipe symbol),
+		// then simply return it - we don't create links within existing links.
+		if(count($matches) == 1)
+		{
+			return $matches[0];
+		}
+
 		$external = '';
 		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
 		while(my_substr($matches['link'], -1) == ')')
