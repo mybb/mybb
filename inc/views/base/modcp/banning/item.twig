@@ -18,7 +18,7 @@
     </ul>
     {% if banned.show_edit_link %}
         <div class="user-list__buttons">
-            <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}" class="button button--secondary button--small">
+            <a href="modcp.php?action=editban&amp;uid={{ banned.uid }}" class="button button--secondary button--small">
                 {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.edit_ban }}</span>
             </a>

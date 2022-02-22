@@ -10,7 +10,7 @@
 
 function task_usercleanup($task)
 {
-	global $db, $lang, $cache, $plugins;
+	global $db, $lang, $plugins;
 
 	// Expire any old warnings
 	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -51,19 +51,16 @@ function task_usercleanup($task)
 	}
 
 	// Expire bans
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$query = $db->simple_select("banned", "*", "lifted!=0 AND lifted<".TIME_NOW);
 	while($ban = $db->fetch_array($query))
 	{
-		$updated_user = array(
-			"usergroup" => $ban['oldgroup'],
-			"additionalgroups" => $db->escape_string($ban['oldadditionalgroups']),
-			"displaygroup" => $ban['olddisplaygroup']
-		);
-		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
-		$db->delete_query("banned", "uid='{$ban['uid']}'");
-	}
+		$userhandler = new UserDataHandler("update");
 
-	$cache->update_moderators();
+		$userhandler->set_data($ban);
+
+		$userhandler->lift_ban();
+	}
 
 	if(is_object($plugins))
 	{
