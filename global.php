@@ -728,22 +728,27 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 	// Format their ban lift date and reason appropriately
 	if(!empty($mybb->user['banned']))
 	{
-		$ban['lift'] = $lang->banned_lifted_never;
-
-		if($ban['lifted'] > 0)
+		if(!empty($mybb->user['banlifted']))
 		{
-			$ban['lift'] = my_date('normal', $ban['lifted']);
+			$ban['lift'] = my_date('normal', $mybb->user['banlifted']);
+		}
+		else
+		{
+			$ban['lift'] = $lang->banned_lifted_never;
 		}
 	}
-
-	if(empty($ban['reason']))
-	{
-		$ban['reason'] = $lang->unknown;
-	}
-
-	if(empty($ban['lift']))
+	else
 	{
 		$ban['lift'] = $lang->unknown;
+	}
+
+	if(!empty($mybb->user['banreason']))
+	{
+		$ban['reason'] = htmlspecialchars_uni($mybb->user['banreason']);
+	}
+	else
+	{
+		$ban['reason'] = $lang->unknown;
 	}
 
 	$headerMessages['banneduser'] = [
