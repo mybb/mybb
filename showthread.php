@@ -499,6 +499,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Does this thread have a poll?
+	$poll = [];
 	if($thread['poll'])
 	{
 		$options = array(
@@ -761,6 +762,7 @@ if($mybb->input['action'] == "thread")
 
 	// Threaded or linear display?
 	$thread['showthreaded'] = false;
+	$threadedbits = [];
 	if($mybb->get_input('mode') == 'threaded')
 	{
 		$thread['showthreaded'] = true;
@@ -1054,6 +1056,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Show the similar threads table if wanted.
+	$similarthreads = [];
 	if($mybb->settings['showsimilarthreads'] != 0)
 	{
 		$own_perm = '';
@@ -1086,7 +1089,6 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$thread['similarthreads'] = 0;
-		$similarthreads = [];
 		$icon_cache = $cache->read("posticons");
 		while($similar_thread = $db->fetch_array($query))
 		{

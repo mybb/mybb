@@ -54,6 +54,7 @@
                         {% if (mybb.settings.enableshowteam) %}
                             <li class="footer-menu__item">
                                 <a href="showteam.php" class="footer-menu__link">
+                                    {{ include('partials/icon.twig', {icon: 'address-book', class: 'button__icon'}, with_context = false) }}
                                     <span class="footer-menu__text">{{ lang.bottomlinks_forumteam }}</span>
                                 </a>
                             </li>

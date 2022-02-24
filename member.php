@@ -2585,7 +2585,6 @@ if($mybb->input['action'] == "profile")
 				$memprofile['banned_class'] = "normal_banned";
 			}
 		}
-		eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
 
 		$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
 	}
@@ -3012,7 +3011,7 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
-	if(!$user['$uid'])
+	if(!$user['uid'])
 	{
 		error($lang->referrals_invalid_user);
 	}
@@ -3025,6 +3024,8 @@ if($mybb->input['action'] == 'referrals')
 
 	$bg_color = 'trow1';
 
+	$referrals = [];
+	$multipage = '';
 	if($referral_count > 0)
 	{
 		// Figure out if we need to display multiple pages.
@@ -3058,7 +3059,6 @@ if($mybb->input['action'] == 'referrals')
 
 		$multipage = multipage($referral_count, $perpage, $page, "member.php?action=referrals&amp;uid={$uid}");
 
-        $referrals = array();
 		foreach(get_user_referrals($uid, $start, $perpage) as $referral)
 		{
 			$username = htmlspecialchars_uni($referral['username']);

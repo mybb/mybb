@@ -49,7 +49,7 @@
 
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
-                    {% set attachment_title = (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count %}
+                    {% set attachment_title = (thread.attachmentcount > 1) ? trans('attachment_count_multiple', thread.attachmentcount) : lang.attachment_count %}
                     {{ include('partials/icon.twig', {icon: 'paperclip', class: 'thread__icon fa-fw', title: attachment_title}, with_context = false) }}
                 {% endif %}
 
@@ -89,7 +89,7 @@
                 {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
             </span>
         {% endif %}
-        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ thread.start_datetime }}</p>
+        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ thread.start_datetime|raw }}</p>
     </div>
     {% if thread.moved %}
         <div class="thread__column thread__column--replies">&nbsp;</div>
@@ -98,7 +98,7 @@
             <p class="thread__replies">
                 <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
                 {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
-                    <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
+                    <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans('thread_unapproved_post_count', 1) : trans('thread_unapproved_posts_count', thread.unapprovedposts) }}">
                         {{ thread.unapprovedposts|my_number_format }}
                     </span>
                 {% endif %}

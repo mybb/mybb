@@ -73,10 +73,6 @@
                     <span class="button__text">{{ lang.index_logout }}</span>
                 </a>
             {% endif %}
-            <a href="showteam.php" class="button button--basic">
-                {{ include('partials/icon.twig', {icon: 'address-book', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.forumteam }}</span>
-            </a>
             {% if mybb.settings.statsenabled %}
                 <a href="stats.php" class="button button--basic">
                     {{ include('partials/icon.twig', {icon: 'chart-bar', class: 'button__icon'}, with_context = false) }}

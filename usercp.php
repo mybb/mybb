@@ -45,6 +45,7 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == 0)
 }
 
 $errors = '';
+$error = '';
 
 $mybb->input['action'] = $mybb->get_input('action');
 
@@ -370,6 +371,7 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 
+	$defaultTitle = '';
 	if($mybb->usergroup['cancustomtitle'] == 1 && $mybb->usergroup['usertitle'] == "")
 	{
 		$usertitles = $cache->read('usertitles');
@@ -869,9 +871,9 @@ if($mybb->input['action'] == "subscriptions")
 
 	// Do Multi Pages
 	$query = $db->query("
-        SELECT COUNT(ts.tid) as threads
-        FROM ".TABLE_PREFIX."threadsubscriptions ts
-        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
+        SELECT COUNT(s.tid) as threads
+        FROM ".TABLE_PREFIX."threadsubscriptions s
+        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = s.tid)
         WHERE {$where}
     ");
 	$threadcount = $db->fetch_field($query, "threads");
@@ -1164,9 +1166,6 @@ if($mybb->input['action'] == "subscriptions")
 
 			$threads[] = $thread;
 		}
-
-		// Provide remove options
-		eval("\$remove_options = \"".$templates->get("usercp_subscriptions_remove")."\";");
 	}
 	else
 	{
@@ -1226,8 +1225,16 @@ if($mybb->input['action'] == 'forumsubscriptions')
 			continue;
 		}
 
-		$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']),
-			array('lastpost' => $forum['lastpost']));
+		$lightbulb = get_forum_lightbulb(
+			array(
+				'open' => $forum['open'],
+			 	'lastread' => $forum['lastread'],
+			 	'linkto' => $forum['linkto']
+			),
+			array(
+				'lastpost' => $forum['lastpost']
+			)
+		);
 
 		$forum['light_bulb_folder'] = $lightbulb['folder'];
 		$forum['light_bulb_alt_on_off'] = $lightbulb['altonoff'];
@@ -3062,6 +3069,7 @@ if($mybb->input['action'] == "usergroups")
 	}
 
 	$leadinggroups = [];
+	$groupleader = [];
 	while($usergroup = $db->fetch_array($query))
 	{
 		$groupleader[$usergroup['gid']] = 1;
@@ -3260,6 +3268,7 @@ if($mybb->input['action'] == "attachments")
 	}
 
 	$friendlyusage = get_friendly_size((int)$totalusage);
+	$percent = 0;
 	if($mybb->usergroup['attachquota'])
 	{
 		$percent = round(($totalusage / ($mybb->usergroup['attachquota'] * 1024)) * 100);
@@ -3274,8 +3283,6 @@ if($mybb->input['action'] == "attachments")
 	}
 
 	$bandwidth = get_friendly_size($bandwidth);
-
-	eval("\$delete_button = \"".$templates->get("delete_attachments_button")."\";");
 
 	if(!$attachments)
 	{
@@ -3417,6 +3424,7 @@ if(!$mybb->input['action'])
 			$mybb->user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 		}
 
+		$warnings = [];
 		if($warning_level > 0)
 		{
 			require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -3425,7 +3433,6 @@ if(!$mybb->input['action'])
 			$warningshandler->expire_warnings();
 
 			$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
-			$warnings = [];
 			// Fetch latest warnings
 			$query = $db->query("
                 SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
@@ -3799,6 +3806,7 @@ if(!$mybb->input['action'])
 				}
 
 				$thread['lastread'] = $lastread;
+				$thread['folder_label'] = '';
 
 				// Folder Icons
 				if($thread['doticon'])

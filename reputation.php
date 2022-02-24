@@ -795,6 +795,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
+	$report_link = false;
 	if(!empty($post_cache))
 	{
 		$pids = implode(',', $post_cache);
@@ -949,7 +950,6 @@ if(!$mybb->input['action'])
 			$reputation_vote['can_delete'] = true;
 		}
 
-		$report_link = false;
 		if($mybb->user['uid'] != 0 && !in_array($reputation_vote['rid'], $not_reportable))
 		{
 			$report_link = true;

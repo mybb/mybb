@@ -25,11 +25,15 @@
             <div class="sort-threads">
                 <div class="sort-threads__column sort-threads__column--primary">
                     <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=subject&amp;order=asc" class="sort-threads__link">{{ lang.thread }}</a> {% if results.orderarrow.subject %}{{ ascDesc }}{% endif %}
-                    <span class="sort-threads__author"> &mdash; <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order=asc" class="sort-threads__link">{{ lang.author }}</a> {% if results.orderarrow.starter %}{{ ascDesc }}{% endif %}</span>
-                    <span class="sort-threads__forum"> &mdash; <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order=asc" class="sort-threads__link">{{ lang.forum }}</a> {% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}</span>
+                    <span class="sort-threads__author"> &mdash;
+                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order=asc" class="sort-threads__link">{{ lang.author }}</a> {% if results.orderarrow.starter %}{{ ascDesc }}{% endif %}
+                    </span>
+                    <span class="sort-threads__forum"> &mdash;
+                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order=asc" class="sort-threads__link">{{ lang.forum }}</a> {% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}
+                    </span>
                 </div>
                 <div class="sort-threads__column sort-threads__column--replies">
-                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=replies&amp;order=desc" class="sort-threads__link">{{ lang.replies }}</a> {% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=replies&amp;order=desc" class="sort-threads__link">{{ lang.replies }}</a> {% if results.orderarrow.replies %}{{ ascDesc }}{% endif %}
                 </div>
                 <div class="sort-threads__column sort-threads__column--latest">
                     <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=lastpost&amp;order=desc" class="sort-threads__link">{{ lang.lastpost }}</a> {% if results.orderarrow.lastpost %}{{ ascDesc }}{% endif %}
