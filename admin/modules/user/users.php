@@ -434,6 +434,8 @@ if($mybb->input['action'] == "edit")
 {
 	$user = get_user($mybb->input['uid']);
 
+	$rowspan = 6;
+
 	// Does the user not exist?
 	if(!$user['uid'])
 	{
@@ -1101,7 +1103,6 @@ EOF;
 		$age = get_age($user['birthday']);
 	}
 
-	$rowspan = 6;
 	$postnum = my_number_format($user['postnum']);
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => (int)$rowspan, 'width' => 1));
