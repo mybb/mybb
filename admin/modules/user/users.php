@@ -434,14 +434,14 @@ if($mybb->input['action'] == "edit")
 {
 	$user = get_user($mybb->input['uid']);
 
-	$rowspan = 6;
-
 	// Does the user not exist?
 	if(!$user['uid'])
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$rowspan = 6;
 
 	$plugins->run_hooks("admin_user_users_edit");
 
