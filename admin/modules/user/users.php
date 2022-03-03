@@ -1125,10 +1125,11 @@ EOF;
 	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
 	$table->construct_row();
 
-	$plugins->run_hooks("admin_user_users_edit_overview");
+	$plugins->run_hooks("admin_user_users_edit_overview_table");
 
 	$username = htmlspecialchars_uni($user['username']);
 	$table->output("{$lang->user_overview}: {$username}");
+	$plugins->run_hooks("admin_user_users_edit_overview");
 	echo "</div>\n";
 
 	//
