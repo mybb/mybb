@@ -293,8 +293,8 @@ if($mybb->input['action'] == "add")
 		}
 
 		// do some type filtering
-		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
-		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		$mybb->input['type'] = $mybb->get_input('type');
+		if(!ctype_alnum($mybb->input['type']) || strtolower($mybb->input['type']) == "php")
 		{
 			$mybb->input['type'] = "";
 		}
@@ -496,8 +496,8 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// do some type filtering
-		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
-		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		$mybb->input['type'] = $mybb->get_input('type');
+		if(!ctype_alnum($mybb->input['type']) || strtolower($mybb->input['type']) == "php")
 		{
 			$mybb->input['type'] = "";
 		}
