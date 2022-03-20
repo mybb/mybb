@@ -762,7 +762,7 @@ function upgrade12_dbchanges2()
 	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
 
 	$db->update_query("settings", array('optionscode' => $db->escape_string('php
-<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
+<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".(isset($lang->setting_searchtype_standard)?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".(isset($lang->setting_searchtype_fulltext)?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
