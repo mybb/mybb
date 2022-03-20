@@ -57,7 +57,10 @@ class session
 		$this->packedip = my_inet_pton($this->ipaddress);
 
 		// Find out the user agent.
-		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
+		if(isset($_SERVER['HTTP_USER_AGENT']))
+		{
+			$this->useragent = $_SERVER['HTTP_USER_AGENT'];
+		}
 
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))

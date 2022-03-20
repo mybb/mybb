@@ -1102,7 +1102,15 @@ $closed_bypass = array(
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
+if(
+	$mybb->settings['boardclosed'] == 1 &&
+	$mybb->usergroup['canviewboardclosed'] != 1 &&
+	!in_array($current_page, $closed_bypass) &&
+	!(
+		isset($closed_bypass[$current_page]) &&
+		in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+	)
+)
 {
 	// Show error
 	if(!$mybb->settings['boardclosed_reason'])
@@ -1145,7 +1153,15 @@ $force_bypass = array(
 );
 
 // If the board forces user to login/register, and the user is a guest, show the force login message
-if($mybb->settings['forcelogin'] == 1 && $mybb->user['uid'] == 0 && !in_array($current_page, $force_bypass) && (!is_array($force_bypass[$current_page]) || !in_array($mybb->get_input('action'), $force_bypass[$current_page])))
+if(
+	$mybb->settings['forcelogin'] == 1 &&
+	$mybb->user['uid'] == 0 &&
+	!in_array($current_page, $force_bypass) &&
+	!(
+		isset($force_bypass[$current_page]) &&
+		in_array($mybb->get_input('action'), $force_bypass[$current_page])
+	)
+)
 {
 	// Show error
 	error_no_permission();
