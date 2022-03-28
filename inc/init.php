@@ -229,8 +229,10 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 
 require_once __DIR__.'/src/bootstrap.php';
 
+use Illuminate\Support\Arr;
+
 MyBB\app('config')->set(
-	array_dot($config)
+	Arr::dot($config)
 );
 
 $error_handler->force_display_errors = false;

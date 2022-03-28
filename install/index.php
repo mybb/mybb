@@ -2236,6 +2236,7 @@ EOF;
 /**
  * Installation is finished
  */
+use Illuminate\Support\Arr;
 function install_done()
 {
 	global $output, $db, $mybb, $errors, $cache, $lang;
@@ -2269,7 +2270,7 @@ function install_done()
 
 	require MYBB_ROOT.'inc/src/bootstrap.php';
 	MyBB\app('config')->set(
-		array_dot($config)
+		Arr::dot($config)
 	);
 
 	ob_start();

@@ -21,20 +21,20 @@
         "issues": "https://github.com/mybb/mybb/issues"
     },
     "require": {
-        "php": "^7.1",
-        "illuminate/config": "5.7.*",
-        "illuminate/container": "5.7.*",
-        "illuminate/events": "5.7.*",
-        "illuminate/hashing": "5.7.*",
-        "illuminate/routing": "5.7.*",
-        "twig/twig": "^2.11"
+        "php": ">=7.3",
+        "illuminate/config": "8.*",
+        "illuminate/container": "8.*",
+        "illuminate/events": "8.*",
+        "illuminate/hashing": "8.*",
+        "illuminate/routing": "8.*",
+        "twig/twig": "^3.3"
     },
     "require-dev": {
-        "mockery/mockery": "^1.2",
-        "phpspec/phpspec": "^5.1",
-        "phpunit/phpunit": "^7.5",
-        "squizlabs/php_codesniffer": "^3.4",
-        "phpstan/phpstan": "0.11.12"
+        "mockery/mockery": "^1.5",
+        "phpspec/phpspec": "^7.2",
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpstan/phpstan": "^1.4"
     },
     "autoload": {
         "psr-4": {
