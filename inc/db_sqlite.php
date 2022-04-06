@@ -920,8 +920,8 @@ class DB_SQLite implements DB_Base
 	 */
 	function optimize_table($table)
 	{
-		// table-level VACUUM not supported
-		return;
+		$query = $this->query("VACUUM ".$this->table_prefix.$table."");
+		$query->closeCursor();
 	}
 
 	/**
