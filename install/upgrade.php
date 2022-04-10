@@ -189,6 +189,11 @@ else
 	}
 	else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{
+		// Because validate_password_from_uid() below indirectly,
+		// via a call to verify_user_password() uses functionality
+		// enabled by requiring this file.
+		require_once MYBB_ROOT."inc/src/bootstrap.php";
+
 		require_once MYBB_ROOT."inc/functions_user.php";
 
 		if(!username_exists($mybb->get_input('username')))
