@@ -18,9 +18,9 @@
                 <h2 class="title title--section">{{ lang.existing_folders }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
-                    {% for folder in folderlist %}
+                    {% for folder in folders %}
                         <div class="row row--form field">
-                            <input type="text" class="textbox" name="folder[{{ folder.fid }}]" value="{{ folder.foldername }}" maxlength="30" />
+                            <input type="text" class="textbox" name="folder[{{ folder.id }}]" value="{{ folder.foldername }}" maxlength="30" />
                             {% if folder.default %}
                                 <p class="field__description field__description--below">({{ folder.defaultname }} - {{ lang.cannot_be_removed }})</p>
                             {% endif %}

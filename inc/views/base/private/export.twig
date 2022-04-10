@@ -20,8 +20,10 @@
                     <h3 class="field__name">{{ lang.folders }}</h3>
                     <select name="exportfolders[]" multiple="multiple">
                         <option value="all" selected="selected">{{ lang.all_folders }}</option>
-                        {% for folder in folderlist %}
+                        {% for folder in folders %}
+                            {% if folder.id != 1 %}
                             <option value="{{ folder.id }}">{{ folder.name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

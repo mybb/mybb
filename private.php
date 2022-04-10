@@ -42,42 +42,64 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 	error_no_permission();
 }
 
-$mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
+$input_fid_raw = $mybb->get_input('fid', MyBB::INPUT_INT);
 
-$folder['id'] = $folder_name = '';
-
-$foldernames = array();
 $folders = [];
 $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-foreach($foldersexploded as $key => $folder_name)
+foreach($foldersexploded as $key => $fid_and_name)
 {
-	$folderinfo = explode("**", $folder_name, 2);
-
-	$folder['sel'] = false;
-	if($input['fid'] == $folderinfo[0])
-	{
-		$folder['sel'] = true;
-	}
+	$folderinfo = explode("**", $fid_and_name, 2);
 
 	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-	$foldernames[$folderinfo[0]] = $folderinfo[1];
 
 	$folder['id'] = $folderinfo[0];
-	$folder['name'] = $folderinfo[1];
+	$folder['foldername'] = $folder['name'] = $folderinfo[1];
 
-	$folders[] = $folder;
-
-	// Manipulate search folder selection & move selector to omit "Unread"
-	if($folder['id'] != 1)
+	$folder['default'] = false;
+	if((int)$folderinfo[0] < 5)
 	{
-		if($folder['id'] == 0)
-		{
-			$folder['id'] = 1;
-		}
+		$folder['default'] = true;
+		$folder['defaultname'] = get_pm_folder_name($folder['id']);
 	}
+
+	if($mybb->input['action'] == "empty")
+	{
+		$unread_cond2 = '';
+		if($folderinfo[0] == 1)
+		{
+			$unread_cond2 = " AND status='0'";
+		}
+		if($folderinfo[0] == 0)
+		{
+			$fid2 = 1;
+		}
+		else
+		{
+			$fid2 = $folderinfo[0];
+		}
+
+		$folder['foldername'] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='{$fid2}'{$unread_cond2} AND uid='{$mybb->user['uid']}'");
+		$folder['foldercount'] = my_number_format($db->fetch_field($query, 'pmsinfolder'));
+
+	}
+	$folders[$folderinfo[0]] = $folder;
 }
 
-$from_fid = $mybb->input['fid'];
+if(!$input_fid_raw || !array_key_exists($input_fid_raw, $folders))
+{
+	$fid = 1;
+}
+else
+{
+	$fid = $input_fid_raw;
+}
+
+$unread_cond = '';
+if($fid == 1 && !empty($input_fid_raw))
+{
+	$unread_cond = " AND status='0'";
+}
 
 usercp_menu();
 
@@ -127,7 +149,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		$mybb->input['action'] = "do_search";
 		$mybb->input['subject'] = 1;
 		$mybb->input['message'] = 1;
-		$mybb->input['folder'] = $input['fid'];
+		$mybb->input['folder'] = $fid;
 		unset($mybb->input['jumpto']);
 		unset($mybb->input['fromfid']);
 	}
@@ -345,14 +367,14 @@ if($mybb->input['action'] == "results")
 
 	$messagelist = [];
 	$query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username as tousername, tu.avatar as to_avatar
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-        LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-        WHERE pm.pmid IN(".$db->escape_string($search['querycache']).") AND pm.uid='{$mybb->user['uid']}'
-        ORDER BY pm.{$query_sortby} {$order}
-        LIMIT {$start}, {$perpage}
-    ");
+            SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username as tousername, tu.avatar as to_avatar
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+            LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+            WHERE pm.pmid IN(".$db->escape_string($search['querycache']).") AND pm.uid='{$mybb->user['uid']}'
+            ORDER BY pm.{$query_sortby} {$order}
+            LIMIT {$start}, {$perpage}"
+	);
 	while($message = $db->fetch_array($query))
 	{
 		// Determine Folder Icon
@@ -462,12 +484,13 @@ if($mybb->input['action'] == "results")
 			$message['senddate'] = $lang->not_sent;
 		}
 
-		$fid = "0";
-		if((int)$message['folder'] > 1)
+		$fid_for_display = (int)$message['folder'];
+		if($fid_for_display == 1)
 		{
-			$fid = $message['folder'];
+			$fid_for_display = 0;
 		}
-		$message['foldername'] = $foldernames[$fid];
+
+		$message['foldername'] = $folders[$fid_for_display]['foldername'];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
@@ -549,12 +572,12 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
-		SELECT pm.pmid
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
-		WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
-		LIMIT 0, 1
-	");
+            SELECT pm.pmid
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
+            WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
+            LIMIT 0, 1"
+	);
 	if($db->num_rows($query) > 0)
 	{
 		error($lang->error_pm_already_submitted);
@@ -944,6 +967,7 @@ if($mybb->input['action'] == "send")
 		'codebuttons' => $codebuttons,
 		'postbit' => $postbit,
 		'posticons' => $posticons,
+		'folders' => $folders,
 	]));
 }
 
@@ -954,12 +978,12 @@ if($mybb->input['action'] == "read")
 	$pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 
 	$query = $db->query("
-        SELECT pm.*, u.*, f.*
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-        LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-        WHERE pm.pmid='{$pmid}' AND pm.uid='".$mybb->user['uid']."'
-    ");
+            SELECT pm.*, u.*, f.*
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
+            LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+            WHERE pm.pmid='{$pmid}' AND pm.uid='{$mybb->user['uid']}'"
+	);
 	$pm = $db->fetch_array($query);
 
 	if(!$pm)
@@ -1168,6 +1192,7 @@ if($mybb->input['action'] == "read")
 		'collapsedthead' => $collapsedthead,
 		'collapsedimg' => $collapsedimg,
 		'collapsed' => $collapsed,
+		'folders' => $folders,
 	]));
 }
 
@@ -1219,13 +1244,13 @@ if($mybb->input['action'] == "tracking")
 
 	$readmessages = [];
 	$query = $db->query("
-        SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername, u.avatar as to_avatar
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-        WHERE pm.receipt='2' AND pm.folder!='3'  AND pm.status!='0' AND pm.fromid='".$mybb->user['uid']."'
-        ORDER BY pm.readtime DESC
-        LIMIT {$start}, {$perpage}
-    ");
+            SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername, u.avatar as to_avatar
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+            WHERE pm.receipt='2' AND pm.folder!='3'  AND pm.status!='0' AND pm.fromid='{$mybb->user['uid']}'
+            ORDER BY pm.readtime DESC
+            LIMIT {$start}, {$perpage}"
+	);
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = $parser->parse_badwords($readmessage['subject']);
@@ -1266,13 +1291,13 @@ if($mybb->input['action'] == "tracking")
 
 	$unreadmessages = [];
 	$query = $db->query("
-        SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername, u.avatar as to_avatar
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-        WHERE pm.receipt='1' AND pm.folder!='3' AND pm.status='0' AND pm.fromid='".$mybb->user['uid']."'
-        ORDER BY pm.dateline DESC
-        LIMIT {$start}, {$perpage}
-    ");
+            SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername, u.avatar as to_avatar
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+            WHERE pm.receipt='1' AND pm.folder!='3' AND pm.status='0' AND pm.fromid='{$mybb->user['uid']}'
+            ORDER BY pm.dateline DESC
+            LIMIT {$start}, {$perpage}"
+	);
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = $parser->parse_badwords($unreadmessage['subject']);
@@ -1289,6 +1314,7 @@ if($mybb->input['action'] == "tracking")
 		'unread_multipage' => $unread_multipage,
 		'readmessages' => $readmessages,
 		'unreadmessages' => $unreadmessages,
+		'folders' => $folders,
 	]));
 }
 
@@ -1380,29 +1406,10 @@ if($mybb->input['action'] == "folders")
 {
 	$plugins->run_hooks("private_folders_start");
 
-	$folderlist = [];
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$foldername = $folderinfo[1];
-		$folder['fid'] = $folderinfo[0];
-		$folder['foldername'] = get_pm_folder_name($folder['fid'], $foldername);
-
-		$folder['default'] = false;
-		if((int)$folderinfo[0] < 5)
-		{
-			$folder['default'] = true;
-			$folder['defaultname'] = get_pm_folder_name($folder['fid']);
-		}
-
-		$folderlist[] = $folder;
-	}
-
 	$plugins->run_hooks("private_folders_end");
 
 	output_page(\MyBB\template('private/folders.twig', [
-		'folderlist' => $folderlist,
+		'folders' => $folders,
 	]));
 }
 
@@ -1414,7 +1421,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_folders_start");
 
 	$highestid = 2;
-	$folders = '';
+	$folders_str = '';
 	$donefolders = array();
 	$mybb->input['folder'] = $mybb->get_input('folder', MyBB::INPUT_ARRAY);
 	foreach($mybb->input['folder'] as $key => $val)
@@ -1454,11 +1461,11 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 				if(my_strpos($foldername, "$%%$") === false)
 				{
-					if($folders != '')
+					if($folders_str != '')
 					{
-						$folders .= "$%%$";
+						$folders_str .= "$%%$";
 					}
-					$folders .= "$fid**$foldername";
+					$folders_str .= "$fid**$foldername";
 				}
 				else
 				{
@@ -1474,7 +1481,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	}
 
 	$sql_array = array(
-		"pmfolders" => $folders
+		"pmfolders" => $folders_str
 	);
 	$db->update_query("users", $sql_array, "uid='".$mybb->user['uid']."'");
 
@@ -1495,34 +1502,10 @@ if($mybb->input['action'] == "empty")
 
 	$plugins->run_hooks("private_empty_start");
 
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = [];
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$unread = '';
-		$folder['fid'] = $folderinfo[0];
-		if($folderinfo[0] == "1")
-		{
-			$folder['fid'] = "1";
-			$unread = " AND status='0'";
-		}
-		if($folderinfo[0] == "0")
-		{
-			$folder['fid'] = "1";
-		}
-        $folder['foldername'] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='{$folder['fid']}'{$unread} AND uid='{$mybb->user['uid']}'");
-		$thing = $db->fetch_array($query);
-		$folder['foldercount'] = my_number_format($thing['pmsinfolder']);
-
-		$folderlist[] = $folder;
-	}
-
 	$plugins->run_hooks("private_empty_end");
 
 	output_page(\MyBB\template('private/empty.twig', [
-		'folderlist' => $folderlist,
+		'folders' => $folders,
 	]));
 }
 
@@ -1584,14 +1567,9 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 		$pms = array_map('intval', array_keys($mybb->get_input('check', MyBB::INPUT_ARRAY)));
 		if(!empty($pms))
 		{
-			if(empty($mybb->input['fid']))
+			if(array_key_exists($fid, $folders))
 			{
-				$mybb->input['fid'] = 1;
-			}
-
-			if(array_key_exists($mybb->input['fid'], $foldernames))
-			{
-				$db->update_query("privatemessages", array("folder" => $mybb->input['fid']), "pmid IN (".implode(",", $pms).") AND uid='".$mybb->user['uid']."'");
+				$db->update_query("privatemessages", array("folder" => $fid), "pmid IN (".implode(",", $pms).") AND uid='".$mybb->user['uid']."'");
 				update_pm_count();
 			}
 			else
@@ -1699,23 +1677,10 @@ if($mybb->input['action'] == "export")
 
 	$plugins->run_hooks("private_export_start");
 
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = [];
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-
-		$folder['id'] = $folderinfo[0];
-		$folder['name'] = $folderinfo[1];
-
-		$folderlist[] = $folder;
-	}
-
 	$plugins->run_hooks("private_export_end");
 
 	output_page(\MyBB\template('private/export.twig', [
-		'folderlist' => $folderlist,
+		'folders' => $folders,
 	]));
 }
 
@@ -1769,6 +1734,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$folderlst = '';
 			foreach($mybb->input['exportfolders'] as $key => $val)
 			{
+				if($val == 0)
+				{
+					$val = 1;
+				}
 				$val = $db->escape_string($val);
 				if($val == "all")
 				{
@@ -1805,13 +1774,13 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 
 	$query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-        LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-        WHERE $wsql AND pm.uid='".$mybb->user['uid']."'
-        ORDER BY pm.folder ASC, pm.dateline DESC
-    ");
+            SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+            LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+            WHERE $wsql AND pm.uid='{$mybb->user['uid']}'
+            ORDER BY pm.folder ASC, pm.dateline DESC"
+	);
 	$numpms = $db->num_rows($query);
 
 	if(!$numpms)
@@ -2019,15 +1988,10 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("private_folder");
 
-	if(!$input['fid'] || !array_key_exists($input['fid'], $foldernames))
-	{
-		$input['fid'] = 1;
-	}
+	$private['folder'] = $fid;
+	$private['foldername'] = $folders[$fid]['foldername'];
 
-	$private['folder'] = $folder = $fid = $input['fid'];
-	$private['foldername'] = $foldernames[$folder];
-
-	if($private['folder'] == 2 || $private['folder'] == 3)
+	if($fid == 2 || $fid == 3)
 	{
 		// Sent Items or Drafts Folder
 		$private['sender'] = $lang->sentto;
@@ -2073,13 +2037,7 @@ if(!$mybb->input['action'])
 	$private['orderarrow'][$sortby] = true;
 
 	// Do Multi Pages
-	$selective = "";
-	if($fid == 1)
-	{
-		$selective = " AND status='0'";
-	}
-
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='{$mybb->user['uid']}' AND folder='{$folder}'{$unread_cond}");
 	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
@@ -2117,15 +2075,14 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$input['fid']}&sortby={$sortby}&order={$sortordernow}";
+		$page_url = "private.php?fid={$fid}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
-		$page_url = "private.php?fid={$input['fid']}";
+		$page_url = "private.php?fid={$fid}";
 	}
 
 	$multipage = multipage($pmscount, $perpage, $page, $page_url);
-	$selective = '';
 	$messagelist = [];
 
 	$icon_cache = $cache->read("posticons");
@@ -2145,13 +2102,13 @@ if(!$mybb->input['action'])
 		// Get all recipients into an array
 		$cached_users = $get_users = array();
 		$users_query = $db->query("
-            SELECT pm.recipients
-            FROM ".TABLE_PREFIX."privatemessages pm
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-            WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
-            ORDER BY {$u}{$sortfield} {$sortordernow}
-            LIMIT {$start}, {$perpage}
-        ");
+                    SELECT pm.recipients
+                    FROM ".TABLE_PREFIX."privatemessages pm
+                    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+                    WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
+                    ORDER BY {$u}{$sortfield} {$sortordernow}
+                    LIMIT {$start}, {$perpage}"
+		);
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = my_unserialize($row['recipients']);
@@ -2192,11 +2149,6 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		if($fid == 1)
-		{
-			$selective = " AND pm.status='0'";
-		}
-
 		if($sortfield == "username")
 		{
 			$pm = "fu.";
@@ -2209,14 +2161,14 @@ if(!$mybb->input['action'])
 
 	$messagelist = [];
 	$query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
-        FROM ".TABLE_PREFIX."privatemessages pm
-        LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-        LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-        WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'{$selective}
-        ORDER BY {$pm}{$sortfield} {$sortordernow}
-        LIMIT $start, $perpage
-    ");
+            SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+            LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+            WHERE pm.folder='{$fid}' AND pm.uid='{$mybb->user['uid']}'{$unread_cond}
+            ORDER BY {$pm}{$sortfield} {$sortordernow}
+            LIMIT $start, $perpage"
+	);
 
 	if($db->num_rows($query) > 0)
 	{
