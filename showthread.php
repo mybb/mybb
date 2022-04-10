@@ -1220,7 +1220,7 @@ if($mybb->input['action'] == "thread")
 			$collapsed['quickreply_e'] = '';
 		}
 
-		$expaltext = (in_array("quickreply", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
+		$expaltext = (in_array("quickreply_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	}
 
 	// If the user is a moderator, show the moderation tools.
