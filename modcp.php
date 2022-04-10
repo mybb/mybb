@@ -246,13 +246,13 @@ $plugins->run_hooks('modcp_nav');
 
 if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
 {
-	$expaltext = (in_array("modcpforums", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
+	$expaltext = (in_array("modcpforums_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
 }
 
 if(!empty($nav_editprofile) || !empty($nav_banning) || !empty($nav_warninglogs) || !empty($nav_ipsearch))
 {
-	$expaltext = (in_array("modcpusers", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
+	$expaltext = (in_array("modcpusers_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_users = \"".$templates->get("modcp_nav_users")."\";");
 }
 
