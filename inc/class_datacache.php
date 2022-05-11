@@ -912,7 +912,7 @@ class datacache
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$reportcount = $db->fetch_field($query, 'reportcount');
-		
+
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$dateline = $db->fetch_field($query, 'dateline');
 
@@ -1297,6 +1297,14 @@ class datacache
 		}
 
 		$this->update("reportreasons", $reasons);
+	}
+
+	function update_themelet_dirs()
+	{
+		require_once MYBB_ROOT.'inc/functions_themes.php';
+		$themelet_dirs = get_themelet_dirs(/*$inc_devdist = */false);
+
+		$this->update('themelet_dirs', $themelet_dirs);
 	}
 
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */

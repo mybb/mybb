@@ -53,6 +53,9 @@ else
 
 	// Add our hello_new() function to the misc_start hook so our misc.php?action=hello inserts a new message into the created DB table.
 	$plugins->add_hook('misc_start', 'hello_new');
+
+	// Add our hello_template() function to the template hook so as to add our "$hello" variable to the template's context variables.
+	$plugins->add_hook('template', 'hello_template');
 }
 
 function hello_info()
@@ -475,19 +478,28 @@ function hello_index()
 	{
 		// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 		$message = htmlspecialchars_uni($message);
-		$messages .= eval($templates->render('hello_message'));
+// 		$messages .= eval($templates->render('hello_message'));
+		$messages .= \MyBB\template('@hello/message.twig', [
+			'message' => $message
+		]);
 	}
 
 	// If no messages were found, display that notice.
 	if(empty($messages))
 	{
 		$message = $lang->hello_empty;
-		$messages = eval($templates->render('hello_message'));
+// 		$messages = eval($templates->render('hello_message'));
+		$messages .= \MyBB\template('@hello/message.twig', [
+			'message' => $message
+		]);
 	}
 
 	// Set $hello as our template and use eval() to do it so we can have our variables parsed
 	#eval('$hello = "'.$templates->get('hello_index').'";');
-	$hello = eval($templates->render('hello_index'));
+// 	$hello = eval($templates->render('hello_index'));
+	$hello = \MyBB\template('@hello/index.twig', [
+		'messages' => $messages
+	]);
 }
 
 /*
@@ -526,19 +538,23 @@ function hello_post(&$post)
 		{
 			// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 			$message = htmlspecialchars_uni($message);
-			$messages .= eval($templates->render('hello_message'));
+// 			$messages .= eval($templates->render('hello_message'));
+			$messages .= \MyBB\template('@hello/message.twig');
 		}
 
 		// If no messages were found, display that notice.
 		if(empty($messages))
 		{
 			$message = $lang->hello_empty;
-			$messages = eval($templates->render('hello_message'));
+// 			$messages = eval($templates->render('hello_message'));
+			$messages .= \MyBB\template('@hello/message.twig');
 		}
 	}
 
 	// Alter the current post's message
-	$post['message'] .= eval($templates->render('hello_post'));
+	$post['message'] .= \MyBB\template('@hello/post.twig', [
+		'messages' => $messages
+	]);
 }
 
 /*
@@ -586,4 +602,14 @@ function hello_new()
 
 	// Redirect to index.php with a message
 	redirect('index.php', $lang->hello_done);
+}
+
+function hello_template(&$params)
+{
+	global $hello;
+
+	if($params['name'] == 'index/index.twig')
+	{
+		$params['context']['hello'] = $hello;
+	}
 }

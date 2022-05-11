@@ -51,24 +51,31 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
-            if (defined('IN_ADMINCP')) {
-                $paths = [
-                    __DIR__ . '/../../views/admin/base',
-                ];
-            } else {
-                // TODO: views for the current theme, it's parent, it's parent's parent, etc. should be here
-                // The filesystem loader works by using files from the first array entry.
-                // If a file doesn't exist, it looks in the second array entry and so on.
-                // This allows us to easily implement template inheritance.
+            $loader = new FilesystemLoader();
+            /* We don't yet have an admin-specific theme, and when we do, we will probably bundle
+             * it as the 'acp' component of the 'core.default' theme, so there's probably no need
+             * to distinguish between whether or not defined('IN_ADMINCP') resolves to true here.
+             */
+            /** @TODO Set $current_theme according to the current member's theme */
+            $current_theme = 'core.default';
+            require_once MYBB_ROOT.'inc/functions_themes.php';
+            $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */false, /*$use_themelet_cache = */true);
 
-                $paths = [
-                    __DIR__ . '/../../views/base',
-                ];
+            // A fallback in case only the core.default `devdist` directory exists.
+            if (empty($twig_dirs)) {
+                 $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */true, /*$use_themelet_cache = */true);
             }
 
-            // TODO: These paths should come from the theme system once it is written
+            foreach($twig_dirs as $twig_dir) {
+                if (is_array($twig_dir)) {
+                    list($dir, $namespace) = $twig_dir;
+                    $loader->addPath($dir, $namespace);
+                } else {
+                    $loader->addPath($twig_dir);
+                }
+            }
 
-            return new FilesystemLoader($paths);
+            return $loader;
         });
 
         $this->app->bind('twig.options', function () {

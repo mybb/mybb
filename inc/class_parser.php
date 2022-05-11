@@ -609,7 +609,7 @@ class postParser
 				foreach($smilie['find'] as $s)
 				{
 					$s = $this->parse_html($s);
-					$this->smilies_cache[$s] = template('parser/mycodes/smilie.twig', [
+					$this->smilies_cache[$s] = template('@parser/mycodes/smilie.twig', [
 						'smilie' => $smilie
 					]);
 					// workaround for smilies starting with ;
@@ -825,7 +825,7 @@ class postParser
 
 		$text = str_replace("\'", "'", $text);
 
-		return template('parser/mycodes/size.twig', [
+		return template('@parser/mycodes/size.twig', [
 			'text' => $text,
 			'size' => $size
 		]);
@@ -968,7 +968,7 @@ class postParser
 		}
 		else
 		{
-			return template('parser/mycodes/quote.twig', [
+			return template('@parser/mycodes/quote.twig', [
 				'quote' => $quote,
 				'delete_quote' => $delete_quote
 			]);
@@ -1029,7 +1029,7 @@ class postParser
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 
-		return template('parser/mycodes/code.twig', [
+		return template('@parser/mycodes/code.twig', [
 			'code' => $code
 		]);;
 	}
@@ -1121,7 +1121,7 @@ class postParser
 		}
 
 		// Send back the code all nice and pretty
-		return template('parser/mycodes/php.twig', [
+		return template('@parser/mycodes/php.twig', [
 			'code' => $code
 		]);
 	}
@@ -1186,7 +1186,7 @@ class postParser
 
 		$link['name'] = $this->parse_badwords(preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name)); // Fix & but allow unicode, filter bad words
 
-		return template('parser/mycodes/url.twig', [
+		return template('@parser/mycodes/url.twig', [
 			'link' => $link
 		]);
 	}
@@ -1287,7 +1287,7 @@ class postParser
 
 		$image['url'] = $this->encode_url($image['url']);
 
-		return template('parser/mycodes/img.twig', [
+		return template('@parser/mycodes/img.twig', [
 			'image' => $image
 		]);
 	}
@@ -1414,7 +1414,7 @@ class postParser
 
 		$email = $this->encode_url($email);
 
-		return template('parser/mycodes/email.twig', [
+		return template('@parser/mycodes/email.twig', [
 			'email' => $email,
 			'name' => $name
 		]);
@@ -1587,7 +1587,7 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		return template('parser/mycodes/video.twig', [
+		return template('@parser/mycodes/video.twig', [
 			'id' => $this->encode_url($id),
 			'type' => $video,
 			'local' => $local

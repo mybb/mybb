@@ -461,6 +461,9 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
 
+	// Update the themelet directory cache
+	$cache->update_themelet_dirs();
+
 	// Log admin action
 	log_admin_action($codename, $install_uninstall);
 

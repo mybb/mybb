@@ -38,8 +38,13 @@ function app(?string $className = null, array $parameters = [])
  */
 function template(string $name, array $context = [])
 {
+    global $plugins;
+
     /** @var Environment $twig */
     $twig = app(Environment::class);
+
+    $params = ['name' => &$name, 'context' => &$context];
+    $plugins->run_hooks('template', $params);
 
     return $twig->render($name, $context);
 }

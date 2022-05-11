@@ -1,0 +1,19 @@
+<br>
+<div>
+	<p>
+		<strong>{{ lang.hello }}</strong>
+	</p>
+	<div style="display: flex;">
+		<div style="margin-right: 100px;">
+			<form method="POST" action="misc.php">
+				<input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+				<input type="hidden" name="action" value="hello" />
+				{{ lang.hello_add_message }}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" class="button" value="{{ lang.hello_add }}" />
+			</form>
+		</div>
+		<div>
+			{{ messages|raw }}
+		</div>
+	</div>
+</div>
+<br>
