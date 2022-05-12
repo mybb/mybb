@@ -479,7 +479,7 @@ function hello_index()
 		// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 		$message = htmlspecialchars_uni($message);
 // 		$messages .= eval($templates->render('hello_message'));
-		$messages .= \MyBB\template('@hello/message.twig', [
+		$messages .= \MyBB\template('@ext.hello/message.twig', [
 			'message' => $message
 		]);
 	}
@@ -489,7 +489,7 @@ function hello_index()
 	{
 		$message = $lang->hello_empty;
 // 		$messages = eval($templates->render('hello_message'));
-		$messages .= \MyBB\template('@hello/message.twig', [
+		$messages .= \MyBB\template('@ext.hello/message.twig', [
 			'message' => $message
 		]);
 	}
@@ -497,7 +497,7 @@ function hello_index()
 	// Set $hello as our template and use eval() to do it so we can have our variables parsed
 	#eval('$hello = "'.$templates->get('hello_index').'";');
 // 	$hello = eval($templates->render('hello_index'));
-	$hello = \MyBB\template('@hello/index.twig', [
+	$hello = \MyBB\template('@ext.hello/index.twig', [
 		'messages' => $messages
 	]);
 }
@@ -539,7 +539,7 @@ function hello_post(&$post)
 			// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 			$message = htmlspecialchars_uni($message);
 // 			$messages .= eval($templates->render('hello_message'));
-			$messages .= \MyBB\template('@hello/message.twig');
+			$messages .= \MyBB\template('@ext.hello/message.twig');
 		}
 
 		// If no messages were found, display that notice.
@@ -547,12 +547,12 @@ function hello_post(&$post)
 		{
 			$message = $lang->hello_empty;
 // 			$messages = eval($templates->render('hello_message'));
-			$messages .= \MyBB\template('@hello/message.twig');
+			$messages .= \MyBB\template('@ext.hello/message.twig');
 		}
 	}
 
 	// Alter the current post's message
-	$post['message'] .= \MyBB\template('@hello/post.twig', [
+	$post['message'] .= \MyBB\template('@ext.hello/post.twig', [
 		'messages' => $messages
 	]);
 }

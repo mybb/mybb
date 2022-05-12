@@ -135,10 +135,10 @@ function get_themelet_dirs($inc_devdist = false)
 	{
 		foreach($themelet_hierarchy[$mode]['plugins'] as $codename)
 		{
-			$themelet_dir = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode;
+			$themelet_dir = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode.'/ext';
 			if(is_dir($themelet_dir) && is_readable($themelet_dir))
 			{
-				$plugin_themelet_dirs[] = [$themelet_dir, $codename/*namespace*/, true/*is a plugin*/];
+				$plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$codename/*namespace*/, true/*is a plugin*/];
 			}
 		}
 	}
@@ -256,7 +256,7 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 						if(substr($filename, 0, 4) === 'ext.')
 						{
 							$pluginname = substr($filename, 4);
-							$twig_dirs[] = [$theme_dir.'/'.$filename.'/templates/', $pluginname];
+							$twig_dirs[] = [$theme_dir.'/'.$filename.'/templates/', 'ext.'.$pluginname];
 						}
 					}
 					closedir($dh);
