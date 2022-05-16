@@ -986,13 +986,17 @@ class datacache
 	/**
 	 * Update default_theme cache
 	 */
-	function update_default_theme()
+	function update_default_theme($theme = [])
 	{
 		global $db;
 
-		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
-		$theme = $db->fetch_array($query);
-		$this->update("default_theme", $theme);
+		if(empty($theme))
+		{
+			// Default the default theme to the first one if this function is called without one
+			$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets', '', array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'DESC'));
+			$theme = $db->fetch_array($query);
+		}
+		$this->update('default_theme', $theme);
 	}
 
 	/**

@@ -5284,7 +5284,6 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if($tid == 0)
 	{
-		$tid = 1;
 		$num_themes = 0;
 		$themeselect_options = [];
 
@@ -5294,15 +5293,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 		}
 	}
 
-	if(!is_array($tcache))
-	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
-
-		while($theme = $db->fetch_array($query))
-		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
-		}
-	}
+	build_tcache();
 
 	if(is_array($tcache[$tid]))
 	{
@@ -5311,14 +5302,10 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 			// Show theme if allowed, or if override is on
 			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
-
-				if($theme['pid'] != 0)
-				{
-					$theme['depth'] = $depth;
-					$themeselect_options[] = $theme;
-					++$num_themes;
-					$depthit = $depth."--";
-				}
+				$theme['depth'] = $depth;
+				$themeselect_options[] = $theme;
+				++$num_themes;
+				$depthit = $depth."--";
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
@@ -5328,7 +5315,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 		}
 	}
 
-	if($tid == 1 && ($num_themes > 1 || $count_override == true))
+	if($tid == 0 && ($num_themes > 1 || $count_override == true))
 	{
 		return \MyBB\template('misc/themeselect.twig', [
 			'footer' => $footer,
@@ -5343,6 +5330,40 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 	}
 }
 
+function build_tcache()
+{
+	global $db, $tcache;
+
+	if(!is_array($tcache))
+	{
+		require_once MYBB_ROOT.'inc/functions_themes.php';
+		$themelet_hierarchy = get_themelet_hierarchy();
+
+		$themes = [];
+
+		$query = $db->simple_select('themes', 'tid, package, title, allowedgroups');
+
+		while($theme = $db->fetch_array($query))
+		{
+			$themes[$theme['package']] = $theme;
+		}
+		foreach($themes as $theme)
+		{
+			if(isset($themelet_hierarchy['current']['themes'][$theme['package']]))
+			{
+				$first_pid = 0;
+				if(!empty($themelet_hierarchy['current']['themes'][$theme['package']][0]))
+				{
+					$first_parent = $themelet_hierarchy['current']['themes'][$theme['package']][0];
+					$first_pid = $themes[$first_parent]['tid'];
+				}
+				$theme['pid'] = $first_pid;
+				$tcache[$first_pid][$theme['tid']] = $theme;
+			}
+		}
+	}
+}
+
 /**
  * Get the theme data of a theme id.
  *
@@ -5353,15 +5374,7 @@ function get_theme($tid)
 {
 	global $tcache, $db;
 
-	if(!is_array($tcache))
-	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
-
-		while($theme = $db->fetch_array($query))
-		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
-		}
-	}
+	build_tcache();
 
 	$s_theme = false;
 

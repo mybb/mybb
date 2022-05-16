@@ -6,7 +6,7 @@
         <optgroup label="{{ lang.select_theme }}">
     {% endif %}
         {% for option in options %}
-            <option value="{{ option.tid }}"{% if option.tid == selected %} selected {% endif %}>{{ option.depth }}{{ option.name }}</option>
+            <option value="{{ option.tid }}"{% if option.tid == selected %} selected {% endif %}>{{ option.depth }}{{ option.title }}</option>
         {% endfor %}
     {% if footer != true %}
         </optgroup>

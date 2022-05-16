@@ -144,7 +144,7 @@ function import_theme_xml($xml, $options=array())
 
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && empty($options['no_templates']))
-	{	
+	{
 		$templates = $theme['templates']['template'];
 		if(is_array($templates))
 		{
@@ -1125,8 +1125,6 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			update_theme_stylesheet_list($id, false, $update_disporders);
 		}
 	}
-
-	$cache->update_default_theme();
 
 	return true;
 }

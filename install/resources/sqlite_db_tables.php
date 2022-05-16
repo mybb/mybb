@@ -754,9 +754,9 @@ $tables[] = "CREATE TABLE mybb_templatesets (
 
 $tables[] = "CREATE TABLE mybb_themes (
 	tid INTEGER PRIMARY KEY,
-	name varchar(100) NOT NULL default '',
-	pid smallint NOT NULL default '0',
-	def tinyint(1) NOT NULL default '0',
+	package varchar(32) NOT NULL default '',
+	version varchar(32) NOT NULL,
+	title varchar(100) NOT NULL default '',
 	properties TEXT NOT NULL,
 	stylesheets TEXT NOT NULL,
 	allowedgroups TEXT NOT NULL

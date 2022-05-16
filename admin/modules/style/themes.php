@@ -1230,7 +1230,7 @@ if($mybb->input['action'] == "edit")
 
 			if($theme['def'] == 1)
 			{
-				$cache->update_default_theme();
+				$cache->update_default_theme($theme);
 			}
 
 			// Log admin action
@@ -1331,7 +1331,7 @@ if($mybb->input['action'] == "edit")
 
 		if($theme['def'] == 1)
 		{
-			$cache->update_default_theme();
+			$cache->update_default_theme($theme);
 		}
 
 		// Normalize for consistency

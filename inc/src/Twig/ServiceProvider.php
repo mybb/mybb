@@ -51,13 +51,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
+            global $theme;
+
             $loader = new FilesystemLoader();
             /* We don't yet have an admin-specific theme, and when we do, we will probably bundle
              * it as the 'acp' component of the 'core.default' theme, so there's probably no need
              * to distinguish between whether or not defined('IN_ADMINCP') resolves to true here.
              */
-            /** @TODO Set $current_theme according to the current member's theme */
-            $current_theme = 'core.default';
+            $current_theme = $theme['package'];
             require_once MYBB_ROOT.'inc/functions_themes.php';
             $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */false, /*$use_themelet_cache = */true);
 

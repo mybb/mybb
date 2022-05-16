@@ -164,7 +164,7 @@ else
 		'database_info' => $lang->db_config,
 		'create_tables' => $lang->table_creation,
 		'populate_tables' => $lang->data_insertion,
-		'templates' => $lang->theme_install,
+		'default_theme' => $lang->theme_install,
 		'configuration' => $lang->board_config,
 		'adminuser' => $lang->admin_user,
 		'final' => $lang->finish_setup,
@@ -187,8 +187,8 @@ else
 		case 'populate_tables':
 			populate_tables();
 			break;
-		case 'templates':
-			insert_templates();
+		case 'default_theme':
+			install_default_theme();
 			break;
 		case 'configuration':
 			configure();
@@ -1750,13 +1750,13 @@ function populate_tables()
 	}
 
 	echo $lang->populate_step_inserted;
-	$output->print_footer('templates');
+	$output->print_footer('default_theme');
 }
 
 /**
  * Install our theme
  */
-function insert_templates()
+function install_default_theme()
 {
 	global $mybb, $output, $cache, $db, $lang;
 
@@ -1770,10 +1770,49 @@ function insert_templates()
 
 	echo $lang->theme_step_importing;
 
+	$core_theme_basedir = MYBB_ROOT.'inc/themes/core.default/';
+	if(!rename($core_theme_basedir.'devdist', $core_theme_basedir.'current'))
+	{
+		$output->print_error('Failed to move "'.htmlspecialchars_uni($core_theme_basedir.'devdist').'" to '.htmlspecialchars_uni($core_theme_basedir.'current').'.');
+	}
+
+	$core_theme_title = 'Default';
+	$manifest_file = $core_theme_basedir.'current/manifest.json';
+	if(is_readable($manifest_file))
+	{
+		$json = file_get_contents($manifest_file);
+		$manifest = json_decode($json, true);
+		if(is_array($manifest) && !empty($manifest['extra']['title']))
+		{
+			$core_theme_title = $manifest['extra']['title'];
+		}
+	}
+
 	$db->delete_query("themes");
+	// An empty `version` field indicates to use `current` (or `devdist` if in development mode and that directory exists).
+	$db->insert_query('themes', ['package' => 'core.default', 'version' => '', 'title' => $db->escape_string($core_theme_title), 'properties' => '', 'stylesheets' => '', 'allowedgroups' => 'all']);
+
+	$cache->update_themelet_dirs();
+
+	my_rmdir_recursive(MYBB_ROOT."cache/themes");
+	my_rmdir_recursive(MYBB_ROOT."cache/views", array(MYBB_ROOT."cache/views/index.html"));
+
+	echo $lang->theme_step_imported;
+	$output->print_footer('configuration');
+
+	return;
+
+
+
+
+	/** TODO: Migrate as necessary to 1.9 any of the below 1.8 code (now being
+	 * skipped due to the return statement above). In particular, handle 1.9 theme
+	 * stylesheets and properties, including colours. Then, delete any redundant 1.8 code.
+	 */
+
+
 	$db->delete_query("templates");
 	$db->delete_query("themestylesheets");
-	my_rmdir_recursive(MYBB_ROOT."cache/themes", array(MYBB_ROOT."cache/themes/index.html"));
 
 	$insert_array = array(
 		'title' => 'Default Templates'
@@ -1860,9 +1899,6 @@ function insert_templates()
 	}
 
 	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(my_serialize($properties)), "stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid = '{$tid}'");
-
-	echo $lang->theme_step_imported;
-	$output->print_footer('configuration');
 }
 
 /**

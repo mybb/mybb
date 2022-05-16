@@ -247,7 +247,7 @@ if(empty($loadstyle))
 // Fetch the theme to load from the cache
 if($loadstyle != "def='1'")
 {
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
+	$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
 	$theme = $db->fetch_array($query);
 
 	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
@@ -293,10 +293,13 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	}
 
 	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
+	$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
 	$theme = $db->fetch_array($query);
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
+if(!empty($theme['properties']))
+{
+	$theme = @array_merge($theme, my_unserialize($theme['properties']));
+}
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
@@ -890,7 +893,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 
 	if(count($mybb->settings['footer']['langselect']) > 1)
 	{
-		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
+		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(false, 'language');
 	}
 }
 
@@ -901,7 +904,7 @@ if($mybb->settings['showthemeselect'] != 0)
 
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{
-		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(true, 'theme');
+		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(false, 'theme');
 	}
 }
 
