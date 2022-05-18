@@ -42,6 +42,11 @@ function get_themelet_hierarchy()
 
 	// Iterate through theme directories in the filesystem,
 	// adding their ancestors to a list unique to each.
+	//
+	// TODO Optimise this code: currently, all parents are queried for
+	// each theme directory, leading to redundant filesystem reads
+	// given that we technically only need to query each theme's parent once,
+	// from which we can THEN put together the ancestor list for each theme.
 	$themes_dir = MYBB_ROOT.'inc/themes/';
 	if(is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false)
 	{
