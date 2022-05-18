@@ -303,10 +303,18 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="themelet_dev_mode">
+			<title>Development Mode (Themelets)</title>
+			<description><![CDATA[Setting this to Yes will cause the theme system to use and preference `devdist` directories over `current` directories when loading resources (templates, stylesheets, etc) from themes and plugin themelets. Setting it to No will cause <em>only</em> `current` directories to be used (this is the default value, for end-user/production use).]]></description>
+			<disporder>18</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
@@ -315,7 +323,7 @@ min=0]]></optionscode>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -323,7 +331,7 @@ min=0]]></optionscode>
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

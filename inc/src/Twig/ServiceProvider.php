@@ -51,7 +51,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
-            global $theme;
+            global $theme, $mybb;
 
             $loader = new FilesystemLoader();
             /* We don't yet have an admin-specific theme, and when we do, we will probably bundle
@@ -60,7 +60,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
              */
             $current_theme = $theme['package'];
             require_once MYBB_ROOT.'inc/functions_themes.php';
-            $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */false, /*$use_themelet_cache = */true);
+            $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */$mybb->settings['themelet_dev_mode'], /*$use_themelet_cache = */true);
 
             // A fallback in case only the core.default `devdist` directory exists.
             if (empty($twig_dirs)) {
