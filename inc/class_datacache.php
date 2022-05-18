@@ -993,7 +993,7 @@ class datacache
 		if(empty($theme))
 		{
 			// Default the default theme to the first one if this function is called without one
-			$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets', '', array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'DESC'));
+			$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets', '', array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'ASC'));
 			$theme = $db->fetch_array($query);
 		}
 		$this->update('default_theme', $theme);
