@@ -51,24 +51,30 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
-            if (defined('IN_ADMINCP')) {
-                $paths = [
-                    __DIR__ . '/../../views/admin/base',
-                ];
-            } else {
-                // TODO: views for the current theme, it's parent, it's parent's parent, etc. should be here
-                // The filesystem loader works by using files from the first array entry.
-                // If a file doesn't exist, it looks in the second array entry and so on.
-                // This allows us to easily implement template inheritance.
+            $loader = new FilesystemLoader();
 
-                $paths = [
-                    __DIR__ . '/../../views/base',
-                ];
+            $themeName = 'core.default'; // TODO
+            $themePath = __DIR__ . '/../../themes/' . $themeName . '/';
+            $namespaceDirectories = [
+                'frontend',
+                'parser',
+            ];
+
+            $mainNamespace = 'frontend';
+
+            foreach ($namespaceDirectories as $namespaceDirectory) {
+                if ($namespaceDirectory === $mainNamespace) {
+                    $targetNamespace = FilesystemLoader::MAIN_NAMESPACE;
+                } else {
+                    $targetNamespace = $namespaceDirectory;
+                }
+
+                $path = $themePath . $namespaceDirectory . '/templates';
+
+                $loader->addPath($path, $targetNamespace);
             }
 
-            // TODO: These paths should come from the theme system once it is written
-
-            return new FilesystemLoader($paths);
+            return $loader;
         });
 
         $this->app->bind('twig.options', function () {
