@@ -648,7 +648,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
-	$expaltext = (in_array("usercpmisc_e", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
+	$expaltext = (in_array("usercpmisc_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
