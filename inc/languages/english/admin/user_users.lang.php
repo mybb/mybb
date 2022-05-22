@@ -91,6 +91,7 @@ $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not app
 $l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
 $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
+$l['error_delete_self'] = "You cannot delete yourself.";
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";
 $l['error_invalid_user_destination'] = "The destination account username you entered does not exist";
 $l['error_cannot_merge_same_account'] = "The source and destination accounts must be different";
