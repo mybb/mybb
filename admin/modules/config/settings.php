@@ -1283,7 +1283,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid'], '', true, "lax");
+			my_setcookie("adminsid", $admin_session['sid'], '', true, "strict");
 		}
 
 		if(isset($mybb->input['upsetting']['statstopreferrer']) && $mybb->input['upsetting']['statstopreferrer'] != $mybb->settings['statstopreferrer'])
