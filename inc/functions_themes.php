@@ -50,22 +50,22 @@ function get_themelet_hierarchy()
 	$themes_dir = MYBB_ROOT.'inc/themes/';
 	if(is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false)
 	{
-		while(($codename = readdir($dh)) !== false)
+		while(($theme_code = readdir($dh)) !== false)
 		{
-			if($codename == '.' || $codename == '..')
+			if($theme_code == '.' || $theme_code == '..')
 			{
 				continue;
 			}
 			foreach(['devdist', 'current'] as $mode)
 			{
-				$themelet_hierarchy[$mode]['themes'][$codename] = [];
-				if($codename == 'core.default')
+				$themelet_hierarchy[$mode]['themes'][$theme_code] = [];
+				if($theme_code == 'core.default')
 				{
 					continue;
 				}
-				if(is_dir($themes_dir.$codename.'/'.$mode))
+				if(is_dir($themes_dir.$theme_code.'/'.$mode))
 				{
-					$parent = $codename;
+					$parent = $theme_code;
 					do
 					{
 						$termination = false;
@@ -77,14 +77,14 @@ function get_themelet_hierarchy()
 							if(is_array($props) && array_key_exists('parent', $props))
 							{
 								$parent = $props['parent'];
-								if(in_array($parent, $themelet_hierarchy[$mode]['themes'][$codename]) || $parent === 'core.default')
+								if(in_array($parent, $themelet_hierarchy[$mode]['themes'][$theme_code]) || $parent === 'core.default')
 								{
 									$termination = true;
 									break;
 								}
 								else
 								{
-									$themelet_hierarchy[$mode]['themes'][$codename][] = $parent;
+									$themelet_hierarchy[$mode]['themes'][$theme_code][] = $parent;
 								}
 							}
 							else
@@ -97,7 +97,7 @@ function get_themelet_hierarchy()
 							$termination = true;
 						}
 					} while(!$termination);
-					$themelet_hierarchy[$mode]['themes'][$codename][] = 'core.default';
+					$themelet_hierarchy[$mode]['themes'][$theme_code][] = 'core.default';
 				}
 			}
 		}
@@ -110,11 +110,11 @@ function get_themelet_hierarchy()
 	}
 	$active_plugins = empty($plugins_cache['active']) ? [] : $plugins_cache['active'];
 
-	foreach($active_plugins as $codename)
+	foreach($active_plugins as $plugin_code)
 	{
 		foreach(['devdist', 'current'] as $mode)
 		{
-			$themelet_hierarchy[$mode]['plugins'][] = $codename;
+			$themelet_hierarchy[$mode]['plugins'][] = $plugin_code;
 		}
 	}
 
@@ -145,39 +145,39 @@ function get_themelet_dirs($inc_devdist = false)
 
 	foreach($modes as $mode)
 	{
-		foreach($themelet_hierarchy[$mode]['plugins'] as $codename)
+		foreach($themelet_hierarchy[$mode]['plugins'] as $plugin_code)
 		{
-			$themelet_dir = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode.'/ext';
+			$themelet_dir = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/'.$mode.'/ext';
 			if(is_dir($themelet_dir) && is_readable($themelet_dir))
 			{
-				$plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$codename/*namespace*/, true/*is a plugin*/];
+				$plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$plugin_code/*namespace*/, true/*is a plugin*/];
 			}
 		}
 	}
 
 	foreach($modes as $mode)
 	{
-		foreach($themelet_hierarchy[$mode]['themes'] as $codename => $parents)
+		foreach($themelet_hierarchy[$mode]['themes'] as $theme_code => $parents)
 		{
-			$themelet_dir = MYBB_ROOT.'inc/themes/'.$codename.'/'.$mode;
+			$themelet_dir = MYBB_ROOT.'inc/themes/'.$theme_code.'/'.$mode;
 			if(is_dir($themelet_dir) && is_readable($themelet_dir))
 			{
-				if (empty($themelet_dirs[$codename]))
+				if (empty($themelet_dirs[$theme_code]))
 				{
-					$themelet_dirs[$codename] = [];
+					$themelet_dirs[$theme_code] = [];
 				}
-				$themelet_dirs[$codename][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
+				$themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
 				foreach($parents as $parent)
 				{
 					$themelet_dir = MYBB_ROOT.'inc/themes/'.$parent.'/'.$mode;
 					if(is_dir($themelet_dir) && is_readable($themelet_dir))
 					{
-						$themelet_dirs[$codename][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
+						$themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
 					}
 				}
 				// Insert plugin themelet directories just prior to the final theme themelet,
 				// which should be the core theme.
-				array_splice($themelet_dirs[$codename], count($themelet_dirs[$codename]) - 1, 0, $plugin_themelet_dirs);
+				array_splice($themelet_dirs[$theme_code], count($themelet_dirs[$theme_code]) - 1, 0, $plugin_themelet_dirs);
 			}
 		}
 	}
@@ -284,19 +284,19 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 }
 
 /**
- * Determines via its manifest file the version of the current theme with name $codename.
+ * Determines via its manifest file the version of the current theme with name $theme_code.
  *
- * @param string $codename The codename (directory) of the theme for which to find the version.
+ * @param string $theme_code The codename (directory) of the theme for which to find the version.
  * @param string $err_msg Stores the messages for any errors encountered.
  * @return Mixed Boolean false if an error was encountered (in which case $err_msg will be set),
  *               and the version number as a string on success.
  */
-function get_theme_version($codename, &$err_msg = '')
+function get_theme_version($theme_code, &$err_msg = '')
 {
 	$err_msg = '';
 	$version = false;
 	$themes_base = MYBB_ROOT.'inc/themes/';
-	$manifest_file = $themes_base.$codename.'/current/manifest.json';
+	$manifest_file = $themes_base.$theme_code.'/current/manifest.json';
 	if(is_readable($manifest_file))
 	{
 		$json = file_get_contents($manifest_file);
@@ -315,20 +315,20 @@ function get_theme_version($codename, &$err_msg = '')
 }
 
 /**
- * Archives the current theme with name $codename.
+ * Archives the current theme with codename $theme_code.
  *
- * @param string $codename The codename (directory) of the theme to archive.
+ * @param string $theme_code The codename (directory) of the theme to archive.
  * @param string $err_msg Stores the messages for any errors encountered.
  * @return boolean False if an error was encountered (in which case $err_msg will be set),
  *                 and true on success.
  */
-function archive_theme($codename, &$err_msg = '')
+function archive_theme($theme_code, &$err_msg = '')
 {
 	$err_msg = '';
-	$version = get_theme_version($codename, $err_msg);
+	$version = get_theme_version($theme_code, $err_msg);
 	if($version !== false)
 	{
-		$archive_base = MYBB_ROOT.'storage/themelets/'.$codename;
+		$archive_base = MYBB_ROOT.'storage/themelets/'.$theme_code;
 		if(!is_dir($archive_base))
 		{
 			mkdir($archive_base, 0777, true);
@@ -339,7 +339,7 @@ function archive_theme($codename, &$err_msg = '')
 		}
 		else
 		{
-			$theme_dir = MYBB_ROOT.'inc/themes/'.$codename.'current';
+			$theme_dir = MYBB_ROOT.'inc/themes/'.$theme_code.'/current';
 			$archival_dir = $archive_base.'/'.$version;
 			if(file_exists($archival_dir))
 			{
