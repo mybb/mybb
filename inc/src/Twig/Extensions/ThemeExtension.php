@@ -103,13 +103,18 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getStylesheets() : \Generator
     {
-        // TODO: Optimise this function - it looks like it can be improved at a glance
-        $theme = $GLOBALS['theme'];
+        global $theme, $cache;
 
-        $alreadyLoaded = [];
+        $stylesheets_a = $alreadyLoaded = [];
 
-        if (!is_array($theme['stylesheets'])) {
-            $theme['stylesheets'] = my_unserialize($theme['stylesheets']);
+        require_once MYBB_ROOT.'inc/functions_themes.php';
+        if ($this->mybb->settings['themelet_dev_mode']) {
+            $stylesheets_a[''] = get_themelet_stylesheets($theme['package'], false, true);
+        } else {
+            $stylesheets_a[''] = is_array($theme['stylesheets']) ? $theme['stylesheets'] : my_unserialize($theme['stylesheets']);
+        }
+        foreach ($cache->read('plugins')['active'] as $plugin_code) {
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, true, $mybb->settings['themelet_dev_mode']);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
@@ -128,47 +133,41 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                     continue;
                 }
 
-                if (!empty($theme['stylesheets'][$stylesheetScript][$stylesheet_action])) {
-                    // Actually add the stylesheets to the list
-                    foreach ($theme['stylesheets'][$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
-                        if (!empty($alreadyLoaded[$pageStylesheet])) {
-                            continue;
-                        }
+                foreach ($stylesheets_a as $codename => $stylesheets) {
+                    if (!empty($stylesheets[$stylesheetScript][$stylesheet_action])) {
+                        // Actually add the stylesheets to the list
+                        foreach ($stylesheets[$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
+                            if (empty($codename)) {
+                                $res_spec = "~frontend:styles:$pageStylesheet"; // Current theme stylesheet
+                            } else {
+                                $res_spec = "!$codename:styles:$pageStylesheet"; // Plugin stylesheet
+                            }
+                            if (!empty($alreadyLoaded[$res_spec])) {
+                                continue;
+                            }
 
-                        if (strpos($pageStylesheet, 'css.php') !== false) {
-                            $stylesheetUrl = $this->mybb->settings['bburl'] . '/' . $pageStylesheet;
-                        } else {
-                            $stylesheetUrl = $this->mybb->get_asset_url($pageStylesheet);
-                        }
-
-                        if ($this->mybb->settings['minifycss']) {
-                            $stylesheetUrl = str_replace('.css', '.min.css', $stylesheetUrl);
-                        }
-
-                        if (strpos($pageStylesheet, 'css.php') !== false) {
-                            // We need some modification to get it working with the displayorder
-                            $queryString = parse_url($stylesheetUrl, PHP_URL_QUERY);
-                            $id = (int)my_substr($queryString, 11);
-                            $query = $this->db->simple_select("themestylesheets", "name", "sid={$id}");
-                            $realName = $this->db->fetch_field($query, "name");
-                            $themeStylesheets[$realName] = $stylesheetUrl;
-                        } else {
+                            $stylesheetUrl = $this->mybb->get_asset_url($res_spec);
                             $themeStylesheets[basename($pageStylesheet)] = $stylesheetUrl;
+                            $alreadyLoaded[$res_spec] = 1;
                         }
-
-                        $alreadyLoaded[$pageStylesheet] = 1;
                     }
                 }
             }
         }
-        unset($actions);
 
+        // Return the stylesheet paths we've found via yielding, honouring their display order.
         if (!empty($themeStylesheets) && is_array($theme['disporder'])) {
             foreach ($theme['disporder'] as $style_name => $order) {
                 if (!empty($themeStylesheets[$style_name])) {
-                    yield $themeStylesheets[$style_name];
+                    $style_path = $themeStylesheets[$style_name];
+                    unset($themeStylesheets[$style_name]);
+                    yield $style_path;
                 }
             }
+        }
+        // Now for those without a display order. Mostly (solely?), these will be plugin stylesheets.
+        foreach ($themeStylesheets as $style_path) {
+           yield $style_path;
         }
     }
 }

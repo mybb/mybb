@@ -81,7 +81,7 @@ function hello_info()
 		'author'		=> 'MyBB Group',
 		'authorsite'	=> 'https://mybb.com',
 		'version'		=> '2.0',
-		'compatibility'	=> '18*',
+		'compatibility'	=> '19*',
 		'codename'		=> 'hello'
 	);
 }

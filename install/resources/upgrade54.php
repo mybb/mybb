@@ -22,7 +22,7 @@ $upgrade_detail = array(
 
 function upgrade54_dbchanges()
 {
-	global $output, $cache, $db, $mybb;
+	global $output, $db;
 
 	$output->print_header('Updating Database');
 
@@ -70,20 +70,10 @@ CREATE TABLE '.TABLE_PREFIX."themes (
 ) ENGINE=MyISAM{$charset};");
 	}
 
-	$core_theme_title = 'Default';
-	$manifest_file = MYBB_ROOT.'inc/themes/core.default/current/manifest.json';
-	if(is_readable($manifest_file))
-	{
-		$json = file_get_contents($manifest_file);
-		$manifest = json_decode($json, true);
-		if(is_array($manifest) && !empty($manifest['extra']['title']))
-		{
-			$core_theme_title = $manifest['extra']['title'];
-		}
-	}
-
-	// An empty `version` field indicates to use `current` (or `devdist` if in development mode and that directory exists).
-	$db->insert_query('themes', ['package' => 'core.default', 'version' => '', 'title' => $db->escape_string($core_theme_title)]);
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	// We set $devdist true because at this point in the upgrade, the core.default
+	// theme hasn't yet had its `devdist` subdirectory renamed to `current`.
+	install_core_19_theme_to_db('core.default', /*$devdist = */true);
 
 	$output->print_contents('<p>Click next to continue with the upgrade process.</p>');
 	$output->print_footer('54_done');

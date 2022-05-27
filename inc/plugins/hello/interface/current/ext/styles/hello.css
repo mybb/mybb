@@ -1,0 +1,7 @@
+#div-hello-outer {
+	display: flex;
+}
+
+#div-hello-left {
+	margin-right: 100px;
+}

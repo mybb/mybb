@@ -1,0 +1,10 @@
+{
+	"stylesheets": {
+		"hello.css": [
+			{
+				"script": "index.php",
+				"actions": ["global"]
+			}
+		]
+	}
+}

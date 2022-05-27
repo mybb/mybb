@@ -1231,7 +1231,7 @@ function cache_themes()
 
 	if(empty($theme_cache) || !is_array($theme_cache))
 	{
-		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
+		$query = $db->simple_select("themes", "*", "", array('order_by' => "title"));
 		while($theme = $db->fetch_array($query))
 		{
 			$theme['users'] = 0;

@@ -485,24 +485,42 @@ class MyBB {
 	/**
 	 * Get the path to an asset using the CDN URL if configured.
 	 *
-	 * @param string $path    The path to the file.
+	 * @param string $path    The path to a resource file, or a theme/plugin resource specifier.
+	 *                        For a description of resource specifiers, see the comment block
+	 *                        above the resolve_themelet_resource() function in the file:
+	 *                        inc/functions_themes.php.
 	 * @param bool   $use_cdn Whether to use the configured CDN options.
 	 *
 	 * @return string The complete URL to the asset.
 	 */
 	public function get_asset_url($path = '', $use_cdn = true)
 	{
+		global $mybb;
+
 		$path = (string) $path;
 		$path = ltrim($path, '/');
 
 		if(substr($path, 0, 4) != 'http')
 		{
-			if(substr($path, 0, 2) == './')
+			if(($path[0] === '~' || $path[0] === '!') && substr_count($path, ':') == 2)
+			{
+				// We have a themelet resource which requires resolution (and
+				// potentially processing/caching). Resolve it, potentially,
+				// afterwards, processing/caching it too).
+				require_once MYBB_ROOT.'inc/functions_themes.php';
+				$path_new = resolve_themelet_resource($path, /* $use_themelet_cache = */true);
+
+				if(!empty($path_new))
+				{
+					$path = $path_new;
+				}
+			}
+			else if(substr($path, 0, 2) == './')
 			{
 				$path = substr($path, 2);
 			}
 
-			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
+			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']) && !$mybb->settings['themelet_dev_mode'])
 			{
 				$base_path = rtrim($this->settings['cdnurl'], '/');
 			}

@@ -51,13 +51,19 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
-            global $theme, $mybb;
+            global $theme, $mybb, $cache;
 
             $loader = new FilesystemLoader();
-            /* We don't yet have an admin-specific theme, and when we do, we will probably bundle
-             * it as the 'acp' component of the 'core.default' theme, so there's probably no need
-             * to distinguish between whether or not defined('IN_ADMINCP') resolves to true here.
+            /* Some template-rendering functions such as get_reputation() are called from both the
+             * front end and the ACP, so we need to make sure that the global $theme is initialised
+             * for the ACP - we just set it to the default.
              */
+            if (defined('IN_ADMINCP') && empty($theme)) {
+                if (!$cache->read('default_theme')) {
+                    $cache->update_default_theme();
+                }
+                $theme = $cache->read('default_theme');
+            }
             $current_theme = $theme['package'];
             require_once MYBB_ROOT.'inc/functions_themes.php';
             $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */$mybb->settings['themelet_dev_mode'], /*$use_themelet_cache = */true);

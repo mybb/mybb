@@ -3,8 +3,8 @@
 	<p>
 		<strong>{{ lang.hello }}</strong>
 	</p>
-	<div style="display: flex;">
-		<div style="margin-right: 100px;">
+	<div id="div-hello-outer">
+		<div id="div-hello-left">
 			<form method="POST" action="misc.php">
 				<input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
 				<input type="hidden" name="action" value="hello" />
