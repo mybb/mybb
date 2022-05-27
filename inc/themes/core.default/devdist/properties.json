@@ -1,0 +1,10 @@
+{
+	"stylesheets": {
+		"main.css": [
+			{
+				"script": "global",
+				"actions": ["global"]
+			}
+		]
+	}
+}

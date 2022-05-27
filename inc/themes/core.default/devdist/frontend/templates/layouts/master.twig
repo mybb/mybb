@@ -11,15 +11,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     {% for stylesheet in get_stylesheets() %}
-        {# <link rel="stylesheet" href="{{ stylesheet }}"> #}
+        <link rel="stylesheet" href="{{ stylesheet }}">
     {% endfor %}
 
     {# TEMPORARY #}
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Asap:400,600,600i|Open+Sans:300,400,700" rel="stylesheet">
-    {# <link href="{{ asset_url('assets/css/main.css') }}" rel="stylesheet"> #}
-    <link href="https://mybb.github.io/1.9-ui-framework/assets/css/main.css" rel="stylesheet">
-    {# <link href="http://localhost:4000/assets/css/main.css" rel="stylesheet"> #}
 
     <link rel="alternate" type="application/rss+xml" title="{{ lang.latest_threads }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php" />
     <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_threads }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?type=atom1.0" />
