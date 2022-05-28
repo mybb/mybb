@@ -45,7 +45,7 @@ function get_themelet_hierarchy()
 	];
 
 	// Iterate through theme directories in the filesystem,
-	// adding their ancestors to a list unique to each.
+	// determining the parent of each.
 	$themes_dir = MYBB_ROOT.'inc/themes/';
 	if(is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false)
 	{
@@ -76,6 +76,7 @@ function get_themelet_hierarchy()
 		closedir($dh);
 	}
 
+	// Generate a list of ancestors for each filesystem theme.
 	foreach(['devdist', 'current'] as $mode)
 	{
 		foreach($parents[$mode] as $child => $parent)
@@ -99,6 +100,7 @@ function get_themelet_hierarchy()
 	}
 	$active_plugins = empty($plugins_cache['active']) ? [] : $plugins_cache['active'];
 
+	// Generate a list of unique active plugins which might or might not have themelets.
 	foreach($active_plugins as $plugin_code)
 	{
 		foreach(['devdist', 'current'] as $mode)
