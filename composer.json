@@ -27,7 +27,8 @@
         "illuminate/events": "8.*",
         "illuminate/hashing": "8.*",
         "illuminate/routing": "8.*",
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.3",
+        "scssphp/scssphp": "^1.10.3"
     },
     "require-dev": {
         "mockery/mockery": "^1.5",
