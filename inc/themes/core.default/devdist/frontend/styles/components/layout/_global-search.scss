@@ -1,0 +1,132 @@
+/**
+ * Global forum search in header
+ */
+.global-search {
+
+    // Hidden checkbox to show/hide on mobile
+    &__checkbox {
+        display: none;
+    }
+
+    // Search button, close button on mobile
+    &__mobile-search-button,
+    &__mobile-search-close-button {
+        display: none; // hidden by default
+        float: $right;
+        padding: 12px 8px;
+        margin-#{$right}: 0px;
+        font-size: 1.2em;
+        color: $alt-font-color-1;
+
+        &:hover {
+            color: $secondary-color;
+            cursor: pointer;
+        }
+    }
+
+    &__mobile-search-button {
+
+        @include bp-medium-max {
+            display: inline-block; // only shown on small screens
+        }
+    }
+
+    // Search box container
+    &__container {
+        box-sizing: border-box;
+        display: none;
+        width: auto;
+        padding: side-values(2px 0 2px 8px);
+        margin: side-values(0 0 10px 0);
+        clear: both;
+        cursor: text;
+        background: $background-default;
+        border: 1px solid $border-1;
+        border-radius: 4px;
+
+        @include bp-medium {
+            display: block;
+            float: $right;
+            width: 35%;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            clear: none;
+        }
+    }
+
+    // Wrapper element that allows for some additional padding
+    &__label {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        cursor: text;
+    }
+
+    // Search box
+    .global-search__field {    // nesting required
+        box-sizing: border-box;
+        flex-grow: 1;
+        min-width: 0;
+        padding: 4px;
+        margin: 0;
+        font-size: 16px;
+        background-color: $background-default;
+        border: 0;
+        outline: 0;
+    }
+
+    // Search, advanced search buttons wrapper
+    &__controls {
+        box-sizing: border-box;
+        flex-shrink: 0;
+        padding-#{$right}: 8px;
+        text-align: $right;
+    }
+
+    // Search, advanced search buttons
+    &__submit,
+    &__advanced {
+        display: inline-block;
+        height: 24px;
+        padding: 2px 0;
+        margin: side-values(0 0 0 6px);
+        font-size: 16px;
+        color: $alt-font-color-2;
+        cursor: pointer;
+        background: none;
+        border: 0;
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-2;
+        }
+
+        &:hover {
+            color: $alt-font-color-1;
+        }
+    }
+}
+
+/**
+ * Do not show mobile search button if it has already been clicked
+ */
+#show-mobile-search:checked ~ .global-search__mobile-search-button {
+    display: none;
+}
+
+/**
+ * Instead, show the close search button
+ */
+#show-mobile-search:checked ~ .global-search__mobile-search-close-button {
+
+    @include bp-medium-max {
+        display: inline-block;
+    }
+}
+
+/**
+ * Show the search box if the mobile search button has been clicked
+ */
+#show-mobile-search:checked ~ .global-search__container {
+    display: block;
+}

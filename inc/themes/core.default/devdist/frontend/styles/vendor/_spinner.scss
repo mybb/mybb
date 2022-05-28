@@ -1,0 +1,17 @@
+#spinner {
+    background: $dark-background-2;
+    color: $invert-font-color;
+    position: fixed;
+    top: 0;
+    #{$left}: 0;
+    z-index: 1001;
+    padding: 3px 15px;
+    border-radius: corner-values(0 0 4px 0);
+    font-size: 12px;
+    display: none;
+
+    i {
+        font-size: 16px;
+        padding: 0 2px;
+    }
+}

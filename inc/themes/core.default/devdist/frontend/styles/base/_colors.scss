@@ -1,0 +1,71 @@
+// Theme colors
+$primary-color: #007fd0;
+$secondary-color: #ff7500;
+
+
+// Font colors
+$font-color: #222;
+$invert-font-color: #fff;
+$alt-font-color-1: #666;
+$alt-font-color-2: #999;
+$alt-font-color-3: #ccc;
+$alt-font-color-4: #444;
+
+
+// Border colors
+$border-1: #dfdfdf;
+$border-2: #ccc;
+$border-3: #e3e3e3;
+$dark-border-1: #222;
+$dark-border-2: #999;
+$dark-border-3: #666;
+$primary-color-border: #0065a6;
+
+
+// Background colors
+$background-default: #fff;
+$background-1: #f7f7f7;
+$background-2: #f2f2f2;
+$background-3: #eee;
+$background-4: #ccc;
+$dark-background-1: #393D3F;
+$dark-background-2: #444;
+$dark-background-3: #555;
+$dark-background-4: #888;
+$unread-count: #eb5257;
+
+
+// Status background & border colors
+$new-icon-color: $dark-background-2;
+$status-highlight: $background-1;
+$status-highlight-border: #afd9fa;
+$status-deleted: #ece3fa;
+$status-deleted-border: #864ddf;
+$status-deleted-font-color: #864ddf;
+$status-pending: #fbe3e4;
+$status-pending-font-color: #ed4660;
+$status-pending-border: #ed4660;
+
+
+// Success / danger colors
+$success-color: #68c000;
+$success-color-border: #5dac00;
+$moderate-color: #d7611e;
+$moderate-color-border: #c1571b;
+$danger-color: #eb5257;
+$danger-color-border: #d3494e;
+
+
+// Link colors
+$link-default: $primary-color;
+$link-hover: $secondary-color;
+
+
+// Button colors
+$button-default: $primary-color;
+$button-hover: $secondary-color;
+
+
+// Heading colors
+$major-heading-background: $primary-color;
+$major-heading-border: $primary-color-border;

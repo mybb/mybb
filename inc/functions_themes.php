@@ -9,6 +9,8 @@
  *
  */
 
+use ScssPhp\ScssPhp\Compiler;
+
 /**
  * Gets the hierarchy of themelets present in the filesystem.
  *
@@ -422,9 +424,16 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
 /**
  * Resolves a themelet resource for the current theme, checking up the hierarchy if it does not
  * exist in the themelet directory itself, and supporting resources in `ext.[pluginname]` theme
- * directories. When appropriate, caches the resource under `cache/themes/themeid` where `themeid`
- * is the database ID of the current theme. First minifies the resource if it is a stylesheet and
- * the core setting to minify CSS is enabled.
+ * subdirectories.
+ *
+ * When appropriate, caches the resource under `cache/themes/themeid` where `themeid`
+ * is the database ID of the current theme.
+ *
+ * If a CSS resource is requested and it does not exist but a SCSS file with the same name excluding
+ * extension exists, then it auto-compiles the SCSS into CSS.
+ *
+ * If a resource ending in `.min.css` is specified, or the core setting to minify CSS is enabled
+ * then it minifies the CSS.
  *
  * @param string $specifier Stipulates which resource to load in the current theme.
  *                          Resources for the current theme are specified in the format:
@@ -470,7 +479,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 	{
 		$minify = (!empty($mybb->settings['minifycss'])
 		           &&
-		           my_strtolower(get_extension($resource_path)) === 'css'
+		           my_strtolower(get_extension($specifier)) === 'css'
 		);
 	}
 
@@ -494,6 +503,15 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 					{
 						$resource_path = $path_to_test;
 						break;
+					}
+					else if(my_strtolower(substr($path_to_test, -4)) === '.css')
+					{
+						$scss_path = substr($path_to_test, 0, -3).'scss';
+						if(is_readable($scss_path))
+						{
+							$resource_path = $path_to_test;
+							break;
+						}
 					}
 				}
 			}
@@ -560,16 +578,21 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		}
 	}
 
-	// TODO Compile SCSS into CSS if required, in which case $scss_path will be set to the full
-	// path to the root SCSS file to compile into CSS). In that case, update the check for a
-	// stale cache by comparing cached file (if any) timestamp to the SCSS file(s) (there may be
-	// includes) rather than the CSS file.
-
-
-	$use_cache = !$return_resource;
+	$use_cache = !$return_resource && !$mybb->settings['themelet_dev_mode'];
 	$needs_cache = false;
-	if($mybb->settings['themelet_dev_mode'] == false)
+
+	if($use_cache)
 	{
+		if(!empty($scss_path))
+		{
+			$source_files = get_imported_scss_files($scss_path);
+			$source_files[] = $scss_path;
+		}
+		else
+		{
+			$source_files = [$resource_path];
+		}
+
 		$cache_dir = MYBB_ROOT.'cache/themes/'.$theme['tid'];
 		if(!is_dir($cache_dir))
 		{
@@ -587,26 +610,35 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		else
 		{
 			$cache_time = filemtime($cache_file);
-			$source_time = filemtime($resource_path);
-			if($source_time > $cache_time)
+			foreach($source_files as $source_file)
 			{
-				$needs_cache = true;
+				$source_time = filemtime($source_file);
+				if($source_time > $cache_time)
+				{
+					$needs_cache = true;
+					break;
+				}
 			}
 		}
-	}
-	else
-	{
-		$use_cache = false;
 	}
 
 	$resource = '';
 
-	if(($needs_cache || $return_resource) && $minify)
+	if(($needs_cache || $return_resource) && ($minify || $scss_path))
 	{
-		$stylesheet = file_get_contents($resource_path);
+		if($scss_path)
+		{
+			$compiler = new Compiler();
+			$stylesheet = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path)->getCss();
+		}
+		else
+		{
+			$stylesheet = file_get_contents($resource_path);
+		}
+
 		$plugins->run_hooks('css_start', $stylesheet);
 
-		if(!empty($mybb->settings['minifycss']))
+		if($minify)
 		{
 			global $config;
 			require_once MYBB_ROOT.$config['admin_dir'].'/inc/functions_themes.php';
@@ -619,23 +651,23 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 
 	if($needs_cache)
 	{
-		if(!$minify)
+		if(!$minify && !$scss_path)
 		{
-			$use_cache = copy($resource_path, $cache_file);
+			copy($resource_path, $cache_file);
 		}
 		else
 		{
-			$use_cache = file_put_contents($cache_file, $stylesheet);
+			file_put_contents($cache_file, $stylesheet);
 		}
 	}
 
 	if($return_resource)
 	{
-		if($minify)
+		if($minify || $scss_path)
 		{
 			$resource = $stylesheet;
 		}
-		else
+		else if($resource_path)
 		{
 			$resource = file_get_contents($resource_path);
 		}
@@ -705,4 +737,47 @@ function install_core_19_theme_to_db($theme_code, $devdist = false)
 	$theme['tid'] = $tid;
 	$cache->update_default_theme($theme);
 	$cache->update_themelet_dirs();
+}
+
+function get_imported_scss_files($scss_file)
+{
+	$files = [];
+	get_imported_scss_files_r($scss_file, $files);
+
+	return $files;
+}
+
+function get_imported_scss_files_r($scss_file, &$files)
+{
+	if($scss = file_get_contents($scss_file))
+	{
+		if (preg_match_all('(@import\\s+(["\'])(.*)\\1)i', $scss, $matches, PREG_PATTERN_ORDER))
+		{
+			$list = $matches[2];
+			$basedir = mk_path_abs(dirname($scss_file)).'/';
+			foreach($list as &$file)
+			{
+				$file = mk_path_abs($file, $basedir);
+			}
+			unset($file);
+			foreach($list as $file)
+			{
+				$alt_files = [$file];
+				if(my_strtolower(substr($file, -5)) !== '.scss')
+				{
+					$alt_files[] = $file.'.scss';
+					$base = basename($file);
+					$alt_files[] = substr($file, 0, -strlen($base)).'_'.$base.'.scss';
+				}
+				foreach($alt_files as $alt_file)
+				{
+					if(!in_array($alt_file, $files))
+					{
+						$files[] = $alt_file;
+						get_imported_scss_files_r($alt_file, $files);
+					}
+				}
+			}
+		}
+	}
 }

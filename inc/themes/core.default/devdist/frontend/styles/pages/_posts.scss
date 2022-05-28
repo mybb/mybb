@@ -1,0 +1,288 @@
+// these values are used to change border width with post status styles
+$avatar-margin-small: 80px;
+$avatar-margin-medium: 110px;
+$post-spacing: 25px;
+
+.post-list {
+    clear: both;
+}
+
+.post {
+    margin-bottom: $post-spacing;
+    background-color: $background-default;
+    border: 1px solid $border-1;
+    border-radius: $radius;
+
+    @include bp-small {
+        margin-#{$left}: $avatar-margin-small;
+    }
+
+    @include bp-medium {
+        margin-#{$left}: $avatar-margin-medium;
+    }
+
+    &--no-avatar {
+        margin-#{$left}: 0;
+    }
+
+    &__meta {
+        padding: side-values(12px 18px 4px 18px);
+    }
+
+    &__author {
+        margin: 0;
+        font-size: 1em;
+
+        @include bp-small {
+            display: inline-block;
+        }
+    }
+
+    &__date,
+    &__topic {
+        font-size: 0.8em;
+        color: $alt-font-color-1;
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-1;
+        }
+
+        @include bp-small {
+            margin: side-values(0 0 0 10px);
+        }
+    }
+
+    &__edit-log {
+        margin-#{$left}: 4px;
+        font-size: 0.8em;
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-2;
+        }
+
+        &:hover {
+            color: $link-hover;
+        }
+    }
+
+    &__ip-address {
+        float: $right;
+        font-size: 0.8em;
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-2;
+        }
+
+        &:hover {
+            color: $link-hover;
+        }
+    }
+
+    &__messenger-meta {
+        padding: side-values(0 0 5px 0);
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+        border-bottom: 1px solid $border-3;
+    }
+
+    &__inline-mod {
+        float: $right;
+        margin: side-values(-20px 0 0 10px);
+
+        @include bp-small {
+            margin-top: 7px;
+        }
+    }
+
+    &__badge {
+        display: none;
+
+        @include bp-medium {
+            display: inline;
+        }
+    }
+
+    .avatar-profile-link {
+        float: $left;
+        margin: side-values(5px 10px 0 0);
+        @include avatar(40);
+
+        @include bp-small {
+            float: $left;
+            margin: side-values(-13px 0 0 -100px);
+            @include avatar(70);
+        }
+
+        @include bp-medium {
+            margin-#{$left}: -130px;
+            @include avatar(100);
+        }
+    }
+
+    &__body {
+        padding: side-values(8px 18px 16px 18px);
+
+        img {
+            max-width: 100%;
+        }
+
+        &--message {
+            color: $alt-font-color-1;
+        }
+    }
+
+    .quote,
+    .codeblock,
+    blockquote {
+        padding: 10px 18px;
+        margin: 5px 0;
+        font-size: 0.9rem;
+        background: $background-1;
+        border-radius: $radius;
+
+        .quote,
+        .codeblock,
+        blockquote {
+            border: 1px solid $border-1;
+        }
+
+        &__cite,
+        &__title,
+        cite {
+            display: block;
+            margin-bottom: 4px;
+            font-style: normal;
+            font-weight: normal;
+            color: $alt-font-color-1;
+        }
+
+        &__jump {
+            margin-#{$left}: 3px;
+        }
+
+        &__date {
+            float: $right;
+        }
+    }
+
+    &__signature {
+        padding: side-values(6px 0 0 0);
+        margin-top: 20px;
+        font-size: 0.8em;
+        border-top: 1px dotted $border-2;
+    }
+
+    &__foot {
+        padding: 6px 12px;
+        margin: 0;
+        list-style: none;
+        background: $background-1;
+        border-radius: corner-values(0 0 $radius $radius);
+
+        &--controls {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    &--highlight,
+    &--soft-deleted,
+    &--awaiting-approval {
+        margin: side-values(-1px -1px ($post-spacing - 1) -1px);
+        border-width: 2px;
+
+        @include bp-small {
+            margin-#{$left}: $avatar-margin-small - 1;
+        }
+
+        @include bp-medium {
+            margin-#{$left}: $avatar-margin-medium - 1;
+        }
+    }
+
+    &--highlight {
+        border-color: $secondary-color;
+    }
+
+    &--deleted {
+        border-color: $status-deleted-border;
+    }
+
+    &--awaiting-approval {
+        border-color: $status-pending-border;
+    }
+
+    &--message {
+        background: $background-1;
+        border: none;
+
+        &__button {
+            display: none;
+            margin: side-values(5px -5px 0 -5px);
+        }
+    }
+
+    // TODO: change classes in code
+    &.trow_selected {
+        @extend .post--highlight;
+    }
+
+    &.unapproved_post {
+        @extend .post--awaiting-approval;
+    }
+
+    &.deleted_post,
+    &.unapproved_post.deleted_post {
+        @extend .post--deleted;
+    }
+
+    &--hidden {
+
+        @include bp-small {
+
+            .avatar-profile-link {
+                margin-#{$left}: -80px;
+                @include avatar(50);
+            }
+        }
+
+        .post__meta {
+            padding-bottom: 2px;
+        }
+
+        .post__body,
+        .post__controls {
+            display: none;
+        }
+    }
+}
+
+.user-status {
+    display: inline-block;
+    margin-#{$left}: 2px;
+    font-size: 10px;
+    vertical-align: middle;
+
+    &--offline {
+        color: $alt-font-color-3;
+    }
+
+    &--online {
+        color: $success-color;
+
+        .user-status__link {
+            color: $success-color;
+        }
+    }
+
+    &--away {
+        color: $danger-color;
+
+        .user-status__link {
+            color: $danger-color;
+        }
+    }
+}

@@ -1,0 +1,196 @@
+@mixin button-theme(
+    $color, // background color
+    $color-text: $invert-font-color, // text color
+    $color-border: $color, // border color
+    $color-hover: $button-hover, // hover background color
+    $color-text-hover: $invert-font-color, // hover text color
+    $color-border-hover: $color-hover) { // hover border color
+
+    @content;
+
+    &,
+    &:link,
+    &:visited {
+        color: $color-text;
+        background-color: $color;
+        border-color: $color-border;
+    }
+
+    &:hover {
+        color: $color-text-hover;
+        background-color: $color-hover;
+        border-color: $color-border-hover;
+    }
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    margin: 5px;
+    font-size: 0.9em;
+    line-height: 26px;
+    border: 1px solid;
+    border-radius: 4px;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: none;
+        outline: none;
+    }
+
+    @include button-theme($button-default);
+
+    &__icon {
+        margin-#{$right}: 8px;
+
+        &.button__icon--after {
+            margin-#{$right}: 0;
+            margin-#{$left}: 8px;
+        }
+    }
+
+    $theme-secondary: (
+        'color': $background-default,
+        'color-text': $link-default,
+        'color-border': $border-1,
+        'color-hover': $background-default,
+        'color-text-hover': $link-hover,
+        'color-border-hover': $border-1
+    );
+
+    &--secondary {
+        @include button-theme($theme-secondary...);
+    }
+
+    $theme-invert: (
+        'color': $background-default,
+        'color-text': $link-default,
+        'color-border': $background-default,
+        'color-hover': $background-default,
+        'color-text-hover': $link-hover,
+        'color-border-hover': $background-default
+    );
+
+    &--invert {
+        @include button-theme($theme-invert...);
+    }
+
+    $theme-danger: (
+        'color': $background-default,
+        'color-text': $danger-color,
+        'color-border': $border-1,
+        'color-hover': $danger-color
+    );
+
+    &--danger {
+        @include button-theme($theme-danger...);
+    }
+
+    $theme-danger-secondary: (
+        'color': $background-default,
+        'color-text': $link-default,
+        'color-border': $border-1,
+        'color-hover': $danger-color
+    );
+
+    &--danger.button--secondary {
+        @include button-theme($theme-danger-secondary...);
+    }
+
+    $theme-success: (
+        'color': $background-default,
+        'color-text': $success-color,
+        'color-border': $border-1,
+        'color-hover': $success-color
+    );
+
+    &--success {
+        @include button-theme($theme-success...);
+    }
+
+    $theme-success-secondary: (
+        'color': $background-default,
+        'color-text': $link-default,
+        'color-border': $border-1,
+        'color-hover': $success-color
+    );
+
+    &--success.button--secondary {
+        @include button-theme($theme-success-secondary...);
+    }
+
+    $theme-basic: (
+        'color': transparent,
+        'color-text': $alt-font-color-1,
+        'color-border': transparent,
+        'color-hover': transparent,
+        'color-text-hover': $link-hover
+    );
+
+    &--basic {
+        @include button-theme($theme-basic...) {
+            padding: 4px 4px;
+            margin: 0 5px;
+        }
+    }
+
+    &--inline {
+        padding: 3px 10px;
+        margin: side-values(0 0 0 5px);
+        font-size: 0.9em;
+        vertical-align: top;
+    }
+
+    @include bp-medium-max {
+
+        &--full-width {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 8px 10px;
+            margin: 5px 0;
+        }
+
+        &--half-width {
+            box-sizing: border-box;
+            float: $left;
+            width: 49%;
+            padding: 8px 10px;
+
+            &:nth-child(odd) {
+                margin-#{$left}: 0;
+                margin-#{$right}: 1%;
+            }
+
+            &:nth-child(even) {
+                margin-#{$left}: 1%;
+                margin-#{$right}: 0;
+            }
+        }
+    }
+
+    &--small {
+        padding: 0 8px;
+        margin: side-values(0 5px 0 0);
+        font-size: 0.9em;
+        vertical-align: top;
+    }
+
+    &--medium {
+        padding: 6px 12px;
+        font-size: 1em;
+    }
+
+    &--big {
+        padding: 8px 16px;
+        font-size: 1.1em;
+
+        .button__icon {
+            margin-#{$right}: 12px;
+        }
+    }
+}
