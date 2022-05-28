@@ -39,14 +39,13 @@ function get_themelet_hierarchy()
 			'plugins' => [],
 		],
 	];
+	$parents = [
+		'devdist' => [],
+		'current' => [],
+	];
 
 	// Iterate through theme directories in the filesystem,
 	// adding their ancestors to a list unique to each.
-	//
-	// TODO Optimise this code: currently, all parents are queried for
-	// each theme directory, leading to redundant filesystem reads
-	// given that we technically only need to query each theme's parent once,
-	// from which we can THEN put together the ancestor list for each theme.
 	$themes_dir = MYBB_ROOT.'inc/themes/';
 	if(is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false)
 	{
@@ -58,50 +57,40 @@ function get_themelet_hierarchy()
 			}
 			foreach(['devdist', 'current'] as $mode)
 			{
-				$themelet_hierarchy[$mode]['themes'][$theme_code] = [];
-				if($theme_code == 'core.default')
+				$prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
+				if(is_readable($prop_file))
 				{
-					continue;
-				}
-				if(is_dir($themes_dir.$theme_code.'/'.$mode))
-				{
-					$parent = $theme_code;
-					do
+					$json = file_get_contents($prop_file);
+					$props = json_decode($json, true);
+					if(is_array($props) && array_key_exists('parent', $props))
 					{
-						$termination = false;
-						$prop_file = $themes_dir.$parent.'/'.$mode.'/properties.json';
-						if(is_readable($prop_file))
-						{
-							$json = file_get_contents($prop_file);
-							$props = json_decode($json, true);
-							if(is_array($props) && array_key_exists('parent', $props))
-							{
-								$parent = $props['parent'];
-								if(in_array($parent, $themelet_hierarchy[$mode]['themes'][$theme_code]) || $parent === 'core.default')
-								{
-									$termination = true;
-									break;
-								}
-								else
-								{
-									$themelet_hierarchy[$mode]['themes'][$theme_code][] = $parent;
-								}
-							}
-							else
-							{
-								$termination = true;
-							}
-						}
-						else
-						{
-							$termination = true;
-						}
-					} while(!$termination);
-					$themelet_hierarchy[$mode]['themes'][$theme_code][] = 'core.default';
+						$parents[$mode][$theme_code] = $props['parent'];
+					}
+					else if($theme_code == 'core.default')
+					{
+						$parents[$mode][$theme_code] = '';
+					}
 				}
 			}
 		}
 		closedir($dh);
+	}
+
+	foreach(['devdist', 'current'] as $mode)
+	{
+		foreach($parents[$mode] as $child => $parent)
+		{
+			$themelet_hierarchy[$mode]['themes'][$child] = [];
+			if($child !== 'core.default')
+			{
+				while($parent && !in_array($parent, $themelet_hierarchy[$mode]['themes'][$child]))
+				{
+					$themelet_hierarchy[$mode]['themes'][$child][] = $parent;
+					$parent = isset($parents[$parent]) ? $parents[$parent] : null;
+				}
+				$themelet_hierarchy[$mode]['themes'][$child][] = 'core.default';
+			}
+		}
 	}
 
 	if(empty($plugins_cache) || !is_array($plugins_cache))
