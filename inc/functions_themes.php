@@ -352,12 +352,12 @@ function archive_theme($theme_code, &$err_msg = '')
 }
 
 /**
- * Retrieve the stylesheets for the given themelet from its `properties.json` file.
+ * Retrieve the stylesheets for the given themelet from its `resources.json` file.
  *
  * @param string $codename   The codename (directory) of the theme or plugin whose stylesheets should
  *                           be retrieved.
  * @param boolean $is_plugin If true, $codename represents a plugin codename; else a theme.
- * @param boolean $devdist   If true, try to use the properties.json file in the `devdist` directory
+ * @param boolean $devdist   If true, try to use the resources.json file in the `devdist` directory
  *                           before trying that in the `current` directory.
  * @return array The first index is the name of a script to which to attach a stylesheet; the second is
  *               the action which conditionally triggers attachment ("global" indicates any action
@@ -377,19 +377,19 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
 	{
 		if($is_plugin)
 		{
-			$prop_file = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode.'/properties.json';
+			$res_file = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode.'/resources.json';
 		}
 		else
 		{
-			$prop_file = MYBB_ROOT.'inc/themes/'.$codename.'/'.$mode.'/properties.json';
+			$res_file = MYBB_ROOT.'inc/themes/'.$codename.'/'.$mode.'/resources.json';
 		}
-		if(is_readable($prop_file))
+		if(is_readable($res_file))
 		{
-			$json = file_get_contents($prop_file);
-			$props = json_decode($json, true);
-			if(is_array($props) && array_key_exists('stylesheets', $props))
+			$json = file_get_contents($res_file);
+			$res_arr = json_decode($json, true);
+			if(is_array($res_arr) && array_key_exists('stylesheets', $res_arr))
 			{
-				foreach($props['stylesheets'] as $sheet => $arr)
+				foreach($res_arr['stylesheets'] as $sheet => $arr)
 				{
 					foreach($arr as $script_actions)
 					{
