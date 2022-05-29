@@ -20,7 +20,7 @@ define('THIS_SCRIPT', 'resource.php');
 require_once './global.php';
 
 if (empty($mybb->input['specifier'])) {
-	error('Missing "specifier" query string parameter.');
+    error('Missing "specifier" query string parameter.');
 }
 
 require_once MYBB_ROOT.'inc/functions_themes.php';
@@ -31,24 +31,28 @@ $specifier = $mybb->get_input('specifier');
 // Alternatively: develop a normative list of permitted resource file types, and use it to extend the below code.
 $content_type = 'application/octet-stream';
 switch (my_strtolower(get_extension($specifier))) {
-	case 'jpg':
-	case 'jpeg':
-		$content_type = 'image/jpeg';
-		break;
-	case 'png':
-		$content_type = 'image/png';
-		break;
-	case 'gif':
-		$content_type = 'image/gif';
-		break;
-	case 'css':
-		$content_type = 'text/css';
-		break;
+    case 'jpg':
+    case 'jpeg':
+        $content_type = 'image/jpeg';
+        break;
+    case 'png':
+        $content_type = 'image/png';
+        break;
+    case 'gif':
+        $content_type = 'image/gif';
+        break;
+    case 'css':
+        $content_type = 'text/css';
+        break;
 }
 
 header("Content-Type: $content_type");
 if ($mybb->settings['themelet_dev_mode']) {
-	echo resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_resource = */true);
-} else	echo file_get_contents(MYBB_ROOT.resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_resource = */false));
+    echo resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_resource = */true);
+} else {
+    echo file_get_contents(
+        MYBB_ROOT.resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_resource = */false)
+    );
+}
 
 exit;
