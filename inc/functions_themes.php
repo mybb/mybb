@@ -429,8 +429,8 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
  * When appropriate, caches the resource under `cache/themes/themeid` where `themeid`
  * is the database ID of the current theme.
  *
- * If a CSS resource is requested and it does not exist but a SCSS file with the same name excluding
- * extension exists, then it auto-compiles the SCSS into CSS.
+ * If a CSS resource is requested and it does not exist but a SCSS file with the same name other
+ * than extension exists, then it auto-compiles the SCSS into CSS.
  *
  * If a resource ending in `.min.css` is specified, or the core setting to minify CSS is enabled
  * then it minifies the CSS.
@@ -455,6 +455,31 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
 function resolve_themelet_resource($specifier, $use_themelet_cache = true, $return_resource = false)
 {
 	global $mybb, $cache, $theme, $plugins;
+
+	if(!function_exists('test_set_path'))
+	{
+		function test_set_path($path_to_test, &$resource_path, &$scss_path)
+		{
+			if(is_readable($path_to_test))
+			{
+				$resource_path = $path_to_test;
+				return true;
+			}
+			else if(my_strtolower(substr($path_to_test, -4)) === '.css')
+			{
+				$scss_path_test = substr($path_to_test, 0, -3).'scss';
+				if(is_readable($scss_path_test))
+				{
+					$resource_path = $path_to_test;
+					$scss_path = $scss_path_test;
+					return true;
+				}
+			}
+
+			// Earlier returns possible
+			return false;
+		}
+	}
 
 	if(!$mybb->settings['themelet_dev_mode'] && $use_themelet_cache)
 	{
@@ -483,7 +508,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		);
 	}
 
-	$resource_path = false;
+	$resource_path = $scss_path = false;
 	$theme_code = $theme['package'];
 
 	if($specifier[0] === '~' && substr_count($specifier, ':') == 2)
@@ -495,23 +520,13 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		{
 			foreach($themelet_dirs[$theme_code] as $entry)
 			{
-				list($theme_dir, $namespace1, $is_plugin) = $entry;
+				list($theme_dir, $codename, $is_plugin) = $entry;
 				if(!$is_plugin)
 				{
 					$path_to_test = $theme_dir.'/'.$res_comp.'/'.$res_dir.'/'.$res_name;
-					if(is_readable($path_to_test))
+					if(test_set_path($path_to_test, $resource_path, $scss_path))
 					{
-						$resource_path = $path_to_test;
 						break;
-					}
-					else if(my_strtolower(substr($path_to_test, -4)) === '.css')
-					{
-						$scss_path = substr($path_to_test, 0, -3).'scss';
-						if(is_readable($scss_path))
-						{
-							$resource_path = $path_to_test;
-							break;
-						}
 					}
 				}
 			}
@@ -524,96 +539,68 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 
 		if(!empty($themelet_dirs[$theme_code]))
 		{
-			foreach([false, true] as $check_plugin)
+			// The plugin resource might be overridden in a theme.
+			// We test this possibility first, then...
+			foreach($themelet_dirs[$theme_code] as $entry)
 			{
-				foreach($themelet_dirs[$theme_code] as $entry)
+				list($theme_dir, $codename, $is_plugin) = $entry;
+				if(!$is_plugin)
 				{
-					$scss_path = false;
-					list($theme_dir, $namespace1, $is_plugin) = $entry;
-					if($check_plugin === $is_plugin)
+					$path_to_test = $theme_dir.'/ext.'.$plugin_code.'/'.$res_dir.'/'.$res_name;
+					if(test_set_path($path_to_test, $resource_path, $scss_path))
 					{
-						if(!$is_plugin)
-						{
-							$path_to_test = $theme_dir.'/ext.'.$plugin_code.'/'.$res_dir.'/'.$res_name;
-							if(is_readable($path_to_test))
-							{
-								$resource_path = $path_to_test;
-								break;
-							}
-							else if(my_strtolower(substr($path_to_test, -4)) === '.css')
-							{
-								$scss_path = substr($path_to_test, 0, -3).'scss';
-								if(is_readable($scss_path))
-								{
-									$resource_path = $path_to_test;
-									break;
-								}
-							}
-						}
-						else
-						{
-							$path_to_test = $theme_dir.'/'.$res_dir.'/'.$res_name;
-							if(is_readable($path_to_test))
-							{
-								$resource_path = $path_to_test;
-								break;
-							}
-							else if(my_strtolower(substr($path_to_test, -4)) === '.css')
-							{
-								$scss_path = substr($path_to_test, 0, -3).'scss';
-								if(is_readable($scss_path))
-								{
-									$resource_path = $path_to_test;
-									break;
-								}
-							}
-						}
+						break;
 					}
-				}
-				if($resource_path)
-				{
-					break;
 				}
 			}
 		}
+
+		// ...look for the resource in the plugin's own themelet.
+		// TODO: decide whether we should then (or first) check the directories of
+		// other plugins, i.e., decide whether plugins should be able to override
+		// the resources of other plugins.
+		if(!$resource_path)
+		{
+			$path_to_test = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/current/ext/'.$res_dir.'/'.$res_name;
+			test_set_path($path_to_test, $resource_path, $scss_path);
+		}
+	}
+
+	if(!$resource_path)
+	{
+		return false;
 	}
 
 	$use_cache = !$return_resource && !$mybb->settings['themelet_dev_mode'];
-	$needs_cache = false;
+	$needs_cache = $deps_file = false;
 
 	if($use_cache)
 	{
-		if(!empty($scss_path))
-		{
-			$source_files = get_imported_scss_files($scss_path);
-			$source_files[] = $scss_path;
-		}
-		else
-		{
-			$source_files = [$resource_path];
-		}
-
 		$cache_dir = MYBB_ROOT.'cache/themes/'.$theme['tid'];
 		if(!is_dir($cache_dir))
 		{
 			mkdir($cache_dir, 0777, true);
 		}
-		$cache_file = $cache_dir.'/'.$specifier;
-		if($minify)
-		{
-			$cache_file = substr($cache_file, 0, -3).'min.css';
-		}
-		if(!is_file($cache_file))
+		$cache_file = $minify? substr($cache_file, 0, -3).'min.css' : $cache_dir.'/'.$specifier;
+		$deps_file = $cache_dir.'/'.$specifier.'.deps';
+		$deps_existing = is_readable($deps_file) ? file($deps_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES): [];
+
+		// The first entry in the .deps file is the primary resource...
+		$deps_new = [$scss_path ? $scss_path : $resource_path];
+
+		// ...which we check in case the resource now resolves to a different themelet than
+		// when it was cached...
+		if(!is_readable($cache_file) || !$deps_existing || /* ...here: */$deps_existing[0] != $resource_path)
 		{
 			$needs_cache = true;
 		}
 		else
 		{
 			$cache_time = filemtime($cache_file);
-			foreach($source_files as $source_file)
+			foreach($deps_existing as $dep_file)
 			{
-				$source_time = filemtime($source_file);
-				if($source_time > $cache_time)
+				$dep_time = filemtime($dep_file);
+				if($dep_time > $cache_time)
 				{
 					$needs_cache = true;
 					break;
@@ -622,14 +609,19 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		}
 	}
 
-	$resource = '';
-
 	if(($needs_cache || $return_resource) && ($minify || $scss_path))
 	{
 		if($scss_path)
 		{
 			$compiler = new Compiler();
-			$stylesheet = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path)->getCss();
+			$result = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path);
+			$stylesheet = $result->getCss();
+			if($needs_cache)
+			{
+				// Entries other than the first in the .deps file are for secondary
+				// dependencies - in this case, SCSS @import files.
+				$deps_new = array_merge($deps_new, $result->getIncludedFiles());
+			}
 		}
 		else
 		{
@@ -659,7 +651,10 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		{
 			file_put_contents($cache_file, $stylesheet);
 		}
+		file_put_contents($deps_file, implode("\n", $deps_new));
 	}
+
+	$resource = '';
 
 	if($return_resource)
 	{
@@ -673,6 +668,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 		}
 	}
 
+	// Early return possible
 	return $return_resource ? $resource : ($use_cache ? substr($cache_file, strlen(MYBB_ROOT)) : 'resource.php?specifier='.urlencode($specifier));
 }
 
@@ -745,39 +741,4 @@ function get_imported_scss_files($scss_file)
 	get_imported_scss_files_r($scss_file, $files);
 
 	return $files;
-}
-
-function get_imported_scss_files_r($scss_file, &$files)
-{
-	if($scss = file_get_contents($scss_file))
-	{
-		if (preg_match_all('(@import\\s+(["\'])(.*)\\1)i', $scss, $matches, PREG_PATTERN_ORDER))
-		{
-			$list = $matches[2];
-			$basedir = mk_path_abs(dirname($scss_file)).'/';
-			foreach($list as &$file)
-			{
-				$file = mk_path_abs($file, $basedir);
-			}
-			unset($file);
-			foreach($list as $file)
-			{
-				$alt_files = [$file];
-				if(my_strtolower(substr($file, -5)) !== '.scss')
-				{
-					$alt_files[] = $file.'.scss';
-					$base = basename($file);
-					$alt_files[] = substr($file, 0, -strlen($base)).'_'.$base.'.scss';
-				}
-				foreach($alt_files as $alt_file)
-				{
-					if(!in_array($alt_file, $files))
-					{
-						$files[] = $alt_file;
-						get_imported_scss_files_r($alt_file, $files);
-					}
-				}
-			}
-		}
-	}
 }
