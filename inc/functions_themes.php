@@ -375,11 +375,11 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
  *
  * @param string $specifier Stipulates which resource to load in the current theme.
  *                          Resources for the current theme are specified in the format:
- *                          "~component:directory:filename", where "component" is, e.g., "frontend",
+ *                          "~t~component:directory:filename", where "component" is, e.g., "frontend",
  *                          "acp", or "parser", "directory" is, e.g., "styles" or "images", and
  *                          "filename" is, e.g., "main.css" or "logo.png".
  *                          Resources for plugins are specified in the format:
- *                          "!plugin_codename:directory:filename", where "directory" and "filename"
+ *                          "~p~plugin_codename:directory:filename", where "directory" and "filename"
  *                          are as above, and "plugin_codename is self-explanatory.
  * @param boolean $use_themelet_cache True to try to get the list of themelet directories out of
  *                                    cache; otherwise rebuild it manually.
@@ -437,9 +437,10 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
     $resource_path = $scss_path = false;
     $theme_code = $theme['package'];
 
-    if ($specifier[0] === '~' && substr_count($specifier, ':') == 2) {
+    $spec_type_len = 3;
+    if (my_strtolower(substr($specifier, 0, $spec_type_len)) === '~t~' && substr_count($specifier, ':') == 2) {
         // We have a theme resource which requires resolution. Resolve it.
-        list($res_comp, $res_dir, $res_name) = explode(':', substr($specifier, 1));
+        list($res_comp, $res_dir, $res_name) = explode(':', substr($specifier, $spec_type_len));
 
         if (!empty($themelet_dirs[$theme_code])) {
             foreach ($themelet_dirs[$theme_code] as $entry) {
@@ -452,9 +453,9 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                 }
             }
         }
-    } elseif ($specifier[0] === '!' && substr_count($specifier, ':') == 2) {
+    } elseif (my_strtolower(substr($specifier, 0, $spec_type_len)) === '~p~' && substr_count($specifier, ':') == 2) {
         // We have a plugin's themelet resource which requires resolution. Resolve it.
-        list($plugin_code, $res_dir, $res_name) = explode(':', substr($specifier, 1));
+        list($plugin_code, $res_dir, $res_name) = explode(':', substr($specifier, $spec_type_len));
 
         if (!empty($themelet_dirs[$theme_code])) {
             // The plugin resource might be overridden in a theme.

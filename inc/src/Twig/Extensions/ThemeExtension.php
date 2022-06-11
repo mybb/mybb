@@ -138,9 +138,9 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                         // Actually add the stylesheets to the list
                         foreach ($stylesheets[$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
                             if (empty($codename)) {
-                                $res_spec = "~frontend:styles:$pageStylesheet"; // Current theme stylesheet
+                                $res_spec = "~t~frontend:styles:$pageStylesheet"; // Current theme stylesheet
                             } else {
-                                $res_spec = "!$codename:styles:$pageStylesheet"; // Plugin stylesheet
+                                $res_spec = "~p~$codename:styles:$pageStylesheet"; // Plugin stylesheet
                             }
                             if (!empty($alreadyLoaded[$res_spec])) {
                                 continue;

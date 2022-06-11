@@ -502,7 +502,8 @@ class MyBB {
 
 		if(substr($path, 0, 4) != 'http')
 		{
-			if(($path[0] === '~' || $path[0] === '!') && substr_count($path, ':') == 2)
+			$spec_type = my_strtolower(substr($path, 0, 3));
+			if(($spec_type === '~p~' || $spec_type === '~t~') && substr_count($path, ':') == 2)
 			{
 				// We have a themelet resource which requires resolution (and
 				// potentially processing/caching). Resolve it, potentially,
