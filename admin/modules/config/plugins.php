@@ -603,6 +603,7 @@ if(!$mybb->input['action'])
 function get_plugins_list()
 {
 	// Get a list of the plugin files which exist in the plugins directory
+	$plugins_list = [];
 	$dir = @opendir(MYBB_ROOT."inc/plugins/");
 	if($dir)
 	{
