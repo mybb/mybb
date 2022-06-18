@@ -1508,7 +1508,7 @@ if($mybb->input['action'] == "delete_folder" && $mybb->request_method == "post")
 		$newfolders = '';
 		foreach ($folders as $key => $value)
 		{
-			if(my_substr($value, 0, 1) != $fid)
+			if(str_replace('**', '', $value) != $fid)
 			{
 				if($newfolders != '')
 				{

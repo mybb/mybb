@@ -2,6 +2,7 @@
 
 {% block head %}
     <title>{{ lang.pm_folders }} - {{ mybb.settings.bbname }}</title>
+    <script type="text/javascript" src="{{ asset_url('jscripts/form.js') }}"></script>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -36,12 +37,19 @@
             <section class="section section--form">
                 <h2 class="title title--section">{{ lang.new_folders }}</h2>
                 <div class="section__container">
-                    <div class="row row--form field">{{ lang.add_folders_note }}</div>
-                    {% for fid in 1..5 %}
-                        <div class="row row--form field">
-                            <input type="text" class="textbox" name="folder[new{{ fid }}]" value="" maxlength="30" />
+                    <div id="add_folders">
+                        <div class="row row--form field">{{ lang.add_folders_note }}</div>
+                            <div class="row row--form field">
+                                <input type="text" class="textbox" name="folder[new1]" value="" maxlength="30" />
+                            </div>
                         </div>
-                    {% endfor %}
+                        <div class="row row--form field">
+                            <button type="button" class="button button--primary" id="add_folder_btn">
+                                {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                                {{ lang.add_more_folders }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
             <div class="form__submit">
@@ -58,4 +66,12 @@
         <form action="private.php" id="inner-{{ folder.id }}" method="post"></form>
         {% endif %}
     {% endfor %}
+
+    <script type="text/javascript">
+        var newFid = 1;
+        $("#add_folder_btn").click(function () {
+            Form.addFormField("add_folders", `folder[new${++newFid}]`, "text", { maxlength: "30", class: "textbox" });
+        });
+    </script>
+
 {% endblock messengerBody %}
