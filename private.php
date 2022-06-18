@@ -1493,6 +1493,47 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
 }
 
+if($mybb->input['action'] == "delete_folder" && $mybb->request_method == "post")
+{	
+    // Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+
+	if(!empty($fid))
+	{
+        $plugins->run_hooks("private_delete_folder_start");
+
+		$folders = explode('$%%$', $mybb->user['pmfolders']);
+		$newfolders = '';
+		foreach ($folders as $key => $value)
+		{
+			if(my_substr($value, 0, 1) != $fid)
+			{
+				if($newfolders != '')
+				{
+					$newfolders .= "$%%$";
+				}
+
+				$newfolders .= $value;
+			}
+		}
+
+		$db->delete_query("privatemessages", "folder='$fid' AND uid='".$mybb->user['uid']."'");
+
+		$sql_array = array(
+			"pmfolders" => $newfolders
+		);
+		$db->update_query("users", $sql_array, "uid='".$mybb->user['uid']."'");
+
+		update_pm_count();
+
+		$plugins->run_hooks("private_delete_folder_end");
+	}
+
+	redirect("private.php", $lang->redirect_pmfoldersupdated);
+}
+
 if($mybb->input['action'] == "empty")
 {
 	if($mybb->user['totalpms'] == 0)
