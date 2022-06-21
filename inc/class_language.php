@@ -20,7 +20,7 @@ class MyLanguage
 
 	/**
 	 * The language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
@@ -29,7 +29,7 @@ class MyLanguage
 
 	/**
 	 * The fallback language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
@@ -139,8 +139,10 @@ class MyLanguage
 	 * @param string $section The section name.
 	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
 	 * @param boolean $supress_error supress the error if the file doesn't exist?
+	 * @param string $staged_plugin To indicate that we are loading the section for a staged plugin, this should be
+	 *                              the codename of the staged plugin; otherwise empty.
 	 */
-	function load($section, $forceuserarea=false, $supress_error=false)
+	function load($section, $forceuserarea=false, $supress_error=false, $staged_plugin='')
 	{
 		$language = $this->language;
 		$fallback = $this->fallback;
@@ -151,8 +153,16 @@ class MyLanguage
 			$fallback = str_replace('/admin', '', $fallback);
 		}
 
-		$lfile = $this->path."/".$language."/".$section.".lang.php";
-		$ffile = $this->path."/".$fallback."/".$section.".lang.php";
+		if($staged_plugin)
+		{
+			$lfile = MYBB_ROOT."staging/plugins/$staged_plugin/root/inc/languages/$language/$section.lang.php";
+			$lfile = MYBB_ROOT."staging/plugins/$staged_plugin/root/inc/languages/$fallback/$section.lang.php";
+		}
+		else
+		{
+			$lfile = $this->path."/".$language."/".$section.".lang.php";
+			$ffile = $this->path."/".$fallback."/".$section.".lang.php";
+		}
 
 		if(file_exists($lfile))
 		{

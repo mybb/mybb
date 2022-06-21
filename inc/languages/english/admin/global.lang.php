@@ -377,3 +377,10 @@ $l['my2fa_failed'] = "The code was incorrect, you're logged out now";
 $l['my2fa_code'] = "Please enter the authentication code";
 $l['my2fa_label'] = "Authentication code:";
 $l['my2fa_no_codes'] = "Note: you've used all of your recovery codes. Please visit the <a href=\"index.php?module=home-preferences&amp;action=recovery_codes\">recovery codes page</a> to generate a new set.";
+
+// These are repeated in ../global.lang.php. Please ensure that they are kept consistent.
+$l['error_missing_json_file'] = 'The JSON file "{1}" was not found.';
+$l['error_unreadable_json_file'] = 'The JSON file "{1}" is not readable.';
+$l['error_fgc_failed_for_json_file'] = 'The file_get_contents() function returned false for the JSON file "{1}".';
+$l['error_invalid_json_in_file'] = 'The json_decode() function returned null for the JSON file "{1}".';
+$l['error_missing_manifest_version'] = 'The `version` property is missing in the JSON file "{1}".';

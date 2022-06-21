@@ -58,32 +58,9 @@ else
 	$plugins->add_hook('template', 'hello_template');
 }
 
-function hello_info()
+function hello_dyndesc(&$desc)
 {
-	global $lang;
-	$lang->load('hello');
-
-	/**
-	 * Array of information about the plugin.
-	 * name: The name of the plugin
-	 * description: Description of what the plugin does
-	 * website: The website the plugin is maintained at (Optional)
-	 * author: The name of the author of the plugin
-	 * authorsite: The URL to the website of the author (Optional)
-	 * version: The version number of the plugin
-	 * compatibility: A CSV list of MyBB versions supported. Ex, '121,123', '12*'. Wildcards supported.
-	 * codename: An unique code name to be used by updated from the official MyBB Mods community.
-	 */
-	return array(
-		'name'			=> 'Hello World!',
-		'description'	=> $lang->hello_desc,
-		'website'		=> 'https://mybb.com',
-		'author'		=> 'MyBB Group',
-		'authorsite'	=> 'https://mybb.com',
-		'version'		=> '2.0',
-		'compatibility'	=> '19*',
-		'codename'		=> 'hello'
-	);
+	$desc .= '<br /><br />Using the `hello_dyndesc()` function, we dynamically append to the description from the manifest file.';
 }
 
 /*

@@ -9169,3 +9169,55 @@ function mk_path_abs($path, $base = MYBB_ROOT)
 
 	return $path;
 }
+
+/**
+ * Attempt to read a JSON file (such as a manifest) and return its contents as an array.
+ *
+ * @param string $json_file The path to the JSON file.
+ * @param boolean $show_errs If true and an error occurs, display the error inline. If not in the ACP, exit thereafter.
+ * @return array
+ */
+function read_json_file($json_file, $show_errs = true)
+{
+	global $lang, $page;
+
+	$ret = [];
+
+	if (!file_exists($json_file)) {
+		if ($show_errs) {
+			$msg = $lang->sprintf($lang->error_missing_json_file, $json_file);
+			if (IN_ADMINCP) {
+				$page->output_inline_error($msg);
+			} else	error($msg);
+		}
+	} else if (!is_file($json_file) || !is_readable($json_file)) {
+		if ($show_errs) {
+			$msg = $lang->sprintf($lang->error_unreadable_json_file, $json_file);
+			if (IN_ADMINCP) {
+				$page->output_inline_error($msg);
+			} else	error($msg);
+		}
+	} else {
+		$json = file_get_contents($json_file);
+		if ($json === false) {
+			if ($show_errs) {
+				$msg = $lang->sprintf($lang->error_fgc_failed_for_json_file, $json_file);
+				if (IN_ADMINCP) {
+					$page->output_inline_error($msg);
+				} else	error($msg);
+			}
+		} else {
+			$ret = json_decode($json, true);
+			if (!is_array($ret)) {
+				if ($show_errs) {
+					$msg = $lang->sprintf($lang->error_invalid_json_in_file, $json_file);
+					if (IN_ADMINCP) {
+						$page->output_inline_error($msg);
+					} else	error($msg);
+				} else	$ret = [];
+			}
+		}
+	}
+
+	return $ret;
+}

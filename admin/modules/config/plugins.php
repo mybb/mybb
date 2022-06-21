@@ -513,39 +513,60 @@ if(!$mybb->input['action'])
 	}
 
 	$plugins_list = get_plugins_list();
+	$s_plugins    = get_staged_plugins();
 
 	$plugins->run_hooks("admin_config_plugins_plugin_list");
 
-	if(!empty($plugins_list))
+	foreach($s_plugins as $codename => &$plugininfo)
+	{
+		require_once MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename.php";
+		$dyndescfunc = $codename."_dyndesc";
+		if(!function_exists($dyndescfunc))
+		{
+			continue;
+		}
+		$dyndescfunc($plugininfo['description']);
+	}
+	unset($plugininfo);
+
+	if(!empty($plugins_list) || !empty($s_plugins))
 	{
 		$a_plugins = $i_plugins = array();
 
-		foreach($plugins_list as $plugin_file)
+		if(!empty($plugins_list))
 		{
-			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
-			$codename = str_replace(".php", "", $plugin_file);
-			$infofunc = $codename."_info";
-
-			if(!function_exists($infofunc))
+			foreach($plugins_list as $plugin_file)
 			{
-				continue;
-			}
+				$codename = str_replace('.php', '', $plugin_file);
+				$plugininfo = read_json_file(MYBB_ROOT.'inc/plugins/'.$codename.'/plugin.json');
+				if(!$plugininfo)
+				{
+					continue;
+				}
+				$plugininfo['codename'] = $codename;
+				if(empty($s_plugins[$codename]))
+				{
+					require_once MYBB_ROOT."inc/plugins/$codename.php";
+					$dyndescfunc = $codename."_dyndesc";
+					if(function_exists($dyndescfunc))
+					{
+						$plugininfo['desc'] .= $dyndescfunc();
+					}
+				}
 
-			$plugininfo = $infofunc();
-			$plugininfo['codename'] = $codename;
+				if(isset($active_plugins[$codename]))
+				{
+					// This is an active plugin
+					$plugininfo['is_active'] = 1;
 
-			if(isset($active_plugins[$codename]))
-			{
-				// This is an active plugin
-				$plugininfo['is_active'] = 1;
-
-				$a_plugins[] = $plugininfo;
-			}
-			else
-			{
-				// Either installed and not active or completely inactive
-				$plugininfo['is_active'] = 0;
-				$i_plugins[] = $plugininfo;
+					$a_plugins[] = $plugininfo;
+				}
+				else
+				{
+					// Either installed and not active or completely inactive
+					$plugininfo['is_active'] = 0;
+					$i_plugins[] = $plugininfo;
+				}
 			}
 		}
 
@@ -577,9 +598,22 @@ if(!$mybb->input['action'])
 		else
 		{
 			build_plugin_list($i_plugins);
+			build_plugin_list($s_plugins);
 		}
 
 		$table->output($lang->inactive_plugin);
+
+		if(!empty($s_plugins))
+		{
+			$table = new Table;
+			$table->construct_header($lang->plugin);
+			$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
+
+			build_plugin_list($s_plugins);
+		}
+
+		$table->output($lang->staged_plugin);
+
 	}
 	else
 	{
@@ -618,6 +652,64 @@ function get_plugins_list()
 		@sort($plugins_list);
 	}
 	@closedir($dir);
+
+	return $plugins_list;
+}
+
+/**
+ * Gets a list of staged plugin files.
+ *
+ * @param boolean $exit_on_err If true and an error occurs, displays the error and exits.
+ * @return array Keys are plugin codenames; values are plugin manifest data as extracted from the relevant manifest file.
+ */
+function get_staged_plugins($exit_on_err = true)
+{
+	global $lang, $page;
+
+	$plugins_list = [];
+	$dh = @opendir(MYBB_ROOT.'staging/plugins/');
+	if ($dh) {
+		while (($plugin_code = readdir($dh))) {
+			if (in_array($plugin_code, ['.', '..'])) {
+				continue;
+			}
+			$p_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code.php";
+			if (!file_exists($p_file) || !is_readable($p_file)) {
+				if ($exit_on_err) {
+					$page->output_inline_error($lang->sprintf($lang->error_bad_staged_plugin_file, $p_file));
+				}
+			} else {
+				$manifest_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json";
+				if ($manifest = read_json_file($manifest_file, $exit_on_err)) {
+					if (empty($manifest['version'])) {
+						if ($exit_on_err) {
+							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $manifest_file));
+						}
+					} else {
+						$manifest['is_staged'] = true;
+						if (!empty($manifest['langfile'])) {
+							$lang->load($manifest['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugin_code);
+							foreach (['name', 'description'] as $key) {
+								if (isset($manifest[$key]) && isset($manifest[$key.'_key'])) {
+									if ($exit_on_err) {
+										$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
+									}
+								} else if (!empty($manifest[$key.'_key'])) {
+									$manifest[$key] = $lang->{$manifest[$key.'_key']};
+								}
+							}
+						}
+						$plugins_list[$plugin_code] = $manifest;
+					}
+				} else {
+					if ($exit_on_err) {
+						$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $manifest_file));
+					}
+				}
+			}
+		}
+		@closedir($dh);
+	}
 
 	return $plugins_list;
 }
@@ -676,7 +768,7 @@ function build_plugin_list($plugin_list)
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 
 		// Plugin is not installed at all
-		if($installed == false)
+		if(!empty($plugininfo['is_staged']) || $installed == false)
 		{
 			if($compatibility_warning)
 			{
@@ -684,7 +776,8 @@ function build_plugin_list($plugin_list)
 			}
 			else
 			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
+				$key = !empty($plugininfo['is_staged']) ? 'integrate_install_and_activate' : 'install_and_activate';
+				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->$key}</a>", array("class" => "align_center", "colspan" => 2));
 			}
 		}
 		// Plugin is activated and installed

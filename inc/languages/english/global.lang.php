@@ -621,3 +621,10 @@ $l['expcol_expand'] = '[+]';
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
 
 $l['use_default'] = "Use Default";
+
+// These are repeated in admin/global.lang.php. Please ensure that they are kept consistent.
+$l['error_missing_json_file'] = 'The JSON file "{1}" was not found.';
+$l['error_unreadable_json_file'] = 'The JSON file "{1}" is not readable.';
+$l['error_fgc_failed_for_json_file'] = 'The file_get_contents() function returned false for the JSON file "{1}".';
+$l['error_invalid_json_in_file'] = 'The json_decode() function returned null for the JSON file "{1}".';
+$l['error_missing_manifest_version'] = 'The `version` property is missing in the JSON file "{1}".';
