@@ -1275,8 +1275,8 @@ class postParser
 		{
 			$image['alt'] = my_substr($image['alt'], 0, 40).'...'.my_substr($image['alt'], -10);
 		}
-		$alt = $this->encode_url($alt);
-		$alt = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $alt); // fix & but allow unicode
+		$image['alt'] = $this->encode_url($image['alt']);
+		$image['alt'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $image['alt']); // fix & but allow unicode
 
 		$image['width'] = $image['height'] = '';
 		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
