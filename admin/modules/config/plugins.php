@@ -390,8 +390,9 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
 
-	// Check if the file exists and throw an error if it doesn't
-	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
+	$staged = is_dir(MYBB_ROOT.'staging/plugins/'.$codename);
+	$integrated = file_exists(MYBB_ROOT."inc/plugins/$file");
+	if(!$integrated && !$staged)
 	{
 		flash_message($lang->error_invalid_plugin, 'error');
 		admin_redirect("index.php?module=config-plugins");
@@ -399,6 +400,17 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 	$plugins_cache = $cache->read("plugins");
 	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
+
+	if(!$integrated && $staged)
+	{
+		// Integrate the staged plugin's files into the root directory
+		if(!move_recursively(MYBB_ROOT.'staging/plugins/'.$codename.'/root', MYBB_ROOT, $errmsg))
+		{
+			flash_message($errmsg, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		rmdir(MYBB_ROOT.'staging/plugins/'.$codename);
+	}
 
 	require_once MYBB_ROOT."inc/plugins/$file";
 
@@ -416,7 +428,8 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		$message = $lang->success_plugin_activated;
 
 		// Plugin is compatible with this version?
-		if($plugins->is_compatible($codename) == false)
+		$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/$codename/plugin.json");
+		if($plugins->is_compatible($plugininfo['compatibility']) == false)
 		{
 			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
 			admin_redirect("index.php?module=config-plugins");
@@ -519,11 +532,14 @@ if(!$mybb->input['action'])
 
 	foreach($s_plugins as $codename => &$plugininfo)
 	{
-		require_once MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename.php";
 		$dyndescfunc = $codename."_dyndesc";
 		if(!function_exists($dyndescfunc))
 		{
-			continue;
+			require_once MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename.php";
+			if(!function_exists($dyndescfunc))
+			{
+				continue;
+			}
 		}
 		$dyndescfunc($plugininfo['description']);
 	}
@@ -543,6 +559,7 @@ if(!$mybb->input['action'])
 				{
 					continue;
 				}
+				plugininfo_keys_to_raw($plugininfo, false, true);
 				$plugininfo['codename'] = $codename;
 				if(empty($s_plugins[$codename]))
 				{
@@ -550,7 +567,7 @@ if(!$mybb->input['action'])
 					$dyndescfunc = $codename."_dyndesc";
 					if(function_exists($dyndescfunc))
 					{
-						$plugininfo['desc'] .= $dyndescfunc();
+						$dyndescfunc($plugininfo['description']);
 					}
 				}
 
@@ -598,7 +615,6 @@ if(!$mybb->input['action'])
 		else
 		{
 			build_plugin_list($i_plugins);
-			build_plugin_list($s_plugins);
 		}
 
 		$table->output($lang->inactive_plugin);
@@ -610,10 +626,9 @@ if(!$mybb->input['action'])
 			$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
 
 			build_plugin_list($s_plugins);
+
+			$table->output($lang->staged_plugin);
 		}
-
-		$table->output($lang->staged_plugin);
-
 	}
 	else
 	{
@@ -679,31 +694,20 @@ function get_staged_plugins($exit_on_err = true)
 					$page->output_inline_error($lang->sprintf($lang->error_bad_staged_plugin_file, $p_file));
 				}
 			} else {
-				$manifest_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json";
-				if ($manifest = read_json_file($manifest_file, $exit_on_err)) {
-					if (empty($manifest['version'])) {
+				$info_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json";
+				if ($plugininfo = read_json_file($info_file, $exit_on_err)) {
+					if (empty($plugininfo['version'])) {
 						if ($exit_on_err) {
-							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $manifest_file));
+							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $info_file));
 						}
 					} else {
-						$manifest['is_staged'] = true;
-						if (!empty($manifest['langfile'])) {
-							$lang->load($manifest['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugin_code);
-							foreach (['name', 'description'] as $key) {
-								if (isset($manifest[$key]) && isset($manifest[$key.'_key'])) {
-									if ($exit_on_err) {
-										$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
-									}
-								} else if (!empty($manifest[$key.'_key'])) {
-									$manifest[$key] = $lang->{$manifest[$key.'_key']};
-								}
-							}
-						}
-						$plugins_list[$plugin_code] = $manifest;
+						plugininfo_keys_to_raw($plugininfo, true, $exit_on_err);
+						$plugininfo['is_staged'] = true;
+						$plugins_list[$plugin_code] = $plugininfo;
 					}
 				} else {
 					if ($exit_on_err) {
-						$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $manifest_file));
+						$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $info_file));
 					}
 				}
 			}
@@ -712,6 +716,24 @@ function get_staged_plugins($exit_on_err = true)
 	}
 
 	return $plugins_list;
+}
+
+function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true)
+{
+	global $lang, $page;
+
+	if (!empty($plugininfo['langfile'])) {
+		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $staged ? $plugininfo['codename'] : false);
+		foreach (['name', 'description'] as $key) {
+			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
+				if ($show_errs) {
+					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
+				}
+			} else if (!empty($plugininfo[$key.'_key'])) {
+				$plugininfo[$key] = $lang->{$plugininfo[$key.'_key']};
+			}
+		}
+	}
 }
 
 /**
@@ -733,7 +755,7 @@ function build_plugin_list($plugin_list)
 			$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 		}
 
-		if($plugins->is_compatible($plugininfo['codename']) == false)
+		if($plugins->is_compatible($plugininfo['compatibility']) == false)
 		{
 			$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
 		}

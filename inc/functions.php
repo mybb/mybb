@@ -9221,3 +9221,76 @@ function read_json_file($json_file, $show_errs = true)
 
 	return $ret;
 }
+
+function move_recursively($source, $dest, &$error = '')
+{
+	global $lang;
+
+	$source_dirs = [];
+	$moved = [];
+	$error = '';
+	if (!file_exists($dest) && !mkdir($dest, 0755, true)) {
+		$error = $lang->sprintf(
+			$lang->error_failed_move_create_dir_backing_out,
+			$dest
+		);
+		goto backout_recursive_move;
+	}
+	try {
+		$rci = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
+	} catch (Exception $e) {
+		$error = $lang->sprintf($lang->error_exception_caught_backing_out, $e->getMessage());
+		goto backout_recursive_move;
+	}
+
+	foreach (
+		$iterator = new \RecursiveIteratorIterator(
+			$rci,
+			\RecursiveIteratorIterator::SELF_FIRST
+		) as $item
+	) {
+		if ($item->isDir()) {
+			$dir = $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
+				$error = $lang->sprintf(
+					$lang->error_failed_move_create_dir_backing_out,
+					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
+				);
+				goto backout_recursive_move;
+			} else {
+				$source_dirs[] = $source.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			}
+		} else {
+			if (!rename($item, $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname())) {
+				$error = $lang->sprintf(
+					$lang->error_failed_move_backing_out,
+					$item,
+					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
+				);
+				goto backout_recursive_move;
+			} else {
+				$moved[(string)$item] = $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			}
+		}
+	}
+
+	foreach (array_reverse($source_dirs) as $dir) {
+		rmdir($dir);
+	}
+	rmdir($source);
+
+	return true;
+
+backout_recursive_move:
+	foreach ($source_dirs as $dir) {
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+	}
+	foreach ($moved as $from => $to) {
+		rename($to, $from);
+	}
+
+	// Earlier return possible
+	return false;
+}

@@ -628,3 +628,6 @@ $l['error_unreadable_json_file'] = 'The JSON file "{1}" is not readable.';
 $l['error_fgc_failed_for_json_file'] = 'The file_get_contents() function returned false for the JSON file "{1}".';
 $l['error_invalid_json_in_file'] = 'The json_decode() function returned null for the JSON file "{1}".';
 $l['error_missing_manifest_version'] = 'The `version` property is missing in the JSON file "{1}".';
+$l['error_failed_move_backing_out'] = 'Failed to move {1} to {2}. Attempting to gracefully back out of recursive move.';
+$l['error_failed_move_create_dir_backing_out'] = 'Failed to create {1}. Attempting to gracefully back out of recursive move.';
+$l['error_exception_caught_backing_out'] = 'Caught an exception in move_recursively(): {1}. Attempting to gracefully back out of recursive move.';

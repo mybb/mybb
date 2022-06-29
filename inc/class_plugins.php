@@ -241,37 +241,21 @@ class pluginSystem
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
-	 * @param string $plugin The name of the plugin.
+	 * @param string $compatibilities The compatibility string of the plugin.
 	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
-	function is_compatible(string $plugin): bool
+	function is_compatible(string $compatibilities): bool
 	{
 		global $mybb;
 
-		// Ignore potentially missing plugins.
-		if(!file_exists(MYBB_ROOT."inc/plugins/{$plugin}.php"))
-		{
-			return true;
-		}
-
-		require_once MYBB_ROOT."inc/plugins/{$plugin}.php";
-
-		$infoFunc = "{$plugin}_info";
-		if(!function_exists($infoFunc))
-		{
-			return false;
-		}
-
-		$pluginInfo = $infoFunc();
-
 		// No compatibility set or compatibility = * - assume compatible
-		if(empty($pluginInfo['compatibility']) || $pluginInfo['compatibility'] == "*")
+		if(empty($compatibilities || $compatibilities == "*"))
 		{
 			return true;
 		}
 
-		$compatibility = explode(",", $pluginInfo['compatibility']);
+		$compatibility = explode(",", $compatibilities);
 		foreach($compatibility as $version)
 		{
 			$version = trim($version);
