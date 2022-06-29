@@ -416,7 +416,7 @@ function upgradethemes()
 	if(version_compare($curr_ver['version'], '1.9.0') > 0)
 	{
 		require_once MYBB_ROOT.'inc/functions_themes.php';
-		archive_theme('core.default', $err_msg);
+		archive_themelet('core.default', /*$is_plugin_themelet = */false, $err_msg);
 		if($err_msg)
 		{
 			$output->print_error($err_msg);

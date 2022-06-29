@@ -369,7 +369,7 @@ if($mybb->input['action'] == "check")
 }
 
 // Activates or deactivates a specific plugin
-if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate")
+if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate" || $mybb->input['action'] == 'upgrade')
 {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
@@ -377,9 +377,16 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		admin_redirect("index.php?module=config-plugins");
 	}
 
+	$do_upgrade = false;
+
 	if($mybb->input['action'] == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate");
+	}
+	else if($mybb->input['action'] == 'upgrade')
+	{
+		$do_upgrade = true;
+		$plugins->run_hooks('admin_config_plugins_upgrade');
 	}
 	else
 	{
@@ -403,16 +410,17 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 	if(!$integrated && $staged)
 	{
-		// Integrate the staged plugin's files into the root directory
-		if(!move_recursively(MYBB_ROOT.'staging/plugins/'.$codename.'/root', MYBB_ROOT, $errmsg))
-		{
-			flash_message($errmsg, 'error');
-			admin_redirect('index.php?module=config-plugins');
-		}
-		rmdir(MYBB_ROOT.'staging/plugins/'.$codename);
+		integrate_staged_plugin($codename);
 	}
 
-	require_once MYBB_ROOT."inc/plugins/$file";
+	if($do_upgrade)
+	{
+		require_once MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename.php";
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/plugins/$file";
+	}
 
 	$installed_func = "{$codename}_is_installed";
 	$installed = true;
@@ -423,9 +431,41 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 	$install_uninstall = false;
 
-	if($mybb->input['action'] == "activate")
+	if($do_upgrade)
 	{
-		$message = $lang->success_plugin_activated;
+		$plugininfo = read_json_file(MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename/plugin.json");
+
+		// Check the plugin's compatibility with the current MyBB version
+		if($plugins->is_compatible($plugininfo['compatibility']) == false)
+		{
+			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		// Try to archive plugin's themelet
+		require_once MYBB_ROOT.'inc/functions_themes.php';
+		if(!archive_themelet($codename, /*$is_plugin_themelet = */true, $err_msg))
+		{
+			flash_message($err_msg, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		integrate_staged_plugin($codename);
+
+		// Run any custom upgrade function as required
+		if($installed && function_exists("{$codename}_upgrade"))
+		{
+			call_user_func("{$codename}_upgrade");
+		}
+		$message = $lang->success_plugin_upgraded;
+	}
+
+	if($do_upgrade || $mybb->input['action'] == "activate")
+	{
+		if(!$do_upgrade)
+		{
+			$message = $lang->success_plugin_activated;
+		}
 
 		// Plugin is compatible with this version?
 		$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/$codename/plugin.json");
@@ -439,7 +479,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		if($installed == false && function_exists("{$codename}_install"))
 		{
 			call_user_func("{$codename}_install");
-			$message = $lang->success_plugin_installed;
+			$message = $do_upgrade ? $lang->success_plugin_upgraded_install_activated : $lang->success_plugin_installed;
 			$install_uninstall = true;
 		}
 
@@ -483,6 +523,10 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	if($mybb->input['action'] == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate_commit");
+	}
+	else if($do_upgrade)
+	{
+		$plugins->run_hooks('admin_config_plugins_upgrade_commit');
 	}
 	else
 	{
@@ -564,10 +608,20 @@ if(!$mybb->input['action'])
 				if(empty($s_plugins[$codename]))
 				{
 					require_once MYBB_ROOT."inc/plugins/$codename.php";
-					$dyndescfunc = $codename."_dyndesc";
+					$dyndescfunc = $codename.'_dyndesc';
 					if(function_exists($dyndescfunc))
 					{
 						$dyndescfunc($plugininfo['description']);
+					}
+				} else {
+					$plugininfo['description'] = $s_plugins[$codename]['description'];
+					if(version_compare($s_plugins[$codename]['version'], $plugininfo['version']) <= 0)
+					{
+						$s_plugins[$codename]['less_or_equal_vers'] = true;
+					}
+					else
+					{
+						$s_plugins[$codename]['upgradeable'] = true;
 					}
 				}
 
@@ -695,7 +749,7 @@ function get_staged_plugins($exit_on_err = true)
 				}
 			} else {
 				$info_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json";
-				if ($plugininfo = read_json_file($info_file, $exit_on_err)) {
+				if ($plugininfo = read_json_file($info_file, $errmsg, $exit_on_err)) {
 					if (empty($plugininfo['version'])) {
 						if ($exit_on_err) {
 							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $info_file));
@@ -789,8 +843,16 @@ function build_plugin_list($plugin_list)
 
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 
+		if(!empty($plugininfo['less_or_equal_vers']))
+		{
+			$table->construct_cell('<span style="color: red;">'.$lang->error_staged_plugin_less_or_equal_vers.'</span>', array("class" => "align_center", "colspan" => 2));
+		}
+		else if(!empty($plugininfo['upgradeable']))
+		{
+			$table->construct_cell('<a href="index.php?module=config-plugins&amp;action=upgrade&amp;plugin='.$plugininfo['codename'].'&amp;my_post_key='.$mybb->post_code.'">'.($installed ? $lang->upgrade_plugin : $lang->upgrade_install_activate_plugin).'</a>', array("class" => "align_center", "colspan" => 2));
+		}
 		// Plugin is not installed at all
-		if(!empty($plugininfo['is_staged']) || $installed == false)
+		else if(!empty($plugininfo['is_staged']) || $installed == false)
 		{
 			if($compatibility_warning)
 			{
@@ -836,5 +898,36 @@ function build_plugin_list($plugin_list)
 			}
 		}
 		$table->construct_row();
+	}
+}
+
+function integrate_staged_plugin($codename)
+{
+	global $lang;
+
+	// Require that any plugin themelet does NOT use the `current` directory (it must instead use `devdist`).
+	if(file_exists(MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename/interface/current"))
+	{
+		flash_message($lang->error_staged_plugin_themelet_uses_curr, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+
+	$staged_themelet_dir = MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename/interface/devdist";
+	$dest_themelet_dir = MYBB_ROOT."inc/plugins/$codename/interface/current";
+	if(!move_recursively($staged_themelet_dir, $dest_themelet_dir, $errmsg))
+	{
+		flash_message($errmsg, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	if(!move_recursively(MYBB_ROOT.'staging/plugins/'.$codename.'/root', MYBB_ROOT, $errmsg))
+	{
+		// Attempt to back out of the prior successful move.
+		move_recursively($dest_themelet_dir, $staged_themelet_dir);
+
+		flash_message($errmsg, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	} else
+	{
+		rmdir(MYBB_ROOT.'staging/plugins/'.$codename);
 	}
 }

@@ -9177,43 +9177,43 @@ function mk_path_abs($path, $base = MYBB_ROOT)
  * @param boolean $show_errs If true and an error occurs, display the error inline. If not in the ACP, exit thereafter.
  * @return array
  */
-function read_json_file($json_file, $show_errs = true)
+function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 {
 	global $lang, $page;
 
 	$ret = [];
 
 	if (!file_exists($json_file)) {
+		$err_msg = $lang->sprintf($lang->error_missing_json_file, $json_file);
 		if ($show_errs) {
-			$msg = $lang->sprintf($lang->error_missing_json_file, $json_file);
 			if (IN_ADMINCP) {
-				$page->output_inline_error($msg);
-			} else	error($msg);
+				$page->output_inline_error($err_msg);
+			} else	error($err_msg);
 		}
 	} else if (!is_file($json_file) || !is_readable($json_file)) {
+		$err_msg = $lang->sprintf($lang->error_unreadable_json_file, $json_file);
 		if ($show_errs) {
-			$msg = $lang->sprintf($lang->error_unreadable_json_file, $json_file);
 			if (IN_ADMINCP) {
-				$page->output_inline_error($msg);
-			} else	error($msg);
+				$page->output_inline_error($err_msg);
+			} else	error($err_msg);
 		}
 	} else {
 		$json = file_get_contents($json_file);
 		if ($json === false) {
+			$err_msg = $lang->sprintf($lang->error_fgc_failed_for_json_file, $json_file);
 			if ($show_errs) {
-				$msg = $lang->sprintf($lang->error_fgc_failed_for_json_file, $json_file);
 				if (IN_ADMINCP) {
-					$page->output_inline_error($msg);
-				} else	error($msg);
+					$page->output_inline_error($err_msg);
+				} else	error($err_msg);
 			}
 		} else {
 			$ret = json_decode($json, true);
 			if (!is_array($ret)) {
+				$err_msg = $lang->sprintf($lang->error_invalid_json_in_file, $json_file);
 				if ($show_errs) {
-					$msg = $lang->sprintf($lang->error_invalid_json_in_file, $json_file);
 					if (IN_ADMINCP) {
-						$page->output_inline_error($msg);
-					} else	error($msg);
+						$page->output_inline_error($err_msg);
+					} else	error($err_msg);
 				} else	$ret = [];
 			}
 		}
@@ -9293,4 +9293,19 @@ backout_recursive_move:
 
 	// Earlier return possible
 	return false;
+}
+
+// Copied from https://stackoverflow.com/a/15111679 with edits for coding style
+function rmdir_recursive($dirPath)
+{
+    if (!empty($dirPath) && is_dir($dirPath)) {
+        $dirObj= new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS); //upper dirs not included,otherwise DISASTER HAPPENS :)
+        $files = new RecursiveIteratorIterator($dirObj, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $path) {
+            $path->isDir() && !$path->isLink() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+        }
+        rmdir($dirPath);
+        return true;
+    }
+    return false;
 }

@@ -24,11 +24,16 @@ $l['deactivate'] = "Deactivate";
 $l['activate'] = "Activate";
 $l['install_and_activate'] = "Install &amp; Activate";
 $l['integrate_install_and_activate'] = "Integrate, Install &amp; Activate";
+$l['upgrade_plugin'] = "Upgrade to this version";
+$l['upgrade_install_activate_plugin'] = "Upgrade to this version, Install &amp; Activate";
 $l['uninstall'] = "Uninstall";
 $l['created_by'] = "Created by";
 $l['no_plugins'] = "There are no plugins on your forum at this time.";
 $l['no_active_plugins'] = "There are no active plugins on your forum.";
 $l['no_inactive_plugins'] = "There are no inactive plugins available.";
+
+$l['upload_plugin'] = 'Upload a plugin to install/upgrade: ';
+$l['install_uploaded_plugin'] = 'Upload and install/upgrade';
 
 $l['plugin_incompatible'] = "This plugin is incompatible with MyBB {1}";
 
@@ -49,9 +54,13 @@ $l['error_no_results_found'] = "No results were found for the specified keywords
 $l['error_bad_staged_plugin_file'] = "The staged plugin file '{1}' either does not exist or is not readable.";
 $l['error_bad_staged_json_file'] = "Failed to parse the staged plugin JSON file '{1}'.";
 $l['error_pl_json_both_key_and_raw'] = "Both {1} and {2} are specified in the JSON file for the staged plugin {3}.";
+$l['error_staged_plugin_less_or_equal_vers'] = 'The installed or integrated version of this plugin is greater than or equal to that of this staged version.';
+$l['error_staged_plugin_themelet_uses_curr'] = 'The staged plugin\'s themelet contains a `current` directory. This is disallowed. It must instead use a `devdist` directory.';
 
 $l['success_plugins_up_to_date'] = "Congratulations, all of your plugins are up to date.";
 $l['success_plugin_activated'] = "The selected plugin has been activated successfully.";
+$l['success_plugin_upgraded_install_activated'] = 'The selected plugin has been upgraded, installed, and activated successfully.';
 $l['success_plugin_deactivated'] = "The selected plugin has been deactivated successfully.";
 $l['success_plugin_installed'] = "The selected plugin has been installed and activated successfully.";
+$l['success_plugin_upgraded'] = 'The selected plugin has been upgraded successfully.';
 $l['success_plugin_uninstalled'] = "The selected plugin has been uninstalled successfully.";

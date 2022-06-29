@@ -234,7 +234,7 @@ MyBB\app('config')->set(
 $error_handler->force_display_errors = false;
 
 // Load plugins
-if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
+if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1) && !$skip_plugin_load)
 {
 	$plugins->load();
 }

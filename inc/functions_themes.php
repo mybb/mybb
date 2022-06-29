@@ -237,7 +237,7 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 }
 
 /**
- * Determines via its manifest file the version of the current theme with name $theme_code.
+ * Determine via its manifest file the version of the current theme with name $theme_code.
  *
  * @param string $theme_code The codename (directory) of the theme for which to find the version.
  * @param string $err_msg Stores the messages for any errors encountered.
@@ -247,38 +247,42 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 function get_theme_version($theme_code, &$err_msg = '')
 {
     $err_msg = '';
-    $version = false;
-    $themes_base = MYBB_ROOT.'inc/themes/';
-    $manifest_file = $themes_base.$theme_code.'/current/manifest.json';
-    if (is_readable($manifest_file)) {
-        $json = file_get_contents($manifest_file);
-        $manifest = json_decode($json, true);
-        if (is_array($manifest) && !empty($manifest['version'])) {
-            $version = $manifest['version'];
+    $manifest_file = MYBB_ROOT."inc/themes/$theme_code/current/manifest.json";
+    $manifest = read_json_file($manifest_file, $err_msg, false);
+    if (!isset($manifest['version'])) {
+        if (!$err_msg) {
+            $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
+            '" does not supply a valid `version` property (or is non-existent, unreadable, or corrupt.';
         }
+        return false;
+    } else {
+        $version = $manifest['version'];
+        return $version;
     }
-    if ($version === false) {
-        $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
-          '" either does not exist, is not readable, or is corrupt.';
-    }
-
-    return $version;
 }
 
 /**
- * Archives the current theme with codename $theme_code.
+ * Archives the `current` version of the themelet with (plugin) codename $codename.
  *
- * @param string $theme_code The codename (directory) of the theme to archive.
+ * @param string $codename The codename (directory) of the theme or plugin to archive.
+ * @param boolean $is_plugin_themelet True indicates to interpret $codename as a plugin codename, and to archive
+ *                                    that plugin's `current` themelet; otherwise, $codename represents the codename
+ *                                    of a theme proper.
  * @param string $err_msg Stores the messages for any errors encountered.
  * @return boolean False if an error was encountered (in which case $err_msg will be set),
  *                 and true on success.
  */
-function archive_theme($theme_code, &$err_msg = '')
+function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = '')
 {
     $err_msg = '';
-    $version = get_theme_version($theme_code, $err_msg);
+    if ($is_plugin_themelet) {
+        $plugininfo = read_json_file(MYBB_ROOT."inc/plugins/$codename/plugin.json", $err_msg, false);
+        $version = isset($plugininfo['version']) ? $plugininfo['version'] : false;
+    } else {
+        $version = get_theme_version($codename, $err_msg);
+    }
     if ($version !== false) {
-        $archive_base = MYBB_ROOT.'storage/themelets/'.$theme_code;
+        $archive_base = MYBB_ROOT.'storage/themelets/'.($is_plugin_themelet ? 'ext.' : '').$codename;
         if (!is_dir($archive_base)) {
             mkdir($archive_base, 0777, true);
         }
@@ -286,19 +290,36 @@ function archive_theme($theme_code, &$err_msg = '')
             $err_msg = 'The archival directory "'.htmlspecialchars_uni($archive_base).
               '" either does not exist (and could not be created) or is not readable.';
         } else {
-            $theme_dir = MYBB_ROOT.'inc/themes/'.$theme_code.'/current';
+            if ($is_plugin_themelet) {
+                $themelet_dir = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/current';
+            } else {
+                $themelet_dir = MYBB_ROOT.'inc/themes/'.$codename.'/current';
+            }
             $archival_dir = $archive_base.'/'.$version;
             if (file_exists($archival_dir)) {
-                $err_msg = 'The archival directory "'.htmlspecialchars_uni($archival_dir).'" already exists.';
-            } else {
-                if (!rename($theme_dir, $archival_dir)) {
-                    $err_msg = 'Failed to move "'.htmlspecialchars_uni($theme_dir).
-                      '" to "'.htmlspecialchars_uni($archival_dir).'".';
+                // Don't delete an existing archive of this themelet version unless we can't make a backup copy of it.
+                $max_tries = 100;
+                for ($i = 1; $i <= $max_tries; $i++) {
+                    if (rename($archival_dir, $archival_dir.' (copy '.$i.')')) {
+                        break;
+                    }
                 }
+                if ($i > $max_tries) {
+                    if (!rmdir_recursive($archival_dir)) {;
+                        $err_msg = 'The archival directory "'.htmlspecialchars_uni($archival_dir).
+                                   '" already exists and could neither be renamed nor deleted.';
+                        return false;
+                    }
+                }
+            }
+            if (!rename($themelet_dir, $archival_dir)) {
+                $err_msg = 'Failed to move "'.htmlspecialchars_uni($themelet_dir).
+                    '" to "'.htmlspecialchars_uni($archival_dir).'".';
             }
         }
     }
 
+    // Earlier return possible
     return $err_msg ? false : true;
 }
 

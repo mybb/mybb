@@ -64,6 +64,15 @@ function hello_dyndesc(&$desc)
 }
 
 /*
+ * _upgrade():
+ *   Called whenever a plugin is upgraded via the Admin CP. Any upgrades from prior versions of this plugin should be
+ *   performed in this function, including to the database schema and settings.
+ */
+function hello_upgrade()
+{
+}
+
+/*
  * _activate():
  *    Called whenever a plugin is activated via the Admin CP. This should essentially make a plugin
  *    'visible' by adding templates/template changes, language changes etc.
