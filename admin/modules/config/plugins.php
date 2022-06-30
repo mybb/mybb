@@ -943,6 +943,6 @@ function integrate_staged_plugin($codename)
 		admin_redirect('index.php?module=config-plugins');
 	} else
 	{
-		rmdir(MYBB_ROOT.'staging/plugins/'.$codename);
+		rmdir_recursive(MYBB_ROOT.'staging/plugins/'.$codename);
 	}
 }
