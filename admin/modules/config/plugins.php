@@ -16,9 +16,11 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->plugins, "index.php?module=config-plugins");
 
+$action = $mybb->get_input('action');
+
 $plugins->run_hooks("admin_config_plugins_begin");
 
-if($mybb->input['action'] == "browse")
+if($action == "browse")
 {
 	$page->add_breadcrumb_item($lang->browse_plugins);
 
@@ -197,7 +199,7 @@ if($mybb->input['action'] == "browse")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "check")
+if($action == "check")
 {
 	$plugins_list = get_plugins_list();
 
@@ -368,8 +370,131 @@ if($mybb->input['action'] == "check")
 	$page->output_footer();
 }
 
-// Activates, deactivates, or upgrades (from staging) a specific plugin
-if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate" || $mybb->input['action'] == 'upgrade')
+$is_upload = ($action == 'upload');
+if($is_upload)
+{
+	if(!class_exists('ZipArchive'))
+	{
+		flash_message($lang->error_no_ziparchive_for_plugin, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	else if(empty($_FILES['plugin_upload']['tmp_name']))
+	{
+		flash_message($lang->error_no_plugin_uploaded, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	else
+	{
+		$maxtries = 100;
+		$base = MYBB_ROOT.'staging/plugins/'.uniqid();
+		for($i = 1; $i < $maxtries; $i++)
+		{
+			$tmpdir = $base.'-'.$i;
+			if(mkdir($tmpdir, 0755, true))
+			{
+				break;
+			}
+		}
+		if($i >= $maxtries)
+		{
+			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else if(!mkdir($tmpdir.'/extracted/', 0755, true))
+		{
+			rmdir_recursive($tmpdir);
+			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else if(!move_uploaded_file($_FILES['plugin_upload']['tmp_name'], $tmpdir.'/'.$_FILES['plugin_upload']['name']))
+		{
+			rmdir_recursive($tmpdir);
+			flash_message($lang->error_move_uploaded_plugin_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else
+		{
+			$za = new ZipArchive;
+			$res = $za->open($tmpdir.'/'.$_FILES['plugin_upload']['name']);
+			if($res !== true)
+			{
+				rmdir_recursive($tmpdir);
+				flash_message($lang->sprintf($lang->error_plugin_unzip_open_failed, $res), 'error');
+				admin_redirect('index.php?module=config-plugins');
+			}
+			else
+			{
+				if(!$za->extractTo($tmpdir.'/extracted/'))
+				{
+					rmdir_recursive($tmpdir);
+					flash_message($lang->error_plugin_unzip_failed, 'error');
+					admin_redirect('index.php?module=config-plugins');
+				}
+				$za->close();
+				$top_lvl_files = glob($tmpdir.'/extracted/*');
+				if(count($top_lvl_files) != 1)
+				{
+					rmdir_recursive($tmpdir);
+					flash_message($lang->error_plugin_unzip_multi_or_none_root, 'error');
+					admin_redirect('index.php?module=config-plugins');
+
+				}
+				else
+				{
+					$plugin_code = basename($top_lvl_files[0]);
+					if(file_exists(MYBB_ROOT.'staging/plugins/'.$plugin_code) && empty($mybb->input['allow_overwrite']))
+					{
+						rmdir_recursive($tmpdir);
+						flash_message($lang->sprintf($lang->error_plugin_already_staged, $plugin_code), 'error');
+						admin_redirect('index.php?module=config-plugins');
+					}
+					else
+					{
+						rmdir_recursive(MYBB_ROOT.'staging/plugins/'.$plugin_code);
+						if(!rename($top_lvl_files[0], MYBB_ROOT.'staging/plugins/'.$plugin_code))
+						{
+							rmdir_recursive($tmpdir);
+							flash_message($lang->error_plugin_move_fail, 'error');
+							admin_redirect('index.php?module=config-plugins');
+						}
+						else
+						{
+							rmdir_recursive($tmpdir);
+							$file = basename($plugin_code.'.php');
+							if(file_exists(MYBB_ROOT."inc/plugins/$file"))
+							{
+								$action = 'upgrade';
+								$plugininfo = read_json_file(MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json");
+								$pi_integrated = read_json_file(MYBB_ROOT."inc/plugins/$plugin_code/plugin.json");
+
+								if(isset($pi_integrated['version'])
+								   &&
+								   isset($plugininfo['version'])
+								   &&
+								   version_compare($pi_integrated['version'], $plugininfo['version']) >= 0
+								   &&
+								   empty($mybb->input['ignore_vers'])
+								)
+								{
+									rmdir_recursive(MYBB_ROOT.'staging/plugins/'.$plugin_code);
+									flash_message($lang->error_plugin_uploaded_less_or_equal_vers, 'error');
+									admin_redirect('index.php?module=config-plugins');
+								}
+							}
+							else
+							{
+								$action = 'activate';
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Upgrades (from staging), activates, or deactivates a specific plugin
+if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
@@ -379,11 +504,11 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 	$do_upgrade = false;
 
-	if($mybb->input['action'] == "activate")
+	if($action == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate");
 	}
-	else if($mybb->input['action'] == 'upgrade')
+	else if($action == 'upgrade')
 	{
 		$do_upgrade = true;
 		$plugins->run_hooks('admin_config_plugins_upgrade');
@@ -393,7 +518,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		$plugins->run_hooks("admin_config_plugins_deactivate");
 	}
 
-	$codename = $mybb->input['plugin'];
+	$codename = !empty($plugin_code) ? $plugin_code : $mybb->input['plugin'];
 	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
 
@@ -457,10 +582,10 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		{
 			call_user_func("{$codename}_upgrade");
 		}
-		$message = $lang->success_plugin_upgraded;
+		$message = $lang->success_plugin_updated;
 	}
 
-	if($do_upgrade || $mybb->input['action'] == "activate")
+	if($do_upgrade || $action == "activate")
 	{
 		if(!$do_upgrade)
 		{
@@ -491,7 +616,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		$active_plugins[$codename] = $codename;
 		$executed[] = 'activate';
 	}
-	else if($mybb->input['action'] == "deactivate")
+	else if($action == "deactivate")
 	{
 		$message = $lang->success_plugin_deactivated;
 
@@ -520,7 +645,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	// Log admin action
 	log_admin_action($codename, $install_uninstall);
 
-	if($mybb->input['action'] == "activate")
+	if($action == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate_commit");
 	}
@@ -537,7 +662,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	admin_redirect("index.php?module=config-plugins");
 }
 
-if(!$mybb->input['action'])
+if(!$action)
 {
 	$page->output_header($lang->plugins);
 
@@ -588,6 +713,18 @@ if(!$mybb->input['action'])
 		$dyndescfunc($plugininfo['description']);
 	}
 	unset($plugininfo);
+
+	$form = new Form('index.php?module=config-plugins&amp;action=upload', 'post', '', 1);
+	$table = new Table;
+	$table->construct_header($lang->upload_plugin_desc);
+	$table->construct_cell($form->generate_file_upload_box('plugin_upload', array('style' => 'width: 230px;')).
+	                       $form->generate_check_box('allow_overwrite', 1, $lang->plugin_upload_allow_overwrite).
+	                       $form->generate_check_box('ignore_vers', 1, $lang->plugin_ignore_vers).
+	                       ' '.
+	                       $form->generate_submit_button($lang->install_uploaded_plugin));
+	$table->construct_row();
+	$table->output($lang->upload_plugin);
+	$form->end();
 
 	if(!empty($plugins_list) || !empty($s_plugins))
 	{
