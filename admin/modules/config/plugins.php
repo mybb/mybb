@@ -845,7 +845,7 @@ function build_plugin_list($plugin_list)
 
 		if(!empty($plugininfo['less_or_equal_vers']))
 		{
-			$table->construct_cell('<span style="color: red;">'.$lang->error_staged_plugin_less_or_equal_vers.'</span>', array("class" => "align_center", "colspan" => 2));
+			$table->construct_cell('<span style="color: red;">'.($lang->sprintf($installed ? $lang->error_staged_plugin_less_or_equal_vers_ins : $lang->error_staged_plugin_less_or_equal_vers_int, $plugininfo['codename'])).'</span>', array("class" => "align_center", "colspan" => 2));
 		}
 		else if(!empty($plugininfo['upgradeable']))
 		{

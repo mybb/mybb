@@ -54,7 +54,8 @@ $l['error_no_results_found'] = "No results were found for the specified keywords
 $l['error_bad_staged_plugin_file'] = "The staged plugin file '{1}' either does not exist or is not readable.";
 $l['error_bad_staged_json_file'] = "Failed to parse the staged plugin JSON file '{1}'.";
 $l['error_pl_json_both_key_and_raw'] = "Both {1} and {2} are specified in the JSON file for the staged plugin {3}.";
-$l['error_staged_plugin_less_or_equal_vers'] = 'The installed or integrated version of this plugin is greater than or equal to that of this staged version.';
+$l['error_staged_plugin_less_or_equal_vers_int'] = 'The integrated version of this plugin is greater than or equal to that of this staged version. To anyway install this staged version of the plugin, please first delete those of its files already integrated into the filesystem, in particular its `inc/plugins/{1}.php` file.';
+$l['error_staged_plugin_less_or_equal_vers_ins'] = 'The installed version of this plugin is greater than or equal to that of this staged version. To anyway install this staged version of the plugin, please first uninstall the current version (via the link in the above panel), then delete those of its files already integrated into the filesystem, in particular its `inc/plugins/{1}.php` file.';
 $l['error_staged_plugin_themelet_uses_curr'] = 'The staged plugin\'s themelet contains a `current` directory. This is disallowed. It must instead use a `devdist` directory.';
 
 $l['success_plugins_up_to_date'] = "Congratulations, all of your plugins are up to date.";
