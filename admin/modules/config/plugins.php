@@ -368,7 +368,7 @@ if($mybb->input['action'] == "check")
 	$page->output_footer();
 }
 
-// Activates or deactivates a specific plugin
+// Activates, deactivates, or upgrades (from staging) a specific plugin
 if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate" || $mybb->input['action'] == 'upgrade')
 {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
@@ -772,6 +772,15 @@ function get_staged_plugins($exit_on_err = true)
 	return $plugins_list;
 }
 
+/**
+ * Translates any `[field]_key` fields in the supplied plugin info into `[field]` keys using the language key stipulated
+ * by those `_key` fields. Checks whether this can be done for the fields `name` and `description`.
+ *
+ * @param array $plugininfo An array of plugin info, e.g., as retrieved from a plugin.json file.
+ * @param boolean $staged If true, then the plugin language file used is in the staging directory; otherwise, it is as
+ *                        usual.
+ * @param boolean $show_errs If true, then output an inline error message on error; otherwise, ignore errors.
+ */
 function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true)
 {
 	global $lang, $page;
@@ -901,6 +910,12 @@ function build_plugin_list($plugin_list)
 	}
 }
 
+/**
+ * Attempt to integrate the specified plugin into the main filesystem hierarchy from its staged location, and fully
+ * removing its staged location. Redirects on error.
+ *
+ * @param string $codename The codename of the staged plugin.
+ */
 function integrate_staged_plugin($codename)
 {
 	global $lang;
