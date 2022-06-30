@@ -728,10 +728,10 @@ function get_plugins_list()
 /**
  * Gets a list of staged plugin files.
  *
- * @param boolean $exit_on_err If true and an error occurs, displays the error and exits.
+ * @param boolean $show_errs If true, and an error occurs, the error is displayed inline; otherwise errors are ignored.
  * @return array Keys are plugin codenames; values are plugin manifest data as extracted from the relevant manifest file.
  */
-function get_staged_plugins($exit_on_err = true)
+function get_staged_plugins($show_errs = true)
 {
 	global $lang, $page;
 
@@ -739,28 +739,28 @@ function get_staged_plugins($exit_on_err = true)
 	$dh = @opendir(MYBB_ROOT.'staging/plugins/');
 	if ($dh) {
 		while (($plugin_code = readdir($dh))) {
-			if (in_array($plugin_code, ['.', '..'])) {
+			if (in_array($plugin_code, ['.', '..']) || !is_dir(MYBB_ROOT."staging/plugins/$plugin_code")) {
 				continue;
 			}
 			$p_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code.php";
 			if (!file_exists($p_file) || !is_readable($p_file)) {
-				if ($exit_on_err) {
+				if ($show_errs) {
 					$page->output_inline_error($lang->sprintf($lang->error_bad_staged_plugin_file, $p_file));
 				}
 			} else {
 				$info_file = MYBB_ROOT."staging/plugins/$plugin_code/root/inc/plugins/$plugin_code/plugin.json";
-				if ($plugininfo = read_json_file($info_file, $errmsg, $exit_on_err)) {
+				if ($plugininfo = read_json_file($info_file, $errmsg, $show_errs)) {
 					if (empty($plugininfo['version'])) {
-						if ($exit_on_err) {
+						if ($show_errs) {
 							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $info_file));
 						}
 					} else {
-						plugininfo_keys_to_raw($plugininfo, true, $exit_on_err);
+						plugininfo_keys_to_raw($plugininfo, true, $show_errs);
 						$plugininfo['is_staged'] = true;
 						$plugins_list[$plugin_code] = $plugininfo;
 					}
 				} else {
-					if ($exit_on_err) {
+					if ($show_errs) {
 						$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $info_file));
 					}
 				}
@@ -911,8 +911,8 @@ function build_plugin_list($plugin_list)
 }
 
 /**
- * Attempt to integrate the specified plugin into the main filesystem hierarchy from its staged location, and fully
- * removing its staged location. Redirects on error.
+ * Attempts to integrate the specified plugin into the main filesystem hierarchy from its staged location, and fully
+ * remove its staged location. Redirects on error.
  *
  * @param string $codename The codename of the staged plugin.
  */
