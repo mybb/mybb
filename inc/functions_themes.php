@@ -54,16 +54,14 @@ function get_themelet_hierarchy()
                 continue;
             }
             foreach (['devdist', 'current'] as $mode) {
-                if ($theme_code == 'core.default') {
+                $prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
+                if ($theme_code == 'core.default' || !is_readable($prop_file)) {
                     $parents[$mode][$theme_code] = '';
                 } else {
-                    $prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
-                    if (is_readable($prop_file)) {
-                        $json = file_get_contents($prop_file);
-                        $props = json_decode($json, true);
-                        if (is_array($props) && array_key_exists('parent', $props)) {
-                            $parents[$mode][$theme_code] = $props['parent'];
-                        }
+                    $json = file_get_contents($prop_file);
+                    $props = json_decode($json, true);
+                    if (is_array($props) && array_key_exists('parent', $props)) {
+                        $parents[$mode][$theme_code] = $props['parent'];
                     }
                 }
             }
