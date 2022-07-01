@@ -54,14 +54,16 @@ function get_themelet_hierarchy()
                 continue;
             }
             foreach (['devdist', 'current'] as $mode) {
-                $prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
-                if (is_readable($prop_file)) {
-                    $json = file_get_contents($prop_file);
-                    $props = json_decode($json, true);
-                    if (is_array($props) && array_key_exists('parent', $props)) {
-                        $parents[$mode][$theme_code] = $props['parent'];
-                    } elseif ($theme_code == 'core.default') {
-                        $parents[$mode][$theme_code] = '';
+                if ($theme_code == 'core.default') {
+                    $parents[$mode][$theme_code] = '';
+                } else {
+                    $prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
+                    if (is_readable($prop_file)) {
+                        $json = file_get_contents($prop_file);
+                        $props = json_decode($json, true);
+                        if (is_array($props) && array_key_exists('parent', $props)) {
+                            $parents[$mode][$theme_code] = $props['parent'];
+                        }
                     }
                 }
             }
@@ -76,9 +78,8 @@ function get_themelet_hierarchy()
             if ($child !== 'core.default') {
                 while ($parent && !in_array($parent, $themelet_hierarchy[$mode]['themes'][$child])) {
                     $themelet_hierarchy[$mode]['themes'][$child][] = $parent;
-                    $parent = isset($parents[$parent]) ? $parents[$parent] : null;
+                    $parent = isset($parents[$mode][$parent]) ? $parents[$mode][$parent] : null;
                 }
-                $themelet_hierarchy[$mode]['themes'][$child][] = 'core.default';
             }
         }
     }
