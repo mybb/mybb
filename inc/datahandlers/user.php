@@ -903,7 +903,7 @@ class UserDataHandler extends DataHandler
 
 		if(!empty($user['style']))
 		{
-			$theme = get_theme($user['style']);
+			$theme = get_fs_theme($user['style']);
 
 			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
 			{
@@ -1371,7 +1371,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['style']))
 		{
-			$this->user_update_data['style'] = (int)$user['style'];
+			$this->user_update_data['style'] = $user['style'];
 		}
 		if(isset($user['timezone']))
 		{

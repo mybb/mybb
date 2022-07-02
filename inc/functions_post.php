@@ -927,7 +927,6 @@ function build_postbit($post, $post_type=0)
 			if($mybb->user['uid'] && $post['visible'] == 0 && $post['uid'] == $mybb->user['uid'] && !is_moderator($fid, "canviewunapprove"))
 			{
 				$ignored_message = $lang->sprintf($lang->postbit_post_under_moderation, $post['username']);
-				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 

@@ -14,27 +14,6 @@ if(!defined('IN_MYBB'))
 	die('This file cannot be accessed directly.');
 }
 
-// cache templates - this is important when it comes to performance
-// THIS_SCRIPT is defined by some of the MyBB scripts, including index.php
-if(defined('THIS_SCRIPT'))
-{
-    global $templatelist;
-
-    if(isset($templatelist))
-    {
-        $templatelist .= ',';
-    }
-
-	if(THIS_SCRIPT== 'index.php')
-	{
-		$templatelist .= 'hello_index, hello_message';
-	}
-	elseif(THIS_SCRIPT== 'showthread.php')
-	{
-		$templatelist .= 'hello_post, hello_message';
-	}
-}
-
 if(defined('IN_ADMINCP'))
 {
 	// Add our hello_settings() function to the setting management module to load language strings.
@@ -64,149 +43,14 @@ function hello_dyndesc(&$desc)
 }
 
 /*
- * _upgrade():
- *   Called whenever a plugin is upgraded via the Admin CP. Any upgrades from prior versions of this plugin should be
- *   performed in this function, including to the database schema and settings.
- */
-function hello_upgrade()
-{
-}
-
-/*
  * _activate():
  *    Called whenever a plugin is activated via the Admin CP. This should essentially make a plugin
- *    'visible' by adding templates/template changes, language changes etc.
+ *    'visible' by adding template changes, language changes etc.
 */
 function hello_activate()
 {
 	global $db, $lang;
 	$lang->load('hello');
-
-	// Add a new template (hello_index) to our global templates (sid = -1)
-	$templatearray = array(
-	'index' => '<br />
-<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
-	<thead>
-		<tr>
-			<td class="thead">
-				<strong>{$lang->hello}</strong>
-			</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td class="tcat">
-				<form method="POST" action="misc.php">
-					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-					<input type="hidden" name="action" value="hello" />
-					{$lang->hello_add_message}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" class="button" value="{$lang->hello_add}" />
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td class="trow1">
-				{$messages}
-			</td>
-		</tr>
-	</tbody>
-</table>
-<br />',
-	'post' => '<br /><br /><strong>{$lang->hello}:</strong><br />{$messages}',
-	'message' => '<br /> - {$message}'
-	);
-
-	$group = array(
-		'prefix' => $db->escape_string('hello'),
-		'title' => $db->escape_string('Hello World!')
-	);
-
-	// Update or create template group:
-	$query = $db->simple_select('templategroups', 'prefix', "prefix='{$group['prefix']}'");
-
-	if($db->fetch_field($query, 'prefix'))
-	{
-		$db->update_query('templategroups', $group, "prefix='{$group['prefix']}'");
-	}
-	else
-	{
-		$db->insert_query('templategroups', $group);
-	}
-
-	// Query already existing templates.
-	$query = $db->simple_select('templates', 'tid,title,template', "sid=-2 AND (title='{$group['prefix']}' OR title LIKE '{$group['prefix']}=_%' ESCAPE '=')");
-
-	$templates = $duplicates = array();
-
-	while($row = $db->fetch_array($query))
-	{
-		$title = $row['title'];
-		$row['tid'] = (int)$row['tid'];
-
-		if(isset($templates[$title]))
-		{
-			// PluginLibrary had a bug that caused duplicated templates.
-			$duplicates[] = $row['tid'];
-			$templates[$title]['template'] = false; // force update later
-		}
-		else
-		{
-			$templates[$title] = $row;
-		}
-	}
-
-	// Delete duplicated master templates, if they exist.
-	if($duplicates)
-	{
-		$db->delete_query('templates', 'tid IN ('.implode(",", $duplicates).')');
-	}
-
-	// Update or create templates.
-	foreach($templatearray as $name => $code)
-	{
-		if(strlen($name))
-		{
-			$name = "hello_{$name}";
-		}
-		else
-		{
-			$name = "hello";
-		}
-
-		$template = array(
-			'title' => $db->escape_string($name),
-			'template' => $db->escape_string($code),
-			'version' => 1,
-			'sid' => -2,
-			'dateline' => TIME_NOW
-		);
-
-		// Update
-		if(isset($templates[$name]))
-		{
-			if($templates[$name]['template'] !== $code)
-			{
-				// Update version for custom templates if present
-				$db->update_query('templates', array('version' => 0), "title='{$template['title']}'");
-
-				// Update master template
-				$db->update_query('templates', $template, "tid={$templates[$name]['tid']}");
-			}
-		}
-		// Create
-		else
-		{
-			$db->insert_query('templates', $template);
-		}
-
-		// Remove this template from the earlier queried list.
-		unset($templates[$name]);
-	}
-
-	// Remove no longer used templates.
-	foreach($templates as $name => $row)
-	{
-		$db->delete_query('templates', "title='{$db->escape_string($name)}'");
-	}
 
 	// Settings group array details
 	$group = array(
@@ -315,13 +159,13 @@ function hello_activate()
 	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
 
 	// Edit the index template and add our variable to above {$forums}
-	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', "{\$hello}\n{\$forums}");
+// 	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', "{\$hello}\n{\$forums}");
 }
 
 /*
  * _deactivate():
  *    Called whenever a plugin is deactivated. This should essentially 'hide' the plugin from view
- *    by removing templates/template changes etc. It should not, however, remove any information
+ *    by removing template changes etc. It should not, however, remove any information
  *    such as tables, fields etc - that should be handled by an _uninstall routine. When a plugin is
  *    uninstalled, this routine will also be called before _uninstall() if the plugin is active.
 */
@@ -330,7 +174,7 @@ function hello_deactivate()
 	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
 
 	// remove template edits
-	find_replace_templatesets('index', '#'.preg_quote('{$hello}').'#', '');
+// 	find_replace_templatesets('index', '#'.preg_quote('{$hello}').'#', '');
 }
 
 /*
@@ -406,12 +250,6 @@ function hello_uninstall()
 		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello', $lang->hello_uninstall_message, $lang->hello_uninstall);
 	}
 
-	// Delete template groups.
-	$db->delete_query('templategroups', "prefix='hello'");
-
-	// Delete templates belonging to template groups.
-	$db->delete_query('templates', "title='hello' OR title LIKE 'hello_%'");
-
 	// Delete settings group
 	$db->delete_query('settinggroups', "name='hello'");
 
@@ -452,7 +290,7 @@ function hello_index()
 		return;
 	}
 
-	global $db, $lang, $templates, $hello, $theme;
+	global $db, $lang, $hello, $theme;
 
 	// Load our language file
 	$lang->load('hello');
@@ -464,7 +302,6 @@ function hello_index()
 	{
 		// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 		$message = htmlspecialchars_uni($message);
-// 		$messages .= eval($templates->render('hello_message'));
 		$messages .= \MyBB\template('@ext.hello/message.twig', [
 			'message' => $message
 		]);
@@ -474,15 +311,11 @@ function hello_index()
 	if(empty($messages))
 	{
 		$message = $lang->hello_empty;
-// 		$messages = eval($templates->render('hello_message'));
 		$messages .= \MyBB\template('@ext.hello/message.twig', [
 			'message' => $message
 		]);
 	}
 
-	// Set $hello as our template and use eval() to do it so we can have our variables parsed
-	#eval('$hello = "'.$templates->get('hello_index').'";');
-// 	$hello = eval($templates->render('hello_index'));
 	$hello = \MyBB\template('@ext.hello/index.twig', [
 		'messages' => $messages
 	]);
@@ -502,7 +335,7 @@ function hello_post(&$post)
 		return;
 	}
 
-	global $lang, $templates;
+	global $lang;
 
 	// Load our language file
 	if(!isset($lang->hello))
@@ -524,7 +357,6 @@ function hello_post(&$post)
 		{
 			// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 			$message = htmlspecialchars_uni($message);
-// 			$messages .= eval($templates->render('hello_message'));
 			$messages .= \MyBB\template('@ext.hello/message.twig');
 		}
 
@@ -532,7 +364,6 @@ function hello_post(&$post)
 		if(empty($messages))
 		{
 			$message = $lang->hello_empty;
-// 			$messages = eval($templates->render('hello_message'));
 			$messages .= \MyBB\template('@ext.hello/message.twig');
 		}
 	}

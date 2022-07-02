@@ -1401,7 +1401,7 @@ EOF;
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->get_input('showredirect'))),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->get_input('showcodebuttons'))),
 		$form->generate_check_box("sourceeditor", "1", $lang->source_editor, array("checked" => $mybb->get_input('sourceeditor'))),
-		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->get_input('style'), 0, "", true, false, true),
+		"<label for=\"style\">{$lang->theme}:</label><br />".build_fs_theme_select("style", $mybb->get_input('style'), true, false, true),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->get_input('language'), array('id' => 'language'))
 	);
 

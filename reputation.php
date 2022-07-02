@@ -11,9 +11,6 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
-$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,reputation_vote_delete";
-$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report,postbit_reputation_formatted_link";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
@@ -456,7 +453,7 @@ if($mybb->input['action'] == "delete")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$rid = $mybb->get_input('rid', MyBB::INPUT_INT);
-	
+
 	$plugins->run_hooks("reputation_delete_start");
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
@@ -473,7 +470,7 @@ if($mybb->input['action'] == "delete")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("reputation_delete_end");
 
 	// Delete the specified reputation

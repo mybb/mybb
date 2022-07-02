@@ -12,13 +12,15 @@
 use ScssPhp\ScssPhp\Compiler;
 
 /**
- * Gets the hierarchy of themelets present in the filesystem.
+ * Gets the hierarchy of themelets present in the filesystem, including their properties.
  *
- * @return array The themelet hierarchy where the first index is mode ('devdist'
- *               or 'current'), the second is type ('themes' or 'plugins'), with,
- *               for plugins, the value being an array of codenames, and, for
- *               themes, the value being an array of arrayed theme parents
- *               indexed by theme codename.
+ * @return array The themelet hierarchy where the first index is mode ('devdist' or 'current'), the
+ *               second is type ('themes' or 'plugins'). For plugins, the value then is an array of
+ *               codenames. For themes, the third index is the codename of a theme, and the fourth
+ *               is either 'ancestors', 'children', or 'properties', with the value of each being
+ *               the appropriate array (of codenames of ancestors/children, ordered for ancestors
+ *               from nearest to furtherest, or of theme properties pulled out of its
+ *               `properties.json` file).
  */
 function get_themelet_hierarchy()
 {
@@ -44,9 +46,13 @@ function get_themelet_hierarchy()
         'devdist' => [],
         'current' => [],
     ];
+    $props_a = [
+        'devdist' => [],
+        'current' => [],
+    ];
 
-    // Iterate through theme directories in the filesystem,
-    // determining the parent of each.
+    // Iterate through each theme directory in the filesystem, pulling its properties from its
+    // `properties.json` and `manifest.json` files, and determining its parent.
     $themes_dir = MYBB_ROOT.'inc/themes/';
     if (is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false) {
         while (($theme_code = readdir($dh)) !== false) {
@@ -54,12 +60,27 @@ function get_themelet_hierarchy()
                 continue;
             }
             foreach (['devdist', 'current'] as $mode) {
-                $prop_file = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
+                if (!file_exists($themes_dir.$theme_code.'/'.$mode)) {
+                    continue;
+                }
+                $prop_file     = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
+                $manifest_file = $themes_dir.$theme_code.'/'.$mode.'/manifest.json';
+                $props = [];
+                if (is_readable($prop_file)) {
+                    $json = file_get_contents($prop_file);
+                    $props = json_decode($json, true);
+                }
+                $props_a[$mode][$theme_code] = $props;
+                if (is_readable($manifest_file)) {
+                    $json2 = file_get_contents($manifest_file);
+                    $props2 = json_decode($json2, true);
+                    if (is_array($props2)) {
+                        $props_a[$mode][$theme_code] = array_merge($props_a[$mode][$theme_code], $props2);
+                    }
+                }
                 if ($theme_code == 'core.default' || !is_readable($prop_file)) {
                     $parents[$mode][$theme_code] = '';
                 } else {
-                    $json = file_get_contents($prop_file);
-                    $props = json_decode($json, true);
                     if (is_array($props) && array_key_exists('parent', $props)) {
                         $parents[$mode][$theme_code] = $props['parent'];
                     }
@@ -69,14 +90,19 @@ function get_themelet_hierarchy()
         closedir($dh);
     }
 
-    // Generate a list of ancestors for each filesystem theme.
+    // Generate a list of ancestors and (direct) children for each filesystem theme.
     foreach (['devdist', 'current'] as $mode) {
         foreach ($parents[$mode] as $child => $parent) {
-            $themelet_hierarchy[$mode]['themes'][$child] = [];
+            $themelet_hierarchy[$mode]['themes'][$child] = ['ancestors' => [], 'children' => [], 'properties' => $props_a[$mode][$child]];
             if ($child !== 'core.default') {
-                while ($parent && !in_array($parent, $themelet_hierarchy[$mode]['themes'][$child])) {
-                    $themelet_hierarchy[$mode]['themes'][$child][] = $parent;
+                while ($parent && !in_array($parent, $themelet_hierarchy[$mode]['themes'][$child]['ancestors'])) {
+                    $themelet_hierarchy[$mode]['themes'][$child]['ancestors'][] = $parent;
                     $parent = isset($parents[$mode][$parent]) ? $parents[$mode][$parent] : null;
+                }
+            }
+            foreach ($parents[$mode] as $child2 => $parent2) {
+                if ($parent2 === $child) {
+                    $themelet_hierarchy[$mode]['themes'][$child]['children'][] = $child2;
                 }
             }
         }
@@ -128,7 +154,8 @@ function get_themelet_dirs($inc_devdist = false)
     }
 
     foreach ($modes as $mode) {
-        foreach ($themelet_hierarchy[$mode]['themes'] as $theme_code => $parents) {
+        foreach ($themelet_hierarchy[$mode]['themes'] as $theme_code => $relatives) {
+            $parents = $relatives['ancestors'];
             $themelet_dir = MYBB_ROOT.'inc/themes/'.$theme_code.'/'.$mode;
             if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
                 if (empty($themelet_dirs[$theme_code])) {
@@ -455,7 +482,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
     }
 
     $resource_path = $scss_path = false;
-    $theme_code = $theme['package'];
+    $theme_code = $theme['codename'];
 
     $spec_type_len = 3;
     if (my_strtolower(substr($specifier, 0, $spec_type_len)) === '~t~' && substr_count($specifier, ':') == 2) {
@@ -588,69 +615,4 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                   ? substr($cache_file, strlen(MYBB_ROOT))
                   : 'resource.php?specifier='.urlencode($specifier)
                );
-}
-
-/**
- * Installs the core 1.9 theme to the database. For use within installation/upgrade routines.
- *
- * @param string $theme_code The codename (directory) of the core 1.9 theme to install. At time of
- *                           writing, the only valid value for this parameter is 'core.default'.
- * @param boolean $devdist   If true, use the theme's `devdist` directory; otherwise, use its
- *                           `current` directory.
- */
-function install_core_19_theme_to_db($theme_code, $devdist = false)
-{
-    global $cache, $db;
-
-    $mode = $devdist ? 'devdist' : 'current';
-    $core_theme_title = 'Default';
-    $manifest_file = MYBB_ROOT.'inc/themes/core.default/'.$mode.'/manifest.json';
-    if (is_readable($manifest_file)) {
-        $json = file_get_contents($manifest_file);
-        $manifest = json_decode($json, true);
-        if (is_array($manifest) && !empty($manifest['extra']['title'])) {
-            $core_theme_title = $manifest['extra']['title'];
-        }
-    }
-
-    $stylesheets     = get_themelet_stylesheets($theme_code, /* $is_plugin = */false, $devdist);
-    $stylesheets_ser = my_serialize($stylesheets);
-    $stylesheets_esc = $db->escape_string($stylesheets_ser);
-
-    $disporder = [];
-    $order = 1;
-    $seen = [];
-    foreach ($stylesheets as $script => $arr) {
-        foreach ($arr as $action => $sheets) {
-            foreach ($sheets as $sheet) {
-                if (!in_array($sheet, $seen)) {
-                    $disporder[$sheet] = $order++;
-                    $seen[] = $sheet;
-                }
-            }
-        }
-    }
-    $properties = my_serialize(['disporder' => $disporder]);
-    $properties_esc = $db->escape_string($properties);
-
-    $core_theme_title_esc = $db->escape_string($core_theme_title);
-
-    // An empty `version` field indicates to use `current` (or `devdist` if in development mode and that directory
-    // exists).
-    $theme = [
-        'package' => $theme_code,
-        'version' => '',
-        'title' => $core_theme_title,
-        'properties' => $properties,
-        'stylesheets' => $stylesheets_ser,
-        'allowedgroups' => 'all'
-    ];
-    $theme_esc = $theme;
-    $theme_esc['title'      ] = $core_theme_title_esc;
-    $theme_esc['properties' ] = $properties_esc;
-    $theme_esc['stylesheets'] = $stylesheets_esc;
-    $tid = $db->insert_query('themes', $theme_esc);
-    $theme['tid'] = $tid;
-    $cache->update_default_theme($theme);
-    $cache->update_themelet_dirs();
 }

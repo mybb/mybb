@@ -87,7 +87,7 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
  */
 function get_unsearchable_forums($pid=0, $first=1)
 {
-	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $forumpass;
 
 	$pid = (int)$pid;
 

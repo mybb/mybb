@@ -116,11 +116,12 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	// Load the first available theme
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$theme = reset($themelet_hierarchy[$mode]['themes'])['properties'];
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
@@ -181,9 +182,6 @@ else
 	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
 	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
-
-$templatelist = "postbit_editedby,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
-$templates->cache($db->escape_string($templatelist));
 
 if($lang->settings['charset'])
 {
@@ -638,9 +636,9 @@ else if($mybb->input['action'] == "edit_post")
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
 				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+// 				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
 			}
-			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+// 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
 
 		// Send our headers.

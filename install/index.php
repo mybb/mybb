@@ -1776,11 +1776,6 @@ function install_default_theme()
 		$output->print_error('Failed to move "'.htmlspecialchars_uni($core_theme_basedir.'devdist').'" to '.htmlspecialchars_uni($core_theme_basedir.'current').'.');
 	}
 
-	$db->delete_query("themes");
-
-	require_once MYBB_ROOT.'inc/functions_themes.php';
-	install_core_19_theme_to_db('core.default', /*$devdist = */false);
-
 	my_rmdir_recursive(MYBB_ROOT."cache/themes");
 	my_rmdir_recursive(MYBB_ROOT."cache/views", array(MYBB_ROOT."cache/views/index.html"));
 

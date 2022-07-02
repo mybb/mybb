@@ -15,7 +15,7 @@
  */
 function output_page($contents)
 {
-	global $db, $lang, $theme, $templates, $plugins, $mybb;
+	global $db, $lang, $theme, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
@@ -941,7 +941,7 @@ function inline_error($errors, $title = "", $json_data = array())
  */
 function error_no_permission()
 {
-	global $mybb, $theme, $templates, $db, $lang, $plugins, $session;
+	global $mybb, $theme, $db, $lang, $plugins, $session;
 
 	$time = TIME_NOW;
 	$plugins->run_hooks('no_permission');
@@ -1011,7 +1011,7 @@ function error_no_permission()
  */
 function redirect($url, $message = "", $title = "", $force_redirect = false)
 {
-	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
+	global $header, $footer, $mybb, $theme, $headerinclude, $lang, $plugins;
 
 	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
 
@@ -1758,7 +1758,7 @@ function forum_password_validated($forum, $ignore_empty=false, $check_parents=fa
  */
 function check_forum_password($fid, $pid = 0, $return = false)
 {
-	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
+	global $mybb, $header, $footer, $headerinclude, $theme, $lang, $forum_cache;
 
 	$showform = true;
 
@@ -2131,7 +2131,7 @@ function get_moderated_fids($uid=0)
  */
 function get_post_icons()
 {
-	global $mybb, $cache, $icon, $theme, $templates, $lang;
+	global $mybb, $cache, $icon, $theme, $lang;
 
 	if(isset($mybb->input['icon']))
 	{
@@ -3246,7 +3246,7 @@ function delete_post($pid)
  */
 function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $showextras = 1, $showall = false, $permissions = "", $name = "fid")
 {
-	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $lang;
 
 	$pid = (int)$pid;
 
@@ -3524,7 +3524,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  */
 function build_mycode_inserter($bind = "message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
+	global $db, $mybb, $theme, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -3749,7 +3749,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 				'toolbar' => $toolbar,
 				'emoticons' => $emoticons,
 				'editor_language' => $editor_language,
-				'bind' => $bind
+				'bind' => $bind,
+				'theme' => $theme
 			]);
 		}
 	}
@@ -3815,7 +3816,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
  */
 function build_clickable_smilies()
 {
-	global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
+	global $cache, $smiliecache, $theme, $lang, $mybb, $smiliecount;
 
 	$clickablesmilies = '';
 
@@ -3946,7 +3947,7 @@ function build_prefixes($pid = 0)
  */
 function build_prefix_select($fid, $selected_pid = 0, $multiple = 0, $previous_pid = 0)
 {
-	global $cache, $db, $lang, $mybb, $templates;
+	global $cache, $db, $lang, $mybb;
 
 	if($fid != 'all')
 	{
@@ -4012,7 +4013,7 @@ function build_prefix_select($fid, $selected_pid = 0, $multiple = 0, $previous_p
  */
 function build_forum_prefix_select($fid, $selected_pid = 0)
 {
-	global $cache, $db, $lang, $mybb, $templates;
+	global $cache, $db, $lang, $mybb;
 
 	$fid = (int)$fid;
 
@@ -4388,7 +4389,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme, $templates, $lang, $mybb;
+	global $cache, $attachtypes, $theme, $lang, $mybb;
 
 	if(!$attachtypes)
 	{
@@ -4535,76 +4536,6 @@ function fix_mktime($format, $year)
 	$format = str_replace("y", my_substr($year, -2), $format);
 
 	return $format;
-}
-
-/**
- * Build the breadcrumb navigation trail from the specified items
- *
- * @return string The formatted breadcrumb navigation trail
- */
-function build_breadcrumb()
-{
-	global $nav, $navbits, $templates, $theme, $lang, $mybb;
-
-	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-
-	$i = 0;
-	$activesep = '';
-
-	if(is_array($navbits))
-	{
-		reset($navbits);
-		foreach($navbits as $key => $navbit)
-		{
-			if(isset($navbits[$key+1]))
-			{
-				if(isset($navbits[$key+2]))
-				{
-					$sep = $navsep;
-				}
-				else
-				{
-					$sep = "";
-				}
-
-				$multipage = null;
-				$multipage_dropdown = null;
-				if(!empty($navbit['multipage']))
-				{
-					if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-					{
-						$mybb->settings['threadsperpage'] = 20;
-					}
-
-					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-					if($multipage)
-					{
-						++$i;
-						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
-						$sep = $multipage_dropdown.$sep;
-					}
-				}
-
-				// Replace page 1 URLs
-				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-
-				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
-			}
-		}
-		$navsize = count($navbits);
-		$navbit = $navbits[$navsize-1];
-	}
-
-	if($nav)
-	{
-		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
-	}
-
-	eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-	eval("\$donenav = \"".$templates->get("nav")."\";");
-
-	return $donenav;
 }
 
 /**
@@ -5270,6 +5201,86 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  * Build a theme selection menu
  *
  * @param string $name The name of the menu
+ * @param int $selected The codename of the selected theme
+ * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
+ * @param boolean $footer Whether or not theme select is in the footer (true if it is)
+ * @param boolean $count_override Whether or not to override output based on theme count (true to override)
+ * @return string The theme selection list
+ */
+function build_fs_theme_select($name, $selected = '', $usergroup_override = false, $footer = false, $count_override = false)
+{
+	global $lang;
+
+	$ret = '';
+	$num_themes = 0;
+	$themeselect_options = [];
+
+	if(!isset($lang->use_default))
+	{
+		$lang->use_default = $lang->lang_select_default;
+	}
+
+	build_fs_theme_select_r(
+		/*$theme_code = */'',
+		/*$depth = */'',
+		$usergroup_override,
+		$num_themes,
+		$themeselect_options,
+	);
+
+	if ($num_themes > 1 || $count_override == true) {
+		$ret = \MyBB\template('misc/themeselect.twig', [
+			'footer' => $footer,
+			'selected' => $selected,
+			'options' => $themeselect_options,
+			'name' => $name
+		]);
+	}
+
+	return $ret;
+}
+
+function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_override = false, &$num_themes = 0, &$themeselect_options = [])
+{
+	global $mybb;
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$themes = $themelet_hierarchy[$mode]['themes'];
+
+	foreach($themes as $t_code => $theme)
+	{
+		if(!empty($theme['ancestors'][0]) && $theme['ancestors'][0] == $theme_code
+		   ||
+		   empty($theme['ancestors'][0]) && $theme_code == '')
+		{
+			if(is_member($theme['properties']['allowedgroups']) || $theme['properties']['allowedgroups'] == 'all' || $usergroup_override == true)
+			{
+				$themeselect_options[] = [
+					'tid' => $t_code,
+					'title' => $theme['properties']['extra']['title'],
+					'depth' => $depth,
+				];
+				++$num_themes;
+
+				if(!empty($theme['children']))
+				{
+					build_fs_theme_select_r($t_code, $depth."--", $usergroup_override, $num_themes, $themeselect_options);
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Build a theme selection menu
+ *
+ * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to the above build_fs_theme_select() alternative.
+ *
+ * @param string $name The name of the menu
  * @param int $selected The ID of the selected theme
  * @param int $tid The ID of the parent theme to select from
  * @param string $depth The current selection depth
@@ -5280,7 +5291,7 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  */
 function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $usergroup_override = false, $footer = false, $count_override = false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_options;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $num_themes, $themeselect_options;
 
 	if($tid == 0)
 	{
@@ -5330,6 +5341,10 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 	}
 }
 
+/**
+ * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to code based on the get_themelet_hierarchy() function.
+ */
 function build_tcache()
 {
 	global $db, $tcache;
@@ -5349,12 +5364,13 @@ function build_tcache()
 		}
 		foreach($themes as $theme)
 		{
-			if(isset($themelet_hierarchy['current']['themes'][$theme['package']]))
+			if(isset($themelet_hierarchy['current']['themes'][$theme['package']]['ancestors']))
 			{
+				$ancestors = $themelet_hierarchy['current']['themes'][$theme['package']]['ancestors'];
 				$first_pid = 0;
-				if(!empty($themelet_hierarchy['current']['themes'][$theme['package']][0]))
+				if(!empty($ancestors[0]))
 				{
-					$first_parent = $themelet_hierarchy['current']['themes'][$theme['package']][0];
+					$first_parent = $ancestors[0];
 					$first_pid = $themes[$first_parent]['tid'];
 				}
 				$theme['pid'] = $first_pid;
@@ -5365,7 +5381,30 @@ function build_tcache()
 }
 
 /**
+ * Get the properties of a theme.
+ *
+ * @param int $codename The codename of the theme.
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
+ */
+function get_fs_theme($codename)
+{
+	global $mybb;
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+
+	return $themelet_hierarchy[$mode]['themes'][$codename]['properties']
+	         ? $themelet_hierarchy[$mode]['themes'][$codename]['properties']
+	         : false;
+}
+
+/**
  * Get the theme data of a theme id.
+ *
+ * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to the above get_fs_theme() alternative.
  *
  * @param int $tid The theme id of the theme.
  * @return boolean|array False if no valid theme, Array with the theme data otherwise

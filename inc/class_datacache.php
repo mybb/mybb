@@ -993,8 +993,10 @@ class datacache
 		if(empty($theme))
 		{
 			// Default the default theme to the first one if this function is called without one
-			$query = $db->simple_select('themes', 'package, title, tid, properties, stylesheets', '', array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'ASC'));
-			$theme = $db->fetch_array($query);
+			require_once MYBB_ROOT.'inc/functions_themes.php';
+			$themelet_hierarchy = get_themelet_hierarchy();
+			$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+			$theme = reset($themelet_hierarchy[$mode]['themes'])['properties'];
 		}
 		$this->update('default_theme', $theme);
 	}

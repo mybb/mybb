@@ -64,7 +64,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 }
                 $theme = $cache->read('default_theme');
             }
-            $current_theme = $theme['package'];
+            $current_theme = $theme['codename'];
             require_once MYBB_ROOT.'inc/functions_themes.php';
             $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */$mybb->settings['themelet_dev_mode'], /*$use_themelet_cache = */true);
 
