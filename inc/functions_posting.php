@@ -190,10 +190,10 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 	else
 	{
 		if(empty($quoted_post['username']))
-	{
-		$quoted_post['username'] = htmlspecialchars_uni($lang->guest);
+		{
+			$quoted_post['username'] = htmlspecialchars_uni($lang->guest);
+		}
 	}
-}
 	// Clean up the message
 	$quoted_post['message'] = preg_replace(array(
 		'#(^|\r|\n)/me ([^\r\n<]*)#i',
