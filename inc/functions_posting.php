@@ -189,7 +189,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 	}
 	else
 	{
-	if(empty($quoted_post['username']))
+		if(empty($quoted_post['username']))
 	{
 		$quoted_post['username'] = htmlspecialchars_uni($lang->guest);
 	}
