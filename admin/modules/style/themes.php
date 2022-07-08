@@ -32,6 +32,12 @@ lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 
+// Be extra careful about dodgy codenames which use directory separators and '..' to access private filesystem files.
+if (!empty($mybb->input) && (strpos($mybb->input['codename'], '/') !== false || strpos($mybb->input['codename'], '\\') !== false)) {
+	flash_message($lang->error_codename_with_directory_separator, 'error');
+	admin_redirect('index.php?module=style-themes');
+}
+
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
 	// Fetch the theme we want to edit this stylesheet in
@@ -551,12 +557,6 @@ if($mybb->input['action'] == "export")
 		) {
 			$mode = $mybb->input['export_devdist'] ? 'devdist' : 'current';
 			$theme = $themelet_hierarchy[$mode]['themes'][$mybb->input['codename']]['properties'];
-		}
-
-		// Be extra careful about dodgy codenames.
-		if (strpos($theme['codename'], '/') !== false || strpos($theme['codename'], '\\') !== false) {
-			flash_message($lang->error_codename_with_directory_separator, 'error');
-			admin_redirect('index.php?module=style-themes');
 		}
 
 		$tmp_root = create_temp_dir();
