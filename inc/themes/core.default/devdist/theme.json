@@ -1,8 +1,6 @@
 {
 	"codename": "core.default",
-	"extra": {
-		"title": "Default"
-	},
+	"name": "Default",
 	"description": "The default core MyBB theme",
 	"version": "1.9.0",
 	"authors": [
@@ -12,5 +10,7 @@
 			"homepage": "https://jsoltesz.com/",
 			"role": "Designer"
 		}
-	]
+	],
+	"allowedgroups": "all",
+	"editortheme": "mybb.css"
 }

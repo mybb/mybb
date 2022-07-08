@@ -43,9 +43,9 @@ $l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You c
 $l['colors_specific_color'] = "Specific color";
 
 $l['include_custom_only'] = "Include customized items only?";
-$l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
-$l['include_templates'] = "Include templates in the export as well?";
-$l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
+$l['include_custom_only_desc'] = "If you wish to include resources (stylesheets, templates, images, etc) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
+$l['export_devdist'] = "Export the `devdist` version of the theme?";
+$l['export_devdist_desc'] = "If you want to export the `current` version instead, select yes.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
 $l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
@@ -91,6 +91,8 @@ $l['display_order'] = "Order";
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
 $l['name_desc_edit'] = "Specify a name for the theme.";
+$l['description'] = 'Description';
+$l['description_desc_edit'] = 'Provide a description for the theme.';
 $l['allowed_user_groups'] = "Allowed User Groups";
 $l['allowed_user_groups_desc'] = "Specify which user groups are allowed to use this theme. Selecting 'All User Groups' will override any other selection. Hold down the CTRL key to select multiple user groups.";
 $l['all_user_groups'] = "All User Groups";
@@ -121,6 +123,8 @@ $l['font_weight'] = "Font Weight";
 
 $l['stylesheets'] = "Stylesheets";
 $l['inherited_from'] = "Inherited from";
+$l['the_plugin_sq_br'] = '[the plugin]';
+$l['associated_with_plugin'] = '[Associated with plugin {1}]';
 $l['attached_to'] = "Attached to";
 $l['attached_to_nothing'] = "Attached to nothing";
 $l['attached_to_desc'] = "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.";
@@ -197,6 +201,11 @@ $l['error_communication_problem'] = "There was a problem communicating with the 
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
 $l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
 $l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
+$l['error_stylesheet_order_update'] = 'Failed to write the stylesheet order to the theme\'s resources.json file.';
+$l['error_failed_to_save_theme'] = 'Failed to update the theme\'s theme.json file.';
+$l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
+$l['error_codename_with_directory_separator'] = 'The supplied theme codename contains an illegal directory separator character (/ or \\).';
+$l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically zip themes for distribution. If you are unable to install the PHP package providing this class, then please zip up your theme manually.';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";

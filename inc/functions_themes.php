@@ -20,7 +20,7 @@ use ScssPhp\ScssPhp\Compiler;
  *               is either 'ancestors', 'children', or 'properties', with the value of each being
  *               the appropriate array (of codenames of ancestors/children, ordered for ancestors
  *               from nearest to furtherest, or of theme properties pulled out of its
- *               `properties.json` file).
+ *               `theme.json` file).
  */
 function get_themelet_hierarchy()
 {
@@ -52,7 +52,7 @@ function get_themelet_hierarchy()
     ];
 
     // Iterate through each theme directory in the filesystem, pulling its properties from its
-    // `properties.json` and `manifest.json` files, and determining its parent.
+    // `theme.json` file, and determining its parent.
     $themes_dir = MYBB_ROOT.'inc/themes/';
     if (is_dir($themes_dir) && ($dh = opendir($themes_dir)) !== false) {
         while (($theme_code = readdir($dh)) !== false) {
@@ -63,22 +63,14 @@ function get_themelet_hierarchy()
                 if (!file_exists($themes_dir.$theme_code.'/'.$mode)) {
                     continue;
                 }
-                $prop_file     = $themes_dir.$theme_code.'/'.$mode.'/properties.json';
-                $manifest_file = $themes_dir.$theme_code.'/'.$mode.'/manifest.json';
+                $theme_file = $themes_dir.$theme_code.'/'.$mode.'/theme.json';
                 $props = [];
-                if (is_readable($prop_file)) {
-                    $json = file_get_contents($prop_file);
+                if (is_readable($theme_file)) {
+                    $json = file_get_contents($theme_file);
                     $props = json_decode($json, true);
                 }
                 $props_a[$mode][$theme_code] = $props;
-                if (is_readable($manifest_file)) {
-                    $json2 = file_get_contents($manifest_file);
-                    $props2 = json_decode($json2, true);
-                    if (is_array($props2)) {
-                        $props_a[$mode][$theme_code] = array_merge($props_a[$mode][$theme_code], $props2);
-                    }
-                }
-                if ($theme_code == 'core.default' || !is_readable($prop_file)) {
+                if ($theme_code == 'core.default' || !is_readable($theme_file)) {
                     $parents[$mode][$theme_code] = '';
                 } else {
                     if (is_array($props) && array_key_exists('parent', $props)) {
@@ -128,11 +120,11 @@ function get_themelet_hierarchy()
  * Gets the correctly ordered (according to resource search priority)
  * directories of themelets in the filesystem.
  *
- * @param boolean $inc_devdist True to include `devdist` directories; otherwise
- *                             only include `current` directories.
- * @return array Indexed by themelet codename, the values are arrays with three
- *               entries: themelet filesystem directory, its codename, and whether
- *               or not it is a plugin themelet (otherwise it belongs to a theme).
+ * @param boolean $inc_devdist True to include `devdist` directories; otherwise only include
+ *                             `current` directories.
+ * @return array Indexed by themelet codename, the values are arrays with four entries: themelet
+ *               filesystem directory, its namespace, whether or not it is a plugin themelet
+ *               (otherwise it belongs to a theme), and its codename.
  */
 function get_themelet_dirs($inc_devdist = false)
 {
@@ -148,7 +140,7 @@ function get_themelet_dirs($inc_devdist = false)
         foreach ($themelet_hierarchy[$mode]['plugins'] as $plugin_code) {
             $themelet_dir = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/'.$mode.'/ext';
             if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
-                $plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$plugin_code/*namespace*/, true/*is a plugin*/];
+                $plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$plugin_code/*namespace*/, true/*is a plugin*/, $plugin_code];
             }
         }
     }
@@ -161,11 +153,11 @@ function get_themelet_dirs($inc_devdist = false)
                 if (empty($themelet_dirs[$theme_code])) {
                     $themelet_dirs[$theme_code] = [];
                 }
-                $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
+                $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/, $theme_code];
                 foreach ($parents as $parent) {
                     $themelet_dir = MYBB_ROOT.'inc/themes/'.$parent.'/'.$mode;
                     if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
-                        $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/];
+                        $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/, $parent];
                     }
                 }
                 // Insert plugin themelet directories just prior to the final theme themelet,
@@ -263,7 +255,7 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 }
 
 /**
- * Determine via its manifest file the version of the current theme with name $theme_code.
+ * Determine via its theme file the version of the current theme with name $theme_code.
  *
  * @param string $theme_code The codename (directory) of the theme for which to find the version.
  * @param string $err_msg Stores the messages for any errors encountered.
@@ -272,19 +264,64 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
  */
 function get_theme_version($theme_code, &$err_msg = '')
 {
+    global $mybb;
+    static $version = [];
+
+    if (isset($version[$theme_code])) {
+        return $version[$theme_code];
+    }
+
+    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+
     $err_msg = '';
-    $manifest_file = MYBB_ROOT."inc/themes/$theme_code/current/manifest.json";
-    $manifest = read_json_file($manifest_file, $err_msg, false);
-    if (!isset($manifest['version'])) {
+    $theme_file = MYBB_ROOT."inc/themes/$theme_code/$mode/theme.json";
+    $theme_data = read_json_file($theme_file, $err_msg, false);
+    if (!isset($theme_data['version'])) {
         if (!$err_msg) {
-            $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
+            $err_msg = 'The theme file at "'.htmlspecialchars_uni($theme_file).
             '" does not supply a valid `version` property (or is non-existent, unreadable, or corrupt.';
         }
-        return false;
+        $version[$theme_code] = false;
     } else {
-        $version = $manifest['version'];
-        return $version;
+        $version[$theme_code] = $theme_data['version'];
     }
+
+    return $version[$theme_code];
+}
+
+/**
+ * Determine via its theme file the name of the current theme with codename $theme_code.
+ *
+ * @param string $theme_code The codename (directory) of the theme for which to find the title.
+ * @param string $err_msg Stores the messages for any errors encountered.
+ * @return Mixed Boolean false if an error was encountered (in which case $err_msg will be set),
+ *               and the version number as a string on success.
+ */
+function get_theme_name($theme_code, &$err_msg = '')
+{
+    global $mybb;
+    static $name = [];
+
+    if (isset($name[$theme_code])) {
+        return $name[$theme_code];
+    }
+
+    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+
+    $err_msg = '';
+    $theme_file = MYBB_ROOT."inc/themes/$theme_code/$mode/theme.json";
+    $theme_data = read_json_file($theme_file, $err_msg, false);
+    if (!isset($theme_data['name'])) {
+        if (!$err_msg) {
+            $err_msg = 'The theme file at "'.htmlspecialchars_uni($theme_file).
+            '" does not supply a valid `name` property (or is non-existent, unreadable, or corrupt.';
+        }
+        $name[$theme_code] = false;
+    } else {
+        $name[$theme_code] = $theme_data['name'];
+    }
+
+    return $name[$theme_code];
 }
 
 /**
@@ -354,14 +391,22 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  *
  * @param string $codename   The codename (directory) of the theme or plugin whose stylesheets should
  *                           be retrieved.
+ * @parma boolean $raw       If true, the raw stylesheet structure from the resources.json will be
+ *                           returned. If false, a reformed structure will be returned.
  * @param boolean $is_plugin If true, $codename represents a plugin codename; else a theme.
  * @param boolean $devdist   If true, try to use the resources.json file in the `devdist` directory
  *                           before trying that in the `current` directory.
- * @return array The first index is the name of a script to which to attach a stylesheet; the second is
- *               the action which conditionally triggers attachment ("global" indicates any action
- *               including none), and the third is an array of stylesheet filenames.
+ * @return array When $raw is false, the return is structured as follows:
+ *                The first index is the name of a script to which to attach a stylesheet; the second is
+ *                the action which conditionally triggers attachment ("global" indicates any action
+ *                including none), and the third is an array of stylesheet filenames.
+ *               When $raw is true, the return is structured as follows:
+ *                The first index is the stylesheet filename; the second is an array of items, each
+ *                of which contains two entries, one of which is "script", referencing the script to
+ *                which to attach the stylesheet, and "actions", being an array of actions which
+ *                conditionally trigger the attachment for the script.
  */
-function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = false)
+function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $devdist = false)
 {
     $stylesheets = [];
     $modes = [];
@@ -380,7 +425,20 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
             $json = file_get_contents($res_file);
             $res_arr = json_decode($json, true);
             if (is_array($res_arr) && array_key_exists('stylesheets', $res_arr)) {
+                if ($raw) {
+                    $ret = [];
+                    foreach ($res_arr['stylesheets'] as $sheet => $arr) {
+                        if ($arr) { // This is a plugin's stylesheet included for purposes of ordering, and thus is empty.
+                            $ret[$sheet] = $arr;
+                        }
+                    }
+
+                    return $ret;
+                }
                 foreach ($res_arr['stylesheets'] as $sheet => $arr) {
+                    if (!$arr) { // This is a plugin's stylesheet included for purposes of ordering, and thus is empty.
+                        continue;
+                    }
                     foreach ($arr as $script_actions) {
                         $actions = $script_actions['actions'];
                         $script  = $script_actions['script' ];
@@ -403,41 +461,69 @@ function get_themelet_stylesheets($codename, $is_plugin = false, $devdist = fals
         }
     }
 
+    // Previous return possible.
     return $stylesheets;
 }
 
 /**
  * Resolves a themelet resource for the current theme, checking up the hierarchy if it does not
- * exist in the themelet directory itself, and supporting resources in `ext.[pluginname]` theme
- * subdirectories.
+ * exist in the themelet directory itself, and supporting the overriding of plugin resources in
+ * `ext.[pluginname]` theme subdirectories.
  *
- * When appropriate, caches the resource under `cache/themes/themeid` where `themeid`
- * is the database ID of the current theme.
+ * When appropriate, caches the resource under `cache/themes/theme_code` where `theme_code`
+ * is the codename of the current theme.
  *
  * If a CSS resource is requested and it does not exist but a SCSS file with the same name other
  * than extension exists, then it auto-compiles the SCSS into CSS.
  *
- * If a resource ending in `.min.css` is specified, or the core setting to minify CSS is enabled
- * then it minifies the CSS.
+ * If a resource ending in `.min.css` is specified, then the CSS is minified. Note that this
+ * function does not consult the core setting to minify CSS ('minifycss'); it is up to calling
+ * functions to supply a resource ending (or not) in `.min.css` as consistent with that core
+ * setting.
  *
  * @param string $specifier Stipulates which resource to load in the current theme.
  *                          Resources for the current theme are specified in the format:
- *                          "~t~component:directory:filename", where "component" is, e.g., "frontend",
- *                          "acp", or "parser", "directory" is, e.g., "styles" or "images", and
- *                          "filename" is, e.g., "main.css" or "logo.png".
- *                          Resources for plugins are specified in the format:
- *                          "~p~plugin_codename:directory:filename", where "directory" and "filename"
- *                          are as above, and "plugin_codename is self-explanatory.
+ *                            "~ct~component:directory:filename", where "component" is, e.g.,
+ *                              "frontend", "acp", or "parser", "directory" is, e.g., "styles" or
+ *                               "images", and "filename" is, e.g., "main.css" or "logo.png".
+ *                          Resources for some other named theme are specified in the format:
+ *                            "~t~theme_code:component:directory:filename", where theme_code is the
+ *                            theme's codename and the other entities are as described above.
+ *                          Resources for plugins in the current theme are specified in the format:
+ *                            "~cp~plugin_code:directory:filename", where "directory" and
+ *                            "filename" are as above, and "plugin_code" is the plugin's codename.
+ *                          Resources for plugins for some other named theme are specified in the format:
+ *                            "~p~theme_code:plugin_code:directory:filename", where theme_code is the
+ *                            theme's codename and the other entities are as described above.
  * @param boolean $use_themelet_cache True to try to get the list of themelet directories out of
  *                                    cache; otherwise rebuild it manually.
- * @param boolean $return_resource True to return the resource's contents; false to return a path to
- *                                 the resource relative to the MyBB root directory.
- * @return string If $return_resource is true, this is the resource's contents, generated
- *                dynamically, avoiding the cache. Otherwise, if development mode is off, it is a
- *                path to the cached file, relative to the MyBB root directory. Otherwise, it is
- *                the relative path `resource.php?specifier=[specifier]`.
+ * @param integer $return_type One of the constants RTR_RETURN_RESOURCE, RTR_RETURN_PATH, or
+ *                             RTR_RETURN_INHERITANCE.
+ * @return Mixed  If the resource could not be located, this return is false. Otherwise:
+ *                If $return_type is RTR_RETURN_RESOURCE, this return is the resource's contents,
+ *                  generated dynamically, avoiding the cache.
+ *                If $return_type is RTR_RETURN_PATH, then, if development mode is off, this return
+ *                  is a path to the cached file, relative to the MyBB root directory, else it is
+ *                  the relative path `resource.php?specifier=$specifier`.
+ *                If $return_type is RTR_RETURN_INHERITANCE, then this return is the resource's
+ *                  inheritance data as an array, indexed by:
+ *                    `orig_plugin` => string, indicating the plugin which originates the resource
+ *                                             (empty if not a plugin resource).
+ *                    `is_scss` => boolean, indicating for a stylesheet resource whether the
+ *                                          resolved resource is in the form of SCSS (when true) or
+ *                                          CSS (when false).
+ *                    `inheritance_chain` => an array of themelets in ascendant order of inheritance,
+ *                                           terminating in the themelet to which the resource
+ *                                           resolves. Each entry in the array is an array indexed
+ *                                           by:
+ *                      `codename`  => string, the codename of the theme/plugin.
+ *                      `is_plugin` => boolean, indicating whether or not the codename refers to a
+ *                                              plugin (otherwise, it resolves to a theme).
  */
-function resolve_themelet_resource($specifier, $use_themelet_cache = true, $return_resource = false)
+define('RTR_RETURN_PATH'       , 1);
+define('RTR_RETURN_RESOURCE'   , 2);
+define('RTR_RETURN_INHERITANCE', 3);
+function resolve_themelet_resource($specifier, $use_themelet_cache = true, $return_type = RTR_RETURN_PATH)
 {
     global $mybb, $cache, $theme, $plugins;
 
@@ -461,6 +547,14 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         }
     }
 
+    if ($return_type == RTR_RETURN_INHERITANCE) {
+        $ret = [
+            'orig_plugin'       => '',
+            'is_scss'           => false,
+            'inheritance_chain' => [],
+        ];
+    }
+
     if (!$mybb->settings['themelet_dev_mode'] && $use_themelet_cache) {
         $themelet_dirs = $cache->read('themelet_dirs');
         if (empty($themelet_dirs)) {
@@ -472,59 +566,106 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
     }
 
     if (my_strtolower(substr($specifier, -8)) === '.min.css') {
-        $specifier = my_strtolower(substr($specifier, 0, -7)).'css';
+        $specifier_new = my_strtolower(substr($specifier, 0, -7)).'css';
         $minify = true;
     } else {
-        $minify = (!empty($mybb->settings['minifycss'])
-                   &&
-                   my_strtolower(get_extension($specifier)) === 'css'
-        );
+        $specifier_new = $specifier;
+        $minify = false;
     }
 
-    $resource_path = $scss_path = false;
     $theme_code = $theme['codename'];
+    $is_plugin_spec = $is_theme_spec = $resource_path = $scss_path = false;
 
-    $spec_type_len = 3;
-    if (my_strtolower(substr($specifier, 0, $spec_type_len)) === '~t~' && substr_count($specifier, ':') == 2) {
+    if (my_strtolower(substr($specifier_new, 0, 4)) === '~ct~' && substr_count($specifier_new, ':') == 2) {
+        $is_theme_spec = true;
+        list($res_comp, $res_dir, $res_name) = explode(':', substr($specifier_new, 4));
+    } else if (my_strtolower(substr($specifier_new, 0, 3)) === '~t~' && substr_count($specifier_new, ':') == 3) {
+        $is_theme_spec = true;
+        list($theme_code, $res_comp, $res_dir, $res_name) = explode(':', substr($specifier_new, 3));
+    }
+    if ($is_theme_spec) {
         // We have a theme resource which requires resolution. Resolve it.
-        list($res_comp, $res_dir, $res_name) = explode(':', substr($specifier, $spec_type_len));
-
+        if ($return_type == RTR_RETURN_INHERITANCE) {
+            $ret['orig_plugin'] = '';
+        }
         if (!empty($themelet_dirs[$theme_code])) {
             foreach ($themelet_dirs[$theme_code] as $entry) {
-                list($theme_dir, $codename, $is_plugin) = $entry;
+                list($theme_dir, $namespace, $is_plugin, $codename) = $entry;
                 if (!$is_plugin) {
+                    if ($return_type == RTR_RETURN_INHERITANCE) {
+                        $ret['inheritance_chain'][] = [
+                            'codename'  => $codename,
+                            'is_plugin' => false    ,
+                        ];
+                    }
                     $path_to_test = $theme_dir.'/'.$res_comp.'/'.$res_dir.'/'.$res_name;
                     if (test_set_path($path_to_test, $resource_path, $scss_path)) {
+                        if ($return_type == RTR_RETURN_INHERITANCE) {
+                            $ret['is_scss'] = !empty($scss_path);
+                            return $ret;
+                        }
                         break;
                     }
                 }
             }
         }
-    } elseif (my_strtolower(substr($specifier, 0, $spec_type_len)) === '~p~' && substr_count($specifier, ':') == 2) {
-        // We have a plugin's themelet resource which requires resolution. Resolve it.
-        list($plugin_code, $res_dir, $res_name) = explode(':', substr($specifier, $spec_type_len));
+    } else {
+        if (my_strtolower(substr($specifier_new, 0, 4)) === '~cp~' && substr_count($specifier_new, ':') == 2) {
+            $is_plugin_spec = true;
+            list($plugin_code, $res_dir, $res_name) = explode(':', substr($specifier_new, 4));
+        } else if (my_strtolower(substr($specifier_new, 0, 3)) === '~p~' && substr_count($specifier_new, ':') == 3) {
+            $is_plugin_spec = true;
+            list($theme_code, $plugin_code, $res_dir, $res_name) = explode(':', substr($specifier_new, 3));
+        }
 
-        if (!empty($themelet_dirs[$theme_code])) {
-            // The plugin resource might be overridden in a theme.
-            // We test this possibility first, then...
-            foreach ($themelet_dirs[$theme_code] as $entry) {
-                list($theme_dir, $codename, $is_plugin) = $entry;
-                if (!$is_plugin) {
-                    $path_to_test = $theme_dir.'/ext.'.$plugin_code.'/'.$res_dir.'/'.$res_name;
-                    if (test_set_path($path_to_test, $resource_path, $scss_path)) {
-                        break;
+        if ($is_plugin_spec) {
+            // We have a plugin's themelet resource which requires resolution. Resolve it.
+
+            if ($return_type == RTR_RETURN_INHERITANCE) {
+                $ret['orig_plugin'] = $plugin_code;
+            }
+
+            if (!empty($themelet_dirs[$theme_code])) {
+                // The plugin resource might be overridden in a theme.
+                // We test this possibility first, then...
+                foreach ($themelet_dirs[$theme_code] as $entry) {
+                    list($theme_dir, $namespace, $is_plugin, $codename) = $entry;
+                    if (!$is_plugin) {
+                        if ($return_type == RTR_RETURN_INHERITANCE) {
+                            $ret['inheritance_chain'][] = [
+                                'codename'  => $codename,
+                                'is_plugin' => false    ,
+                            ];
+                        }
+                        $path_to_test = $theme_dir.'/ext.'.$plugin_code.'/'.$res_dir.'/'.$res_name;
+                        if (test_set_path($path_to_test, $resource_path, $scss_path)) {
+                            if ($return_type == RTR_RETURN_INHERITANCE) {
+                                $ret['is_scss'] = !empty($scss_path);
+                                return $ret;
+                            }
+                            break;
+                        }
                     }
                 }
             }
-        }
 
-        // ...look for the resource in the plugin's own themelet.
-        // TODO: decide whether we should then (or first) check the directories of
-        // other plugins, i.e., decide whether plugins should be able to override
-        // the resources of other plugins.
-        if (!$resource_path) {
-            $path_to_test = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/current/ext/'.$res_dir.'/'.$res_name;
-            test_set_path($path_to_test, $resource_path, $scss_path);
+            // ...look for the resource in the plugin's own themelet.
+            // TODO: decide whether we should then (or first) check the directories of
+            // other plugins, i.e., decide whether plugins should be able to override
+            // the resources of other plugins.
+            if (!$resource_path) {
+                $path_to_test = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/'.
+                                ($mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current').'/ext/'.$res_dir.'/'.
+                                $res_name;
+                if (test_set_path($path_to_test, $resource_path, $scss_path) && $return_type == RTR_RETURN_INHERITANCE) {
+                    $ret['is_scss'] = !empty($scss_path);
+                    $ret['inheritance_chain'][] = [
+                        'codename'  => $plugin_code,
+                        'is_plugin' => true        ,
+                    ];
+                    return $ret;
+                }
+            }
         }
     }
 
@@ -532,15 +673,15 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         return false;
     }
 
-    $use_cache = !$return_resource && !$mybb->settings['themelet_dev_mode'];
+    $use_cache = $return_type == RTR_RETURN_PATH && !$mybb->settings['themelet_dev_mode'];
     $needs_cache = $deps_file = false;
 
     if ($use_cache) {
-        $cache_dir = MYBB_ROOT.'cache/themes/'.$theme['tid'];
+        $cache_dir = MYBB_ROOT.'cache/themes/'.$theme['codename'];
         if (!is_dir($cache_dir)) {
             mkdir($cache_dir, 0777, true);
         }
-        $cache_file = $minify? substr($cache_file, 0, -3).'min.css' : $cache_dir.'/'.$specifier;
+        $cache_file = $cache_dir.'/'.$specifier;
         $deps_file = $cache_dir.'/'.$specifier.'.deps';
         $deps_existing = is_readable($deps_file) ? file($deps_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES): [];
 
@@ -563,7 +704,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         }
     }
 
-    if (($needs_cache || $return_resource) && ($minify || $scss_path)) {
+    if (($needs_cache || $return_type == RTR_RETURN_RESOURCE) && ($minify || $scss_path)) {
         if ($scss_path) {
             $compiler = new Compiler();
             $result = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path);
@@ -583,7 +724,6 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
             global $config;
             require_once MYBB_ROOT.$config['admin_dir'].'/inc/functions_themes.php';
             $stylesheet = minify_stylesheet($stylesheet);
-            $minified = true;
         }
 
         $plugins->run_hooks('css_end', $stylesheet);
@@ -600,7 +740,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 
     $resource = '';
 
-    if ($return_resource) {
+    if ($return_type == RTR_RETURN_RESOURCE) {
         if ($minify || $scss_path) {
             $resource = $stylesheet;
         } elseif ($resource_path) {
@@ -608,8 +748,8 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         }
     }
 
-    // Early return possible
-    return $return_resource
+    // Earlier returns possible
+    return $return_type == RTR_RETURN_RESOURCE
              ? $resource
              : ($use_cache
                   ? substr($cache_file, strlen(MYBB_ROOT))

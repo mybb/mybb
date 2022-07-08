@@ -103,14 +103,14 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getStylesheets() : \Generator
     {
-        global $theme, $cache;
+        global $theme, $cache, $mybb;
 
-        $stylesheets_a = $alreadyLoaded = [];
+        $stylesheets_a = [];
 
         require_once MYBB_ROOT.'inc/functions_themes.php';
-        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], false, true);
+        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], false, false, true);
         foreach ($cache->read('plugins')['active'] as $plugin_code) {
-            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, true, $mybb->settings['themelet_dev_mode']);
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, false, true, $mybb->settings['themelet_dev_mode']);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
@@ -133,18 +133,20 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                     if (!empty($stylesheets[$stylesheetScript][$stylesheet_action])) {
                         // Actually add the stylesheets to the list
                         foreach ($stylesheets[$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
-                            if (empty($codename)) {
-                                $res_spec = "~t~frontend:styles:$pageStylesheet"; // Current theme stylesheet
-                            } else {
-                                $res_spec = "~p~$codename:styles:$pageStylesheet"; // Plugin stylesheet
+                            $minify = !empty($mybb->settings['minifycss']);
+                            if ($minify && my_strtolower(substr($pageStylesheet, -8)) !== '.min.css') {
+                                $pageStylesheet = substr($pageStylesheet, 0, -3).'min.css';
                             }
-                            if (!empty($alreadyLoaded[$res_spec])) {
+                            if (!empty($themeStylesheets[$pageStylesheet])) {
                                 continue;
                             }
-
+                            if (empty($codename)) {
+                                $res_spec = "~ct~frontend:styles:$pageStylesheet"; // Current theme stylesheet
+                            } else {
+                                $res_spec = "~cp~$codename:styles:$pageStylesheet"; // Plugin stylesheet for current theme
+                            }
                             $stylesheetUrl = $this->mybb->get_asset_url($res_spec);
-                            $themeStylesheets[basename($pageStylesheet)] = $stylesheetUrl;
-                            $alreadyLoaded[$res_spec] = 1;
+                            $themeStylesheets[$pageStylesheet] = $stylesheetUrl;
                         }
                     }
                 }

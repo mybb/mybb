@@ -628,6 +628,15 @@ $l['error_unreadable_json_file'] = 'The JSON file "{1}" is not readable.';
 $l['error_fgc_failed_for_json_file'] = 'The file_get_contents() function returned false for the JSON file "{1}".';
 $l['error_invalid_json_in_file'] = 'The json_decode() function returned null for the JSON file "{1}".';
 $l['error_missing_manifest_version'] = 'The `version` property is missing in the JSON file "{1}".';
-$l['error_failed_move_backing_out'] = 'Failed to move {1} to {2}. Attempting to gracefully back out of recursive move.';
-$l['error_failed_move_create_dir_backing_out'] = 'Failed to create {1}. Attempting to gracefully back out of recursive move.';
-$l['error_exception_caught_backing_out'] = 'Caught an exception in move_recursively(): {1}. Attempting to gracefully back out of recursive move.';
+$l['error_failed_move_backing_out'] = 'Failed to copy/move {1} to {2}. Attempting to gracefully back out of recursive copy/move.';
+$l['error_failed_move_create_dir_backing_out'] = 'Failed to create {1}. Attempting to gracefully back out of recursive copy/move.';
+$l['error_exception_caught_backing_out'] = 'Caught an exception in cp_or_mv_recursively(): {1}. Attempting to gracefully back out of recursive copy/move.';
+
+// Again, these are repeated in admin/global.lang.php. Please ensure that they are kept consistent.
+$l['error_zip_missing_class'] = 'Failed to create zip archive: the "ZipArchive" class does not exist. You can install it using <a href="http://php.net/manual/en/zip.installation.php">these</a> online instructions.';
+$l['error_zip_chdir_failed'] = 'Failed to change to directory "{1}" in preparation for zipping it.';
+$l['error_zip_create_failed'] = 'Unable to create zip archive "{1}".';
+$l['error_zip_add_dir_failed'] = 'Failed to add directory "{1}" to the zip archive.';
+$l['error_zip_add_dir_contents_failed'] = 'Failed to add contents of directory "{1}" to the zip archive.';
+$l['error_zip_add_file_failed'] ='Failed to add singular file "{1}" to the zip archive.';
+$l['error_zip_close_archive_failed'] = 'Failed to close the zip archive "{1}".';

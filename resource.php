@@ -48,10 +48,10 @@ switch (my_strtolower(get_extension($specifier))) {
 
 header("Content-Type: $content_type");
 if ($mybb->settings['themelet_dev_mode']) {
-    echo resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_resource = */true);
+    echo resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE);
 } else {
     echo file_get_contents(
-        MYBB_ROOT.resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_resource = */false)
+        MYBB_ROOT.resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_type = */RTR_RETURN_PATH)
     );
 }
 

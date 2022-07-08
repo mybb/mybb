@@ -502,14 +502,23 @@ class MyBB {
 
 		if(substr($path, 0, 4) != 'http')
 		{
-			$spec_type = my_strtolower(substr($path, 0, 3));
-			if(($spec_type === '~p~' || $spec_type === '~t~') && substr_count($path, ':') == 2)
+			$spec_type1 = my_strtolower(substr($path, 0, 4));
+			$spec_type2 = my_strtolower(substr($path, 0, 3));
+			if(($spec_type1 === '~cp~' || $spec_type1 === '~ct~') && substr_count($path, ':') == 2
+			   ||
+			   (($spec_type2 === '~p~' || $spec_type2 === '~t~') && substr_count($path, ':') == 3)
+			)
 			{
 				// We have a themelet resource which requires resolution (and
 				// potentially processing/caching). Resolve it, potentially,
 				// afterwards, processing/caching it too).
 				require_once MYBB_ROOT.'inc/functions_themes.php';
-				$path_new = resolve_themelet_resource($path, /* $use_themelet_cache = */true);
+
+				$path_new = resolve_themelet_resource(
+					$path,
+					/*$use_themelet_cache = */true,
+					/*$return_type = */RTR_RETURN_PATH
+				);
 
 				if(!empty($path_new))
 				{

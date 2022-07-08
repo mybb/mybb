@@ -838,31 +838,6 @@ if(!$action)
 }
 
 /**
- * @return array
- */
-function get_plugins_list()
-{
-	// Get a list of the plugin files which exist in the plugins directory
-	$plugins_list = [];
-	$dir = @opendir(MYBB_ROOT."inc/plugins/");
-	if($dir)
-	{
-		while($file = readdir($dir))
-		{
-			$ext = get_extension($file);
-			if($ext == "php")
-			{
-				$plugins_list[] = $file;
-			}
-		}
-		@sort($plugins_list);
-	}
-	@closedir($dir);
-
-	return $plugins_list;
-}
-
-/**
  * Gets a list of staged plugin files.
  *
  * @param boolean $show_errs If true, and an error occurs, the error is displayed inline; otherwise errors are ignored.
@@ -907,33 +882,6 @@ function get_staged_plugins($show_errs = true)
 	}
 
 	return $plugins_list;
-}
-
-/**
- * Translates any `[field]_key` fields in the supplied plugin info into `[field]` keys using the language key stipulated
- * by those `_key` fields. Checks whether this can be done for the fields `name` and `description`.
- *
- * @param array $plugininfo An array of plugin info, e.g., as retrieved from a plugin.json file.
- * @param boolean $staged If true, then the plugin language file used is in the staging directory; otherwise, it is as
- *                        usual.
- * @param boolean $show_errs If true, then output an inline error message on error; otherwise, ignore errors.
- */
-function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true)
-{
-	global $lang, $page;
-
-	if (!empty($plugininfo['langfile'])) {
-		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $staged ? $plugininfo['codename'] : false);
-		foreach (['name', 'description'] as $key) {
-			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
-				if ($show_errs) {
-					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
-				}
-			} else if (!empty($plugininfo[$key.'_key'])) {
-				$plugininfo[$key] = $lang->{$plugininfo[$key.'_key']};
-			}
-		}
-	}
 }
 
 /**
@@ -1066,15 +1014,15 @@ function integrate_staged_plugin($codename)
 
 	$staged_themelet_dir = MYBB_ROOT."staging/plugins/$codename/root/inc/plugins/$codename/interface/devdist";
 	$dest_themelet_dir = MYBB_ROOT."inc/plugins/$codename/interface/current";
-	if(!move_recursively($staged_themelet_dir, $dest_themelet_dir, $errmsg))
+	if(!cp_or_mv_recursively($staged_themelet_dir, $dest_themelet_dir, true, $errmsg))
 	{
 		flash_message($errmsg, 'error');
 		admin_redirect('index.php?module=config-plugins');
 	}
-	if(!move_recursively(MYBB_ROOT.'staging/plugins/'.$codename.'/root', MYBB_ROOT, $errmsg))
+	if(!cp_or_mv_recursively(MYBB_ROOT.'staging/plugins/'.$codename.'/root', MYBB_ROOT, true, $errmsg))
 	{
 		// Attempt to back out of the prior successful move.
-		move_recursively($dest_themelet_dir, $staged_themelet_dir);
+		cp_or_mv_recursively($dest_themelet_dir, $staged_themelet_dir, true);
 
 		flash_message($errmsg, 'error');
 		admin_redirect('index.php?module=config-plugins');

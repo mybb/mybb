@@ -5202,12 +5202,21 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  *
  * @param string $name The name of the menu
  * @param int $selected The codename of the selected theme
- * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
- * @param boolean $footer Whether or not theme select is in the footer (true if it is)
- * @param boolean $count_override Whether or not to override output based on theme count (true to override)
- * @return string The theme selection list
+ * @param boolean $usergroup_override Whether or not to override usergroup permissions
+ *                                    (true to override)
+ * @param boolean $footer Whether or not theme select is in the footer
+ *                        (true if it is)
+ * @param boolean $count_override Whether or not to override output based on theme count
+ *                                (true to override)
+ * @param boolean $return_opts_only If false, returns the HTML for a select element.
+ *                                  If true, returns a list of options suitable for supplying to
+ *                                    Form::generate_select_box()
+ * @param string $ignoredtheme The codename of a theme to omit from the list.
+ *
+ * @return Mixed Either a string of HTML (when $return_opts_only is false) or an array of options
+ *               (when $return_opts_only is true).
  */
-function build_fs_theme_select($name, $selected = '', $usergroup_override = false, $footer = false, $count_override = false)
+function build_fs_theme_select($name, $selected = '', $usergroup_override = false, $footer = false, $count_override = false, $return_opts_only = false, $ignoredtheme = '')
 {
 	global $lang;
 
@@ -5224,11 +5233,17 @@ function build_fs_theme_select($name, $selected = '', $usergroup_override = fals
 		/*$theme_code = */'',
 		/*$depth = */'',
 		$usergroup_override,
+		$ignoredtheme,
 		$num_themes,
 		$themeselect_options,
 	);
 
-	if ($num_themes > 1 || $count_override == true) {
+	if ($return_opts_only) {
+		$ret = [];
+		foreach ($themeselect_options as $arr) {
+			$ret[$arr['tid']] = $arr['depth'].$arr['title'];
+		}
+	} else if ($num_themes > 1 || $count_override == true) {
 		$ret = \MyBB\template('misc/themeselect.twig', [
 			'footer' => $footer,
 			'selected' => $selected,
@@ -5240,7 +5255,7 @@ function build_fs_theme_select($name, $selected = '', $usergroup_override = fals
 	return $ret;
 }
 
-function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_override = false, &$num_themes = 0, &$themeselect_options = [])
+function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_override = false, $ignoredtheme = '', &$num_themes = 0, &$themeselect_options = [])
 {
 	global $mybb;
 
@@ -5250,25 +5265,29 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_overr
 	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
 	$themes = $themelet_hierarchy[$mode]['themes'];
 
-	foreach($themes as $t_code => $theme)
+	foreach ($themes as $t_code => $theme)
 	{
-		if(!empty($theme['ancestors'][0]) && $theme['ancestors'][0] == $theme_code
-		   ||
-		   empty($theme['ancestors'][0]) && $theme_code == '')
-		{
-			if(is_member($theme['properties']['allowedgroups']) || $theme['properties']['allowedgroups'] == 'all' || $usergroup_override == true)
-			{
+		if (!empty($theme['ancestors'][0]) && $theme['ancestors'][0] == $theme_code
+		    ||
+		    empty($theme['ancestors'][0]) && $theme_code == ''
+		) {
+			if ((empty($ignoredtheme) || $t_code != $ignoredtheme)
+			    &&
+			    (is_member($theme['properties']['allowedgroups'])
+			     ||
+			     $theme['properties']['allowedgroups'] == 'all'
+			     || $usergroup_override == true
+			    )
+			) {
 				$themeselect_options[] = [
 					'tid' => $t_code,
-					'title' => $theme['properties']['extra']['title'],
+					'title' => $theme['properties']['name'],
 					'depth' => $depth,
 				];
 				++$num_themes;
-
-				if(!empty($theme['children']))
-				{
-					build_fs_theme_select_r($t_code, $depth."--", $usergroup_override, $num_themes, $themeselect_options);
-				}
+			}
+			if (!empty($theme['children'])) {
+				build_fs_theme_select_r($t_code, $depth."--", $usergroup_override, $ignoredtheme, $num_themes, $themeselect_options);
 			}
 		}
 	}
@@ -5277,7 +5296,7 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_overr
 /**
  * Build a theme selection menu
  *
- * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
  * to the above build_fs_theme_select() alternative.
  *
  * @param string $name The name of the menu
@@ -5342,7 +5361,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 }
 
 /**
- * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
  * to code based on the get_themelet_hierarchy() function.
  */
 function build_tcache()
@@ -5403,7 +5422,7 @@ function get_fs_theme($codename)
 /**
  * Get the theme data of a theme id.
  *
- * NOTE: No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
  * to the above get_fs_theme() alternative.
  *
  * @param int $tid The theme id of the theme.
@@ -9261,7 +9280,38 @@ function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 	return $ret;
 }
 
-function move_recursively($source, $dest, &$error = '')
+/**
+ * Attempt to write an array to a JSON file.
+ *
+ * @param string $json_file The path to the JSON file.
+ * @param array $data The array to write to the file.
+ *
+ * @return boolean True on success, false on failure.
+ */
+function write_json_file($json_file, $data)
+{
+	$json = json_encode($data, JSON_PRETTY_PRINT);
+	if (!$json) {
+		return false;
+	} else	return file_put_contents($json_file, $json);
+}
+
+/**
+ * Recursively copy or move the files/directories within directory $source into directory $dest,
+ * such that if a destination directory already exists, files and/or directories are copied into it
+ * without otherwise affecting it. The only difference between copying and moving is that, when
+ * moving, the source directory is recursively deleted after being copied to the destination.
+ *
+ * @param string $source The source directory.
+ * @param string $dest The destination directory.
+ * @param boolean $del_source True for "move" dynamics (the $source directory is deleted after
+ *                            copying it to $dest); false for "copy" dynamics (the $source directory
+ *                            is not altered).
+ * @param string $error Stores any error messages.
+ *
+ * @return boolean True on success; false on failure.
+ */
+function cp_or_mv_recursively($source, $dest, $del_source = false, &$error = '')
 {
 	global $lang;
 
@@ -9273,13 +9323,13 @@ function move_recursively($source, $dest, &$error = '')
 			$lang->error_failed_move_create_dir_backing_out,
 			$dest
 		);
-		goto backout_recursive_move;
+		goto backout_cp_or_mv_recursively;
 	}
 	try {
 		$rci = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
 	} catch (Exception $e) {
 		$error = $lang->sprintf($lang->error_exception_caught_backing_out, $e->getMessage());
-		goto backout_recursive_move;
+		goto backout_cp_or_mv_recursively;
 	}
 
 	foreach (
@@ -9295,39 +9345,39 @@ function move_recursively($source, $dest, &$error = '')
 					$lang->error_failed_move_create_dir_backing_out,
 					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
 				);
-				goto backout_recursive_move;
+				goto backout_cp_or_mv_recursively;
 			} else {
 				$source_dirs[] = $source.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
 			}
 		} else {
-			if (!rename($item, $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname())) {
+			$func = $del_source ? 'rename' : 'copy';
+			if (!$func($item, $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname())) {
 				$error = $lang->sprintf(
 					$lang->error_failed_move_backing_out,
 					$item,
 					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
 				);
-				goto backout_recursive_move;
+				goto backout_cp_or_mv_recursively;
 			} else {
 				$moved[(string)$item] = $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
 			}
 		}
 	}
 
-	foreach (array_reverse($source_dirs) as $dir) {
-		rmdir($dir);
+	if ($del_source) {
+		rmdir_recursive($source);
 	}
-	rmdir($source);
 
 	return true;
 
-backout_recursive_move:
+backout_cp_or_mv_recursively:
 	foreach ($source_dirs as $dir) {
 		if (!is_dir($dir)) {
 			mkdir($dir, 0755, true);
 		}
 	}
 	foreach ($moved as $from => $to) {
-		rename($to, $from);
+		if ($del_source) rename($to, $from);
 	}
 
 	// Earlier return possible
@@ -9347,4 +9397,180 @@ function rmdir_recursive($dirPath)
         return true;
     }
     return false;
+}
+
+/**
+ * @return array
+ */
+function get_plugins_list()
+{
+	// Get a list of the plugin files which exist in the plugins directory
+	$plugins_list = [];
+	$dir = @opendir(MYBB_ROOT."inc/plugins/");
+	if ($dir) {
+		while ($file = readdir($dir)) {
+			$ext = get_extension($file);
+			if ($ext == "php") {
+				$plugins_list[] = $file;
+			}
+		}
+		@sort($plugins_list);
+	}
+	@closedir($dir);
+
+	return $plugins_list;
+}
+
+/**
+ * Determine via its plugin.json file the name of the current plugin with codename $plugin_code.
+ *
+ * @param string $plugin_code The codename (directory) of the plugin for which to find the name.
+ * @param string $err_msg Stores the messages for any errors encountered.
+ * @return Mixed Boolean false if an error was encountered (in which case $err_msg will be set),
+ *               and the version number as a string on success.
+ */
+function get_plugin_name($plugin_code, &$err_msg = '')
+{
+    static $name = [];
+
+    if (isset($name[$plugin_code])) {
+        return $name[$plugin_code];
+    }
+
+    $err_msg = '';
+    $manifest_file = MYBB_ROOT."inc/plugins/$plugin_code/plugin.json";
+    $plugininfo = read_json_file($manifest_file, $err_msg, false);
+    plugininfo_keys_to_raw($plugininfo, /*$staged = */false, /*$show_errs = */false);
+    if (!isset($plugininfo['name'])) {
+        if (!$err_msg) {
+            $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
+            '" does not supply a valid `name` property (or is non-existent, unreadable, or corrupt.';
+        }
+        $name[$plugin_code] = false;
+    } else {
+        $name[$plugin_code] = $plugininfo['name'];
+    }
+
+    return $name[$plugin_code];
+}
+
+/**
+ * Translates any `[field]_key` fields in the supplied plugin info into `[field]` keys using the language key stipulated
+ * by those `_key` fields. Checks whether this can be done for the fields `name` and `description`.
+ *
+ * @param array $plugininfo An array of plugin info, e.g., as retrieved from a plugin.json file.
+ * @param boolean $staged If true, then the plugin language file used is in the staging directory; otherwise, it is as
+ *                        usual.
+ * @param boolean $show_errs If true, then output an inline error message on error; otherwise, ignore errors.
+ */
+function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true)
+{
+	global $lang, $page;
+
+	if (!empty($plugininfo['langfile'])) {
+		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $staged ? $plugininfo['codename'] : false);
+		foreach (['name', 'description'] as $key) {
+			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
+				if ($show_errs) {
+					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
+				}
+			} else if (!empty($plugininfo[$key.'_key'])) {
+				$plugininfo[$key] = $lang->{$plugininfo[$key.'_key']};
+			}
+		}
+	}
+}
+
+/**
+ * Creates a randomly-named temporary directory in the system temporary directory.
+ *
+ * @return Mixed The path as a string on success; boolean false on failure.
+ */
+function create_temp_dir() {
+	$path_base = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.mt_rand().microtime(true);
+	$path = $path_base;
+	for ($i = 1; $i <= 10; $i++) {
+		if (mkdir($path)) {
+			return $path;
+		} else {
+			$path = $path_base.$i;
+		}
+	}
+	return false;
+}
+
+/**
+ * Zips the $sourcepath directory into the $zip_filename zip archive, overwriting any existing
+ * archive.
+ *
+ * @param string $sourcepath The path to the directory to zip.
+ * @param string $zip_filename The path to the file to zip it into.
+ * @param string $err_msg Stores any error message when an error is encountered (and thus when
+ *                        false is returned).
+ *
+ * @return boolean True on success; false on failure (in which case $err_msg will be set).
+ */
+function zip_directory($sourcepath, $zip_filename, &$err_msg = '')
+{
+	global $lang;
+
+	$ret = false;
+
+	if (!class_exists('ZipArchive')) {
+		$err_msg = $lang->error_zip_missing_class;
+	} else if (!chdir($sourcepath)) {
+		$err_msg = $lang->sprintf($lang->error_zip_chdir_failed, $sourcepath);
+	} else {
+		$zip = new ZipArchive();
+		if ($zip->open($zip_filename, ZipArchive::CREATE) !== true) {
+			$err_msg = $lang->sprintf($lang->error_zip_create_failed, $zip_filename);;
+		} else {
+			$sourcepath = str_replace('\\', '/', realpath($sourcepath));
+
+			if (is_dir($sourcepath) === true) {
+				if ($zip->addEmptyDir(basename($sourcepath)) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_dir_failed, basename($sourcepath));
+				}
+				if ($zip->addPattern('(.*)', '.', array('add_path' => basename($sourcepath).'/', 'remove_all_path' => true)) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_dir_contents_failed, $sourcepath);
+				}
+
+				$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourcepath), RecursiveIteratorIterator::SELF_FIRST);
+
+				foreach ($files as $filepath) {
+					// Ignore files; we only want directories
+					if (!is_dir($filepath)) continue;
+
+					$filepath = str_replace('\\', '/', $filepath);
+
+					// Ignore "." and ".." directories
+					if (in_array(substr($filepath, strrpos($filepath, '/')+1), array('.', '..'))) {
+						continue;
+					}
+
+					$filepath = realpath($filepath);
+					$local_filepath = basename($sourcepath).'/'.str_replace($sourcepath.'/', '', $filepath);
+
+					if ($zip->addEmptyDir($local_filepath) === false) {
+						$err_msg = $lang->sprintf($lang->error_zip_add_dir_failed, $local_filepath);
+					}
+					if (!chdir($filepath)) {
+						$err_msg = $lang->sprintf($lang->error_zip_chdir_failed, $local_filepath);
+					} else if ($zip->addPattern('(.*)', '.', array('add_path' => $local_filepath.'/', 'remove_all_path' => true)) === false) {
+						$err_msg = $lang->sprintf($lang->error_zip_add_dir_contents_failed, $local_filepath);
+					}
+				}
+			} else if (is_file($sourcepath) === true) {
+				$local_filepath = basename($sourcepath);
+				if ($zip->addFile($sourcepath, $local_filepath) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_file_failed, $local_filepath);
+				}
+			}
+			if (!$zip->close()) {
+				$err_msg = $lang->sprintf($lang->error_zip_close_archive_failed, $zip_filename);
+			} else	$ret = true;
+		}
+	}
+
+	return $ret;
 }
