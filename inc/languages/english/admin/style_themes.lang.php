@@ -45,7 +45,7 @@ $l['colors_specific_color'] = "Specific color";
 $l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include resources (stylesheets, templates, images, etc) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
 $l['export_devdist'] = "Export the `devdist` version of the theme?";
-$l['export_devdist_desc'] = "If you want to export the `current` version instead, select yes.";
+$l['export_devdist_desc'] = "If you want to export the `current` version instead, select no.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
 $l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";

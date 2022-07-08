@@ -540,16 +540,14 @@ if($mybb->input['action'] == "export")
 
 	if($mybb->request_method == "post")
 	{
-		// TODO: Respect the $mybb->input['custom_theme'] when set.
-
 		if (!class_exists('ZipArchive')) {
 			flash_message($lang->error_no_ziparchive_for_theme, 'error');
 			admin_redirect('index.php?module=style-themes');
 		}
 
-		if (!empty($themelet_hierarchy['devdist'][$mybb->input['codename']])
+		if (!empty($themelet_hierarchy['devdist']['themes'][$mybb->input['codename']])
 		    &&
-		    !empty($themelet_hierarchy['current'][$mybb->input['codename']])
+		    !empty($themelet_hierarchy['current']['themes'][$mybb->input['codename']])
 		) {
 			$mode = $mybb->input['export_devdist'] ? 'devdist' : 'current';
 			$theme = $themelet_hierarchy[$mode]['themes'][$mybb->input['codename']]['properties'];
@@ -649,9 +647,9 @@ if($mybb->input['action'] == "export")
 	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']));
 	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->get_input('custom_theme')), 'custom_theme');
 
-	if (!empty($themelet_hierarchy['devdist'][$mybb->input['codename']])
+	if (!empty($themelet_hierarchy['devdist']['themes'][$mybb->input['codename']])
 	    &&
-	    !empty($themelet_hierarchy['current'][$mybb->input['codename']])
+	    !empty($themelet_hierarchy['current']['themes'][$mybb->input['codename']])
 	) {
 		$form_container->output_row($lang->export_devdist, $lang->export_devdist_desc, $form->generate_yes_no_radio('export_devdist', $mybb->settings['themelet_dev_mode'] ? '1' : '0', 'export_devdist'));
 	}
