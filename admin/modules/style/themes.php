@@ -1217,7 +1217,7 @@ if ($mybb->input['action'] == 'edit') {
 		ksort($disporders);
 		$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
 		$resource_file = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/resources.json";
-		$resources = read_json_file($resource_file);
+		$resources = read_json_file($resource_file, $err_msg, false);
 		if ($resources) {
 			$new_ss_list = [];
 			foreach ($disporders as $order_num => $pl_ss) {
@@ -1232,11 +1232,14 @@ if ($mybb->input['action'] == 'edit') {
 			if (!write_json_file($resource_file, $resources)) {
 				flash_message($lang->error_stylesheet_order_update, 'error');
 				admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
+			} else {
+				flash_message($lang->success_stylesheet_order_updated, 'success');
+				admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
 			}
+		} else {
+			flash_message($err_msg, 'error');
+			admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
 		}
-
-		flash_message($lang->success_stylesheet_order_updated, 'success');
-		admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
 	}
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");

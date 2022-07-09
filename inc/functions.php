@@ -9239,6 +9239,10 @@ function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 {
 	global $lang, $page;
 
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true);
+
 	$ret = [];
 
 	if (!file_exists($json_file)) {
@@ -9314,6 +9318,10 @@ function write_json_file($json_file, $data)
 function cp_or_mv_recursively($source, $dest, $del_source = false, &$error = '')
 {
 	global $lang;
+
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true);
 
 	$source_dirs = [];
 	$moved = [];
@@ -9513,6 +9521,10 @@ function create_temp_dir() {
 function zip_directory($sourcepath, $zip_filename, &$err_msg = '')
 {
 	global $lang;
+
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true);
 
 	$ret = false;
 
