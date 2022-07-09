@@ -406,7 +406,7 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  *                which to attach the stylesheet, and "actions", being an array of actions which
  *                conditionally trigger the attachment for the script.
  */
-function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $devdist = false)
+function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $devdist = false, $inc_placeholders = false)
 {
     $stylesheets = [];
     $modes = [];
@@ -428,7 +428,7 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
                 if ($raw) {
                     $ret = [];
                     foreach ($res_arr['stylesheets'] as $sheet => $arr) {
-                        if ($arr) { // This is a plugin's stylesheet included for purposes of ordering, and thus is empty.
+                        if ($arr || $inc_placeholders) {
                             $ret[$sheet] = $arr;
                         }
                     }

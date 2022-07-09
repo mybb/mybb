@@ -1138,7 +1138,8 @@ if ($mybb->input['action'] == 'edit') {
 		$mybb->input['codename'],
 		/*$raw =*/true,
 		/*$is_plugin = */false,
-		/*$devdist = */$mybb->settings['themelet_dev_mode']
+		/*$devdist = */$mybb->settings['themelet_dev_mode'],
+		/*$inc_placeholders = */true,
 	);
 	foreach ($stylesheets_a[''] as $ss_name => &$ss_arr) {
 		if (substr($ss_name, 0, 4) == 'ext.') {
