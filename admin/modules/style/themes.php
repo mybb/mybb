@@ -1399,7 +1399,7 @@ if ($mybb->input['action'] == 'edit') {
 			}
 		}
 
-		$popup = new PopupMenu("style", $lang->options);
+		$popup = new PopupMenu("style_popup_{$order_num}", $lang->options);
 
 		$popup->add_item($lang->edit_style, "index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}");
 		$popup->add_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}");
