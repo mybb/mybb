@@ -255,7 +255,28 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 }
 
 /**
- * Determine via its theme file the version of the current theme with name $theme_code.
+ * Get the contents of the theme file of the theme with codename $theme_code.
+ *
+ * @param string $theme_code The codename (directory) of the theme.
+ * @param string $err_msg Stores the messages for any errors encountered.
+ *
+ * @return array Empty on error, in which case $err_msg is set.
+ */
+function get_theme_properties($theme_code, &$err_msg = '')
+{
+    global $mybb;
+
+    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+
+    $err_msg = '';
+    $theme_file = MYBB_ROOT."inc/themes/$theme_code/$mode/theme.json";
+    $theme_data = read_json_file($theme_file, $err_msg, false);
+
+    return $theme_data;
+}
+
+/**
+ * Determine via its theme file the version of the theme with name $theme_code.
  *
  * @param string $theme_code The codename (directory) of the theme for which to find the version.
  * @param string $err_msg Stores the messages for any errors encountered.
@@ -264,33 +285,20 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
  */
 function get_theme_version($theme_code, &$err_msg = '')
 {
-    global $mybb;
     static $version = [];
 
     if (isset($version[$theme_code])) {
         return $version[$theme_code];
     }
 
-    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-
-    $err_msg = '';
-    $theme_file = MYBB_ROOT."inc/themes/$theme_code/$mode/theme.json";
-    $theme_data = read_json_file($theme_file, $err_msg, false);
-    if (!isset($theme_data['version'])) {
-        if (!$err_msg) {
-            $err_msg = 'The theme file at "'.htmlspecialchars_uni($theme_file).
-            '" does not supply a valid `version` property (or is non-existent, unreadable, or corrupt.';
-        }
-        $version[$theme_code] = false;
-    } else {
-        $version[$theme_code] = $theme_data['version'];
-    }
+    $theme_data = get_theme_properties($theme_code, $err_msg);
+    $version[$theme_code] = empty($theme_data['version']) ? false : $theme_data['version'];
 
     return $version[$theme_code];
 }
 
 /**
- * Determine via its theme file the name of the current theme with codename $theme_code.
+ * Determine via its theme file the name of the theme with codename $theme_code.
  *
  * @param string $theme_code The codename (directory) of the theme for which to find the title.
  * @param string $err_msg Stores the messages for any errors encountered.
@@ -299,27 +307,14 @@ function get_theme_version($theme_code, &$err_msg = '')
  */
 function get_theme_name($theme_code, &$err_msg = '')
 {
-    global $mybb;
     static $name = [];
 
     if (isset($name[$theme_code])) {
         return $name[$theme_code];
     }
 
-    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-
-    $err_msg = '';
-    $theme_file = MYBB_ROOT."inc/themes/$theme_code/$mode/theme.json";
-    $theme_data = read_json_file($theme_file, $err_msg, false);
-    if (!isset($theme_data['name'])) {
-        if (!$err_msg) {
-            $err_msg = 'The theme file at "'.htmlspecialchars_uni($theme_file).
-            '" does not supply a valid `name` property (or is non-existent, unreadable, or corrupt.';
-        }
-        $name[$theme_code] = false;
-    } else {
-        $name[$theme_code] = $theme_data['name'];
-    }
+    $theme_data = get_theme_properties($theme_code, $err_msg);
+    $name[$theme_code] = empty($theme_data['name']) ? false : $theme_data['name'];
 
     return $name[$theme_code];
 }
@@ -391,7 +386,7 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  *
  * @param string $codename   The codename (directory) of the theme or plugin whose stylesheets should
  *                           be retrieved.
- * @parma boolean $raw       If true, the raw stylesheet structure from the resources.json will be
+ * @param boolean $raw       If true, the raw stylesheet structure from the resources.json will be
  *                           returned. If false, a reformed structure will be returned.
  * @param boolean $is_plugin If true, $codename represents a plugin codename; else a theme.
  * @param boolean $devdist   If true, try to use the resources.json file in the `devdist` directory
@@ -403,8 +398,8 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  *               When $raw is true, the return is structured as follows:
  *                The first index is the stylesheet filename; the second is an array of items, each
  *                of which contains two entries, one of which is "script", referencing the script to
- *                which to attach the stylesheet, and "actions", being an array of actions which
- *                conditionally trigger the attachment for the script.
+ *                which to attach the stylesheet, and the other, "actions", being an array of
+ *                actions which conditionally trigger the attachment for the script.
  */
 function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $devdist = false, $inc_placeholders = false)
 {
@@ -463,6 +458,90 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
 
     // Previous return possible.
     return $stylesheets;
+}
+
+/**
+ * Retrieves from the filesystem all stylesheets for a theme, including those for any installed
+ * plugins, and including their display order.
+ *
+ * @param string $codename The codename (directory) of the theme whose stylesheets should be
+ *                         retrieved.
+ * @param boolean $devdist If true, try to use the resources.json file in the `devdist` directory
+ *                         for a themelet before trying that in the `current` directory.
+ *
+ * @return array The first array entry is the array of stylesheets, in "raw" format as described
+ *               for get_themelet_stylesheets(), with the addition that index -1 into the stylesheet
+ *               array contains inheritance data as described for resolve_themelet_resource() with a
+ *               $return_type of RTR_RETURN_INHERITANCE.
+ *               The second array entry is an array of display orders for the stylesheets, indexed
+ *               by order number with each entry being an array of two entries: plugin name (an
+ *               empty string if not a plugin but rather the theme itself) and stylesheet name
+ *               (e.g., "main.css").
+ */
+function get_theme_stylesheets($theme_code, $devdist = false) {
+    global $mybb;
+
+    $disporders = $stylesheets_a = [];
+    $order_num = 1;
+
+    // Fetch the list of all of the stylesheets and their inheritance information for this theme...
+    $stylesheets_a[''] = get_themelet_stylesheets(
+        $theme_code,
+        /*$raw =*/true,
+        /*$is_plugin = */false,
+        /*$devdist = */$devdist,
+        /*$inc_placeholders = */true,
+    );
+    foreach ($stylesheets_a[''] as $ss_name => &$ss_arr) {
+        if (substr($ss_name, 0, 4) == 'ext.') {
+            $plugin_style = substr($ss_name, 4);
+            $a = explode('.', $plugin_style, 2);
+            if (count($a) == 2) {
+                $disporders[$order_num++] = [$a[0], $a[1]];
+            }
+        } else {
+            $ss_arr[-1] = resolve_themelet_resource(
+                "~t~{$theme_code}:frontend:styles:{$ss_name}",
+                /*$use_themelet_cache = */false,
+                /*$return_type = */RTR_RETURN_INHERITANCE
+            );
+            $disporders[$order_num++] = ['', $ss_name];
+        }
+    }
+    unset($ss_arr);
+    // ...including for installed plugins.
+    foreach (get_plugins_list() as $plugin_file) {
+        global $plugins;
+
+        require_once MYBB_ROOT."inc/plugins/{$plugin_file}";
+        $plugin_code = str_replace('.php', '', $plugin_file);
+        $installed_func = "{$plugin_code}_is_installed";
+        $installed = true;
+        if (function_exists($installed_func) && $installed_func() != true) {
+            $installed = false;
+        }
+        if ($installed) {
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets(
+                $plugin_code,
+                /*$raw =*/true,
+                /*$is_plugin = */true,
+                /*$devdist = */$devdist
+            );
+            foreach ($stylesheets_a[$plugin_code] as $ss_name => &$ss_arr) {
+                $ss_arr[-1] = resolve_themelet_resource(
+                    "~p~{$theme_code}:{$plugin_code}:styles:{$ss_name}",
+                    /*$use_themelet_cache = */false,
+                    /*$return_type = */RTR_RETURN_INHERITANCE
+                );
+                if (!in_array([$plugin_code, $ss_name], $disporders)) {
+                    $disporders[$order_num++] = [$plugin_code, $ss_name];
+                }
+            }
+            unset($ss_arr);
+        }
+    }
+
+    return [$stylesheets_a, $disporders];
 }
 
 /**
