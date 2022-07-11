@@ -45,13 +45,13 @@ class dbpdoEngine
 	{
 		try
 		{
-			$driver_options = array_merge(
-				$driver_options,
+			$driver_options =
+				$driver_options +
 				array(
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_EMULATE_PREPARES => false,
 				)
-			);
+			;
 
 			$this->db = new PDO($dsn, $username, $password, $driver_options);
 		}
