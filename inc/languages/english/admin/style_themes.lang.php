@@ -205,8 +205,8 @@ $l['error_stylesheet_order_update'] = 'Failed to write the stylesheet order to t
 $l['error_failed_to_save_theme'] = 'Failed to update the theme\'s theme.json file.';
 $l['error_failed_to_save_stylesheet_props'] = 'Failed to save the stylesheet properties to the theme\'s resources.json file.';
 $l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
-$l['error_codename_with_directory_separator'] = 'The supplied theme codename contains an illegal directory separator character (/ or \\).';
-$l['error_css_filename_with_directory_separator'] = 'The supplied stylesheet filename contains an illegal directory separator character (/ or \\).';
+$l['error_codename_with_directory_separator'] = 'The supplied theme codename contains an illegal double-dot followed by a directory separator character (/ or \\).';
+$l['error_css_filename_with_directory_separator'] = 'The supplied stylesheet filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically zip themes for distribution. If you are unable to install the PHP package providing this class, then please zip up your theme manually.';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";

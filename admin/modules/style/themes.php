@@ -32,12 +32,13 @@ lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 
-// Be extra careful about dodgy codenames or stylesheet filenames which use directory separators and '..' to access private filesystem files.
-if (!empty($mybb->input) && (strpos($mybb->input['codename'], '/') !== false || strpos($mybb->input['codename'], '\\') !== false)) {
+// Be extra careful about dodgy codenames or stylesheet filenames which try to use directory
+// separators and '..' to access private filesystem files.
+if (!empty($mybb->input) && (strpos($mybb->input['codename'], '../') !== false || strpos($mybb->input['codename'], '..\\') !== false)) {
 	flash_message($lang->error_codename_with_directory_separator, 'error');
 	admin_redirect('index.php?module=style-themes');
 }
-if (!empty($mybb->input) && (strpos($mybb->input['file'], '/') !== false || strpos($mybb->input['file'], '\\') !== false)) {
+if (!empty($mybb->input) && (strpos($mybb->input['file'], '../') !== false || strpos($mybb->input['file'], '..\\') !== false)) {
 	flash_message($lang->error_css_filename_with_directory_separator, 'error');
 	admin_redirect('index.php?module=style-themes');
 }
