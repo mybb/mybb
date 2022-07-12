@@ -391,6 +391,9 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  * @param boolean $is_plugin If true, $codename represents a plugin codename; else a theme.
  * @param boolean $devdist   If true, try to use the resources.json file in the `devdist` directory
  *                           before trying that in the `current` directory.
+ * @param boolean $inc_placeholders If true, include any empty placeholder entries for plugin
+ *                                  stylesheets (these are for the purposes of ordering when *not*
+ *                                  overriding the plugin stylesheet's properties).
  * @return array When $raw is false, the return is structured as follows:
  *                The first index is the name of a script to which to attach a stylesheet; the second is
  *                the action which conditionally triggers attachment ("global" indicates any action
@@ -431,7 +434,7 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
                     return $ret;
                 }
                 foreach ($res_arr['stylesheets'] as $sheet => $arr) {
-                    if (!$arr) { // This is a plugin's stylesheet included for purposes of ordering, and thus is empty.
+                    if (!$arr) { // Because empty, this is a plugin's stylesheet included merely for purposes of ordering.
                         continue;
                     }
                     foreach ($arr as $script_actions) {
@@ -494,11 +497,20 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
     );
     foreach ($stylesheets_a[''] as $ss_name => &$ss_arr) {
         if (substr($ss_name, 0, 4) == 'ext.') {
+            // Note #1: when $ss_arr is non-empty, this theme is overriding a plugin stylesheet's
+            // properties. When it is empty, this is just a placeholder for the purpose of ordering
+            // the plugin's stylesheet within this theme.
+            //
+            // TODO: Support stylesheet property inheritance such that we check any parent themes'
+            // resources.json files for the plugin stylesheet's properties before pulling them from
+            // the plugin's resources.json file itself. Support inheritance for the properties of
+            // ordinary theme stylesheets too.
             $plugin_style = substr($ss_name, 4);
             $a = explode('.', $plugin_style, 2);
             if (count($a) == 2) {
                 $disporders[$order_num++] = [$a[0], $a[1]];
             }
+            $stylesheets_a[$a[0]][$a[1]] = $ss_arr;
         } else {
             $ss_arr[-1] = resolve_themelet_resource(
                 "~t~{$theme_code}:frontend:styles:{$ss_name}",
@@ -521,12 +533,18 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
             $installed = false;
         }
         if ($installed) {
-            $stylesheets_a[$plugin_code] = get_themelet_stylesheets(
+            $plugin_ss = get_themelet_stylesheets(
                 $plugin_code,
                 /*$raw =*/true,
                 /*$is_plugin = */true,
                 /*$devdist = */$devdist
             );
+            foreach ($plugin_ss as $ss_name => $ss_arr) {
+                // Will be non-empty when overridden by the theme at note #1 above.
+                if (empty($stylesheets_a[$plugin_code][$ss_name])) {
+                    $stylesheets_a[$plugin_code][$ss_name] = $ss_arr;
+                }
+            }
             foreach ($stylesheets_a[$plugin_code] as $ss_name => &$ss_arr) {
                 $ss_arr[-1] = resolve_themelet_resource(
                     "~p~{$theme_code}:{$plugin_code}:styles:{$ss_name}",

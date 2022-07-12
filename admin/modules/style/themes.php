@@ -1233,12 +1233,23 @@ if ($mybb->input['action'] == 'edit') {
 	$ordered_stylesheets = [];
 	ksort($disporders);
 	foreach ($disporders as $order_num => $arr) {
-		$ordered_stylesheets[$arr[1]] = $stylesheets_a[$arr[0]][$arr[1]];
+		if (empty($arr[0])) {
+			$key = $arr[1];
+		} else {
+			$key = "ext.{$arr[0]}.{$arr[1]}";
+		}
+		$ordered_stylesheets[$key] = $stylesheets_a[$arr[0]][$arr[1]];
 	}
 
 	$order_num = 1;
 	foreach ($ordered_stylesheets as $ss_name => $ss_arr) {
-		$filename = $ss_name;
+		$prefix = 'ext.';
+		$plen   = strlen($prefix);
+		if (substr($ss_name, 0, $plen) === $prefix) {
+			list($ext, $plugin_code, $filename) = explode('.', $ss_name, 3);
+		} else {
+			$filename = $ss_name;
+		}
 
 		$inherited = '';
 
@@ -1350,16 +1361,15 @@ if ($mybb->input['action'] == 'edit') {
 
 		$popup = new PopupMenu("style_popup_{$order_num}", $lang->options);
 
-		$popup->add_item($lang->edit_style, "index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}");
-		$popup->add_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}");
+		$popup->add_item($lang->edit_style, "index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}");
+		$popup->add_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}");
 
-		if($inherited == "")
-		{
-			$popup->add_item($lang->delete_revert, "index.php?module=style-themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+		if (empty($inheritance_chain)) {
+			$popup->add_item($lang->delete_revert, "index.php?module=style-themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 
-		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;codename={$theme['codename']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$disporder_fldnm = 'disporder_'.($inheritance_data['orig_plugin'] ? 'ext.'.$inheritance_data['orig_plugin'].'.' : '').$ss_name;
+		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
+		$disporder_fldnm = 'disporder_'.($inheritance_data['orig_plugin'] ? 'ext.'.$inheritance_data['orig_plugin'].'.' : '').$filename;
 		$disporder_fldnm = str_replace('.', '~', $disporder_fldnm); // Encode dots with tildes due to PHP limitation (dots converted to underscores)
 		$table->construct_cell($form->generate_numeric_field($disporder_fldnm, $order_num++, array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -1474,14 +1484,28 @@ if($mybb->input['action'] == "stylesheet_properties")
 	// Fetch list of all of the stylesheets for this theme
 	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
 
-	// Does the stylesheet not exist?
 	$stylesheet_props = false;
-	foreach ($stylesheets_a as $code => $ss_arr) {
+	// First check for the stylesheet in the theme itself.
+	foreach ($stylesheets_a as $plugin_code => $ss_arr) {
 		if (isset($ss_arr[$mybb->input['file']])) {
-			$stylesheet_props = $ss_arr[$mybb->input['file']];
+			$ss_filename = $mybb->input['file'];
+			$stylesheet_props = $ss_arr[$ss_filename];
 			break;
 		}
 	}
+	// If not there, then check whether its filename indicates that it originates in a plugin,
+	// and check for it in the plugin.
+	if (empty($stylesheet_props)) {
+		$prefix = 'ext.';
+		$plen   = strlen($prefix);
+		if (substr($mybb->input['file'], 0, $plen) === $prefix) {
+			list($ext, $plugin_code, $ss_filename) = explode('.', $mybb->input['file'], 3);
+			if (isset($stylesheets_a[$plugin_code][$ss_filename])) {
+				$stylesheet_props = $stylesheets_a[$plugin_code][$ss_filename];
+			}
+		}
+	}
+	// The stylesheet does not exist.
 	if (empty($stylesheet_props)) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect('index.php?module=style-themes');
@@ -1537,16 +1561,13 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 			}
 
-			// If we are overriding a plugin's stylesheet, and we already have a
-			// placeholder entry for that stylesheet for purposes of ordering, then
-			// delete that placeholder entry - we're now going to have a genuine entry.
-			if ($code) {
-				$placeholder = "ext.{$code}.{$mybb->input['file']}";
-				if (isset($resources['stylesheets'][$placeholder])) {
-					unset($resources['stylesheets'][$placeholder]);
-				}
+			if ($plugin_code) {
+				// We are overriding a plugin's stylesheet.
+				$ss_key = "ext.{$plugin_code}.{$ss_filename}";
+			} else {
+				$ss_key = $ss_filename;
 			}
-			$resources['stylesheets'][$mybb->input['file']] = $attached;
+			$resources['stylesheets'][$ss_key] = $attached;
 
 			if (!write_json_file($resource_file, $resources)) {
 				flash_message($lang->error_failed_to_save_stylesheet_props, 'error');
