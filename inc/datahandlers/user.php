@@ -1387,11 +1387,11 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['regip']))
 		{
-			$this->user_update_data['regip'] = $db->escape_string($user['regip']);
+			$this->user_update_data['regip'] = $db->escape_binary($user['regip']);
 		}
 		if(isset($user['lastip']))
 		{
-			$this->user_update_data['lastip'] = $db->escape_string($user['lastip']);
+			$this->user_update_data['lastip'] = $db->escape_binary($user['lastip']);
 		}
 		if(isset($user['language']))
 		{
