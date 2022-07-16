@@ -1515,6 +1515,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	{
 		if(!$errors)
 		{
+			// TODO: Abstract this code into a function given that it is duplicated in the "add_stylesheet" action below.
 			$attached = array();
 			if ($mybb->input['attach'] == 0) {
 				$attached = [0 => ['script' => 'global', 'actions' => ['global']]];
@@ -2286,20 +2287,41 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 if($mybb->input['action'] == "add_stylesheet")
 {
-	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
+	// Fetch the theme we want to add this stylesheet to
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$themes = $themelet_hierarchy[$mode]['themes'];
 
-	if(empty($theme['tid']) || $theme['tid'] == 1)
-	{
+	// Does the theme not exist?
+	if (!isset($themes[$mybb->input['codename']])) {
 		flash_message($lang->error_invalid_theme, 'error');
-		admin_redirect("index.php?module=style-themes");
+		admin_redirect('index.php?module=style-themes');
+	}
+
+	$theme = $themes[$mybb->input['codename']]['properties'];
+
+	// Fetch list of all of the stylesheets for this theme
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
+
+	$sheetnames = array();
+	foreach ($stylesheets_a as $plugin_code => $ss_arr) {
+		foreach ($ss_arr as $filename => $script_actions) {
+			if (substr($filename, 0, 4) == 'ext.') {
+				continue;
+			}
+			if ($plugin_code) {
+				$key = 'ext.'.$plugin_code.'.'.$filename;
+				$val = $filename.' '.$lang->sprintf($lang->associated_with_plugin, get_plugin_name($plugin_code));
+			} else {
+				$key = $filename;
+				$val = $filename;
+			}
+			$sheetnames[$key] = $val;
+		}
 	}
 
 	$plugins->run_hooks("admin_style_themes_add_stylesheet");
-
-	// Fetch list of all of the stylesheets for this theme
-	$stylesheets = fetch_theme_stylesheets($theme);
 
 	if($mybb->request_method == "post")
 	{
@@ -2318,93 +2340,133 @@ if($mybb->input['action'] == "add_stylesheet")
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
 		}
 
+		// Does a stylesheet with this name exist already?
+		foreach ($stylesheets_a as $plugin_code => $ss_arr) {
+			if (empty($plugin_code) && isset($ss_arr[$mybb->input['name']])) {
+				$errors[] = $lang->error_stylesheet_already_exists;
+				break;
+			}
+		}
+
 		if(!$errors)
 		{
+			$dest_base = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/frontend/styles/";
+			$is_scss = false;
 			if($mybb->input['add_type'] == 1)
 			{
-				// Import from a current stylesheet
-				$parent_list = make_parent_theme_list($theme['tid']);
-				$parent_list = implode(',', $parent_list);
+				if (!in_array($mybb->input['import'], array_keys($sheetnames))) {
+					$errors[] = $lang->sprintf($lang->error_stylesheet_not_found, $mybb->input['import']);
+				} else {
+					if (substr($mybb->input['import'], 0, 4) == 'ext.') {
+						list($ext, $plugin_code, $filename) = explode('.', $mybb->input['import'], 3);
+						$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+					} else {
+						$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$mybb->input['import']}";
+					}
+					$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
 
-				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid IN ({$parent_list})", array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
-				$stylesheet = $db->fetch_field($query, "stylesheet");
+					if ($is_scss) {
+						// For a new SCSS stylesheet based on an existing
+						// SCSS stylesheet, copy across any SCSS modules
+						// subdirectory if it exists (it is named the same
+						// as the SCSS file, without the .scss extension).
+						$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true);
+						$arr = array_pop($inheritance['inheritance_chain']);
+						if ($arr['is_plugin']) {
+							$src_base = MYBB_ROOT."inc/plugins/{$arr['codename']}/interface/{$mode}/ext/styles/";
+						} else {
+							$src_base = MYBB_ROOT."inc/themes/{$arr['codename']}/{$mode}/frontend/styles/";
+						}
+						$src_deps_dir_name = preg_replace('(\\.[^\\.]*$)', '', $mybb->input['import']);
+						$src_deps_path_abs = $src_base.$src_deps_dir_name;
+						if (is_dir($src_deps_path_abs)) {
+							$dest_deps_dir_name = preg_replace('(\\.[^\\.]*$)', '', $mybb->input['name']);
+							$dest_deps_path_abs = $dest_base.$dest_deps_dir_name;
+							if (!cp_or_mv_recursively($src_deps_path_abs, $dest_deps_path_abs, /*$del_source = */false, $error)) {
+								$errors[] = $error;
+							} else {
+								$stylesheet = preg_replace('(@import\\s+["\']'.preg_quote($src_deps_dir_name).'/)', '@import "'.$dest_deps_dir_name.'/', $stylesheet);
+							}
+						}
+					}
+				}
 			}
 			else
 			{
 				// Custom stylesheet
 				$stylesheet = $mybb->input['stylesheet'];
+
+				if ($mybb->input['filename_ext'] == 'scss') {
+					$is_scss = true;
+				}
 			}
 
-			$attached = array();
+			if (!$errors) {
+				$filename = preg_replace('(\\.(s)?css$)', '', $mybb->input['name']).($is_scss ? '.scss' : '.css');
+				if (!file_put_contents($dest_base.$filename, $stylesheet)) {
+					$errors[] = $lang->sprintf($lang->error_failed_write_stylesheet, $dest_base.$filename);
+				}
+			}
 
-			if($mybb->input['attach'] == 1)
-			{
-				// Our stylesheet is attached to custom pages in MyBB
-				foreach($mybb->input as $id => $value)
-				{
-					$actions_list = "";
-					$attached_to = "";
+			if (!$errors) {
+				// TODO: Abstract this code into a function given that it is duplicated in the "stylesheet_properties" action above.
+				$attached = array();
+				if ($mybb->input['attach'] == 0) {
+					$attached = [0 => ['script' => 'global', 'actions' => ['global']]];
+				} else if ($mybb->input['attach'] == 1) {
+					// Our stylesheet is attached to custom pages in MyBB
+					foreach ($mybb->input as $id => $value) {
+						if (strpos($id, 'attached_') !== false) {
+							$att = ['script' => $value];
 
-					if(strpos($id, 'attached_') !== false)
-					{
-						// We have a custom attached file
-						$attached_id = (int)str_replace('attached_', '', $id);
-						$attached_to = $value;
+							// We have a custom attached file
+							$attached_id = (int)str_replace('attached_', '', $id);
 
-						if($mybb->input['action_'.$attached_id] == 1)
-						{
-							// We have custom actions for attached files
-							$actions_list = $mybb->input['action_list_'.$attached_id];
+							if($mybb->input['action_'.$attached_id] == 1)
+							{
+								// We have custom actions for attached files
+								$att['actions'] = explode(',', $mybb->input['action_list_'.$attached_id]);
+							} else {
+								$att['actions'] = ['global'];
+							}
+
+							$attached[] = $att;
 						}
-
-						if($actions_list)
-						{
-							$attached_to = $attached_to."?".$actions_list;
-						}
-
-						$attached[] = $attached_to;
 					}
 				}
-			}
-			else if($mybb->input['attach'] == 2)
-			{
-				if(!is_array($mybb->input['color']))
+				else if($mybb->input['attach'] == 2)
 				{
-					$errors[] = $lang->error_no_color_picked;
+					if(!is_array($mybb->input['color']))
+					{
+						$errors[] = $lang->error_no_color_picked;
+					}
+					else
+					{
+						$attached = [0 => ['script' => $mybb->input['color'], 'actions' => []]];
+					}
 				}
-				else
-				{
-					$attached = $mybb->input['color'];
+
+				$resource_file = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/resources.json";
+				$resources = read_json_file($resource_file, $err_msg, false);
+				if ($resources) {
+					$resources['stylesheets'][$mybb->input['name']] = $attached;
+					if (!write_json_file($resource_file, $resources)) {
+						$errors[] = $lang->error_ss_add_failed_res_file_write;
+					}
+				} else {
+					$errors[] = $err_msg;
+				}
+
+				if (!$errors) {
+					$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
+
+					// Log admin action
+					log_admin_action($mybb->input['import'], $theme['codename'], $theme['name']);
+
+					flash_message($lang->success_stylesheet_added, 'success');
+					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".urlencode($mybb->input['name']));
 				}
 			}
-
-			// Add Stylesheet
-			$insert_array = array(
-				'name' => $db->escape_string($mybb->input['name']),
-				'tid' => $mybb->get_input('tid', MyBB::INPUT_INT),
-				'attachedto' => implode('|', array_map(array($db, "escape_string"), $attached)),
-				'stylesheet' => $db->escape_string($stylesheet),
-				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
-				'lastmodified' => TIME_NOW
-			);
-
-			$sid = $db->insert_query("themestylesheets", $insert_array);
-
-			if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $stylesheet))
-			{
-				$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
-			}
-
-			// Update the CSS file list for this theme
-			update_theme_stylesheet_list($theme['tid'], $theme, true);
-
-			$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
-
-			// Log admin action
-			log_admin_action($sid, $mybb->input['name'], $theme['tid'], $theme['name']);
-
-			flash_message($lang->success_stylesheet_added, 'success');
-			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}&file=".urlencode($mybb->input['name']));
 		}
 	}
 
@@ -2422,7 +2484,7 @@ if($mybb->input['action'] == "add_stylesheet")
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
 	$page->add_breadcrumb_item($lang->add_stylesheet);
 	$properties = my_unserialize($theme['properties']);
 
@@ -2430,29 +2492,29 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}"
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}"
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->input['codename']}",
 		'description' => $lang->add_stylesheet_desc
 	);
 
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}"
+		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->input['codename']}"
 	);
 
 	$sub_tabs['duplicate_theme'] = array(
 		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}",
 		'description' => $lang->duplicate_theme_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
-	$add_checked = array();
+	$stylesheet = $add_checked = array();
 
 	if($errors)
 	{
@@ -2487,16 +2549,6 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	else
 	{
-		$stylesheet = $mybb->get_input('stylesheet', MyBB::INPUT_ARRAY);
-		if(!isset($stylesheet['sid']))
-		{
-			$stylesheet['sid'] = '';
-		}
-		if(isset($stylesheet['name']))
-		{
-			$mybb->input['name'] = $stylesheet['name'];
-		}
-
 		$add_checked[1] = "";
 		$add_checked[2] = "";
 	}
@@ -2507,14 +2559,13 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$form = new Form("index.php?module=style-themes&amp;action=add_stylesheet", "post", "add_stylesheet");
 
-	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
+	echo $form->generate_hidden_field('codename', $mybb->input['codename'])."\n";
 
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
 	$check_actions = "";
 	$mybb->input['attach'] = $mybb->get_input('attach', MyBB::INPUT_INT);
 	$stylesheet['colors'] = array();
-	$stylesheet['sid'] = null;
 
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
@@ -2647,18 +2698,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	checkAction(\'attach\');'.$check_actions.'
 	</script>';
 
-	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
-
 	$form_container = new FormContainer($lang->add_stylesheet_to.' '.htmlspecialchars_uni($theme['name']), 'tfixed');
 	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
-
-	$sheetnames = array();
-	foreach($stylesheets as $filename => $style)
-	{
-		$sheetnames[basename($filename)] = basename($filename);
-	}
 
 	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->import_stylesheet_from}</strong></label></dt>
@@ -2670,7 +2713,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			</table>
 		</dd>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->write_own}</strong></label></dt>
-		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->get_input('stylesheet'), array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30'))."</span>
+		<span id=\"add_2\" class=\"adds\"><label>Type:</label> ".$form->generate_select_box('filename_ext', ['css' => 'CSS', 'scss' => 'SCSS'])."<br />".$form->generate_text_area('stylesheet', $mybb->get_input('stylesheet'), array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30'))."</span>
 	</dl>";
 
 	$form_container->output_row("", "", $actions);

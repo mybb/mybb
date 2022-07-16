@@ -596,6 +596,11 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
  *                                    cache; otherwise rebuild it manually.
  * @param integer $return_type One of the constants RTR_RETURN_RESOURCE, RTR_RETURN_PATH, or
  *                             RTR_RETURN_INHERITANCE.
+ * @param boolean $min_override If true, then do not minify CSS for stylesheets.
+ * @param boolean $scss_override If true, then do not convert SCSS to CSS for stylesheets.
+ * @param boolean $is_scss (Output only; ignored as input) If true, then the resource is a
+ *                         stylesheet that is or was originally in SCSS format.
+ *
  * @return Mixed  If the resource could not be located, this return is false. Otherwise:
  *                If $return_type is RTR_RETURN_RESOURCE, this return is the resource's contents,
  *                  generated dynamically, avoiding the cache.
@@ -620,7 +625,7 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
 define('RTR_RETURN_PATH'       , 1);
 define('RTR_RETURN_RESOURCE'   , 2);
 define('RTR_RETURN_INHERITANCE', 3);
-function resolve_themelet_resource($specifier, $use_themelet_cache = true, $return_type = RTR_RETURN_PATH)
+function resolve_themelet_resource($specifier, $use_themelet_cache = true, $return_type = RTR_RETURN_PATH, $min_override = false, $scss_override = false, &$is_scss = false)
 {
     global $mybb, $cache, $theme, $plugins;
 
@@ -650,6 +655,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
             'is_scss'           => false,
             'inheritance_chain' => [],
         ];
+        $is_scss = false;
     }
 
     if (!$mybb->settings['themelet_dev_mode'] && $use_themelet_cache) {
@@ -801,15 +807,19 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         }
     }
 
-    if (($needs_cache || $return_type == RTR_RETURN_RESOURCE) && ($minify || $scss_path)) {
+    if (($needs_cache || $return_type == RTR_RETURN_RESOURCE) && (($minify && !$min_override) || $scss_path)) {
         if ($scss_path) {
-            $compiler = new Compiler();
-            $result = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path);
-            $stylesheet = $result->getCss();
-            if ($needs_cache) {
-                // Entries other than the first in the .deps file are for secondary
-                // dependencies - in this case, SCSS @import files.
-                $deps_new = array_merge($deps_new, $result->getIncludedFiles());
+            if ($scss_override) {
+                $stylesheet = file_get_contents($scss_path);
+            } else {
+                $compiler = new Compiler();
+                $result = $compiler->compileString(file_get_contents($scss_path), /*$path = */$scss_path);
+                $stylesheet = $result->getCss();
+                if ($needs_cache) {
+                    // Entries other than the first in the .deps file are for secondary
+                    // dependencies - in this case, SCSS @import files.
+                    $deps_new = array_merge($deps_new, $result->getIncludedFiles());
+                }
             }
         } else {
             $stylesheet = file_get_contents($resource_path);
@@ -817,7 +827,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
 
         $plugins->run_hooks('css_start', $stylesheet);
 
-        if ($minify) {
+        if ($minify && !$min_override) {
             global $config;
             require_once MYBB_ROOT.$config['admin_dir'].'/inc/functions_themes.php';
             $stylesheet = minify_stylesheet($stylesheet);
@@ -827,7 +837,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
     }
 
     if ($needs_cache) {
-        if (!$minify && !$scss_path) {
+        if ((!$minify || $min_override) && !$scss_path) {
             copy($resource_path, $cache_file);
         } else {
             file_put_contents($cache_file, $stylesheet);
@@ -838,12 +848,14 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
     $resource = '';
 
     if ($return_type == RTR_RETURN_RESOURCE) {
-        if ($minify || $scss_path) {
+        if ($minify && !$min_override || $scss_path) {
             $resource = $stylesheet;
         } elseif ($resource_path) {
             $resource = file_get_contents($resource_path);
         }
     }
+
+    $is_scss = !empty($scss_path);
 
     // Earlier returns possible
     return $return_type == RTR_RETURN_RESOURCE
