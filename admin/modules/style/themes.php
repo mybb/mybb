@@ -2225,31 +2225,48 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 if($mybb->input['action'] == "delete_stylesheet")
 {
-	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
+	// Fetch the theme we want to delete this stylesheet from
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$themes = $themelet_hierarchy[$mode]['themes'];
 
-	if(!$theme['tid'] || $theme['tid'] == 1)
-	{
+	// Does the theme not exist? Then error out
+	if (!isset($themes[$mybb->input['codename']])) {
 		flash_message($lang->error_invalid_theme, 'error');
-		admin_redirect("index.php?module=style-themes");
+		admin_redirect('index.php?module=style-themes');
 	}
+
+	$theme = $themes[$mybb->input['codename']]['properties'];
 
 	$plugins->run_hooks("admin_style_themes_delete_stylesheet");
 
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
+	// Fetch list of all of the stylesheets for this theme
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
+
+	// Check that the stylesheet supplied for deletion exists
+	$filename = $mybb->get_input('file');
+	$plugin_code = '';
+	if (substr($filename, 0, 4) == 'ext.') {
+		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
 	}
 
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
+	// If not, then error out
+	if (empty($stylesheets_a[$plugin_code][$filename])) {
+		flash_message($lang->error_invalid_stylesheet, 'error');
+		admin_redirect('index.php?module=style-themes');
+	}
 
-	// Does the theme not exist? or are we trying to delete the master?
-	if(!$stylesheet['sid'] || $stylesheet['tid'] == 1)
-	{
+	// Check the stylesheet's inheritance status
+	if ($plugin_code) {
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+	} else {
+		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+	}
+	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
+
+	// If this stylesheet is being inherited, and thus there is nothing to delete, then error out
+	if (count($inheritance['inheritance_chain']) > 1) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
@@ -2262,26 +2279,51 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
-		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+		// Delete the stylesheet file(s) from this theme, also deleting any potential SCSS
+		// modules dependency directory.
 
-		$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
-		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
+		$base_abs_path = preg_replace('(\\.[^\\.]*$)', '', $filename);
+		$base_abs_path = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/frontend/styles/{$base_abs_path}";
 
-		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid'], $theme, true);
+		if ($is_scss) {
+			if (is_dir($base_abs_path)) {
+				rmdir_recursive($base_abs_path);
+			}
+
+		}
+		foreach (['.scss', '.css'] as $ext) {
+			$filepath = "{$base_abs_path}{$ext}";
+			if (file_exists($filepath)) {
+				unlink($filepath);
+			}
+		}
+
+		$err_msg = false;
+		$resource_file = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/resources.json";
+		$resources = read_json_file($resource_file, $err_msg, false);
+		if ($resources) {
+			unset($resources['stylesheets'][$mybb->input['file']]);
+			if (!write_json_file($resource_file, $resources)) {
+				$err_msg = $lang->error_failed_to_save_stylesheet_props;
+			}
+		}
+
+		if ($err_msg) {
+			flash_message($err_msg, 'error');
+			admin_redirect("index.php?module=style-themes");
+		}
 
 		$plugins->run_hooks("admin_style_themes_delete_stylesheet_commit");
 
 		// Log admin action
-		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
+		log_admin_action($stylesheet['name'], $theme['codename'], $theme['name']);
 
 		flash_message($lang->success_stylesheet_deleted, 'success');
-		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+		admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}", $lang->confirm_stylesheet_deletion);
+		$page->output_confirm_action("index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}", $lang->confirm_stylesheet_deletion);
 	}
 }
 
@@ -2451,7 +2493,7 @@ if($mybb->input['action'] == "add_stylesheet")
 				if ($resources) {
 					$resources['stylesheets'][$mybb->input['name']] = $attached;
 					if (!write_json_file($resource_file, $resources)) {
-						$errors[] = $lang->error_ss_add_failed_res_file_write;
+						$errors[] = $lang->error_failed_to_save_stylesheet_props;
 					}
 				} else {
 					$errors[] = $err_msg;

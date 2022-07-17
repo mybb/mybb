@@ -705,6 +705,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                     if (test_set_path($path_to_test, $resource_path, $scss_path)) {
                         if ($return_type == RTR_RETURN_INHERITANCE) {
                             $ret['is_scss'] = !empty($scss_path);
+                            $is_scss = $ret['is_scss'];
                             return $ret;
                         }
                         break;
@@ -744,6 +745,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                         if (test_set_path($path_to_test, $resource_path, $scss_path)) {
                             if ($return_type == RTR_RETURN_INHERITANCE) {
                                 $ret['is_scss'] = !empty($scss_path);
+                                $is_scss = $ret['is_scss'];
                                 return $ret;
                             }
                             break;
@@ -762,6 +764,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                                 $res_name;
                 if (test_set_path($path_to_test, $resource_path, $scss_path) && $return_type == RTR_RETURN_INHERITANCE) {
                     $ret['is_scss'] = !empty($scss_path);
+                    $is_scss = $ret['is_scss'];
                     $ret['inheritance_chain'][] = [
                         'codename'  => $plugin_code,
                         'is_plugin' => true        ,
