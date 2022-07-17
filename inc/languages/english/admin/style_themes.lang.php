@@ -50,7 +50,8 @@ $l['export_devdist_desc'] = "If you want to export the `current` version instead
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
 $l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
 $l['edit_stylesheet_advanced_mode'] = "Edit Stylesheet: Advanced Mode";
-$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the CSS stylesheet is shown in the text area below.";
+$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the {1} stylesheet are shown in the text area below.";
+$l['stylesheet_type'] = "Stylesheet type: ";
 
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
@@ -209,6 +210,7 @@ $l['error_codename_with_directory_separator'] = 'The supplied theme codename con
 $l['error_css_filename_with_directory_separator'] = 'The supplied stylesheet filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_stylesheet_already_exists'] = 'A stylesheet with that name already exists in this theme.';
 $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically zip themes for distribution. If you are unable to install the PHP package providing this class, then please zip up your theme manually.';
+$l['error_failed_to_mkdir'] = 'Failed to create the directory "{1}".';
 $l['error_failed_write_stylesheet'] = 'Failed to write the stylesheet to the file "{1}".';
 $l['error_stylesheet_not_found'] = 'Stylesheet "{1}" not found.';
 

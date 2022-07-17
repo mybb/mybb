@@ -46,33 +46,45 @@ if (!empty($mybb->input) && (strpos($mybb->input['file'], '../') !== false || st
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$themes = $themelet_hierarchy[$mode]['themes'];
 
-	if(!$theme['tid'] || $theme['tid'] == 1)
-	{
+	// Does the theme not exist? Then error out
+	if (!isset($themes[$mybb->input['codename']])) {
 		flash_message($lang->error_invalid_theme, 'error');
-		admin_redirect("index.php?module=style-themes");
+		admin_redirect('index.php?module=style-themes');
 	}
 
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
+	$theme = $themes[$mybb->input['codename']]['properties'];
+
+	// Fetch list of all of the stylesheets for this theme
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
+
+	// Check that the stylesheet supplied for editing exists
+	$filename = $mybb->get_input('file');
+	$plugin_code = '';
+	if (substr($filename, 0, 4) == 'ext.') {
+		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
 	}
 
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
-	{
+	// If not, then error out
+	if (empty($stylesheets_a[$plugin_code][$filename])) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
 
-	$css_array = css_to_array($stylesheet['stylesheet']);
+	// Fetch the stylesheet from the filesystem
+	if ($plugin_code) {
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+	} else {
+		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+	}
+	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
+
+
+	$css_array = css_to_array($stylesheet);
 	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
 	$editable_selector = $css_array[$mybb->input['selector']];
 	$properties = parse_css_properties($editable_selector['values']);
@@ -86,7 +98,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
-	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
+	echo $form->generate_hidden_field("codename", $mybb->input['codename'], array('id' => "codename"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
 	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($mybb->input['selector']), array('id' => 'hidden_selector'))."\n";
 
@@ -1254,12 +1266,12 @@ if ($mybb->input['action'] == 'edit') {
 		$inherited = '';
 
 		$sep = ' ';
-		$inheritance_data = $ss_arr[-1];
+		$inheritance = $ss_arr[-1];
 		unset($ss_arr[-1]);
-		$inheritance_chain = (array)$inheritance_data['inheritance_chain'];
+		$inheritance_chain = (array)$inheritance['inheritance_chain'];
 		array_shift($inheritance_chain); // Remove the themelet itself
-		if ($inheritance_data['orig_plugin']) {
-			$inherited .= ' <small>'.$lang->sprintf($lang->associated_with_plugin, get_plugin_name($inheritance_data['orig_plugin'])).'</small>';
+		if ($inheritance['orig_plugin']) {
+			$inherited .= ' <small>'.$lang->sprintf($lang->associated_with_plugin, get_plugin_name($inheritance['orig_plugin'])).'</small>';
 		}
 		if ($inheritance_chain) {
 			$inherited .= " <small>({$lang->inherited_from}";
@@ -1369,7 +1381,7 @@ if ($mybb->input['action'] == 'edit') {
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$disporder_fldnm = 'disporder_'.($inheritance_data['orig_plugin'] ? 'ext.'.$inheritance_data['orig_plugin'].'.' : '').$filename;
+		$disporder_fldnm = 'disporder_'.($inheritance['orig_plugin'] ? 'ext.'.$inheritance['orig_plugin'].'.' : '').$filename;
 		$disporder_fldnm = str_replace('.', '~', $disporder_fldnm); // Encode dots with tildes due to PHP limitation (dots converted to underscores)
 		$table->construct_cell($form->generate_numeric_field($disporder_fldnm, $order_num++, array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -1788,179 +1800,189 @@ EOF;
 	$page->output_footer();
 }
 
+// Perform the initialisation common to both "simple" and "advanced" stylesheet editing modes
+if ($mybb->input['action'] == "edit_stylesheet") {
+	// Fetch the theme we want to edit this stylesheet in
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$themes = $themelet_hierarchy[$mode]['themes'];
+
+	// Does the theme not exist? Then error out
+	if (!isset($themes[$mybb->input['codename']])) {
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect('index.php?module=style-themes');
+	}
+
+	$theme = $themes[$mybb->input['codename']]['properties'];
+
+	$simple_mode = (!isset($mybb->input['mode']) || $mybb->input['mode'] == 'simple');
+
+	if ($simple_mode) {
+		$plugins->run_hooks('admin_style_themes_edit_stylesheet_simple');
+	} else {
+		$plugins->run_hooks('admin_style_themes_edit_stylesheet_advanced');
+	}
+
+
+	// Fetch list of all of the stylesheets for this theme
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
+
+	// Check that the stylesheet supplied for editing exists
+	$filename = $mybb->get_input('file');
+	$plugin_code = '';
+	if (substr($filename, 0, 4) == 'ext.') {
+		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
+	}
+
+	// If not, then error out
+	if (empty($stylesheets_a[$plugin_code][$filename])) {
+		flash_message($lang->error_invalid_stylesheet, 'error');
+		admin_redirect('index.php?module=style-themes');
+	}
+
+	// Check the stylesheet's inheritance status and type (CSS vs SCSS)
+	if ($plugin_code) {
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+	} else {
+		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+	}
+	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
+	$is_inherited = (count($inheritance['inheritance_chain']) > 1);
+
+	// Pull out the contents of the stylesheet from the appropriate file
+	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
+}
+
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
 if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
 {
-	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
-
-	if(empty($theme['tid']) || $theme['tid'] == 1)
-	{
-		flash_message($lang->error_invalid_theme, 'error');
-		admin_redirect("index.php?module=style-themes");
-	}
-
-	$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple");
-
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
-	}
-
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
-	{
-		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style-themes");
+	if ($is_scss) {
+		// Editing of SCSS in "simple" mode is not (yet?) supported: redirect to the advanced editor.
+		admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=advanced");
 	}
 
 	if($mybb->request_method == "post")
 	{
-		$sid = $stylesheet['sid'];
-
-		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
-		if($theme['tid'] != $stylesheet['tid'])
-		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
+		// TODO: Abstract this code given that it is duplicated for saving in "advanced" mode below
+		$err_msg = false;
+		$base_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/$mode";
+		if ($inheritance['orig_plugin']) {
+			$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
+		} else {
+			$save_dir = "$base_dir/frontend/styles/";
 		}
+		if (!file_exists($save_dir) && !mkdir($save_dir, 0755, true)) {
+			$err_msg = $lang->sprintf($lang->error_failed_to_mkdir, $save-dir);
+		} else {
+			$filename = preg_replace('(\\.[^\\.]*$)', '', $filename).'.'.($is_scss ? 'scss' : 'css');
+			$save_path = $save_dir.$filename;
 
-		// Insert the modified CSS
-		$new_stylesheet = $stylesheet['stylesheet'];
-
-		if($mybb->input['serialized'] == 1)
-		{
-			$mybb->input['css_bits'] = my_unserialize($mybb->input['css_bits']);
-		}
-
-		$css_to_insert = '';
-		foreach($mybb->input['css_bits'] as $field => $value)
-		{
-			if(!trim($value) || !trim($field))
+			if($mybb->input['serialized'] == 1)
 			{
-				continue;
+				$mybb->input['css_bits'] = my_unserialize($mybb->input['css_bits']);
 			}
 
-			if($field == "extra")
+			$css_to_insert = '';
+			foreach($mybb->input['css_bits'] as $field => $value)
 			{
-				$css_to_insert .= $value."\n";
+				if(!trim($value) || !trim($field))
+				{
+					continue;
+				}
+
+				if($field == "extra")
+				{
+					$css_to_insert .= $value."\n";
+				}
+				else
+				{
+					$field = str_replace("_", "-", $field);
+					$css_to_insert .= "{$field}: {$value};\n";
+				}
 			}
-			else
-			{
-				$field = str_replace("_", "-", $field);
-				$css_to_insert .= "{$field}: {$value};\n";
+
+			$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $stylesheet);
+
+			if (!file_put_contents($save_path, $new_stylesheet)) {
+				$err_msg = $lang->sprintf($lang->error_failed_write_stylesheet, $save_path);
 			}
+
+			$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple_commit");
 		}
-
-		$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $new_stylesheet);
-
-		// Now we have the new stylesheet, save it
-		$updated_stylesheet = array(
-			"cachefile" => $db->escape_string($stylesheet['name']),
-			"stylesheet" => $db->escape_string($new_stylesheet),
-			"lastmodified" => TIME_NOW
-		);
-		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
-
-		// Cache the stylesheet to the file
-		if(!cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet))
-		{
-			$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
-		}
-
-		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);
-
-		$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple_commit");
 
 		// Log admin action
-		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $mybb->input['file']);
 
 		if(!$mybb->input['ajax'])
 		{
-			flash_message($lang->success_stylesheet_updated, 'success');
-
-			if($mybb->input['save_close'])
-			{
-				admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
-			}
-			else
-			{
-				admin_redirect("index.php?module=style-themes&action=edit_stylesheet&tid={$theme['tid']}&file={$stylesheet['name']}");
+			if ($err_msg) {
+				flash_message($err_msg, 'error');
+				admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=simple");
+			} else {
+				flash_message($lang->success_stylesheet_updated, 'success');
+				if($mybb->input['save_close'])
+				{
+					admin_redirect("index.php?module=style-themes&action=edit&codename={$mybb->input['codename']}");
+				}
+				else
+				{
+					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}");
+				}
 			}
 		}
 		else
 		{
-			echo "1";
+			echo $err_msg ? "<error>$err_msg</error>" : "1";
 			exit;
 		}
 	}
 
-	// Has the file on the file system been modified?
-	if(resync_stylesheet($stylesheet))
-	{
-		// Need to refetch new stylesheet as it was modified
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid='{$stylesheet['sid']}'");
-		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
-	}
-
-	$css_array = css_to_array($stylesheet['stylesheet']);
+	$css_array = css_to_array($stylesheet);
 	$selector_list = get_selectors_as_options($css_array, $mybb->get_input('selector'));
 
 	// Do we not have any selectors? Send em to the full edit page
 	if(!$selector_list)
 	{
 		flash_message($lang->error_cannot_parse, 'error');
-		admin_redirect("index.php?module=style-themes&action=edit_stylesheet&tid={$theme['tid']}&file=".htmlspecialchars_uni($stylesheet['name'])."&mode=advanced");
+		admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".htmlspecialchars_uni($mybb->input['file'])."&mode=advanced");
 		exit;
 	}
-
-	// Fetch list of all of the stylesheets for this theme
-	$stylesheets = fetch_theme_stylesheets($theme);
-	$this_stylesheet = $stylesheets[$stylesheet['name']];
-	unset($stylesheets);
 
 	$page->extra_header .= "
 	<script type=\"text/javascript\">
 	var my_post_key = '".$mybb->post_code."';
 	</script>";
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
+	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
-	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if(!empty($this_stylesheet['inherited'][$stylesheet['name']]))
-	{
-		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
-		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
-
+	if ($is_inherited) {
 		// Show inherited warning
-		if($stylesheet['tid'] == 1)
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
-		}
-		else
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent), "ajax_alert");
-		}
+		// TODO: when immutability of original/core themes is implemented, adapt the logic here to suit,
+		//       and improve the alerts to indicate the actual name of the theme/plugin from which we're
+		//       inheriting, plus whether or not it is a plugin.
+// 		if($stylesheet['tid'] == 1)
+// 		{
+// 			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
+// 		}
+// 		else
+// 		{
+			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $inheritance['inheritance_chain'][1]['codename']), "ajax_alert");
+// 		}
 	}
 
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple",
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple",
 		'description' => $lang->edit_stylesheet_simple_mode_desc
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
@@ -1969,7 +1991,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	$form = new Form("index.php", "get", "selector_form");
 	echo $form->generate_hidden_field("module", "style/themes")."\n";
 	echo $form->generate_hidden_field("action", "edit_stylesheet")."\n";
-	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
+	echo $form->generate_hidden_field("codename", $mybb->input['codename'])."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";
 
 	echo "{$lang->selector}: <select id=\"selector\" name=\"selector\">\n{$selector_list}</select> <span id=\"mini_spinner\">".$form->generate_submit_button($lang->go)."</span><br /><br />\n";
@@ -2003,7 +2025,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheet", "post");
-	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
+	echo $form->generate_hidden_field("codename", $mybb->input['codename'], array('id' => "codename"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
 	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($selector), array('id' => 'hidden_selector'))."\n";
 
@@ -2042,7 +2064,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 $(function() {
 //<![CDATA[
-	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
+	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['codename'].'");
 	lang.saving = "'.$lang->saving.'";
 });
 //]]>
@@ -2055,83 +2077,62 @@ $(function() {
 
 if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
 {
-	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
-
-	if(empty($theme['tid']) || $theme['tid'] == 1)
-	{
-		flash_message($lang->error_invalid_theme, 'error');
-		admin_redirect("index.php?module=style-themes");
-	}
-
-	$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced");
-
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
-	}
-
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if($db->num_rows($query) == 0)
-	{
-		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style-themes");
-	}
+	// Note: initialisation common between this advanced editing mode and the simple editing
+	// mode was performed above.
 
 	if($mybb->request_method == "post")
 	{
-		$sid = $stylesheet['sid'];
-
-		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
-		if($theme['tid'] != $stylesheet['tid'])
-		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
-		}
-
 		// Now we have the new stylesheet, save it
-		$updated_stylesheet = array(
-			"cachefile" => $db->escape_string($stylesheet['name']),
-			"stylesheet" => $db->escape_string($mybb->input['stylesheet']),
-			"lastmodified" => TIME_NOW
-		);
-		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
 
-		// Cache the stylesheet to the file
-		if(!cache_stylesheet($theme['tid'], $stylesheet['name'], $mybb->input['stylesheet']))
-		{
-			$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
+		// TODO: Abstract this code given that it is duplicated for saving in "simple" mode above
+		$err_msg = false;
+		$base_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/$mode";
+		if ($inheritance['orig_plugin']) {
+			$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
+		} else {
+			$save_dir = "$base_dir/frontend/styles/";
+		}
+		if (!file_exists($save_dir) && !mkdir($save_dir, 0755, true)) {
+			$err_msg = $lang->sprintf($lang->error_failed_to_mkdir, $save-dir);
+		} else {
+			$filename = preg_replace('(\\.[^\\.]*$)', '', $filename).'.'.($mybb->input['stylesheet_type'] == 'scss' ? 'scss' : 'css');
+			$save_path = $save_dir.$filename;
 		}
 
-		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);
+		if (!file_put_contents($save_path, $mybb->input['stylesheet'])) {
+			$err_msg = $lang->sprintf($lang->error_failed_write_stylesheet, $save_path);
+		}
+
+		// If we're changing from CSS to SCSS or the reverse, then...
+		if ($is_scss != ($mybb->input['stylesheet_type'] == 'scss')) {
+			// ...delete the other file. This is especially important for a change to
+			// SCSS, because any CSS file will override the new SCSS file.
+			$filename = preg_replace('(\\.[^\\.]*$)', '', $filename).($is_scss ? '.scss' : '.css');
+			$rm_path = $save_dir.$filename;
+			@unlink($rm_path);
+		}
+
+		if ($err_msg) {
+			flash_message($err_msg, 'error');
+			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=advanced");
+		}
 
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced_commit");
 
 		// Log admin action
-		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $mybb->input['file']);
 
 		flash_message($lang->success_stylesheet_updated, 'success');
 
 		if(!$mybb->get_input('save_close'))
 		{
-			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&file=".htmlspecialchars_uni($stylesheet['name'])."&tid={$theme['tid']}&mode=advanced");
+			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&file=".htmlspecialchars_uni($mybb->input['file'])."&codename={$mybb->input['codename']}&mode=advanced");
 		}
 		else
 		{
-			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+			admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
 		}
 	}
-
-	// Fetch list of all of the stylesheets for this theme
-	$stylesheets = fetch_theme_stylesheets($theme);
-	$this_stylesheet = $stylesheets[$stylesheet['name']];
-	unset($stylesheets);
 
 	if($admin_options['codepress'] != 0)
 	{
@@ -2147,57 +2148,49 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
+	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($filename), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
-	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if(!empty($this_stylesheet['inherited']) && $this_stylesheet['inherited'][$stylesheet['name']])
-	{
-		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
-		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
-
+	if ($is_inherited) {
 		// Show inherited warning
-		if($stylesheet['tid'] == 1)
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent));
-		}
-		else
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent));
-		}
+		// TODO: when immutability of original/core themes is implemented, adapt the logic here to suit,
+		//       and improve the alerts to indicate the actual name of the theme/plugin from which we're
+		//       inheriting, plus whether or not it is a plugin.
+// 		if($stylesheet['tid'] == 1)
+// 		{
+// 			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
+// 		}
+// 		else
+// 		{
+			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $inheritance['inheritance_chain'][1]['codename']), "ajax_alert");
+// 		}
 	}
 
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple"
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple"
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
-		'description' => $lang->edit_stylesheet_advanced_mode_desc
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
+		'description' => $lang->sprintf($lang->edit_stylesheet_advanced_mode_desc, $is_scss ? 'SCSS' : 'CSS')
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet_advanced');
 
-	// Has the file on the file system been modified?
-	if(resync_stylesheet($stylesheet))
-	{
-		// Need to refetch new stylesheet as it was modified
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid='{$stylesheet['sid']}'");
-		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
-	}
-
 	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheet&amp;mode=advanced", "post", "edit_stylesheet");
-	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
+	echo $form->generate_hidden_field("codename", $mybb->input['codename'])."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";
 
 	$table = new Table;
-	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30')));
+	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet, array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30')));
 	$table->construct_row();
-	$table->output($lang->full_stylesheet_for.' '.htmlspecialchars_uni($stylesheet['name']), 1, 'tfixed');
+	$table->construct_cell('<strong>'.$lang->stylesheet_type.'</strong>'.$form->generate_select_box('stylesheet_type', ['css' => 'CSS', 'scss' => 'SCSS'], $is_scss ? 'scss' : 'css'), ['style' => 'text-align: center;']);
+	$table->construct_row();
+	$table->output($lang->full_stylesheet_for.' '.htmlspecialchars_uni($filename), 1, 'tfixed');
 
 	$buttons[] = $form->generate_submit_button($lang->save_changes, array('id' => 'save', 'name' => 'save'));
 	$buttons[] = $form->generate_submit_button($lang->save_changes_and_close, array('id' => 'save_close', 'name' => 'save_close'));
