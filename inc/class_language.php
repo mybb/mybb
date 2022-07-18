@@ -52,6 +52,13 @@ class MyLanguage
 	public $settings;
 
 	/**
+	 * The loaded language strings.
+	 *
+	 * @var string[]
+	 */
+	private array $phrases = [];
+
+	/**
 	 * Set the path for the language folder.
 	 *
 	 * @param string $path The path to the language folder.
@@ -171,18 +178,9 @@ class MyLanguage
 			}
 		}
 
-		// We must unite and protect our language variables!
-		$lang_keys_ignore = array('language', 'fallback', 'fallbackLanguage', 'path', 'settings');
-
 		if(isset($l) && is_array($l))
 		{
-			foreach($l as $key => $val)
-			{
-				if((empty($this->$key) || $this->$key != $val) && !in_array($key, $lang_keys_ignore))
-				{
-					$this->$key = $val;
-				}
-			}
+			$this->phrases = array_merge($this->phrases, $l);
 		}
 	}
 
