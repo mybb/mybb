@@ -601,6 +601,10 @@ class MyBB {
 				$message = "Your server does not have redis support enabled.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "dependencies_not_installed":
+				$message = "The autoload file does not exist.\n\nIf you intend to get MyBB ready from source code, run <code>composer install</code> first. Otherwise, download a production-ready package from the Project's website.";
+				$error_code = MYBB_DEPENDENCIES_NOT_INSTALLED;
+				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_GENERAL;
