@@ -250,4 +250,24 @@ class MyLanguage
 	{
 		return $this->{$matches[1]};
 	}
+
+	public function __set(string $name, string $value): void
+	{
+		$this->phrases[$name] = $value;
+	}
+
+	public function __get(string $name): string
+	{
+		return $this->phrases[$name];
+	}
+
+	public function __isset(string $name): bool
+	{
+		return isset($this->phrases[$name]);
+	}
+
+	public function __unset(string $name): void
+	{
+		unset($this->phrases[$name]);
+	}
 }
