@@ -578,13 +578,13 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
  * functions to supply a resource ending (or not) in `.min.css` as consistent with that core
  * setting.
  *
- * @param string $specifier Stipulates which resource to load in the current theme.
+ * @param string $specifier Stipulates which resource to load in the given theme.
  *                          Resources for the current theme are specified in the format:
- *                            "~ct~component:directory:filename", where "component" is, e.g.,
+ *                            "~ct~namespace:directory:filename", where "namespace" is, e.g.,
  *                              "frontend", "acp", or "parser", "directory" is, e.g., "styles" or
  *                               "images", and "filename" is, e.g., "main.css" or "logo.png".
  *                          Resources for some other named theme are specified in the format:
- *                            "~t~theme_code:component:directory:filename", where theme_code is the
+ *                            "~t~theme_code:namespace:directory:filename", where theme_code is the
  *                            theme's codename and the other entities are as described above.
  *                          Resources for plugins in the current theme are specified in the format:
  *                            "~cp~plugin_code:directory:filename", where "directory" and
