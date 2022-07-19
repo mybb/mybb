@@ -1791,7 +1791,6 @@ function upgrade12_redothemes()
 	if(!$cachewritable)
 	{
 		$not_writable = true;
-		@fclose($cachewritable);
 	}
 	else
 	{
@@ -1822,7 +1821,6 @@ function upgrade12_redothemes()
 	if(!$themewritable)
 	{
 		$not_writable = true;
-		@fclose($themewritable);
 	}
 	else
 	{
