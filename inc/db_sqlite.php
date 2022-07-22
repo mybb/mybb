@@ -968,25 +968,34 @@ class DB_SQLite implements DB_Base
 	 */
 	function show_fields_from($table)
 	{
-		$old_tbl_prefix = $this->table_prefix;
-		$this->set_table_prefix("");
-		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$old_tbl_prefix}{$table}'");
-		$this->set_table_prefix($old_tbl_prefix);
-		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
-		$query->closeCursor();
-
-		preg_match('#\((.*)\)#s', $table, $matches);
-
+		$query = $this->write_query("PRAGMA TABLE_INFO('".$this->table_prefix.$table."')");
 		$field_info = array();
-		$table_cols = explode(',', trim($matches[1]));
-		foreach($table_cols as $declaration)
+		while($field = $this->fetch_array($query))
 		{
-			$entities = preg_split('#\s+#', trim($declaration));
-			$column_name = preg_replace('/"?([^"]+)"?/', '\1', $entities[0]);
+			if(!empty($field['pk']))
+			{
+				$field['_key'] = 'PRI';
+				$field['_extra'] = 'auto_increment';
+			}
+			else
+			{
+				$field['_key'] = '';
+				$field['_extra'] = '';
+			}
 
-			$field_info[] = array('Extra' => $entities[1], 'Field' => $column_name);
+			// SQLite allows NULLs in most PRIMARY KEY columns due to a bug in early versions, even in an INTEGER PRIMARY KEY column, read https://sqlite.org/lang_createtable.html for details. We won't fix this for consistency among other database engines.
+			$field['_nullable'] = $field['notnull'] ? 'NO' : 'YES';
+
+			$field_info[] = array(
+				'Field' => $field['name'],
+				'Type' => $field['type'],
+				'Null' => $field['_nullable'],
+				'Key' => $field['_key'],
+				'Default' => $field['dflt_value'],
+				'Extra' => $field['_extra'],
+			);
 		}
-
+		$query->closeCursor();
 		return $field_info;
 	}
 
