@@ -611,7 +611,7 @@ if($mybb->input['action'] == "export")
 		$plugins->run_hooks('admin_style_themes_export_commit');
 
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['codename'], $theme['name']);
 
 		$data = file_get_contents($zip_filepath);
 		header("Content-disposition: attachment; filename={$theme['codename']}.zip");
@@ -623,7 +623,7 @@ if($mybb->input['action'] == "export")
 		exit;
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
 
 	$page->add_breadcrumb_item($lang->export_theme, "index.php?module=style-themes&amp;action=export");
 
@@ -631,23 +631,23 @@ if($mybb->input['action'] == "export")
 
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}",
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->input['codename']}",
 	);
 
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->input['codename']}",
 		'description' => $lang->export_theme_desc
 	);
 
 	$sub_tabs['duplicate_theme'] = array(
 		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}",
 		'description' => $lang->duplicate_theme_desc
 	);
 
@@ -1092,7 +1092,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-themes&amp;action=delete&amp;tid={$theme['tid']}", $lang->confirm_theme_deletion);
+		$page->output_confirm_action("index.php?module=style-themes&amp;action=delete&amp;codename={$theme['codename']}", $lang->confirm_theme_deletion);
 	}
 }
 
