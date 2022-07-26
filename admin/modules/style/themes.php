@@ -1023,40 +1023,11 @@ if($mybb->input['action'] == "duplicate")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "add")
+if($mybb->input['action'] == 'add')
 {
 	$plugins->run_hooks("admin_style_themes_add");
 
-	$query = $db->simple_select("themes", "tid, name");
-	while($theme = $db->fetch_array($query))
-	{
-		$themes[$theme['tid']] = $theme['name'];
-	}
-
-	if($mybb->request_method == "post")
-	{
-		if(!$mybb->input['name'])
-		{
-			$errors[] = $lang->error_missing_name;
-		}
-		else if(in_array($mybb->input['name'], $themes))
-		{
-			$errors[] = $lang->error_theme_already_exists;
-		}
-
-		if(!$errors)
-		{
-			$tid = build_new_theme($mybb->input['name'], null, $mybb->input['tid']);
-
-			$plugins->run_hooks("admin_style_themes_add_commit");
-
-			// Log admin action
-			log_admin_action($mybb->input['name'], $tid);
-
-			flash_message($lang->success_theme_created, 'success');
-			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
-		}
-	}
+	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$usergroup_override = */false, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'');
 
 	$page->add_breadcrumb_item($lang->create_new_theme, "index.php?module=style-themes&amp;action=add");
 
@@ -1064,36 +1035,31 @@ if($mybb->input['action'] == "add")
 
 	$page->output_nav_tabs($sub_tabs, 'create_theme');
 
-	if($errors)
-	{
-		$page->output_inline_error($errors);
+	$table = new Table;
+
+	$table->construct_header($lang->based_on_theme);
+
+	foreach ($theme_opts as $codename => $name) {
+		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=duplicate&amp;codename={$codename}\">".htmlspecialchars_uni($name).'</a><br /><br />');
+		$table->construct_row();
 	}
 
-	$form = new Form("index.php?module=style-themes&amp;action=add", "post");
-
-	$form_container = new FormContainer($lang->create_a_theme);
-	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
-
-	$form_container->end();
-
-	$buttons[] = $form->generate_submit_button($lang->create_new_theme);
-
-	$form->output_submit_wrapper($buttons);
-
-	$form->end();
+	$table->output($lang->create_a_theme);
 
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
+	// Does the theme not exist?
+	$src_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}";
+	if (!is_dir($src_dir)) {
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style-themes");
+	}
 
-	// Does the theme not exist? or are we trying to delete the master?
-	if(!$theme['tid'] || $theme['tid'] == 1)
-	{
+	// Are we trying to delete a core theme?
+	if (strpos($mybb->input['codename'], 'core.') === 0) {
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
@@ -1108,94 +1074,18 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$inherited_theme_cache = array();
-
-		$query = $db->simple_select("themes", "tid,stylesheets", "tid != '{$theme['tid']}'", array('order_by' => "pid, name"));
-		while($theme2 = $db->fetch_array($query))
-		{
-			$theme2['stylesheets'] = my_unserialize($theme2['stylesheets']);
-
-			if(empty($theme2['stylesheets']['inherited']))
-			{
-				continue;
-			}
-
-			$inherited_theme_cache[$theme2['tid']] = $theme2['stylesheets']['inherited'];
+		$props = read_json_file("{$src_dir}/current/theme.json");
+		if (!$props) {
+			$props = read_json_file("{$src_dir}/devdist/theme.json");
 		}
+		$theme_name = !empty($props['name']) ? $props['name'] : '';
 
-		$inherited_stylesheets = false;
-
-		// Are any other themes relying on stylesheets from this theme? Get a list and show an error
-		foreach($inherited_theme_cache as $tid => $inherited)
-		{
-			foreach($inherited as $file => $value)
-			{
-				foreach($value as $filepath => $val)
-				{
-					if(strpos($filepath, "cache/themes/theme{$theme['tid']}") !== false)
-					{
-						$inherited_stylesheets = true;
-					}
-				}
-			}
-		}
-
-		if($inherited_stylesheets == true)
-		{
-			flash_message($lang->error_inheriting_stylesheets, 'error');
-			admin_redirect("index.php?module=style-themes");
-		}
-
-		$query = $db->simple_select("themestylesheets", "cachefile", "tid='{$theme['tid']}'");
-		while($cachefile = $db->fetch_array($query))
-		{
-			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile['cachefile']}");
-
-			$filename_min = str_replace('.css', '.min.css', $cachefile['cachefile']);
-			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
-		}
-
-		$path = MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html";
-		if(file_exists($path))
-		{
-			@unlink($path);
-		}
-
-		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
-
-		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid'], $theme, true);
-
-		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
-
-		$path = MYBB_ROOT."cache/themes/theme{$theme['tid']}/";
-		if(file_exists($path))
-		{
-			@rmdir($path);
-		}
-
-		$children = (array)make_child_theme_list($theme['tid']);
-		$child_tids = array();
-
-		foreach($children as $child_tid)
-		{
-			if($child_tid != 0)
-			{
-				$child_tids[] = $child_tid;
-			}
-		}
-
-		if(!empty($child_tids))
-		{
-			$db->update_query("themes", array('pid' => $theme['pid']), "tid IN (".implode(',', $child_tids).")");
-		}
-
-		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
+		rmdir_recursive($src_dir);
 
 		$plugins->run_hooks("admin_style_themes_delete_commit");
 
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($mybb->input['codename'], $theme_name);
 
 		flash_message($lang->success_theme_deleted, 'success');
 		admin_redirect("index.php?module=style-themes");

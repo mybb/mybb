@@ -104,6 +104,8 @@ $l['dup_type_child_resolved'] = 'A child theme, with fully resolved inheritance 
 $l['dup_type_sibling_exact'] = 'A sibling theme, with identical inheritance (a strict horizontal resources copy).';
 $l['dup_type_sibling_resolved'] = 'A sibling theme, with fully resolved inheritance (all resources copied).';
 
+$l['based_on_theme'] = 'Click the existing theme on which the new theme should be based';
+
 $l['duplicate_stylesheets'] = "Duplicate Stylesheets";
 $l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
 $l['duplicate_templates'] = "Duplicate Templates";
