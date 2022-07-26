@@ -868,3 +868,14 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                   : 'resource.php?specifier='.urlencode($specifier)
                );
 }
+
+function is_theme_code_valid($theme_code)
+{
+    $prefix = 'board.';
+    $len = strlen($prefix);
+    if (substr($theme_code, 0, $len) == $prefix) {
+        $theme_code = substr($theme_code, $len);
+    }
+
+    return preg_replace('([a-z_])', '', $theme_code) == '';
+}

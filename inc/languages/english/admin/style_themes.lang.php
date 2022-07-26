@@ -70,6 +70,7 @@ $l['parent_theme'] = "Parent Theme";
 $l['parent_theme_desc'] = "Select the theme this theme should be a child of.";
 $l['new_name'] = "New Name";
 $l['new_name_desc'] = "A new name for the imported theme. If left blank, the name in the theme file will be used.";
+$l['new_codename'] = "New Codename";
 $l['advanced_options'] = "Advanced Options";
 $l['ignore_version_compatibility'] = "Ignore Version Compatibility";
 $l['ignore_version_compat_desc'] = "Should this theme be installed regardless of the version of MyBB it was created for?";
@@ -79,7 +80,30 @@ $l['import_templates'] = "Import Templates";
 $l['import_templates_desc'] = "If this theme contains custom templates should they be imported?";
 $l['import_theme'] = "Import Theme";
 
-$l['new_name_duplicate_desc'] = "A new name for the duplicated theme.";
+$l['new_name_duplicate_desc'] = 'A new name for the duplicated theme.';
+$l['new_codename_duplicate_desc'] = 'A new codename for the duplicated theme.';
+$l['original_vs_board_themes_desc'] = 'Via an optional prefix, you can indicate the type of the theme: "board" or "original".
+<br><br>
+<strong>Board</strong> themes are suitable for production use. A board theme unconditionally (1) is editable via the ACP, (2) can be modified by plugins, and (3) can be set as default or selected by members, whether in ordinary operation (assuming it has a `current` directory), or when themelet development mode is on (assuming it has a `devdist` directory).
+<br><br>
+To duplicate as a <strong>board</strong> theme, prefix this codename with `<strong>board.</strong>` (that is, the word <strong>board</strong> followed by a dot).
+<br><br>
+Without that prefix, an <strong>original</strong> theme is indicated.
+<br><br>
+<strong>Original</strong> themes are suitable for development and distribution, and/or for inheriting from. When themelet development mode is off, and an original theme is thus using its `current` directory, it is wholly immutable, and cannot even be selected by members. Its sole function is to be inherited from. Only in themelet development mode, and only if the original theme has a `devdist` directory, can it be modified by plugins, edited via the ACP, and selected by members.<br><br>
+Valid codename characters (aside from the dot in any `board.` prefix) are lowercase `a` through `z` and underscore.';
+$l['create_devdist'] = "Add a `devdist` directory?";
+$l['create_devdist_desc'] = "The theme to be duplicated does not have a development and distribution (`devdist`) directory. Check this box to create one in the duplicated theme. It will be copied from the ultimate `current` directory when generating the duplicate theme.";
+$l['create_current'] = "Add a `current` directory?";
+$l['create_current_desc'] = "The theme to be duplicated does not have a production (`current`) directory. Check this box to create one in the duplicated theme. It will be copied from the ultimate `devdist` directory when generating the duplicate theme.";
+$l['dup_type'] = 'Duplicate as:';
+$l['dup_type_desc'] = '(Safe to leave as default if unsure)';
+$l['dup_type_child_full'] = 'A child theme, with full inheritance (no resources copied).';
+$l['dup_type_child_exact'] = 'A child theme, with identical inheritance (only parent resources copied).';
+$l['dup_type_child_resolved'] = 'A child theme, with fully resolved inheritance (all resources copied).';
+$l['dup_type_sibling_exact'] = 'A sibling theme, with identical inheritance (a strict horizontal resources copy).';
+$l['dup_type_sibling_resolved'] = 'A sibling theme, with fully resolved inheritance (all resources copied).';
+
 $l['duplicate_stylesheets'] = "Duplicate Stylesheets";
 $l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
 $l['duplicate_templates'] = "Duplicate Templates";
@@ -213,6 +237,10 @@ $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This 
 $l['error_failed_to_mkdir'] = 'Failed to create the directory "{1}".';
 $l['error_failed_write_stylesheet'] = 'Failed to write the stylesheet to the file "{1}".';
 $l['error_stylesheet_not_found'] = 'Stylesheet "{1}" not found.';
+$l['error_theme_has_no_contents'] = 'The theme to be duplicated has no contents (neither a `current` nor a `devdist` subdirectory).';
+$l['error_invalid_theme_codename'] = 'The supplied theme codename "{1}" is empty or contains invalid characters (only lowercase `a` through `z` and underscore are valid.';
+$l['error_theme_codename_exists'] = 'The supplied theme codename "{1}" already exists.';
+$l['error_cp_failed'] = 'Failed to copy {1} to {2}.';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";

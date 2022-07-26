@@ -684,124 +684,252 @@ if($mybb->input['action'] == "export")
 
 if($mybb->input['action'] == "duplicate")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
-	$theme = $db->fetch_array($query);
-
 	// Does the theme not exist?
-	if(!$theme['tid'])
-	{
+	$src_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}";
+	if (!is_dir($src_dir)) {
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$have_current = is_dir("{$src_dir}/current");
+	$have_devdist = is_dir("{$src_dir}/devdist");
+
+	// Does the theme have no contents?
+	if (!$have_current && !$have_devdist) {
+		flash_message($lang->error_theme_has_no_contents, 'error');
+		admin_redirect("index.php?module=style-themes");
+	}
+
+	// Determine which modes (current/devdist) exist in the source theme
+	$modes = [];
+	if ($have_current) {
+		$modes[] = 'current';
+	}
+	if ($have_devdist) {
+		$modes[] = 'devdist';
+	}
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
 
 	$plugins->run_hooks("admin_style_themes_duplicate");
 
 	if($mybb->request_method == "post")
 	{
-		if($mybb->input['name'] == "")
-		{
+		if (!is_theme_code_valid($mybb->input['new_codename'])) {
+			$errors[] = $lang->sprintf($lang->error_invalid_theme_codename, $mybb->input['new_codename']);
+		} else if ($mybb->input['name'] == '') {
 			$errors[] = $lang->error_missing_name;
-		}
-		else
-		{
-			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($mybb->get_input('name'))."'");
-			$numthemes = $db->fetch_field($query, 'numthemes');
-
-			if($numthemes)
-			{
-				$errors[] = $lang->error_theme_already_exists;
+		} else {
+			foreach (['devdist', 'current'] as $mode) {
+				foreach ($themelet_hierarchy[$mode]['themes'] as $theme) {
+					if ($theme['properties']['name'] == $mybb->get_input('name')) {
+						$errors[] = $lang->error_theme_already_exists;
+					} else if ($theme['properties']['codename'] == $mybb->input['new_codename']) {
+						$errors[] = $lang->sprintf($lang->error_theme_codename_exists, $mybb->input['new_codename']);
+					}
+				}
 			}
 		}
 
-		if(!$errors)
-		{
-			$properties = my_unserialize($theme['properties']);
-			$sid = (int)$properties['templateset'];
-			$nprops = null;
-			if($mybb->get_input('duplicate_templates'))
-			{
-				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->get_input('name'))." Templates"));
+		if (!$errors) {
+			$dest_dir = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}";
 
-				// Copy all old Templates to our new templateset
-				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
-				while($template = $db->fetch_array($query))
-				{
-					$insert = array(
-						"title" => $db->escape_string($template['title']),
-						"template" => $db->escape_string($template['template']),
-						"sid" => $nsid,
-						"version" => $db->escape_string($template['version']),
-						"dateline" => TIME_NOW
-					);
-
-					if($db->engine == "pgsql")
-					{
-						echo " ";
-						flush();
+			// If we are copying all resolved (including inherited) resources for
+			// the applicable modes....
+			if (in_array($mybb->input['dup_type'], ['child_resolved', 'sibling_resolved'])) {
+				// ...then get the ancestor list of themes for the source theme and copy
+				// their directories recursively in reverse order into the
+				// destination directory.
+				foreach ($modes as $mode) {
+					foreach (array_reverse($themelet_hierarchy[$mode]['themes'][$mybb->input['codename']]['ancestors']) as $anc_code) {
+						$source_path = MYBB_ROOT."inc/themes/{$anc_code}/{$mode}/";
+						$dest_path   = "$dest_dir/{$mode}";
+						if (!cp_or_mv_recursively($source_path, $dest_path, false, $err_msg)) {
+							flash_message($err_msg, 'error');
+							admin_redirect('index.php?module=style-themes');
+						}
 					}
 
-					$db->insert_query("templates", $insert);
 				}
-
-				// We need to change the templateset so we need to work out the others properties too
-				foreach($properties as $property => $value)
-				{
-					if($property == "inherited")
-					{
-						continue;
-					}
-
-					$nprops[$property] = $value;
-					if(!empty($properties['inherited'][$property]))
-					{
-						$nprops['inherited'][$property] = $properties['inherited'][$property];
-					}
-					else
-					{
-						$nprops['inherited'][$property] = $theme['tid'];
+			// Otherwise, if we are copying only resources in the source theme...
+			} else if (in_array($mybb->input['dup_type'], ['child_exact', 'sibling_exact'])) {
+				// ...then copy just the source dir for the relevant modes.
+				foreach ($modes as $mode) {
+					$source_path = "{$src_dir}/{$mode}";
+					$dest_path   = "{$dest_dir}/{$mode}";
+					if (!cp_or_mv_recursively($source_path, $dest_path, false, $err_msg)) {
+						flash_message($err_msg, 'error');
+						admin_redirect('index.php?module=style-themes');
 					}
 				}
-				$nprops['templateset'] = $nsid;
 			}
-			$tid = build_new_theme($mybb->get_input('name'), $nprops, $theme['tid']);
 
-			update_theme_stylesheet_list($tid);
+			// Then, copy theme.json and resources.json to the dest dirs for the
+			// relevant modes, at the same time editing theme.json to update codename,
+			// name, and (if necessary) parent codename.
+			foreach ($modes as $mode) {
+				foreach (['theme.json', 'resources.json'] as $json_file) {
+					if (!is_dir("{$dest_dir}/{$mode}")) {
+						@mkdir("{$dest_dir}/{$mode}", 0755, true);
+					}
+					$source_path = "{$src_dir}/{$mode}/{$json_file}";
+					$dest_path   = "{$dest_dir}/{$mode}/{$json_file}";
+					if (!copy($source_path, $dest_path)) {
+						flash_message($lang->sprintf($lang->error_cp_failed, $source_path, $dest_path), 'error');
+						admin_redirect('index.php?module=style-themes');
+					} else if ($json_file == 'theme.json') {
+						$theme_properties = read_json_file($dest_path, $err_msg, false);
+						if (!$theme_properties && $err_msg) {
+							flash_message($err_msg, 'error');
+							admin_redirect('index.php?module=style-themes');
+						} else {
+							$theme_properties['codename'] = $mybb->input['new_codename'];
+							$theme_properties['name'] = $mybb->input['name'];
+							if (in_array($mybb->input['dup_type'], ['child_exact', 'child_full', 'child_resolved'])) {
+								$theme_properties['parent'] = $mybb->input['codename'];
+							}
+							if (!write_json_file($dest_path, $theme_properties)) {
+								flash_message($lang->error_failed_to_save_theme, 'error');
+								admin_redirect('index.php?module=style-themes');
+							}
+						}
+					}
+				}
+			}
 
-			$plugins->run_hooks("admin_style_themes_duplicate_commit");
+			// Then, if this is a child, update its resource derivation info.
+			if (in_array($mybb->input['dup_type'], ['child_full', 'child_exact', 'child_resolved'])) {
+				$ignored_files = ['resources.json', 'theme.json', 'LICENCE', 'LICENSE'];
+				foreach ($modes as $mode) {
+					$all_resources = [];
+					// First, build a list of all resources in ancestors.
+					foreach (array_reverse($themelet_hierarchy[$mode]['themes'][$mybb->input['codename']]['ancestors']) as $anc_code) {
+						$base = MYBB_ROOT."inc/themes/$anc_code/$mode/";
+						if (!file_exists($base)) {
+							continue;
+						}
+						$baselen = strlen($base);
+						$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
+						foreach (
+							$iterator = new \RecursiveIteratorIterator(
+								$rci,
+								\RecursiveIteratorIterator::SELF_FIRST
+							) as $item
+						) {
+							if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
+								$resource = substr($item->getPathname(), $baselen);
+								if (!in_array($resource, $all_resources)) {
+									$all_resources[] = $resource;
+								}
+							}
+						}
 
-			// Log admin action
-			log_admin_action($tid, $theme['tid']);
+					}
+					// Now, build a list of resources (with inheritance broken) in the theme being duplicated,
+					// at the same time adding them to the above list if they are not in it already.
+					$theme_resources = [];
+					$base = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}/$mode/";
+					$baselen = strlen($base);
+					if (file_exists($base)) {
+						$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
+						foreach (
+							$iterator = new \RecursiveIteratorIterator(
+								$rci,
+								\RecursiveIteratorIterator::SELF_FIRST
+							) as $item
+						) {
+							if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
+								$resource = substr($item->getPathname(), $baselen);
+								if (!in_array($resource, $theme_resources)) {
+									$theme_resources[] = $resource;
+								}
+								if (!in_array($resource, $all_resources)) {
+									$all_resources[] = $resource;
+								}
+							}
+						}
+					}
+					// Finally, update the derivation list and then save the resource file.
+					$resources = read_json_file($base.'resources.json', $err_msg, false);
+					if (!$resources) {
+						$errors[] = $err_msg;
+					} else {
+						if (empty($resources['derivations'])) {
+							$resources['derivations'] = [];
+						}
+						$derivations = &$resources['derivations'];
+						$prefix = 'board.';
+						if (substr($mybb->input['codename'], 0, strlen($prefix)) == $prefix) {
+							$vers = 'board';
+						} else {
+							$vers = $themelet_hierarchy[$mode]['themes'][$mybb->input['codename']]['properties']['version'];
+						}
+						foreach ($all_resources as $resource) {
+							if (empty($derivations[$resource])) {
+								$derivations[$resource] = [];
+							}
+							array_unshift($derivations[$resource], [$mybb->input['codename'], in_array($resource, $theme_resources) ? $vers : 'inherit', /*is_plugin*/false]);
+						}
+						unset($derivations);
+						write_json_file($base.'resources.json', $resources);
+					}
+				}
+			}
 
-			flash_message($lang->success_duplicated_theme, 'success');
-			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
+			// Finally, if creating a new current/devdist directory, then copy the now existing one (in the destination) to the other.
+			$to = $from = '';
+			if (!$have_devdist && !empty($mybb->input['create_devdist'])) {
+				$from = 'current';
+				$to = 'devdist';
+			} else if (!$have_current && !empty($mybb->input['create_current'])) {
+				$from = 'devdist';
+				$to = 'current';
+			}
+			if ($to) {
+				$base = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}/";
+				if (!cp_or_mv_recursively("{$base}{$from}", "{$base}{$to}", /*$del_source = */false, $error)) {
+					$errors[] = $error;
+				}
+			}
+
+			if (!$errors) {
+				$plugins->run_hooks("admin_style_themes_duplicate_commit");
+
+				// Log admin action
+				log_admin_action($mybb->input['new_codename'], $mybb->input['codename']);
+
+				flash_message($lang->success_duplicated_theme, 'success');
+				admin_redirect("index.php?module=style-themes&action=edit&codename=".$mybb->input['new_codename']);
+			}
 		}
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->get_input('tid')}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->get_input('codename')}");
 
-	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
+	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->get_input('codename')}");
 
 	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
 
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->get_input('tid')}",
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->get_input('codename')}",
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->get_input('tid')}",
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->get_input('codename')}",
 	);
 
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->get_input('tid')}",
+		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->get_input('codename')}",
 		'description' => $lang->export_theme_desc
 	);
 
 	$sub_tabs['duplicate_theme'] = array(
 		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->get_input('tid')}",
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->get_input('codename')}",
 		'description' => $lang->duplicate_theme_desc
 	);
 
@@ -816,11 +944,73 @@ if($mybb->input['action'] == "duplicate")
 		$mybb->input['duplicate_templates'] = true;
 	}
 
-	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}", "post");
+	// Suggest a name for the duplicate theme if none has yet been provided
+	if (empty($mybb->input['name'])) {
+		$name_val_base = $themelet_hierarchy[$modes[0]]['themes'][$mybb->input['codename']]['properties']['name'];
+		for ($i = 1; $i < 20; $i++) {
+			$name_val = $name_val_base.' (copy '.$i.')';
+			$found = false;
+			foreach (['devdist', 'current'] as $mode) {
+				foreach ($themelet_hierarchy[$mode]['themes'] as $theme) {
+					if ($name_val == $theme['properties']['name']) {
+						$found = true;
+						break;
+					}
+				}
+			}
+			if (!$found) break;
+		}
+	} else {
+		$name_val = $mybb->get_input('name');
+	}
+
+	// Suggest a codename for the duplicate theme if none has yet been provided
+	if (empty($mybb->input['new_codename'])) {
+		$new_codename_val_base = $mybb->input['codename'];
+		if (strpos($new_codename_val_base, 'board.') !== 0) {
+			$new_codename_val_base = 'board.'.$new_codename_val_base;
+		}
+		$new_codename_val = $new_codename_val_base;
+		for ($i = 1; $i <= 26; $i++) {
+			$found = false;
+			foreach (['devdist', 'current'] as $mode) {
+				foreach ($themelet_hierarchy[$mode]['themes'] as $theme) {
+					if ($new_codename_val == $theme['properties']['codename']) {
+						$found = true;
+						break;
+					}
+				}
+			}
+			if (!$found) break;
+			$new_codename_val = $new_codename_val_base.'_'.chr(96+$i);
+		}
+	} else {
+		$new_codename_val = $mybb->get_input('new_codename');
+	}
+
+	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}", "post");
 
 	$form_container = new FormContainer($lang->duplicate_theme);
-	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('duplicate_templates', '1', $lang->duplicate_templates, array('checked' => $mybb->get_input('duplicate_templates'), 'id' => 'duplicate_templates'))."<br /><small>{$lang->duplicate_templates_desc}</small>");
+	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $name_val, array('id' => 'name')), 'name');
+	$form_container->output_row($lang->new_codename, $lang->new_codename_duplicate_desc.' '.$lang->original_vs_board_themes_desc, $form->generate_text_box('new_codename', $new_codename_val, array('id' => 'new_codename')), 'new_codename');
+	$dup_checked = ['child_full' => '', 'child_exact' => '', 'child_resolved' => '', 'sibling_exact' => '', 'sibling_resolved' => ''];
+	if (!empty($mybb->input['dup_type'])) {
+		$dup_checked[$mybb->input['dup_type']] = 'checked="checked"';
+	} else {
+		$dup_checked['child_full'] = 'checked="checked"';
+	}
+	$form_container->output_row($lang->dup_type, $lang->dup_type_desc, '<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
+		<dt><label style="display: block;"><input type="radio" name="dup_type" value="child_full" '.$dup_checked['child_full'].' style="vertical-align: middle;" /> '.$lang->dup_type_child_full.'</label></dt><br />
+		<dt><label style="display: block;"><input type="radio" name="dup_type" value="child_exact" '.$dup_checked['child_exact'].' style="vertical-align: middle;" /> '.$lang->dup_type_child_exact.'</label></dt><br />
+		<dt><label style="display: block;"><input type="radio" name="dup_type" value="child_resolved" '.$dup_checked['child_resolved'].' style="vertical-align: middle;" /> '.$lang->dup_type_child_resolved.'</label></dt><br />
+		<dt><label style="display: block;"><input type="radio" name="dup_type" value="sibling_exact" '.$dup_checked['sibling_exact'].' style="vertical-align: middle;" /> '.$lang->dup_type_sibling_exact.'</label></dt><br />
+		<dt><label style="display: block;"><input type="radio" name="dup_type" value="sibling_resolved" '.$dup_checked['sibling_resolved'].' style="vertical-align: middle;" /> '.$lang->dup_type_sibling_resolved.'</label></dt>
+	</dl>');
+	if (!$have_devdist) {
+		$form_container->output_row('', '', $form->generate_check_box('create_devdist', '1', $lang->create_devdist, array('checked' => $mybb->get_input('create_devdist'), 'id' => 'create_devdist'))."<br /><small>{$lang->create_devdist_desc}</small>");
+	} else if (!$have_current) {
+		$form_container->output_row('', '', $form->generate_check_box('create_current', '1', $lang->create_current, array('checked' => $mybb->get_input('create_current'), 'id' => 'create_current'))."<br /><small>{$lang->create_current_desc}</small>");
+	}
 
 	$form_container->end();
 
@@ -2079,6 +2269,10 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 {
 	// Note: initialisation common between this advanced editing mode and the simple editing
 	// mode was performed above.
+
+	// Possible TODO: Implement support on this same page for editing of any SCSS module
+	// dependency files in the stylesheet's modules directory. At the moment, there is no
+	// support for this in the UI, and filesystem editing is necessary.
 
 	if($mybb->request_method == "post")
 	{
