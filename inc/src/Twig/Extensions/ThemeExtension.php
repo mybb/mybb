@@ -108,9 +108,9 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $stylesheets_a = [];
 
         require_once MYBB_ROOT.'inc/functions_themes.php';
-        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], false, false, true);
+        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], false, false, $mybb->settings['themelet_dev_mode'] != 0);
         foreach ($cache->read('plugins')['active'] as $plugin_code) {
-            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, false, true, $mybb->settings['themelet_dev_mode']);
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, false, true, $mybb->settings['themelet_dev_mode'] != 0);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
