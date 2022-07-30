@@ -1,6 +1,6 @@
 {
 	"stylesheets": {
-		"main.css": [
+		"@frontend\/styles\/main.css": [
 			{
 				"script": "global",
 				"actions": ["global"]

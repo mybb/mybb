@@ -427,7 +427,8 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
                     $ret = [];
                     foreach ($res_arr['stylesheets'] as $sheet => $arr) {
                         if ($arr || $inc_placeholders) {
-                            $ret[$sheet] = $arr;
+                            $norm_spec = $is_plugin ? "@ext.{$codename}/styles/$sheet" : normalise_res_spec1($sheet);
+                            $ret[$norm_spec] = $arr;
                         }
                     }
 
@@ -450,7 +451,7 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
                             if (empty($stylesheets[$script][$action])) {
                                 $stylesheets[$script][$action] = [];
                             }
-                            $stylesheets[$script][$action][] = $sheet;
+                            $stylesheets[$script][$action][] = $is_plugin ? "@ext.{$codename}/styles/{$sheet}" : normalise_res_spec1($sheet);
                         }
                     }
                 }
@@ -477,9 +478,9 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
  *               array contains inheritance data as described for resolve_themelet_resource() with a
  *               $return_type of RTR_RETURN_INHERITANCE.
  *               The second array entry is an array of display orders for the stylesheets, indexed
- *               by order number with each entry being an array of two entries: plugin name (an
- *               empty string if not a plugin but rather the theme itself) and stylesheet name
- *               (e.g., "main.css").
+ *               by order number with each entry being an array of three entries: plugin name (an
+ *               empty string if not a plugin but rather the theme itself), namespace (e.g.,
+ *               'frontend' or 'acp'), and stylesheet name (e.g., "main.css").
  */
 function get_theme_stylesheets($theme_code, $devdist = false) {
     global $mybb;
@@ -496,7 +497,11 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
         /*$inc_placeholders = */true,
     );
     foreach ($stylesheets_a[''] as $ss_name => &$ss_arr) {
-        if (substr($ss_name, 0, 4) == 'ext.') {
+        list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($ss_name);
+        if ($component != 'styles') {
+            continue;
+        }
+        if ($plugin_code) {
             // Note #1: when $ss_arr is non-empty, this theme is overriding a plugin stylesheet's
             // properties. When it is empty, this is just a placeholder for the purpose of ordering
             // the plugin's stylesheet within this theme.
@@ -505,19 +510,15 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
             // resources.json files for the plugin stylesheet's properties before pulling them from
             // the plugin's resources.json file itself. Support inheritance for the properties of
             // ordinary theme stylesheets too.
-            $plugin_style = substr($ss_name, 4);
-            $a = explode('.', $plugin_style, 2);
-            if (count($a) == 2) {
-                $disporders[$order_num++] = [$a[0], $a[1]];
-            }
-            $stylesheets_a[$a[0]][$a[1]] = $ss_arr;
+            $disporders[$order_num++] = [$plugin_code, /*namespace*/'', $component, $filename];
+            $stylesheets_a[$plugin_code]["@ext.{$plugin_code}/{$component}/{$filename}"] = $ss_arr;
         } else {
             $ss_arr[-1] = resolve_themelet_resource(
-                "~t~{$theme_code}:frontend:styles:{$ss_name}",
+                "~t~{$theme_code}:{$namespace}:{$component}:{$filename}",
                 /*$use_themelet_cache = */false,
                 /*$return_type = */RTR_RETURN_INHERITANCE
             );
-            $disporders[$order_num++] = ['', $ss_name];
+            $disporders[$order_num++] = [/*plugin_code*/'', $namespace, $component, $filename];
         }
     }
     unset($ss_arr);
@@ -546,13 +547,15 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
                 }
             }
             foreach ($stylesheets_a[$plugin_code] as $ss_name => &$ss_arr) {
+                list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($ss_name);
                 $ss_arr[-1] = resolve_themelet_resource(
-                    "~p~{$theme_code}:{$plugin_code}:styles:{$ss_name}",
+                    "~p~{$theme_code}:{$plugin_code}:styles:{$filename}",
                     /*$use_themelet_cache = */false,
                     /*$return_type = */RTR_RETURN_INHERITANCE
                 );
-                if (!in_array([$plugin_code, $ss_name], $disporders)) {
-                    $disporders[$order_num++] = [$plugin_code, $ss_name];
+                $disp_a = [$plugin_code, /*namespace*/'', 'styles', $filename];
+                if (!in_array($disp_a, $disporders)) {
+                    $disporders[$order_num++] = $disp_a;
                 }
             }
             unset($ss_arr);
@@ -560,6 +563,82 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
     }
 
     return [$stylesheets_a, $disporders];
+}
+
+/**
+ * Parses a normative resource specifier, such as "@ext.plugin_code/styles/main.css".
+ * (Non-normative resource specifiers are those used by resolve_themelet_resource().)
+ *
+ * @param string $specifier The resource specifier.
+ *
+ * @return Array The returned array contains four string entries.
+ *               The first is the plugin code (empty if the specified resource is not from a plugin).
+ *               The second is the theme namespace, such as "frontend" (default), "parser", or "acp"
+ *                 (empty if the specified resource is from a plugin).
+ *               The third is the component, such as "styles", "templates", or "images".
+ *               The fourth is the filename, such as "main.css". This may be a relative path,
+ *                 thus prefixed with one or more directories, such as "subdir1/subdir2/main.css".
+ */
+function parse_res_spec1($specifier)
+{
+    $plugin_code = $namespace = $component = $filename = '';
+    $pfx = '@ext.';
+    $plen = strlen($pfx);
+
+    // First, check if this specifies a plugin resource
+    if (substr($specifier, 0, $plen) == $pfx) {
+        // It does. Now parse it.
+        $remainder = substr($specifier, $plen);
+        $a = explode('/', $remainder, 3);
+        $plugin_code = $a[0];
+        if (!empty($a[1])) {
+            $component = $a[1];
+        }
+        if (!empty($a[2])) {
+            $filename = $a[2];
+        }
+    // Next, check whether it specifies a namespaced theme resource
+    } else if ($specifier[0] == '@') {
+        // It does. Now parse it.
+        $remainder = substr($specifier, 1);
+        $a = explode('/', $remainder, 3);
+        $namespace = $a[0];
+        if (!empty($a[1])) {
+            $component = $a[1];
+        }
+        if (!empty($a[2])) {
+            $filename = $a[2];
+        }
+    // If neither of the above apply, then it must specify a non-namespaced theme resource
+    // (i.e., in the default "frontend" namespace).
+    } else {
+        // Parse it.
+        $namespace = 'frontend';
+        $a = explode('/', $specifier, 2);
+        $component = $a[0];
+        if (!empty($a[1])) {
+            $filename = $a[1];
+        }
+    }
+
+    return [$plugin_code, $namespace, $component, $filename];
+}
+
+/**
+ * Normalises a normative resource specifier, such as "@ext.plugin_code/styles/main.css".
+ * (Non-normative resource specifiers are those used by resolve_themelet_resource().)
+ * Currently, all this normalisation does is ensure that an empty theme namespace is converted into
+ * an explicit "frontend" namespace.
+ *
+ * @param string $specifier The resource specifier.
+ *
+ * @return string The normalised resource specifier.
+ */
+function normalise_res_spec1($specifier)
+{
+    list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($specifier);
+
+    return '@'.($plugin_code ? 'ext.'.$plugin_code : $namespace)."/{$component}/{$filename}";
 }
 
 /**

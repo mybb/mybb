@@ -134,19 +134,21 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                         // Actually add the stylesheets to the list
                         foreach ($stylesheets[$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
                             $minify = !empty($mybb->settings['minifycss']);
-                            if ($minify && my_strtolower(substr($pageStylesheet, -8)) !== '.min.css') {
-                                $pageStylesheet = substr($pageStylesheet, 0, -3).'min.css';
+                            list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($pageStylesheet);
+                            if ($minify && my_strtolower(substr($filename, -8)) !== '.min.css') {
+                                $filename = substr($filename, 0, -3).'min.css';
                             }
-                            if (!empty($themeStylesheets[$pageStylesheet])) {
+                            assert($plugin_code == $codename);
+                            if (empty($plugin_code)) {
+                                $res_spec = "~ct~{$namespace}:{$component}:{$filename}"; // Current theme stylesheet
+                            } else {
+                                $res_spec = "~cp~{$plugin_code}:{$component}:{$filename}"; // Plugin stylesheet for current theme
+                            }
+                            if (!empty($themeStylesheets[$res_spec])) {
                                 continue;
                             }
-                            if (empty($codename)) {
-                                $res_spec = "~ct~frontend:styles:$pageStylesheet"; // Current theme stylesheet
-                            } else {
-                                $res_spec = "~cp~$codename:styles:$pageStylesheet"; // Plugin stylesheet for current theme
-                            }
                             $stylesheetUrl = $this->mybb->get_asset_url($res_spec);
-                            $themeStylesheets[$pageStylesheet] = $stylesheetUrl;
+                            $themeStylesheets[$res_spec] = $stylesheetUrl;
                         }
                     }
                 }

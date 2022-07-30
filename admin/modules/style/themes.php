@@ -62,24 +62,19 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	// Fetch list of all of the stylesheets for this theme
 	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
 
-	// Check that the stylesheet supplied for editing exists
-	$filename = $mybb->get_input('file');
-	$plugin_code = '';
-	if (substr($filename, 0, 4) == 'ext.') {
-		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
-	}
+	list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->get_input('file'));
 
-	// If not, then error out
-	if (empty($stylesheets_a[$plugin_code][$filename])) {
+	// Check that the stylesheet supplied for editing exists
+	if (empty($stylesheets_a[$plugin_code][$mybb->get_input('file')])) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style-themes");
+		admin_redirect('index.php?module=style-themes');
 	}
 
 	// Fetch the stylesheet from the filesystem
 	if ($plugin_code) {
-		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:{$component}:{$filename}";
 	} else {
-		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+		$specifier = "~t~{$mybb->input['codename']}:{$namespace}:{$component}:{$filename}";
 	}
 	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
 
@@ -1230,31 +1225,14 @@ if ($mybb->input['action'] == 'edit') {
 	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
 
 	// Save any stylesheet orders
-	if ($mybb->request_method == 'post' && $mybb->input['do'] == 'save_orders') {
+	if ($mybb->request_method == 'post' && $mybb->input['do'] == 'save_orders'
+	    &&
+	    !empty($mybb->input['disporder']) && !empty($mybb->input['disporder_specifiers'])) {
+		$disporders_in = $mybb->get_input('disporder', MyBB::INPUT_ARRAY);
+		$disporder_specifiers = $mybb->get_input('disporder_specifiers', MyBB::INPUT_ARRAY);
 		$disporders = [];
-		$prefix1 = 'disporder_';
-		$plen1   = strlen($prefix1);
-		$prefix2 = 'ext.';
-		$plen2   = strlen($prefix2);
-		foreach ($mybb->input as $key => $val) {
-			$key = str_replace('~', '.', $key);
-			if (substr($key, 0, $plen1) === $prefix1) {
-				if (substr($key, $plen1, $plen2) === $prefix2) {
-					$pl_ss = explode('.', substr($key, $plen1+$plen2), 2);
-					$ss_name = array_pop($pl_ss);
-					$plugin_code = array_pop($pl_ss);
-					if (empty($plugin_code)) {
-						$plugin_code = '';
-					}
-				} else {
-					$plugin_code = '';
-					$ss_name = substr($key, $plen1);
-				}
-				while (isset($disporders[$val])) {
-					$val++;
-				}
-				$disporders[$val] = [$plugin_code, $ss_name];
-			}
+		foreach ($disporders_in as $key => $ordernum) {
+			$disporders[$ordernum] = parse_res_spec1($disporder_specifiers[$key]);
 		}
 		ksort($disporders);
 		$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
@@ -1262,12 +1240,14 @@ if ($mybb->input['action'] == 'edit') {
 		$resources = read_json_file($resource_file, $err_msg, false);
 		if ($resources) {
 			$new_ss_list = [];
-			foreach ($disporders as $order_num => $pl_ss) {
-				$key = $pl_ss[0] == '' ? $pl_ss[1] : "ext.{$pl_ss[0]}.{$pl_ss[1]}";
-				if ($resources['stylesheets'][$key]) {
-					$new_ss_list[$key] = $resources['stylesheets'][$key];
-					unset($resources['stylesheets'][$key]);
-				} else	$new_ss_list[$key] = [];
+			foreach ($disporders as $order_num => $arr) {
+				$specifier = !empty($arr[0]/*plugin_code*/)
+				               ? "@ext.{$arr[0]}/{$arr[2]}/{$arr[3]}"
+					       : "@{$arr[1]}/{$arr[2]}/{$arr[3]}";
+				if ($resources['stylesheets'][$specifier]) {
+					$new_ss_list[$specifier] = $resources['stylesheets'][$specifier];
+					unset($resources['stylesheets'][$specifier]);
+				} else	$new_ss_list[$specifier] = [];
 			}
 			$new_ss_list = array_merge($new_ss_list, $resources['stylesheets']);
 			$resources['stylesheets'] = $new_ss_list;
@@ -1325,23 +1305,23 @@ if ($mybb->input['action'] == 'edit') {
 	$ordered_stylesheets = [];
 	ksort($disporders);
 	foreach ($disporders as $order_num => $arr) {
-		if (empty($arr[0])) {
-			$key = $arr[1];
+		if (empty($arr[0]/*plugin_code*/)) {
+			if (empty($arr[1])) {
+				$namespace = 'frontend';
+			} else {
+				$namespace = $arr[1];
+			}
+			$key = "@$namespace/{$arr[2]}/{$arr[3]}";
 		} else {
-			$key = "ext.{$arr[0]}.{$arr[1]}";
+			$key = "@ext.{$arr[0]}/{$arr[2]}/{$arr[3]}";
 		}
-		$ordered_stylesheets[$key] = $stylesheets_a[$arr[0]][$arr[1]];
+		$ordered_stylesheets[$key] = $stylesheets_a[$arr[0]][$key];
 	}
 
 	$order_num = 1;
+	$i = 0;
 	foreach ($ordered_stylesheets as $ss_name => $ss_arr) {
-		$prefix = 'ext.';
-		$plen   = strlen($prefix);
-		if (substr($ss_name, 0, $plen) === $prefix) {
-			list($ext, $plugin_code, $filename) = explode('.', $ss_name, 3);
-		} else {
-			$filename = $ss_name;
-		}
+		list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($ss_name);
 
 		$inherited = '';
 
@@ -1351,7 +1331,9 @@ if ($mybb->input['action'] == 'edit') {
 		$inheritance_chain = (array)$inheritance['inheritance_chain'];
 		array_shift($inheritance_chain); // Remove the themelet itself
 		if ($inheritance['orig_plugin']) {
-			$inherited .= ' <small>'.$lang->sprintf($lang->associated_with_plugin, get_plugin_name($inheritance['orig_plugin'])).'</small>';
+			$inherited .= ' <small>'.$lang->sprintf($lang->in_plugin_namespace, get_plugin_name($inheritance['orig_plugin'])).'</small>';
+		} else if ($namespace) {
+			$inherited .= ' <small>'.$lang->sprintf($lang->in_namespace, htmlspecialchars_uni($namespace)).'</small>';
 		}
 		if ($inheritance_chain) {
 			$inherited .= " <small>({$lang->inherited_from}";
@@ -1461,11 +1443,12 @@ if ($mybb->input['action'] == 'edit') {
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$disporder_fldnm = 'disporder_'.($inheritance['orig_plugin'] ? 'ext.'.$inheritance['orig_plugin'].'.' : '').$filename;
-		$disporder_fldnm = str_replace('.', '~', $disporder_fldnm); // Encode dots with tildes due to PHP limitation (dots converted to underscores)
-		$table->construct_cell($form->generate_numeric_field($disporder_fldnm, $order_num++, array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
+		$disporder_hidden = $form->generate_hidden_field('disporder_specifiers['.$i.']', $ss_name);
+		$table->construct_cell($disporder_hidden.' '.$form->generate_numeric_field('disporder['.$i.']', $order_num, array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
+		$i++;
+		$order_num++;
 	}
 
 	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']));
@@ -1908,24 +1891,19 @@ if ($mybb->input['action'] == "edit_stylesheet") {
 	// Fetch list of all of the stylesheets for this theme
 	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
 
-	// Check that the stylesheet supplied for editing exists
-	$filename = $mybb->get_input('file');
-	$plugin_code = '';
-	if (substr($filename, 0, 4) == 'ext.') {
-		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
-	}
+	list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->get_input('file'));
 
-	// If not, then error out
-	if (empty($stylesheets_a[$plugin_code][$filename])) {
+	// Check that the stylesheet supplied for editing exists
+	if (empty($stylesheets_a[$plugin_code][$mybb->get_input('file')])) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect('index.php?module=style-themes');
 	}
 
 	// Check the stylesheet's inheritance status and type (CSS vs SCSS)
 	if ($plugin_code) {
-		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:{$component}:{$filename}";
 	} else {
-		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+		$specifier = "~t~{$mybb->input['codename']}:{$namespace}:{$component}:{$filename}";
 	}
 	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
 	$is_inherited = (count($inheritance['inheritance_chain']) > 1);
@@ -1950,7 +1928,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 		if ($inheritance['orig_plugin']) {
 			$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
 		} else {
-			$save_dir = "$base_dir/frontend/styles/";
+			$save_dir = "$base_dir/{$namespace}/{$component}/";
 		}
 		if (!file_exists($save_dir) && !mkdir($save_dir, 0755, true)) {
 			$err_msg = $lang->sprintf($lang->error_failed_to_mkdir, $save-dir);
@@ -1984,7 +1962,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 			$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $stylesheet);
 
-			if (!file_put_contents($save_path, $new_stylesheet)) {
+			if (file_put_contents($save_path, $new_stylesheet) === false) {
 				$err_msg = $lang->sprintf($lang->error_failed_write_stylesheet, $save_path);
 			}
 
@@ -2174,7 +2152,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		if ($inheritance['orig_plugin']) {
 			$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
 		} else {
-			$save_dir = "$base_dir/frontend/styles/";
+			$save_dir = "$base_dir/{$namespace}/{$component}/";
 		}
 		if (!file_exists($save_dir) && !mkdir($save_dir, 0755, true)) {
 			$err_msg = $lang->sprintf($lang->error_failed_to_mkdir, $save-dir);
@@ -2183,7 +2161,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 			$save_path = $save_dir.$filename;
 		}
 
-		if (!file_put_contents($save_path, $mybb->input['stylesheet'])) {
+		if (file_put_contents($save_path, $mybb->input['stylesheet']) === false) {
 			$err_msg = $lang->sprintf($lang->error_failed_write_stylesheet, $save_path);
 		}
 
@@ -2321,24 +2299,19 @@ if($mybb->input['action'] == "delete_stylesheet")
 	// Fetch list of all of the stylesheets for this theme
 	list($stylesheets_a, $disporders) = get_theme_stylesheets($mybb->input['codename'], $mybb->settings['themelet_dev_mode']);
 
-	// Check that the stylesheet supplied for deletion exists
-	$filename = $mybb->get_input('file');
-	$plugin_code = '';
-	if (substr($filename, 0, 4) == 'ext.') {
-		list($ext, $plugin_code, $filename) = explode('.', $filename, 3);
-	}
+	list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->get_input('file'));
 
-	// If not, then error out
-	if (empty($stylesheets_a[$plugin_code][$filename])) {
+	// If the stylesheet supplied for deletion does not exist, then error out
+	if (empty($stylesheets_a[$plugin_code][$mybb->get_input('file')])) {
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect('index.php?module=style-themes');
 	}
 
 	// Check the stylesheet's inheritance status
 	if ($plugin_code) {
-		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+		$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:{$component}:{$filename}";
 	} else {
-		$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$filename}";
+		$specifier = "~t~{$mybb->input['codename']}:{$namespace}:{$component}:{$filename}";
 	}
 	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
 
@@ -2360,7 +2333,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		// modules dependency directory.
 
 		$base_abs_path = preg_replace('(\\.[^\\.]*$)', '', $filename);
-		$base_abs_path = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/frontend/styles/{$base_abs_path}";
+		$base_abs_path = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/".($plugin_code ? 'ext.'.$plugin_code : $namespace)."/{$component}/{$base_abs_path}";
 
 		if ($is_scss) {
 			if (is_dir($base_abs_path)) {
@@ -2425,18 +2398,15 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$sheetnames = array();
 	foreach ($stylesheets_a as $plugin_code => $ss_arr) {
-		foreach ($ss_arr as $filename => $script_actions) {
-			if (substr($filename, 0, 4) == 'ext.') {
-				continue;
-			}
+		foreach ($ss_arr as $specifier => $script_actions) {
+			list($pcode, $namespace, $component, $filename) = parse_res_spec1($specifier);
+
+			$sheetnames[$specifier] = $filename;
 			if ($plugin_code) {
-				$key = 'ext.'.$plugin_code.'.'.$filename;
-				$val = $filename.' '.$lang->sprintf($lang->associated_with_plugin, get_plugin_name($plugin_code));
-			} else {
-				$key = $filename;
-				$val = $filename;
+				$sheetnames[$specifier] .= ' '.$lang->sprintf($lang->in_plugin_namespace, get_plugin_name($plugin_code));
+			} else if ($namespace) {
+				$sheetnames[$specifier] .= ' '.$lang->sprintf($lang->in_namespace, htmlspecialchars_uni($namespace)).'</small>';
 			}
-			$sheetnames[$key] = $val;
 		}
 	}
 
@@ -2444,7 +2414,13 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	if($mybb->request_method == "post")
 	{
-		// Remove special characters
+		// Remove invalid characters from the namespace
+		$mybb->input['namespace'] = preg_replace('#([^a-z_]+)#i', '', $mybb->input['namespace']);
+		if (empty(trim($mybb->input['namespace']))) {
+			$mybb->input['namespace'] = 'frontend';
+		}
+
+		// Remove special characters from name and then validate it
 		$mybb->input['name'] = preg_replace('#([^a-z0-9-_\.]+)#i', '', $mybb->input['name']);
 		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
@@ -2459,9 +2435,11 @@ if($mybb->input['action'] == "add_stylesheet")
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
 		}
 
+		$new_spec = '@'.$mybb->input['namespace'].'/styles/'.$mybb->input['name'];
+
 		// Does a stylesheet with this name exist already?
 		foreach ($stylesheets_a as $plugin_code => $ss_arr) {
-			if (empty($plugin_code) && isset($ss_arr[$mybb->input['name']])) {
+			if (empty($plugin_code) && isset($ss_arr[$new_spec])) {
 				$errors[] = $lang->error_stylesheet_already_exists;
 				break;
 			}
@@ -2469,18 +2447,18 @@ if($mybb->input['action'] == "add_stylesheet")
 
 		if(!$errors)
 		{
-			$dest_base = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/frontend/styles/";
+			$dest_base = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/{$mybb->input['namespace']}/styles/";
 			$is_scss = false;
 			if($mybb->input['add_type'] == 1)
 			{
 				if (!in_array($mybb->input['import'], array_keys($sheetnames))) {
 					$errors[] = $lang->sprintf($lang->error_stylesheet_not_found, $mybb->input['import']);
 				} else {
-					if (substr($mybb->input['import'], 0, 4) == 'ext.') {
-						list($ext, $plugin_code, $filename) = explode('.', $mybb->input['import'], 3);
-						$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:styles:{$filename}";
+					list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->input['import']);
+					if ($plugin_code) {
+						$specifier = "~p~{$mybb->input['codename']}:{$plugin_code}:{$component}:{$filename}";
 					} else {
-						$specifier = "~t~{$mybb->input['codename']}:frontend:styles:{$mybb->input['import']}";
+						$specifier = "~t~{$mybb->input['codename']}:{$namespace}:{$component}:{$mybb->input['import']}";
 					}
 					$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
 
@@ -2494,7 +2472,7 @@ if($mybb->input['action'] == "add_stylesheet")
 						if ($arr['is_plugin']) {
 							$src_base = MYBB_ROOT."inc/plugins/{$arr['codename']}/interface/{$mode}/ext/styles/";
 						} else {
-							$src_base = MYBB_ROOT."inc/themes/{$arr['codename']}/{$mode}/frontend/styles/";
+							$src_base = MYBB_ROOT."inc/themes/{$arr['codename']}/{$mode}/{$namespace}/styles/";
 						}
 						$src_deps_dir_name = preg_replace('(\\.[^\\.]*$)', '', $mybb->input['import']);
 						$src_deps_path_abs = $src_base.$src_deps_dir_name;
@@ -2522,7 +2500,10 @@ if($mybb->input['action'] == "add_stylesheet")
 
 			if (!$errors) {
 				$filename = preg_replace('(\\.(s)?css$)', '', $mybb->input['name']).($is_scss ? '.scss' : '.css');
-				if (!file_put_contents($dest_base.$filename, $stylesheet)) {
+				if (!is_dir($dest_base)) {
+					mkdir($dest_base, 0755, true);
+				}
+				if (file_put_contents($dest_base.$filename, $stylesheet) === false) {
 					$errors[] = $lang->sprintf($lang->error_failed_write_stylesheet, $dest_base.$filename);
 				}
 			}
@@ -2568,7 +2549,7 @@ if($mybb->input['action'] == "add_stylesheet")
 				$resource_file = MYBB_ROOT."inc/themes/{$mybb->input['codename']}/{$mode}/resources.json";
 				$resources = read_json_file($resource_file, $err_msg, false);
 				if ($resources) {
-					$resources['stylesheets'][$mybb->input['name']] = $attached;
+					$resources['stylesheets'][$new_spec] = $attached;
 					if (!write_json_file($resource_file, $resources)) {
 						$errors[] = $lang->error_failed_to_save_stylesheet_props;
 					}
@@ -2583,7 +2564,7 @@ if($mybb->input['action'] == "add_stylesheet")
 					log_admin_action($mybb->input['import'], $theme['codename'], $theme['name']);
 
 					flash_message($lang->success_stylesheet_added, 'success');
-					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".urlencode($mybb->input['name']));
+					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".urlencode($new_spec));
 				}
 			}
 		}
@@ -2818,6 +2799,9 @@ if($mybb->input['action'] == "add_stylesheet")
 	</script>';
 
 	$form_container = new FormContainer($lang->add_stylesheet_to.' '.htmlspecialchars_uni($theme['name']), 'tfixed');
+
+	$form_container->output_row($lang->namespace, $lang->namespace_desc, $form->generate_text_box('namespace', $mybb->get_input('namespace'), array('id' => 'namespace', 'style' => 'width: 200px;')), 'namespace');
+
 	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
