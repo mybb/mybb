@@ -9,7 +9,7 @@
  */
 
 #[AllowDynamicProperties]
-class MyLanguage
+class MyLanguage implements JsonSerializable
 {
 
 	/**
@@ -249,6 +249,11 @@ class MyLanguage
 	function parse_replace($matches)
 	{
 		return $this->{$matches[1]};
+	}
+
+	public function jsonSerialize(): array
+	{
+		return array_merge($this->phrases, get_object_vars($this));
 	}
 
 	public function __set(string $name, string $value): void
