@@ -6783,8 +6783,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#(?!<.*?)(".preg_quote($word, "#").")(?![^<>]*?>)#ui";
-		$replacement = "<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$1</span>";
+		$find = "/(?<!&|&#)\b([[:alnum:]]*)(".preg_quote($word, "/").")(?![^<>]*?>)/ui";
+		$replacement = "$1<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$2</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 
