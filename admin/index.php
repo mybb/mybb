@@ -296,7 +296,7 @@ elseif($mybb->input['do'] == "login")
 			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		}
 
-		my_setcookie("adminsid", $sid, '', true, "lax");
+		my_setcookie("adminsid", $sid, '', true, "strict");
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
 
