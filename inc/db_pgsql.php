@@ -955,7 +955,7 @@ class DB_PgSQL implements DB_Base
 	{
 		if(function_exists("pg_escape_string"))
 		{
-			$string = pg_escape_string($string);
+			$string = pg_escape_string($this->read_link, $string);
 		}
 		else
 		{
@@ -1578,7 +1578,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_binary($string)
 	{
-		return "'".pg_escape_bytea($string)."'";
+		return "'".pg_escape_bytea($this->read_link, $string)."'";
 	}
 
 	/**
