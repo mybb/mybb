@@ -25,6 +25,13 @@ class DB_PgSQL implements DB_Base
 	public $short_title = "PostgreSQL";
 
 	/**
+	 * The type of db software being used.
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * A count of the number of queries.
 	 *
 	 * @var int
@@ -65,6 +72,11 @@ class DB_PgSQL implements DB_Base
 	 * @var resource
 	 */
 	public $current_link;
+
+	/**
+	 * @var array
+	 */
+	public $connections = array();
 
 	/**
 	 * Explanation of a query.

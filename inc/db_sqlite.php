@@ -67,6 +67,11 @@ class DB_SQLite implements DB_Base
 	public $link;
 
 	/**
+	 * @var array
+	 */
+	public $connections = array();
+
+	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
