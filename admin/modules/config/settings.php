@@ -1404,6 +1404,8 @@ if($mybb->input['action'] == "change")
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
 
+		$groupinfo['title'] = htmlspecialchars_uni($groupinfo['title']);
+
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
@@ -1447,6 +1449,8 @@ if($mybb->input['action'] == "change")
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
 
+		$groupinfo['title'] = htmlspecialchars_uni($groupinfo['title']);
+
 		$form_container = new FormContainer($groupinfo['title']);
 
 		if(empty($cache_settings[$groupinfo['gid']]))
@@ -1462,6 +1466,8 @@ if($mybb->input['action'] == "change")
 
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{
+			$setting['name'] = htmlspecialchars_uni($setting['name']);
+
 			$options = "";
 			$type = explode("\n", $setting['optionscode']);
 			$type[0] = trim($type[0]);
