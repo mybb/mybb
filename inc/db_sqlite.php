@@ -1084,9 +1084,11 @@ class DB_SQLite implements DB_Base
 			$table_prefix = $this->table_prefix;
 		}
 
+		$table_prefix_bak = $this->table_prefix;
+		$this->table_prefix = '';
 		if($hard == false)
 		{
-			if($this->table_exists($table))
+			if($this->table_exists($table_prefix.$table))
 			{
 				$query = $this->query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1095,6 +1097,7 @@ class DB_SQLite implements DB_Base
 		{
 			$query = $this->query('DROP TABLE '.$table_prefix.$table);
 		}
+		$this->table_prefix = $table_prefix_bak;
 
 		if(isset($query))
 		{
