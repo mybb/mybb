@@ -1199,7 +1199,7 @@ if($mybb->input['action'] == "add")
 	foreach($usergroups as $usergroup)
 	{
 		$perms = array();
-		if(isset($mybb->input['default_permissions']) && $mybb->input['default_permissions'][$usergroup['gid']])
+		if(!empty($mybb->input['default_permissions'][$usergroup['gid']]))
 		{
 			if(isset($existing_permissions) && is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 			{
@@ -1228,7 +1228,7 @@ if($mybb->input['action'] == "add")
 		{
 			if(isset($mybb->input['permissions']))
 			{
-				if($mybb->input['default_permissions'][$usergroup['gid']])
+				if(!empty($mybb->input['default_permissions'][$usergroup['gid']]))
 				{
 					$default_checked = true;
 				}

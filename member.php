@@ -839,7 +839,7 @@ if($mybb->input['action'] == "register")
 				$ref['username'] = htmlspecialchars_uni($ref['username']);
 				$referrername = $ref['username'];
 			}
-			elseif(isset($referrer))
+			elseif(!empty($referrer))
 			{
 				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
@@ -901,9 +901,9 @@ if($mybb->input['action'] == "register")
 				$code = $select = $val = $options = $expoptions = $useropts = '';
 				$seloptions = array();
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-				$thing = explode("\n", $profilefield['type'], "2");
+				$thing = explode("\n", $profilefield['type'], 2);
 				$type = trim($thing[0]);
-				$options = $thing[1];
+				$options = isset($thing[1]) ? $thing[1] : null;
 				$select = '';
 				$field = "fid{$profilefield['fid']}";
 				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);

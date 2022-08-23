@@ -1243,6 +1243,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$reviewmore = '';
+	$threadreview = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
 		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
@@ -1263,6 +1264,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
+		$pidin = array();
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{

@@ -266,9 +266,9 @@ function save_quick_perms($fid)
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 
 		// Only insert the new ones if we're using custom permissions
-		if($inherit[$usergroup['gid']] != 1)
+		if(empty($inherit[$usergroup['gid']]))
 		{
-			if($canview[$usergroup['gid']] == 1)
+			if(!empty($canview[$usergroup['gid']]))
 			{
 				$pview = 1;
 			}
@@ -277,7 +277,7 @@ function save_quick_perms($fid)
 				$pview = 0;
 			}
 
-			if($canpostthreads[$usergroup['gid']] == 1)
+			if(!empty($canpostthreads[$usergroup['gid']]))
 			{
 				$pthreads = 1;
 			}
@@ -286,7 +286,7 @@ function save_quick_perms($fid)
 				$pthreads = 0;
 			}
 
-			if($canpostreplies[$usergroup['gid']] == 1)
+			if(!empty($canpostreplies[$usergroup['gid']]))
 			{
 				$preplies = 1;
 			}
@@ -295,7 +295,7 @@ function save_quick_perms($fid)
 				$preplies = 0;
 			}
 
-			if($canpostpolls[$usergroup['gid']] == 1)
+			if(!empty($canpostpolls[$usergroup['gid']]))
 			{
 				$ppolls = 1;
 			}
@@ -329,7 +329,7 @@ function save_quick_perms($fid)
 					continue;
 				}
 
-				$insertquery[$db->escape_string($field)] = (int)$existing_permissions[$field];
+				$insertquery[$db->escape_string($field)] = isset($existing_permissions[$field]) ? (int)$existing_permissions[$field] : 0;
 			}
 
 			$db->insert_query("forumpermissions", $insertquery);

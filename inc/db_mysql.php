@@ -74,6 +74,11 @@ class DB_MySQL implements DB_Base
 	public $current_link;
 
 	/**
+	 * @var array
+	 */
+	public $connections = array();
+
+	/**
 	 * The database name.
 	 *
 	 * @var string
