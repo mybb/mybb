@@ -830,7 +830,7 @@ if($mybb->input['action'] == "register")
 				$ref = $db->fetch_array($query);
 				$select['referrername'] = $ref['username'];
 			}
-			else if(isset($referrer))
+			else if(!empty($referrer))
 			{
 				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
@@ -878,9 +878,9 @@ if($mybb->input['action'] == "register")
 
 				$profilefield['type_multiselect'] = $profilefield['type_select'] = $profilefield['type_radio'] = $profilefield['type_checkbox'] = $profilefield['type_textarea'] = $profilefield['type_text'] = false;
 				$seloptions = array();
-				$thing = explode("\n", $profilefield['type'], "2");
+				$thing = explode("\n", $profilefield['type'], 2);
 				$type = trim($thing[0]);
-				$options = $thing[1];
+				$options = isset($thing[1]) ? $thing[1] : null;
 				$profilefield['field'] = "fid{$profilefield['fid']}";
 
 				if(!empty($errors) && isset($mybb->input['profile_fields'][$field]))

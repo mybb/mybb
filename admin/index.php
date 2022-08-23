@@ -329,7 +329,12 @@ elseif($mybb->input['do'] == "login")
 				{
 					$params = explode("=", $param);
 
-					$query_string .= '&'.htmlspecialchars_uni($params[0])."=".htmlspecialchars_uni($params[1]);
+					$query_string .= '&'.htmlspecialchars_uni($params[0]);
+
+					if(isset($params[1]))
+					{
+						$query_string .= "=".htmlspecialchars_uni($params[1]);
+					}
 				}
 			}
 

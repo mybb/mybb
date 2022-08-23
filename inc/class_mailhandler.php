@@ -420,10 +420,13 @@ class MailHandler
 			{
 				$newpos = min($pos + $chunk_size, $len);
 
-				while(ord($string[$newpos]) >= 0x80 && ord($string[$newpos]) < 0xC0)
+				if($newpos != $len)
 				{
-					// Reduce len until it's safe to split UTF-8.
-					$newpos--;
+					while(ord($string[$newpos]) >= 0x80 && ord($string[$newpos]) < 0xC0)
+					{
+						// Reduce len until it's safe to split UTF-8.
+						$newpos--;
+					}
 				}
 
 				$chunk = substr($string, $pos, $newpos - $pos);

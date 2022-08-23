@@ -25,6 +25,13 @@ class DB_PgSQL implements DB_Base
 	public $short_title = "PostgreSQL";
 
 	/**
+	 * The type of db software being used.
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * A count of the number of queries.
 	 *
 	 * @var int
@@ -65,6 +72,11 @@ class DB_PgSQL implements DB_Base
 	 * @var resource
 	 */
 	public $current_link;
+
+	/**
+	 * @var array
+	 */
+	public $connections = array();
 
 	/**
 	 * Explanation of a query.
@@ -943,7 +955,7 @@ class DB_PgSQL implements DB_Base
 	{
 		if(function_exists("pg_escape_string"))
 		{
-			$string = pg_escape_string($string);
+			$string = pg_escape_string($this->read_link, $string);
 		}
 		else
 		{
@@ -1587,7 +1599,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_binary($string)
 	{
-		return "'".pg_escape_bytea($string)."'";
+		return "'".pg_escape_bytea($this->read_link, $string)."'";
 	}
 
 	/**

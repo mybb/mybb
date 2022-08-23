@@ -53,6 +53,21 @@ class datacache
 	public $cache_debug;
 
 	/**
+	 * @var array
+	 */
+	public $moderators;
+
+	/**
+	 * @var array
+	 */
+	public $built_moderators;
+
+	/**
+	 * @var array
+	 */
+	public $moderators_forum_cache;
+
+	/**
 	 * Build cache data.
 	 *
 	 */

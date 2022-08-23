@@ -10,6 +10,13 @@
 abstract class AbstractPdoDbDriver implements DB_Base
 {
 	/**
+	 * The type of db software being used.
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * Whether error reporting is enabled.
 	 *
 	 * @var boolean
