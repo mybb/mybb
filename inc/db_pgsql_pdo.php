@@ -10,6 +10,20 @@
 class PostgresPdoDbDriver extends AbstractPdoDbDriver
 {
 	/**
+	 * The title of this layer.
+	 *
+	 * @var string
+	 */
+	public $title = "PostgreSQL (PDO)";
+
+	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	public $short_title = "PostgreSQL (PDO)";
+
+	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
