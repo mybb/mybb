@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.30";
+	public $version = "1.8.31";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1830;
+	public $version_code = 1831;
 
 	/**
 	 * The current working directory.
