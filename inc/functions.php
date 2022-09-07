@@ -2383,6 +2383,11 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
 
+	if(isset($mybb->cookies['mybb']) && !is_array($mybb->cookies['mybb']))
+	{
+		$mybb->cookies['mybb'] = array();
+	}
+
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
 }
