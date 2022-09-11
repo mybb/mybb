@@ -1712,7 +1712,7 @@ class PostDataHandler extends DataHandler
 				");
 				while($subscribedmember = $db->fetch_array($query))
 				{
-					if($done_users[$subscribedmember['uid']])
+					if(!empty($done_users[$subscribedmember['uid']]))
 					{
 						continue;
 					}
