@@ -245,30 +245,8 @@ class pluginSystem
 	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
-	function is_compatible(string $compatibilities): bool
-	{
-		global $mybb;
-
-		// No compatibility set or compatibility = * - assume compatible
-		if(empty($compatibilities || $compatibilities == "*"))
-		{
-			return true;
-		}
-
-		$compatibility = explode(",", $compatibilities);
-		foreach($compatibility as $version)
-		{
-			$version = trim($version);
-			$version = str_replace("*", ".+", preg_quote($version));
-			$version = str_replace("\.+", ".+", $version);
-			if(preg_match("#{$version}#i", $mybb->version_code))
-			{
-				return true;
-			}
-		}
-
-		// Nothing matches
-		return false;
+	function is_compatible(string $compatibilities): bool {
+		return is_compatible($compatibilities);
 	}
 }
 

@@ -9393,6 +9393,8 @@ backout_cp_or_mv_recursively:
 }
 
 // Copied from https://stackoverflow.com/a/15111679 with edits for coding style
+// TODO: Try to reconcile this with the preexisting similar function my_rmdir_recursive() above,
+// which I (Laird) have belatedly discovered.
 function rmdir_recursive($dirPath)
 {
     if (!empty($dirPath) && is_dir($dirPath)) {
@@ -9585,4 +9587,26 @@ function zip_directory($sourcepath, $zip_filename, &$err_msg = '')
 	}
 
 	return $ret;
+}
+
+function is_compatible(string $compatibilities): bool {
+	global $mybb;
+
+	// No compatibility set or compatibility = * - assume compatible
+	if (empty($compatibilities || $compatibilities == "*")) {
+		return true;
+	}
+
+	$compatibility = explode(",", $compatibilities);
+	foreach ($compatibility as $version) {
+		$version = trim($version);
+		$version = str_replace("*", ".+", preg_quote($version));
+		$version = str_replace("\.+", ".+", $version);
+		if (preg_match("#{$version}#i", $mybb->version_code)) {
+			return true;
+		}
+	}
+
+	// Nothing matches
+	return false;
 }

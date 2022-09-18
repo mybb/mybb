@@ -32,14 +32,21 @@ lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 
-// Be extra careful about dodgy codenames or stylesheet filenames which try to use directory
+// Be extra careful about dodgy codenames or staging/stylesheet filenames which try to use directory
 // separators and '..' to access private filesystem files.
-if (!empty($mybb->input['codename']) && (strpos($mybb->input['codename'], '../') !== false || strpos($mybb->input['codename'], '..\\') !== false)) {
+function is_unsafe_path($path) {
+	return strpos($path, '../') !== false || strpos($path, '..\\') !== false;
+}
+if (!empty($mybb->input['codename']) && is_unsafe_path($mybb->input['codename'])) {
 	flash_message($lang->error_codename_with_directory_separator, 'error');
 	admin_redirect('index.php?module=style-themes');
 }
-if (!empty($mybb->input['file']) && (strpos($mybb->input['file'], '../') !== false || strpos($mybb->input['file'], '..\\') !== false)) {
+if (!empty($mybb->input['file']) && is_unsafe_path($mybb->input['file'])) {
 	flash_message($lang->error_css_filename_with_directory_separator, 'error');
+	admin_redirect('index.php?module=style-themes');
+}
+if (!empty($mybb->input['staged_theme']) && is_unsafe_path($mybb->input['staged_theme'])) {
+	flash_message($lang->error_staging_filename_with_directory_separator, 'error');
 	admin_redirect('index.php?module=style-themes');
 }
 
@@ -321,128 +328,227 @@ if($mybb->input['action'] == "browse")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "import")
-{
+if ($mybb->input['action'] == "import") {
 	$plugins->run_hooks("admin_style_themes_import");
 
-	if($mybb->request_method == "post")
-	{
-		if(!$_FILES['local_file'] && !$mybb->input['url'])
-		{
-			$errors[] = $lang->error_missing_url;
-		}
+	if ($mybb->request_method == "post") {
+		$type = $mybb->get_input('import', MyBB::INPUT_INT);
+		if (!($type == 0 && !empty($_FILES['local_file'])
+		      ||
+		      $type == 1 && !empty($mybb->input['url'])
+		      ||
+		      $type == 2 && !empty($mybb->input['staged_theme'])
+		     )
+		) {
+			$errors[] = $lang->error_missing_import_source;
+		} else {
+			$codename = $staged_path = $zip_filepath = $tmp_dir = '';
+			switch ($type) {
+				case 0:
+					if ($_FILES['local_file']['error'] == 4) {
+						// UPLOAD_ERR_NO_FILE
+						$errors[] = $lang->error_uploadfailed_php4;
+					} else {
+						// Find out if there was an error with the uploaded file
+						if ($_FILES['local_file']['error'] != 0) {
+							$errors[] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+							switch($_FILES['local_file']['error']) {
+								case 1: // UPLOAD_ERR_INI_SIZE
+									$errors[] = $lang->error_uploadfailed_php1;
+									break;
+								case 2: // UPLOAD_ERR_FORM_SIZE
+									$errors[] = $lang->error_uploadfailed_php2;
+									break;
+								case 3: // UPLOAD_ERR_PARTIAL
+									$errors[] = $lang->error_uploadfailed_php3;
+									break;
+								case 6: // UPLOAD_ERR_NO_TMP_DIR
+									$errors[] = $lang->error_uploadfailed_php6;
+									break;
+								case 7: // UPLOAD_ERR_CANT_WRITE
+									$errors[] = $lang->error_uploadfailed_php7;
+									break;
+								default:
+									$errors[] = $lang->sprintf($lang->error_uploadfailed_phpx, $_FILES['local_file']['error']);
+									break;
+							}
+						}
 
-		if(!$errors)
-		{
-			// Find out if there was an uploaded file
-			if($_FILES['local_file']['error'] != 4)
-			{
-				// Find out if there was an error with the uploaded file
-				if($_FILES['local_file']['error'] != 0)
-				{
-					$errors[] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
-					switch($_FILES['local_file']['error'])
-					{
-						case 1: // UPLOAD_ERR_INI_SIZE
-							$errors[] = $lang->error_uploadfailed_php1;
-							break;
-						case 2: // UPLOAD_ERR_FORM_SIZE
-							$errors[] = $lang->error_uploadfailed_php2;
-							break;
-						case 3: // UPLOAD_ERR_PARTIAL
-							$errors[] = $lang->error_uploadfailed_php3;
-							break;
-						case 6: // UPLOAD_ERR_NO_TMP_DIR
-							$errors[] = $lang->error_uploadfailed_php6;
-							break;
-						case 7: // UPLOAD_ERR_CANT_WRITE
-							$errors[] = $lang->error_uploadfailed_php7;
-							break;
-						default:
-							$errors[] = $lang->sprintf($lang->error_uploadfailed_phpx, $_FILES['local_file']['error']);
-							break;
+						if (!$errors) {
+							// Was the temporary file found?
+							if (!is_uploaded_file($_FILES['local_file']['tmp_name'])) {
+								$errors[] = $lang->error_uploadfailed_lost;
+							}
+							$zip_filepath = $_FILES['local_file']['tmp_name'];
+						}
 					}
+					break;
+				case 1:
+					// Get the contents of the remote file
+					$contents = fetch_remote_file($mybb->input['url']);
+					if (!$contents) {
+						$errors[] = $lang->sprintf($lang->error_missing_or_empty_remote_file, $mybb->input['url']);
+					} else {
+						// Save them to a file in a temporary directory
+						$tmp_dir = create_temp_dir();
+						$zip_filepath = $tmp_dir.'/theme.zip';
+						if (!$tmp_dir || !file_put_contents($zip_filepath, $contents)) {
+							$errors[] = $lang->error_failed_to_save_remote_file;
+						}
+					}
+					break;
+				case 2:
+					$codename = $mybb->input['staged_theme'];
+					$staged_path = MYBB_ROOT.'staging/themes/'.$codename;
+					break;
+			}
+
+			if (!$errors) {
+				if ($zip_filepath) {
+					if ($tmp_dir) {
+						$extract_dir = $tmp_dir.'/extracted';
+					} else	$tmp_dir = $extract_dir = create_temp_dir();
+					if (!$extract_dir) {
+						$errors[] = $lang->error_failed_to_create_tmpdir;
+					}
+
+					if (!$errors) {
+						// Unzip the file and move its main directory into
+						// the staging directory, first checking that no
+						// directory with the same name already exists in
+						// staging.
+						if (!class_exists('ZipArchive')) {
+							$errors[] = $lang->error_no_ziparchive_for_theme;
+						} else {
+							$za = new ZipArchive;
+							$res = $za->open($zip_filepath);
+							if ($res !== true) {
+								$errors[] = $lang->sprintf($lang->error_theme_unzip_open_failed, $res);
+							} else {
+								if (!$za->extractTo($extract_dir)) {
+									$errors[] = $lang->error_theme_unzip_failed;
+								} else {
+									$top_lvl_files = glob("$extract_dir/*");
+									if (count($top_lvl_files) != 1) {
+										rmdir_recursive($tmpdir);
+										$errors[] = $lang->error_theme_unzip_multi_or_none_root;
+									} else {
+										$codename = basename($top_lvl_files[0]);
+										$staged_path = MYBB_ROOT.'staging/themes/'.$codename;
+										if (file_exists($staged_path)) {
+											$errors[] = $lang->sprintf($lang->error_theme_already_staged, $codename);
+										// I (Laird) have no idea why, but a simple `rename()` fails on my dev setup,
+										// presumably due to some obscure permission restrictions on the `/tmp` directory,
+										// even though they superficially look fine to me, so we are forced to call this
+										// more elaborate custom function.
+										} else if (!cp_or_mv_recursively("$extract_dir/$codename", $staged_path, true)) {
+											$errors[] = $lang->sprintf($lang->error_theme_move_fail, "$extract_dir/$codename", $staged_path);
+										}
+									}
+								}
+								$za->close();
+							}
+						}
+					}
+
+					@unlink($zip_filepath);
 				}
+			}
 
-				if(!$errors)
-				{
-					// Was the temporary file found?
-					if(!is_uploaded_file($_FILES['local_file']['tmp_name']))
-					{
-						$errors[] = $lang->error_uploadfailed_lost;
-					}
-					// Get the contents
-					$contents = @file_get_contents($_FILES['local_file']['tmp_name']);
-					// Delete the temporary file if possible
-					@unlink($_FILES['local_file']['tmp_name']);
-					// Are there contents?
-					if(!trim($contents))
-					{
-						$errors[] = $lang->error_uploadfailed_nocontents;
+			if (!$errors) {
+				$infofile2 = '';
+				$infofile = "$staged_path/theme.json";
+				if (!($themeinfo = read_json_file($infofile))) {
+					$errors[] = $lang->sprintf($lang->error_bad_staged_json_file, $infofile);
+				} else if (empty($themeinfo['codename'])) {
+					$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'codename', $infofile);
+				} else if ($themeinfo['codename'] != $codename) {
+					$errors[] = $lang->sprintf($lang->error_codename_mismatch, $themeinfo['codename'], $codename);
+				} else if (file_exists(MYBB_ROOT."inc/themes/{$codename}/current")) {
+					$infofile2 = MYBB_ROOT."inc/themes/{$codename}/current/theme.json";
+					if (!($themeinfo2 = read_json_file($infofile2))) {
+						$errors[] = $lang->sprintf($lang->error_bad_json_file, $infofile2);
+					} else if (empty($themeinfo2['version'])) {
+						$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', $infofile2);
+					} else if (empty($themeinfo['version'])) {
+						$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', $infofile);
+					} else if ($themeinfo['version'] == $themeinfo2['version']) {
+						$errors[] = $lang->sprintf($lang->error_identical_theme_version, $codename, $themeinfo['version']);
 					}
 				}
 			}
-			else if(!empty($mybb->input['url']))
-			{
-				// Get the contents
-				$contents = @fetch_remote_file($mybb->input['url']);
-				if(!$contents)
-				{
-					$errors[] = $lang->error_local_file;
+			if(!$errors) {
+				if (!$mybb->get_input('version_compat', MyBB::INPUT_INT) && !empty($themeinfo['compatibility']) && !is_compatible($themeinfo['compatibility'])) {
+					$errors[] = $lang->sprintf($lang->error_theme_incompatible_with_mybb_version, $themeinfo['compatibility'], $mybb->version);
+				} else {
+					if (!$errors) {
+						require_once MYBB_ROOT.'inc/functions_themes.php';
+						$themelet_hierarchy = get_themelet_hierarchy();
+						$found = false;
+						$name = !empty($mybb->input['name']) ? $mybb->input['name'] : $themeinfo['name'];
+						foreach (['devdist', 'current'] as $mode) {
+							foreach ($themelet_hierarchy[$mode]['themes'] as $theme) {
+								if ($theme['properties']['name'] == $name && $theme['properties']['codename'] != $themeinfo['codename']) {
+									$found = true;
+									break;
+								}
+							}
+						}
+						if ($found) {
+							$errors[] = $lang->sprintf($lang->error_theme_already_exists, $themeinfo['name']);
+						} else if (!empty($mybb->input['name'])) {
+							$themeinfo['name'] = $mybb->input['name'];
+							if (!write_json_file($infofile, $themeinfo)) {
+								$errors[] = $lang->error_failed_to_save_theme;
+							}
+						}
+					}
 				}
-			}
-			else
-			{
-				// UPLOAD_ERR_NO_FILE
-				$errors[] = $lang->error_uploadfailed_php4;
-			}
 
-			if(!$errors)
-			{
-				$options = array(
-					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
-					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
-					'version_compat' => $mybb->get_input('version_compat', MyBB::INPUT_INT),
-					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
-					'force_name_check' => true,
-				);
-				$theme_id = import_theme_xml($contents, $options);
+				if (!$errors) {
+					// If $infofile2 is non-empty, then we are upgrading or
+					// downgrading, so, try to archive the existing theme.
+					// TODO: consider whether/how to warn on downgrade.
+					if ($infofile2) {
+						require_once MYBB_ROOT.'inc/functions_themes.php';
+						if (!archive_themelet($codename, /*$is_plugin_themelet = */false, $err_msg)) {
+							$errors[] = $lang->error_theme_archival_failed;
+						}
+					}
+				}
+				if (!$errors) {
+					$installed_path = MYBB_ROOT."inc/themes/{$codename}/current";
+					if (!rename($staged_path, $installed_path)) {
+						$errors[] = $lang->error_theme_rename_failed;
+					} else if ($infofile2) {
+						// TODO: generate and store information about new
+						// conflicts with board themes that descend from this one.
+					}
+				}
 
-				if($theme_id > -1)
-				{
+				if (!$errors) {
 					$plugins->run_hooks("admin_style_themes_import_commit");
 
 					// Log admin action
-					log_admin_action($theme_id);
+					log_admin_action($codename);
 
-					flash_message($lang->success_imported_theme, 'success');
-					admin_redirect("index.php?module=style-themes&action=edit&tid=".$theme_id);
-				}
-				else
-				{
-					switch($theme_id)
-					{
-						case -1:
-							$errors[] = $lang->error_uploadfailed_nocontents;
-							break;
-						case -2:
-							$errors[] = $lang->error_invalid_version;
-							break;
-						case -3:
-							$errors[] = $lang->error_theme_already_exists;
-							break;
-						case -4:
-							$errors[] = $lang->error_theme_security_problem;
-					}
+					$msg = $infofile2
+					         ? (
+						    $themeinfo2['version'] < $themeinfo['version']
+						      ? $lang->sprintf($lang->success_upgraded_theme, $themeinfo['name'], $themeinfo2['version'], $themeinfo['version'])
+						      : $lang->sprintf($lang->success_downgraded_theme, $themeinfo['name'], $themeinfo2['version'], $themeinfo['version'])
+						   )
+						 : $lang->sprintf($lang->success_imported_theme, $themeinfo['name']);
+					flash_message($msg, 'success');
+					admin_redirect("index.php?module=style-themes&action=edit&codename=".$codename);
 				}
 			}
-		}
-	}
 
-	$query = $db->simple_select("themes", "tid, name");
-	while($theme = $db->fetch_array($query))
-	{
-		$themes[$theme['tid']] = $theme['name'];
+			rmdir_recursive($tmp_dir);
+			if ($errors && $zip_filepath) {
+				rmdir_recursive($staged_path);
+			}
+		}
 	}
 
 	$page->add_breadcrumb_item($lang->import_a_theme, "index.php?module=style-themes&amp;action=import");
@@ -451,31 +557,18 @@ if($mybb->input['action'] == "import")
 
 	$page->output_nav_tabs($sub_tabs, 'import_theme');
 
-	if($errors)
-	{
+	$import_checked = array_fill(1, 3, '');
+	if ($errors) {
 		$page->output_inline_error($errors);
-
-		if($mybb->input['import'] == 1)
-		{
-			$import_checked[1] = "";
-			$import_checked[2] = "checked=\"checked\"";
-		}
-		else
-		{
-			$import_checked[1] = "checked=\"checked\"";
-			$import_checked[2] = "";
-		}
+		$import_checked[$mybb->get_input('import', MyBB::INPUT_INT) + 1] = "checked=\"checked\"";
 	}
-	else
-	{
+	else {
 		$import_checked[1] = "checked=\"checked\"";
-		$import_checked[2] = "";
-
-		$mybb->input['import_stylesheets'] = true;
-		$mybb->input['import_templates'] = true;
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=import", "post", "", 1);
+
+	$staged_themes = get_staged_themes();
 
 	$actions = '<script type="text/javascript">
 	function checkAction(id)
@@ -500,9 +593,9 @@ if($mybb->input['action'] == "import")
 	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 35%;">
-	<dt><label style="display: block;"><input type="radio" name="import" value="0" '.$import_checked[1].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->local_file.'</label></dt>
+		<dt><label style="display: block;"><input type="radio" name="import" value="0" '.$import_checked[1].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->local_file.'</label></dt>
 		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_0" class="imports">
-	<table cellpadding="4">
+		<table cellpadding="4">
 				<tr>
 					<td>'.$form->generate_file_upload_box("local_file", array('style' => 'width: 230px;')).'</td>
 				</tr>
@@ -512,19 +605,33 @@ if($mybb->input['action'] == "import")
 		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_1" class="imports">
 		<table cellpadding="4">
 				<tr>
-					<td>'.$form->generate_text_box("url", $mybb->get_input('file')).'</td>
+					<td>'.$form->generate_text_box("url", $mybb->get_input('url')).'</td>
 				</tr>
 		</table></dd>
-	</dl>
+';
+	if ($staged_themes) {
+		$opts = [];
+		foreach ($staged_themes as $codename => $props) {
+			$opts[$codename] = empty($props['name']) ? '['.$codename.']' : $props['name'];
+		}
+		$actions .= '		<dt><label style="display: block;"><input type="radio" name="import" value="2" '.$import_checked[3].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->staged_theme.'</label></dt>
+		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_2" class="imports">
+		<table cellpadding="4">
+				<tr>
+					<td>'.$form->generate_select_box('staged_theme', $opts, [$mybb->get_input('staged_theme')]).'</td>
+				</tr>
+		</table></dd>
+';
+	}
+	$actions .= '	</dl>
 	<script type="text/javascript">
 	checkAction(\'import\');
 	</script>';
 
 	$form_container = new FormContainer($lang->import_a_theme);
 	$form_container->output_row($lang->import_from, $lang->import_from_desc, $actions, 'file');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
 	$form_container->output_row($lang->new_name, $lang->new_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->get_input('version_compat'), 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->get_input('import_stylesheets'), 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->get_input('import_templates'), 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
+	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->get_input('version_compat'), 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small>");
 
 	$form_container->end();
 
@@ -719,7 +826,7 @@ if($mybb->input['action'] == "duplicate")
 			foreach (['devdist', 'current'] as $mode) {
 				foreach ($themelet_hierarchy[$mode]['themes'] as $theme) {
 					if ($theme['properties']['name'] == $mybb->get_input('name')) {
-						$errors[] = $lang->error_theme_already_exists;
+						$errors[] = $lang->sprintf($lang->error_theme_already_exists, $mybb->get_input('name'));
 					} else if ($theme['properties']['codename'] == $mybb->input['new_codename']) {
 						$errors[] = $lang->sprintf($lang->error_theme_codename_exists, $mybb->input['new_codename']);
 					}
@@ -1181,7 +1288,7 @@ if ($mybb->input['action'] == 'edit') {
 				}
 			}
 			if (!$unused_name) {
-				$errors[] = $lang->error_theme_already_exists;
+				$errors[] = $lang->sprintf($lang->error_theme_already_exists, $new_properties['name']);
 			}
 		}
 
@@ -2963,4 +3070,38 @@ if(!$mybb->input['action'])
 	$table->output($lang->themes);
 
 	$page->output_footer();
+}
+
+/**
+ * Gets a list of staged theme files.
+ *
+ * @param boolean $show_errs If true, and an error occurs, the error is displayed inline; otherwise, errors are ignored.
+ * @return array Keys are theme codenames; values are theme manifest data as extracted from the relevant manifest file.
+ */
+function get_staged_themes($show_errs = true)
+{
+	global $lang, $page;
+
+	$themes_list = [];
+	$dh = @opendir(MYBB_ROOT.'staging/themes/');
+	if ($dh) {
+		while (($theme_code = readdir($dh))) {
+			if (in_array($theme_code, ['.', '..']) || !is_dir(MYBB_ROOT."staging/themes/$theme_code")) {
+				continue;
+			}
+			$info_file = MYBB_ROOT."staging/themes/$theme_code/theme.json";
+			if ($themeinfo = read_json_file($info_file, $errmsg, $show_errs)) {
+				if (empty($themeinfo['version'])) {
+					if ($show_errs) {
+						$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $info_file));
+					}
+				} else	$themes_list[$theme_code] = $themeinfo;
+			} else if ($show_errs) {
+				$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $info_file));
+			}
+		}
+		@closedir($dh);
+	}
+
+	return $themes_list;
 }
