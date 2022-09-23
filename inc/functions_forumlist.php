@@ -364,7 +364,8 @@ function build_forumbits($pid=0, $depth=1)
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 			}
 
-			// Moderator column is not off
+			// Moderator column
+			$modlist = '';
 			if($mybb->settings['modlist'] != 0)
 			{
 				$done_moderators = array(
@@ -420,10 +421,6 @@ function build_forumbits($pid=0, $depth=1)
 				if($moderators)
 				{
 					eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
-				}
-				else
-				{
-					$modlist = '';
 				}
 			}
 
