@@ -2037,7 +2037,17 @@ if($mybb->input['action'] == "merge")
 			merge_thread_ratings($source_user['uid'], $destination_user['uid']);
 
 			// Banning
-			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$where = "`admin` = '{$source_user['uid']}'";
+					break;
+				default:
+					$where = "admin = '{$source_user['uid']}'";
+					break;
+			}
+			$db->update_query("banned", array('admin' => $destination_user['uid']), $where);
 
 			// Carry over referrals
 			$db->update_query("users", array("referrer" => $destination_user['uid']), "referrer='{$source_user['uid']}' AND uid!='{$destination_user['uid']}'");
