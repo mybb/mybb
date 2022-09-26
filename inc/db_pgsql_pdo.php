@@ -429,7 +429,7 @@ HTML;
 				$field['_key'] = '';
 			}
 
-			if (stripos($field['column_default'], 'nextval') !== false) {
+			if (!is_null($field['column_default']) && stripos($field['column_default'], 'nextval') !== false) {
 				$field['_extra'] = 'auto_increment';
 			} else {
 				$field['_extra'] = '';
