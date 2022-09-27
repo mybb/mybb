@@ -1564,8 +1564,14 @@ if ($action == 'stylesheets') {
 					continue;
 				}
 
-				if (array_key_exists($name, $theme['colors'])) {
-					$colors[] = $theme['colors'][$name];
+				// Multiple colors can be selected, so colours, and only colours,
+				// are arrayed in the 'script' property of a stylesheet.
+				if (is_array($name)) {
+					foreach ($name as $color) {
+						if (array_key_exists($color, $theme['colors'])) {
+							$colors[] = $theme['colors'][$color];
+						}
+					}
 				}
 
 				if (count($colors)) {
