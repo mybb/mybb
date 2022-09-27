@@ -8,6 +8,8 @@
 $l['themes'] = "Themes";
 $l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
 
+$l['theme_templates'] = "Theme Templates";
+
 $l['create_new_theme'] = "Create New Theme";
 $l['create_new_theme_desc'] = "Here you can create a new theme based on the default. <strong>Template sets, stylesheets, and other settings are inherited from the parent theme.</strong>";
 
@@ -15,7 +17,7 @@ $l['import_a_theme'] = "Import a Theme";
 $l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
 
 $l['edit_stylesheets'] = "Edit Stylesheets";
-$l['edit_stylesheets_desc'] = "Here you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
+$l['edit_stylesheets_desc'] = "Here you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS (.css) or SASS (.scss) and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
 $l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
@@ -30,6 +32,14 @@ $l['export_theme_desc'] = "Here you can export your themes and customized templa
 
 $l['duplicate_theme'] = "Duplicate Theme";
 $l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
+
+$l['namespace_lc_sq'] = '[namespace]';
+$l['plugin_lc_sq'] = '[plugin]';
+$l['inherited_lc_sq'] = '[inherited]';
+$l['have_own_copy_lc_sq'] = '[have own copy]';
+
+$l['templates_for'] = 'Templates for "{1}"';
+$l['stylesheets_for'] = 'Stylesheets for "{1}"';
 
 $l['colors_manage'] = "Manage Colors";
 $l['colors_attached_to'] = "color setting";
@@ -53,8 +63,14 @@ $l['edit_stylesheet_advanced_mode'] = "Edit Stylesheet: Advanced Mode";
 $l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the {1} stylesheet are shown in the text area below.";
 $l['stylesheet_type'] = "Stylesheet type: ";
 
+$l['edit_template_breadcrumb'] = 'Edit Template: ';
+$l['editing_template'] = 'Editing Template: {1}';
+$l['edit_template'] = 'Edit Template';
+$l['edit_template_desc'] = "Here you can edit the template's code.";
+
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
+$l['quick_links'] = 'Quick Links';
 $l['edit_theme'] = "Edit Theme";
 $l['delete_theme'] = "Delete Theme";
 $l['set_as_default'] = "Set as Default";
@@ -117,7 +133,18 @@ $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
 $l['display_order'] = "Order";
 
+$l['manage_templates'] = "Here you can view and edit the \"{1}\" theme's templates.";
+
+$l['template_name'] = 'Template Path and Name';
+$l['template_name_desc'] = 'If you change this, the template will be saved to the new path and name. The original template will not be affected.';
+$l['template_namespace'] = 'Template Namespace';
+$l['template_namespace_desc'] = 'If you change this, the template will be saved to the new namespace. The original template will not be affected.';
+
+$l['save_continue'] = 'Save and Continue Editing';
+$l['save_close'] = 'Save and Return to Listing';
+
 $l['edit_theme_properties'] = "Edit Theme Properties";
+$l['edit_theme_desc'] = 'Here, you can edit the theme\'s properties.';
 $l['name_desc_edit'] = "Specify a name for the theme.";
 $l['description'] = 'Description';
 $l['description_desc_edit'] = 'Provide a description for the theme.';
@@ -241,6 +268,7 @@ $l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
 $l['error_codename_with_directory_separator'] = 'The supplied theme codename contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_css_filename_with_directory_separator'] = 'The supplied stylesheet filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_staging_filename_with_directory_separator'] = 'The supplied staging filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
+$l['error_template_path_with_directory_separator'] = 'The supplied template path contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically unzip theme archives. If you are unable to install the PHP package providing this class, then instead simply unzip your theme archive manually into the `staging/themes/` directory and refresh this page. It should then show up as a "Staged" theme, allowing you to import it.';
 $l['error_theme_unzip_open_failed'] = 'Unable to open the uploaded zip file. ZipArchive::open() returned code: {1}.';
 $l['error_theme_unzip_failed'] = 'Failed to unzip the theme archive.';
@@ -264,6 +292,8 @@ $l['error_theme_has_no_contents'] = 'The theme to be duplicated has no contents 
 $l['error_invalid_theme_codename'] = 'The supplied theme codename "{1}" is empty or contains invalid characters (only lowercase `a` through `z` and underscore are valid.';
 $l['error_theme_codename_exists'] = 'The supplied theme codename "{1}" already exists.';
 $l['error_cp_failed'] = 'Failed to copy {1} to {2}.';
+$l['error_no_template_input'] = 'The path to the template to edit was not supplied.';
+$l['error_failed_write_template'] = 'Failed to write the template file to the filesystem.';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_upgraded_theme'] = "The theme '{1}' has been successfully upgraded from version '{2}' to version '{3}'.";
@@ -279,6 +309,7 @@ $l['success_theme_forced'] = "All users have been forced to use the selected the
 $l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
 $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets have been updated successfully.";
+$l['success_template_saved'] = "The selected template has successfully been saved.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";

@@ -1371,6 +1371,7 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;codename={$theme['codename']}");
 		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=stylesheets&amp;codename={$theme['codename']}\">{$lang->stylesheets}</a> | <a href=\"index.php?module=style-themes&amp;action=templates&amp;codename={$theme['codename']}\">{$lang->templates}</a>", array('class' => 'align_center'));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 

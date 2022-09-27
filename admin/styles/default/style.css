@@ -40,3 +40,11 @@ ins, del {
 del {
 	background: #fdd;
 }
+
+.inherited_res {
+	color: #aaa;
+}
+
+.have_own_copy_res {
+	color: #df8c97;
+}
