@@ -133,7 +133,9 @@ $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
 $l['display_order'] = "Order";
 
-$l['manage_templates'] = "Here you can view and edit the \"{1}\" theme's templates.";
+$l['edit_templates'] = 'Edit Templates';
+$l['edit_templates_desc'] = 'Here you can easily manage the templates in use by this theme.';
+$l['templates_in_theme'] = 'Templates in {1}';
 
 $l['template_name'] = 'Template Path and Name';
 $l['template_name_desc'] = 'If you change this, the template will be saved to the new path and name. The original template will not be affected.';

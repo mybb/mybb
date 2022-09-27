@@ -3120,9 +3120,9 @@ if ($mybb->input['action'] == 'templates') {
 	$page->output_header($lang->theme_templates);
 
 	$sub_tabs = ['templates' => [
-		'title' => $lang->templates,
+		'title' => $lang->edit_templates,
 		'link' => "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}",
-		'description' => $lang->manage_template_sets_desc
+		'description' => $lang->edit_templates_desc
 	]];
 
 	$page->output_nav_tabs($sub_tabs, 'templates');
@@ -3254,7 +3254,7 @@ if ($mybb->input['action'] == 'templates') {
 		output_tpls_r($codename, $mode, $namespace, $tpls['entries'], $table);
 	}
 
-	$table->output($lang->sprintf($lang->manage_templates, htmlspecialchars_uni($theme['name'])));
+	$table->output($lang->sprintf($lang->templates_in_theme, htmlspecialchars_uni($theme['name'])));
 	$page->output_footer();
 }
 
