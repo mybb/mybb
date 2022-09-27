@@ -546,7 +546,7 @@ if ($mybb->input['action'] == "import") {
 						   )
 						 : $lang->sprintf($lang->success_imported_theme, $themeinfo['name']);
 					flash_message($msg, 'success');
-					admin_redirect("index.php?module=style-themes&action=edit&codename=".$codename);
+					admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename=".$codename);
 				}
 			}
 
@@ -1008,7 +1008,7 @@ if($mybb->input['action'] == "duplicate")
 				log_admin_action($mybb->input['new_codename'], $mybb->input['codename']);
 
 				flash_message($lang->success_duplicated_theme, 'success');
-				admin_redirect("index.php?module=style-themes&action=edit&codename=".$mybb->input['new_codename']);
+				admin_redirect("index.php?module=style-themes&action=edit&amp;codename=".$mybb->input['new_codename']);
 			}
 		}
 	}
@@ -1784,7 +1784,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$resources = read_json_file($resource_file, $err_msg, false);
 			if ($err_msg) {
 				flash_message($err_msg, 'error');
-				admin_redirect("index.php?module=style-themes&action=stylesheet_properties&codename={$mybb->input['codename']}&file={$mybb->input['file']}");
+				admin_redirect("index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename={$mybb->input['codename']}&file={$mybb->input['file']}");
 
 			}
 
@@ -1798,7 +1798,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 			if (!write_json_file($resource_file, $resources)) {
 				flash_message($lang->error_failed_to_save_stylesheet_props, 'error');
-				admin_redirect("index.php?module=style-themes&action=stylesheet_properties&codename={$mybb->input['codename']}&file={$mybb->input['file']}");
+				admin_redirect("index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}");
 
 			}
 
@@ -1808,7 +1808,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			log_admin_action($mybb->input['file'], $theme['codename'], $theme['name']);
 
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
-			admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
+			admin_redirect("index.php?module=style-themes&action=edit&amp;codename={$theme['codename']}");
 		}
 	}
 
@@ -2068,7 +2068,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 {
 	if ($is_scss) {
 		// Editing of SCSS in "simple" mode is not (yet?) supported: redirect to the advanced editor.
-		admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=advanced");
+		admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}&amp;mode=advanced");
 	}
 
 	if($mybb->request_method == "post")
@@ -2127,16 +2127,16 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 		{
 			if ($err_msg) {
 				flash_message($err_msg, 'error');
-				admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=simple");
+				admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}&mode=simple");
 			} else {
 				flash_message($lang->success_stylesheet_updated, 'success');
 				if($mybb->input['save_close'])
 				{
-					admin_redirect("index.php?module=style-themes&action=edit&codename={$mybb->input['codename']}");
+					admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}");
+					admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}");
 				}
 			}
 		}
@@ -2154,7 +2154,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	if(!$selector_list)
 	{
 		flash_message($lang->error_cannot_parse, 'error');
-		admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".htmlspecialchars_uni($mybb->input['file'])."&mode=advanced");
+		admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
 		exit;
 	}
 
@@ -2327,7 +2327,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 		if ($err_msg) {
 			flash_message($err_msg, 'error');
-			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file={$mybb->input['file']}&mode=advanced");
+			admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}&amp;mode=advanced");
 		}
 
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced_commit");
@@ -2339,11 +2339,11 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 		if(!$mybb->get_input('save_close'))
 		{
-			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&file=".htmlspecialchars_uni($mybb->input['file'])."&codename={$mybb->input['codename']}&mode=advanced");
+			admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;codename={$mybb->input['codename']}&amp;mode=advanced");
 		}
 		else
 		{
-			admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
+			admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
 		}
 	}
 
@@ -2520,7 +2520,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		log_admin_action($stylesheet['name'], $theme['codename'], $theme['name']);
 
 		flash_message($lang->success_stylesheet_deleted, 'success');
-		admin_redirect("index.php?module=style-themes&action=edit&codename={$theme['codename']}");
+		admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
 	}
 	else
 	{
@@ -2715,7 +2715,7 @@ if($mybb->input['action'] == "add_stylesheet")
 					log_admin_action($mybb->input['import'], $theme['codename'], $theme['name']);
 
 					flash_message($lang->success_stylesheet_added, 'success');
-					admin_redirect("index.php?module=style-themes&action=edit_stylesheet&codename={$mybb->input['codename']}&file=".urlencode($new_spec));
+					admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file=".urlencode($new_spec));
 				}
 			}
 		}
