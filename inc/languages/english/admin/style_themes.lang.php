@@ -6,40 +6,37 @@
  */
 
 $l['themes'] = "Themes";
-$l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
+$l['themes_desc'] = "Here, you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
 
 $l['theme_templates'] = "Theme Templates";
 
 $l['create_new_theme'] = "Create New Theme";
-$l['create_new_theme_desc'] = "Here you can create a new theme based on the default. <strong>Template sets, stylesheets, and other settings are inherited from the parent theme.</strong>";
+$l['create_new_theme_desc'] = "Here, you can create a new theme based on the default. <strong>Template sets, stylesheets, and other settings are inherited from the parent theme.</strong>";
 
 $l['import_a_theme'] = "Import a Theme";
-$l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
+$l['import_a_theme_desc'] = "Here, you can import a new theme. You may import a theme from your computer, or a remote URL.";
 
 $l['edit_stylesheets'] = "Edit Stylesheets";
-$l['edit_stylesheets_desc'] = "Here you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS (.css) or SASS (.scss) and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
+$l['edit_stylesheets_desc'] = "Here, you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS (.css) or SASS (.scss) and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
-$l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
+$l['add_stylesheet_desc'] = "Here, you can add a new stylesheet to this theme. A stylesheet contains CSS (.css) or SASS (.scss) that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
 
 $l['browse_themes'] = "Browse Themes";
-$l['browse_themes_desc'] = "Here you may browse the official MyBB modifications site for themes compatible with your series of MyBB.";
+$l['browse_themes_desc'] = "Here, you may browse the official MyBB modifications site for themes compatible with your series of MyBB.";
 
 $l['browse_all_themes'] = "Browse All Themes";
 
 $l['export_theme'] = "Export Theme";
-$l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
+$l['export_theme_desc'] = "Here, you can export your theme, including its properties, stylesheets, and templates. Exporting a theme is useful if you wish to share it with others or import it into another forum.";
 
 $l['duplicate_theme'] = "Duplicate Theme";
-$l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
+$l['duplicate_theme_desc'] = "Here, you can duplicate your theme. This helps you if you want to develop another version of it.";
 
 $l['namespace_lc_sq'] = '[namespace]';
 $l['plugin_lc_sq'] = '[plugin]';
 $l['inherited_lc_sq'] = '[inherited]';
 $l['have_own_copy_lc_sq'] = '[have own copy]';
-
-$l['templates_for'] = 'Templates for "{1}"';
-$l['stylesheets_for'] = 'Stylesheets for "{1}"';
 
 $l['colors_manage'] = "Manage Colors";
 $l['colors_attached_to'] = "color setting";
@@ -58,15 +55,14 @@ $l['export_devdist'] = "Export the `devdist` version of the theme?";
 $l['export_devdist_desc'] = "If you want to export the `current` version instead, select no.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
-$l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
+$l['edit_stylesheet_simple_mode_desc'] = "Here, you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
 $l['edit_stylesheet_advanced_mode'] = "Edit Stylesheet: Advanced Mode";
-$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the {1} stylesheet are shown in the text area below.";
+$l['edit_stylesheet_advanced_mode_desc'] = "Here, you can edit this stylesheet like a flat file. The contents of the {1} stylesheet are shown in the text area below.";
 $l['stylesheet_type'] = "Stylesheet type: ";
 
-$l['edit_template_breadcrumb'] = 'Edit Template: ';
 $l['editing_template'] = 'Editing Template: {1}';
 $l['edit_template'] = 'Edit Template';
-$l['edit_template_desc'] = "Here you can edit the template's code.";
+$l['edit_template_desc'] = "Here, you can edit the template's code.";
 
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
@@ -134,7 +130,7 @@ $l['name_desc'] = "Specify a name for the new theme.";
 $l['display_order'] = "Order";
 
 $l['edit_templates'] = 'Edit Templates';
-$l['edit_templates_desc'] = 'Here you can easily manage the templates in use by this theme.';
+$l['edit_templates_desc'] = 'Here, you can easily manage the templates in use by this theme.';
 $l['templates_in_theme'] = 'Templates in {1}';
 
 $l['template_name'] = 'Template Path and Name';
@@ -205,7 +201,7 @@ $l['edit_stylesheet_properties_for'] = "Edit Stylesheet Properties for";
 $l['namespace'] = 'Namespace';
 $l['namespace_desc'] = 'The stylesheet\'s namespace, for example <em>frontend</em> (the default if left blank), <em>parser</em>, or <em>acp</em>.';
 $l['file_name'] = "File Name";
-$l['file_name_desc'] = "Name for the stylesheet. Must end in <strong>.css</strong> (even if you provide SCSS content).";
+$l['file_name_desc'] = "Name for the stylesheet. Must end in <strong>.css</strong> (even if you provide SASS content).";
 $l['save_stylesheet_properties'] = "Save Stylesheet Properties";
 $l['saved'] = "Saved";
 $l['editing'] = "Editing";

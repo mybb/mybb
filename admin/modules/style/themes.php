@@ -56,8 +56,9 @@ if (!empty($mybb->input['template']) && is_unsafe_path($mybb->input['template'])
 
 $sub_tabs = [];
 
-if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
-{
+$action = $mybb->get_input('action');
+
+if ($action == 'xmlhttp_stylesheet' && $mybb->request_method == 'post') {
 	// Fetch the theme we want to edit this stylesheet in
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
@@ -144,8 +145,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 
 $page->add_breadcrumb_item($lang->themes, "index.php?module=style-themes");
 
-if($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $mybb->input['action'] == "browse" || !$mybb->input['action'])
-{
+if (in_array($action, ['add', 'import', 'browse', ''])) {
 	$sub_tabs['themes'] = array(
 		'title' => $lang->themes,
 		'link' => "index.php?module=style-themes",
@@ -169,13 +169,60 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $myb
 		'link' => "index.php?module=style-themes&amp;action=browse",
 		'description' => $lang->browse_themes_desc
 	);
+} else if (in_array($action, ['edit', 'stylesheets', 'add_stylesheet', 'templates', 'export', 'duplicate', 'edit_template'])) {
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+	$codename = $mybb->get_input('codename');
+	if (!empty($themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'])) {
+		$name = $themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'];
+	} else	$name = '[Unknown]';
+
+	$page->add_breadcrumb_item(htmlspecialchars_uni($name), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+
+	if ($action != 'edit_template') {
+		$sub_tabs['edit'] = array(
+			'title' => $lang->edit_theme_properties,
+			'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}",
+			'description' => $lang->edit_theme_desc
+		);
+
+		$sub_tabs['edit_stylesheets'] = array(
+			'title' => $lang->edit_stylesheets,
+			'link' => "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}",
+			'description' => $lang->edit_stylesheets_desc
+		);
+
+		$sub_tabs['add_stylesheet'] = array(
+			'title' => $lang->add_stylesheet,
+			'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$codename}",
+			'description' => $lang->add_stylesheet_desc
+		);
+
+		$sub_tabs['edit_templates'] = array(
+			'title' => $lang->edit_templates,
+			'link' => "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}",
+			'description' => $lang->edit_templates_desc
+		);
+
+		$sub_tabs['export_theme'] = array(
+			'title' => $lang->export_theme,
+			'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$codename}",
+			'description' => $lang->export_theme_desc
+		);
+
+		$sub_tabs['duplicate_theme'] = array(
+			'title' => $lang->duplicate_theme,
+			'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$codename}",
+			'description' => $lang->duplicate_theme_desc
+		);
+	}
 }
 
-$plugins->run_hooks("admin_style_themes_begin");
+$plugins->run_hooks('admin_style_themes_begin');
 
-if($mybb->input['action'] == "browse")
-{
-	$plugins->run_hooks("admin_style_themes_browse");
+if ($action == 'browse') {
+	$plugins->run_hooks('admin_style_themes_browse');
 
 	$page->add_breadcrumb_item($lang->browse_themes);
 
@@ -334,7 +381,7 @@ if($mybb->input['action'] == "browse")
 	$page->output_footer();
 }
 
-if ($mybb->input['action'] == "import") {
+if ($action == 'import') {
 	$plugins->run_hooks("admin_style_themes_import");
 
 	if ($mybb->request_method == "post") {
@@ -488,8 +535,6 @@ if ($mybb->input['action'] == "import") {
 					$errors[] = $lang->sprintf($lang->error_theme_incompatible_with_mybb_version, $themeinfo['compatibility'], $mybb->version);
 				} else {
 					if (!$errors) {
-						require_once MYBB_ROOT.'inc/functions_themes.php';
-						$themelet_hierarchy = get_themelet_hierarchy();
 						$found = false;
 						$name = !empty($mybb->input['name']) ? $mybb->input['name'] : $themeinfo['name'];
 						foreach (['devdist', 'current'] as $mode) {
@@ -650,8 +695,7 @@ if ($mybb->input['action'] == "import") {
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "export")
-{
+if ($action == 'export') {
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
@@ -737,28 +781,6 @@ if($mybb->input['action'] == "export")
 
 	$page->output_header("{$lang->themes} - {$lang->export_theme}");
 
-	$sub_tabs['edit_stylesheets'] = array(
-		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}",
-	);
-
-	$sub_tabs['add_stylesheet'] = array(
-		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->input['codename']}",
-	);
-
-	$sub_tabs['export_theme'] = array(
-		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->export_theme_desc
-	);
-
-	$sub_tabs['duplicate_theme'] = array(
-		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->duplicate_theme_desc
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'export_theme');
 
 	if($errors)
@@ -790,8 +812,7 @@ if($mybb->input['action'] == "export")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "duplicate")
-{
+if ($action == 'duplicate') {
 	// Does the theme not exist?
 	$src_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}";
 	if (!is_dir($src_dir)) {
@@ -1013,33 +1034,9 @@ if($mybb->input['action'] == "duplicate")
 		}
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->get_input('codename')}");
-
 	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->get_input('codename')}");
 
 	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
-
-	$sub_tabs['edit_stylesheets'] = array(
-		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->get_input('codename')}",
-	);
-
-	$sub_tabs['add_stylesheet'] = array(
-		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->get_input('codename')}",
-	);
-
-	$sub_tabs['export_theme'] = array(
-		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->get_input('codename')}",
-		'description' => $lang->export_theme_desc
-	);
-
-	$sub_tabs['duplicate_theme'] = array(
-		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->get_input('codename')}",
-		'description' => $lang->duplicate_theme_desc
-	);
 
 	$page->output_nav_tabs($sub_tabs, 'duplicate_theme');
 
@@ -1131,8 +1128,7 @@ if($mybb->input['action'] == "duplicate")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == 'add')
-{
+if ($action == 'add') {
 	$plugins->run_hooks("admin_style_themes_add");
 
 	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$usergroup_override = */false, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'');
@@ -1157,8 +1153,7 @@ if($mybb->input['action'] == 'add')
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "delete")
-{
+if ($action == 'delete') {
 	// Does the theme not exist?
 	$src_dir = MYBB_ROOT."inc/themes/{$mybb->input['codename']}";
 	if (!is_dir($src_dir)) {
@@ -1204,7 +1199,7 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
-if ($mybb->input['action'] == 'edit') {
+if ($action == 'edit') {
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
@@ -1335,15 +1330,9 @@ if ($mybb->input['action'] == 'edit') {
 		}
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
+	$page->add_breadcrumb_item($lang->properties, "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
-
-	$sub_tabs['edit'] = array(
-		'title' => $lang->edit_theme_properties,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->edit_theme_desc
-	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit');
 
@@ -1426,7 +1415,7 @@ if ($mybb->input['action'] == 'edit') {
 	$page->output_footer();
 }
 
-if ($mybb->input['action'] == 'stylesheets') {
+if ($action == 'stylesheets') {
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
@@ -1485,33 +1474,11 @@ if ($mybb->input['action'] == 'stylesheets') {
 		}
 	}
 
-	$page->add_breadcrumb_item($lang->sprintf($lang->stylesheets_for, htmlspecialchars_uni($theme['name'])), "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$mybb->input['codename']}");
+	$page->add_breadcrumb_item($lang->stylesheets, "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$mybb->input['codename']}");
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
 
-	$sub_tabs['stylesheets'] = array(
-		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->edit_stylesheets_desc
-	);
-
-	$sub_tabs['add_stylesheet'] = array(
-		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->input['codename']}",
-	);
-
-	$sub_tabs['export_theme'] = array(
-		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->input['codename']}"
-	);
-
-	$sub_tabs['duplicate_theme'] = array(
-		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->duplicate_theme_desc
-	);
-
-	$page->output_nav_tabs($sub_tabs, 'stylesheets');
+	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
 
 	$table = new Table;
 	$table->construct_header($lang->stylesheets);
@@ -1689,8 +1656,7 @@ if ($mybb->input['action'] == 'stylesheets') {
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "stylesheet_properties")
-{
+if ($action == 'stylesheet_properties') {
 	// Fetch the theme we want to edit this stylesheet in
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
@@ -2015,7 +1981,7 @@ EOF;
 }
 
 // Perform the initialisation common to both "simple" and "advanced" stylesheet editing modes
-if ($mybb->input['action'] == "edit_stylesheet") {
+if ($action == 'edit_stylesheet') {
 	// Fetch the theme we want to edit this stylesheet in
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
@@ -2064,8 +2030,7 @@ if ($mybb->input['action'] == "edit_stylesheet") {
 }
 
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
-if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
-{
+if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->input['mode'] == 'simple')) {
 	if ($is_scss) {
 		// Editing of SCSS in "simple" mode is not (yet?) supported: redirect to the advanced editor.
 		admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$mybb->input['codename']}&amp;file={$mybb->input['file']}&amp;mode=advanced");
@@ -2284,8 +2249,7 @@ $(function() {
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
-{
+if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 	// Note: initialisation common between this advanced editing mode and the simple editing
 	// mode was performed above.
 
@@ -2429,8 +2393,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "delete_stylesheet")
-{
+if ($action == 'delete_stylesheet') {
 	// Fetch the theme we want to delete this stylesheet from
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
@@ -2528,8 +2491,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 	}
 }
 
-if($mybb->input['action'] == "add_stylesheet")
-{
+if ($action == 'add_stylesheet') {
 	// Fetch the theme we want to add this stylesheet to
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
@@ -2735,33 +2697,10 @@ if($mybb->input['action'] == "add_stylesheet")
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}");
 	$page->add_breadcrumb_item($lang->add_stylesheet);
 	$properties = my_unserialize($theme['properties']);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
-
-	$sub_tabs['edit_stylesheets'] = array(
-		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$mybb->input['codename']}"
-	);
-
-	$sub_tabs['add_stylesheet'] = array(
-		'title' => $lang->add_stylesheet,
-		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->add_stylesheet_desc
-	);
-
-	$sub_tabs['export_theme'] = array(
-		'title' => $lang->export_theme,
-		'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$mybb->input['codename']}"
-	);
-
-	$sub_tabs['duplicate_theme'] = array(
-		'title' => $lang->duplicate_theme,
-		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->input['codename']}",
-		'description' => $lang->duplicate_theme_desc
-	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
@@ -3008,8 +2947,7 @@ $(function() {
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "set_default")
-{
+if ($action == 'set_default') {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -3041,8 +2979,7 @@ if($mybb->input['action'] == "set_default")
 	admin_redirect("index.php?module=style-themes");
 }
 
-if($mybb->input['action'] == "force")
-{
+if ($action == 'force') {
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 	$mode = 'current';
@@ -3096,7 +3033,7 @@ if($mybb->input['action'] == "force")
 	}
 }
 
-if ($mybb->input['action'] == 'templates') {
+if ($action == 'templates') {
 	$codename = $mybb->get_input('codename');
 
 	// Fetch the theme for which we want to list templates
@@ -3115,17 +3052,11 @@ if ($mybb->input['action'] == 'templates') {
 
 	$plugins->run_hooks('admin_style_templates');
 
-	$page->add_breadcrumb_item($lang->sprintf($lang->templates_for, htmlspecialchars_uni($theme['name'])), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
 
 	$page->output_header($lang->theme_templates);
 
-	$sub_tabs = ['templates' => [
-		'title' => $lang->edit_templates,
-		'link' => "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}",
-		'description' => $lang->edit_templates_desc
-	]];
-
-	$page->output_nav_tabs($sub_tabs, 'templates');
+	$page->output_nav_tabs($sub_tabs, 'edit_templates');
 
 	$table = new Table;
 	$table->construct_header($lang->templates);
@@ -3258,7 +3189,7 @@ if ($mybb->input['action'] == 'templates') {
 	$page->output_footer();
 }
 
-if ($mybb->input['action'] == 'edit_template') {
+if ($action == 'edit_template') {
 	$errors = [];
 
 	$codename = $mybb->get_input('codename');
@@ -3355,10 +3286,11 @@ if ($mybb->input['action'] == 'edit_template') {
 ';
 	}
 
-	$page->add_breadcrumb_item($lang->sprintf($lang->templates_for, htmlspecialchars_uni($theme['name'])), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
-	$page->add_breadcrumb_item($lang->edit_template_breadcrumb.htmlspecialchars_uni($template_path), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}");
+	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
 
-	$page->output_header($lang->sprintf($lang->editing_template, htmlspecialchars_uni($template_path)));
+	$page->add_breadcrumb_item("@$namespace/".htmlspecialchars_uni($template_path), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}");
+
+	$page->output_header($lang->sprintf($lang->editing_template, "@$namespace/".htmlspecialchars_uni($template_path)));
 
 	$sub_tabs['edit_template'] = array(
 		'title' => $lang->edit_template,
@@ -3373,7 +3305,7 @@ if ($mybb->input['action'] == 'edit_template') {
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}", 'post', 'edit_template');
-	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template_path, 'tfixed');
+	$form_container = new FormContainer($lang->sprintf($lang->editing_template, "@$namespace/$template_path"), 'tfixed');
 	$form_container->output_row($lang->template_namespace, $lang->template_namespace_desc, $form->generate_text_box('namespace_new', $namespace_new, array('id' => 'template_new')), 'template_new');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('template_new', $template_path_new, array('id' => 'template_new')), 'template_new');
 	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
@@ -3405,8 +3337,7 @@ if ($mybb->input['action'] == 'edit_template') {
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
-{
+if (!$action) {
 	$page->output_header($lang->themes);
 
 	$plugins->run_hooks("admin_style_themes_start");
