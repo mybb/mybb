@@ -1920,6 +1920,9 @@ if ($action == 'edit_stylesheet') {
 
 	// Pull out the contents of the stylesheet from the appropriate file
 	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
+
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->stylesheets, "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}");
 }
 
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
@@ -2021,8 +2024,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 	var my_post_key = '".$mybb->post_code."';
 	</script>";
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
@@ -2218,8 +2220,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($filename), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
