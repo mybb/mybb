@@ -2528,7 +2528,6 @@ if ($action == 'add_stylesheet') {
 	}
 
 	$page->add_breadcrumb_item($lang->add_stylesheet);
-	$properties = my_unserialize($theme['properties']);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
 
@@ -2643,13 +2642,13 @@ if ($action == 'add_stylesheet') {
 	else if($mybb->input['attach'] == 2)
 	{
 		// Colors
-		if(is_array($properties['colors']))
+		if(is_array($theme['colors']))
 		{
 			// We might have colors here...
 			foreach($mybb->input['color'] as $color)
 			{
 				// Verify this is a color for this theme
-				if(array_key_exists($color, $properties['colors']))
+				if(array_key_exists($color, $theme['colors']))
 				{
 					$stylesheet['colors'][] = $color;
 				}
@@ -2669,7 +2668,7 @@ if ($action == 'add_stylesheet') {
 	// Colors
 	$specific_colors = $specific_colors_option = '';
 
-	if(isset($properties['colors']) && is_array($properties['colors']))
+	if(isset($theme['colors']) && is_array($theme['colors']))
 	{
 		$specific_colors = "<br /><div id=\"attach_2\" class=\"attachs\">";
 		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt>';
@@ -2677,7 +2676,7 @@ if ($action == 'add_stylesheet') {
 		$specific_color = "
 			<small>{$lang->colors_add_edit_desc}</small>
 			<br /><br />
-			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
+			".$form->generate_select_box('color[]', $theme['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
 		";
 
 		$form_container = new FormContainer();
