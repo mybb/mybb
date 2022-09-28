@@ -64,6 +64,14 @@ $l['editing_template'] = 'Editing Template: {1}';
 $l['edit_template'] = 'Edit Template';
 $l['edit_template_desc'] = "Here, you can edit the template's code.";
 
+$l['add_template'] = 'Add Template';
+$l['add_template_desc'] = 'Here you can create a new template.';
+
+$l['template_add_name'] = 'Template Path and Name';
+$l['template_add_name_desc'] = 'The template will be saved to this path and name, e.g., `showthread/my_showthread_template.twig`.';
+$l['template_add_namespace'] = 'Template Namespace';
+$l['template_add_namespace_desc'] = 'The template will be saved to this namespace. Leave blank for the default namespace of `frontend`. Other core namespaces include `acp` and `parser`. To save to a plugin namespace, prefix its codename with `ext.`. For example, to save to the namespace of the distributed example "Hello World" plugin, enter here `ext.hello`.';
+
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
 $l['quick_links'] = 'Quick Links';
@@ -132,6 +140,8 @@ $l['display_order'] = "Order";
 $l['edit_templates'] = 'Edit Templates';
 $l['edit_templates_desc'] = 'Here, you can easily manage the templates in use by this theme.';
 $l['templates_in_theme'] = 'Templates in {1}';
+$l['actions_ucf'] = 'Actions';
+$l['add_template_here'] = 'Add Template Here';
 
 $l['template_name'] = 'Template Path and Name';
 $l['template_name_desc'] = 'If you change this, the template will be saved to the new path and name. The original template will not be affected.';
@@ -140,6 +150,7 @@ $l['template_namespace_desc'] = 'If you change this, the template will be saved 
 
 $l['save_continue'] = 'Save and Continue Editing';
 $l['save_close'] = 'Save and Return to Listing';
+$l['save'] = 'Save';
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
 $l['edit_theme_desc'] = 'Here, you can edit the theme\'s properties.';
@@ -292,6 +303,11 @@ $l['error_theme_codename_exists'] = 'The supplied theme codename "{1}" already e
 $l['error_cp_failed'] = 'Failed to copy {1} to {2}.';
 $l['error_no_template_input'] = 'The path to the template to edit was not supplied.';
 $l['error_failed_write_template'] = 'Failed to write the template file to the filesystem.';
+$l['error_missing_template_path'] = 'The template path and name were missing.';
+$l['error_missing_template_body'] = 'The contents of the template were empty.';
+$l['error_template_already_exists'] = 'A template in that namespace with that path and name already exists. You can {1}edit{2} it instead.';
+$l['error_invalid_template'] = 'A template in this theme with the supplied namespace and name was not found.';
+$l['error_failed_to_delete_template_file'] = 'The template file could not be deleted from the filesystem (the call to unlink returned false).';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_upgraded_theme'] = "The theme '{1}' has been successfully upgraded from version '{2}' to version '{3}'.";
@@ -308,10 +324,13 @@ $l['success_theme_properties_updated'] = "The properties for the select theme ha
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
 $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets have been updated successfully.";
 $l['success_template_saved'] = "The selected template has successfully been saved.";
+$l['success_new_template_saved'] = 'The new template has successfully been saved.';
+$l['success_template_deleted'] = 'The selected template has successfully been deleted.';
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
 $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
+$l['confirm_template_deletion'] = 'Are you sure you want to delete / revert this template?';
 
 $l['theme_info_fetch_error'] = 'There was an error fetching the style info.';
 $l['theme_info_save_error'] = 'There was an error saving the style info.';

@@ -65,7 +65,7 @@ if (!empty($mybb->input['template']) && is_unsafe_path($mybb->input['template'])
 }
 
 // These actions rely on a correct codename parameter being supplied which maps to a theme
-if (in_array($action, ['xmlhttp_stylesheet', 'stylesheets', 'stylesheet_properties', 'edit_stylesheet', 'delete_stylesheet', 'add_stylesheet', 'set_default', 'force', 'export', 'templates', 'edit_template', 'edit'])) {
+if (in_array($action, ['xmlhttp_stylesheet', 'stylesheets', 'stylesheet_properties', 'edit_stylesheet', 'delete_stylesheet', 'add_stylesheet', 'set_default', 'force', 'export', 'templates', 'edit_template', 'add_template', 'delete_template', 'edit'])) {
 	// Does the theme not exist?
 	if(empty($themes[$codename])) {
 		flash_message($lang->error_invalid_theme, 'error');
@@ -171,7 +171,7 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 		'link' => "index.php?module=style-themes&amp;action=browse",
 		'description' => $lang->browse_themes_desc
 	);
-} else if (in_array($action, ['edit', 'stylesheets', 'add_stylesheet', 'templates', 'export', 'duplicate', 'edit_template'])) {
+} else if (in_array($action, ['edit', 'stylesheets', 'add_stylesheet', 'templates', 'export', 'duplicate', 'edit_template', 'add_template'])) {
 	if (!empty($themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'])) {
 		$name = $themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'];
 	} else	$name = '[Unknown]';
@@ -201,6 +201,12 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 			'title' => $lang->edit_templates,
 			'link' => "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}",
 			'description' => $lang->edit_templates_desc
+		);
+
+		$sub_tabs['add_template'] = array(
+			'title' => $lang->add_template,
+			'link' => "index.php?module=style-themes&amp;action=add_template&amp;codename={$codename}",
+			'description' => $lang->add_template_desc
 		);
 
 		$sub_tabs['export_theme'] = array(
@@ -2531,6 +2537,7 @@ if ($action == 'add_stylesheet') {
 ';
 	}
 
+	$page->add_breadcrumb_item($lang->stylesheets, 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
 	$page->add_breadcrumb_item($lang->add_stylesheet);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
@@ -2853,6 +2860,7 @@ if ($action == 'templates') {
 
 	$table = new Table;
 	$table->construct_header($lang->templates);
+	$table->construct_header($lang->actions_ucf, array('class' => 'align_center'));
 
 	$namespaces = [];
 	$plugins_a = $themelet_hierarchy[$mode]['plugins'];
@@ -2947,6 +2955,7 @@ if ($action == 'templates') {
 			$path_sl = $path ? "{$path}/" : $path;
 			if (is_array($entry)) {
 				$table->construct_cell($indent.htmlspecialchars_uni($entry['dirname']));
+				$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=add_template&amp;codename=".urlencode($codename)."&amp;namespace=".urlencode($namespace)."&amp;template_path=".urlencode("{$path_sl}{$entry['dirname']}")."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
 				$table->construct_row();
 				output_tpls_r($codename, $mode, $namespace, $entry['entries'], $table, "{$path_sl}{$entry['dirname']}", "{$indent}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			} else {
@@ -2955,11 +2964,14 @@ if ($action == 'templates') {
 				if ($is_inherited) {
 					$class = 'inherited_res';
 					$key = 'inherited_lc_sq';
+					$rev_del_html = '';
 				} else {
 					$class  = 'have_own_copy_res';
 					$key = 'have_own_copy_lc_sq';
+					$rev_del_html = ' | <a href="index.php?module=style-themes&amp;action=delete_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode("{$path_sl}{$entry}")."\">{$lang->delete_revert}</a>";
 				}
-				$table->construct_cell("{$indent}<a href=\"index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&template={$path_sl}{$entry}\">{$entry}</a> <span class=\"{$class}\">{$lang->$key}</span><br>\n");
+				$table->construct_cell("{$indent}<a href=\"index.php?module=style-themes&amp;action=edit_template&amp;codename=".urlencode($codename).'&amp;namespace='.urlencode($namespace)."&amp;template=".urlencode("{$path_sl}{$entry}")."\">{$entry}</a> <span class=\"{$class}\">{$lang->$key}</span><br>\n");
+				$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=edit_template&amp;codename=".urlencode($codename).'&amp;namespace='.urlencode($namespace)."&amp;template=".urlencode("{$path_sl}{$entry}")."\">{$lang->edit_template}</a>{$rev_del_html}", array('class' => 'align_center'));
 				$table->construct_row();
 			}
 		}
@@ -2974,6 +2986,7 @@ if ($action == 'templates') {
 			$lang_key = 'namespace_lc_sq';
 		}
 		$table->construct_cell("<strong>{$name}</strong> {$lang->$lang_key}<br>\n");
+		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=add_template&amp;codename=".urlencode($codename)."&amp;namespace=".urlencode($namespace)."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
 		$table->construct_row();
 		output_tpls_r($codename, $mode, $namespace, $tpls['entries'], $table);
 	}
@@ -3026,9 +3039,9 @@ if ($action == 'edit_template') {
 			flash_message($lang->success_template_saved, 'success');
 
 			if ($mybb->get_input('continue')) {
-				admin_redirect("index.php?module=style-themes&amp;action=edit_template&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace_new}&amp;template=".htmlspecialchars_uni($template_path_new));
+				admin_redirect('index.php?module=style-themes&amp;action=edit_template&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace_new).'&amp;template_path='.urlencode($template_path_new));
 			} else {
-				admin_redirect("index.php?module=style-themes&amp;action=edit_template&amp;action=templates&amp;codename={$codename}");
+				admin_redirect('index.php?module=style-themes&amp;action=edit_template&amp;action=templates&amp;codename='.urlencode($codename));
 			}
 		}
 	} else {
@@ -3041,6 +3054,179 @@ if ($action == 'edit_template') {
 			$template_body = resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_type = */RTR_RETURN_RESOURCE);
 		}
 	}
+
+	set_headers_for_codepress();
+
+	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
+
+	$page->add_breadcrumb_item("@$namespace/".htmlspecialchars_uni($template_path), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}");
+
+	$page->output_header($lang->sprintf($lang->editing_template, "@$namespace/".htmlspecialchars_uni($template_path)));
+
+	$sub_tabs['edit_template'] = array(
+		'title' => $lang->edit_template,
+		'link' => "index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template_path=".htmlspecialchars_uni($template_path),
+		'description' => $lang->edit_template_desc
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'edit_template');
+
+	if ($errors) {
+		$page->output_inline_error($errors);
+	}
+
+	$form = new Form("index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template_path={$template_path}", 'post', 'edit_template');
+	$form_container = new FormContainer($lang->sprintf($lang->editing_template, "@$namespace/$template_path"), 'tfixed');
+	$form_container->output_row($lang->template_namespace, $lang->template_namespace_desc, $form->generate_text_box('namespace_new', $namespace_new, array('id' => 'namespace_new')), 'namespace_new');
+	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('template_new', $template_path_new, array('id' => 'template_new')), 'template_new');
+	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
+	$buttons[] = $form->generate_submit_button($lang->save_close, array('name' => 'close'));
+
+	$form->output_submit_wrapper($buttons);
+
+	$form->end();
+
+	output_codepress_js();
+
+	$page->output_footer();
+}
+
+if ($action == 'add_template') {
+	$plugins->run_hooks('admin_style_templates_add_template');
+
+	$errors = [];
+
+	$template_body = $mybb->get_input('template_body');
+	$namespace     = $mybb->get_input('namespace');
+	if (!$namespace) {
+		$namespace = 'frontend';
+	}
+	$template_path = $mybb->get_input('template_path');
+
+	if ($mybb->request_method == 'post') {
+		if (!$template_path) {
+			$errors[] = $lang->error_missing_template_path;
+		}
+		if (!$template_body) {
+			$errors[] = $lang->error_missing_template_body;
+		}
+
+		if (!$errors) {
+			$path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace}/templates/{$template_path}";
+
+			if (file_exists($path)) {
+				$errors[] = $lang->sprintf($lang->error_template_already_exists, '<a href="index.php?module=style-themes&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path).'">', '</a>');
+			} else {
+				$plugins->run_hooks('admin_style_themes_add_template_commit');
+
+				mkdir(dirname($path), 0755, true);
+				if (!file_put_contents($path, $template_body)) {
+					$errors[] = $lang->error_failed_write_template;
+				} else {
+					log_admin_action($codename, $namespace, $template_path);
+
+					flash_message($lang->success_new_template_saved, 'success');
+
+					admin_redirect('index.php?module=style-themes&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path));
+				}
+			}
+		}
+	}
+
+	set_headers_for_codepress();
+
+	$page->add_breadcrumb_item($lang->templates, 'index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
+	$page->add_breadcrumb_item($lang->add_template);
+
+	$page->output_header("{$lang->themes} - {$lang->add_template}");
+
+	$page->output_nav_tabs($sub_tabs, 'add_template');
+
+	if ($errors) {
+		$page->output_inline_error($errors);
+	}
+
+	$form = new Form('index.php?module=style-themes&amp;action=add_template&amp;codename='.urlencode($codename), 'post', 'add_template');
+	$form_container = new FormContainer($lang->add_template, 'tfixed');
+	$form_container->output_row($lang->template_add_namespace, $lang->template_add_namespace_desc, $form->generate_text_box('namespace', $namespace, array('id' => 'namespace')), 'namespace');
+	$form_container->output_row($lang->template_add_name, $lang->template_add_name_desc, $form->generate_text_box('template_path', $template_path, array('id' => 'template_path')), 'template_path');
+	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button($lang->save, array('name' => 'save'));
+
+	$form->output_submit_wrapper($buttons);
+
+	$form->end();
+
+	output_codepress_js();
+
+	$page->output_footer();
+}
+
+if ($action == 'delete_template') {
+	$namespace     = $mybb->get_input('namespace');
+	$template_path = $mybb->get_input('template_path');
+
+	$path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace}/templates/{$template_path}";
+
+	// Does the template not exist?
+	if (!file_exists($path)) {
+		flash_message($lang->error_invalid_template, 'error');
+		admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
+	}
+
+	// User clicked no
+	if ($mybb->get_input('no')) {
+		admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
+	}
+
+	$plugins->run_hooks('admin_style_themes_delete_template');
+
+	if ($mybb->request_method == 'post') {
+		// Attempt to delete the template
+		if (!unlink($path)) {
+			flash_message($lang->error_failed_to_delete_template_file." {$path}", 'error');
+			admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
+		} else {
+			$plugins->run_hooks('admin_style_themes_delete_template_commit');
+
+			// Log admin action
+			log_admin_action($codename, $namespace, $template_path);
+
+			flash_message($lang->success_template_deleted, 'success');
+			admin_redirect('index.php?module=style-themes&action=templates&amp;codename='.urlencode($codename));
+		}
+	} else {
+		$page->output_confirm_action('index.php?module=style-themes&amp;action=delete_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path), $lang->confirm_template_deletion);
+	}
+}
+
+if (!$action) {
+	$page->output_header($lang->themes);
+
+	$plugins->run_hooks("admin_style_themes_start");
+
+	$page->output_nav_tabs($sub_tabs, 'themes');
+
+	$table = new Table;
+	$table->construct_header($lang->theme);
+	$table->construct_header($lang->num_users, array("class" => "align_center", "width" => 100));
+	$table->construct_header($lang->quick_links, array('class' => 'align_center'));
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
+
+	build_theme_list();
+
+	$table->output($lang->themes);
+
+	$page->output_footer();
+}
+
+function set_headers_for_codepress() {
+	global $admin_options, $page;
 
 	if ($admin_options['codepress'] != 0) {
 		$page->extra_header .= '
@@ -3062,38 +3248,10 @@ if ($action == 'edit_template') {
 <link href="./jscripts/codemirror/addon/fold/foldgutter.css?ver=1813" rel="stylesheet">
 ';
 	}
+}
 
-	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
-
-	$page->add_breadcrumb_item("@$namespace/".htmlspecialchars_uni($template_path), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}");
-
-	$page->output_header($lang->sprintf($lang->editing_template, "@$namespace/".htmlspecialchars_uni($template_path)));
-
-	$sub_tabs['edit_template'] = array(
-		'title' => $lang->edit_template,
-		'link' => "index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template=".htmlspecialchars_uni($template_path),
-		'description' => $lang->edit_template_desc
-	);
-
-	$page->output_nav_tabs($sub_tabs, 'edit_template');
-
-	if ($errors) {
-		$page->output_inline_error($errors);
-	}
-
-	$form = new Form("index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}", 'post', 'edit_template');
-	$form_container = new FormContainer($lang->sprintf($lang->editing_template, "@$namespace/$template_path"), 'tfixed');
-	$form_container->output_row($lang->template_namespace, $lang->template_namespace_desc, $form->generate_text_box('namespace_new', $namespace_new, array('id' => 'namespace_new')), 'namespace_new');
-	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('template_new', $template_path_new, array('id' => 'template_new')), 'template_new');
-	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
-	$form_container->end();
-
-	$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
-	$buttons[] = $form->generate_submit_button($lang->save_close, array('name' => 'close'));
-
-	$form->output_submit_wrapper($buttons);
-
-	$form->end();
+function output_codepress_js() {
+	global $admin_options;
 
 	if ($admin_options['codepress'] != 0) {
 		echo '<script type="text/javascript">
@@ -3110,28 +3268,6 @@ if ($action == 'edit_template') {
 			});
 		</script>';
 	}
-
-	$page->output_footer();
-}
-
-if (!$action) {
-	$page->output_header($lang->themes);
-
-	$plugins->run_hooks("admin_style_themes_start");
-
-	$page->output_nav_tabs($sub_tabs, 'themes');
-
-	$table = new Table;
-	$table->construct_header($lang->theme);
-	$table->construct_header($lang->num_users, array("class" => "align_center", "width" => 100));
-	$table->construct_header($lang->quick_links, array('class' => 'align_center'));
-	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
-
-	build_theme_list();
-
-	$table->output($lang->themes);
-
-	$page->output_footer();
 }
 
 /**
