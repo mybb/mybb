@@ -176,48 +176,48 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 		$name = $themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'];
 	} else	$name = '[Unknown]';
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($name), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($name), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 
 	if ($action != 'edit_template') {
 		$sub_tabs['edit'] = array(
 			'title' => $lang->edit_theme_properties,
-			'link' => "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename),
 			'description' => $lang->edit_theme_desc
 		);
 
 		$sub_tabs['edit_stylesheets'] = array(
 			'title' => $lang->edit_stylesheets,
-			'link' => "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename),
 			'description' => $lang->edit_stylesheets_desc
 		);
 
 		$sub_tabs['add_stylesheet'] = array(
 			'title' => $lang->add_stylesheet,
-			'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=add_stylesheet&amp;codename='.urlencode($codename),
 			'description' => $lang->add_stylesheet_desc
 		);
 
 		$sub_tabs['edit_templates'] = array(
 			'title' => $lang->edit_templates,
-			'link' => "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename),
 			'description' => $lang->edit_templates_desc
 		);
 
 		$sub_tabs['add_template'] = array(
 			'title' => $lang->add_template,
-			'link' => "index.php?module=style-themes&amp;action=add_template&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=add_template&amp;codename='.urlencode($codename),
 			'description' => $lang->add_template_desc
 		);
 
 		$sub_tabs['export_theme'] = array(
 			'title' => $lang->export_theme,
-			'link' => "index.php?module=style-themes&amp;action=export&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=export&amp;codename='.urlencode($codename),
 			'description' => $lang->export_theme_desc
 		);
 
 		$sub_tabs['duplicate_theme'] = array(
 			'title' => $lang->duplicate_theme,
-			'link' => "index.php?module=style-themes&amp;action=duplicate&amp;codename={$codename}",
+			'link' => 'index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename),
 			'description' => $lang->duplicate_theme_desc
 		);
 	}
@@ -596,7 +596,7 @@ if ($action == 'import') {
 						   )
 						 : $lang->sprintf($lang->success_imported_theme, $themeinfo['name']);
 					flash_message($msg, 'success');
-					admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename=".$codename);
+					admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 				}
 			}
 
@@ -759,7 +759,7 @@ if ($action == 'export') {
 		exit;
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 
 	$page->add_breadcrumb_item($lang->export_theme, "index.php?module=style-themes&amp;action=export");
 
@@ -1012,12 +1012,12 @@ if ($action == 'duplicate') {
 				log_admin_action($mybb->input['new_codename'], $codename);
 
 				flash_message($lang->success_duplicated_theme, 'success');
-				admin_redirect("index.php?module=style-themes&action=edit&amp;codename=".$mybb->input['new_codename']);
+				admin_redirect('index.php?module=style-themes&action=edit&amp;codename='.urlencode($mybb->input['new_codename']));
 			}
 		}
 	}
 
-	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;codename={$mybb->get_input('codename')}");
+	$page->add_breadcrumb_item($lang->duplicate_theme, 'index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($mybb->get_input('codename')));
 
 	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
 
@@ -1076,7 +1076,7 @@ if ($action == 'duplicate') {
 		$new_codename_val = $mybb->get_input('new_codename');
 	}
 
-	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;codename={$codename}", "post");
+	$form = new Form('index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename), 'post');
 
 	$form_container = new FormContainer($lang->duplicate_theme);
 	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $name_val, array('id' => 'name')), 'name');
@@ -1127,7 +1127,7 @@ if ($action == 'add') {
 	$table->construct_header($lang->based_on_theme);
 
 	foreach ($theme_opts as $codename => $name) {
-		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=duplicate&amp;codename={$codename}\">".htmlspecialchars_uni($name).'</a><br /><br />');
+		$table->construct_cell('<a href="index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename).'>'.htmlspecialchars_uni($name).'</a><br /><br />');
 		$table->construct_row();
 	}
 
@@ -1178,7 +1178,7 @@ if ($action == 'delete') {
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-themes&amp;action=delete&amp;codename={$theme['codename']}", $lang->confirm_theme_deletion);
+		$page->output_confirm_action('index.php?module=style-themes&amp;action=delete&amp;codename='.urlencode($theme['codename']), $lang->confirm_theme_deletion);
 	}
 }
 
@@ -1292,14 +1292,14 @@ if ($action == 'edit') {
 				log_admin_action($theme['codename'], $theme['name']);
 
 				flash_message($lang->success_theme_properties_updated, 'success');
-				admin_redirect("index.php?module=style-themes&action=edit&amp;codename={$theme['codename']}");
+				admin_redirect('index.php?module=style-themes&action=edit&amp;codename='.urlencode($theme['codename']));
 			}
 		} else {
 			$theme = $new_properties;
 		}
 	}
 
-	$page->add_breadcrumb_item($lang->properties, "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->properties, 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
 
@@ -1420,18 +1420,18 @@ if ($action == 'stylesheets') {
 			$resources['stylesheets'] = $new_ss_list;
 			if (!write_json_file($resource_file, $resources)) {
 				flash_message($lang->error_stylesheet_order_update, 'error');
-				admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
+				admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
 			} else {
 				flash_message($lang->success_stylesheet_order_updated, 'success');
-				admin_redirect("index.php?module=style-themes&action=edit&amp;codename={$theme['codename']}");
+				admin_redirect('index.php?module=style-themes&action=edit&amp;codename='.urlencode($theme['codename']));
 			}
 		} else {
 			flash_message($err_msg, 'error');
-			admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
+			admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
 		}
 	}
 
-	$page->add_breadcrumb_item($lang->stylesheets, "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->stylesheets, 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
 
@@ -1586,14 +1586,15 @@ if ($action == 'stylesheets') {
 
 		$popup = new PopupMenu("style_popup_{$order_num}", $lang->options);
 
-		$popup->add_item($lang->edit_style, "index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}");
-		$popup->add_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}");
+		$popup->add_item($lang->edit_style, 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']));
+		$popup->add_item($lang->properties, 'index.php?module=style-themes&amp;action=stylesheet_properties&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']));
 
 		if (empty($inheritance_chain)) {
-			$popup->add_item($lang->delete_revert, "index.php?module=style-themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+			$popup->add_item($lang->delete_revert, 'index.php?module=style-themes&amp;action=delete_stylesheet&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']).'&amp;my_post_key='.urlencode($mybb->post_code), "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 
-		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($ss_name)."&amp;codename={$theme['codename']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
+		$table->construct_cell('<strong><a href="index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=
+		'.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']).'">'.htmlspecialchars_uni($filename)."</a></strong>{$inherited}<br />{$attached_to}");
 		$disporder_hidden = $form->generate_hidden_field('disporder_specifiers['.$i.']', $ss_name);
 		$table->construct_cell($disporder_hidden.' '.$form->generate_numeric_field('disporder['.$i.']', $order_num, array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -1664,7 +1665,7 @@ if ($action == 'stylesheet_properties') {
 			$resources = read_json_file($resource_file, $err_msg, false);
 			if ($err_msg) {
 				flash_message($err_msg, 'error');
-				admin_redirect("index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename={$codename}&file={$mybb->input['file']}");
+				admin_redirect('index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename='.urlencode($codename).'&file='.urlencode($mybb->input['file']));
 
 			}
 
@@ -1678,7 +1679,7 @@ if ($action == 'stylesheet_properties') {
 
 			if (!write_json_file($resource_file, $resources)) {
 				flash_message($lang->error_failed_to_save_stylesheet_props, 'error');
-				admin_redirect("index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename={$codename}&amp;file={$mybb->input['file']}");
+				admin_redirect('index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']));
 
 			}
 
@@ -1688,14 +1689,14 @@ if ($action == 'stylesheet_properties') {
 			log_admin_action($mybb->input['file'], $theme['codename'], $theme['name']);
 
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
-			admin_redirect("index.php?module=style-themes&action=stylesheet_properties&amp;codename={$codename}&amp;file={$mybb->input['file']}");
+			admin_redirect('index.php?module=style-themes&action=stylesheet_properties&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']));
 		}
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
-	$page->add_breadcrumb_item($lang->stylesheets, "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}");
-	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file={$mybb->input['file']}");
-	$page->add_breadcrumb_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename={$codename}&amp;file={$mybb->input['file']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
+	$page->add_breadcrumb_item($lang->stylesheets, 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
+	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']));
+	$page->add_breadcrumb_item($lang->properties, 'index.php?module=style-themes&amp;action=stylesheet_properties&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']));
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheet_properties}");
 
@@ -1930,15 +1931,15 @@ if ($action == 'edit_stylesheet') {
 	// Pull out the contents of the stylesheet from the appropriate file
 	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
-	$page->add_breadcrumb_item($lang->stylesheets, "index.php?module=style-themes&amp;action=stylesheets&amp;codename={$codename}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
+	$page->add_breadcrumb_item($lang->stylesheets, 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
 }
 
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
 if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->input['mode'] == 'simple')) {
 	if ($is_scss) {
 		// Editing of SCSS in "simple" mode is not (yet?) supported: redirect to the advanced editor.
-		admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file={$mybb->input['file']}&amp;mode=advanced");
+		admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced');
 	}
 
 	if($mybb->request_method == "post")
@@ -1997,16 +1998,16 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 		{
 			if ($err_msg) {
 				flash_message($err_msg, 'error');
-				admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file={$mybb->input['file']}&mode=simple");
+				admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&mode=simple');
 			} else {
 				flash_message($lang->success_stylesheet_updated, 'success');
 				if($mybb->input['save_close'])
 				{
-					admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$codename}");
+					admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file={$mybb->input['file']}");
+					admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']));
 				}
 			}
 		}
@@ -2024,7 +2025,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 	if(!$selector_list)
 	{
 		flash_message($lang->error_cannot_parse, 'error');
-		admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
+		admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced');
 		exit;
 	}
 
@@ -2033,7 +2034,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 	var my_post_key = '".$mybb->post_code."';
 	</script>";
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=simple');
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
@@ -2054,13 +2055,13 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple",
+		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file'])."&amp;mode=simple",
 		'description' => $lang->edit_stylesheet_simple_mode_desc
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
+		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced',
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
@@ -2142,7 +2143,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 
 $(function() {
 //<![CDATA[
-	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$codename.'");
+	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.addslashes($mybb->input['file']).'", $("#selector_form"), "'.addslashes($codename).'");
 	lang.saving = "'.$lang->saving.'";
 });
 //]]>
@@ -2195,7 +2196,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 
 		if ($err_msg) {
 			flash_message($err_msg, 'error');
-			admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file={$mybb->input['file']}&amp;mode=advanced");
+			admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced');
 		}
 
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced_commit");
@@ -2207,11 +2208,11 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 
 		if(!$mybb->get_input('save_close'))
 		{
-			admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;codename={$codename}&amp;mode=advanced");
+			admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;file='.urlencode($mybb->input['file']).'&amp;codename='.urlencode($codename).'&amp;mode=advanced');
 		}
 		else
 		{
-			admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
+			admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
 		}
 	}
 
@@ -2229,7 +2230,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($mybb->input['file']), 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced');
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
@@ -2250,12 +2251,12 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple"
+		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=simple'
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
+		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced',
 		'description' => $lang->sprintf($lang->edit_stylesheet_advanced_mode_desc, $is_scss ? 'SCSS' : 'CSS')
 	);
 
@@ -2372,11 +2373,11 @@ if ($action == 'delete_stylesheet') {
 		log_admin_action($stylesheet['name'], $theme['codename'], $theme['name']);
 
 		flash_message($lang->success_stylesheet_deleted, 'success');
-		admin_redirect("index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
+		admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}", $lang->confirm_stylesheet_deletion);
+		$page->output_confirm_action('index.php?module=style-themes&amp;action=force&amp;codename='.urlencode($theme['codename']), $lang->confirm_stylesheet_deletion);
 	}
 }
 
@@ -2517,7 +2518,7 @@ if ($action == 'add_stylesheet') {
 					log_admin_action($mybb->input['import'], $theme['codename'], $theme['name']);
 
 					flash_message($lang->success_stylesheet_added, 'success');
-					admin_redirect("index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename={$codename}&amp;file=".urlencode($new_spec));
+					admin_redirect('index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($new_spec));
 				}
 			}
 		}
@@ -2845,14 +2846,14 @@ if ($action == 'force') {
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}", $lang->confirm_theme_forced);
+		$page->output_confirm_action('index.php?module=style-themes&amp;action=force&amp;codename='.urlencode($theme['codename']), $lang->confirm_theme_forced);
 	}
 }
 
 if ($action == 'templates') {
 	$plugins->run_hooks('admin_style_templates');
 
-	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->templates, 'index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 
 	$page->output_header($lang->theme_templates);
 
@@ -2955,7 +2956,7 @@ if ($action == 'templates') {
 			$path_sl = $path ? "{$path}/" : $path;
 			if (is_array($entry)) {
 				$table->construct_cell($indent.htmlspecialchars_uni($entry['dirname']));
-				$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=add_template&amp;codename=".urlencode($codename)."&amp;namespace=".urlencode($namespace)."&amp;template_path=".urlencode("{$path_sl}{$entry['dirname']}")."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
+				$table->construct_cell('<a href="index.php?module=style-themes&amp;action=add_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode("{$path_sl}{$entry['dirname']}")."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
 				$table->construct_row();
 				output_tpls_r($codename, $mode, $namespace, $entry['entries'], $table, "{$path_sl}{$entry['dirname']}", "{$indent}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			} else {
@@ -3002,7 +3003,7 @@ if ($action == 'edit_template') {
 	$template_path = $mybb->get_input('template');
 	if (!$template_path) {
 		flash_message($lang->error_no_template_input, 'error');
-		admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.$codename);
+		admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 	}
 	$template_path_new = $mybb->get_input('template_new');
 	if (!$template_path_new) {
@@ -3057,15 +3058,15 @@ if ($action == 'edit_template') {
 
 	set_headers_for_codepress();
 
-	$page->add_breadcrumb_item($lang->templates, "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}");
+	$page->add_breadcrumb_item($lang->templates, 'index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 
-	$page->add_breadcrumb_item("@$namespace/".htmlspecialchars_uni($template_path), "index.php?module=style-themes&amp;action=templates&amp;codename={$codename}&amp;namespace={$namespace}&amp;template={$template_path}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni("@{$namespace}/{$template_path}"), 'index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template='.urlencode($template_path));
 
 	$page->output_header($lang->sprintf($lang->editing_template, "@$namespace/".htmlspecialchars_uni($template_path)));
 
 	$sub_tabs['edit_template'] = array(
 		'title' => $lang->edit_template,
-		'link' => "index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template_path=".htmlspecialchars_uni($template_path),
+		'link' => 'index.php?module=style-themes&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path),
 		'description' => $lang->edit_template_desc
 	);
 
@@ -3075,7 +3076,7 @@ if ($action == 'edit_template') {
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?module=style-themes&amp;action=edit_template&amp;codename={$codename}&amp;namespace={$namespace}&amp;template_path={$template_path}", 'post', 'edit_template');
+	$form = new Form('index.php?module=style-themes&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path), 'post', 'edit_template');
 	$form_container = new FormContainer($lang->sprintf($lang->editing_template, "@$namespace/$template_path"), 'tfixed');
 	$form_container->output_row($lang->template_namespace, $lang->template_namespace_desc, $form->generate_text_box('namespace_new', $namespace_new, array('id' => 'namespace_new')), 'namespace_new');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('template_new', $template_path_new, array('id' => 'template_new')), 'template_new');
