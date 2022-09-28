@@ -1127,7 +1127,7 @@ if ($action == 'add') {
 	$table->construct_header($lang->based_on_theme);
 
 	foreach ($theme_opts as $codename => $name) {
-		$table->construct_cell('<a href="index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename).'>'.htmlspecialchars_uni($name).'</a><br /><br />');
+		$table->construct_cell('<a href="index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename).'">'.htmlspecialchars_uni($name).'</a><br /><br />');
 		$table->construct_row();
 	}
 
