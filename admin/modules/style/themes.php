@@ -570,6 +570,7 @@ if ($action == 'import') {
 					if (!rename($staged_path, $installed_path)) {
 						$errors[] = $lang->error_theme_rename_failed;
 					} else if ($infofile2) {
+						$cache->update_themelet_dirs();
 						// TODO: generate and store information about new
 						// conflicts with board themes that descend from this one.
 					}
@@ -998,6 +999,8 @@ if ($action == 'duplicate') {
 
 			if (!$errors) {
 				$plugins->run_hooks("admin_style_themes_duplicate_commit");
+
+				$cache->update_themelet_dirs();
 
 				// Log admin action
 				log_admin_action($mybb->input['new_codename'], $codename);
