@@ -1762,7 +1762,7 @@ if ($action == 'stylesheet_properties') {
 
 			if ($plugin_code) {
 				// We are overriding a plugin's stylesheet.
-				$ss_key = "ext.{$plugin_code}.{$ss_filename}";
+				$ss_key = "@ext.{$plugin_code}/{$ss_filename}";
 			} else {
 				$ss_key = $ss_filename;
 			}
