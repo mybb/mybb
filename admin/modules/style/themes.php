@@ -1114,7 +1114,7 @@ if ($action == 'duplicate') {
 if ($action == 'add') {
 	$plugins->run_hooks("admin_style_themes_add");
 
-	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$usergroup_override = */false, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'');
+	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$usergroup_override = */true, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'');
 
 	$page->add_breadcrumb_item($lang->create_new_theme, "index.php?module=style-themes&amp;action=add");
 
@@ -1127,7 +1127,19 @@ if ($action == 'add') {
 	$table->construct_header($lang->based_on_theme);
 
 	foreach ($theme_opts as $codename => $name) {
-		$table->construct_cell('<a href="index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename).'">'.htmlspecialchars_uni($name).'</a><br /><br />');
+		// Count the initial indenting dashes so that we can replace them with non-breaking spaces,
+		// because they were designed for the dropdown and look ugly in this context.
+		$i = 0;
+		while ($i < strlen($name) && $name[$i] == '-') {
+			$i++;
+		}
+		if ($i > 0) {
+			$indent = str_repeat('&nbsp;', $i * 3);
+			$name = substr($name, $i);
+		} else {
+			$indent = '';
+		}
+		$table->construct_cell('<a href="index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename).'">'.$indent.htmlspecialchars_uni($name).'</a><br /><br />');
 		$table->construct_row();
 	}
 
