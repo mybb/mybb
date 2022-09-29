@@ -948,13 +948,67 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                );
 }
 
-function is_theme_code_valid($theme_code)
+function is_mutable_theme($theme_code, $mode)
 {
-    $prefix = 'board.';
-    $len = strlen($prefix);
-    if (substr($theme_code, 0, $len) == $prefix) {
-        $theme_code = substr($theme_code, $len);
+    $a = explode('.', $theme_code, 2);
+    return $mode == 'devdist' || !(count($a) == 2 && $a[0] == 'core' || count($a) == 1);
+}
+
+function is_valid_theme_code($theme_code)
+{
+    foreach (['board.', 'core.'] as $prefix) {
+        $len = strlen($prefix);
+        if (substr($theme_code, 0, $len) == $prefix) {
+            $theme_code = substr($theme_code, $len);
+            break;
+        }
     }
 
     return preg_replace('([a-z_])', '', $theme_code) == '';
+}
+
+function is_valid_namespace($namespace)
+{
+    $a = explode('.', $namespace);
+    if (count($a) == 2 && $a[0] != 'ext' || count($a) > 2) {
+        return false;
+    }
+    $ns_dots_rem = implode('', $a);
+    return preg_replace('([a-z_])', '', $ns_dots_rem) == '';
+}
+
+function is_valid_resource_path($path)
+{
+    $a = explode('/', trim($path));
+
+    $first = $a[0];
+    $last = array_pop($a);
+
+    // A resource path must not start or end with a directory separator
+    if ($first == '' || $last == '') {
+        return false;
+    // Nor must its final component have more than one dot in it
+    } else if (substr_count($last, '.') > 1) {
+        return false;
+    } else {
+        // Nor must its final component begin or end with a dot
+        $x = explode('.', $last);
+        if (count($x) == 2 && ($x[0] == '' || $x[1] == '')) {
+            return false;
+        }
+        // Now, put the last path component back together without any dot and return it to the array
+        $a[] = implode('', $x);
+        foreach ($a as $b) {
+            // A resource path should not contain any doubled directory separators
+            if ($b == '') {
+                return false;
+            }
+            // Nor should it otherwise contain any characters other than lowercase a-z and underscore
+            if (preg_replace('([a-z_])', '', $b) != '') {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }

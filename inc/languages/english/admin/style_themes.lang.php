@@ -259,6 +259,8 @@ $l['error_uploadfailed_lost'] = "The file could not be found on the server.";
 $l['error_uploadfailed_nocontents'] = "MyBB could not find the theme with the file you uploaded. Please check the file is the correct and is not corrupt.";
 $l['error_invalid_version'] = "This theme has been written for another version of MyBB. Please check the \"Ignore Version Compatibility\" to ignore this error.";
 $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet.";
+$l['error_invalid_stylesheet_name'] = 'The supplied stylesheet name "{1}" contains invalid characters (aside from directory separators - forward slashes - and the dot before the "css" extension, only lowercase `a` through `z` and underscore are valid. It must neither begin nor end with a directory separator, nor end with a dot. It must also not contain any doubled directory separators.).';
+$l['error_invalid_template_name'] = 'The supplied template name "{1}" contains invalid characters (aside from directory separators - forward slashes - and the dot before the "twig" extension, only lowercase `a` through `z` and underscore are valid. It must neither begin nor end with a directory separator, nor end with a dot. It must also not contain any doubled directory separators.).';
 $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the correct file extension, for example, {1}<em>.css</em>";
 $l['error_invalid_parent_theme'] = "The selected parent theme does not exist. Please select a valid parent theme.";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
@@ -274,10 +276,16 @@ $l['error_stylesheet_order_update'] = 'Failed to write the stylesheet order to t
 $l['error_failed_to_save_theme'] = 'Failed to update the theme\'s theme.json file.';
 $l['error_failed_to_save_stylesheet_props'] = 'Failed to save the stylesheet properties to the theme\'s resources.json file.';
 $l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
-$l['error_codename_with_directory_separator'] = 'The supplied theme codename contains an illegal double-dot followed by a directory separator character (/ or \\).';
-$l['error_css_filename_with_directory_separator'] = 'The supplied stylesheet filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
-$l['error_staging_filename_with_directory_separator'] = 'The supplied staging filename contains an illegal double-dot followed by a directory separator character (/ or \\).';
-$l['error_template_path_with_directory_separator'] = 'The supplied template path contains an illegal double-dot followed by a directory separator character (/ or \\).';
+
+$l['error_path_with_double_dot'] = 'The supplied {1} contains an illegal double-dot followed by a directory separator character (/ or \\).';
+// Each of these can be supplied to replace {1} in the string above.
+$l['theme_codename'] = 'theme codename';
+$l['stylesheet_filename'] = 'stylesheet filename';
+$l['staging_filename'] = 'staging filename';
+$l['template_path'] = 'template path';
+
+$l['error_template_path_with_directory_separator'] = 'The supplied  contains an illegal double-dot followed by a directory separator character (/ or \\).';
+$l['error_logo_with_directory_separator'] = 'The supplied logo path contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically unzip theme archives. If you are unable to install the PHP package providing this class, then instead simply unzip your theme archive manually into the `staging/themes/` directory and refresh this page. It should then show up as a "Staged" theme, allowing you to import it.';
 $l['error_theme_unzip_open_failed'] = 'Unable to open the uploaded zip file. ZipArchive::open() returned code: {1}.';
 $l['error_theme_unzip_failed'] = 'Failed to unzip the theme archive.';
@@ -298,7 +306,11 @@ $l['error_failed_to_mkdir'] = 'Failed to create the directory "{1}".';
 $l['error_failed_write_stylesheet'] = 'Failed to write the stylesheet to the file "{1}".';
 $l['error_stylesheet_not_found'] = 'Stylesheet "{1}" not found.';
 $l['error_theme_has_no_contents'] = 'The theme to be duplicated has no contents (neither a `current` nor a `devdist` subdirectory).';
-$l['error_invalid_theme_codename'] = 'The supplied theme codename "{1}" is empty or contains invalid characters (only lowercase `a` through `z` and underscore are valid.';
+$l['error_missing_theme_codename'] = 'No theme codename was supplied.';
+$l['error_invalid_theme_codename'] = 'The supplied theme codename "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
+$l['error_invalid_namespace'] = 'The supplied namespace "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed with `ext.`).';
+$l['error_invalid_theme_archive_tld'] = 'The top-level theme directory in the supplied archive "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
+$l['error_invalid_staged_theme_tld'] = 'The top-level theme directory "{1}" in the referenced staged theme contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
 $l['error_theme_codename_exists'] = 'The supplied theme codename "{1}" already exists.';
 $l['error_cp_failed'] = 'Failed to copy {1} to {2}.';
 $l['error_no_template_input'] = 'The path to the template to edit was not supplied.';
@@ -308,6 +320,12 @@ $l['error_missing_template_body'] = 'The contents of the template were empty.';
 $l['error_template_already_exists'] = 'A template in that namespace with that path and name already exists. You can {1}edit{2} it instead.';
 $l['error_invalid_template'] = 'A template in this theme with the supplied namespace and name was not found.';
 $l['error_failed_to_delete_template_file'] = 'The template file could not be deleted from the filesystem (the call to unlink returned false).';
+$l['error_undeletable_core_theme'] = 'This theme cannot be deleted because it is a core theme.';
+$l['error_immutable_theme'] = 'Changes cannot be made to this theme because it is either a core theme or an original theme and themelet development mode is not enabled (outside of themelet development mode, only board themes can be changed).';
+$l['error_cannot_set_to_default'] = 'This theme may not be set to default because it is not a board theme.';
+$l['error_cannot_force_theme'] = 'This theme may not be forced on users because it is not a board theme.';
+
+$l['warning_immutable_theme'] = 'This theme is immutable, because it is not a board theme and themelet development mode is not enabled. Any changes that you make on this page will not be saved: it is read-only. To create a mutable (board) theme from this one, use the "Duplicate Theme" tool.';
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_upgraded_theme'] = "The theme '{1}' has been successfully upgraded from version '{2}' to version '{3}'.";

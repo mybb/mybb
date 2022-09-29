@@ -1349,22 +1349,25 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
 			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}\">".htmlspecialchars_uni($theme['name'])."</a>";
 
-			// We must have at least the master and 1 other active theme
-			if($theme_cache['num_themes'] > 2)
+			if ($theme_cache['num_themes'] > 2 && substr($theme['codename'], 0, 5) != 'core.')
 			{
 				$popup->add_item($lang->delete_theme, "index.php?module=style-themes&amp;action=delete&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
 			}
 
 			if($theme['codename'] != $def_theme['codename'])
 			{
-				$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}");
-				$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
+				if (is_mutable_theme($theme['codename'], $mode)) {
+					$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}");
+					$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
+				}
 			}
 			else
 			{
 				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
-			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			if(is_mutable_theme($theme['codename'], $mode)) {
+				$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			}
 			$set_default = "<div class=\"float_right\">{$set_default}</div>";
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;codename={$theme['codename']}");
