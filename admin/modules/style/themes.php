@@ -1055,9 +1055,11 @@ if ($action == 'duplicate') {
 	// Suggest a codename for the duplicate theme if none has yet been provided
 	if (empty($mybb->input['new_codename'])) {
 		$new_codename_val_base = $codename;
-		if (strpos($new_codename_val_base, 'board.') !== 0) {
-			$new_codename_val_base = 'board.'.$new_codename_val_base;
+		$a = explode('.', $new_codename_val_base, 2);
+		if (count($a) == 2) {
+			$new_codename_val_base = $a[1];
 		}
+		$new_codename_val_base = 'board.'.$new_codename_val_base;
 		$new_codename_val = $new_codename_val_base;
 		for ($i = 1; $i <= 26; $i++) {
 			$found = false;
