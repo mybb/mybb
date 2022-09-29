@@ -23,7 +23,6 @@ function style_meta()
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style-themes");
-	$sub_menu['20'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates");
 
 	$sub_menu = $plugins->run_hooks("admin_style_menu", $sub_menu);
 
@@ -43,7 +42,6 @@ function style_action_handler($action)
 	$page->active_module = "style";
 
 	$actions = array(
-		'templates' => array('active' => 'templates', 'file' => 'templates.php'),
 		'themes' => array('active' => 'themes', 'file' => 'themes.php')
 	);
 
@@ -70,7 +68,6 @@ function style_admin_permissions()
 
 	$admin_permissions = array(
 		"themes" => $lang->can_manage_themes,
-		"templates" => $lang->can_manage_templates,
 	);
 
 	$admin_permissions = $plugins->run_hooks("admin_style_permissions", $admin_permissions);
