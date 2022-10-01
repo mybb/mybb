@@ -1012,3 +1012,15 @@ function is_valid_resource_path($path)
 
     return true;
 }
+
+function get_theme_name_apx($codename) {
+    global $lang;
+
+    if (substr($codename, 0, 5) == 'core.') {
+        return '<span class="core_theme">'.$lang->sqbr_append_core.'</span>';
+    } else if (strpos($codename, '.') === false) {
+        return '<span class="orig_theme">'.$lang->sqbr_append_orig.'</span>';
+    } else {
+        return '';
+    }
+}

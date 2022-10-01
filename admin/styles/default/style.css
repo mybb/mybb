@@ -48,3 +48,15 @@ del {
 .have_own_copy_res {
 	color: #df8c97;
 }
+
+.core_theme {
+	font-style: italic;
+	color: #733;
+
+}
+
+.orig_theme {
+	font-style: italic;
+	color: #040;
+
+}

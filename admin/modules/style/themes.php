@@ -186,7 +186,7 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 		$name = $themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'];
 	} else	$name = '[Unknown]';
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($name), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
+	$page->add_breadcrumb_item(htmlspecialchars_uni($name).get_theme_name_apx($codename), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
 
 	if ($action != 'edit_template') {
 		$sub_tabs['edit'] = array(
@@ -792,7 +792,7 @@ if ($action == 'export') {
 	$form = new Form("index.php?module=style-themes&amp;action=export", "post");
 	echo $form->generate_hidden_field('codename', $theme['codename']);
 
-	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']));
+	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']).get_theme_name_apx($codename));
 	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->get_input('custom_theme')), 'custom_theme');
 
 	if (!empty($themelet_hierarchy['devdist']['themes'][$codename])
@@ -1094,7 +1094,7 @@ if ($action == 'duplicate') {
 
 	$form = new Form('index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename), 'post');
 
-	$form_container = new FormContainer($lang->duplicate_theme);
+	$form_container = new FormContainer($lang->sprintf($lang->duplicate_theme_named, htmlspecialchars_uni($themelet_hierarchy[$modes[0]]['themes'][$codename]['properties']['name']).get_theme_name_apx($codename)));
 	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $name_val, array('id' => 'name')), 'name');
 	$form_container->output_row($lang->new_codename, $lang->new_codename_duplicate_desc.' '.$lang->original_vs_board_themes_desc, $form->generate_text_box('new_codename', $new_codename_val, array('id' => 'new_codename')), 'new_codename');
 	$dup_checked = ['child_full' => '', 'child_exact' => '', 'child_resolved' => '', 'sibling_exact' => '', 'sibling_resolved' => ''];
@@ -1349,7 +1349,7 @@ if ($action == 'edit') {
 
 	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("codename", $theme['codename']);
-	$form_container = new FormContainer($lang->edit_theme_properties);
+	$form_container = new FormContainer($lang->sprintf($lang->edit_theme_properties_named, htmlspecialchars_uni($name).get_theme_name_apx($theme['codename'])));
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->description." <em>*</em>", $lang->description_desc_edit, $form->generate_text_box('description', $theme['description'], array('id' => 'description')), 'description');
 
@@ -1650,7 +1650,7 @@ if ($action == 'stylesheets') {
 		$order_num++;
 	}
 
-	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']));
+	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']).get_theme_name_apx($codename));
 
 	if (is_mutable_theme($codename, $mode)) {
 		$buttons = array($form->generate_submit_button($lang->save_stylesheet_order));
@@ -3116,7 +3116,7 @@ if ($action == 'templates') {
 		output_tpls_r($codename, $mode, $namespace, $tpls['entries'], $table);
 	}
 
-	$table->output($lang->sprintf($lang->templates_in_theme, htmlspecialchars_uni($theme['name'])));
+	$table->output($lang->sprintf($lang->templates_in_theme, htmlspecialchars_uni($theme['name'])).get_theme_name_apx($codename));
 	$page->output_footer();
 }
 
@@ -3317,7 +3317,7 @@ if ($action == 'add_template') {
 	}
 
 	$form = new Form('index.php?module=style-themes&amp;action=add_template&amp;codename='.urlencode($codename), 'post', 'add_template');
-	$form_container = new FormContainer($lang->add_template, 'tfixed');
+	$form_container = new FormContainer($lang->sprintf($lang->add_template_named, htmlspecialchars_uni($name).get_theme_name_apx($theme['codename'])), 'tfixed');
 	$form_container->output_row($lang->template_add_namespace, $lang->template_add_namespace_desc, $form->generate_text_box('namespace', $namespace, array('id' => 'namespace')), 'namespace');
 	$form_container->output_row($lang->template_add_name, $lang->template_add_name_desc, $form->generate_text_box('template_path', $template_path, array('id' => 'template_path')), 'template_path');
 	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));

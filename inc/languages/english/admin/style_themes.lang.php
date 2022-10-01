@@ -32,11 +32,15 @@ $l['export_theme_desc'] = "Here, you can export your theme, including its proper
 
 $l['duplicate_theme'] = "Duplicate Theme";
 $l['duplicate_theme_desc'] = "Here, you can duplicate your theme. This helps you if you want to develop another version of it.";
+$l['duplicate_theme_named'] = "Duplicate Theme: {1}";
 
 $l['namespace_lc_sq'] = '[namespace]';
 $l['plugin_lc_sq'] = '[plugin]';
 $l['inherited_lc_sq'] = '[inherited]';
 $l['have_own_copy_lc_sq'] = '[have own copy]';
+
+$l['sqbr_append_core'] = ' [core]';
+$l['sqbr_append_orig'] = ' [original]';
 
 $l['colors_manage'] = "Manage Colors";
 $l['colors_attached_to'] = "color setting";
@@ -65,6 +69,7 @@ $l['edit_template'] = 'Edit Template';
 $l['edit_template_desc'] = "Here, you can edit the template's code.";
 
 $l['add_template'] = 'Add Template';
+$l['add_template_named'] = 'Add Template For: {1}';
 $l['add_template_desc'] = 'Here you can create a new template.';
 
 $l['template_add_name'] = 'Template Path and Name';
@@ -153,6 +158,7 @@ $l['save_close'] = 'Save and Return to Listing';
 $l['save'] = 'Save';
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
+$l['edit_theme_properties_named']  = "Edit Theme Properties For: {1}";
 $l['edit_theme_desc'] = 'Here, you can edit the theme\'s properties.';
 $l['name_desc_edit'] = "Specify a name for the theme.";
 $l['description'] = 'Description';
