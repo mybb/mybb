@@ -1130,7 +1130,7 @@ if ($action == 'duplicate') {
 if ($action == 'add') {
 	$plugins->run_hooks("admin_style_themes_add");
 
-	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$usergroup_override = */true, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'');
+	$theme_opts = build_fs_theme_select(/*$name = */'', /*$selected = */'', /*$effective_uid = */0, /*$usergroup_override = */true, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */'', /*$skip_core_orig = */false);
 
 	$page->add_breadcrumb_item($lang->create_new_theme, "index.php?module=style-themes&amp;action=add");
 
@@ -1353,7 +1353,7 @@ if ($action == 'edit') {
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->description." <em>*</em>", $lang->description_desc_edit, $form->generate_text_box('description', $theme['description'], array('id' => 'description')), 'description');
 
-	$options = build_fs_theme_select($name, /*$selected = */'', /*$usergroup_override = */true, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */$codename);
+	$options = build_fs_theme_select($name, /*$selected = */'', /*$usergroup_override = */true, /*$effective_uid = */0, /*$footer = */false, /*$count_override = */false, /*$return_opts_only = */true, /*$ignoredtheme = */$codename, /*$skip_core_orig = */false);
 	if (substr($codename, 0, 5) != 'core.') {
 		$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('parent', $options, $theme['parent'], array('id' => 'parent')), 'parent');
 	}

@@ -862,8 +862,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 // Are we showing the quick theme selection box?
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$mybb->settings['footer']['themeselect']['options'] = build_fs_theme_select("theme", $mybb->user['style'], false, true);
-
+	$mybb->settings['footer']['themeselect']['options'] = build_fs_theme_select("theme", $mybb->user['style'], /*$effective_uid = */$mybb->user['uid'], /*$usergroup_override = */false, /*$footer = */true);
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{
 		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(false, 'theme');

@@ -481,7 +481,7 @@ if($mybb->input['action'] == "options")
 		$user['style'] = '';
 	}
 
-	$stylelist = build_fs_theme_select("style", $user['style']);
+	$stylelist = build_fs_theme_select("style", $user['style'], /*$effective_uid = */$mybb->user['uid']);
 
 	$plugins->run_hooks('usercp_options_end');
 

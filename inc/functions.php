@@ -5216,7 +5216,7 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  * @return Mixed Either a string of HTML (when $return_opts_only is false) or an array of options
  *               (when $return_opts_only is true).
  */
-function build_fs_theme_select($name, $selected = '', $usergroup_override = false, $footer = false, $count_override = false, $return_opts_only = false, $ignoredtheme = '')
+function build_fs_theme_select($name, $selected = '', $effective_uid = 0, $usergroup_override = false, $footer = false, $count_override = false, $return_opts_only = false, $ignoredtheme = '', $skip_core_orig = true)
 {
 	global $lang;
 
@@ -5232,10 +5232,12 @@ function build_fs_theme_select($name, $selected = '', $usergroup_override = fals
 	build_fs_theme_select_r(
 		/*$theme_code = */'',
 		/*$depth = */'',
+		$effective_uid,
 		$usergroup_override,
 		$ignoredtheme,
 		$num_themes,
 		$themeselect_options,
+		$skip_core_orig
 	);
 
 	if ($return_opts_only) {
@@ -5255,7 +5257,7 @@ function build_fs_theme_select($name, $selected = '', $usergroup_override = fals
 	return $ret;
 }
 
-function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_override = false, $ignoredtheme = '', &$num_themes = 0, &$themeselect_options = [])
+function build_fs_theme_select_r($theme_code = '', $depth = '', $effective_uid = 0, $usergroup_override = false, $ignoredtheme = '', &$num_themes = 0, &$themeselect_options = [], $skip_core_orig = true)
 {
 	global $mybb;
 
@@ -5271,12 +5273,18 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_overr
 		    ||
 		    empty($theme['ancestors'][0]) && $theme_code == ''
 		) {
+			$new_depth = $depth;
 			if ((empty($ignoredtheme) || $t_code != $ignoredtheme)
 			    &&
-			    (is_member($theme['properties']['allowedgroups'])
+			    (!$skip_core_orig || is_mutable_theme($theme['properties']['codename'], $mode))
+			    &&
+			    (!$effective_uid
+			     ||
+			     is_member($theme['properties']['allowedgroups'], $effective_uid)
 			     ||
 			     $theme['properties']['allowedgroups'] == 'all'
-			     || $usergroup_override == true
+			     ||
+			     $usergroup_override == true
 			    )
 			) {
 				$themeselect_options[] = [
@@ -5285,9 +5293,10 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $usergroup_overr
 					'depth' => $depth,
 				];
 				++$num_themes;
+				$new_depth = $depth.'--';
 			}
 			if (!empty($theme['children'])) {
-				build_fs_theme_select_r($t_code, $depth."--", $usergroup_override, $ignoredtheme, $num_themes, $themeselect_options);
+				build_fs_theme_select_r($t_code, $new_depth, $effective_uid, $usergroup_override, $ignoredtheme, $num_themes, $themeselect_options, $skip_core_orig);
 			}
 		}
 	}
