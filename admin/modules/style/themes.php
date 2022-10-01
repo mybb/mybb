@@ -86,7 +86,7 @@ if (in_array($action, ['xmlhttp_stylesheet', 'stylesheets', 'stylesheet_properti
 
 if ($action == 'xmlhttp_stylesheet' && $mybb->request_method == 'post') {
 	// Fetch list of all of the stylesheets for this theme
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->get_input('file'));
 
@@ -1428,7 +1428,7 @@ if ($action == 'edit') {
 if ($action == 'stylesheets') {
 	$plugins->run_hooks('admin_stylesheets_do_edit');
 
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	// Save any stylesheet orders
 	if ($mybb->request_method == 'post' && $mybb->input['do'] == 'save_orders'
@@ -1673,7 +1673,7 @@ if ($action == 'stylesheet_properties') {
 	$plugins->run_hooks('admin_style_themes_stylesheet_properties');
 
 	// Fetch list of all of the stylesheets for this theme
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	$stylesheet_props = false;
 	// First check for the stylesheet in the theme itself.
@@ -1967,7 +1967,7 @@ if ($action == 'edit_stylesheet') {
 
 
 	// Fetch list of all of the stylesheets for this theme
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	if (is_unsafe_path($mybb->get_input('file'))) {
 		flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->stylesheet_filename), 'error');
@@ -2385,7 +2385,7 @@ if ($action == 'delete_stylesheet') {
 	}
 
 	// Fetch list of all of the stylesheets for this theme
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($mybb->get_input('file'));
 
@@ -2472,7 +2472,7 @@ if ($action == 'delete_stylesheet') {
 
 if ($action == 'add_stylesheet') {
 	// Fetch list of all of the stylesheets for this theme
-	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename, $mybb->settings['themelet_dev_mode']);
+	list($stylesheets_a, $disporders) = get_theme_stylesheets($codename);
 
 	$sheetnames = array();
 	foreach ($stylesheets_a as $plugin_code => $ss_arr) {

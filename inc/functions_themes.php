@@ -384,13 +384,12 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
 /**
  * Retrieve the stylesheets for the given themelet from its `resources.json` file.
  *
- * @param string $codename   The codename (directory) of the theme or plugin whose stylesheets should
- *                           be retrieved.
+ * @param string  $codename The codename (directory) of the theme or plugin whose stylesheets should
+ *                          be retrieved.
+ * @param string  $theme_color The selected theme color, if any, for which to retrieve stylesheets.
  * @param boolean $raw       If true, the raw stylesheet structure from the resources.json will be
  *                           returned. If false, a reformed structure will be returned.
  * @param boolean $is_plugin If true, $codename represents a plugin codename; else a theme.
- * @param boolean $devdist   If true, try to use the resources.json file in the `devdist` directory
- *                           before trying that in the `current` directory.
  * @param boolean $inc_placeholders If true, include any empty placeholder entries for plugin
  *                                  stylesheets (these are for the purposes of ordering when *not*
  *                                  overriding the plugin stylesheet's properties).
@@ -404,11 +403,13 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
  *                which to attach the stylesheet, and the other, "actions", being an array of
  *                actions which conditionally trigger the attachment for the script.
  */
-function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $devdist = false, $inc_placeholders = false)
+function get_themelet_stylesheets($codename, $theme_color, $raw = false, $is_plugin = false, $inc_placeholders = false)
 {
+    global $mybb;
+
     $stylesheets = [];
     $modes = [];
-    if ($devdist) {
+    if ($mybb->settings['themelet_dev_mode'] == 'devdist') {
         $modes[] = 'devdist';
     }
     $modes[] = 'current';
@@ -444,14 +445,29 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
                         if (empty($actions)) {
                             $actions = ['global'];
                         }
-                        foreach ($actions as $action) {
-                            if (empty($stylesheets[$script])) {
-                                $stylesheets[$script] = [];
+                        if (is_array($script)) {
+                            // Script(s) is/are colours
+                            foreach ($script as $colour) {
+                                if ($colour == $theme_color) {
+                                    if (empty($stylesheets['global'])) {
+                                        $stylesheets['global'] = [];
+                                    }
+                                    if (empty($stylesheets['global']['global'])) {
+                                        $stylesheets['global']['global'] = [];
+                                    }
+                                    $stylesheets['global']['global'][] = $is_plugin ? "@ext.{$codename}/styles/{$sheet}" : normalise_res_spec1($sheet);
+                                }
                             }
-                            if (empty($stylesheets[$script][$action])) {
-                                $stylesheets[$script][$action] = [];
+                        } else {
+                            foreach ($actions as $action) {
+                                if (empty($stylesheets[$script])) {
+                                    $stylesheets[$script] = [];
+                                }
+                                if (empty($stylesheets[$script][$action])) {
+                                    $stylesheets[$script][$action] = [];
+                                }
+                                $stylesheets[$script][$action][] = $is_plugin ? "@ext.{$codename}/styles/{$sheet}" : normalise_res_spec1($sheet);
                             }
-                            $stylesheets[$script][$action][] = $is_plugin ? "@ext.{$codename}/styles/{$sheet}" : normalise_res_spec1($sheet);
                         }
                     }
                 }
@@ -470,8 +486,6 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
  *
  * @param string $codename The codename (directory) of the theme whose stylesheets should be
  *                         retrieved.
- * @param boolean $devdist If true, try to use the resources.json file in the `devdist` directory
- *                         for a themelet before trying that in the `current` directory.
  *
  * @return array The first array entry is the array of stylesheets, in "raw" format as described
  *               for get_themelet_stylesheets(), with the addition that index -1 into the stylesheet
@@ -482,18 +496,20 @@ function get_themelet_stylesheets($codename, $raw = false, $is_plugin = false, $
  *               empty string if not a plugin but rather the theme itself), namespace (e.g.,
  *               'frontend' or 'acp'), and stylesheet name (e.g., "main.css").
  */
-function get_theme_stylesheets($theme_code, $devdist = false) {
+function get_theme_stylesheets($theme_code) {
     global $mybb;
 
     $disporders = $stylesheets_a = [];
     $order_num = 1;
 
+    $theme = get_theme_properties($theme_code);
+
     // Fetch the list of all of the stylesheets and their inheritance information for this theme...
     $stylesheets_a[''] = get_themelet_stylesheets(
         $theme_code,
+        $theme['color'],
         /*$raw =*/true,
         /*$is_plugin = */false,
-        /*$devdist = */$devdist,
         /*$inc_placeholders = */true,
     );
     foreach ($stylesheets_a[''] as $ss_name => &$ss_arr) {
@@ -536,9 +552,9 @@ function get_theme_stylesheets($theme_code, $devdist = false) {
         if ($installed) {
             $plugin_ss = get_themelet_stylesheets(
                 $plugin_code,
+                $theme['color'],
                 /*$raw =*/true,
-                /*$is_plugin = */true,
-                /*$devdist = */$devdist
+                /*$is_plugin = */true
             );
             foreach ($plugin_ss as $ss_name => $ss_arr) {
                 // Will be non-empty when overridden by the theme at note #1 above.

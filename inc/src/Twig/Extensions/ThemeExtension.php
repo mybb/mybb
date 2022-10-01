@@ -108,9 +108,9 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $stylesheets_a = [];
 
         require_once MYBB_ROOT.'inc/functions_themes.php';
-        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], false, false, $mybb->settings['themelet_dev_mode'] != 0);
+        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], $theme['color'], false, false);
         foreach ($cache->read('plugins')['active'] as $plugin_code) {
-            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, false, true, $mybb->settings['themelet_dev_mode'] != 0);
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, $theme['color'], false, true);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
@@ -138,7 +138,6 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                             if ($minify && my_strtolower(substr($filename, -8)) !== '.min.css') {
                                 $filename = substr($filename, 0, -3).'min.css';
                             }
-                            assert($plugin_code == $codename);
                             if (empty($plugin_code)) {
                                 $res_spec = "~ct~{$namespace}:{$component}:{$filename}"; // Current theme stylesheet
                             } else {
