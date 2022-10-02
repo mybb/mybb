@@ -3388,6 +3388,31 @@ if ($action == 'delete_template') {
 	}
 }
 
+if ($action == 'create_devdist') {
+	// Validate the supplied theme codename.
+	if (!is_valid_theme_code($codename)) {
+		flash_message($lang->sprintf($lang->error_invalid_theme_codename, htmlspecialchars_uni($codename)), 'error');
+		admin_redirect('index.php?module=style-themes');
+	}
+
+	if (!verify_post_check($mybb->get_input('my_post_key'))) {
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
+	}
+
+	$basedir = MYBB_ROOT."inc/themes/$codename/";
+	if (file_exists($basedir.'devdist')) {
+		flash_message($lang->sprintf($lang->error_devdist_dir_already_exists, htmlspecialchars_uni($basedir.'devdist')), 'error');
+	} else if (!file_exists($basedir.'current')) {
+		flash_message($lang->sprintf($lang->error_current_dir_does_not_exist, htmlspecialchars_uni($basedir.'current')), 'error');
+	} else if (!cp_or_mv_recursively("{$basedir}current", "{$basedir}devdist", /*$del_source = */false, $error)) {
+		flash_message($error, 'error');
+	} else {
+		flash_message($lang->success_created_devdist, 'success');
+	}
+	admin_redirect('index.php?module=style-themes');
+}
+
 if (!$action) {
 	$page->output_header($lang->themes);
 
@@ -3404,6 +3429,29 @@ if (!$action) {
 	build_theme_list();
 
 	$table->output($lang->themes);
+
+	if ($mode == 'devdist') {
+		$with_no_devdist = [];
+		foreach (array_keys($themelet_hierarchy['current']['themes']) as $cname) {
+			if (!array_key_exists($cname, $themelet_hierarchy['devdist']['themes'])) {
+				$with_no_devdist[$cname] = $themelet_hierarchy['current']['themes'][$cname]['properties']['name'];
+			}
+		}
+
+		if ($with_no_devdist) {
+			$table2 = new Table;
+			$table2->construct_header($lang->theme);
+			$table2->construct_header($lang->create_missing_devdist_q);
+			$table2->construct_header($lang->recommended_q);
+			foreach ($with_no_devdist as $cname => $name) {
+				$table2->construct_cell(htmlspecialchars_uni($name));
+				$table2->construct_cell('<a href="index.php?module=style-themes&amp;action=create_devdist&amp;codename='.urlencode($cname).'&amp;my_post_key='.$mybb->post_code.'">'.$lang->create_missing_devdist.'</a>'.$recomm);
+				$table2->construct_cell(is_mutable_theme($cname, 'current') ? $lang->not_recomm_mutable_already : $lang->yes);
+				$table2->construct_row();
+			}
+			$table2->output($lang->themes_with_no_devdist);
+		}
+	}
 
 	$page->output_footer();
 }

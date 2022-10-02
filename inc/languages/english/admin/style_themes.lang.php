@@ -86,6 +86,11 @@ $l['set_as_default'] = "Set as Default";
 $l['default_theme'] = "Default Theme";
 $l['force_on_users'] = "Force on Users";
 $l['delete_revert'] = "Delete / Revert";
+$l['themes_with_no_devdist'] = 'Themes Without a Development and Distribution (`devdist`) Directory';
+$l['create_missing_devdist_q'] = 'Create `devdist` Directory?';
+$l['create_missing_devdist'] = 'Create `devdist` Directory';
+$l['recommended_q'] = 'Recommended?';
+$l['not_recomm_mutable_already'] = 'No, because this is a board theme, and thus it is already mutable outside of themelet development (`devdist`) mode. Two mutable versions of this theme could become confusing.';
 
 $l['local_file'] = "Local File";
 $l['url'] = "URL";
@@ -330,6 +335,8 @@ $l['error_undeletable_core_theme'] = 'This theme cannot be deleted because it is
 $l['error_immutable_theme'] = 'Changes cannot be made to this theme because it is either a core theme or an original theme and themelet development mode is not enabled (outside of themelet development mode, only board themes can be changed).';
 $l['error_cannot_set_to_default'] = 'This theme may not be set to default because it is not a board theme.';
 $l['error_cannot_force_theme'] = 'This theme may not be forced on users because it is not a board theme.';
+$l['error_devdist_dir_already_exists'] = 'The theme `devdist` directory "{1}" already exists.';
+$l['error_current_dir_does_not_exist'] = 'The theme `current` directory "{1}" does not exist.';
 
 $l['warning_immutable_theme'] = 'This theme is immutable, because it is not a board theme and themelet development mode is not enabled. Any changes that you make on this page will not be saved: it is read-only. To create a mutable (board) theme from this one, use the "Duplicate Theme" tool.';
 
@@ -350,6 +357,7 @@ $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_new_template_saved'] = 'The new template has successfully been saved.';
 $l['success_template_deleted'] = 'The selected template has successfully been deleted.';
+$l['success_created_devdist'] = 'A `devdist` directory was successfully created for the theme.';
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
