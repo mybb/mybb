@@ -55,6 +55,10 @@ if (!empty($codename) && is_unsafe_path($codename)) {
 	flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->theme_codename), 'error');
 	admin_redirect('index.php?module=style-themes');
 }
+if (!empty($mybb->get_input('new_codename')) && is_unsafe_path($mybb->get_input('new_codename'))) {
+	flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->theme_codename), 'error');
+	admin_redirect('index.php?module=style-themes');
+}
 if (!empty($mybb->input['file']) && is_unsafe_path($mybb->input['file'])) {
 	flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->stylesheet_filename), 'error');
 	admin_redirect('index.php?module=style-themes');
