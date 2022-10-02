@@ -357,7 +357,7 @@ $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_new_template_saved'] = 'The new template has successfully been saved.';
 $l['success_template_deleted'] = 'The selected template has successfully been deleted.';
-$l['success_created_devdist'] = 'A `devdist` directory was successfully created for the theme.';
+$l['success_created_devdist'] = 'A `devdist` directory was successfully created for the selected theme.';
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme? WARNING: This will delete BOTH `current` AND `devdist` modes of this theme (whichever exist).";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
