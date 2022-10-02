@@ -1993,7 +1993,7 @@ if ($action == 'edit_stylesheet') {
 		$specifier = "~t~{$codename}:{$namespace}:{$component}:{$filename}";
 	}
 	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true, $is_scss);
-	$is_inherited = (count($inheritance['inheritance_chain']) > 1);
+	$is_inherited = ($inheritance && count($inheritance['inheritance_chain']) > 1);
 
 	// Pull out the contents of the stylesheet from the appropriate file
 	$stylesheet = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_RESOURCE, /*$min_override = */true, /*$scss_override = */true);
