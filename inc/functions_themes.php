@@ -63,17 +63,17 @@ function get_themelet_hierarchy()
                 if (!file_exists($themes_dir.$theme_code.'/'.$mode)) {
                     continue;
                 }
-                $theme_file = $themes_dir.$theme_code.'/'.$mode.'/theme.json';
-                $props = [];
-                if (is_readable($theme_file)) {
+                $theme_file = "{$themes_dir}{$theme_code}/{$mode}/theme.json";
+                if (!is_readable($theme_file)) {
+                    $parents[$mode][$theme_code] = 'core.default';
+                    $props_a[$mode][$theme_code] = [];
+                } else {
                     $json = file_get_contents($theme_file);
                     $props = json_decode($json, true);
-                }
-                $props_a[$mode][$theme_code] = $props;
-                if ($theme_code == 'core.default' || !is_readable($theme_file)) {
-                    $parents[$mode][$theme_code] = '';
-                } else {
-                    if (is_array($props) && array_key_exists('parent', $props)) {
+                    $props_a[$mode][$theme_code] = $props;
+                    if ($theme_code == 'core.default') {
+                        $parents[$mode][$theme_code] = '';
+                    } else if (is_array($props) && array_key_exists('parent', $props)) {
                         $parents[$mode][$theme_code] = $props['parent'];
                     }
                 }
@@ -89,7 +89,7 @@ function get_themelet_hierarchy()
             if ($child !== 'core.default') {
                 while ($parent && !in_array($parent, $themelet_hierarchy[$mode]['themes'][$child]['ancestors'])) {
                     $themelet_hierarchy[$mode]['themes'][$child]['ancestors'][] = $parent;
-                    $parent = isset($parents[$mode][$parent]) ? $parents[$mode][$parent] : null;
+                    $parent = isset($parents[$mode][$parent]) ? $parents[$mode][$parent] : 'core.default';
                 }
             }
             foreach ($parents[$mode] as $child2 => $parent2) {
@@ -136,27 +136,42 @@ function get_themelet_dirs($inc_devdist = false)
     }
     $modes[] = 'current';
 
+    $plugin_codes = [];
     foreach ($modes as $mode) {
-        foreach ($themelet_hierarchy[$mode]['plugins'] as $plugin_code) {
-            $themelet_dir = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/'.$mode.'/ext';
-            if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
+        $plugin_codes = array_merge($plugin_codes, $themelet_hierarchy[$mode]['plugins']);
+    }
+    $plugin_codes = array_unique($plugin_codes);
+
+    foreach ($plugin_codes as $plugin_code) {
+        foreach ($modes as $mode) {
+            $themelet_dir = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/';
+            $themelet_dir_moded = $themelet_dir.$mode.'/ext';
+            if (is_dir($themelet_dir_moded) && is_readable($themelet_dir_moded)) {
                 $plugin_themelet_dirs[] = [$themelet_dir, 'ext.'.$plugin_code/*namespace*/, true/*is a plugin*/, $plugin_code];
+                break;
             }
         }
     }
 
+    $themelet_hierarchy_wk = [];
     foreach ($modes as $mode) {
-        foreach ($themelet_hierarchy[$mode]['themes'] as $theme_code => $relatives) {
+        $themelet_hierarchy_wk = array_merge($themelet_hierarchy[$mode]['themes'], $themelet_hierarchy_wk);
+    }
+
+    foreach ($themelet_hierarchy_wk as $theme_code => $relatives) {
+        foreach ($modes as $mode) {
             $parents = $relatives['ancestors'];
-            $themelet_dir = MYBB_ROOT.'inc/themes/'.$theme_code.'/'.$mode;
-            if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
+            $themelet_dir = MYBB_ROOT."inc/themes/{$theme_code}/";
+            $themelet_dir_moded = $themelet_dir.$mode;
+            if (is_dir($themelet_dir_moded) && is_readable($themelet_dir_moded)) {
                 if (empty($themelet_dirs[$theme_code])) {
                     $themelet_dirs[$theme_code] = [];
                 }
                 $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/, $theme_code];
                 foreach ($parents as $parent) {
-                    $themelet_dir = MYBB_ROOT.'inc/themes/'.$parent.'/'.$mode;
-                    if (is_dir($themelet_dir) && is_readable($themelet_dir)) {
+                    $themelet_dir = MYBB_ROOT."inc/themes/{$parent}/";
+                    $themelet_dir_moded = $themelet_dir.$mode;
+                    if (is_dir($themelet_dir_moded) && is_readable($themelet_dir_moded)) {
                         $themelet_dirs[$theme_code][] = [$themelet_dir, ''/*global namespace*/, false/*not a plugin*/, $parent];
                     }
                 }
@@ -168,6 +183,7 @@ function get_themelet_dirs($inc_devdist = false)
                     0,
                     $plugin_themelet_dirs
                 );
+                break;
             }
         }
     }
@@ -213,18 +229,20 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
         $themelet_dirs = get_themelet_dirs($inc_devdist);
     }
 
+    $mode = $inc_devdist ? 'devdist' : 'current';
+
     if (!empty($themelet_dirs[$theme])) {
         foreach ($themelet_dirs[$theme] as $entry) {
             list($theme_dir, $namespace1, $is_plugin) = $entry;
             if ($is_plugin) {
-                $twig_dir = $theme_dir.'/templates/';
+                $twig_dir = $theme_dir.$mode.'/ext/templates/';
                 if (is_dir($twig_dir) && is_readable($twig_dir)) {
                     $twig_dirs[] = [$twig_dir, $namespace1];
-                    ;
                 }
             } else {
+                $themelet_dir_moded = "{$theme_dir}{$mode}";
                 foreach ($valid_comps as $comp => $namespace2) {
-                    $twig_dir = $theme_dir.'/'.$comp.'/templates/';
+                    $twig_dir = "{$themelet_dir_moded}/{$comp}/templates/";
                     if (is_dir($twig_dir) && is_readable($twig_dir)) {
                         if (!empty($namespace2)) {
                             $twig_dirs[] = [$twig_dir, $namespace2];
@@ -236,10 +254,10 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
                         }
                     }
                 }
-                if (is_dir($theme_dir) && ($dh = opendir($theme_dir)) !== false) {
+                if (is_dir($themelet_dir_moded) && ($dh = opendir($themelet_dir_moded)) !== false) {
                     while (($filename = readdir($dh)) !== false) {
                         if (substr($filename, 0, 4) === 'ext.') {
-                            $twig_dir = $theme_dir.'/'.$filename.'/templates/';
+                            $twig_dir = "{$themelet_dir_moded}/{$filename}/templates/";
                             if (is_dir($twig_dir) && is_readable($twig_dir)) {
                                 $twig_dirs[] = [$twig_dir, $filename];
                             }
@@ -407,13 +425,18 @@ function get_themelet_stylesheets($codename, $theme_color, $raw = false, $is_plu
 {
     global $mybb;
 
-    $stylesheets = [];
-    $modes = [];
-    if ($mybb->settings['themelet_dev_mode'] == 'devdist') {
-        $modes[] = 'devdist';
-    }
-    $modes[] = 'current';
+    $modes = $stylesheets = [];
 
+    if ($is_plugin) {
+        // If we're in devdist mode, and the plugin doesn't have a devdist directory,
+        // then use its current directory.
+        if ($mybb->settings['themelet_dev_mode']) {
+            $modes[] = 'devdist';
+        }
+        $modes[] = 'current';
+    } else {
+        $modes[] = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+    }
     foreach ($modes as $mode) {
         if ($is_plugin) {
             $res_file = MYBB_ROOT.'inc/plugins/'.$codename.'/interface/'.$mode.'/resources.json';
@@ -472,7 +495,6 @@ function get_themelet_stylesheets($codename, $theme_color, $raw = false, $is_plu
                     }
                 }
             }
-            break;
         }
     }
 
@@ -744,6 +766,20 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         }
     }
 
+    // When themelet development mode is enabled, we allow for resolving resources in ancestors
+    // where the ancestral resource doesn't exist in the ancestor's `devdist` directory but does
+    // exist in its `current` directory. However, we *only* do this for ancestral resources, *not*
+    // for the theme itself: in that case, if the resource doesn't exist in the theme's `devdist`
+    // directory, then we do not check its `current` directory, but instead check in its ancestors.
+    $modes = [];
+    if ($mybb->settings['themelet_dev_mode']) {
+        $modes[] = 'devdist';
+    }
+    $modes[] = 'current';
+    $modes_first = [$mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current'];
+
+    $first = true;
+
     if ($return_type == RTR_RETURN_INHERITANCE) {
         $ret = [
             'orig_plugin'       => '',
@@ -789,6 +825,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         if (!empty($themelet_dirs[$theme_code])) {
             foreach ($themelet_dirs[$theme_code] as $entry) {
                 list($theme_dir, $namespace, $is_plugin, $codename) = $entry;
+                $found = false;
                 if (!$is_plugin) {
                     if ($return_type == RTR_RETURN_INHERITANCE) {
                         $ret['inheritance_chain'][] = [
@@ -796,16 +833,23 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                             'is_plugin' => false    ,
                         ];
                     }
-                    $path_to_test = $theme_dir.'/'.$res_comp.'/'.$res_dir.'/'.$res_name;
-                    if (test_set_path($path_to_test, $resource_path, $scss_path)) {
-                        if ($return_type == RTR_RETURN_INHERITANCE) {
-                            $ret['is_scss'] = !empty($scss_path);
-                            $is_scss = $ret['is_scss'];
-                            return $ret;
+                    $modes2 = $first ? $modes_first : $modes;
+                    foreach ($modes2 as $mode) {
+                        $theme_dir_moded = $theme_dir.$mode;
+                        $path_to_test = "{$theme_dir_moded}/{$res_comp}/{$res_dir}/{$res_name}";
+                        if (test_set_path($path_to_test, $resource_path, $scss_path)) {
+                            if ($return_type == RTR_RETURN_INHERITANCE) {
+                                $ret['is_scss'] = !empty($scss_path);
+                                $is_scss = $ret['is_scss'];
+                                return $ret;
+                            }
+                            $found = true;
+                            break;
                         }
-                        break;
                     }
                 }
+                $first = false;
+                if ($found) break;
             }
         }
     } else {
@@ -829,6 +873,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                 // We test this possibility first, then...
                 foreach ($themelet_dirs[$theme_code] as $entry) {
                     list($theme_dir, $namespace, $is_plugin, $codename) = $entry;
+                    $found = false;
                     if (!$is_plugin) {
                         if ($return_type == RTR_RETURN_INHERITANCE) {
                             $ret['inheritance_chain'][] = [
@@ -836,16 +881,23 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
                                 'is_plugin' => false    ,
                             ];
                         }
-                        $path_to_test = $theme_dir.'/ext.'.$plugin_code.'/'.$res_dir.'/'.$res_name;
-                        if (test_set_path($path_to_test, $resource_path, $scss_path)) {
-                            if ($return_type == RTR_RETURN_INHERITANCE) {
-                                $ret['is_scss'] = !empty($scss_path);
-                                $is_scss = $ret['is_scss'];
-                                return $ret;
+                        $modes2 = $first ? $modes_first : $modes;
+                        foreach ($modes2 as $mode) {
+                            $theme_dir_moded = $theme_dir.$mode;
+                            $path_to_test = "{$theme_dir_moded}/ext.{$plugin_code}/{$res_dir}/{$res_name}";
+                            if (test_set_path($path_to_test, $resource_path, $scss_path)) {
+                                if ($return_type == RTR_RETURN_INHERITANCE) {
+                                    $ret['is_scss'] = !empty($scss_path);
+                                    $is_scss = $ret['is_scss'];
+                                    return $ret;
+                                }
+                                $found = true;
+                                break;
                             }
-                            break;
                         }
                     }
+                    $first = false;
+                    if ($found) break;
                 }
             }
 
@@ -854,17 +906,18 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
             // other plugins, i.e., decide whether plugins should be able to override
             // the resources of other plugins.
             if (!$resource_path) {
-                $path_to_test = MYBB_ROOT.'inc/plugins/'.$plugin_code.'/interface/'.
-                                ($mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current').'/ext/'.$res_dir.'/'.
-                                $res_name;
-                if (test_set_path($path_to_test, $resource_path, $scss_path) && $return_type == RTR_RETURN_INHERITANCE) {
-                    $ret['is_scss'] = !empty($scss_path);
-                    $is_scss = $ret['is_scss'];
-                    $ret['inheritance_chain'][] = [
-                        'codename'  => $plugin_code,
-                        'is_plugin' => true        ,
-                    ];
-                    return $ret;
+                $modes2 = $first ? $modes_first : $modes;
+                foreach ($modes2 as $mode) {
+                    $path_to_test = MYBB_ROOT."inc/plugins/{$plugin_code}/interface/{$mode}/ext/{$res_dir}/{$res_name}";
+                    if (test_set_path($path_to_test, $resource_path, $scss_path) && $return_type == RTR_RETURN_INHERITANCE) {
+                        $ret['is_scss'] = !empty($scss_path);
+                        $is_scss = $ret['is_scss'];
+                        $ret['inheritance_chain'][] = [
+                            'codename'  => $plugin_code,
+                            'is_plugin' => true        ,
+                        ];
+                        return $ret;
+                    }
                 }
             }
         }
