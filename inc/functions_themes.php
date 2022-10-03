@@ -219,15 +219,7 @@ function get_twig_dirs($theme, $inc_devdist = false, $use_themelet_cache = true)
 
     $twig_dirs = [];
 
-    if (!$inc_devdist && $use_themelet_cache) {
-        $themelet_dirs = $cache->read('themelet_dirs');
-        if (empty($themelet_dirs)) {
-            $cache->update_themelet_dirs();
-            $themelet_dirs = $cache->read('themelet_dirs');
-        }
-    } else {
-        $themelet_dirs = get_themelet_dirs($inc_devdist);
-    }
+    $themelet_dirs = get_themelet_dirs($inc_devdist);
 
     $mode = $inc_devdist ? 'devdist' : 'current';
 
@@ -790,15 +782,7 @@ function resolve_themelet_resource($specifier, $use_themelet_cache = true, $retu
         $is_scss = false;
     }
 
-    if (!$mybb->settings['themelet_dev_mode'] && $use_themelet_cache) {
-        $themelet_dirs = $cache->read('themelet_dirs');
-        if (empty($themelet_dirs)) {
-            $cache->update_themelet_dirs();
-            $themelet_dirs = $cache->read('themelet_dirs');
-        }
-    } else {
-        $themelet_dirs = get_themelet_dirs($mybb->settings['themelet_dev_mode']);
-    }
+    $themelet_dirs = get_themelet_dirs($mybb->settings['themelet_dev_mode']);
 
     if (my_strtolower(substr($specifier, -8)) === '.min.css') {
         $specifier_new = my_strtolower(substr($specifier, 0, -7)).'css';

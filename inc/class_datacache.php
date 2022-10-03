@@ -1305,14 +1305,6 @@ class datacache
 		$this->update("reportreasons", $reasons);
 	}
 
-	function update_themelet_dirs()
-	{
-		require_once MYBB_ROOT.'inc/functions_themes.php';
-		$themelet_dirs = get_themelet_dirs(/*$inc_devdist = */false);
-
-		$this->update('themelet_dirs', $themelet_dirs);
-	}
-
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
 	function reload_mostonline()
 	{
