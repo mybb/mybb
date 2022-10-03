@@ -732,7 +732,7 @@ if(!$action)
 			foreach($plugins_list as $plugin_file)
 			{
 				$codename = str_replace('.php', '', $plugin_file);
-				$plugininfo = read_json_file(MYBB_ROOT.'inc/plugins/'.$codename.'/plugin.json');
+				$plugininfo = read_json_file(MYBB_ROOT.'inc/plugins/'.$codename.'/plugin.json', $err_msg, /*$show_errs = */false);
 				if(!$plugininfo)
 				{
 					continue;
