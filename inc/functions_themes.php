@@ -525,11 +525,12 @@ function get_theme_stylesheets($theme_code) {
     $order_num = 1;
 
     $theme = get_theme_properties($theme_code);
+    $theme_color = !empty($theme['color']) ? $theme['color'] : '';
 
     // Fetch the list of all of the stylesheets and their inheritance information for this theme...
     $stylesheets_a[''] = get_themelet_stylesheets(
         $theme_code,
-        $theme['color'],
+        $theme_color,
         /*$raw =*/true,
         /*$is_plugin = */false,
         /*$inc_placeholders = */true,
@@ -574,7 +575,7 @@ function get_theme_stylesheets($theme_code) {
         if ($installed) {
             $plugin_ss = get_themelet_stylesheets(
                 $plugin_code,
-                $theme['color'],
+                $theme_color,
                 /*$raw =*/true,
                 /*$is_plugin = */true
             );

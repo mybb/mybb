@@ -1313,6 +1313,9 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 			{
 				$theme_cache[$p_codename] = [];
 			}
+			if (empty($theme['properties']['users'])) {
+				$theme['properties']['users'] = 0;
+			}
 			$theme_cache[$p_codename][$theme['properties']['codename']] = $theme['properties'];
 		}
 		$theme_cache['num_themes'] = count($themes);

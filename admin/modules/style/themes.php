@@ -1254,6 +1254,7 @@ if ($action == 'edit') {
 				foreach($colors as $color)
 				{
 					$color = trim($color);
+					if (!$color) continue;
 					if(preg_match('(^((\p{L}|\p{Nd}|_)+)={1}((\p{L}|\p{Nd}|_)+)$)u', $color))
 					{
 						$color = explode("=", $color);
@@ -1294,7 +1295,7 @@ if ($action == 'edit') {
 			else
 			{
 				$unused_name = true;
-				foreach ($themelet_hierarchy['themes'] as $t_code => $a) {
+				foreach ($themelet_hierarchy[$mode]['themes'] as $t_code => $a) {
 					if ($a['properties']['name'] == $new_properties['name'] && $codename != $t_code) {
 						$unused_name = false;
 						break;
@@ -1393,9 +1394,9 @@ if ($action == 'edit') {
 
 	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $theme['editortheme'], array('id' => 'editortheme')), 'editortheme');
 
-	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $theme['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $theme['tablespace'], array('id' => 'tablespace', 'min' => 0)), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $theme['borderwidth'], array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
+	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', !empty($theme['logo']) ? $theme['logo'] : '', array('id' => 'boardlogo')), 'logo');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', !empty($theme['tablespace']) ? $theme['tablespace'] : '', array('id' => 'tablespace', 'min' => 0)), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', !empty($theme['borderwidth']) ? $theme['borderwidth'] : '', array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
 
 	$form_container->end();
 
@@ -1476,14 +1477,14 @@ if ($action == 'stylesheets') {
 				$resources['stylesheets'] = $new_ss_list;
 				if (!write_json_file($resource_file, $resources)) {
 					flash_message($lang->error_stylesheet_order_update, 'error');
-					admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
+					admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($theme['codename']));
 				} else {
 					flash_message($lang->success_stylesheet_order_updated, 'success');
-					admin_redirect('index.php?module=style-themes&action=edit&amp;codename='.urlencode($theme['codename']));
+					admin_redirect('index.php?module=style-themes&action=stylesheets&amp;codename='.urlencode($theme['codename']));
 				}
 			} else {
 				flash_message($err_msg, 'error');
-				admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($theme['codename']));
+				admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($theme['codename']));
 			}
 		}
 	}
@@ -1805,12 +1806,12 @@ if ($action == 'stylesheet_properties') {
 
 	unset($stylesheet_props[-1]);
 
+	$check_actions = "";
 	if(is_array($stylesheet_props) && ($stylesheet_props[0]['script'] != 'global' || $stylesheet_props[0]['actions'][0] != 'global'))
 	{
-		$check_actions = "";
 		$stylesheet['colors'] = array();
 
-		if(!is_array($theme['colors']))
+		if(!isset($theme['colors']) || !is_array($theme['colors']))
 		{
 			$theme['colors'] = array();
 		}
@@ -3019,7 +3020,7 @@ if ($action == 'templates') {
 
 	function get_tpls_r($dir, &$tpls_a = []) {
 		if (empty($tpls_a['entries'])) $tpls_a['entries'] = [];
-		$dh = opendir($dir);
+		$dh = @opendir($dir);
 		if ($dh) {
 			while ($nm = readdir($dh)) {
 				if (!in_array($nm, ['.', '..'])) {
