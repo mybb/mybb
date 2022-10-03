@@ -9250,7 +9250,7 @@ function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 
 	// Load the user area language file even if in the ACP, so we don't have to duplicate
 	// language strings.
-	$lang->load('global', /*$forceuserarea = */true);
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
 
 	$ret = [];
 
@@ -9330,7 +9330,7 @@ function cp_or_mv_recursively($source, $dest, $del_source = false, &$error = '')
 
 	// Load the user area language file even if in the ACP, so we don't have to duplicate
 	// language strings.
-	$lang->load('global', /*$forceuserarea = */true);
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
 
 	$source_dirs = [];
 	$moved = [];
@@ -9535,7 +9535,7 @@ function zip_directory($sourcepath, $zip_filename, &$err_msg = '')
 
 	// Load the user area language file even if in the ACP, so we don't have to duplicate
 	// language strings.
-	$lang->load('global', /*$forceuserarea = */true);
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
 
 	$ret = false;
 
