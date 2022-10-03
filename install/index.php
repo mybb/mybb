@@ -1792,7 +1792,7 @@ function install_default_theme()
 					} else {
 						$theme_properties['codename'] = $board_codename;
 						$theme_properties['name'] = 'MyBB Default';
-						$theme_properties['parent'] = 'cored.default';
+						$theme_properties['parent'] = 'core.default';
 						if (!write_json_file($dest_path, $theme_properties)) {
 							$output->print_error('Failed to write to the JSON file at "'.$dest_path.'".');
 						}
