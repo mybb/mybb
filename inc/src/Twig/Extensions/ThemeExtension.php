@@ -155,7 +155,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         }
 
         // Return the stylesheet paths we've found via yielding, honouring their display order.
-        if (!empty($themeStylesheets) && is_array($theme['disporder'])) {
+        if (!empty($themeStylesheets) && isset($theme['disporder']) && is_array($theme['disporder'])) {
             foreach ($theme['disporder'] as $style_name => $order) {
                 if (!empty($themeStylesheets[$style_name])) {
                     $style_path = $themeStylesheets[$style_name];
