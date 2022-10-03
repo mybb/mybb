@@ -72,6 +72,7 @@ $l['stylesheet_type'] = "Stylesheet type: ";
 $l['editing_template'] = 'Editing Template: {1}';
 $l['edit_template'] = 'Edit Template';
 $l['edit_template_desc'] = "Here, you can edit the template's code.";
+$l['template_inherited'] = "This template is currently being inherited from {1}. Any changes you make will break the inheritance, and the template will be copied to this theme. Edit this template in {1} to keep the inheritance.";
 
 $l['add_template'] = 'Add Template';
 $l['add_template_named'] = 'Add Template For: {1}';
@@ -216,7 +217,6 @@ $l['properties'] = "Properties";
 $l['edit_style'] = "Edit Style";
 $l['stylesheets_in'] = "Stylesheets in";
 $l['stylesheet_properties'] = "Stylesheet Properties";
-$l['stylesheet_inherited_default'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme.";
 $l['stylesheet_inherited'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme. Edit this stylesheet in {1} to keep the inheritance.";
 $l['globally'] = "Globally";
 $l['specific_files'] = "Specific files";

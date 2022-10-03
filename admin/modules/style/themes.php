@@ -2141,7 +2141,9 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 	if (!is_mutable_theme($codename, $mode)) {
 		$page->output_alert($lang->warning_immutable_theme);
 	} else if ($is_inherited) {
-		$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni(get_theme_name($inheritance['inheritance_chain'][1]['codename']))), "ajax_alert");
+		$last = end(array_keys($inheritance['inheritance_chain']));
+		$cname = $inheritance['inheritance_chain'][$last]['codename'];
+		$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni(get_theme_name($cname))));
 	}
 
 	// Output the selection box
@@ -3150,6 +3152,14 @@ if ($action == 'edit_template') {
 
 	$pcode = substr($namespace_new, 0, 4) == 'ext.' ? substr($namespace_new, 4) : '';
 
+	if ($pcode) {
+		$specifier = "~p~{$codename}:{$pcode}:templates:{$template_path}";
+	} else {
+		$specifier = "~t~{$codename}:{$namespace}:templates:{$template_path}";
+	}
+	$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_type = */RTR_RETURN_INHERITANCE);
+	$is_inherited = ($inheritance && count($inheritance['inheritance_chain']) > 1);
+
 	$plugins->run_hooks('admin_style_themes_edit_template');
 
 	if ($mybb->request_method == 'post') {
@@ -3191,15 +3201,8 @@ if ($action == 'edit_template') {
 				}
 			}
 		}
-	} else {
-		if (!array_key_exists('template_body', $mybb->input)) {
-			if ($pcode) {
-				$specifier = "~p~{$codename}:{$pcode}:templates:{$template_path}";
-			} else {
-				$specifier = "~t~{$codename}:{$namespace}:templates:{$template_path}";
-			}
-			$template_body = resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_type = */RTR_RETURN_RESOURCE);
-		}
+	} else if (!array_key_exists('template_body', $mybb->input)) {
+		$template_body = resolve_themelet_resource($specifier, /*$use_themelet_cache = */true, /*$return_type = */RTR_RETURN_RESOURCE);
 	}
 
 	set_headers_for_codepress();
@@ -3222,6 +3225,10 @@ if ($action == 'edit_template') {
 
 	if (!is_mutable_theme($codename, $mode)) {
 		$page->output_alert($lang->warning_immutable_theme);
+	} else if ($is_inherited) {
+		$last = end(array_keys($inheritance['inheritance_chain']));
+		$cname = $inheritance['inheritance_chain'][$last]['codename'];
+		$page->output_alert($lang->sprintf($lang->template_inherited, htmlspecialchars_uni(get_theme_name($cname))));
 	}
 
 	if ($errors) {
