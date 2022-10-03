@@ -634,6 +634,8 @@ if ($action == 'import') {
 
 	$page->output_header("{$lang->themes} - {$lang->import_a_theme}");
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'import_theme');
 
 	$import_checked = array_fill(1, 3, '');
@@ -785,6 +787,8 @@ if ($action == 'export') {
 	$page->add_breadcrumb_item($lang->export_theme, "index.php?module=style-themes&amp;action=export");
 
 	$page->output_header("{$lang->themes} - {$lang->export_theme}");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'export_theme');
 
@@ -1044,6 +1048,8 @@ if ($action == 'duplicate') {
 
 	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'duplicate_theme');
 
 	if ($errors) {
@@ -1139,6 +1145,8 @@ if ($action == 'add') {
 	$page->add_breadcrumb_item($lang->create_new_theme, "index.php?module=style-themes&amp;action=add");
 
 	$page->output_header("{$lang->themes} - {$lang->create_new_theme}");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'create_theme');
 
@@ -1339,6 +1347,8 @@ if ($action == 'edit') {
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'edit');
 
 	if (!is_mutable_theme($codename, $mode)) {
@@ -1481,6 +1491,8 @@ if ($action == 'stylesheets') {
 	$page->add_breadcrumb_item($lang->stylesheets, 'index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
 
@@ -1760,6 +1772,7 @@ if ($action == 'stylesheet_properties') {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
+	output_devdist_indicator_header();
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -2109,23 +2122,6 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
-	if (!is_mutable_theme($codename, $mode)) {
-		$page->output_alert($lang->warning_immutable_theme);
-	} else if ($is_inherited) {
-		// Show inherited warning
-		// TODO: when immutability of original/core themes is implemented, adapt the logic here to suit,
-		//       and improve the alerts to indicate the actual name of the theme/plugin from which we're
-		//       inheriting, plus whether or not it is a plugin.
-// 		if($stylesheet['tid'] == 1)
-// 		{
-// 			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
-// 		}
-// 		else
-// 		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni($inheritance['inheritance_chain'][1]['codename'])), "ajax_alert");
-// 		}
-	}
-
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
 		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file'])."&amp;mode=simple",
@@ -2137,7 +2133,15 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=advanced',
 	);
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
+
+	if (!is_mutable_theme($codename, $mode)) {
+		$page->output_alert($lang->warning_immutable_theme);
+	} else if ($is_inherited) {
+		$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni(get_theme_name($inheritance['inheritance_chain'][1]['codename']))), "ajax_alert");
+	}
 
 	// Output the selection box
 	$form = new Form("index.php", "get", "selector_form");
@@ -2313,23 +2317,6 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
-	if (!is_mutable_theme($codename, $mode)) {
-		$page->output_alert($lang->warning_immutable_theme);
-	} else if ($is_inherited) {
-		// Show inherited warning
-		// TODO: when immutability of original/core themes is implemented, adapt the logic here to suit,
-		//       and improve the alerts to indicate the actual name of the theme/plugin from which we're
-		//       inheriting, plus whether or not it is a plugin.
-// 		if($stylesheet['tid'] == 1)
-// 		{
-// 			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
-// 		}
-// 		else
-// 		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni($inheritance['inheritance_chain'][1]['codename'])), "ajax_alert");
-// 		}
-	}
-
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
 		'link' => 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;codename='.urlencode($codename).'&amp;file='.urlencode($mybb->input['file']).'&amp;mode=simple'
@@ -2341,7 +2328,15 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 		'description' => $lang->sprintf($lang->edit_stylesheet_advanced_mode_desc, $is_scss ? 'SCSS' : 'CSS')
 	);
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet_advanced');
+
+	if (!is_mutable_theme($codename, $mode)) {
+		$page->output_alert($lang->warning_immutable_theme);
+	} else if ($is_inherited) {
+		$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni(get_theme_name($inheritance['inheritance_chain'][1]['codename']))), "ajax_alert");
+	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheet&amp;mode=advanced", "post", "edit_stylesheet");
 	echo $form->generate_hidden_field("codename", $codename)."\n";
@@ -2645,6 +2640,8 @@ if ($action == 'add_stylesheet') {
 	$page->add_breadcrumb_item($lang->add_stylesheet);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
@@ -2981,6 +2978,8 @@ if ($action == 'templates') {
 
 	$page->output_header($lang->theme_templates);
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'edit_templates');
 
 	if (!is_mutable_theme($codename, $mode)) {
@@ -3216,6 +3215,8 @@ if ($action == 'edit_template') {
 		'description' => $lang->edit_template_desc
 	);
 
+	output_devdist_indicator_header();
+
 	$page->output_nav_tabs($sub_tabs, 'edit_template');
 
 	if (!is_mutable_theme($codename, $mode)) {
@@ -3309,6 +3310,8 @@ if ($action == 'add_template') {
 	$page->add_breadcrumb_item($lang->add_template);
 
 	$page->output_header("{$lang->themes} - {$lang->add_template}");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'add_template');
 
@@ -3413,10 +3416,24 @@ if ($action == 'create_devdist') {
 	admin_redirect('index.php?module=style-themes');
 }
 
+if ($action == 'toggle_themelet_dev_mode') {
+	if (!verify_post_check($mybb->get_input('my_post_key'))) {
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
+	}
+
+	$db->update_query('settings', array('value' => $mybb->settings['themelet_dev_mode'] ? '0' : '1'), "name='themelet_dev_mode'");
+	rebuild_settings();
+
+	admin_redirect('index.php?'.$mybb->get_input('return_qrystr'));
+}
+
 if (!$action) {
 	$page->output_header($lang->themes);
 
 	$plugins->run_hooks("admin_style_themes_start");
+
+	output_devdist_indicator_header();
 
 	$page->output_nav_tabs($sub_tabs, 'themes');
 
@@ -3570,4 +3587,12 @@ function get_ss_attach_from_input(&$errors) {
 	}
 
 	return $attached;
+}
+
+function output_devdist_indicator_header()
+{
+	global $mybb, $lang;
+
+	$on_off_class = 'devdist_indicator-'.($mybb->settings['themelet_dev_mode'] ? 'on' : 'off');
+	echo "<div class=\"devdist_indicator {$on_off_class}\">{$lang->devdist_mode_is} <span class=\"ddi_onoff\">".($mybb->settings['themelet_dev_mode'] ? $lang->on : $lang->off).'</span> | <a href="index.php?module=style-themes&amp;action=toggle_themelet_dev_mode&amp;return_qrystr='.urlencode($_SERVER['QUERY_STRING']).'&amp;my_post_key='.$mybb->post_code.'">'.($mybb->settings['themelet_dev_mode'] ? $lang->turn_off : $lang->turn_on).'</a>'.$lang->sprintf($lang->corresp_devdist_setting, '<a href="index.php?module=config-settings&action=change&gid=3">', '</a>').'</div>';
 }

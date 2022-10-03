@@ -42,6 +42,11 @@ $l['have_own_copy_lc_sq'] = '[have own copy]';
 $l['sqbr_append_core'] = ' [core]';
 $l['sqbr_append_orig'] = ' [original]';
 
+$l['devdist_mode_is'] = 'Themelet Development Mode is:';
+$l['turn_off'] = 'Turn off';
+$l['turn_on'] = 'Turn on';
+$l['corresp_devdist_setting'] = ' [Corresponding to Board Settings » {1}General Configuration{2} » Development Mode (Themelets)]';
+
 $l['colors_manage'] = "Manage Colors";
 $l['colors_attached_to'] = "color setting";
 $l['colors_setting'] = "Base Color";
