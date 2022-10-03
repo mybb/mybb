@@ -395,7 +395,7 @@ if(!empty($css_php_script_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if(!empty($theme['imgdir']) && my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -418,7 +418,7 @@ if(my_validate_url($theme['imgdir']))
 }
 else
 {
-	$img_directory = $theme['imgdir'];
+	$img_directory = !empty($theme['imgdir']) ? $theme['imgdir'] : '';
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
