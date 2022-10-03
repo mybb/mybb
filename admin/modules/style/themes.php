@@ -596,11 +596,68 @@ if ($action == 'import') {
 				}
 				if (!$errors) {
 					$installed_path = MYBB_ROOT."inc/themes/{$codename}/current";
-					if (!rename($staged_path, $installed_path)) {
+					if (!mkdir(dirname($installed_path), 0755, true)) {
+						$errors[] = $lang->sprintf($lang->error_failed_to_create_dir, htmlspecialchars_uni(dirname($installed_path)));
+					} else if (!rename($staged_path, $installed_path)) {
 						$errors[] = $lang->error_theme_rename_failed;
-					} else if ($infofile2) {
-						// TODO: generate and store information about new
-						// conflicts with board themes that descend from this one.
+					} else {
+						if ($infofile2) {
+							// TODO: generate and store information about new
+							// conflicts with board themes that descend from this one.
+						} else {
+							if (substr($codename, 0, 6) != 'board.') {
+								// If a board theme with this theme as parent does not yet exist,
+								// then create one, so that it is visible in the theme selection list.
+								$found = false;
+								foreach ($themelet_hierarchy['current']['themes'] as $thm) {
+									if ($thm['properties']['parent'] == $codename && substr($thm['properties']['codename'], 0, 6) == 'board.') {
+										$found = true;
+										break;
+									}
+								}
+								if (!$found) {
+									// Construct an appropriate codename for the board theme.
+									$cname = $cname_base = 'board.'.$codename;
+									$ok = false;
+									for ($i = 0; $i < 20; $i++) {
+										if (!file_exists(MYBB_ROOT."inc/themes/{$cname}")) {
+											$ok = true;
+											break;
+										}
+										$cname = $cname_base.'_'.chr(96+$i);
+									}
+									if ($ok) {
+										$board_dir = MYBB_ROOT."inc/themes/{$cname}/current";
+										if (!mkdir($board_dir, 0755, true)) {
+											$errors[] = $lang->sprintf($lang->error_failed_to_create_dir, htmlspecialchars_uni($board_dir));
+										} else {
+											foreach (['theme.json', 'resources.json'] as $json_file) {
+												$source_path = "{$installed_path}/{$json_file}";
+												$dest_path   = "{$board_dir}//{$json_file}";
+												if (!copy($source_path, $dest_path)) {
+													flash_message($lang->sprintf($lang->error_cp_failed, htmlspecialchars_uni($source_path), htmlspecialchars_uni($dest_path)), 'error');
+													admin_redirect('index.php?module=style-themes');
+												} else if ($json_file == 'theme.json') {
+													$theme_properties = read_json_file($dest_path, $err_msg, false);
+													if (!$theme_properties && $err_msg) {
+														flash_message($err_msg, 'error');
+														admin_redirect('index.php?module=style-themes');
+													} else {
+														$theme_properties['codename'] = $cname;
+														$theme_properties['name'] = $themeinfo['name'].' (Board)';
+														$theme_properties['parent'] = $codename;
+														if (!write_json_file($dest_path, $theme_properties)) {
+															flash_message($lang->error_failed_to_save_board_theme, 'error');
+															admin_redirect('index.php?module=style-themes');
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 

@@ -290,8 +290,10 @@ $l['error_no_color_picked'] = "You didn't specify which colors to attach this st
 $l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
 $l['error_stylesheet_order_update'] = 'Failed to write the stylesheet order to the theme\'s resources.json file.';
 $l['error_failed_to_save_theme'] = 'Failed to update the theme\'s theme.json file.';
+$l['error_failed_to_save_board_theme'] = 'Failed to update the derived board theme\'s theme.json file.';
 $l['error_failed_to_save_stylesheet_props'] = 'Failed to save the stylesheet properties to the theme\'s resources.json file.';
 $l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
+$l['error_failed_to_create_dir'] = 'Failed to create the directory "{1}".';
 
 $l['error_path_with_double_dot'] = 'The supplied {1} contains an illegal double-dot followed by a directory separator character (/ or \\).';
 // Each of these can be supplied to replace {1} in the string above.
