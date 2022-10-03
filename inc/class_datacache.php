@@ -992,11 +992,20 @@ class datacache
 
 		if(empty($theme))
 		{
-			// Default the default theme to the first one if this function is called without one
+			// Default to the first board theme, or else to the first theme in general
+			// if this function is called without a theme
 			require_once MYBB_ROOT.'inc/functions_themes.php';
 			$themelet_hierarchy = get_themelet_hierarchy();
-			$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-			$theme = reset($themelet_hierarchy[$mode]['themes'])['properties'];
+			$theme = [];
+			foreach ($themelet_hierarchy['current']['themes'] as $codename => $theme_a) {
+				if (substr($theme_a['properties']['codename'], 0, 6) == 'board.') {
+					$theme = $theme_a['properties'];
+					break;
+				}
+			}
+			if (!$theme) {
+				$theme = reset($themelet_hierarchy['current']['themes'])['properties'];
+			}
 		}
 		$this->update('default_theme', $theme);
 	}
