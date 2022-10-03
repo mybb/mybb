@@ -428,8 +428,6 @@ function upgradethemes()
 		$output->print_error('Failed to move "'.htmlspecialchars_uni($core_theme_basedir.'devdist').'" to '.htmlspecialchars_uni($core_theme_basedir.'current').'.');
 	}
 
-	$cache->update_themelet_dirs();
-
 	$output->print_contents($lang->upgrade_templates_reverted_success);
 	$output->print_footer("rebuildsettings");
 
