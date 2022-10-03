@@ -656,7 +656,7 @@ function buildcaches()
  */
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang, $config, $plugins;
+	global $db, $output, $mybb, $lang, $config, $plugins, $cache;
 
 	ob_start();
 	$output->print_header($lang->upgrade_complete);
@@ -722,6 +722,7 @@ function upgradedone()
 		}
 	}
 
+	$cache->update_default_theme();
 	$output->print_contents($lang->sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }

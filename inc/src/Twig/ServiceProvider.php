@@ -58,7 +58,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
              * front end and the ACP, so we need to make sure that the global $theme is initialised
              * for the ACP - we just set it to the default.
              */
-            if (defined('IN_ADMINCP') && empty($theme)) {
+            if (empty($theme)) {
                 if (!$cache->read('default_theme')) {
                     $cache->update_default_theme();
                 }
