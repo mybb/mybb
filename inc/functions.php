@@ -581,9 +581,9 @@ function &get_my_mailhandler($use_buitlin = false)
 			{
 				require_once MYBB_ROOT . "inc/mailhandlers/php.php";
 				$my_mailhandler_builtin = new PhpMail();
-				if(!empty($mybb->settings['mail_parameters']))
+				if(!empty($mybb->config['mail_parameters']))
 				{
-					$my_mailhandler_builtin->additional_parameters = $mybb->settings['mail_parameters'];
+					$my_mailhandler_builtin->additional_parameters = $mybb->config['mail_parameters'];
 				}
 			}
 		}
