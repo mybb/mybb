@@ -354,6 +354,10 @@ class session
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
 		$mybb->user['invisible'] = 0;
+		$mybb->user['moderateposts'] = 0;
+		$mybb->user['showquickreply'] = 1;
+		$mybb->user['signature'] = '';
+		$mybb->user['suspendposting'] = 0;
 
 		// Has this user visited before? Lastvisit need updating?
 		if(isset($mybb->cookies['mybb']['lastvisit']))
