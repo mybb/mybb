@@ -1129,9 +1129,18 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 			else
 			{
-				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-				$thread['width'] = (int)round($thread['averagerating'])*20;
 				$thread['numratings'] = (int)$thread['numratings'];
+
+				if($thread['numratings'] == 0)
+				{
+					$thread['averagerating'] = 0;
+					$thread['width'] = 0;
+				}
+				else
+				{
+					$thread['averagerating'] = (float)round($thread['averagerating'], 2);
+					$thread['width'] = (int)round($thread['averagerating']) * 20;
+				}
 
 				$not_rated = '';
 				if(!isset($thread['rated']) || empty($thread['rated']))

@@ -4378,7 +4378,7 @@ if(!$mybb->input['action'])
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
 
-			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
+			if(!isset($forumpermissions['canonlyviewownthreads']) || $forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -4427,7 +4427,7 @@ if(!$mybb->input['action'])
 					$folder_label = '';
 					$gotounread = '';
 
-					if($thread['tid'])
+					if(!empty($thread['tid']))
 					{
 						$bgcolor = alt_trow();
 						$thread['subject'] = $parser->parse_badwords($thread['subject']);
