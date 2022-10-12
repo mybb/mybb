@@ -100,7 +100,40 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                     'is_safe' => ['html'],
                 ]
             ),
+            new TwigFunction(
+                'include',
+                [$this, 'twig_include'],
+                [
+                    'needs_environment' => true,
+                    'needs_context' => true,
+                    'is_safe' => ['all']
+                ]
+            ),
         ];
+    }
+
+    function twig_include(Environment $env, $context, $template, $variables = [], $withContext = true, $ignoreMissing = false, $sandboxed = false)
+    {
+        global $plugins;
+
+        $name = false;
+        if (is_array($template)) {
+            foreach ($template as $tpl) {
+                if ($env->getLoader()->exists($tpl)) {
+                    $name = $tpl;
+                    break;
+                }
+            }
+        } else {
+            $name = $template;
+        }
+        if ($name) {
+            // Note that unlike the related `template` hook in `inc/src/functions.php`,
+            // $name and $variables are not passed by reference here, because changing
+            // either has no effect anyway.
+            $params = ['name' => $name, 'variables' => $variables];
+            $plugins->run_hooks('template_include', $params);
+        }
     }
 
     /**
