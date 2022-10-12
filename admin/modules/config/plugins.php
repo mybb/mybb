@@ -590,14 +590,13 @@ if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 		if(!$do_upgrade)
 		{
 			$message = $lang->success_plugin_activated;
-		}
-
-		// Plugin is compatible with this version?
-		$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/$codename/plugin.json");
-		if($plugins->is_compatible($plugininfo['compatibility']) == false)
-		{
-			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
-			admin_redirect("index.php?module=config-plugins");
+		} else {
+			// Plugin is compatible with this version?
+			$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/$codename/plugin.json");
+			if (empty($plugininfo['compatibility']) || $plugins->is_compatible($plugininfo['compatibility']) == false) {
+				flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
+				admin_redirect("index.php?module=config-plugins");
+			}
 		}
 
 		// If not installed and there is a custom installation function
