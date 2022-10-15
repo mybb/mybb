@@ -48,7 +48,15 @@ function template(string $name, array $variables = [])
     $params = ['name' => &$name, 'variables' => &$variables];
     $plugins->run_hooks('template', $params);
 
-    return $twig->render($name, $variables);
+    $ret = '';
+    try {
+        $ret = $twig->render($name, $variables);
+    } catch (\Throwable $e) {} // Ignore exceptions/errors - just return an empty string.
+                               // Mostly, this is so that if we are in `devdist` mode, and
+                               // a plugin doesn't have a `devdist` directory in which the
+                               // requested template is expected, we don't error out here.
+
+    return $ret;
 }
 
 /**
