@@ -454,7 +454,7 @@ else
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
-if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
+if(!empty($theme['logo']) && !preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }

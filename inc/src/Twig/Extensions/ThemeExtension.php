@@ -108,14 +108,15 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $stylesheets_a = [];
 
         require_once MYBB_ROOT.'inc/functions_themes.php';
-        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], $theme['color'], false, false);
+        $color = !empty($theme['color']) ? $theme['color'] : '';
+        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], $color, false, false);
         foreach ($cache->read('plugins')['active'] as $plugin_code) {
-            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, $theme['color'], false, true);
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, $color, false, true);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
-        if (!empty($theme['color'])) {
-            $stylesheetScripts[] = $theme['color'];
+        if (!empty($color)) {
+            $stylesheetScripts[] = $color;
         }
 
         $stylesheetActions = array("global");
