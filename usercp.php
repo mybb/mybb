@@ -3809,7 +3809,7 @@ if(!$mybb->input['action'])
 				$thread['folder_label'] = '';
 
 				// Folder Icons
-				if($thread['doticon'])
+				if(!empty($thread['doticon']))
 				{
 					$thread['folder'] = "dot_";
 					$thread['folder_label'] .= $lang->icon_dot;
