@@ -512,6 +512,8 @@ if($mybb->input['action'] == "profile")
 				continue;
 			}
 
+			$userfield = $code = $select = $val = $options = $expoptions = $useropts = '';
+			$seloptions = array();
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
@@ -526,7 +528,6 @@ if($mybb->input['action'] == "profile")
 				$options = array();
 			}
 			$field = "fid{$profilefield['fid']}";
-			$select = '';
 			if($errors)
 			{
 				if(!isset($mybb->input['profile_fields'][$field]))
@@ -683,13 +684,6 @@ if($mybb->input['action'] == "profile")
 				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
 			$altbg = alt_trow();
-			$code = "";
-			$select = "";
-			$val = "";
-			$options = "";
-			$expoptions = "";
-			$useropts = "";
-			$seloptions = array();
 		}
 	}
 	if($customfields)
