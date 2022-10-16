@@ -2337,6 +2337,10 @@ if(!$mybb->input['action'])
 				{
 					foreach($recipients['to'] as $uid)
 					{
+						if(!isset($cached_users[$uid]))
+						{
+							continue;
+						}
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
 						$user['username'] = htmlspecialchars_uni($user['username']);
@@ -2352,6 +2356,10 @@ if(!$mybb->input['action'])
 						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
 						foreach($recipients['bcc'] as $uid)
 						{
+							if(!isset($cached_users[$uid]))
+							{
+								continue;
+							}
 							$profilelink = get_profile_link($uid);
 							$user = $cached_users[$uid];
 							$user['username'] = htmlspecialchars_uni($user['username']);
