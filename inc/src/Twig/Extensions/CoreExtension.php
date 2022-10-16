@@ -129,9 +129,9 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         }
         if ($name) {
             // Note that unlike the related `template` hook in `inc/src/functions.php`,
-            // $name and $variables are not passed by reference here, because changing
-            // either has no effect anyway.
-            $params = ['name' => $name, 'variables' => $variables];
+            // neither $name nor $context (nor $variables) are not passed by reference here,
+            // because changing either has no effect anyway.
+            $params = ['name' => $name, 'context' => $context, 'variables' => $variables];
             $plugins->run_hooks('template_include', $params);
         }
     }

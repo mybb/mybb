@@ -427,6 +427,6 @@ function hello_template(&$params)
 
 	if($params['name'] == 'index/index.twig')
 	{
-		$params['variables']['hello'] = $hello;
+		$params['context']['hello'] = $hello;
 	}
 }

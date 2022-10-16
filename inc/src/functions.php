@@ -28,7 +28,7 @@ function app(?string $className = null, array $parameters = [])
  * Render a view using the Twig template system.
  *
  * @param string $name The name of the template to render.
- * @param array $variables An array of variables to be accessible within the template.
+ * @param array $context An array of variables to be accessible within the template.
  *
  * @return string The rendered HTML content of the template.
  *
@@ -36,7 +36,7 @@ function app(?string $className = null, array $parameters = [])
  * @throws \Twig\Error\RuntimeError
  * @throws \Twig\Error\SyntaxError
  */
-function template(string $name, array $variables = [])
+function template(string $name, array $context = [])
 {
     global $plugins;
 
@@ -45,12 +45,12 @@ function template(string $name, array $variables = [])
 
     // Note the related `template_include` hook in `inc/src/Twig/Extensions/CoreExtension.php`,
     // which you might also want to make use of.
-    $params = ['name' => &$name, 'variables' => &$variables];
+    $params = ['name' => &$name, 'context' => &$context];
     $plugins->run_hooks('template', $params);
 
     $ret = '';
     try {
-        $ret = $twig->render($name, $variables);
+        $ret = $twig->render($name, $context);
     } catch (\Throwable $e) {} // Ignore exceptions/errors - just return an empty string.
                                // Mostly, this is so that if we are in `devdist` mode, and
                                // a plugin doesn't have a `devdist` directory in which the
