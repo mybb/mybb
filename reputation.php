@@ -669,7 +669,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Check the sorting options for the reputation list
-	$sort_selected = array('username' => '', 'last_ipdated' => '');
+	$sort_selected = array('username' => '', 'last_updated' => '');
 	switch($mybb->get_input('sort'))
 	{
 		case "username":
