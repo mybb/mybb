@@ -249,6 +249,19 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = array_merge($mybb->input, $ban);
 	}
 
+	if(!empty($ban['gid']))
+	{
+		$mybb->input['usergroup'] = $ban['gid'];
+	}
+	else if(!empty($user['usergroup']))
+	{
+		$mybb->input['usergroup'] = $user['usergroup'];
+	}
+	else
+	{
+		$mybb->input['usergroup'] = 0;
+	}
+
 	$form_container = new FormContainer($lang->edit_ban);
 	$form_container->output_row($lang->ban_username, "", htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
@@ -402,6 +415,23 @@ if(!$mybb->input['action'])
 	{
 		$user = get_user($mybb->input['uid']);
 		$mybb->input['username'] = $user['username'];
+	}
+
+	if(empty($mybb->input['usergroup']))
+	{
+		if(!empty($mybb->settings['purgespammerbangroup']))
+		{
+			$mybb->input['usergroup'] = $mybb->settings['purgespammerbangroup'];
+		}
+		else if(count($banned_groups))
+		{
+			$group = array_keys($banned_groups);
+			$mybb->input['usergroup'] = $group[0];
+		}
+		else
+		{
+			$mybb->input['usergroup'] = 0;
+		}
 	}
 
 	$form_container = new FormContainer($lang->ban_a_user);
