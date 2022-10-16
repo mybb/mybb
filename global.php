@@ -111,7 +111,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 
 // Select the board theme to use.
 $load_from_forum = $load_from_user = false;
-$style = '';
+$style = 'board.default'; // Default to the default board style.
 
 // The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
