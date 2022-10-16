@@ -4162,7 +4162,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => (isset($selected_options[$val]) && $val == $selected_options[$val] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":
