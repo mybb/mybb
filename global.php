@@ -291,6 +291,7 @@ if(empty($theme))
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
+$stylesheet_scripts = [];
 $resources = read_json_file(MYBB_ROOT."inc/themes/$style/$mode/resources.json", $err_msg, /*$show_errs =*/false);
 if(!empty($resources['stylesheets']))
 {
