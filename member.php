@@ -2345,8 +2345,8 @@ if($mybb->input['action'] == "profile")
 	}
 
 	// Get the user title for this user
-	unset($usertitle);
 	unset($stars);
+	$usertitle = '';
 	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
@@ -2360,9 +2360,12 @@ if($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		// No usergroup title so get a default one
-		$usertitles = $cache->read('usertitles');
+		if(!isset($usertitles))
+		{
+			$usertitles = $cache->read('usertitles');
+		}
 
+		// No usergroup title so get a default one
 		if(is_array($usertitles))
 		{
 			foreach($usertitles as $title)
@@ -2386,9 +2389,9 @@ if($mybb->input['action'] == "profile")
 		// Set the number of stars if display group has constant number of stars
 		$stars = $memperms['stars'];
 	}
-	elseif(!$stars)
+	elseif(!isset($stars))
 	{
-		if(!is_array($usertitles))
+		if(!isset($usertitles))
 		{
 			$usertitles = $cache->read('usertitles');
 		}
@@ -2405,6 +2408,11 @@ if($mybb->input['action'] == "profile")
 					break;
 				}
 			}
+		}
+
+		if(!isset($stars))
+		{
+			$stars = 0;
 		}
 	}
 
