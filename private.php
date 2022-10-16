@@ -2207,6 +2207,11 @@ if(!$mybb->input['action'])
 					$message['tousers'] = $message['bbcusers'] = [];
 					foreach($recipients['to'] as $uid)
 					{
+						if(!isset($cached_users[$uid]))
+						{
+							continue;
+						}
+
 						$user = $cached_users[$uid];
 						$user['profilelink'] = get_profile_link($uid);
 						$user['username_raw'] = $user['username'];
@@ -2217,6 +2222,11 @@ if(!$mybb->input['action'])
 					{
 						foreach($recipients['bcc'] as $uid)
 						{
+							if(!isset($cached_users[$uid]))
+							{
+								continue;
+							}
+
 							$user = $cached_users[$uid];
 							$user['profilelink'] = get_profile_link($uid);
 							$user['username_raw'] = $user['username'];
