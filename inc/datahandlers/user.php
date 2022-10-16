@@ -1427,7 +1427,7 @@ class UserDataHandler extends DataHandler
 		$old_user = get_user($user['uid']);
 
 		// If old user has new pmnotice and new user has = yes, keep old value
-		if($old_user['pmnotice'] == "2" && $this->user_update_data['pmnotice'] == 1)
+		if(isset($this->user_update_data['pmnotice']) && $old_user['pmnotice'] == "2" && $this->user_update_data['pmnotice'] == 1)
 		{
 			unset($this->user_update_data['pmnotice']);
 		}
