@@ -525,6 +525,8 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
+		$post['userstars'] = '';
+		$post['useravatar'] = '';
 
 		$usergroup['title'] = $lang->na;
 
