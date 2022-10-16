@@ -1094,6 +1094,10 @@ EOF;
 		}
 		$warning_level = get_colored_warning_level($warning_level);
 	}
+	else
+	{
+		$warning_level = "-";
+	}
 
 	$age = $lang->na;
 	if($user['birthday'])
