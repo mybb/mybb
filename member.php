@@ -2656,57 +2656,66 @@ if($mybb->input['action'] == "profile")
 	{
 		// Fetch details on their ban
 		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
-		$memban = $db->fetch_array($query);
 
-		if($memban['reason'])
+		if($db->num_rows($query))
 		{
-			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-		}
-		else
-		{
-			$memban['reason'] = $lang->na;
-		}
+			$memban = $db->fetch_array($query);
 
-		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
-		{
-			$banlength = $lang->permanent;
-			$timeremaining = $lang->na;
-			$banned_class = "normal_banned";
-		}
-		else
-		{
-			// Set up the array of ban times.
-			$bantimes = fetch_ban_times();
-
-			$banlength = $bantimes[$memban['bantime']];
-			$remaining = $memban['lifted']-TIME_NOW;
-
-			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-			$banned_class = '';
-			if($remaining < 3600)
+			if($memban['reason'])
 			{
-				$banned_class = "high_banned";
-			}
-			else if($remaining < 86400)
-			{
-				$banned_class = "moderate_banned";
-			}
-			else if($remaining < 604800)
-			{
-				$banned_class = "low_banned";
+				$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
 			}
 			else
 			{
+				$memban['reason'] = $lang->na;
+			}
+
+			if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
+			{
+				$banlength = $lang->permanent;
+				$timeremaining = $lang->na;
 				$banned_class = "normal_banned";
 			}
+			else
+			{
+				// Set up the array of ban times.
+				$bantimes = fetch_ban_times();
+
+				$banlength = $bantimes[$memban['bantime']];
+				$remaining = $memban['lifted']-TIME_NOW;
+
+				$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+				$banned_class = '';
+				if($remaining < 3600)
+				{
+					$banned_class = "high_banned";
+				}
+				else if($remaining < 86400)
+				{
+					$banned_class = "moderate_banned";
+				}
+				else if($remaining < 604800)
+				{
+					$banned_class = "low_banned";
+				}
+				else
+				{
+					$banned_class = "normal_banned";
+				}
+			}
+			eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
+
+			$memban['adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+
+			// Display a nice warning to the user
+			eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
 		}
-		eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
-
-		$memban['adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
-
-		// Display a nice warning to the user
-		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
+		else
+		{
+			// TODO: more specific output for converted/merged boards where no ban record is merged.
+			$bannedbit = '';
+		}
 	}
 
 	$adminoptions = '';
