@@ -2237,7 +2237,7 @@ if(!$mybb->input['action'])
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = my_unserialize($row['recipients']);
-			if(is_array($recipients['to']) && count($recipients['to']))
+			if(isset($recipients['to']) && is_array($recipients['to']) && count($recipients['to']))
 			{
 				$get_users = array_merge($get_users, $recipients['to']);
 			}
