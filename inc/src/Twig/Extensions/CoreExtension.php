@@ -134,6 +134,12 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             $params = ['name' => $name, 'context' => $context, 'variables' => $variables];
             $plugins->run_hooks('template_include', $params);
         }
+        // Call the function we're overriding. For some reason, this doesn't seem to be
+        // necessary anyway, because despite my confirming that the function doesn't run unless
+        // we explicitly call it here, functionality did not seem to be in any way affected,
+        // which baffles me (Laird). It still seems to be proper and good practice to add this
+        // call anyway.
+        \twig_include($env, $context, $template, $variables, $withContext, $ignoreMissing, $sandboxed);
     }
 
     /**
