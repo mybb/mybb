@@ -4,9 +4,46 @@ namespace MyBB\Twig\Extensions;
 
 use DB_Base;
 use MyBB;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
+use Twig\Node\Node;
+use Twig\Node\ModuleNode;
+use Twig\NodeVisitor\NodeVisitorInterface;
+use Twig\Compiler;
+
+class MyBBTwigDispNode extends Node
+{
+    public function compile(\Twig\Compiler $compiler): void
+    {
+        $compiler
+            ->write("\$this->env->getExtension('".ThemeExtension::class."')->onDisplayMyBBTwigTemplate(\$this, \$context);\n")
+        ;
+    }
+}
+
+class MyBBTwigNodeVisitor implements NodeVisitorInterface
+{
+    public function enterNode(Node $node, Environment $env): Node
+    {
+        if ($node instanceof ModuleNode) {
+            $node->setNode('display_start', new MyBBTwigDispNode);
+        }
+
+        return $node;
+    }
+
+    public function leaveNode(Node $node, Environment $env): ?Node
+    {
+        return $node;
+    }
+
+    public function getPriority(): int
+    {
+        return 0;
+    }
+}
 
 /**
  * A Twig extension class to provide functionality related to themes and assets.
@@ -40,6 +77,24 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $this->db = $db;
 
         $this->altRowState = null;
+    }
+
+    public function getNodeVisitors(): array
+    {
+        return [new MyBBTwigNodeVisitor(static::class)];
+    }
+
+    public function onDisplayMyBBTwigTemplate($node, &$context)
+    {
+        global $plugins, $twig_templates;
+
+        if (empty($twig_templates)) {
+            $twig_templates = [];
+        }
+        $twig_templates[] = $node->getTemplateName();
+
+        $params = ['name' => $node->getTemplateName(), 'context' => &$context];
+        $plugins->run_hooks('template', $params);
     }
 
     public function getFunctions()

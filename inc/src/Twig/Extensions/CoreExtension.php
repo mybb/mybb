@@ -100,58 +100,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                     'is_safe' => ['html'],
                 ]
             ),
-            new TwigFunction(
-                'include',
-                [$this, 'twig_include'],
-                [
-                    'needs_environment' => true,
-                    'needs_context' => true,
-                    'is_safe' => ['all']
-                ]
-            ),
         ];
-    }
-
-    function twig_include(Environment $env, $context, $template, $variables = [], $withContext = true, $ignoreMissing = false, $sandboxed = false)
-    {
-        global $plugins;
-
-        $name = false;
-        if (is_array($template)) {
-            foreach ($template as $tpl) {
-                if ($env->getLoader()->exists($tpl)) {
-                    $name = $tpl;
-                    break;
-                }
-            }
-        } else {
-            $name = $template;
-        }
-        if ($name) {
-            // Note that unlike the related `template` hook in `inc/src/functions.php`,
-            // neither $name nor $context (nor $variables) are passed by reference here,
-            // because changing either has no effect anyway.
-            //
-            // Note too that as well as via this *function*, the basic syntax of which in Twig is:
-            //
-            // {{ include('template.twig') }}
-            //
-            // templates can also be included via a *tag*, the basic syntax of which in Twig is:
-            //
-            // {% include 'template.twig' %}
-            //
-            // I (Laird) have been unable to find a way to trigger on include tags, so this
-            // below `template_include` hook does not run when templates are included via the tag,
-            // only when they are included via the function.
-            $params = ['name' => $name, 'context' => $context, 'variables' => $variables];
-            $plugins->run_hooks('template_include', $params);
-        }
-        // Call the function we're overriding. For some reason, this doesn't seem to be
-        // necessary anyway, because despite my confirming that the function doesn't run unless
-        // we explicitly call it here, functionality did not seem to be in any way affected,
-        // which baffles me (Laird). It still seems to be proper and good practice to add this
-        // call anyway.
-        \twig_include($env, $context, $template, $variables, $withContext, $ignoreMissing, $sandboxed);
     }
 
     /**

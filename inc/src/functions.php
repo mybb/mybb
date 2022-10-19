@@ -38,15 +38,8 @@ function app(?string $className = null, array $parameters = [])
  */
 function template(string $name, array $context = [])
 {
-    global $plugins;
-
     /** @var Environment $twig */
     $twig = app(Environment::class);
-
-    // Note the related `template_include` hook in `inc/src/Twig/Extensions/CoreExtension.php`,
-    // which you might also want to make use of.
-    $params = ['name' => &$name, 'context' => &$context];
-    $plugins->run_hooks('template', $params);
 
     $ret = '';
     try {
