@@ -3524,7 +3524,7 @@ if (!$action) {
 			$table2->construct_header($lang->recommended_q);
 			foreach ($with_no_devdist as $cname => $name) {
 				$table2->construct_cell(htmlspecialchars_uni($name));
-				$table2->construct_cell('<a href="index.php?module=style-themes&amp;action=create_devdist&amp;codename='.urlencode($cname).'&amp;my_post_key='.$mybb->post_code.'">'.$lang->create_missing_devdist.'</a>'.$recomm);
+				$table2->construct_cell('<a href="index.php?module=style-themes&amp;action=create_devdist&amp;codename='.urlencode($cname).'&amp;my_post_key='.$mybb->post_code.'">'.$lang->create_missing_devdist.'</a>');
 				$table2->construct_cell(is_mutable_theme($cname, 'current') ? $lang->not_recomm_mutable_already : $lang->yes);
 				$table2->construct_row();
 			}
