@@ -129,8 +129,20 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         }
         if ($name) {
             // Note that unlike the related `template` hook in `inc/src/functions.php`,
-            // neither $name nor $context (nor $variables) are not passed by reference here,
+            // neither $name nor $context (nor $variables) are passed by reference here,
             // because changing either has no effect anyway.
+            //
+            // Note too that as well as via this *function*, the basic syntax of which in Twig is:
+            //
+            // {{ include('template.twig') }}
+            //
+            // templates can also be included via a *tag*, the basic syntax of which in Twig is:
+            //
+            // {% include 'template.twig' %}
+            //
+            // I (Laird) have been unable to find a way to trigger on include tags, so this
+            // below `template_include` hook does not run when templates are included via the tag,
+            // only when they are included via the function.
             $params = ['name' => $name, 'context' => $context, 'variables' => $variables];
             $plugins->run_hooks('template_include', $params);
         }
