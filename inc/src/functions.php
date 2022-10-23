@@ -44,10 +44,10 @@ function template(string $name, array $context = [])
     $ret = '';
     try {
         $ret = $twig->render($name, $context);
-    } catch (\Throwable $e) {} // Ignore exceptions/errors - just return an empty string.
-                               // Mostly, this is so that if we are in `devdist` mode, and
-                               // a plugin doesn't have a `devdist` directory in which the
-                               // requested template is expected, we don't error out here.
+    } catch (LoaderError $e) {} // Ignore loading exceptions/errors - just return an empty string.
+                                // Mostly, this is so that if we are in `devdist` mode, and
+                                // a plugin doesn't have a `devdist` directory in which the
+                                // requested template is expected, we don't error out here.
 
     return $ret;
 }

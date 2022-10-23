@@ -1148,6 +1148,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		'captcha' => $captcha,
 		'prefixes' => $prefixes,
 		'posticons' => $posticons,
-        'post_javascript' => $post_javascript,
+		'post_javascript' => $post_javascript,
 	]));
 }

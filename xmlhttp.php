@@ -125,7 +125,7 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if(!empty($theme['imgdir']) && my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -148,11 +148,11 @@ if(my_validate_url($theme['imgdir']))
 }
 else
 {
-	$img_directory = $theme['imgdir'];
+	$img_directory = empty($theme['imgdir']) ? '' : $theme['imgdir'];
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
-		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($img_directory, '/');
 	}
 
 	if(!@is_dir($img_directory))
