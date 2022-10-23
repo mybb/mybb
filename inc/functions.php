@@ -9246,7 +9246,7 @@ function mk_path_abs($path, $base = MYBB_ROOT)
  */
 function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 {
-	global $lang, $page;
+	global $lang, $page, $error_handler;
 
 	// Load the user area language file even if in the ACP, so we don't have to duplicate
 	// language strings.
@@ -9257,34 +9257,36 @@ function read_json_file($json_file, &$err_msg = '', $show_errs = true)
 	if (!file_exists($json_file)) {
 		$err_msg = $lang->sprintf($lang->error_missing_json_file, $json_file);
 		if ($show_errs) {
-			if (IN_ADMINCP) {
+			if (defined('IN_ADMINCP')) {
 				$page->output_inline_error($err_msg);
-			} else	error($err_msg);
+			} else {
+				$error_handler->error(MYBB_GENERAL, $err_msg);
+			}
 		}
 	} else if (!is_file($json_file) || !is_readable($json_file)) {
 		$err_msg = $lang->sprintf($lang->error_unreadable_json_file, $json_file);
 		if ($show_errs) {
-			if (IN_ADMINCP) {
+			if (defined('IN_ADMINCP')) {
 				$page->output_inline_error($err_msg);
-			} else	error($err_msg);
+			} else	$error_handler->error(MYBB_GENERAL, $err_msg);
 		}
 	} else {
 		$json = file_get_contents($json_file);
 		if ($json === false) {
 			$err_msg = $lang->sprintf($lang->error_fgc_failed_for_json_file, $json_file);
 			if ($show_errs) {
-				if (IN_ADMINCP) {
+				if (defined('IN_ADMINCP')) {
 					$page->output_inline_error($err_msg);
-				} else	error($err_msg);
+				} else	$error_handler->error(MYBB_GENERAL, $err_msg);
 			}
 		} else {
 			$ret = json_decode($json, true);
 			if (!is_array($ret)) {
 				$err_msg = $lang->sprintf($lang->error_invalid_json_in_file, $json_file);
 				if ($show_errs) {
-					if (IN_ADMINCP) {
+					if (defined('IN_ADMINCP')) {
 						$page->output_inline_error($err_msg);
-					} else	error($err_msg);
+					} else	$error_handler->error(MYBB_GENERAL, $err_msg);
 				} else	$ret = [];
 			}
 		}
