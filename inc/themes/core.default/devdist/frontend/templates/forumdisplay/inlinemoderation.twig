@@ -25,8 +25,7 @@
             <option value="multiunapprovethreads">{{ lang.unapprove_threads }}</option>
         {% endif %}
     {% endset %}
-    {% if standardTools|trim or customTools %}
-        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
+    {% if displayModeration %}
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />

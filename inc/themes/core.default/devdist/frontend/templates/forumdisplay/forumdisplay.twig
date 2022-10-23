@@ -18,14 +18,9 @@
         lang.post_fetch_error = "{{ lang.post_fetch_error }}";
     // -->
     </script>
-    <!-- jeditable (jquery) -->
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/jeditable/jeditable.min.js"></script>
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_edit.js?ver=1808"></script>
 {% endblock jscripts %}
 
 {% block body %}
-    {% set displayRating = (mybb.settings.allowthreadratings and foruminfo.allowtratings and fpermissions.canviewthreads) ? true : false %}
-
     <div class="page-content">
         <header class="page-header">
             <h1 class="title title--page">{{ foruminfo.name }}</h1>
@@ -145,7 +140,6 @@
                                 {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
                             </strong>
                         </span>
-                        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
                         <script type="text/javascript">
                         <!--
                             lang.stars = [];

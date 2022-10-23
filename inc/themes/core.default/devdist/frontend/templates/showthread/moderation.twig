@@ -65,7 +65,6 @@
     </div>
     {% if thread.showinlinemodoptions %}
         <div class="page-tools__item thread-moderation__inline">
-            <script type="text/javascript" src="{{ asset_url('jscripts/inline_moderation.js') }}"></script>
             <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
                 <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                 <input type="hidden" name="tid" value="{{ thread.tid }}" />

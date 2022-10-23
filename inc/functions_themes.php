@@ -391,6 +391,56 @@ function archive_themelet($codename, $is_plugin_themelet = false, &$err_msg = ''
     return $err_msg ? false : true;
 }
 
+function get_theme_jscripts($theme_code)
+{
+    global $theme, $cache, $mybb;
+
+    $jscripts = [];
+    $current = $theme_code;
+    $noinherit = false;
+    $mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
+    $themelet_dirs = get_themelet_dirs();
+    foreach ([false, true] as $doing_plugins) {
+        foreach (array_reverse($themelet_dirs[$theme_code]) as $entry) {
+            $resources = read_json_file("{$entry[0]}{$mode}/resources.json", $err_msg, /*$show_errs = */false);
+            if ($doing_plugins == $entry[2]) {
+                if (!$doing_plugins) {
+                    // If this theme's inheritance policy is 'noinherit', then discard jscript data to date,
+                    // because that policy stipulates that the jscript data must not be inherited.
+                    // We are working through themes from the furtherest ancestor to the theme with code $theme_code.
+                    // We work through themes before working through plugins so that we don't discard plugin jscript data.
+                    // The default inheritance policy is 'merge'.
+                    if (!empty($resources['js_inheritance_policy']) && $resources['js_inheritance_policy'] == 'noinherit') {
+                        $jscripts = [];
+                    }
+                }
+                if (!empty($resources['jscripts'])) {
+                    foreach ($resources['jscripts'] as $scriptname => &$scriptdata) {
+                        if (my_substr($scriptname, 0, 1) == '@') {
+                            $scriptdata['specifier'] = normalise_res_spec1($scriptname);
+                        } else {
+                            $scriptdata['specifier'] = $scriptname;
+                        }
+                        if (!empty($scriptdata['dependent_on'])) {
+                            foreach ($scriptdata['dependent_on'] as &$dependent) {
+                                if (my_substr($dependent, 0, 1) == '@') {
+                                    $dependent = normalise_res_spec1($dependent);
+                                    echo $dependent;
+                                }
+                            }
+                            unset($dependent);
+                        }
+                    }
+                    unset($scriptdata);
+                    $jscripts = array_merge_recursive($jscripts, $resources['jscripts']);
+                }
+            }
+        }
+    }
+
+    return $jscripts;
+}
+
 /**
  * Retrieve the stylesheets for the given themelet from its `resources.json` file.
  *
@@ -633,7 +683,7 @@ function parse_res_spec1($specifier)
         // It does. Now parse it.
         $remainder = substr($specifier, 1);
         $a = explode('/', $remainder, 3);
-        $namespace = $a[0];
+        $namespace = $a[0] ? $a[0] : 'frontend';
         if (!empty($a[1])) {
             $component = $a[1];
         }

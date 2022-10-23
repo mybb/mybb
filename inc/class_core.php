@@ -502,31 +502,39 @@ class MyBB {
 
 		if(substr($path, 0, 4) != 'http')
 		{
-			$spec_type1 = my_strtolower(substr($path, 0, 4));
-			$spec_type2 = my_strtolower(substr($path, 0, 3));
-			if(($spec_type1 === '~cp~' || $spec_type1 === '~ct~') && substr_count($path, ':') == 2
-			   ||
-			   (($spec_type2 === '~p~' || $spec_type2 === '~t~') && substr_count($path, ':') == 3)
-			)
-			{
+			$spec = false;
+			if (my_substr($path, 0, 1) == '@') {
+				list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($path);
+				$spec = $plugin_code
+				         ? "~cp~{$plugin_code}:{$component}:{$filename}"
+				         : "~ct~{$namespace}:{$component}:{$filename}";
+			} else {
+				$spec_type1 = my_strtolower(substr($path, 0, 4));
+				$spec_type2 = my_strtolower(substr($path, 0, 3));
+				if (($spec_type1 === '~cp~' || $spec_type1 === '~ct~') && substr_count($path, ':') == 2
+				    ||
+				    (($spec_type2 === '~p~' || $spec_type2 === '~t~') && substr_count($path, ':') == 3)
+				) {
+					$spec = $path;
+				}
+			}
+
+			if ($spec) {
 				// We have a themelet resource which requires resolution (and
 				// potentially processing/caching). Resolve it, potentially,
 				// afterwards, processing/caching it too).
 				require_once MYBB_ROOT.'inc/functions_themes.php';
 
 				$path_new = resolve_themelet_resource(
-					$path,
+					$spec,
 					/*$use_themelet_cache = */true,
 					/*$return_type = */RTR_RETURN_PATH
 				);
 
-				if(!empty($path_new))
-				{
+				if (!empty($path_new)) {
 					$path = $path_new;
 				}
-			}
-			else if(substr($path, 0, 2) == './')
-			{
+			} else if (substr($path, 0, 2) == './') {
 				$path = substr($path, 2);
 			}
 

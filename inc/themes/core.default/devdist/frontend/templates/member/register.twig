@@ -4,10 +4,6 @@
     <title>{{ lang.registration }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block jscripts %}
-    <script type="text/javascript" src="{{ asset_url('jscripts/validate/jquery.validate.min.js') }}" defer></script>
-{% endblock jscripts %}
-
 {% block body %}
     <div class="page-content">
         <header class="page-header">
@@ -112,7 +108,6 @@
                         </div>
                     </section>
                     <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css">
-                    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
                     <script type="text/javascript">
                     <!--
                     if(use_xmlhttprequest == "1")
@@ -230,7 +225,6 @@
                                     lang.question_fetch_failure = "{{ lang.question_fetch_failure }}";
                                 // -->
                                 </script>
-                                <script type="text/javascript" src="{{ asset_url('jscripts/question.js') }}"></script>
                                 <p class="field__description">{{ lang.question_note }}</p>
                                 <h2 class="field__name" id="question"><label for="answer">{{ registration.question }}</label></h2>
                                 <input type="text" class="textbox textbox--large" name="answer" value="" id="answer" />
@@ -262,6 +256,5 @@
             <input type="hidden" name="action" value="do_register" />
         </form>
         {{ validator_javascript|raw }}
-        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/regvalidator.js?ver=1823"></script>
     </div>
 {% endblock body %}

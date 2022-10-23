@@ -12,6 +12,7 @@ use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
 use MyLanguage;
 use pluginSystem;
+use Twig\DeferredExtension\DeferredExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -102,6 +103,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $env->addExtension($container->make(ThemeExtension::class));
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
+            $env->addExtension($container->make(DeferredExtension::class));
 
             // TODO: this shouldn't be registered in live environments
             $env->addExtension(new DebugExtension());

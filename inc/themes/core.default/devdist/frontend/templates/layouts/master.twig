@@ -21,9 +21,11 @@
     <link rel="alternate" type="application/rss+xml" title="{{ lang.latest_threads }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php" />
     <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_threads }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?type=atom1.0" />
 
-    <script type="text/javascript" src="{{ asset_url('jscripts/jquery.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/jquery.plugins.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/general.js') }}"></script>
+    {% block js deferred %}
+    {% for jscript in get_jscripts() %}
+        <script type="text/javascript" src="{{ jscript.path }}"{{ jscript.attributes|raw }}></script>
+    {% endfor %}
+    {% endblock %}
 
     <script type="text/javascript">
     <!--
@@ -72,8 +74,6 @@
     </script>
 
     {% block jscripts %}{% endblock %}
-
-    <script defer src="https://use.fontawesome.com/releases/v5.4.1/js/all.js" integrity="sha384-L469/ELG4Bg9sDQbl0hvjMq8pOcqFgkSpwhwnslzvVVGpDjYJ6wJJyYjvG3u8XW7" crossorigin="anonymous"></script>
 </head>
 <body>
 {% block header %}{% include 'partials/header.twig' %}{% endblock %}
