@@ -21,6 +21,8 @@
 {% endblock jscripts %}
 
 {% block body %}
+    {% set displayRating = (mybb.settings.allowthreadratings and foruminfo.allowtratings and fpermissions.canviewthreads) ? true : false %}
+
     <div class="page-content">
         <header class="page-header">
             <h1 class="title title--page">{{ foruminfo.name }}</h1>
