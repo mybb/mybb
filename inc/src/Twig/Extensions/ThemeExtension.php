@@ -66,9 +66,9 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     private $altRowState;
 
     /**
-     * @var array $twigTemplatesUsed
+     * @var array $twigTemplateContexts
      */
-    private $twigTemplatesUsed;
+    private $twigTemplateContexts;
 
     /**
      * @var array $attachedJsFilesAttrs
@@ -98,9 +98,13 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     {
         global $plugins;
 
-        $this->twigTemplatesUsed[] = $node->getTemplateName();
+        $tpl = $node->getTemplateName();
+        if (empty($this->twigTemplateContexts[$tpl])) {
+            $this->twigTemplateContexts[$tpl] = [];
+        }
+        $this->twigTemplateContexts[$tpl][] = $context;
 
-        $params = ['name' => $node->getTemplateName(), 'context' => &$context];
+        $params = ['name' => $tpl, 'context' => &$context];
         $plugins->run_hooks('template', $params);
     }
 
@@ -235,6 +239,50 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         }
     }
 
+    public function checkConditions($conditions, $template)
+    {
+        if (!array_key_exists($template, $this->twigTemplateContexts)) {
+            return false;
+        }
+        $conditions_met = false;
+        foreach ($this->twigTemplateContexts[$template] as $context) {
+            $conditions_met = true;
+            foreach ((array)$conditions as $key => $value) {
+                if (is_int($key)) {
+                    $item = $value;
+                    $test_val = true;
+                } else {
+                    $item = $key;
+                    $test_val = $value;
+                }
+                $item_is_missing = false;
+                $curr = $context;
+                $a = explode('.', $item);
+                foreach ($a as $i => $k) {
+                    if (is_object($curr) && !property_exists($curr, $k)
+                        ||
+                        !is_object($curr) && !isset($curr[$k])
+                    ) {
+                        $item_is_missing = true;
+                        break;
+                    } else {
+                        $curr = is_object($curr) ? $curr->$k : $curr[$k];
+                    }
+                }
+                if ($item_is_missing || $curr != $test_val) {
+                    $conditions_met = false;
+                    break;
+                }
+            }
+            if ($conditions_met) {
+                break;
+            }
+        }
+
+        // Earlier return possible
+        return $conditions_met;
+    }
+
     /**
      * Get a list of all the Javascript files applicable to the current page.
      *
@@ -266,7 +314,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                     $have_script = !empty($attached_to['script']);
                     $script_matches = $have_script && ($attached_to['script'] == 'global' || $attached_to['script'] == basename($_SERVER['PHP_SELF']));
                     $have_template = !empty($attached_to['template']);
-                    $template_matches = $have_template && in_array($attached_to['template'], $this->twigTemplatesUsed);
+                    $template_matches = $have_template && in_array($attached_to['template'], array_keys($this->twigTemplateContexts));
                     if ($has_been_attached
                         ||
                         (
@@ -288,43 +336,15 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                           ||
                           in_array($mybb->get_input('action'), $attached_to['actions'])
                          )
+                         &&
+                         (!$have_template
+                          ||
+                          empty($attached_to['conditional_on'])
+                          ||
+                          $this->checkConditions((array)$attached_to['conditional_on'], $attached_to['template'])
+                         )
                         )
                     ) {
-                        // Check, when appropriate, whether all stipulated conditional variables
-                        // in $context have the stipulated (or implicit) value.
-                        $conditions_met = true;
-                        if (!empty($attached_to['conditional_on'])) {
-                            foreach ((array)$attached_to['conditional_on'] as $key => $value) {
-                                if (is_int($key)) {
-                                    $item = $value;
-                                    $test_val = true;
-                                } else {
-                                    $item = $key;
-                                    $test_val = $value;
-                                }
-                                $item_is_missing = false;
-                                $curr = $context;
-                                $a = explode('.', $item);
-                                foreach ($a as $i => $k) {
-                                    if (is_object($curr) && !property_exists($curr, $k)
-                                        ||
-                                        !is_object($curr) && !isset($curr[$k])
-                                    ) {
-                                        $item_is_missing = true;
-                                        break;
-                                    } else {
-                                        $curr = is_object($curr) ? $curr->$k : $curr[$k];
-                                    }
-                                }
-                                if ($item_is_missing || $curr != $test_val) {
-                                    $conditions_met = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!$conditions_met) {
-                            continue;
-                        }
                         $attrs = empty($scriptdata['attributes']) ? [] : $scriptdata['attributes'];
                         if (empty($this->attachedJsFilesAttrs[$scriptname])) {
                             $this->attachedJsFilesAttrs[$scriptname] = $attrs;
