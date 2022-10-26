@@ -71,6 +71,11 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     private $twigTemplatesUsed;
 
     /**
+     * @var array $attachedJsFilesAttrs
+     */
+    private $attachedJsFilesAttrs = [];
+
+    /**
      * Create a new instance of the ThemeExtension.
      *
      * @param \MyBB $mybb
@@ -106,6 +111,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('alt_trow', [$this, 'altTrow']),
             new TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
             new TwigFunction('get_jscripts', [$this, 'getJscripts'], ['needs_context' => true]),
+            new TwigFunction('attach_resource', [$this, 'attachResource']),
         ];
     }
 
@@ -249,32 +255,39 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         if (!empty($jscripts)) {
             foreach ($jscripts as $scriptname => $scriptdata) {
                 $priority = -1;
-                if (empty($scriptdata['attached_to'])) {
-                    $scriptdata['attached_to'] = ['script' => 'global'];
+                $has_been_attached = isset($this->attachedJsFilesAttrs[$scriptname]);
+                if (!isset($scriptdata['attached_to'])) {
+                    $scriptdata['attached_to'] = [['' => '']];
+                } else if (empty($scriptdata['attached_to'])) {
+                    $scriptdata['attached_to'] = [['script' => 'global']];
                 }
                 foreach ($scriptdata['attached_to'] as $attached_to) {
-                    $is_global = empty($attached_to['script']) && empty($attached_to['template']);
+                    $is_global = isset($attached_to['script']) && empty($attached_to['script']) && isset($attached_to['template']) && empty($attached_to['template']);
                     $have_script = !empty($attached_to['script']);
                     $script_matches = $have_script && ($attached_to['script'] == 'global' || $attached_to['script'] == basename($_SERVER['PHP_SELF']));
                     $have_template = !empty($attached_to['template']);
                     $template_matches = $have_template && in_array($attached_to['template'], $this->twigTemplatesUsed);
-                    if (($is_global
-                         ||
-                         ($have_script && $script_matches && (!$have_template || $template_matches))
-                         ||
-                         (!$have_script && $have_template && $template_matches)
-                        )
-                        &&
-                        (empty($attached_to['ext'])
-                         ||
-                         $attached_to['ext'] == $mybb->get_input('ext')
-                        )
-                        &&
-                        (empty($attached_to['actions'])
-                         ||
-                         in_array('global', $attached_to['actions'])
-                         ||
-                         in_array($mybb->get_input('action'), $attached_to['actions'])
+                    if ($has_been_attached
+                        ||
+                        (
+                         ($is_global
+                          ||
+                          ($have_script && $script_matches && (!$have_template || $template_matches))
+                          ||
+                          (!$have_script && $have_template && $template_matches)
+                         )
+                         &&
+                         (empty($attached_to['ext'])
+                          ||
+                          $attached_to['ext'] == $mybb->get_input('ext')
+                         )
+                         &&
+                         (empty($attached_to['actions'])
+                          ||
+                          in_array('global', $attached_to['actions'])
+                          ||
+                          in_array($mybb->get_input('action'), $attached_to['actions'])
+                         )
                         )
                     ) {
                         // Check, when appropriate, whether all stipulated conditional variables
@@ -312,30 +325,37 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                         if (!$conditions_met) {
                             continue;
                         }
+                        $attrs = empty($scriptdata['attributes']) ? [] : $scriptdata['attributes'];
+                        if (empty($this->attachedJsFilesAttrs[$scriptname])) {
+                            $this->attachedJsFilesAttrs[$scriptname] = $attrs;
+                        } else {
+                            $this->attachedJsFilesAttrs[$scriptname] = array_merge($this->attachedJsFilesAttrs[$scriptname], $attrs);
+                        }
+
                         if (!array_key_exists($scriptname, $file_priorities)) {
                             $file_priorities[$scriptname] = ['specifier' => $scriptdata['specifier'], 'priorities' => []];
                         }
                         $file_priorities[$scriptname]['priorities'][] = $priority;
 
-                        $dependent_on = [];
-                        if (!empty($scriptdata['dependent_on'])) {
-                            $dependent_on = $scriptdata['dependent_on'];
+                        $depends_on = [];
+                        if (!empty($scriptdata['depends_on'])) {
+                            $depends_on = $scriptdata['depends_on'];
                         }
                         do {
                             $parents = [];
                             $priority -= 1;
-                            foreach ($dependent_on as $dependable) {
+                            foreach ($depends_on as $dependable) {
                                 if (!array_key_exists($dependable, $file_priorities)) {
                                     $file_priorities[$dependable] = ['specifier' => $dependable, 'priorities' => []];
                                 }
                                 $file_priorities[$dependable]['priorities'][] = $priority;
-                                $dep_deps = empty($jscripts[$dependable]['dependent_on'])
+                                $dep_deps = empty($jscripts[$dependable]['depends_on'])
                                                 ? []
-                                                : $jscripts[$dependable]['dependent_on'];
+                                                : $jscripts[$dependable]['depends_on'];
                                 $parents = array_merge($parents, $dep_deps);
                             }
-                            $dependent_on = $parents;
-                        } while (!empty($dependent_on));
+                            $depends_on = $parents;
+                        } while (!empty($depends_on));
                         break;
                     }
                 }
@@ -355,8 +375,8 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         foreach ($js_files_pr as $entries) {
             foreach ($entries as $entry) {
                 $attributes = '';
-                if (!empty($jscripts[$entry['file_path']]['attributes'])) {
-                    foreach ($jscripts[$entry['file_path']]['attributes'] as $attr => $val) {
+                if (!empty($this->attachedJsFilesAttrs[$entry['file_path']])) {
+                    foreach ($this->attachedJsFilesAttrs[$entry['file_path']] as $attr => $val) {
                         $attributes .= ' '.htmlspecialchars_uni($attr).'="'.htmlspecialchars_uni($val).'"';
                     }
                 }
@@ -369,6 +389,23 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
 
         foreach ($js_files as $entry) {
             yield $entry;
+        }
+    }
+
+    public function attachResource($resource, $attrs = [])
+    {
+        if (my_strtolower(get_extension($resource)) !== 'js') {
+            error('`attach_resource()` was called in a Twig template for a resource other than a Javascript file ('.htmlspecialchars_uni($resource).'). This is not yet supported.');
+        }
+
+        if (my_substr($resource, 0, 1) == '@') {
+            $resource = normalise_res_spec1($resource);
+        }
+
+        if (empty($this->attachedJsFilesAttrs[$resource])) {
+            $this->attachedJsFilesAttrs[$resource] = $attrs;
+        } else {
+            $this->attachedJsFilesAttrs[$resource] = array_merge($this->attachedJsFilesAttrs[$resource], $attrs);
         }
     }
 }

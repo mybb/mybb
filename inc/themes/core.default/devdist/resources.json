@@ -9,15 +9,15 @@
 	},
 	"jscripts": {
 		"jscripts/jquery.js": {
-			"attached_to": []
+			"attached_to": [{"script": "global"}]
 		},
 		"jscripts/jquery.plugins.min.js": {
-			"attached_to": [],
-			"dependent_on": ["jscripts/jquery.js"]
+			"attached_to": [{"script": "global"}],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/general.js": {
-			"attached_to": [],
-			"dependent_on": [
+			"attached_to": [{"script": "global"}],
+			"depends_on": [
 				"jscripts/jquery.js",
 				"jscripts/jquery.plugins.min.js"
 			]
@@ -28,10 +28,10 @@
 					"script": "forumdisplay.php"
 				},
 				{
-					"template": "showthread/showthread.twig"
+					"script": "showthread.php"
 				}
 			],
-			"dependent_on": ["jscripts/jquery.js"]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/inline_edit.js": {
 			"attached_to": [
@@ -39,206 +39,92 @@
 					"script": "forumdisplay.php"
 				}
 			],
-			"dependent_on": ["jscripts/jquery.js"]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/rating.js": {
-			"attached_to": [
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": [
-						"mybb.settings.allowthreadratings",
-						"foruminfo.allowtratings",
-						"fpermissions.canviewthreads"
-					]
-				},
-				{
-					"template": "showthread/showthread.twig",
-					"conditional_on": ["mybb.settings.allowthreadratings", "forum.allowtratings"]
-				}
-			],
-			"dependent_on": ["jscripts/jquery.js"]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/inline_moderation.js": {
-			"attached_to": [
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.canopenclosethreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.canstickunstickthreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.cansoftdelete"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.canrestorethreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.candeletethreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.canmanagethreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "modpermissions.canapproveunapprovethreads"
-				},
-				{
-					"template": "forumdisplay/forumdisplay.twig",
-					"conditional_on": "customTools"
-				},
-				{
-					"template": "search/results_posts.twig",
-					"conditional_on": "results.show_inline_moderation"
-				},
-				{
-					"template": "search/results_threads.twig",
-					"conditional_on": "results.show_inline_moderation"
-				},
-				{
-					"template": "showthread/moderation.twig",
-					"conditional_on": "thread.showinlinemodoptions"
-				}
-			],
-			"dependent_on": ["jscripts/jquery.js"]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/select2/select2.min.js": {
-			"attached_to": [
-				{
-					"template": "managegroup/managegroup.twig",
-					"conditional_on": "groupleader.canmanagemembers"
-				},
-				{
-					"template": "managegroup/managegroup.twig",
-					"conditional_on": {"usergroup.type": 5, "groupleader.caninvitemembers": true}
-				},
-				{
-					"template": "member/register.twig",
-					"conditional_on": "registration.showreferrer"
-				},
-				{
-					"template": "memberlist/memberlist.twig"
-				},
-				{
-					"template": "memberlist/search.twig"
-				},
-				{
-					"template": "modcp/banuser.twig"
-				},
-				{
-					"template": "modcp/finduser.twig"
-				},
-				{
-					"template": "modcp/warninglogs.twig"
-				},
-				{
-					"template": "private/advanced_search.twig"
-				},
-				{
-					"template": "private/send.twig"
-				},
-				{
-					"template": "search/search.twig"
-				}
-			]
+			"attributes": {"defer": "defer"}
 		},
 		"jscripts/report.js": {
 			"attached_to": [
 				{
-					"template": "member/profile.twig"
+					"script": "member.php",
+					"actions": ["profile"]
 				},
 				{
-					"template": "reputation/reputation.twig"
+					"script": "reputation.php",
+					"actions": [""]
 				},
 				{
-					"template": "showthread/showthread.twig"
+					"script": "showthread.php"
 				}
-			]
+			],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/jquery.validate.min.js": {
-			"attached_to": [
-				{
-					"template": "member/register.twig"
-				}
-			]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/regvalidator.js": {
 			"attached_to": [
 				{
-					"template": "member/register.twig"
+					"script": "member.php",
+					"actions": ["register"]
 				}
-			]
+			],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/question.js": {
-			"attached_to": [
-				{
-					"template": "member/register.twig",
-					"conditional_on": "registration.showquestion"
-				}
-			]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/sceditor/jquery.sceditor.bbcode.min.js": {
-			"attached_to": [
-				{
-					"template": "misc/codebuttons.twig"
-				}
-			],
-			"dependent_on": ["jscripts/jquery.js"]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/bbcodes_sceditor.js": {
-			"attached_to": [
-				{
-					"template": "misc/codebuttons.twig"
-				}
-			],
-			"dependent_on": [
+			"depends_on": [
 				"jscripts/jquery.js",
 				"jscripts/jquery.sceditor.bbcode.min.js"
 			]
 		},
 		"jscripts/sceditor/plugins/undo.js": {
-			"attached_to": [
-				{
-					"template": "misc/codebuttons.twig"
-				}
-			],
-			"dependent_on": ["jscripts/jquery.sceditor.bbcode.min.js"]
+			"depends_on": ["jscripts/jquery.sceditor.bbcode.min.js"]
 		},
 		"jscripts/post.js": {
-			"attached_to": [
-				{
-					"template": "misc/post_javascript.twig"
-				}
-			]
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/inline_reports.js": {
 			"attached_to": [
 				{
-					"template": "modcp/reports.twig"
+					"script": "modcp.php",
+					"actions": ["reports"]
 				}
-			]
+			],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/usercp.js": {
 			"attached_to": [
 				{
-					"template": "private/send.twig"
+					"script": "private.php",
+					"actions": ["send"]
 				}
-			]
+			],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"jscripts/thread.js": {
 			"attached_to": [
 				{
-					"template": "showthread/showthread.twig"
+					"script": "showthread.php",
+					"actions": ["thread"]
 				}
-			]
+			],
+			"depends_on": ["jscripts/jquery.js"]
 		},
 		"https://use.fontawesome.com/releases/v5.4.1/js/all.js": {
-			"attached_to": [],
+			"attached_to": [{"script": "global"}],
 			"attributes": {
 				"defer": "defer",
 				"integrity": "sha384-L469/ELG4Bg9sDQbl0hvjMq8pOcqFgkSpwhwnslzvVVGpDjYJ6wJJyYjvG3u8XW7",
