@@ -15,7 +15,6 @@ define("IN_ADMINCP", 1);
 define("ADMIN_IP_SEGMENTS", 0);
 define("ADMIN_IPV6_SEGMENTS", 0);
 
-$skip_plugin_load = true;
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
 $shutdown_queries = $shutdown_functions = array();
