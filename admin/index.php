@@ -822,5 +822,9 @@ $lang->load("{$run_module}_{$page->active_action}", false, true);
 
 $plugins->run_hooks("admin_load");
 
+if (!empty($page->plugin)) {
+	$modules_dir = MYBB_ROOT.'inc/plugins/'.$page->plugin.'/admin/modules';
+}
+
 require $modules_dir."/".$run_module."/".$action_file;
 
