@@ -24,6 +24,17 @@ function app(?string $className = null, array $parameters = [])
     return Container::getInstance()->make($className, $parameters);
 }
 
+function strip_frontend_ns($name)
+{
+    static $strip = '@frontend/';
+    static $strip_len;
+    if (!$strip_len) $strip_len = strlen($strip);
+    if (my_substr($name, 0, $strip_len) === $strip) {
+        $name = my_substr($name, $strip_len);
+    }
+    return $name;
+}
+
 /**
  * Render a view using the Twig template system.
  *
@@ -43,8 +54,11 @@ function template(string $name, array $context = [])
 
     $ret = '';
     try {
+        // Strip explicit default namespace (frontend) because we don't register it with the loader.
+        // Instead, we register it as the main namespace (i.e., when $name doesn't begin with an @).
+        $name = strip_frontend_ns($name);
         $ret = $twig->render($name, $context);
-    } catch (LoaderError $e) {} // Ignore loading exceptions/errors - just return an empty string.
+    } catch (\Twig\Error\LoaderError $e) {} // Ignore loading exceptions/errors - just return an empty string.
                                 // Mostly, this is so that if we are in `devdist` mode, and
                                 // a plugin doesn't have a `devdist` directory in which the
                                 // requested template is expected, we don't error out here.
