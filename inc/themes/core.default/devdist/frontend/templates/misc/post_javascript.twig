@@ -13,4 +13,4 @@
     php_max_file_uploads = {{ php_max_file_uploads }};
     mybb_max_file_uploads = {{ mybb.settings.maxattachments }};
 </script>
-{{ attach_resource('jscripts/post.js') }}
+{{ attach(resource='jscripts/post.js', absolute=true) }}

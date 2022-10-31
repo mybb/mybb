@@ -108,7 +108,7 @@
                         </div>
                     </section>
                     <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css">
-                    {{ attach_resource('jscripts/select2/select2.min.js') }}
+                    {{ attach(resource=jscripts/select2/select2.min.js', absolute=true) }}
                     <script type="text/javascript">
                     <!--
                     if(use_xmlhttprequest == "1")
@@ -226,7 +226,7 @@
                                     lang.question_fetch_failure = "{{ lang.question_fetch_failure }}";
                                 // -->
                                 </script>
-                                {{ attach_resource('jscripts/question.js') }}
+                                {{ attach(resource='jscripts/question.js', absolute=true) }}
                                 <p class="field__description">{{ lang.question_note }}</p>
                                 <h2 class="field__name" id="question"><label for="answer">{{ registration.question }}</label></h2>
                                 <input type="text" class="textbox textbox--large" name="answer" value="" id="answer" />
@@ -258,6 +258,6 @@
             <input type="hidden" name="action" value="do_register" />
         </form>
         {{ validator_javascript|raw }}
-        {{ attach_resource('jscripts/regvalidator.js') }}
+        {{ attach(resource='jscripts/regvalidator.js', absolute=true) }}
     </div>
 {% endblock body %}

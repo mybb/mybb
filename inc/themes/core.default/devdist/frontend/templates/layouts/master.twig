@@ -22,8 +22,8 @@
     <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_threads }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?type=atom1.0" />
 
     {% block js deferred %}
-    {% for jscript in get_jscripts() %}
-        <script type="text/javascript" src="{{ jscript.path }}"{{ jscript.attributes|raw }}></script>
+    {% for tag in get_jscripts() %}
+        {{ include("partials/script.twig", tag) }}
     {% endfor %}
     {% endblock %}
 

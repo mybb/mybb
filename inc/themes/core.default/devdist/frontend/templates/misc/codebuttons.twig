@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/sceditor/themes/{{ theme.editortheme }}" type="text/css" media="all" />
-{{ attach_resource('jscripts/sceditor/jquery.sceditor.bbcode.min.js') }}
-{{ attach_resource('jscripts/bbcodes_sceditor.js') }}
-{{ attach_resource('jscripts/sceditor/plugins/undo.js') }}
+{{ attach(resource='jscripts/sceditor/jquery.sceditor.bbcode.min.js', absolute=true) }}
+{{ attach(resource='jscripts/bbcodes_sceditor.js', absolute=true) }}
+{{ attach(resource='jscripts/sceditor/plugins/undo.js', absolute=true) }}
 <script type="text/javascript">
     var partialmode = {{ mybb.settings.partialmode }},
     opt_editor = {

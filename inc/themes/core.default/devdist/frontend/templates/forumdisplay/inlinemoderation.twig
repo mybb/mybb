@@ -26,7 +26,7 @@
         {% endif %}
     {% endset %}
     {% if standardTools|trim or customTools %}
-        {{ attach_resource('jscripts/inline_moderation.js') }}
+        {{ attach(resource='jscripts/inline_moderation.js', absolute=true) }}
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />

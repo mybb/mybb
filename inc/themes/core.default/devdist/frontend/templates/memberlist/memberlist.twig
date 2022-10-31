@@ -100,7 +100,7 @@
     </div>
 
     <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
-    {{ attach_resource('jscripts/select2/select2.min.js') }}
+    {{ attach(resource='jscripts/select2/select2.min.js', absolute=true) }}
     <script type="text/javascript">
     <!--
     if({{ mybb.settings.use_xmlhttprequest }})

@@ -4,6 +4,7 @@ namespace MyBB\Twig\Extensions;
 
 use DB_Base;
 use MyBB;
+use Illuminate\Container\Container;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -115,7 +116,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('alt_trow', [$this, 'altTrow']),
             new TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
             new TwigFunction('get_jscripts', [$this, 'getJscripts'], ['needs_context' => true]),
-            new TwigFunction('attach_resource', [$this, 'attachResource']),
+            new TwigFunction('attach', [$this, 'attach']),
         ];
     }
 
@@ -412,20 +413,104 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         }
     }
 
-    public function attachResource($resource, $attrs = [])
+    /**
+     * Attach a resource to a page.
+     *
+     * @param string  $resource The resource as either a specifier or path relative to MYBB_ROOT.
+     * @param string  $type     The type of resource. Currently only the "script" type (Javascript files)
+     *                          is supported. If empty, the type is auto-detected from the extension of $resource.
+     * @param string  $attrs    An array of attributes to include in the final rendered tag for the resource.
+     * @param boolean $absolute If true, $resource represents a path relative to MYBB_ROOT. If false, it represents
+     *                          a themelet resource specifier, e.g., '@frontend/jscripts/my.js'.
+     * @param boolean $local    If true, render the final tag immediately. Otherwise, defer it until the end of
+     *                          processing to be finally rendered in the <head> tag.
+     * @param array   $data     An array of data to convert into JSON and include as the value of one of the
+     *                          rendered tag's attributes, such as "data-json".
+     * @todo  Implement the functionality of the $data parameter: e.g., by converting it to JSON and setting it as
+     *        the value of some sort of attribute like "data-json" of a <script> tag.
+     * @todo  Support resources other than Javascript files, especially stylesheets and images.
+     *
+     * @return None
+     */
+    public function attach($resource, $type = '', $attrs = [], $absolute = false, $local = false, $data = [])
     {
-        if (my_strtolower(get_extension($resource)) !== 'js') {
+        if (!$type) {
+            switch (my_strtolower(get_extension($resource))) {
+                case 'js':
+                $type = 'script';
+                break;
+            }
+        }
+
+        if ($type !== 'script') {
             error('`attach_resource()` was called in a Twig template for a resource other than a Javascript file ('.htmlspecialchars_uni($resource).'). This is not yet supported.');
         }
 
-        if (my_substr($resource, 0, 1) == '@') {
-            $resource = normalise_res_spec1($resource);
+        if (!$absolute || $local) {
+            $namespace = $this->parseName($resource)[0];
+            if (!$namespace) {
+                $namespace = $this->parseName($this->getTwigTemplateName())[0];
+            }
+            if (!$namespace) {
+                $namespace = 'frontend';
+            }
+        }
+        if (!$absolute) {
+            if (my_substr($resource, 0, 1) == '@') {
+                $resource = normalise_res_spec1($resource);
+            } else {
+                $resource = "@{$namespace}/{$resource}";
+            }
         }
 
-        if (empty($this->attachedJsFilesAttrs[$resource])) {
-            $this->attachedJsFilesAttrs[$resource] = $attrs;
+        if ($local) {
+            $twig = Container::getInstance()->make(Environment::class);
+            echo $twig->render("partials/{$type}.twig", ['tag' => ['path' => $resource, 'attrs' => $attrs]]);
         } else {
-            $this->attachedJsFilesAttrs[$resource] = array_merge($this->attachedJsFilesAttrs[$resource], $attrs);
+            if (!empty($this->attachedJsFilesAttrs[$resource])) {
+                $attrs = array_merge($this->attachedJsFilesAttrs[$resource], $attrs);
+            }
+            $this->attachedJsFilesAttrs[$resource] = $attrs;
         }
+    }
+
+    // Heavily based on https://stackoverflow.com/a/44648744/3126722
+    // except that it returns the name of the template at the top of
+    // the hierarchy rather than that at the bottom.
+    public function getTwigTemplateName()
+    {
+        foreach (array_reverse(debug_backtrace()) as $trace) {
+            if (isset($trace['object'])
+                &&
+                (strpos($trace['class'], 'TwigTemplate') !== false)
+                &&
+                'Twig_Template' !== get_class($trace['object'])
+            ) {
+                return $trace['object']->getTemplateName();
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Based on FilesystemLoader::parseName() but without the possibility of throwing an error
+     * nor with a default namespace parameter.
+     */
+    public function parseName(string $name): array
+    {
+        if (isset($name[0]) && '@' == $name[0]) {
+            if (false === $pos = strpos($name, '/')) {
+                $namespace = $name;
+                $shortname = '';
+            } else {
+                $namespace = substr($name, 1, $pos - 1);
+                $shortname = substr($name, $pos + 1);
+            }
+
+            return [$namespace, $shortname];
+        }
+
+        return ['', $name];
     }
 }
