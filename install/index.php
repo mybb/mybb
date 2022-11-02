@@ -1039,6 +1039,25 @@ EOF;
 	$output->print_footer('requirements_check');
 }
 
+function my_is_dir_writable($dir, $dir_friendly, &$errors, &$status)
+{
+	global $lang;
+
+	$writable = @fopen(MYBB_ROOT."{$dir}test.write", 'w');
+	if (!$writable) {
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_unwritable_dir, $dir_friendly, $dir));
+		$status = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	} else {
+		$status = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($writable);
+	  	@my_chmod(MYBB_ROOT.$dir, '0777');
+	  	@my_chmod(MYBB_ROOT."{$dir}test.write", '0777');
+		@unlink(MYBB_ROOT."{$dir}test.write");
+	}
+
+	return $writable;
+}
+
 /**
  * Check our requirements
  */
@@ -1156,61 +1175,62 @@ function requirements_check()
 	@fclose($settingswritable);
 
 	// Check cache directory is writable
-	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
-	if(!$cachewritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
-		$cachestatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('cache/', 'cache', $errors, $cachestatus)) {
 		$showerror = 1;
-		@fclose($cachewritable);
-	}
-	else
-	{
-		$cachestatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($cachewritable);
-	  	@my_chmod(MYBB_ROOT.'cache', '0777');
-	  	@my_chmod(MYBB_ROOT.'cache/test.write', '0777');
-		@unlink(MYBB_ROOT.'cache/test.write');
 	}
 
 	// Check upload directory is writable
-	$uploadswritable = @fopen(MYBB_ROOT.'uploads/test.write', 'w');
-	if(!$uploadswritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
-		$uploadsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('uploads/', 'uploads', $errors, $uploadsstatus)) {
 		$showerror = 1;
-		@fclose($uploadswritable);
-	}
-	else
-	{
-		$uploadsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($uploadswritable);
-	  	@my_chmod(MYBB_ROOT.'uploads', '0777');
-	  	@my_chmod(MYBB_ROOT.'uploads/test.write', '0777');
-		@unlink(MYBB_ROOT.'uploads/test.write');
 	}
 
 	// Check avatar directory is writable
-	$avatarswritable = @fopen(MYBB_ROOT.'uploads/avatars/test.write', 'w');
-	if(!$avatarswritable)
-	{
-		$errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
-		$avatarsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('uploads/avatars/', 'avatars', $errors, $avatarsstatus)) {
 		$showerror = 1;
-		@fclose($avatarswritable);
 	}
-	else
-	{
-		$avatarsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($avatarswritable);
-		@my_chmod(MYBB_ROOT.'uploads/avatars', '0777');
-	  	@my_chmod(MYBB_ROOT.'uploads/avatars/test.write', '0777');
-		@unlink(MYBB_ROOT.'uploads/avatars/test.write');
-  	}
+
+	// Check staging directory is writable
+	if (!my_is_dir_writable('staging/', 'staging', $errors, $stagingstatus)) {
+		$showerror = 1;
+	}
+
+	// Check themes staging directory is writable
+	if (!my_is_dir_writable('staging/themes/', 'theme staging', $errors, $themestagingstatus)) {
+		$showerror = 1;
+	}
+
+	// Check plugins staging directory is writable
+	if (!my_is_dir_writable('staging/plugins/', 'plugin staging', $errors, $pluginstagingstatus)) {
+		$showerror = 1;
+	}
+
+	// Check themes directory is writable
+	if (!my_is_dir_writable('inc/themes/', 'themes', $errors, $themestatus)) {
+		$showerror = 1;
+	}
+
+	// Check default core theme directory is writable (so that we can copy its `devdist` to `current`)
+	if (!my_is_dir_writable('inc/themes/core.default/', 'default core theme', $errors, $corethemestatus)) {
+		$showerror = 1;
+	}
+
+	// Check plugins directory is writable (so that we can copy its `devdist` to `current`)
+	if (!my_is_dir_writable('inc/plugins/', 'plugins', $errors, $pluginstatus)) {
+		$showerror = 1;
+	}
+
+	// Check storage directory is writable
+	if (!my_is_dir_writable('storage/', 'storage', $errors, $storagestatus)) {
+		$showerror = 1;
+	}
+
+	// Check themelets storage directory is writable
+	if (!my_is_dir_writable('storage/themelets/', 'themelets storage', $errors, $themeletsstoragestatus)) {
+		$showerror = 1;
+	}
 
 	// Output requirements page
-	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $stagingstatus, $themestagingstatus, $pluginstagingstatus, $themestatus, $corethemestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
 
 	if($showerror == 1)
 	{
