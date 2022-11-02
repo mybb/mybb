@@ -432,7 +432,7 @@ function get_theme_jscripts($theme_code)
                         }
                     }
                     unset($scriptdata);
-                    $jscripts = array_merge_recursive($jscripts, $resources['jscripts']);
+                    $jscripts = array_replace_recursive($jscripts, $resources['jscripts']);
                 }
             }
         }
