@@ -139,10 +139,11 @@ class MyLanguage
 	 * @param string $section The section name.
 	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
 	 * @param boolean $supress_error supress the error if the file doesn't exist?
-	 * @param string $staged_plugin To indicate that we are loading the section for a staged plugin, this should be
-	 *                              the codename of the staged plugin; otherwise empty.
+	 * @param string  $plugin_code   The codename of the plugin if we are loading one of a plugin's sections.
+	 * @param boolean $is_staged     True if we are loading the section for a plugin that is still staged; otherwise
+	 *                               false. Only applicable when $plugin_code is not empty.
 	 */
-	function load($section, $forceuserarea=false, $supress_error=false, $staged_plugin='')
+	function load($section, $forceuserarea=false, $supress_error=false, $plugin_code='', $is_staged=false)
 	{
 		$language = $this->language;
 		$fallback = $this->fallback;
@@ -153,10 +154,15 @@ class MyLanguage
 			$fallback = str_replace('/admin', '', $fallback);
 		}
 
-		if($staged_plugin)
+		if($plugin_code)
 		{
-			$lfile = MYBB_ROOT."staging/plugins/$staged_plugin/root/inc/languages/$language/$section.lang.php";
-			$lfile = MYBB_ROOT."staging/plugins/$staged_plugin/root/inc/languages/$fallback/$section.lang.php";
+			if ($is_staged) {
+				$lfile = MYBB_ROOT."staging/plugins/{$plugin_code}/languages/{$language}/{$section}.lang.php";
+				$ffile = MYBB_ROOT."staging/plugins/{$plugin_code}/languages/{$fallback}/{$section}.lang.php";
+			} else {
+				$lfile = MYBB_ROOT."inc/plugins/{$plugin_code}/languages/{$language}/{$section}.lang.php";
+				$ffile = MYBB_ROOT."inc/plugins/{$plugin_code}/languages/{$fallback}/{$section}.lang.php";
+			}
 		}
 		else
 		{

@@ -9427,12 +9427,13 @@ function get_plugins_list()
 {
 	// Get a list of the plugin files which exist in the plugins directory
 	$plugins_list = [];
-	$dir = @opendir(MYBB_ROOT."inc/plugins/");
+	$base = MYBB_ROOT.'inc/plugins/';
+	$dir = @opendir($base);
 	if ($dir) {
-		while ($file = readdir($dir)) {
-			$ext = get_extension($file);
-			if ($ext == "php") {
-				$plugins_list[] = $file;
+		while ($plugin_code = readdir($dir)) {
+			$p_file = "{$base}{$plugin_code}/{$plugin_code}.php";
+			if (is_readable($p_file) && is_file($p_file)) {
+				$plugins_list[] = $plugin_code;
 			}
 		}
 		@sort($plugins_list);
@@ -9489,11 +9490,11 @@ function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true
 	global $lang, $page;
 
 	if (!empty($plugininfo['langfile'])) {
-		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $staged ? $plugininfo['codename'] : false);
+		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugininfo['codename'], $staged);
 		foreach (['name', 'description'] as $key) {
 			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
 				if ($show_errs) {
-					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugin_code));
+					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugininfo['codename']));
 				}
 			} else if (!empty($plugininfo[$key.'_key'])) {
 				$plugininfo[$key] = $lang->{$plugininfo[$key.'_key']};
