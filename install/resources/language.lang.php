@@ -125,9 +125,13 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="first">File Uploads Directory Writable:</td>
 			<td class="last alt_col">{8}</td>
 		</tr>
-		<tr class="last">
+		<tr class="alt_row">
 			<td class="first">Avatar Uploads Directory Writable:</td>
 			<td class="last alt_col">{9}</td>
+		</tr>
+		<tr class="last">
+			<td class="first">Post Embed Images Uploads Directory Writable:</td>
+			<td class="last alt_col">{10}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -148,6 +152,7 @@ $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not
 $l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noopener">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noopener">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noopener">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_postembeddir'] = 'The post embed images upload directory (uploads/postembeds/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noopener">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noopener">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_tablelist'] = '<div class="error">
 <h3>Error</h3>

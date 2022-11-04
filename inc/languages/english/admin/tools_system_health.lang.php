@@ -55,6 +55,7 @@ $l['settings_file'] = "Settings File";
 $l['config_file'] = "Configuration File";
 $l['file_upload_dir'] = "File Uploads Directory";
 $l['avatar_upload_dir'] = "Avatar Uploads Directory";
+$l['postembed_upload_dir'] = "Post Embed Images Uploads Directory";
 $l['language_files'] = "Language Files";
 $l['backup_dir'] = "Backups Directory";
 $l['cache_dir'] = "Cache Directory";

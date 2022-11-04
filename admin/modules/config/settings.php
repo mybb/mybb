@@ -2023,6 +2023,9 @@ function print_setting_peekers()
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
 		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)',
 		'new Peeker($(".setting_usereferrals"), $("#row_setting_referralsperpage"), 1, true)',
+		'new Peeker($(".setting_postembed"), $("#row_setting_postembedhost"), 1, true)',
+		'new Peeker($("#setting_postembedhost"), $("#row_setting_postembedkey"), /^(img)/, false)',
+		'new Peeker($("#setting_postembedhost"), $("#row_setting_postembedpath"), /local/, false)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);

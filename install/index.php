@@ -1206,8 +1206,26 @@ function requirements_check()
 		@unlink(MYBB_ROOT.'uploads/avatars/test.write');
   	}
 
+	  // Check postembed image directory is writable
+	  $postembedswritable = @fopen(MYBB_ROOT.'uploads/postembeds/test.write', 'w');
+	  if(!$postembedswritable)
+	  {
+		  $errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_postembeddir);
+		  $postembedsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+		  $showerror = 1;
+		  @fclose($postembedswritable);
+	  }
+	  else
+	  {
+		  $postembedsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
+		  @fclose($postembedswritable);
+		  @my_chmod(MYBB_ROOT.'uploads/postembeds', '0777');
+		  @my_chmod(MYBB_ROOT.'uploads/postembeds/test.write', '0777');
+		  @unlink(MYBB_ROOT.'uploads/postembeds/test.write');
+	  }
+  
 	// Output requirements page
-	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $postembedsstatus);
 
 	if($showerror == 1)
 	{

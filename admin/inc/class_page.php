@@ -1051,50 +1051,26 @@ EOF;
 			$code = "code,php,";
 		}
 
-		if($mybb->user['sourceeditor'] == 1)
-		{
-			$sourcemode = "MyBBEditor.sourceMode(true);";
-		}
-
 		return <<<EOF
-
 <script type="text/javascript">
-var partialmode = {$mybb->settings['partialmode']},
-opt_editor = {
-	plugins: "undo",
-	format: "bbcode",
-	bbcodeTrim: true,
-	style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
-	rtl: {$lang->settings['rtl']},
-	locale: "mybblang",
-	enablePasteFiltering: true,
-	autoUpdate: true,
-	emoticonsEnabled: {$emoticons_enabled},
-	emoticons: {
-		// Emoticons to be included in the dropdown
-		dropdown: {
-			{$dropdownsmilies}
+var editorElm = "#{$bind}",
+	sourceMode = {$mybb->user['sourceeditor']},
+	partialMode = {$mybb->settings['partialmode']},
+	editorLang = {$editor_language},
+	postEmbed = { enabled: {$mybb->settings['postembed']}, host: "{$mybb->settings['postembedhost']}", clientKey: "{$mybb->settings['postembedkey']}" },
+	optEditor = {
+		style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
+		rtl: {$lang->settings['rtl']},
+		emoticonsEnabled: {$emoticons_enabled},
+		emoticons: {
+			dropdown: { {$dropdownsmilies} }, // Emoticons to be included in the dropdown
+			more: { {$moresmilies} }, // Emoticons to be included in the more section
+			hidden: { {$hiddensmilies} } // Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
 		},
-		// Emoticons to be included in the more section
-		more: {
-			{$moresmilies}
-		},
-		// Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
-		hidden: {
-			{$hiddensmilies}
-		}
-	},
-	emoticonsCompat: true,
-	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
-};
-{$editor_language}
-$(function() {
-	$("#{$bind}").sceditor(opt_editor);
-
-	MyBBEditor = $("#{$bind}").sceditor("instance");
-	{$sourcemode}
-});
+		toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source"
+	};
 </script>
+<script type="text/javascript" src="../jscripts/editor.js?ver=1827"></script>
 EOF;
 	}
 }
