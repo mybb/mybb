@@ -1008,22 +1008,18 @@ function integrate_staged_plugin($codename)
 		admin_redirect('index.php?module=config-plugins');
 	}
 
-	$staged_themelet_dir = MYBB_ROOT."staging/plugins/{$codename}/interface/devdist";
-	$dest_themelet_dir = MYBB_ROOT."inc/plugins/{$codename}/interface/current";
-	if(!cp_or_mv_recursively($staged_themelet_dir, $dest_themelet_dir, true, $errmsg))
-	{
-		flash_message($errmsg, 'error');
+	$staged_dir = MYBB_ROOT."staging/plugins/{$codename}";
+	$dest_dir   = MYBB_ROOT."inc/plugins/{$codename}";
+	$src_themelet_dir  = "{$dest_dir}/interface/devdist";
+	$dest_themelet_dir = "{$dest_dir}/interface/current";
+	if (file_exists($dest_dir)) {
+		flash_message($lang->sprintf($lang->error_dest_directory_exists, $dest_dir), 'error');
 		admin_redirect('index.php?module=config-plugins');
-	}
-	if(!cp_or_mv_recursively(MYBB_ROOT."staging/plugins/{$codename}", MYBB_ROOT."inc/plugins/{$codename}", true, $errmsg))
-	{
-		// Attempt to back out of the prior successful move.
-		cp_or_mv_recursively($dest_themelet_dir, $staged_themelet_dir, true);
-
-		flash_message($errmsg, 'error');
+	} else if (!rename($staged_dir, $dest_dir)) {
+		flash_message($lang->sprintf($lang->error_mv_failed, $staged_dir, $dest_dir), 'error');
 		admin_redirect('index.php?module=config-plugins');
-	} else
-	{
-		rmdir_recursive(MYBB_ROOT.'staging/plugins/'.$codename);
+	} else if (!rename($src_themelet_dir, $dest_themelet_dir)) {
+		flash_message($lang->sprintf($lang->error_mv_failed, $src_themelet_dir, $dest_themelet_dir), 'error');
+		admin_redirect('index.php?module=config-plugins');
 	}
 }

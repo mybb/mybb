@@ -71,6 +71,8 @@ $l['error_plugin_unzip_failed'] = 'Failed to unzip the plugin archive.';
 $l['error_plugin_already_staged'] = 'A version of this plugin with codename "{1}" is already staged. If you wish to overwrite it, then please check the "Allow overwrite if already staged" checkbox or remove the existing staged version at `staged/plugins/{1}` before trying again.';
 $l['error_plugin_uploaded_less_or_equal_vers'] = 'The integrated/installed version of this plugin is greater than or equal to the version which you uploaded. Aborting. To force a downgrade/reinstall, please check the "Allow downgrades/reinstalls when plugin already exists" checkbox.';
 $l['error_missing_manifest_version'] = 'The `version` property is missing in the JSON file "{1}".';
+$l['error_dest_directory_exists'] = 'The destination directory "{1}" already exists.';
+$l['error_mv_failed'] = 'Failed to move "{1}" to "{2}".';
 
 $l['success_plugins_up_to_date'] = "Congratulations, all of your plugins are up to date.";
 $l['success_plugin_activated'] = "The selected plugin has been activated successfully.";

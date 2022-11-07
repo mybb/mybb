@@ -142,24 +142,32 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="last alt_col">{12}</td>
 		</tr>
 		<tr class="alt_row">
-			<td class="first">Themes Directory Writable:</td>
+			<td class="first">"Hello" Plugin Staging Directory Writable:</td>
 			<td class="last alt_col">{13}</td>
 		</tr>
 		<tr class="alt_row">
-			<td class="first">Default Core Theme Staging Directory Writable:</td>
+			<td class="first">"Hello" Plugin\'s Interface Staging Directory Writable:</td>
 			<td class="last alt_col">{14}</td>
 		</tr>
 		<tr class="alt_row">
-			<td class="first">Plugins Staging Directory Writable:</td>
+			<td class="first">Themes Directory Writable:</td>
 			<td class="last alt_col">{15}</td>
 		</tr>
 		<tr class="alt_row">
-			<td class="first">Storage Directory Writable:</td>
+			<td class="first">Default Core Theme Staging Directory Writable:</td>
 			<td class="last alt_col">{16}</td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first">Plugins Staging Directory Writable:</td>
+			<td class="last alt_col">{17}</td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first">Storage Directory Writable:</td>
+			<td class="last alt_col">{18}</td>
 		</tr>
 		<tr class="last">
 			<td class="first">Themelets Staging Directory Writable:</td>
-			<td class="last alt_col">{17}</td>
+			<td class="last alt_col">{19}</td>
 		</tr>
 		</tbody>
 		</table>

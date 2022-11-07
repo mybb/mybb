@@ -1043,6 +1043,9 @@ function my_is_dir_writable($dir, $dir_friendly, &$errors, &$status)
 {
 	global $lang;
 
+	if (my_substr($dir, -1) != '/') {
+		$dir .= '/';
+	}
 	$writable = @fopen(MYBB_ROOT."{$dir}test.write", 'w');
 	if (!$writable) {
 		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_unwritable_dir, $dir_friendly, $dir));
@@ -1204,6 +1207,16 @@ function requirements_check()
 		$showerror = 1;
 	}
 
+	// Check "hello" plugin's staging directory is writable
+	if (!my_is_dir_writable('staging/plugins/hello/', '"hello" plugin staging', $errors, $hellopluginstagingstatus)) {
+		$showerror = 1;
+	}
+
+	// Check "hello" plugin's interface staging directory is writable
+	if (!my_is_dir_writable('staging/plugins/hello/interface/', '"hello" plugin interface staging', $errors, $helloplugininterfacestagingstatus)) {
+		$showerror = 1;
+	}
+
 	// Check themes directory is writable
 	if (!my_is_dir_writable('inc/themes/', 'themes', $errors, $themestatus)) {
 		$showerror = 1;
@@ -1230,7 +1243,7 @@ function requirements_check()
 	}
 
 	// Output requirements page
-	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $stagingstatus, $themestagingstatus, $pluginstagingstatus, $themestatus, $corethemestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $stagingstatus, $themestagingstatus, $pluginstagingstatus, $hellopluginstagingstatus, $helloplugininterfacestagingstatus, $themestatus, $corethemestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
 
 	if($showerror == 1)
 	{
