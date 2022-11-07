@@ -386,21 +386,13 @@ if($is_upload)
 	else
 	{
 		$maxtries = 100;
-		$base = MYBB_ROOT.'staging/plugins/'.uniqid();
-		for($i = 1; $i < $maxtries; $i++)
-		{
-			$tmpdir = $base.'-'.$i;
-			if(mkdir($tmpdir, 0755, true))
-			{
-				break;
-			}
-		}
-		if($i >= $maxtries)
+		$tmpdir = create_temp_dir();
+		if (!$tmpdir)
 		{
 			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
 			admin_redirect('index.php?module=config-plugins');
 		}
-		else if(!mkdir($tmpdir.'/extracted/', 0755, true))
+		else if(!mkdir($tmpdir.'/extracted/', 0777, true))
 		{
 			rmdir_recursive($tmpdir);
 			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
@@ -451,10 +443,12 @@ if($is_upload)
 					else
 					{
 						rmdir_recursive(MYBB_ROOT."staging/plugins/{$plugin_code}");
-						if(!rename($top_lvl_files[0], MYBB_ROOT."staging/plugins/{$plugin_code}"))
+						// We use cp_or_mv_recursively() rather than rename() because of this PHP bug:
+						// https://bugs.php.net/bug.php?id=54097
+						if (!cp_or_mv_recursively($top_lvl_files[0], MYBB_ROOT."staging/plugins/{$plugin_code}", /*$del_source = */true, $error))
 						{
 							rmdir_recursive($tmpdir);
-							flash_message($lang->error_plugin_move_fail, 'error');
+							flash_message($lang->sprintf($lang->error_plugin_move_fail, $error), 'error');
 							admin_redirect('index.php?module=config-plugins');
 						}
 						else

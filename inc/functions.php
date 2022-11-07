@@ -9512,7 +9512,7 @@ function create_temp_dir() {
 	$path_base = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.mt_rand().microtime(true);
 	$path = $path_base;
 	for ($i = 1; $i <= 10; $i++) {
-		if (mkdir($path)) {
+		if (mkdir($path, 0777)) {
 			return $path;
 		} else {
 			$path = $path_base.$i;
