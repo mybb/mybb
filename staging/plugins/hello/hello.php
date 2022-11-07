@@ -50,7 +50,7 @@ function hello_dyndesc(&$desc)
 function hello_activate()
 {
 	global $db, $lang;
-	$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+	$lang->loadp('hello');
 
 	// Settings group array details
 	$group = array(
@@ -245,7 +245,7 @@ function hello_uninstall()
 	if($mybb->request_method != 'post')
 	{
 		global $page, $lang;
-		$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+		$lang->loadp('hello');
 
 		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello', $lang->hello_uninstall_message, $lang->hello_uninstall);
 	}
@@ -274,7 +274,7 @@ function hello_settings()
 	global $lang;
 
 	// Load our language file
-	$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+	$lang->loadp('hello');
 }
 
 /*
@@ -293,7 +293,7 @@ function hello_index()
 	global $db, $lang, $hello, $theme;
 
 	// Load our language file
-	$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+	$lang->loadp('hello');
 
 	// Retreive all messages from the database
 	$messages = '';
@@ -340,7 +340,7 @@ function hello_post(&$post)
 	// Load our language file
 	if(!isset($lang->hello))
 	{
-		$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+		$lang->loadp('hello');
 	}
 
 	static $messages;
@@ -399,7 +399,7 @@ function hello_new()
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Load our language file
-	$lang->load('hello', /*$forceuserarea=*/false, /*$supress_error=*/false, /*$plugin_code=*/'hello', /*$is_staged=*/false);
+	$lang->loadp('hello');
 
 	$message = trim($mybb->get_input('message'));
 

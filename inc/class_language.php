@@ -134,6 +134,25 @@ class MyLanguage
 	}
 
 	/**
+	 * A wrapper around load() with plugin-friendly argument order.
+	 *
+	 * @param string  $section       The section name.
+	 * @param string  $plugin_code   The codename of the plugin if we are loading one of a plugin's sections.
+	 *                               If not supplied, it is assumed to be identical to $section.
+	 * @param boolean $is_staged     True if we are loading the section for a plugin that is still staged; otherwise
+	 *                               false. Only applicable when $plugin_code is not empty.
+	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
+	 * @param boolean $supress_error supress the error if the file doesn't exist?
+	 */
+	function loadp($section, $plugin_code='', $is_staged=false, $forceuserarea=false, $supress_error=false)
+	{
+		if (empty($plugin_code)) {
+			$plugin_code = $section;
+		}
+		$this->load($section, $forceuserarea, $supress_error, $plugin_code, $is_staged);
+	}
+
+	/**
 	 * Load the language variables for a section.
 	 *
 	 * @param string $section The section name.
