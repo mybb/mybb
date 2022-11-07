@@ -1809,7 +1809,7 @@ function install_default_theme()
 		$board_codename = 'board.default';
 		// Create a board theme inheriting from core.default
 		$board_dir = MYBB_ROOT."inc/themes/{$board_codename}/current/";
-		if (!mkdir($board_dir, 0755, true)) {
+		if (!mkdir($board_dir, 0777, true)) {
 			$output->print_error('Failed to create the directory: "'.htmlspecialchars_uni($board_dir).'".');
 		} else {
 			foreach (['theme.json', 'resources.json'] as $json_file) {
