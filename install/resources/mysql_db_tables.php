@@ -702,6 +702,15 @@ $tables[] = "CREATE TABLE mybb_reputation (
   PRIMARY KEY (rid)
 ) ENGINE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_securitylog (
+  uid int unsigned NOT NULL default '0',
+  ipaddress varbinary(16) NOT NULL default '',
+  dateline int unsigned NOT NULL default '0',
+  type varchar(50) NOT NULL default '',
+  data text NOT NULL,
+  KEY uid (uid)
+) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int unsigned NOT NULL default '0',

@@ -625,6 +625,14 @@ $tables[] = "CREATE TABLE mybb_reputation (
 	comments TEXT NOT NULL
 );";
 
+$tables[] = "CREATE TABLE mybb_securitylog (
+	uid int NOT NULL default '0',
+	ipaddress blob(16) NOT NULL default '',
+	dateline int NOT NULL default '0',
+	type varchar(50) NOT NULL default '',
+	data TEXT NOT NULL
+ );";
+
 $tables[] = "CREATE TABLE mybb_searchlog (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
