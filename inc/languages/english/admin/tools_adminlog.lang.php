@@ -247,6 +247,9 @@ $l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} 
 $l['admin_log_tools_spamlog_prune_email'] = "Pruned {4} spam logs older than {1} days with email {3}";
 $l['admin_log_tools_spamlog_prune_user_email'] = "Pruned {4} spam logs older than {1} days with username {2} and email {3}";
 
+$l['admin_log_tools_securitylog_prune'] = "Pruned {3} security logs older than {1} days";
+$l['admin_log_tools_securitylog_prune_user'] = "Pruned {3} security logs older than {1} days for user #{2}";
+
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
 $l['admin_log_tools_tasks_delete'] = "Deleted task #{1} ({2})";
