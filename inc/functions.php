@@ -4126,6 +4126,41 @@ function gzip_encode($contents, $level = 1)
 }
 
 /**
+ * Log any security issues.
+ *
+ * @param string $type The type of security action to log.
+ * @param int $uid The user ID (if not specified, $mybb->user will be used).
+ * @param array $data Any miscellaneous data of the security action.
+ */
+function log_security_action($type, $uid, $data = array())
+{
+	global $mybb, $db;
+
+	// If no user id is specified, assume it is the current user
+	$uid = (int)$uid;
+	if($uid == 0)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	// Any extra data - we my_serialize and insert in to its own column
+	if(is_array($data))
+	{
+		$data = my_serialize($data);
+	}
+
+	$sql_array = array(
+		"uid" => $uid,
+		"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
+		"dateline" => TIME_NOW,
+		"type" => $db->escape_string($type),
+		"data" => $db->escape_string($data)
+	);
+
+	$db->insert_query("securitylog", $sql_array);
+}
+
+/**
  * Log the actions of a moderator.
  *
  * @param array $data The data of the moderator's action.
