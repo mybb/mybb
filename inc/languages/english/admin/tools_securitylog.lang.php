@@ -12,12 +12,12 @@ $l['prune_security_log_desc'] = "Here you can prune the security logs matching a
 
 $l['username'] = "Username";
 $l['date'] = "Date";
+$l['information'] = "Information";
 $l['ipaddress'] = "IP Address";
 
-$l['yes_pin'] = "Yes, wrong secret pin";
-$l['yes_password'] = "Yes, wrong password";
-$l['yes'] = "Yes";
-$l['no'] = "No";
+$l['security_log_failed_login'] = "Failed Login";
+$l['security_log_failed_login_admincp'] = "Failed Login (Admin CP)";
+$l['security_log_incorrect_pin'] = "Incorrect Admin CP Pin";
 
 $l['filter_security_logs'] = "Filter Security Logs";
 $l['all_users'] = "All Users";

@@ -186,8 +186,9 @@ if(!$mybb->input['action'])
 	}
 
 	$table = new Table;
-	$table->construct_header($lang->username, array('width' => '30%'));
-	$table->construct_header($lang->date, array("class" => "align_center", 'width' => '35%'));
+	$table->construct_header($lang->username, array('width' => '15%'));
+	$table->construct_header($lang->date, array("class" => "align_center", 'width' => '20%'));
+	$table->construct_header($lang->information, array("class" => "align_center", 'width' => '45%'));
 	$table->construct_header($lang->ipaddress, array("class" => "align_center", 'width' => '20%'));
 
 	$query = $db->query("
@@ -200,6 +201,7 @@ if(!$mybb->input['action'])
 	");
 	while($logitem = $db->fetch_array($query))
 	{
+		$information = $data = '';
 		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 
@@ -213,15 +215,23 @@ if(!$mybb->input['action'])
 			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
 		}
 
+		if(is_array($logitem['data']))
+		{
+			$data = my_unserialize($logitem['data']);
+		}
+
+		$information = 'security_log_'.$logitem['type'];
+
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array("class" => "align_center"));
+		$table->construct_cell($lang->$information);
 		$table->construct_cell(my_inet_ntop($db->unescape_binary($logitem['ipaddress'])), array("class" => "align_center"));
 		$table->construct_row();
 	}
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_security_logs, array("colspan" => "3"));
+		$table->construct_cell($lang->no_security_logs, array("colspan" => "4"));
 		$table->construct_row();
 	}
 

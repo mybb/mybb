@@ -266,7 +266,6 @@ class LoginDataHandler extends DataHandler
 		global $plugins, $mybb;
 
 		$user = &$this->data;
-		$admincp = 0;
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
@@ -290,8 +289,17 @@ class LoginDataHandler extends DataHandler
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
 		{
-			$admincp = (int)defined('IN_ADMINCP');
-			log_security_action('failed_login', $this->login_data['uid'], $admincp);
+			$type = '';
+			if(defined('IN_ADMINCP'))
+			{
+				$type = 'failed_login_admincp';
+			}
+			else
+			{
+				$type = 'failed_login';
+			}
+
+			log_security_action($type, $this->login_data['uid']);
 			return false;
 		}
 
