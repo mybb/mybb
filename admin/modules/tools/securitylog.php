@@ -26,8 +26,12 @@ $sub_tabs['prune_security_log'] = array(
 	'description' => $lang->prune_security_log_desc
 );
 
+$plugins->run_hooks("admin_tools_securitylog_begin");
+
 if($mybb->input['action'] == 'prune')
 {
+	$plugins->run_hooks("admin_tools_securitylog_prune");
+
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
@@ -47,6 +51,8 @@ if($mybb->input['action'] == 'prune')
 
 		$db->delete_query("securitylog", $where);
 		$num_deleted = $db->affected_rows();
+
+		$plugins->run_hooks("admin_tools_securitylog_prune_commit");
 
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $num_deleted);
@@ -125,6 +131,8 @@ if(!$mybb->input['action'])
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 
+	$plugins->run_hooks("admin_tools_securitylog_start");
+
 	$where = 'WHERE 1=1';
 
 	// Searching for entries by a particular user
@@ -202,6 +210,9 @@ if(!$mybb->input['action'])
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = $data = '';
+
+		$plugins->run_hooks("admin_tools_securitylog_item");
+
 		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 
