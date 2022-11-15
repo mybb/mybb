@@ -4132,7 +4132,7 @@ function gzip_encode($contents, $level = 1)
  * @param int $uid The user ID (if not specified, $mybb->user will be used).
  * @param array $data Any miscellaneous data of the security action.
  */
-function log_security_action($type, $uid, $data = array())
+function log_security_action($type, $uid = 0, $data = array())
 {
 	global $mybb, $db;
 

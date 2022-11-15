@@ -585,6 +585,8 @@ if($mybb->input['action'] == 'do_email' && $mybb->request_method == 'post')
 				}
 				my_mail($mybb->user['email'], $emailsubject, $emailmessage);
 
+				log_security_action('changed_email');
+
 				$plugins->run_hooks("usercp_do_email_changed");
 				redirect("usercp.php?action=email", $lang->redirect_emailupdated);
 			}
@@ -615,6 +617,8 @@ if($mybb->input['action'] == 'do_email' && $mybb->request_method == 'post')
 					$mybb->settings['bbname']);
 				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 
+				log_security_action('changed_email');
+
 				$plugins->run_hooks('usercp_do_email_verify');
 				error($lang->redirect_changeemail_activation);
 			}
@@ -627,6 +631,9 @@ if($mybb->input['action'] == 'do_email' && $mybb->request_method == 'post')
 					$mybb->settings['bburl']);
 				my_mail($mybb->get_input('email'),
 					$lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']), $mail_message);
+
+				log_security_action('changed_email');
+
 				$plugins->run_hooks('usercp_do_email_changed');
 				redirect('usercp.php?action=email', $lang->redirect_emailupdated);
 			}
@@ -703,6 +710,8 @@ if($mybb->input['action'] == 'do_password' && $mybb->request_method == 'post')
 			$lang->emailsubject_changepassword = $lang->sprintf($lang->emailsubject_changepassword,
 				$mybb->settings['bbname']);
 			my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
+
+			log_security_action('changed_password');
 
 			$plugins->run_hooks('usercp_do_password_end');
 			redirect('usercp.php?action=password', $lang->redirect_passwordupdated);
