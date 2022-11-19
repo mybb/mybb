@@ -20,6 +20,8 @@ $l['security_log_failed_login_admincp'] = "Failed Login (Admin CP)";
 $l['security_log_incorrect_pin'] = "Incorrect Admin CP Pin";
 $l['security_log_changed_email'] = "Changed Email Address";
 $l['security_log_changed_password'] = "Changed Password";
+$l['security_log_lost_password'] = "Lost Password email sent";
+$l['security_log_reset_password'] = "Password reset email sent";
 
 $l['filter_security_logs'] = "Filter Security Logs";
 $l['all_users'] = "All Users";
