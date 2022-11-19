@@ -3480,6 +3480,11 @@ function build_users_view($view)
 		$userfield_sql = '1=1';
 		foreach($view['custom_profile_fields'] as $column => $input)
 		{
+			if(!preg_match('/^fid[0-9]+(_blank)?$/', $column))
+			{
+				continue;
+			}
+
 			if(is_array($input))
 			{
 				foreach($input as $value => $text)
