@@ -9606,7 +9606,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1827"><![CDATA[
+		<template name="post_javascript" version="1832"><![CDATA[
 			<script type="text/javascript">
 				lang.add_attachment = "{$lang->add_attachment}";
 				lang.update_attachment = "{$lang->update_attachment}";
@@ -9622,7 +9622,7 @@ if(use_xmlhttprequest == "1")
 				php_max_file_uploads = {$php_max_file_uploads};
 				mybb_max_file_uploads = {$mybb->settings['maxattachments']};
 			</script>
-			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1827"></script>
+			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1832"></script>
 			]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>
