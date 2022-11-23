@@ -21,7 +21,7 @@
         "issues": "https://github.com/mybb/mybb/issues"
     },
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "illuminate/config": "8.*",
         "illuminate/container": "8.*",
         "illuminate/events": "8.*",
