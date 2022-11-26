@@ -25,9 +25,11 @@ $l['security_log_reset_password'] = "Password reset email sent";
 
 $l['filter_security_logs'] = "Filter Security Logs";
 $l['all_users'] = "All Users";
+$l['all_types'] = "All Types";
 $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
 $l['username_colon'] = "Username:";
+$l['type_colon'] = "Type:";
 $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['in'] = "in";

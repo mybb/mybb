@@ -49,13 +49,19 @@ if($mybb->input['action'] == 'prune')
 			$where .= " AND uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 		}
 
+		// Searching for entries by a particular type
+		if($mybb->input['type'])
+		{
+			$where .= " AND type='".$mybb->get_input('type')."'";
+		}
+
 		$db->delete_query("securitylog", $where);
 		$num_deleted = $db->affected_rows();
 
 		$plugins->run_hooks("admin_tools_securitylog_prune_commit");
 
 		// Log admin action
-		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $num_deleted);
+		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['type'], $num_deleted);
 
 		$success = $lang->success_pruned_security_logs;
 		if($is_today == true && $num_deleted > 0)
@@ -98,9 +104,26 @@ if($mybb->input['action'] == 'prune')
 		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
+	$type_options[''] = $lang->all_types;
+	$type_options['0'] = '----------';
+
+	$query = $db->query("
+		SELECT DISTINCT type
+		FROM ".TABLE_PREFIX."securitylog
+		ORDER BY type ASC
+	");
+	while($type = $db->fetch_array($query))
+	{
+		$typeoption = '';
+		$typeoption = 'security_log_'.$type['type'];
+
+		$type_options[$type['type']] = $lang->$typeoption;
+	}
+
 	$form = new Form("index.php?module=tools-securitylog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_security_log);
 	$form_container->output_row($lang->username_colon, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	$form_container->output_row($lang->type_colon, "", $form->generate_select_box('type', $type_options, $mybb->get_input('type'), array('id' => 'type')), 'type');
 	if(!$mybb->get_input('older_than'))
 	{
 		$mybb->input['older_than'] = '60';
@@ -139,6 +162,12 @@ if(!$mybb->input['action'])
 	if($mybb->get_input('uid') > 0)
 	{
 		$where .= " AND l.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
+	}
+
+	// Searching for entries by a particular type
+	if($mybb->get_input('type'))
+	{
+		$where .= " AND l.type='".$mybb->get_input('type')."'";
 	}
 
 	// Order?
@@ -251,7 +280,7 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;type={$mybb->input['type']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 
 	// Fetch filter options
@@ -283,6 +312,27 @@ if(!$mybb->input['action'])
 		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
+	$type_options[''] = $lang->all_types;
+	$type_options['0'] = '----------';
+
+	$query = $db->query("
+		SELECT DISTINCT type
+		FROM ".TABLE_PREFIX."securitylog
+		ORDER BY type ASC
+	");
+	while($type = $db->fetch_array($query))
+	{
+		$typeoption = '';
+		$typeoption = 'security_log_'.$type['type'];
+
+		$selected = '';
+		if($mybb->get_input('type') == $type['type'])
+		{
+			$selected = "selected=\"selected\"";
+		}
+		$type_options[$type['type']] = $lang->$typeoption;
+	}
+
 	$sort_by = array(
 		'dateline' => $lang->date,
 		'username' => $lang->username
@@ -296,6 +346,7 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=tools-securitylog", "post");
 	$form_container = new FormContainer($lang->filter_security_logs);
 	$form_container->output_row($lang->username_colon, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	$form_container->output_row($lang->type_colon, "", $form->generate_select_box('type', $type_options, $mybb->get_input('type'), array('id' => 'type')), 'type');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
