@@ -26,6 +26,7 @@ $l['security_log_reset_password'] = "Password reset email sent";
 $l['filter_security_logs'] = "Filter Security Logs";
 $l['all_users'] = "All Users";
 $l['all_types'] = "All Types";
+$l['guest'] = "Guest";
 $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
 $l['username_colon'] = "Username:";

@@ -85,7 +85,8 @@ if($mybb->input['action'] == 'prune')
 	$ordersel[$mybb->get_input('order')] = "selected=\"selected\"";
 
 	$user_options[''] = $lang->all_users;
-	$user_options['0'] = '----------';
+	$user_options['-1'] = '----------';
+	$user_options['0'] = $lang->guest;
 
 	$query = $db->query("
 		SELECT DISTINCT l.uid, u.username
@@ -96,7 +97,7 @@ if($mybb->input['action'] == 'prune')
 	while($user = $db->fetch_array($query))
 	{
 		// Deleted Users
-		if(!$user['username'])
+		if(!$user['username'] && $user['uid'] > 0)
 		{
 			$user['username'] = htmlspecialchars_uni($lang->na_deleted);
 		}
@@ -238,7 +239,7 @@ if(!$mybb->input['action'])
 	");
 	while($logitem = $db->fetch_array($query))
 	{
-		$information = $data = '';
+		$information = $data = $username = '';
 
 		$plugins->run_hooks("admin_tools_securitylog_item");
 
@@ -250,9 +251,13 @@ if(!$mybb->input['action'])
 			$username = format_name(htmlspecialchars_uni($logitem['username']), $logitem['usergroup'], $logitem['displaygroup']);
 			$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		}
-		else
+		elseif(!$logitem['username'] && $logitem['uid'] > 0)
 		{
 			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
+		}
+		else
+		{
+			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->guest);
 		}
 
 		if(is_array($logitem['data']))
@@ -288,7 +293,8 @@ if(!$mybb->input['action'])
 	$ordersel[$mybb->get_input('order')] = "selected=\"selected\"";
 
 	$user_options[''] = $lang->all_users;
-	$user_options['0'] = '----------';
+	$user_options['-1'] = '----------';
+	$user_options['0'] = $lang->guest;
 
 	$query = $db->query("
 		SELECT DISTINCT l.uid, u.username
@@ -299,7 +305,7 @@ if(!$mybb->input['action'])
 	while($user = $db->fetch_array($query))
 	{
 		// Deleted Users
-		if(!$user['username'])
+		if(!$user['username'] && $user['uid'] > 0)
 		{
 			$user['username'] = htmlspecialchars_uni($lang->na_deleted);
 		}
