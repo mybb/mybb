@@ -2028,6 +2028,7 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("securitylog", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
