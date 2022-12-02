@@ -1,0 +1,1 @@
+This file simply ensures that Git always retains the containing directory, even when the directory is otherwise empty.
