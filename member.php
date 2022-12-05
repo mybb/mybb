@@ -818,7 +818,7 @@ if($mybb->input['action'] == "register")
 				$ref = $db->fetch_array($query);
 				$select['referrername'] = $ref['username'];
 			}
-			else if(isset($referrer))
+			else if(!empty($referrer))
 			{
 				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
@@ -866,9 +866,9 @@ if($mybb->input['action'] == "register")
 
 				$profilefield['type_multiselect'] = $profilefield['type_select'] = $profilefield['type_radio'] = $profilefield['type_checkbox'] = $profilefield['type_textarea'] = $profilefield['type_text'] = false;
 				$seloptions = array();
-				$thing = explode("\n", $profilefield['type'], "2");
+				$thing = explode("\n", $profilefield['type'], 2);
 				$type = trim($thing[0]);
-				$options = $thing[1];
+				$options = isset($thing[1]) ? $thing[1] : null;
 				$profilefield['field'] = "fid{$profilefield['fid']}";
 
 				if(!empty($errors) && isset($mybb->input['profile_fields'][$field]))
@@ -2238,8 +2238,8 @@ if($mybb->input['action'] == "profile")
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 
 	// Get the user title for this user
-	unset($memprofile['user_title']);
 	unset($stars);
+	$memprofile['user_title'] = '';
 	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
@@ -2253,9 +2253,12 @@ if($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		// No usergroup title so get a default one
-		$usertitles = $cache->read('usertitles');
+		if(!isset($usertitles))
+		{
+			$usertitles = $cache->read('usertitles');
+		}
 
+		// No usergroup title so get a default one
 		if(is_array($usertitles))
 		{
 			foreach($usertitles as $title)
@@ -2277,9 +2280,9 @@ if($mybb->input['action'] == "profile")
 		// Set the number of stars if display group has constant number of stars
 		$stars = $displaygroup['stars'];
 	}
-	else if(!$stars)
+	else if(!isset($stars))
 	{
-		if(!is_array($usertitles))
+		if(!isset($usertitles))
 		{
 			$usertitles = $cache->read('usertitles');
 		}
@@ -2296,6 +2299,11 @@ if($mybb->input['action'] == "profile")
 					break;
 				}
 			}
+		}
+
+		if(!isset($stars))
+		{
+			$stars = 0;
 		}
 	}
 
@@ -2530,51 +2538,59 @@ if($mybb->input['action'] == "profile")
 		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
 		$memban = $db->fetch_array($query);
 
-		if($memban['reason'])
+		if($db->num_rows($query))
 		{
-			$memprofile['banned_reason'] = $parser->parse_badwords($memban['reason']);
-		}
-		else
-		{
-			$memprofile['banned_reason'] = $lang->na;
-		}
-
-		$memprofile['perm_ban'] = false;
-		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
-		{
-			$memprofile['perm_ban'] = true;
-			$memprofile['banlength'] = $lang->permanent;
-			$memprofile['banned_class'] = "normal_banned";
-		}
-		else
-		{
-			// Set up the array of ban times.
-			$bantimes = fetch_ban_times();
-
-			$memprofile['banlength'] = $bantimes[$memban['bantime']];
-			$remaining = $memban['lifted'] - TIME_NOW;
-
-			$memprofile['timeremaining'] = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-			if($remaining < 3600)
+			if($memban['reason'])
 			{
-				$memprofile['banned_class'] = "high_banned";
-			}
-			else if($remaining < 86400)
-			{
-				$memprofile['banned_class'] = "moderate_banned";
-			}
-			else if($remaining < 604800)
-			{
-				$memprofile['banned_class'] = "low_banned";
+				$memprofile['banned_reason'] = $parser->parse_badwords($memban['reason']);
 			}
 			else
 			{
+				$memprofile['banned_reason'] = $lang->na;
+			}
+
+			$memprofile['perm_ban'] = false;
+			if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
+			{
+				$memprofile['perm_ban'] = true;
+				$memprofile['banlength'] = $lang->permanent;
 				$memprofile['banned_class'] = "normal_banned";
 			}
-		}
+			else
+			{
+				// Set up the array of ban times.
+				$bantimes = fetch_ban_times();
 
-		$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+				$memprofile['banlength'] = $bantimes[$memban['bantime']];
+				$remaining = $memban['lifted'] - TIME_NOW;
+
+				$memprofile['timeremaining'] = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+				if($remaining < 3600)
+				{
+					$memprofile['banned_class'] = "high_banned";
+				}
+				else if($remaining < 86400)
+				{
+					$memprofile['banned_class'] = "moderate_banned";
+				}
+				else if($remaining < 604800)
+				{
+					$memprofile['banned_class'] = "low_banned";
+				}
+				else
+				{
+					$memprofile['banned_class'] = "normal_banned";
+				}
+			}
+
+			$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+		}
+		else
+		{
+			// TODO: more specific output for converted/merged boards where no ban record is merged.
+			$bannedbit = '';
+		}
 	}
 
 	$memprofile['showadminoptions'] = false;

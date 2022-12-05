@@ -8,6 +8,7 @@
  *
  */
 
+#[AllowDynamicProperties]
 class MyLanguage
 {
 

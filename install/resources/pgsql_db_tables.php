@@ -864,16 +864,6 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid6 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
-$query = $db->write_query("SELECT column_name
-						  FROM information_schema.constraint_column_usage
-						  WHERE table_name = '".$config['tableprefix']."userfields'
-						  AND constraint_name = '".$config['tableprefix']."userfields_pkey'
-						  LIMIT 1");
-$main_field = $db->fetch_field($query, 'column_name');
-if(!empty($main_field))
-{
-	$tables[] = "DROP SEQUENCE mybb_userfields_ufid_seq;";
-}
 $tables[] = "CREATE SEQUENCE mybb_userfields_ufid_seq;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (

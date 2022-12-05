@@ -1531,7 +1531,7 @@ if($mybb->input['action'] == "delete_template")
 if($mybb->input['action'] == "diff_report")
 {
 	// Compares a template of sid1 with that of sid2, if no sid1, it is assumed -2
-	if(!$mybb->input['sid1'] || !isset($template_sets[$mybb->input['sid1']]))
+	if(empty($mybb->input['sid1']) || !isset($template_sets[$mybb->input['sid1']]))
 	{
 		$mybb->input['sid1'] = -2;
 	}
@@ -1550,7 +1550,7 @@ if($mybb->input['action'] == "diff_report")
 		admin_redirect("index.php?module=style-templates");
 	}
 
-	if(!$mybb->input['from'])
+	if(empty($mybb->input['from']))
 	{
 		$mybb->input['from'] = 0;
 	}

@@ -554,9 +554,9 @@ function &get_my_mailhandler($use_buitlin = false)
 			{
 				require_once MYBB_ROOT . "inc/mailhandlers/php.php";
 				$my_mailhandler_builtin = new PhpMail();
-				if(!empty($mybb->settings['mail_parameters']))
+				if(!empty($mybb->config['mail_parameters']))
 				{
-					$my_mailhandler_builtin->additional_parameters = $mybb->settings['mail_parameters'];
+					$my_mailhandler_builtin->additional_parameters = $mybb->config['mail_parameters'];
 				}
 			}
 		}
@@ -2311,6 +2311,11 @@ function my_set_array_cookie($name, $id, $value, $expires = "")
 	$newcookie[$id] = $value;
 	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
+
+	if(isset($mybb->cookies['mybb']) && !is_array($mybb->cookies['mybb']))
+	{
+		$mybb->cookies['mybb'] = array();
+	}
 
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
@@ -6863,8 +6868,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#(?!<.*?)(".preg_quote($word, "#").")(?![^<>]*?>)#ui";
-		$replacement = "<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$1</span>";
+		$find = "/(?<!&|&#)\b([[:alnum:]]*)(".preg_quote($word, "/").")(?![^<>]*?>)/ui";
+		$replacement = "$1<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$2</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 

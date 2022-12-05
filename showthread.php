@@ -1046,7 +1046,7 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['showsimilarthreads'] != 0)
 	{
 		$own_perm = '';
-		if($forumpermissions['canonlyviewownthreads'] == 1)
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
 		{
 			$own_perm = " AND t.uid={$mybb->user['uid']}";
 		}

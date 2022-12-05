@@ -3263,12 +3263,12 @@ if($mybb->input['action'] == "ipsearch")
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
-					if(!$ipaddress['username'])
+					if(empty($ipaddress['username']))
 					{
 						$ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					}
 
-					if(!$ipaddress['subject'])
+					if(empty($ipaddress['subject']))
 					{
 						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 					}

@@ -184,6 +184,22 @@ class MyBB {
 	 * @var string
 	 */
 	public $asset_url = null;
+
+	/**
+	 * @var array
+	 */
+	public $session = array();
+
+	/**
+	 * @var string
+	 */
+	public $post_code;
+
+	/**
+	 * @var array
+	 */
+	public $admin;
+
 	/**
 	 * String input constant for use with get_input().
 	 *

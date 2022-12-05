@@ -3523,7 +3523,7 @@ if(!$mybb->input['action'])
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
 
-			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
+			if(!isset($forumpermissions['canonlyviewownthreads']) || $forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -3569,7 +3569,7 @@ if(!$mybb->input['action'])
 				{
 					$plugins->run_hooks("usercp_thread_subscriptions_thread");
 
-					if($thread['tid'])
+					if(!empty($thread['tid']))
 					{
 						$thread['subject'] = $parser->parse_badwords($thread['subject']);
 						$thread['subject'] = htmlspecialchars_uni($thread['subject']);
@@ -3792,7 +3792,7 @@ if(!$mybb->input['action'])
 				$thread['folder_label'] = '';
 
 				// Folder Icons
-				if($thread['doticon'])
+				if(!empty($thread['doticon']))
 				{
 					$thread['folder'] = "dot_";
 					$thread['folder_label'] .= $lang->icon_dot;

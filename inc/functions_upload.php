@@ -823,7 +823,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 						}
 						else if(isset($attachedfile['aid']) && $mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 						{
-							$ret['success'][] = array($attachedfile['aid'], get_attachment_icon(get_extension($filename)), $filename, get_friendly_size($FILE['size']));
+							$ret['success'][] = array($attachedfile['aid'], get_attachment_icon(get_extension($filename)), htmlspecialchars_uni($filename), get_friendly_size($FILE['size']));
 						}
 					}
 				}

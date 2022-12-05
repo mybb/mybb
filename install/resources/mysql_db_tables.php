@@ -145,7 +145,7 @@ $tables[] = "CREATE TABLE mybb_banned (
   oldgroup int unsigned NOT NULL default '0',
   oldadditionalgroups text NOT NULL,
   olddisplaygroup int unsigned NOT NULL default '0',
-  admin int unsigned NOT NULL default '0',
+  `admin` int unsigned NOT NULL default '0',
   dateline int unsigned NOT NULL default '0',
   bantime varchar(50) NOT NULL default '',
   lifted int unsigned NOT NULL default '0',

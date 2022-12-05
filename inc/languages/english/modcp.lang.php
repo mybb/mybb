@@ -132,6 +132,7 @@ $l['remove_avatar'] = "Remove user's avatar?";
 $l['profile_optional'] = "Optional Fields";
 $l['website_url'] = "Website URL";
 $l['birthdate'] = "Birthdate";
+$l['away_notice_away'] = "You have been marked away since {1}";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";

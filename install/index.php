@@ -1160,8 +1160,8 @@ function requirements_check()
 	else
 	{
 		$configstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($configwritable);
 	}
-	@fclose($configwritable);
 
 	// Check settings file is writable
 	$settingswritable = @fopen(MYBB_ROOT.'inc/settings.php', 'w');
@@ -1174,8 +1174,8 @@ function requirements_check()
 	else
 	{
 		$settingsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($settingswritable);
 	}
-	@fclose($settingswritable);
 
 	// Check cache directory is writable
 	if (!my_is_dir_writable('cache/', 'cache', $errors, $cachestatus)) {

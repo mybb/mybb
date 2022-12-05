@@ -1261,70 +1261,74 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], get_thread_link($tid));
 		}
 
+		$pidin = array();
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
 		}
 
-		$pidin = implode(",", $pidin);
+		if(!empty($pidin))
+            {
+            $pidin = implode(",", $pidin);
 
-		// Fetch attachments
-		$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
-		while($attachment = $db->fetch_array($query))
-		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-		}
+            // Fetch attachments
+            $query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
+            while($attachment = $db->fetch_array($query))
+            {
+                $attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+            }
 
-		$posts = [];
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC, pid DESC
-		");
+            $posts = [];
+            $query = $db->query("
+                SELECT p.*, u.username AS userusername
+                FROM ".TABLE_PREFIX."posts p
+                LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+                WHERE pid IN ($pidin)
+                ORDER BY dateline DESC, pid DESC
+            ");
 
-		while($post = $db->fetch_array($query))
-		{
-			if($post['userusername'])
-			{
-				$post['username'] = $post['userusername'];
-			}
+            while($post = $db->fetch_array($query))
+            {
+                if($post['userusername'])
+                {
+                    $post['username'] = $post['userusername'];
+                }
 
-			$post['postdate'] = my_date('relative', $post['dateline']);
+                $post['postdate'] = my_date('relative', $post['dateline']);
 
-			$parser_options = array(
-				"allow_html" => $forum['allowhtml'],
-				"allow_mycode" => $forum['allowmycode'],
-				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode'],
-				"allow_videocode" => $forum['allowvideocode'],
-				"me_username" => $post['username'],
-				"filter_badwords" => 1
-			);
+                $parser_options = array(
+                    "allow_html" => $forum['allowhtml'],
+                    "allow_mycode" => $forum['allowmycode'],
+                    "allow_smilies" => $forum['allowsmilies'],
+                    "allow_imgcode" => $forum['allowimgcode'],
+                    "allow_videocode" => $forum['allowvideocode'],
+                    "me_username" => $post['username'],
+                    "filter_badwords" => 1
+                );
 
-			if($post['smilieoff'] == 1)
-			{
-				$parser_options['allow_smilies'] = 0;
-			}
+                if($post['smilieoff'] == 1)
+                {
+                    $parser_options['allow_smilies'] = 0;
+                }
 
-			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_imgcode'] = 0;
-			}
+                if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+                {
+                    $parser_options['allow_imgcode'] = 0;
+                }
 
-			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_videocode'] = 0;
-			}
+                if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+                {
+                    $parser_options['allow_videocode'] = 0;
+                }
 
-			$plugins->run_hooks("newreply_threadreview_post");
+                $plugins->run_hooks("newreply_threadreview_post");
 
-			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+                $post['message'] = $parser->parse_message($post['message'], $parser_options);
 
-			$posts[] = $post;
-		}
+                $posts[] = $post;
+            }
+        }
 	}
 
 	$newreply['showpostoptions'] = false;

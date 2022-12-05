@@ -1444,6 +1444,8 @@ class postParser
 	 */
 	function mycode_parse_video($video, $url)
 	{
+		global $mybb;
+
 		if(empty($video) || empty($url))
 		{
 			return "[video={$video}]{$url}[/video]";
@@ -1460,6 +1462,8 @@ class postParser
 		{
 			return "[video={$video}]{$url}[/video]";
 		}
+
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
 		$fragments = array();
 		if($parsed_url['fragment'])

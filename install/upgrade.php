@@ -344,7 +344,7 @@ else
 	{
 		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
 		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
-		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
+		if($db->table_exists("datacache") && !empty($upgrade_detail['requires_deactivated_plugins']) && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
@@ -388,7 +388,7 @@ else
 	else // Busy running modules, come back later
 	{
 		$bits = explode("_", $mybb->input['action'], 2);
-		if($bits[1]) // We're still running a module
+		if(!empty($bits[1])) // We're still running a module
 		{
 			$from = $bits[0];
 			$runfunction = next_function($bits[0], $bits[1]);
@@ -615,7 +615,7 @@ function buildcaches()
 
 	$output->print_header($lang->upgrade_datacache_building);
 
-	$contents .= $lang->upgrade_building_datacache;
+	$contents = $lang->upgrade_building_datacache;
 
 	$cache->update_version();
 	$cache->update_attachtypes();
@@ -777,7 +777,7 @@ function next_function($from, $func="dbchanges")
 		}
 	}
 
-	if(!$function)
+	if(empty($function))
 	{
 		$function = "whatsnext";
 	}
@@ -796,7 +796,7 @@ function load_module($module)
 	{
 		foreach($upgrade_detail as $key => $val)
 		{
-			if(!$system_upgrade_detail[$key] || $val > $system_upgrade_detail[$key])
+			if(empty($system_upgrade_detail[$key]) || $val > $system_upgrade_detail[$key])
 			{
 				$system_upgrade_detail[$key] = $val;
 			}
@@ -1029,6 +1029,7 @@ function sync_settings($redo=0)
 		}
 	}
 	unset($settings);
+	$settings = '';
 	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{

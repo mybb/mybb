@@ -2101,7 +2101,7 @@ if(!$mybb->input['action'])
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = my_unserialize($row['recipients']);
-			if(is_array($recipients['to']) && count($recipients['to']))
+			if(isset($recipients['to']) && is_array($recipients['to']) && count($recipients['to']))
 			{
 				$get_users = array_merge($get_users, $recipients['to']);
 			}
@@ -2196,6 +2196,11 @@ if(!$mybb->input['action'])
 					$message['tousers'] = $message['bbcusers'] = [];
 					foreach($recipients['to'] as $uid)
 					{
+						if(!isset($cached_users[$uid]))
+						{
+							continue;
+						}
+
 						$user = $cached_users[$uid];
 						$user['profilelink'] = get_profile_link($uid);
 						$user['username_raw'] = $user['username'];
@@ -2206,6 +2211,11 @@ if(!$mybb->input['action'])
 					{
 						foreach($recipients['bcc'] as $uid)
 						{
+							if(!isset($cached_users[$uid]))
+							{
+								continue;
+							}
+
 							$user = $cached_users[$uid];
 							$user['profilelink'] = get_profile_link($uid);
 							$user['username_raw'] = $user['username'];

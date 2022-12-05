@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.28, 1.8.29 or 1.8.30
+ * Upgrade Script: 1.8.31
  */
 
 $upgrade_detail = array(
@@ -20,4 +20,4 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-/* Nothing to do for 1.8.28, 1.8.29 or 1.8.30 */
+/* Nothing to do for 1.8.31 */
