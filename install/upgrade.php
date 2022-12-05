@@ -422,11 +422,10 @@ function upgradethemes()
 			$output->print_error($err_msg);
 		}
 	}
-	$core_theme_basedir = MYBB_ROOT.'inc/themes/core.default/';
-	if(!rename($core_theme_basedir.'devdist', $core_theme_basedir.'current'))
-	{
-		$output->print_error('Failed to move "'.htmlspecialchars_uni($core_theme_basedir.'devdist').'" to '.htmlspecialchars_uni($core_theme_basedir.'current').'.');
-	}
+
+	require_once MYBB_ROOT.'install/common.php';
+
+	copy_and_clone_default_theme();
 
 	$output->print_contents($lang->upgrade_templates_reverted_success);
 	$output->print_footer("rebuildsettings");
