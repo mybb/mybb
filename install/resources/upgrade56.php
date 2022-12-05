@@ -31,6 +31,7 @@ function upgrade56_dbchanges()
 
 	$db->write_query('ALTER TABLE '.TABLE_PREFIX.'users CHANGE `style` `style` varchar(30) NOT NULL DEFAULT \'\'');
 	$db->write_query('ALTER TABLE '.TABLE_PREFIX.'forums CHANGE `style` `style` varchar(30) NOT NULL DEFAULT \'\'');
+	$db->write_query('ALTER TABLE '.TABLE_PREFIX.'users ADD COLUMN password_algorithm varchar(30) NOT NULL DEFAULT \'\'');
 	$db->drop_table('themes');
 	$db->drop_table('themestylesheets');
 	$db->drop_table('templategroups');
