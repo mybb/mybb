@@ -11,9 +11,6 @@
 define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'announcements.php');
 
-$templatelist = 'announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_away,postbit_find,postbit_pm,postbit_email,postbit_author_user';
-$templatelist .= ',forumdisplay_password_wrongpass,forumdisplay_password,postbit_author_guest,postbit_userstar,announcement_quickdelete,postbit,postbit_classic,postbit_www,announcement_edit';
-
 require_once './global.php';
 require_once MYBB_ROOT.'inc/functions_post.php';
 

@@ -15,7 +15,7 @@
  */
 function output_page($contents)
 {
-	global $db, $lang, $theme, $templates, $plugins, $mybb;
+	global $db, $lang, $theme, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
@@ -941,7 +941,7 @@ function inline_error($errors, $title = "", $json_data = array())
  */
 function error_no_permission()
 {
-	global $mybb, $theme, $templates, $db, $lang, $plugins, $session;
+	global $mybb, $theme, $db, $lang, $plugins, $session;
 
 	$time = TIME_NOW;
 	$plugins->run_hooks('no_permission');
@@ -1011,7 +1011,7 @@ function error_no_permission()
  */
 function redirect($url, $message = "", $title = "", $force_redirect = false)
 {
-	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
+	global $header, $footer, $mybb, $theme, $headerinclude, $lang, $plugins;
 
 	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
 
@@ -1758,7 +1758,7 @@ function forum_password_validated($forum, $ignore_empty=false, $check_parents=fa
  */
 function check_forum_password($fid, $pid = 0, $return = false)
 {
-	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
+	global $mybb, $header, $footer, $headerinclude, $theme, $lang, $forum_cache;
 
 	$showform = true;
 
@@ -2131,7 +2131,7 @@ function get_moderated_fids($uid=0)
  */
 function get_post_icons()
 {
-	global $mybb, $cache, $icon, $theme, $templates, $lang;
+	global $mybb, $cache, $icon, $theme, $lang;
 
 	if(isset($mybb->input['icon']))
 	{
@@ -3251,7 +3251,7 @@ function delete_post($pid)
  */
 function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $showextras = 1, $showall = false, $permissions = "", $name = "fid")
 {
-	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $lang;
 
 	$pid = (int)$pid;
 
@@ -3529,7 +3529,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  */
 function build_mycode_inserter($bind = "message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
+	global $db, $mybb, $theme, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -3820,7 +3820,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
  */
 function build_clickable_smilies()
 {
-	global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
+	global $cache, $smiliecache, $theme, $lang, $mybb, $smiliecount;
 
 	$clickablesmilies = '';
 
@@ -3951,7 +3951,7 @@ function build_prefixes($pid = 0)
  */
 function build_prefix_select($fid, $selected_pid = 0, $multiple = 0, $previous_pid = 0)
 {
-	global $cache, $db, $lang, $mybb, $templates;
+	global $cache, $db, $lang, $mybb;
 
 	if($fid != 'all')
 	{
@@ -4017,7 +4017,7 @@ function build_prefix_select($fid, $selected_pid = 0, $multiple = 0, $previous_p
  */
 function build_forum_prefix_select($fid, $selected_pid = 0)
 {
-	global $cache, $db, $lang, $mybb, $templates;
+	global $cache, $db, $lang, $mybb;
 
 	$fid = (int)$fid;
 
@@ -4393,7 +4393,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme, $templates, $lang, $mybb;
+	global $cache, $attachtypes, $theme, $lang, $mybb;
 
 	if(!$attachtypes)
 	{
@@ -4540,76 +4540,6 @@ function fix_mktime($format, $year)
 	$format = str_replace("y", my_substr($year, -2), $format);
 
 	return $format;
-}
-
-/**
- * Build the breadcrumb navigation trail from the specified items
- *
- * @return string The formatted breadcrumb navigation trail
- */
-function build_breadcrumb()
-{
-	global $nav, $navbits, $templates, $theme, $lang, $mybb;
-
-	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-
-	$i = 0;
-	$activesep = '';
-
-	if(is_array($navbits))
-	{
-		reset($navbits);
-		foreach($navbits as $key => $navbit)
-		{
-			if(isset($navbits[$key+1]))
-			{
-				if(isset($navbits[$key+2]))
-				{
-					$sep = $navsep;
-				}
-				else
-				{
-					$sep = "";
-				}
-
-				$multipage = null;
-				$multipage_dropdown = null;
-				if(!empty($navbit['multipage']))
-				{
-					if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-					{
-						$mybb->settings['threadsperpage'] = 20;
-					}
-
-					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-					if($multipage)
-					{
-						++$i;
-						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
-						$sep = $multipage_dropdown.$sep;
-					}
-				}
-
-				// Replace page 1 URLs
-				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-
-				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
-			}
-		}
-		$navsize = count($navbits);
-		$navbit = $navbits[$navsize-1];
-	}
-
-	if($nav)
-	{
-		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
-	}
-
-	eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-	eval("\$donenav = \"".$templates->get("nav")."\";");
-
-	return $donenav;
 }
 
 /**
@@ -5285,7 +5215,7 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  */
 function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $usergroup_override = false, $footer = false, $count_override = false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_options;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $num_themes, $themeselect_options;
 
 	if($tid == 0)
 	{
