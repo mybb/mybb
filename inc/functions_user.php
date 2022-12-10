@@ -483,7 +483,7 @@ function remove_subscribed_forum($fid, $uid=0)
  */
 function usercp_menu()
 {
-	global $mybb, $templates, $theme, $plugins, $lang, $usercpnav, $usercpmenu;
+	global $mybb, $theme, $plugins, $lang, $usercpnav, $usercpmenu;
 
 	$lang->load("usercpnav");
 
@@ -501,14 +501,6 @@ function usercp_menu()
 
 	// Run the plugin hooks
 	$plugins->run_hooks("usercp_menu");
-	global $usercpmenu;
-
-	if($mybb->usergroup['canusercp'] == 1)
-	{
-		eval("\$ucp_nav_home = \"".$templates->get("usercp_nav_home")."\";");
-	}
-
-	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 
 	$plugins->run_hooks("usercp_menu_built");
 }
@@ -519,24 +511,12 @@ function usercp_menu()
  */
 function usercp_menu_messenger()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+	global $db, $mybb, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
 	$expaltext = (in_array("usercppms_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
-	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
 	$tracking = '';
-	if($mybb->usergroup['cantrackpms'])
-	{
-		$tracking = $templates->get("usercp_nav_messenger_tracking");
-	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
-
-	// Hide compose link if no permission
-	$ucp_nav_compose = '';
-	if($mybb->usergroup['cansendpms'] == 1)
-	{
-		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
-	}
 
 	$folderlinks = $folder_id = $folder_name = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -559,8 +539,6 @@ function usercp_menu_messenger()
 
 		$folder_id = $folderinfo[0];
 		$folder_name = $folderinfo[1];
-
-		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
 	}
 
 	if(!isset($collapsedimg['usercppms']))
@@ -572,8 +550,6 @@ function usercp_menu_messenger()
 	{
 		$collapsed['usercppms_e'] = '';
 	}
-
-	eval("\$usercpmenu .= \"".$usercp_nav_messenger."\";");
 }
 
 /**
@@ -582,22 +558,7 @@ function usercp_menu_messenger()
  */
 function usercp_menu_profile()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
-
-	$changenameop = '';
-	if($mybb->usergroup['canchangename'] != 0)
-	{
-		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
-	}
-
-	$changesigop = '';
-	if($mybb->usergroup['canusesig'] == 1 && ($mybb->usergroup['canusesigxposts'] == 0 || $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] > $mybb->usergroup['canusesigxposts']))
-	{
-		if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
-		{
-			eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
-		}
-	}
+	global $db, $mybb, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
 	if(!isset($collapsedimg['usercpprofile']))
 	{
@@ -610,7 +571,6 @@ function usercp_menu_profile()
 	}
 
 	$expaltext = (in_array("usercpprofile_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
 /**
@@ -619,7 +579,7 @@ function usercp_menu_profile()
  */
 function usercp_menu_misc()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+	global $db, $mybb, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
 	$draftstart = $draftend = '';
 	$draftcount = $lang->ucp_nav_drafts;
@@ -630,11 +590,6 @@ function usercp_menu_misc()
 	if($count > 0)
 	{
 		$draftcount = $lang->sprintf($lang->ucp_nav_drafts_active, my_number_format($count));
-	}
-
-	if($mybb->settings['enableattachments'] != 0)
-	{
-		eval("\$attachmentop = \"".$templates->get("usercp_nav_attachments")."\";");
 	}
 
 	if(!isset($collapsedimg['usercpmisc']))
@@ -649,7 +604,6 @@ function usercp_menu_misc()
 
 	$profile_link = get_profile_link($mybb->user['uid']);
 	$expaltext = (in_array("usercpmisc_e", $collapsed)) ? $lang->expcol_expand : $lang->expcol_collapse;
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
 /**

@@ -389,7 +389,7 @@ function upload_avatar($avatar=array(), $uid=0)
  */
 function upload_attachment($attachment, $update_attachment=false)
 {
-	global $mybb, $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
+	global $mybb, $db, $theme, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 
 	$posthash = $db->escape_string($mybb->get_input('posthash'));
 	$pid = (int)$pid;

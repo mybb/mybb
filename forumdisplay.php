@@ -1165,11 +1165,6 @@ if($mybb->user['uid'])
 if($foruminfo['type'] != "c")
 {
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
-
-	// Populate Forumsort
-	$forumsort = '';
-	eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
-
 	$plugins->run_hooks("forumdisplay_threadlist");
 }
 

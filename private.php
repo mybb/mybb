@@ -12,17 +12,6 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,usercp_nav_attachments,usercp_nav_messenger_compose,private_tracking_readmessage_stop";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_archive_txt,private_archive_csv,private_archive_html,private_tracking_unreadmessage_stop";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
-$templatelist .= ",private_messagebit,codebuttons,posticons,private_send_autocomplete,private_messagebit_denyreceipt,postbit_warninglevel_formatted,private_emptyexportlink,postbit_purgespammer,postbit_gotopost,private_read";
-$templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
-$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
-$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_reputation_formatted_link";
-$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders,usercp_nav_home";
-$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find";
-$templatelist .= ",usercp_nav_editsignature,posticons_icon,postbit_icon,postbit_iplogged_hiden,usercp_nav_profile,usercp_nav_misc,postbit_userstar,private_read_to,postbit_online,private_empty,private_orderarrow,postbit_reply_pm";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
