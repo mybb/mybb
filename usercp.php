@@ -2522,7 +2522,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	}
 	elseif($mybb->settings['allowremoteavatars']) // remote avatar
 	{
-		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
+		$mybb->input['avatarurl'] = htmlspecialchars_uni($mybb->get_input('avatarurl'));
 		if(validate_email_format($mybb->input['avatarurl']) != false)
 		{
 			// Gravatar
