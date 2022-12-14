@@ -564,32 +564,72 @@ HTML;
 			$main_field = $default_field;
 		}
 
-		$update = false;
-		$search_bit = array();
-
 		if (!is_array($main_field)) {
 			$main_field = array($main_field);
 		}
 
-		foreach ($main_field as $field) {
-			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-				$search_bit[] = "{$field} = ".$replacements[$field];
-			} else {
-				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
+		if(version_compare($this->get_version(), '9.5.0', '>='))
+		{
+			// ON CONFLICT clause supported
+
+			$main_field_csv = implode(',', $main_field);
+
+			// INSERT-like list of fields and values
+			$fields = implode(",", array_keys($replacements));
+			$values = $this->build_value_string($table, $replacements);
+
+			// UPDATE-like SET list, using special EXCLUDED table to avoid passing values twice
+			$reassignment_values = array();
+			$true_replacement_keys = array_diff(
+				array_keys($replacements),
+				array_flip($main_field)
+			);
+			foreach($true_replacement_keys as $key)
+			{
+				$reassignment_values[$key] = 'EXCLUDED.' . $key;
 			}
+
+			$reassignments = $this->build_field_value_string($table, $reassignment_values, true);
+
+			$this->write_query("
+				INSERT
+				INTO {$this->table_prefix}{$table} ({$fields})
+				VALUES ({$values})
+				ON CONFLICT ($main_field_csv) DO UPDATE SET {$reassignments}
+			");
 		}
+		else
+		{
+			// manual SELECT and UPDATE/INSERT (prone to TOCTOU issues)
 
-		$search_bit = implode(" AND ", $search_bit);
-		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+			$update = false;
+			$search_bit = array();
 
-		if ($this->fetch_field($query, "count") == 1) {
-			$update = true;
-		}
+			if (!is_array($main_field)) {
+				$main_field = array($main_field);
+			}
 
-		if ($update === true) {
-			return $this->update_query($table, $replacements, $search_bit);
-		} else {
-			return $this->insert_query($table, $replacements);
+			foreach ($main_field as $field) {
+				if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+					$search_bit[] = "{$field} = ".$replacements[$field];
+				} else {
+					$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
+				}
+			}
+
+			$search_bit = implode(" AND ", $search_bit);
+
+			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+
+			if ($this->fetch_field($query, "count") == 1) {
+				$update = true;
+			}
+
+			if ($update === true) {
+				return $this->update_query($table, $replacements, $search_bit);
+			} else {
+				return $this->insert_query($table, $replacements);
+			}
 		}
 	}
 
