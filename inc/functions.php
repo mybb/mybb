@@ -2590,9 +2590,10 @@ function _safe_unserialize($str, $unlimited = true)
  * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
  *
  * @param string $str
+ * @param bool $unlimited
  * @return mixed
  */
-function my_unserialize($str)
+function my_unserialize($str, $unlimited = true)
 {
 	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
 	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
@@ -2601,7 +2602,7 @@ function my_unserialize($str)
 		mb_internal_encoding('ASCII');
 	}
 
-	$out = _safe_unserialize($str);
+	$out = _safe_unserialize($str, $unlimited);
 
 	if(isset($mbIntEnc))
 	{
