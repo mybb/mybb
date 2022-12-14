@@ -80,7 +80,7 @@ if($mybb->user['uid'] == 0)
 	$forumsread = [];
 	if(isset($mybb->cookies['mybb']['forumread']))
 	{
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
 	}
 
  	if(is_array($forumsread) && empty($forumsread))
@@ -698,7 +698,7 @@ if($has_announcements == true)
 	$cookie = [];
 	if(isset($mybb->cookies['mybb']['announcements']))
 	{
-		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']), false);
 	}
 
 	while($announcement = $db->fetch_array($query))

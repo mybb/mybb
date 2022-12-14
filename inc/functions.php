@@ -2275,7 +2275,7 @@ function my_get_array_cookie($name, $id)
 		return false;
 	}
 
-	$cookie = my_unserialize($mybb->cookies['mybb'][$name]);
+	$cookie = my_unserialize($mybb->cookies['mybb'][$name], false);
 
 	if(is_array($cookie) && isset($cookie[$id]))
 	{
@@ -2301,7 +2301,7 @@ function my_set_array_cookie($name, $id, $value, $expires = "")
 
 	if(isset($mybb->cookies['mybb'][$name]))
 	{
-		$newcookie = my_unserialize($mybb->cookies['mybb'][$name]);
+		$newcookie = my_unserialize($mybb->cookies['mybb'][$name], false);
 	}
 	else
 	{
