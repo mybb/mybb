@@ -180,22 +180,13 @@ HTML;
 
 	public function insert_query($table, $array)
 	{
-		global $mybb;
-
 		if (!is_array($array)) {
 			return false;
 		}
 
-		foreach ($array as $field => $value) {
-			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-				$array[$field] = $value;
-			} else {
-				$array[$field] = $this->quote_val($value);
-			}
-		}
+		$values = $this->build_value_string($table, $array);
 
 		$fields = implode(",", array_keys($array));
-		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} ({$fields})
@@ -216,8 +207,6 @@ HTML;
 
 	public function insert_query_multiple($table, $array)
 	{
-		global $mybb;
-
 		if (!is_array($array)){
 			return;
 		}
@@ -228,15 +217,7 @@ HTML;
 
 		$insert_rows = array();
 		foreach ($array as $values) {
-			foreach ($values as $field => $value) {
-				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-					$values[$field] = $value;
-				} else {
-					$values[$field] = $this->quote_val($value);
-				}
-			}
-
-			$insert_rows[] = "(".implode(",", $values).")";
+			$insert_rows[] = "(".$this->build_value_string($table, $values).")";
 		}
 
 		$insert_rows = implode(", ", $insert_rows);
@@ -256,25 +237,7 @@ HTML;
 			return false;
 		}
 
-		$comma = "";
-		$query = "";
-		$quote = "'";
-
-		if ($no_quote == true) {
-			$quote = "";
-		}
-
-		foreach($array as $field => $value) {
-			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-				$query .= "{$comma}{$field}={$value}";
-			} else {
-				$quoted_value = $this->quote_val($value, $quote);
-
-				$query .= "{$comma}{$field}={$quoted_value}";
-			}
-
-			$comma = ', ';
-		}
+		$query = $this->build_field_value_string($table, $array, $no_quote);
 
 		if(!empty($where)) {
 			$query .= " WHERE {$where}";
