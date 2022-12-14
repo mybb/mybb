@@ -2335,12 +2335,13 @@ define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
  * - does not unserialize objects
  *
  * @param string $str
+ * @param bool $unlimited Whether to apply limits defined in MAX_SERIALIZED_* constants
  * @return mixed
  * @throw Exception if $str is malformed or contains unsupported types (e.g., resources, objects)
  */
-function _safe_unserialize($str)
+function _safe_unserialize($str, $unlimited = true)
 {
-	if(strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
+	if(!$unlimited && strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
 	{
 		// input exceeds MAX_SERIALIZED_INPUT_LENGTH
 		return false;
@@ -2394,7 +2395,11 @@ function _safe_unserialize($str)
 			$value = substr($matches[2], 0, (int)$matches[1]);
 			$str = substr($matches[2], (int)$matches[1] + 2);
 		}
-		elseif($type == 'a' && preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) && $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		elseif(
+			$type == 'a' &&
+			preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) &&
+			($unlimited || $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		)
 		{
 			$expectedLength = (int)$matches[1];
 			$str = $matches[2];
@@ -2410,7 +2415,7 @@ function _safe_unserialize($str)
 			case 3: // in array, expecting value or another array
 				if($type == 'a')
 				{
-					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
@@ -2456,7 +2461,7 @@ function _safe_unserialize($str)
 				}
 				if($type == 'i' || $type == 's')
 				{
-					if(count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
+					if(!$unlimited && count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
 					{
 						// array size exceeds MAX_SERIALIZED_ARRAY_LENGTH
 						return false;
@@ -2478,7 +2483,7 @@ function _safe_unserialize($str)
 			case 0: // expecting array or value
 				if($type == 'a')
 				{
-					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
