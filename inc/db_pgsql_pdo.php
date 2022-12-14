@@ -719,6 +719,70 @@ HTML;
 		return $fieldstring;
 	}
 
+	/**
+	 * @param string $table
+	 * @param array $array
+	 * @param bool $no_quote
+	 *
+	 * @return string
+	 */
+	protected function build_field_value_string($table, $array, $no_quote = false)
+	{
+		global $mybb;
+
+		$strings = array();
+
+		if ($no_quote == true)
+		{
+			$quote = "";
+		}
+		else
+		{
+			$quote = "'";
+		}
+
+		foreach($array as $field => $value)
+		{
+			if(!isset($mybb->binary_fields[$table][$field]) || !$mybb->binary_fields[$table][$field])
+			{
+				$value = $this->quote_val($value, $quote);
+			}
+
+			$strings[] = "{$field}={$value}";
+		}
+
+		$string = implode(', ', $strings);
+
+		return $string;
+	}
+
+	/**
+	 * @param string $table
+	 * @param array $array
+	 *
+	 * @return string
+	 */
+	protected function build_value_string($table, $array)
+	{
+		global $mybb;
+
+		$values = array();
+
+		foreach($array as $field => $value)
+		{
+			if(!isset($mybb->binary_fields[$table][$field]) || !$mybb->binary_fields[$table][$field])
+			{
+				$value = $this->quote_val($value);
+			}
+
+			$values[$field] = $value;
+		}
+
+		$string = implode(",", $values);
+
+		return $string;
+	}
+
 	public function __set($name, $value)
 	{
 		if ($name === 'type') {
