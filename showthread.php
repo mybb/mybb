@@ -623,6 +623,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
+	$forumjump = '';
 	if($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
