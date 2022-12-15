@@ -172,6 +172,7 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
+$forumjump = '';
 if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
