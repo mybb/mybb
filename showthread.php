@@ -1321,6 +1321,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Get users viewing this thread
+	$usersbrowsing='';
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
