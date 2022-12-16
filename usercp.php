@@ -3640,7 +3640,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
 
-		if($joinrequest['rid'])
+		if(!empty($joinrequest['rid']))
 		{
 			error($lang->already_sent_join_request);
 		}
