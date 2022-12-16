@@ -692,6 +692,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$posticons = get_post_icons();
 		}
 
+		$newthread['numpolloptions'] = 2;
+
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$newthread['subscriptionmethod'][$subscription_method] = true;
 	}
