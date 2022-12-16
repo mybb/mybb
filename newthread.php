@@ -693,6 +693,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$posticons = get_post_icons();
 		}
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
+		$numpolloptions = "2";
 	}
 
 	// Otherwise, this is our initial visit to this page.
