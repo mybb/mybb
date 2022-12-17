@@ -1491,7 +1491,7 @@ class postParser
 		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
 		$fragments = array();
-		if($parsed_url['fragment'])
+		if(!empty($parsed_url['fragment']))
 		{
 			$fragments = explode("&", $parsed_url['fragment']);
 		}
@@ -1584,7 +1584,7 @@ class postParser
 				}
 				break;
 			case "youtube":
-				if($fragments[0])
+				if(!empty($fragments[0]))
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
