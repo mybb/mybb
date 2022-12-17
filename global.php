@@ -239,12 +239,11 @@ unset($valid);
 
 require_once MYBB_ROOT.'inc/functions_themes.php';
 $themelet_hierarchy = get_themelet_hierarchy();
-$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
 
 // Fetch the theme to load from the cache
-if($style && !empty($themelet_hierarchy[$mode]['themes'][$style]))
+if($style && !empty($themelet_hierarchy['themes'][$style]))
 {
-	$theme = $themelet_hierarchy[$mode]['themes'][$style]['properties'];
+	$theme = $themelet_hierarchy['themes'][$style]['properties'];
 
 	if(!empty($theme) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
@@ -286,13 +285,13 @@ if(empty($theme))
 	}
 
 	// Load the first available theme
-	$theme = reset($themelet_hierarchy[$mode]['themes'])['properties'];
+	$theme = reset($themelet_hierarchy['themes'])['properties'];
 }
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
 $stylesheet_scripts = [];
-$resources = read_json_file(MYBB_ROOT."inc/themes/$style/$mode/resources.json", $err_msg, /*$show_errs =*/false);
+$resources = read_json_file(MYBB_ROOT."inc/themes/$style/resources.json", $err_msg, /*$show_errs =*/false);
 if(!empty($resources['stylesheets']))
 {
 	$theme['stylesheets'] = $resources['stylesheets'];

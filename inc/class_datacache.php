@@ -1003,14 +1003,14 @@ class datacache
 			require_once MYBB_ROOT.'inc/functions_themes.php';
 			$themelet_hierarchy = get_themelet_hierarchy();
 			$theme = [];
-			foreach ($themelet_hierarchy['current']['themes'] as $codename => $theme_a) {
+			foreach ($themelet_hierarchy['themes'] as $codename => $theme_a) {
 				if (substr($theme_a['properties']['codename'], 0, 6) == 'board.') {
 					$theme = $theme_a['properties'];
 					break;
 				}
 			}
 			if (!$theme) {
-				$theme = reset($themelet_hierarchy['current']['themes'])['properties'];
+				$theme = reset($themelet_hierarchy['themes'])['properties'];
 			}
 		}
 		$this->update('default_theme', $theme);

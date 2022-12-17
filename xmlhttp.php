@@ -119,8 +119,7 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	// Load the first available theme
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
-	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-	$theme = reset($themelet_hierarchy[$mode]['themes'])['properties'];
+	$theme = reset($themelet_hierarchy['themes'])['properties'];
 }
 
 // Set the appropriate image language directory for this theme.

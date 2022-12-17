@@ -52,18 +52,11 @@ function template(string $name, array $context = [])
     /** @var Environment $twig */
     $twig = app(Environment::class);
 
-    $ret = '';
-    try {
-        // Strip explicit default namespace (frontend) because we don't register it with the loader.
-        // Instead, we register it as the main namespace (i.e., when $name doesn't begin with an @).
-        $name = strip_frontend_ns($name);
-        $ret = $twig->render($name, $context);
-    } catch (\Twig\Error\LoaderError $e) {} // Ignore loading exceptions/errors - just return an empty string.
-                                // Mostly, this is so that if we are in `devdist` mode, and
-                                // a plugin doesn't have a `devdist` directory in which the
-                                // requested template is expected, we don't error out here.
+    // Strip explicit default namespace (frontend) because we don't register it with the loader.
+    // Instead, we register it as the main namespace (i.e., when $name doesn't begin with an @).
+    $name = strip_frontend_ns($name);
 
-    return $ret;
+    return $twig->render($name, $context);
 }
 
 /**

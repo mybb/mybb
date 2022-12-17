@@ -305,7 +305,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="themelet_dev_mode">
 			<title>Development Mode (Themelets)</title>
-			<description><![CDATA[Setting this to Yes will cause the theme system to use and preference `devdist` directories over `current` directories when loading resources (templates, stylesheets, etc) from themes and plugin themelets. Setting it to No will cause <em>only</em> `current` directories to be used (this is the default value, for end-user/production use).]]></description>
+			<description><![CDATA[Setting this to Yes will allow core and original themes to be edited via the ACP. Setting it to No (the default value) is recommended for end-user/production use.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

@@ -67,12 +67,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             }
             $current_theme = $theme['codename'];
             require_once MYBB_ROOT.'inc/functions_themes.php';
-            $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */$mybb->settings['themelet_dev_mode'], /*$use_themelet_cache = */true);
-
-            // A fallback in case only the core.default `devdist` directory exists.
-            if (empty($twig_dirs)) {
-                 $twig_dirs = get_twig_dirs($current_theme, /*$inc_devdist = */true, /*$use_themelet_cache = */true);
-            }
+            $twig_dirs = get_twig_dirs($current_theme, /*$use_themelet_cache = */true);
 
             foreach($twig_dirs as $twig_dir) {
                 if (is_array($twig_dir)) {

@@ -5269,8 +5269,7 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $effective_uid =
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 
-	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-	$themes = $themelet_hierarchy[$mode]['themes'];
+	$themes = $themelet_hierarchy['themes'];
 
 	foreach ($themes as $t_code => $theme)
 	{
@@ -5281,7 +5280,7 @@ function build_fs_theme_select_r($theme_code = '', $depth = '', $effective_uid =
 			$new_depth = $depth;
 			if ((empty($ignoredtheme) || $t_code != $ignoredtheme)
 			    &&
-			    (!$skip_core_orig || is_mutable_theme($theme['properties']['codename'], $mode))
+			    (!$skip_core_orig || is_mutable_theme($theme['properties']['codename']))
 			    &&
 			    (!$effective_uid
 			     ||
@@ -5397,9 +5396,9 @@ function build_tcache()
 		}
 		foreach($themes as $theme)
 		{
-			if(isset($themelet_hierarchy['current']['themes'][$theme['package']]['ancestors']))
+			if(isset($themelet_hierarchy['themes'][$theme['package']]['ancestors']))
 			{
-				$ancestors = $themelet_hierarchy['current']['themes'][$theme['package']]['ancestors'];
+				$ancestors = $themelet_hierarchy['themes'][$theme['package']]['ancestors'];
 				$first_pid = 0;
 				if(!empty($ancestors[0]))
 				{
@@ -5426,10 +5425,8 @@ function get_fs_theme($codename)
 	require_once MYBB_ROOT.'inc/functions_themes.php';
 	$themelet_hierarchy = get_themelet_hierarchy();
 
-	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-
-	return $themelet_hierarchy[$mode]['themes'][$codename]['properties']
-	         ? $themelet_hierarchy[$mode]['themes'][$codename]['properties']
+	return $themelet_hierarchy['themes'][$codename]['properties']
+	         ? $themelet_hierarchy['themes'][$codename]['properties']
 	         : false;
 }
 
@@ -9467,7 +9464,7 @@ function get_plugin_name($plugin_code, &$err_msg = '')
     $err_msg = '';
     $manifest_file = MYBB_ROOT."inc/plugins/$plugin_code/plugin.json";
     $plugininfo = read_json_file($manifest_file, $err_msg, false);
-    plugininfo_keys_to_raw($plugininfo, /*$staged = */false, /*$show_errs = */false);
+    plugininfo_keys_to_raw($plugininfo, /*$show_errs = */false);
     if (!isset($plugininfo['name'])) {
         if (!$err_msg) {
             $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
@@ -9486,16 +9483,14 @@ function get_plugin_name($plugin_code, &$err_msg = '')
  * by those `_key` fields. Checks whether this can be done for the fields `name` and `description`.
  *
  * @param array $plugininfo An array of plugin info, e.g., as retrieved from a plugin.json file.
- * @param boolean $staged If true, then the plugin language file used is in the staging directory; otherwise, it is as
- *                        usual.
  * @param boolean $show_errs If true, then output an inline error message on error; otherwise, ignore errors.
  */
-function plugininfo_keys_to_raw(&$plugininfo, $staged = false, $show_errs = true)
+function plugininfo_keys_to_raw(&$plugininfo, $show_errs = true)
 {
 	global $lang, $page;
 
 	if (!empty($plugininfo['langfile'])) {
-		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugininfo['codename'], $staged);
+		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugininfo['codename']);
 		foreach (['name', 'description'] as $key) {
 			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
 				if ($show_errs) {

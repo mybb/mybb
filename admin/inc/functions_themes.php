@@ -1277,8 +1277,7 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 	}
 	$def_theme = $cache->read('default_theme');
 
-	$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-	$themes = $themelet_hierarchy[$mode]['themes'];
+	$themes = $themelet_hierarchy['themes'];
 
 	if(!is_array($theme_cache))
 	{
@@ -1360,7 +1359,7 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 
 			if($theme['codename'] != $def_theme['codename'])
 			{
-				if (is_mutable_theme($theme['codename'], $mode)) {
+				if (is_mutable_theme($theme['codename'], $mybb->settings['themelet_dev_mode'])) {
 					$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}");
 					$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
 				}
@@ -1369,7 +1368,7 @@ function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 			{
 				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
-			if(is_mutable_theme($theme['codename'], $mode)) {
+			if(is_mutable_theme($theme['codename'], $mybb->settings['themelet_dev_mode'])) {
 				$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
 			}
 			$set_default = "<div class=\"float_right\">{$set_default}</div>";

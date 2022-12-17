@@ -437,52 +437,51 @@ if($is_upload)
 				}
 				else
 				{
+					$do_integrate = false;
 					$plugin_code = basename($top_lvl_files[0]);
-					if(file_exists(MYBB_ROOT."staging/plugins/{$plugin_code}") && empty($mybb->input['allow_overwrite']))
+					$file = basename("{$plugin_code}.php");
+					if(file_exists(MYBB_ROOT."inc/plugins/{$plugin_code}/{$file}"))
 					{
-						rmdir_recursive($tmpdir);
-						flash_message($lang->sprintf($lang->error_plugin_already_staged, $plugin_code), 'error');
-						admin_redirect('index.php?module=config-plugins');
-					}
-					else
-					{
-						rmdir_recursive(MYBB_ROOT."staging/plugins/{$plugin_code}");
-						// We use cp_or_mv_recursively() rather than rename() because of this PHP bug:
-						// https://bugs.php.net/bug.php?id=54097
-						if (!cp_or_mv_recursively($top_lvl_files[0], MYBB_ROOT."staging/plugins/{$plugin_code}", /*$del_source = */true, $error))
+						$action = 'upgrade';
+						$plugininfo    = read_json_file("{$top_lvl_files[0]}/plugin.json");
+						$pi_integrated = read_json_file(MYBB_ROOT."inc/plugins/{$plugin_code}/plugin.json");
+
+						if(isset($pi_integrated['version'])
+							&&
+							isset($plugininfo['version'])
+							&&
+							version_compare($pi_integrated['version'], $plugininfo['version']) >= 0
+							&&
+							empty($mybb->input['ignore_vers'])
+						)
 						{
 							rmdir_recursive($tmpdir);
-							flash_message($lang->sprintf($lang->error_plugin_move_fail, $error), 'error');
+							flash_message($lang->error_plugin_uploaded_less_or_equal_vers, 'error');
 							admin_redirect('index.php?module=config-plugins');
 						}
 						else
 						{
-							rmdir_recursive($tmpdir);
-							$file = basename("{$plugin_code}.php");
-							if(file_exists(MYBB_ROOT."inc/plugins/{$plugin_code}/{$file}"))
-							{
-								$action = 'upgrade';
-								$plugininfo    = read_json_file(MYBB_ROOT."staging/plugins/{$plugin_code}/plugin.json");
-								$pi_integrated = read_json_file(MYBB_ROOT."inc/plugins/{$plugin_code}/plugin.json");
+							rmdir_recursive(MYBB_ROOT."inc/plugins/{$plugin_code}/{$file}");
+							$do_integrate = true;
+						}
+					}
+					else
+					{
+						$action = 'activate';
+						$do_integrate = true;
+					}
+					if ($do_integrate)
+					{
+						// For access to the new `_is_installed()` function below
+						require_once "{$top_lvl_files[0]}}/{$file}";
 
-								if(isset($pi_integrated['version'])
-								   &&
-								   isset($plugininfo['version'])
-								   &&
-								   version_compare($pi_integrated['version'], $plugininfo['version']) >= 0
-								   &&
-								   empty($mybb->input['ignore_vers'])
-								)
-								{
-									rmdir_recursive(MYBB_ROOT."staging/plugins/{$plugin_code}");
-									flash_message($lang->error_plugin_uploaded_less_or_equal_vers, 'error');
-									admin_redirect('index.php?module=config-plugins');
-								}
-							}
-							else
-							{
-								$action = 'activate';
-							}
+						// We use cp_or_mv_recursively() rather than rename() because of this PHP bug:
+						// https://bugs.php.net/bug.php?id=54097
+						if (!cp_or_mv_recursively($top_lvl_files[0], MYBB_ROOT."inc/plugins/{$plugin_code}", /*$del_source = */true, $error))
+						{
+							rmdir_recursive($tmpdir);
+							flash_message($lang->sprintf($lang->error_plugin_move_fail, $error), 'error');
+							admin_redirect('index.php?module=config-plugins');
 						}
 					}
 				}
@@ -491,7 +490,7 @@ if($is_upload)
 	}
 }
 
-// Upgrades (from staging), activates, or deactivates a specific plugin
+// Upgrades, activates, or deactivates a specific plugin
 if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
@@ -520,9 +519,8 @@ if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
 
-	$staged = is_dir(MYBB_ROOT."staging/plugins/{$codename}");
 	$integrated = file_exists(MYBB_ROOT."inc/plugins/{$codename}/{$file}");
-	if(!$integrated && !$staged)
+	if(!$integrated)
 	{
 		flash_message($lang->error_invalid_plugin, 'error');
 		admin_redirect("index.php?module=config-plugins");
@@ -531,16 +529,8 @@ if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 	$plugins_cache = $cache->read("plugins");
 	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
 
-	if(!$integrated && $staged)
-	{
-		integrate_staged_plugin($codename);
-	}
-
-	if($do_upgrade)
-	{
-		require_once MYBB_ROOT."staging/plugins/{$codename}/{$file}";
-	}
-	else
+	// Note: The new plugin file is instead included above (i.e., when $do_upgrade is true)
+	if(!$do_upgrade)
 	{
 		require_once MYBB_ROOT."inc/plugins/{$codename}/{$file}";
 	}
@@ -556,7 +546,7 @@ if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 
 	if($do_upgrade)
 	{
-		$plugininfo = read_json_file(MYBB_ROOT."staging/plugins/{$codename}/plugin.json");
+		$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/{$codename}/plugin.json");
 
 		// Check the plugin's compatibility with the current MyBB version
 		if($plugins->is_compatible($plugininfo['compatibility']) == false)
@@ -572,8 +562,6 @@ if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 			flash_message($err_msg, 'error');
 			admin_redirect('index.php?module=config-plugins');
 		}
-
-		integrate_staged_plugin($codename);
 
 		// Run any custom upgrade function as required
 		if($installed && function_exists("{$codename}_upgrade"))
@@ -689,30 +677,13 @@ if(!$action)
 	}
 
 	$plugins_list = get_plugins_list();
-	$s_plugins    = get_staged_plugins();
 
 	$plugins->run_hooks("admin_config_plugins_plugin_list");
-
-	foreach($s_plugins as $codename => &$plugininfo)
-	{
-		$dyndescfunc = $codename."_dyndesc";
-		if(!function_exists($dyndescfunc))
-		{
-			require_once MYBB_ROOT."staging/plugins/{$codename}/{$codename}.php";
-			if(!function_exists($dyndescfunc))
-			{
-				continue;
-			}
-		}
-		$dyndescfunc($plugininfo['description']);
-	}
-	unset($plugininfo);
 
 	$form = new Form('index.php?module=config-plugins&amp;action=upload', 'post', '', 1);
 	$table = new Table;
 	$table->construct_header($lang->upload_plugin_desc);
 	$table->construct_cell($form->generate_file_upload_box('plugin_upload', array('style' => 'width: 230px;')).
-	                       $form->generate_check_box('allow_overwrite', 1, $lang->plugin_upload_allow_overwrite).
 	                       $form->generate_check_box('ignore_vers', 1, $lang->plugin_ignore_vers).
 	                       ' '.
 	                       $form->generate_submit_button($lang->install_uploaded_plugin));
@@ -720,7 +691,7 @@ if(!$action)
 	$table->output($lang->upload_plugin);
 	$form->end();
 
-	if(!empty($plugins_list) || !empty($s_plugins))
+	if(!empty($plugins_list))
 	{
 		$a_plugins = $i_plugins = array();
 
@@ -734,26 +705,13 @@ if(!$action)
 				{
 					continue;
 				}
-				plugininfo_keys_to_raw($plugininfo, false, true);
+				plugininfo_keys_to_raw($plugininfo, true);
 				$plugininfo['codename'] = $codename;
-				if(empty($s_plugins[$codename]))
+				require_once MYBB_ROOT."inc/plugins/{$codename}/{$codename}.php";
+				$dyndescfunc = $codename.'_dyndesc';
+				if(function_exists($dyndescfunc))
 				{
-					require_once MYBB_ROOT."inc/plugins/{$codename}/{$codename}.php";
-					$dyndescfunc = $codename.'_dyndesc';
-					if(function_exists($dyndescfunc))
-					{
-						$dyndescfunc($plugininfo['description']);
-					}
-				} else {
-					$plugininfo['description'] = $s_plugins[$codename]['description'];
-					if(version_compare($s_plugins[$codename]['version'], $plugininfo['version']) <= 0)
-					{
-						$s_plugins[$codename]['less_or_equal_vers'] = true;
-					}
-					else
-					{
-						$s_plugins[$codename]['upgradeable'] = true;
-					}
+					$dyndescfunc($plugininfo['description']);
 				}
 
 				if(isset($active_plugins[$codename]))
@@ -803,17 +761,6 @@ if(!$action)
 		}
 
 		$table->output($lang->inactive_plugin);
-
-		if(!empty($s_plugins))
-		{
-			$table = new Table;
-			$table->construct_header($lang->plugin);
-			$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
-
-			build_plugin_list($s_plugins);
-
-			$table->output($lang->staged_plugin);
-		}
 	}
 	else
 	{
@@ -829,53 +776,6 @@ if(!$action)
 	}
 
 	$page->output_footer();
-}
-
-/**
- * Gets a list of staged plugin files.
- *
- * @param boolean $show_errs If true, and an error occurs, the error is displayed inline; otherwise errors are ignored.
- * @return array Keys are plugin codenames; values are plugin manifest data as extracted from the relevant manifest file.
- */
-function get_staged_plugins($show_errs = true)
-{
-	global $lang, $page;
-
-	$plugins_list = [];
-	$dh = @opendir(MYBB_ROOT.'staging/plugins/');
-	if ($dh) {
-		while (($plugin_code = readdir($dh))) {
-			if (in_array($plugin_code, ['.', '..']) || !is_dir(MYBB_ROOT."staging/plugins/{$plugin_code}")) {
-				continue;
-			}
-			$p_file = MYBB_ROOT."staging/plugins/{$plugin_code}/{$plugin_code}.php";
-			if (!file_exists($p_file) || !is_readable($p_file)) {
-				if ($show_errs) {
-					$page->output_inline_error($lang->sprintf($lang->error_bad_staged_plugin_file, $p_file));
-				}
-			} else {
-				$info_file = MYBB_ROOT."staging/plugins/{$plugin_code}/plugin.json";
-				if ($plugininfo = read_json_file($info_file, $errmsg, $show_errs)) {
-					if (empty($plugininfo['version'])) {
-						if ($show_errs) {
-							$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, $info_file));
-						}
-					} else {
-						plugininfo_keys_to_raw($plugininfo, true, $show_errs);
-						$plugininfo['is_staged'] = true;
-						$plugins_list[$plugin_code] = $plugininfo;
-					}
-				} else {
-					if ($show_errs) {
-						$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, $info_file));
-					}
-				}
-			}
-		}
-		@closedir($dh);
-	}
-
-	return $plugins_list;
 }
 
 /**
@@ -931,16 +831,12 @@ function build_plugin_list($plugin_list)
 
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 
-		if(!empty($plugininfo['less_or_equal_vers']))
-		{
-			$table->construct_cell('<span style="color: red;">'.($lang->sprintf($installed ? $lang->error_staged_plugin_less_or_equal_vers_ins : $lang->error_staged_plugin_less_or_equal_vers_int, $plugininfo['codename'])).'</span>', array("class" => "align_center", "colspan" => 2));
-		}
-		else if(!empty($plugininfo['upgradeable']))
+		if(!empty($plugininfo['upgradeable']))
 		{
 			$table->construct_cell('<a href="index.php?module=config-plugins&amp;action=upgrade&amp;plugin='.$plugininfo['codename'].'&amp;my_post_key='.$mybb->post_code.'">'.($installed ? $lang->upgrade_plugin : $lang->upgrade_install_activate_plugin).'</a>', array("class" => "align_center", "colspan" => 2));
 		}
 		// Plugin is not installed at all
-		else if(!empty($plugininfo['is_staged']) || $installed == false)
+		else if($installed == false)
 		{
 			if($compatibility_warning)
 			{
@@ -948,8 +844,7 @@ function build_plugin_list($plugin_list)
 			}
 			else
 			{
-				$key = !empty($plugininfo['is_staged']) ? 'integrate_install_and_activate' : 'install_and_activate';
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->$key}</a>", array("class" => "align_center", "colspan" => 2));
+				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
 			}
 		}
 		// Plugin is activated and installed
@@ -986,38 +881,5 @@ function build_plugin_list($plugin_list)
 			}
 		}
 		$table->construct_row();
-	}
-}
-
-/**
- * Attempts to integrate the specified plugin into the main filesystem hierarchy from its staged location, and fully
- * remove its staged location. Redirects on error.
- *
- * @param string $codename The codename of the staged plugin.
- */
-function integrate_staged_plugin($codename)
-{
-	global $lang;
-
-	// Require that any plugin themelet does NOT use the `current` directory (it must instead use `devdist`).
-	if(file_exists(MYBB_ROOT."staging/plugins/{$codename}/interface/current"))
-	{
-		flash_message($lang->error_staged_plugin_themelet_uses_curr, 'error');
-		admin_redirect('index.php?module=config-plugins');
-	}
-
-	$staged_dir = MYBB_ROOT."staging/plugins/{$codename}";
-	$dest_dir   = MYBB_ROOT."inc/plugins/{$codename}";
-	$src_themelet_dir  = "{$dest_dir}/interface/devdist";
-	$dest_themelet_dir = "{$dest_dir}/interface/current";
-	if (file_exists($dest_dir)) {
-		flash_message($lang->sprintf($lang->error_dest_directory_exists, $dest_dir), 'error');
-		admin_redirect('index.php?module=config-plugins');
-	} else if (!rename($staged_dir, $dest_dir)) {
-		flash_message($lang->sprintf($lang->error_mv_failed, $staged_dir, $dest_dir), 'error');
-		admin_redirect('index.php?module=config-plugins');
-	} else if (!rename($src_themelet_dir, $dest_themelet_dir)) {
-		flash_message($lang->sprintf($lang->error_mv_failed, $src_themelet_dir, $dest_themelet_dir), 'error');
-		admin_redirect('index.php?module=config-plugins');
 	}
 }

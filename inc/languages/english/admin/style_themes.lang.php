@@ -60,8 +60,6 @@ $l['colors_specific_color'] = "Specific color";
 
 $l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include resources (stylesheets, templates, images, etc) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
-$l['export_devdist'] = "Export the `devdist` version of the theme?";
-$l['export_devdist_desc'] = "If you want to export the `current` version instead, select no.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
 $l['edit_stylesheet_simple_mode_desc'] = "Here, you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
@@ -92,15 +90,9 @@ $l['set_as_default'] = "Set as Default";
 $l['default_theme'] = "Default Theme";
 $l['force_on_users'] = "Force on Users";
 $l['delete_revert'] = "Delete / Revert";
-$l['themes_with_no_devdist'] = 'Themes Without a Development and Distribution (`devdist`) Directory';
-$l['create_missing_devdist_q'] = 'Create `devdist` Directory?';
-$l['create_missing_devdist'] = 'Create `devdist` Directory';
-$l['recommended_q'] = 'Recommended?';
-$l['not_recomm_mutable_already'] = 'No, because this is a board theme, and thus it is already mutable outside of themelet development (`devdist`) mode. Two mutable versions of this theme could become confusing.';
 
 $l['local_file'] = "Local File";
 $l['url'] = "URL";
-$l['staged_theme'] = 'Staged Theme';
 $l['import_from'] = "Import from";
 $l['import_from_desc'] = "Select a file to import. You can either import the theme file from your computer or from a URL. Remember to use themes from <strong>safe and trusted sources only</strong>.";
 $l['parent_theme'] = "Parent Theme";
@@ -121,18 +113,14 @@ $l['new_name_duplicate_desc'] = 'A new name for the duplicated theme.';
 $l['new_codename_duplicate_desc'] = 'A new codename for the duplicated theme.';
 $l['original_vs_board_themes_desc'] = 'Via an optional prefix, you can indicate the type of the theme: "board" or "original".
 <br><br>
-<strong>Board</strong> themes are suitable for production use. A board theme unconditionally (1) is editable via the ACP, (2) can be modified by plugins, and (3) can be set as default or selected by members, whether in ordinary operation (assuming it has a `current` directory), or when themelet development mode is on (assuming it has a `devdist` directory).
+<strong>Board</strong> themes are suitable for production use. A board theme unconditionally (1) is editable via the ACP, (2) can be modified by plugins, and (3) can be set as default or selected by members, whether in ordinary operation, or when themelet development mode is on.
 <br><br>
 To duplicate as a <strong>board</strong> theme, prefix this codename with `<strong>board.</strong>` (that is, the word <strong>board</strong> followed by a dot).
 <br><br>
 Without that prefix, an <strong>original</strong> theme is indicated.
 <br><br>
-<strong>Original</strong> themes are suitable for development and distribution, and/or for inheriting from. When themelet development mode is off, and an original theme is thus using its `current` directory, it is wholly immutable, and cannot even be selected by members. Its sole function is to be inherited from. Only in themelet development mode, and only if the original theme has a `devdist` directory, can it be modified by plugins, edited via the ACP, and selected by members.<br><br>
+<strong>Original</strong> themes are suitable for development and distribution, and/or for inheriting from. When themelet development mode is off, it is wholly immutable, and cannot even be selected by members. Its sole function is to be inherited from. Only in themelet development mode, can it be modified by plugins, edited via the ACP, and selected by members.<br><br>
 Valid codename characters (aside from the dot in any `board.` prefix) are lowercase `a` through `z` and underscore.';
-$l['create_devdist'] = "Add a `devdist` directory?";
-$l['create_devdist_desc'] = "The theme to be duplicated does not have a development and distribution (`devdist`) directory. Check this box to create one in the duplicated theme. It will be copied from the ultimate `current` directory when generating the duplicate theme.";
-$l['create_current'] = "Add a `current` directory?";
-$l['create_current_desc'] = "The theme to be duplicated does not have a production (`current`) directory. Check this box to create one in the duplicated theme. It will be copied from the ultimate `devdist` directory when generating the duplicate theme.";
 $l['dup_type'] = 'Duplicate as:';
 $l['dup_type_desc'] = '(Safe to leave as default if unsure)';
 $l['dup_type_child_full'] = 'A child theme, with full inheritance (no resources copied).';
@@ -256,7 +244,7 @@ $l['error_invalid_stylesheet'] = "You have selected an invalid stylesheet.";
 $l['error_invalid_theme'] = "You have selected an invalid theme.";
 $l['error_missing_name'] = "Please enter a name for this theme.";
 $l['error_missing_url'] = "Please enter a valid url to import a theme from.";
-$l['error_missing_import_source'] = "You supplied neither a local file, a URL, nor a staged theme.";
+$l['error_missing_import_source'] = "You supplied neither a local file nor a URL.";
 $l['error_theme_already_exists'] = "A theme with the same name, '{1}', already exists. Please specify a different name.";
 $l['error_theme_security_problem'] = "A potential security issue was found in the theme. It was not imported. Please contact the Author or MyBB Group for support.";
 
@@ -294,41 +282,37 @@ $l['error_failed_to_save_board_theme'] = 'Failed to update the derived board the
 $l['error_failed_to_save_stylesheet_props'] = 'Failed to save the stylesheet properties to the theme\'s resources.json file.';
 $l['error_failed_to_create_tmpdir'] = 'Failed to create a temporary directory.';
 $l['error_failed_to_create_dir'] = 'Failed to create the directory "{1}".';
+$l['error_failed_to_remove_theme_dir'] = 'Failed to remove theme directory "{1}" prior to copying new version to it.';
 
 $l['error_path_with_double_dot'] = 'The supplied {1} contains an illegal double-dot followed by a directory separator character (/ or \\).';
 // Each of these can be supplied to replace {1} in the string above.
 $l['theme_codename'] = 'theme codename';
 $l['stylesheet_filename'] = 'stylesheet filename';
-$l['staging_filename'] = 'staging filename';
 $l['template_path'] = 'template path';
 
 $l['error_template_path_with_directory_separator'] = 'The supplied  contains an illegal double-dot followed by a directory separator character (/ or \\).';
 $l['error_logo_with_directory_separator'] = 'The supplied logo path contains an illegal double-dot followed by a directory separator character (/ or \\).';
-$l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically unzip theme archives. If you are unable to install the PHP package providing this class, then instead simply unzip your theme archive manually into the `staging/themes/` directory and refresh this page. It should then show up as a "Staged" theme, allowing you to import it.';
+$l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically unzip theme archives. If you are unable to install the PHP package providing this class, then instead simply unzip your theme archive manually into the `inc/themes/` directory.';
 $l['error_theme_unzip_open_failed'] = 'Unable to open the uploaded zip file. ZipArchive::open() returned code: {1}.';
 $l['error_theme_unzip_failed'] = 'Failed to unzip the theme archive.';
 $l['error_theme_unzip_multi_or_none_root'] = 'Invalid theme archive: either no or multiple file/directory entries found in root. Expected one theme directory entry.';
-$l['error_theme_already_staged'] = 'A version of this theme with codename "{1}" is already staged. Please either delete the existing staged version at `staged/themes/{1}` before trying again, or select the theme with the corresponding name under "Staged Theme".';
-$l['error_theme_move_fail'] = 'Failed to move the unzipped theme from its temporary directory ({1}) to its staging directory ({2}).';
-$l['error_bad_staged_json_file'] = "Failed to parse the staged theme JSON file '{1}'.";
+$l['error_bad_unzipped_json_file'] = "Failed to parse the unzipped theme's JSON file '{1}'.";
 $l['error_bad_json_file'] = "Failed to parse the installed JSON theme file '{1}'.";
 $l['error_missing_theme_file_property'] = 'The `{1}` property in the theme JSON file "{2}" is missing or empty.';
-$l['error_codename_mismatch'] = 'The staged theme\'s `codename` property ({1}) does not match the theme\'s root directory name ({2}).';
+$l['error_codename_mismatch'] = 'The unzipped theme\'s `codename` property ({1}) does not match its root directory name ({2}).';
 $l['error_identical_theme_version'] = 'The installed version of this theme with codename "{1}" has the same version number ({2}) as that of the theme package you have supplied.';
 $l['error_theme_incompatible_with_mybb_version'] = 'The theme that you are trying to install/upgrade/downgrade has a compatibility property ("{1}") that does not match the current MyBB version ("{2}"). If you wish to install it anyway, please try again with the "Ignore Version Compatibility" checkbox checked.';
-$l['error_theme_archival_failed'] = 'Failed to archive the existing installed version of the theme. Upgrade/downgrade aborted.';
-$l['error_theme_rename_failed'] = 'Failed to move the staged version of the theme into the theme installation directory. If this was an upgraded/downgrade, the previously installed version of the theme has been successfully archived - you can restore it by copying it from its archival directory (`storage/themelets/[codename]/[version]`) to its installation directory (`inc/themes/[codename]/current`).';
+$l['error_theme_archival_failed'] = 'Failed to archive the theme. The error message is: "{1}".';
+$l['error_theme_rename_failed'] = 'Failed to move the unzipped version of the theme into the theme installation directory. The error message is "{1}". If this was an upgraded/downgrade, the previously installed version of the theme has been successfully archived - you can restore it by copying it from its archival directory (`storage/themelets/[codename]/[version]`) to its installation directory (`inc/themes/[codename]/current`).';
 $l['error_stylesheet_already_exists'] = 'A stylesheet with that name already exists in this theme.';
 $l['error_no_ziparchive_for_theme'] = 'The ZipArchive class was not found. This class is necessary to automatically zip themes for distribution. If you are unable to install the PHP package providing this class, then please zip up your theme manually.';
 $l['error_failed_to_mkdir'] = 'Failed to create the directory "{1}".';
 $l['error_failed_write_stylesheet'] = 'Failed to write the stylesheet to the file "{1}".';
 $l['error_stylesheet_not_found'] = 'Stylesheet "{1}" not found.';
-$l['error_theme_has_no_contents'] = 'The theme to be duplicated has no contents (neither a `current` nor a `devdist` subdirectory).';
 $l['error_missing_theme_codename'] = 'No theme codename was supplied.';
 $l['error_invalid_theme_codename'] = 'The supplied theme codename "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
 $l['error_invalid_namespace'] = 'The supplied namespace "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed with `ext.`).';
 $l['error_invalid_theme_archive_tld'] = 'The top-level theme directory in the supplied archive "{1}" contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
-$l['error_invalid_staged_theme_tld'] = 'The top-level theme directory "{1}" in the referenced staged theme contains invalid characters (only lowercase `a` through `z` and underscore are valid, optionally prefixed by `board.` or `core.`.';
 $l['error_theme_codename_exists'] = 'The supplied theme codename "{1}" already exists.';
 $l['error_cp_failed'] = 'Failed to copy {1} to {2}.';
 $l['error_no_template_input'] = 'The path to the template to edit was not supplied.';
@@ -342,8 +326,7 @@ $l['error_undeletable_core_theme'] = 'This theme cannot be deleted because it is
 $l['error_immutable_theme'] = 'Changes cannot be made to this theme because it is either a core theme or an original theme and themelet development mode is not enabled (outside of themelet development mode, only board themes can be changed).';
 $l['error_cannot_set_to_default'] = 'This theme may not be set to default because it is not a board theme.';
 $l['error_cannot_force_theme'] = 'This theme may not be forced on users because it is not a board theme.';
-$l['error_devdist_dir_already_exists'] = 'The theme `devdist` directory "{1}" already exists.';
-$l['error_current_dir_does_not_exist'] = 'The theme `current` directory "{1}" does not exist.';
+$l['error_theme_dir_does_not_exist'] = 'The theme directory "{1}" does not exist.';
 
 $l['warning_immutable_theme'] = 'This theme is immutable, because it is not a board theme and themelet development mode is not enabled. Any changes that you make on this page will not be saved: it is read-only. To create a mutable (board) theme from this one, use the "Duplicate Theme" tool.';
 
@@ -364,9 +347,8 @@ $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_new_template_saved'] = 'The new template has successfully been saved.';
 $l['success_template_deleted'] = 'The selected template has successfully been deleted.';
-$l['success_created_devdist'] = 'A `devdist` directory was successfully created for the selected theme.';
 
-$l['confirm_theme_deletion'] = "Are you sure you want to delete this theme? WARNING: This will delete BOTH `current` AND `devdist` modes of this theme (whichever exist).";
+$l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
 $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
 $l['confirm_template_deletion'] = 'Are you sure you want to delete / revert this template?';

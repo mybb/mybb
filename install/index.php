@@ -1192,38 +1192,8 @@ function requirements_check()
 		$showerror = 1;
 	}
 
-	// Check staging directory is writable
-	if (!my_is_dir_writable('staging/', 'staging', $errors, $stagingstatus)) {
-		$showerror = 1;
-	}
-
-	// Check themes staging directory is writable
-	if (!my_is_dir_writable('staging/themes/', 'theme staging', $errors, $themestagingstatus)) {
-		$showerror = 1;
-	}
-
-	// Check plugins staging directory is writable
-	if (!my_is_dir_writable('staging/plugins/', 'plugin staging', $errors, $pluginstagingstatus)) {
-		$showerror = 1;
-	}
-
-	// Check "hello" plugin's staging directory is writable
-	if (!my_is_dir_writable('staging/plugins/hello/', '"hello" plugin staging', $errors, $hellopluginstagingstatus)) {
-		$showerror = 1;
-	}
-
-	// Check "hello" plugin's interface staging directory is writable
-	if (!my_is_dir_writable('staging/plugins/hello/interface/', '"hello" plugin interface staging', $errors, $helloplugininterfacestagingstatus)) {
-		$showerror = 1;
-	}
-
 	// Check themes directory is writable
 	if (!my_is_dir_writable('inc/themes/', 'themes', $errors, $themestatus)) {
-		$showerror = 1;
-	}
-
-	// Check default core theme directory is writable (so that we can copy its `devdist` to `current`)
-	if (!my_is_dir_writable('inc/themes/core.default/', 'default core theme', $errors, $corethemestatus)) {
 		$showerror = 1;
 	}
 
@@ -1243,7 +1213,7 @@ function requirements_check()
 	}
 
 	// Output requirements page
-	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $stagingstatus, $themestagingstatus, $pluginstagingstatus, $hellopluginstagingstatus, $helloplugininterfacestagingstatus, $themestatus, $corethemestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $themestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
 
 	if($showerror == 1)
 	{
@@ -1804,7 +1774,7 @@ function install_default_theme()
 
 	require_once MYBB_ROOT.'install/common.php';
 
-	copy_and_clone_default_theme();
+	clone_and_archive_default_theme();
 
 	my_rmdir_recursive(MYBB_ROOT."cache/themes");
 	my_rmdir_recursive(MYBB_ROOT."cache/views", array(MYBB_ROOT."cache/views/index.html"));

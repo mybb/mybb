@@ -39,10 +39,9 @@ $codename = $mybb->get_input('codename');
 
 require_once MYBB_ROOT.'inc/functions_themes.php';
 $themelet_hierarchy = get_themelet_hierarchy();
-$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-$themes = $themelet_hierarchy[$mode]['themes'];
+$themes = $themelet_hierarchy['themes'];
 
-// Be extra careful about dodgy codenames or staging/stylesheet/template filenames which
+// Be extra careful about dodgy codenames or stylesheet/template filenames which
 // try to use directory separators and '..' to access private filesystem files.
 function is_unsafe_path($path) {
 	return $path == '..'
@@ -61,10 +60,6 @@ if (!empty($mybb->get_input('new_codename')) && is_unsafe_path($mybb->get_input(
 }
 if (!empty($mybb->input['file']) && is_unsafe_path($mybb->input['file'])) {
 	flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->stylesheet_filename), 'error');
-	admin_redirect('index.php?module=style-themes');
-}
-if (!empty($mybb->input['staged_theme']) && is_unsafe_path($mybb->input['staged_theme'])) {
-	flash_message($lang->sprintf($lang->error_path_with_double_dot, $lang->staging_filename), 'error');
 	admin_redirect('index.php?module=style-themes');
 }
 if (!empty($mybb->input['template']) && is_unsafe_path($mybb->input['template'])) {
@@ -186,8 +181,8 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 		'description' => $lang->browse_themes_desc
 	);
 } else if (in_array($action, ['edit', 'stylesheets', 'add_stylesheet', 'templates', 'export', 'duplicate', 'edit_template', 'add_template'])) {
-	if (!empty($themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'])) {
-		$name = $themelet_hierarchy[$mode]['themes'][$codename]['properties']['name'];
+	if (!empty($themelet_hierarchy['themes'][$codename]['properties']['name'])) {
+		$name = $themelet_hierarchy['themes'][$codename]['properties']['name'];
 	} else	$name = '[Unknown]';
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($name).get_theme_name_apx($codename), 'index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
@@ -205,7 +200,7 @@ if (in_array($action, ['add', 'import', 'browse', ''])) {
 			'description' => $lang->edit_stylesheets_desc
 		);
 
-		if (is_mutable_theme($codename, $mode)) {
+		if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$sub_tabs['add_stylesheet'] = array(
 				'title' => $lang->add_stylesheet,
 				'link' => 'index.php?module=style-themes&amp;action=add_stylesheet&amp;codename='.urlencode($codename),
@@ -409,13 +404,13 @@ if ($action == 'import') {
 		if (!($type == 0 && !empty($_FILES['local_file'])
 		      ||
 		      $type == 1 && !empty($mybb->input['url'])
-		      ||
-		      $type == 2 && !empty($mybb->input['staged_theme'])
 		     )
 		) {
 			$errors[] = $lang->error_missing_import_source;
-		} else {
-			$codename = $staged_path = $zip_filepath = $tmp_dir = '';
+		}
+
+		if (!$errors) {
+			$codename = $unzipped_path = $zip_filepath = $tmp_dir = '';
 			switch ($type) {
 				case 0:
 					if ($_FILES['local_file']['error'] == 4) {
@@ -470,187 +465,158 @@ if ($action == 'import') {
 						}
 					}
 					break;
-				case 2:
-					$codename = $mybb->input['staged_theme'];
-					if (!is_valid_theme_code($codename)) {
-						$errors[] = $lang->sprintf($lang->error_invalid_staged_theme_tld, htmlspecialchars_uni($codename));
-					} else {
-						$staged_path = MYBB_ROOT.'staging/themes/'.$codename;
-					}
-					break;
+			}
+		}
+
+		if (!$errors) {
+			assert(!empty($zip_filepath));
+			if ($tmp_dir) {
+				$extract_dir = $tmp_dir.'/extracted';
+			} else	$tmp_dir = $extract_dir = create_temp_dir();
+			if (!$extract_dir) {
+				$errors[] = $lang->error_failed_to_create_tmpdir;
 			}
 
 			if (!$errors) {
-				if ($zip_filepath) {
-					if ($tmp_dir) {
-						$extract_dir = $tmp_dir.'/extracted';
-					} else	$tmp_dir = $extract_dir = create_temp_dir();
-					if (!$extract_dir) {
-						$errors[] = $lang->error_failed_to_create_tmpdir;
-					}
-
-					if (!$errors) {
-						// Unzip the file and move its main directory into
-						// the staging directory, first checking that no
-						// directory with the same name already exists in
-						// staging.
-						if (!class_exists('ZipArchive')) {
-							$errors[] = $lang->error_no_ziparchive_for_theme;
+				// Unzip the file into the temporary directory.
+				if (!class_exists('ZipArchive')) {
+					$errors[] = $lang->error_no_ziparchive_for_theme;
+				} else {
+					$za = new ZipArchive;
+					$res = $za->open($zip_filepath);
+					if ($res !== true) {
+						$errors[] = $lang->sprintf($lang->error_theme_unzip_open_failed, $res);
+					} else {
+						if (!$za->extractTo($extract_dir)) {
+							$errors[] = $lang->error_theme_unzip_failed;
 						} else {
-							$za = new ZipArchive;
-							$res = $za->open($zip_filepath);
-							if ($res !== true) {
-								$errors[] = $lang->sprintf($lang->error_theme_unzip_open_failed, $res);
+							$top_lvl_files = glob("$extract_dir/*");
+							if (count($top_lvl_files) != 1) {
+								rmdir_recursive($tmpdir);
+								$errors[] = $lang->error_theme_unzip_multi_or_none_root;
 							} else {
-								if (!$za->extractTo($extract_dir)) {
-									$errors[] = $lang->error_theme_unzip_failed;
+								$codename = basename($top_lvl_files[0]);
+								if (!is_valid_theme_code($codename)) {
+									$errors[] = $lang->sprintf($lang->error_invalid_theme_archive_tld, htmlspecialchars_uni($codename));
 								} else {
-									$top_lvl_files = glob("$extract_dir/*");
-									if (count($top_lvl_files) != 1) {
-										rmdir_recursive($tmpdir);
-										$errors[] = $lang->error_theme_unzip_multi_or_none_root;
-									} else {
-										$codename = basename($top_lvl_files[0]);
-										if (!is_valid_theme_code($codename)) {
-											$errors[] = $lang->sprintf($lang->error_invalid_theme_archive_tld, htmlspecialchars_uni($codename));
-										} else {
-											$staged_path = MYBB_ROOT.'staging/themes/'.$codename;
-											if (file_exists($staged_path)) {
-												$errors[] = $lang->sprintf($lang->error_theme_already_staged, htmlspecialchars_uni($codename));
-											// I (Laird) have no idea why, but a simple `rename()` fails on my dev setup,
-											// presumably due to some obscure permission restrictions on the `/tmp` directory,
-											// even though they superficially look fine to me, so we are forced to call this
-											// more elaborate custom function.
-											} else if (!cp_or_mv_recursively("$extract_dir/$codename", $staged_path, true)) {
-												$errors[] = $lang->sprintf($lang->error_theme_move_fail, htmlspecialchars_uni("$extract_dir/$codename"), htmlspecialchars_uni($staged_path));
-											}
-										}
-									}
+									$unzipped_path = "$extract_dir/$codename";
 								}
-								$za->close();
 							}
 						}
-					}
-
-					@unlink($zip_filepath);
-				}
-			}
-
-			if (!$errors) {
-				$infofile2 = '';
-				$infofile = "$staged_path/theme.json";
-				if (!($themeinfo = read_json_file($infofile))) {
-					$errors[] = $lang->sprintf($lang->error_bad_staged_json_file, htmlspecialchars_uni($infofile));
-				} else if (empty($themeinfo['codename'])) {
-					$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'codename', htmlspecialchars_uni($infofile));
-				} else if ($themeinfo['codename'] != $codename) {
-					$errors[] = $lang->sprintf($lang->error_codename_mismatch, htmlspecialchars_uni($themeinfo['codename']), htmlspecialchars_uni($codename));
-				} else if (file_exists(MYBB_ROOT."inc/themes/{$codename}/current")) {
-					$infofile2 = MYBB_ROOT."inc/themes/{$codename}/current/theme.json";
-					if (!($themeinfo2 = read_json_file($infofile2))) {
-						$errors[] = $lang->sprintf($lang->error_bad_json_file, htmlspecialchars_uni($infofile2));
-					} else if (empty($themeinfo2['version'])) {
-						$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', htmlspecialchars_uni($infofile2));
-					} else if (empty($themeinfo['version'])) {
-						$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', htmlspecialchars_uni($infofile));
-					} else if ($themeinfo['version'] == $themeinfo2['version']) {
-						$errors[] = $lang->sprintf($lang->error_identical_theme_version, htmlspecialchars_uni($codename), htmlspecialchars_uni($themeinfo['version']));
+						$za->close();
 					}
 				}
 			}
-			if(!$errors) {
-				if (!$mybb->get_input('version_compat', MyBB::INPUT_INT) && !empty($themeinfo['compatibility']) && !is_compatible($themeinfo['compatibility'])) {
-					$errors[] = $lang->sprintf($lang->error_theme_incompatible_with_mybb_version, htmlspecialchars_uni($themeinfo['compatibility']), htmlspecialchars_uni($mybb->version));
+
+			@unlink($zip_filepath);
+		}
+
+		if (!$errors) {
+			$infofile2 = '';
+			$infofile = "$unzipped_path/theme.json";
+			if (!($themeinfo = read_json_file($infofile))) {
+				$errors[] = $lang->sprintf($lang->error_bad_unzipped_json_file, htmlspecialchars_uni($infofile));
+			} else if (empty($themeinfo['codename'])) {
+				$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'codename', htmlspecialchars_uni($infofile));
+			} else if ($themeinfo['codename'] != $codename) {
+				$errors[] = $lang->sprintf($lang->error_codename_mismatch, htmlspecialchars_uni($themeinfo['codename']), htmlspecialchars_uni($codename));
+			} else if (file_exists(MYBB_ROOT."inc/themes/{$codename}")) {
+				$infofile2 = MYBB_ROOT."inc/themes/{$codename}/theme.json";
+				if (!($themeinfo2 = read_json_file($infofile2))) {
+					$errors[] = $lang->sprintf($lang->error_bad_json_file, htmlspecialchars_uni($infofile2));
+				} else if (empty($themeinfo2['version'])) {
+					$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', htmlspecialchars_uni($infofile2));
+				} else if (empty($themeinfo['version'])) {
+					$errors[] = $lang->sprintf($lang->error_missing_theme_file_property, 'version', htmlspecialchars_uni($infofile));
+				} else if ($themeinfo['version'] == $themeinfo2['version']) {
+					$errors[] = $lang->sprintf($lang->error_identical_theme_version, htmlspecialchars_uni($codename), htmlspecialchars_uni($themeinfo['version']));
+				}
+			}
+		}
+
+		if(!$errors) {
+			if (!$mybb->get_input('version_compat', MyBB::INPUT_INT) && !empty($themeinfo['compatibility']) && !is_compatible($themeinfo['compatibility'])) {
+				$errors[] = $lang->sprintf($lang->error_theme_incompatible_with_mybb_version, htmlspecialchars_uni($themeinfo['compatibility']), htmlspecialchars_uni($mybb->version));
+			} else {
+				if (!$errors) {
+					$found = false;
+					$name = !empty($mybb->input['name']) ? $mybb->input['name'] : $themeinfo['name'];
+					foreach ($themelet_hierarchy['themes'] as $theme) {
+						if ($theme['properties']['name'] == $name && $theme['properties']['codename'] != $themeinfo['codename']) {
+							$found = true;
+							break;
+						}
+					}
+					if ($found) {
+						$errors[] = $lang->sprintf($lang->error_theme_already_exists, htmlspecialchars_uni($themeinfo['name']));
+					} else if (!empty($mybb->input['name'])) {
+						$themeinfo['name'] = $mybb->input['name'];
+						if (!write_json_file($infofile, $themeinfo)) {
+							$errors[] = $lang->error_failed_to_save_theme;
+						}
+					}
+				}
+			}
+		}
+
+		if (!$errors) {
+			$installed_path = MYBB_ROOT."inc/themes/{$codename}";
+			if (!rmdir_recursive($installed_path)) {
+				$errors[] = $lang->sprintf($lang->error_failed_to_remove_theme_dir, htmlspecialchars_uni(dirname($installed_path)));
+			} else if (!cp_or_mv_recursively($unzipped_path, $installed_path, true, $err_msg)) {
+				$errors[] = $lang->sprintf($lang->error_theme_rename_failed, $err_msg);
+			} else {
+				if (!archive_themelet($codename, /*$is_plugin_themelet = */false, $err_msg)) {
+					$errors[] = $lang->sprintf($lang->error_theme_archival_failed, $err_msg);
+				}
+				if ($infofile2) {
+					// TODO: generate and store information about new
+					// conflicts with board themes that descend from this one.
 				} else {
-					if (!$errors) {
+					if (substr($codename, 0, 6) != 'board.') {
+						// If a board theme with this theme as parent does not yet exist,
+						// then create one, so that it is visible in the theme selection list.
 						$found = false;
-						$name = !empty($mybb->input['name']) ? $mybb->input['name'] : $themeinfo['name'];
-						foreach (['devdist', 'current'] as $mode1) {
-							foreach ($themelet_hierarchy[$mode1]['themes'] as $theme) {
-								if ($theme['properties']['name'] == $name && $theme['properties']['codename'] != $themeinfo['codename']) {
-									$found = true;
+						foreach ($themelet_hierarchy['themes'] as $thm) {
+							if ($thm['properties']['parent'] == $codename && substr($thm['properties']['codename'], 0, 6) == 'board.') {
+								$found = true;
+								break;
+							}
+						}
+						if (!$found) {
+							// Construct an appropriate codename for the board theme.
+							$cname = $cname_base = 'board.'.$codename;
+							$ok = false;
+							for ($i = 0; $i < 20; $i++) {
+								if (!file_exists(MYBB_ROOT."inc/themes/{$cname}")) {
+									$ok = true;
 									break;
 								}
+								$cname = $cname_base.'_'.chr(96+$i);
 							}
-						}
-						if ($found) {
-							$errors[] = $lang->sprintf($lang->error_theme_already_exists, htmlspecialchars_uni($themeinfo['name']));
-						} else if (!empty($mybb->input['name'])) {
-							$themeinfo['name'] = $mybb->input['name'];
-							if (!write_json_file($infofile, $themeinfo)) {
-								$errors[] = $lang->error_failed_to_save_theme;
-							}
-						}
-					}
-				}
-
-				if (!$errors) {
-					// If $infofile2 is non-empty, then we are upgrading or
-					// downgrading, so, try to archive the existing theme.
-					// TODO: consider whether/how to warn on downgrade.
-					if ($infofile2) {
-						if (!archive_themelet($codename, /*$is_plugin_themelet = */false, $err_msg)) {
-							$errors[] = $lang->error_theme_archival_failed;
-						}
-					}
-				}
-				if (!$errors) {
-					$installed_path = MYBB_ROOT."inc/themes/{$codename}/current";
-					if (!mkdir(dirname($installed_path), 0755, true)) {
-						$errors[] = $lang->sprintf($lang->error_failed_to_create_dir, htmlspecialchars_uni(dirname($installed_path)));
-					} else if (!rename($staged_path, $installed_path)) {
-						$errors[] = $lang->error_theme_rename_failed;
-					} else {
-						if ($infofile2) {
-							// TODO: generate and store information about new
-							// conflicts with board themes that descend from this one.
-						} else {
-							if (substr($codename, 0, 6) != 'board.') {
-								// If a board theme with this theme as parent does not yet exist,
-								// then create one, so that it is visible in the theme selection list.
-								$found = false;
-								foreach ($themelet_hierarchy['current']['themes'] as $thm) {
-									if ($thm['properties']['parent'] == $codename && substr($thm['properties']['codename'], 0, 6) == 'board.') {
-										$found = true;
-										break;
-									}
-								}
-								if (!$found) {
-									// Construct an appropriate codename for the board theme.
-									$cname = $cname_base = 'board.'.$codename;
-									$ok = false;
-									for ($i = 0; $i < 20; $i++) {
-										if (!file_exists(MYBB_ROOT."inc/themes/{$cname}")) {
-											$ok = true;
-											break;
-										}
-										$cname = $cname_base.'_'.chr(96+$i);
-									}
-									if ($ok) {
-										$board_dir = MYBB_ROOT."inc/themes/{$cname}/current";
-										if (!mkdir($board_dir, 0755, true)) {
-											$errors[] = $lang->sprintf($lang->error_failed_to_create_dir, htmlspecialchars_uni($board_dir));
-										} else {
-											foreach (['theme.json', 'resources.json'] as $json_file) {
-												$source_path = "{$installed_path}/{$json_file}";
-												$dest_path   = "{$board_dir}//{$json_file}";
-												if (!copy($source_path, $dest_path)) {
-													flash_message($lang->sprintf($lang->error_cp_failed, htmlspecialchars_uni($source_path), htmlspecialchars_uni($dest_path)), 'error');
+							if ($ok) {
+								$board_dir = MYBB_ROOT."inc/themes/{$cname}";
+								if (!mkdir($board_dir, 0755, true)) {
+									$errors[] = $lang->sprintf($lang->error_failed_to_create_dir, htmlspecialchars_uni($board_dir));
+								} else {
+									foreach (['theme.json', 'resources.json'] as $json_file) {
+										$source_path = "{$installed_path}/{$json_file}";
+										$dest_path   = "{$board_dir}//{$json_file}";
+										if (!copy($source_path, $dest_path)) {
+											flash_message($lang->sprintf($lang->error_cp_failed, htmlspecialchars_uni($source_path), htmlspecialchars_uni($dest_path)), 'error');
+											admin_redirect('index.php?module=style-themes');
+										} else if ($json_file == 'theme.json') {
+											$theme_properties = read_json_file($dest_path, $err_msg, false);
+											if (!$theme_properties && $err_msg) {
+												flash_message($err_msg, 'error');
+												admin_redirect('index.php?module=style-themes');
+											} else {
+												$theme_properties['codename'] = $cname;
+												$theme_properties['name'] = $themeinfo['name'].' (Board)';
+												$theme_properties['parent'] = $codename;
+												if (!write_json_file($dest_path, $theme_properties)) {
+													flash_message($lang->error_failed_to_save_board_theme, 'error');
 													admin_redirect('index.php?module=style-themes');
-												} else if ($json_file == 'theme.json') {
-													$theme_properties = read_json_file($dest_path, $err_msg, false);
-													if (!$theme_properties && $err_msg) {
-														flash_message($err_msg, 'error');
-														admin_redirect('index.php?module=style-themes');
-													} else {
-														$theme_properties['codename'] = $cname;
-														$theme_properties['name'] = $themeinfo['name'].' (Board)';
-														$theme_properties['parent'] = $codename;
-														if (!write_json_file($dest_path, $theme_properties)) {
-															flash_message($lang->error_failed_to_save_board_theme, 'error');
-															admin_redirect('index.php?module=style-themes');
-														}
-													}
 												}
 											}
 										}
@@ -660,29 +626,29 @@ if ($action == 'import') {
 						}
 					}
 				}
-
-				if (!$errors) {
-					$plugins->run_hooks("admin_style_themes_import_commit");
-
-					// Log admin action
-					log_admin_action($codename);
-
-					$msg = $infofile2
-					         ? (
-						    $themeinfo2['version'] < $themeinfo['version']
-						      ? $lang->sprintf($lang->success_upgraded_theme, htmlspecialchars_uni($themeinfo['name']), htmlspecialchars_uni($themeinfo2['version']), htmlspecialchars_uni($themeinfo['version']))
-						      : $lang->sprintf($lang->success_downgraded_theme, htmlspecialchars_uni($themeinfo['name']), htmlspecialchars_uni($themeinfo2['version']), htmlspecialchars_uni($themeinfo['version']))
-						   )
-						 : $lang->sprintf($lang->success_imported_theme, htmlspecialchars_uni($themeinfo['name']));
-					flash_message($msg, 'success');
-					admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
-				}
 			}
+		}
 
-			rmdir_recursive($tmp_dir);
-			if ($errors && $zip_filepath) {
-				rmdir_recursive($staged_path);
-			}
+		if (!$errors) {
+			$plugins->run_hooks("admin_style_themes_import_commit");
+
+			// Log admin action
+			log_admin_action($codename);
+
+			$msg = $infofile2
+					? (
+					$themeinfo2['version'] < $themeinfo['version']
+					? $lang->sprintf($lang->success_upgraded_theme, htmlspecialchars_uni($themeinfo['name']), htmlspecialchars_uni($themeinfo2['version']), htmlspecialchars_uni($themeinfo['version']))
+					: $lang->sprintf($lang->success_downgraded_theme, htmlspecialchars_uni($themeinfo['name']), htmlspecialchars_uni($themeinfo2['version']), htmlspecialchars_uni($themeinfo['version']))
+					)
+					: $lang->sprintf($lang->success_imported_theme, htmlspecialchars_uni($themeinfo['name']));
+			flash_message($msg, 'success');
+			admin_redirect('index.php?module=style-themes&amp;action=edit&amp;codename='.urlencode($codename));
+		}
+
+		rmdir_recursive($tmp_dir);
+		if ($errors && $zip_filepath) {
+			rmdir_recursive($zip_filepath);
 		}
 	}
 
@@ -705,7 +671,6 @@ if ($action == 'import') {
 
 	$form = new Form("index.php?module=style-themes&amp;action=import", "post", "", 1);
 
-	$staged_themes = get_staged_themes();
 
 	$actions = '<script type="text/javascript">
 	function checkAction(id)
@@ -746,20 +711,6 @@ if ($action == 'import') {
 				</tr>
 		</table></dd>
 ';
-	if ($staged_themes) {
-		$opts = [];
-		foreach ($staged_themes as $codename => $props) {
-			$opts[$codename] = empty($props['name']) ? '['.$codename.']' : $props['name'];
-		}
-		$actions .= '		<dt><label style="display: block;"><input type="radio" name="import" value="2" '.$import_checked[3].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->staged_theme.'</label></dt>
-		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_2" class="imports">
-		<table cellpadding="4">
-				<tr>
-					<td>'.$form->generate_select_box('staged_theme', $opts, [$mybb->get_input('staged_theme')]).'</td>
-				</tr>
-		</table></dd>
-';
-	}
 	$actions .= '	</dl>
 	<script type="text/javascript">
 	checkAction(\'import\');
@@ -800,7 +751,7 @@ if ($action == 'export') {
 
 		if (empty($mybb->input['custom_theme'])) {
 			foreach (array_reverse($themes[$theme['codename']]['ancestors']) as $anc_code) {
-				$source = MYBB_ROOT."inc/themes/{$anc_code}/{$mode}/";
+				$source = MYBB_ROOT."inc/themes/{$anc_code}/";
 				if (!cp_or_mv_recursively($source, $dest, false, $err_msg)) {
 					flash_message($err_msg, 'error');
 					admin_redirect('index.php?module=style-themes');
@@ -808,7 +759,7 @@ if ($action == 'export') {
 			}
 		}
 
-		$source = MYBB_ROOT."inc/themes/{$theme['codename']}/{$mode}/";
+		$source = MYBB_ROOT."inc/themes/{$theme['codename']}/";
 
 		if (!cp_or_mv_recursively($source, $dest, false, $err_msg)) {
 			flash_message($err_msg, 'error');
@@ -859,13 +810,6 @@ if ($action == 'export') {
 	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']).get_theme_name_apx($codename));
 	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->get_input('custom_theme')), 'custom_theme');
 
-	if (!empty($themelet_hierarchy['devdist']['themes'][$codename])
-	    &&
-	    !empty($themelet_hierarchy['current']['themes'][$codename])
-	) {
-		$form_container->output_row($lang->export_devdist, $lang->export_devdist_desc, $form->generate_yes_no_radio('export_devdist', $mybb->settings['themelet_dev_mode'] ? '1' : '0', 'export_devdist'));
-	}
-
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->export_theme);
@@ -885,24 +829,6 @@ if ($action == 'duplicate') {
 		admin_redirect("index.php?module=style-themes");
 	}
 
-	$have_current = is_dir("{$src_dir}/current");
-	$have_devdist = is_dir("{$src_dir}/devdist");
-
-	// Does the theme have no contents?
-	if (!$have_current && !$have_devdist) {
-		flash_message($lang->error_theme_has_no_contents, 'error');
-		admin_redirect("index.php?module=style-themes");
-	}
-
-	// Determine which modes (current/devdist) exist in the source theme
-	$modes = [];
-	if ($have_current) {
-		$modes[] = 'current';
-	}
-	if ($have_devdist) {
-		$modes[] = 'devdist';
-	}
-
 	$plugins->run_hooks("admin_style_themes_duplicate");
 
 	if($mybb->request_method == "post")
@@ -914,13 +840,11 @@ if ($action == 'duplicate') {
 		} else if ($mybb->input['name'] == '') {
 			$errors[] = $lang->error_missing_name;
 		} else {
-			foreach (['devdist', 'current'] as $mode1) {
-				foreach ($themelet_hierarchy[$mode1]['themes'] as $theme) {
-					if ($theme['properties']['name'] == $mybb->get_input('name')) {
-						$errors[] = $lang->sprintf($lang->error_theme_already_exists, htmlspecialchars_uni($mybb->get_input('name')));
-					} else if ($theme['properties']['codename'] == $mybb->input['new_codename']) {
-						$errors[] = $lang->sprintf($lang->error_theme_codename_exists, htmlspecialchars_uni($mybb->input['new_codename']));
-					}
+			foreach ($themelet_hierarchy['themes'] as $theme) {
+				if ($theme['properties']['name'] == $mybb->get_input('name')) {
+					$errors[] = $lang->sprintf($lang->error_theme_already_exists, htmlspecialchars_uni($mybb->get_input('name')));
+				} else if ($theme['properties']['codename'] == $mybb->input['new_codename']) {
+					$errors[] = $lang->sprintf($lang->error_theme_codename_exists, htmlspecialchars_uni($mybb->input['new_codename']));
 				}
 			}
 		}
@@ -928,64 +852,54 @@ if ($action == 'duplicate') {
 		if (!$errors) {
 			$dest_dir = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}";
 
-			// If we are copying all resolved (including inherited) resources for
-			// the applicable modes....
+			// If we are copying all resolved (including inherited) resources....
 			if (in_array($mybb->input['dup_type'], ['child_resolved', 'sibling_resolved'])) {
 				// ...then get the ancestor list of themes for the source theme and copy
 				// their directories recursively in reverse order into the
 				// destination directory.
-				foreach ($modes as $mode1) {
-					foreach (array_reverse($themelet_hierarchy[$mode1]['themes'][$codename]['ancestors']) as $anc_code) {
-						$source_path = MYBB_ROOT."inc/themes/{$anc_code}/{$mode1}/";
-						$dest_path   = "$dest_dir/{$mode1}";
-						if (!cp_or_mv_recursively($source_path, $dest_path, false, $err_msg)) {
-							flash_message($err_msg, 'error');
-							admin_redirect('index.php?module=style-themes');
-						}
-					}
-
-				}
-			// Otherwise, if we are copying only resources in the source theme...
-			} else if (in_array($mybb->input['dup_type'], ['child_exact', 'sibling_exact'])) {
-				// ...then copy just the source dir for the relevant modes.
-				foreach ($modes as $mode1) {
-					$source_path = "{$src_dir}/{$mode1}";
-					$dest_path   = "{$dest_dir}/{$mode1}";
+				foreach (array_reverse($themelet_hierarchy['themes'][$codename]['ancestors']) as $anc_code) {
+					$source_path = MYBB_ROOT."inc/themes/{$anc_code}/";
+					$dest_path   = $dest_dir;
 					if (!cp_or_mv_recursively($source_path, $dest_path, false, $err_msg)) {
 						flash_message($err_msg, 'error');
 						admin_redirect('index.php?module=style-themes');
 					}
 				}
+			// Otherwise, if we are copying only resources in the source theme...
+			} else if (in_array($mybb->input['dup_type'], ['child_exact', 'sibling_exact'])) {
+				// ...then copy just the source dir.
+				if (!cp_or_mv_recursively($src_dir, $dest_dir, false, $err_msg)) {
+					flash_message($err_msg, 'error');
+					admin_redirect('index.php?module=style-themes');
+				}
 			}
 
-			// Then, copy theme.json and resources.json to the dest dirs for the
-			// relevant modes, at the same time editing theme.json to update codename,
+			// Then, copy theme.json and resources.json to the dest dirs,
+			// at the same time editing theme.json to update codename,
 			// name, and (if necessary) parent codename.
-			foreach ($modes as $mode1) {
-				foreach (['theme.json', 'resources.json'] as $json_file) {
-					if (!is_dir("{$dest_dir}/{$mode1}")) {
-						@mkdir("{$dest_dir}/{$mode1}", 0755, true);
-					}
-					$source_path = "{$src_dir}/{$mode1}/{$json_file}";
-					$dest_path   = "{$dest_dir}/{$mode1}/{$json_file}";
-					if (!copy($source_path, $dest_path)) {
-						flash_message($lang->sprintf($lang->error_cp_failed, htmlspecialchars_uni($source_path), htmlspecialchars_uni($dest_path)), 'error');
+			foreach (['theme.json', 'resources.json'] as $json_file) {
+				if (!is_dir($dest_dir)) {
+					@mkdir($dest_dir, 0755, true);
+				}
+				$source_path = "{$src_dir}/{$json_file}";
+				$dest_path   = "{$dest_dir}/{$json_file}";
+				if (!copy($source_path, $dest_path)) {
+					flash_message($lang->sprintf($lang->error_cp_failed, htmlspecialchars_uni($source_path), htmlspecialchars_uni($dest_path)), 'error');
+					admin_redirect('index.php?module=style-themes');
+				} else if ($json_file == 'theme.json') {
+					$theme_properties = read_json_file($dest_path, $err_msg, false);
+					if (!$theme_properties && $err_msg) {
+						flash_message($err_msg, 'error');
 						admin_redirect('index.php?module=style-themes');
-					} else if ($json_file == 'theme.json') {
-						$theme_properties = read_json_file($dest_path, $err_msg, false);
-						if (!$theme_properties && $err_msg) {
-							flash_message($err_msg, 'error');
+					} else {
+						$theme_properties['codename'] = $mybb->input['new_codename'];
+						$theme_properties['name'] = $mybb->input['name'];
+						if (in_array($mybb->input['dup_type'], ['child_exact', 'child_full', 'child_resolved'])) {
+							$theme_properties['parent'] = $codename;
+						}
+						if (!write_json_file($dest_path, $theme_properties)) {
+							flash_message($lang->error_failed_to_save_theme, 'error');
 							admin_redirect('index.php?module=style-themes');
-						} else {
-							$theme_properties['codename'] = $mybb->input['new_codename'];
-							$theme_properties['name'] = $mybb->input['name'];
-							if (in_array($mybb->input['dup_type'], ['child_exact', 'child_full', 'child_resolved'])) {
-								$theme_properties['parent'] = $codename;
-							}
-							if (!write_json_file($dest_path, $theme_properties)) {
-								flash_message($lang->error_failed_to_save_theme, 'error');
-								admin_redirect('index.php?module=style-themes');
-							}
 						}
 					}
 				}
@@ -994,95 +908,77 @@ if ($action == 'duplicate') {
 			// Then, if this is a child, update its resource derivation info.
 			if (in_array($mybb->input['dup_type'], ['child_full', 'child_exact', 'child_resolved'])) {
 				$ignored_files = ['resources.json', 'theme.json', 'LICENCE', 'LICENSE'];
-				foreach ($modes as $mode1) {
-					$all_resources = [];
-					// First, build a list of all resources in ancestors.
-					foreach (array_reverse($themelet_hierarchy[$mode1]['themes'][$codename]['ancestors']) as $anc_code) {
-						$base = MYBB_ROOT."inc/themes/$anc_code/$mode1/";
-						if (!file_exists($base)) {
-							continue;
-						}
-						$baselen = strlen($base);
-						$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
-						foreach (
-							$iterator = new \RecursiveIteratorIterator(
-								$rci,
-								\RecursiveIteratorIterator::SELF_FIRST
-							) as $item
-						) {
-							if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
-								$resource = substr($item->getPathname(), $baselen);
-								if (!in_array($resource, $all_resources)) {
-									$all_resources[] = $resource;
-								}
-							}
-						}
-
+				$all_resources = [];
+				// First, build a list of all resources in ancestors.
+				foreach (array_reverse($themelet_hierarchy['themes'][$codename]['ancestors']) as $anc_code) {
+					$base = MYBB_ROOT."inc/themes/$anc_code/";
+					if (!file_exists($base)) {
+						continue;
 					}
-					// Now, build a list of resources (with inheritance broken) in the theme being duplicated,
-					// at the same time adding them to the above list if they are not in it already.
-					$theme_resources = [];
-					$base = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}/$mode1/";
 					$baselen = strlen($base);
-					if (file_exists($base)) {
-						$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
-						foreach (
-							$iterator = new \RecursiveIteratorIterator(
-								$rci,
-								\RecursiveIteratorIterator::SELF_FIRST
-							) as $item
-						) {
-							if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
-								$resource = substr($item->getPathname(), $baselen);
-								if (!in_array($resource, $theme_resources)) {
-									$theme_resources[] = $resource;
-								}
-								if (!in_array($resource, $all_resources)) {
-									$all_resources[] = $resource;
-								}
+					$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
+					foreach (
+						$iterator = new \RecursiveIteratorIterator(
+							$rci,
+							\RecursiveIteratorIterator::SELF_FIRST
+						) as $item
+					) {
+						if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
+							$resource = substr($item->getPathname(), $baselen);
+							if (!in_array($resource, $all_resources)) {
+								$all_resources[] = $resource;
 							}
 						}
 					}
-					// Finally, update the derivation list and then save the resource file.
-					$resources = read_json_file($base.'resources.json', $err_msg, false);
-					if (!$resources) {
-						$errors[] = $err_msg;
-					} else {
-						if (empty($resources['derivations'])) {
-							$resources['derivations'] = [];
-						}
-						$derivations = &$resources['derivations'];
-						$prefix = 'board.';
-						if (substr($codename, 0, strlen($prefix)) == $prefix) {
-							$vers = 'board';
-						} else {
-							$vers = $themelet_hierarchy[$mode1]['themes'][$codename]['properties']['version'];
-						}
-						foreach ($all_resources as $resource) {
-							if (empty($derivations[$resource])) {
-								$derivations[$resource] = [];
+
+				}
+				// Now, build a list of resources (with inheritance broken) in the theme being duplicated,
+				// at the same time adding them to the above list if they are not in it already.
+				$theme_resources = [];
+				$base = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}/";
+				$baselen = strlen($base);
+				if (file_exists($base)) {
+					$rci = new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS);
+					foreach (
+						$iterator = new \RecursiveIteratorIterator(
+							$rci,
+							\RecursiveIteratorIterator::SELF_FIRST
+						) as $item
+					) {
+						if ($item->isFile() && !in_array($item->getFilename(), $ignored_files)) {
+							$resource = substr($item->getPathname(), $baselen);
+							if (!in_array($resource, $theme_resources)) {
+								$theme_resources[] = $resource;
 							}
-							array_unshift($derivations[$resource], [$codename, in_array($resource, $theme_resources) ? $vers : 'inherit', /*is_plugin*/false]);
+							if (!in_array($resource, $all_resources)) {
+								$all_resources[] = $resource;
+							}
 						}
-						unset($derivations);
-						write_json_file($base.'resources.json', $resources);
 					}
 				}
-			}
-
-			// Finally, if creating a new current/devdist directory, then copy the now existing one (in the destination) to the other.
-			$to = $from = '';
-			if (!$have_devdist && !empty($mybb->input['create_devdist'])) {
-				$from = 'current';
-				$to = 'devdist';
-			} else if (!$have_current && !empty($mybb->input['create_current'])) {
-				$from = 'devdist';
-				$to = 'current';
-			}
-			if ($to) {
-				$base = MYBB_ROOT."inc/themes/{$mybb->input['new_codename']}/";
-				if (!cp_or_mv_recursively("{$base}{$from}", "{$base}{$to}", /*$del_source = */false, $error)) {
-					$errors[] = $error;
+				// Finally, update the derivation list and then save the resource file.
+				$resources = read_json_file($base.'resources.json', $err_msg, false);
+				if (!$resources) {
+					$errors[] = $err_msg;
+				} else {
+					if (empty($resources['derivations'])) {
+						$resources['derivations'] = [];
+					}
+					$derivations = &$resources['derivations'];
+					$prefix = 'board.';
+					if (substr($codename, 0, strlen($prefix)) == $prefix) {
+						$vers = 'board';
+					} else {
+						$vers = $themelet_hierarchy['themes'][$codename]['properties']['version'];
+					}
+					foreach ($all_resources as $resource) {
+						if (empty($derivations[$resource])) {
+							$derivations[$resource] = [];
+						}
+						array_unshift($derivations[$resource], [$codename, in_array($resource, $theme_resources) ? $vers : 'inherit', /*is_plugin*/false]);
+					}
+					unset($derivations);
+					write_json_file($base.'resources.json', $resources);
 				}
 			}
 
@@ -1112,16 +1008,14 @@ if ($action == 'duplicate') {
 
 	// Suggest a name for the duplicate theme if none has yet been provided
 	if (empty($mybb->input['name'])) {
-		$name_val_base = $themelet_hierarchy[$modes[0]]['themes'][$codename]['properties']['name'];
+		$name_val_base = $themelet_hierarchy['themes'][$codename]['properties']['name'];
 		for ($i = 1; $i < 20; $i++) {
 			$name_val = $name_val_base.' (copy '.$i.')';
 			$found = false;
-			foreach (['devdist', 'current'] as $mode1) {
-				foreach ($themelet_hierarchy[$mode1]['themes'] as $theme) {
-					if ($name_val == $theme['properties']['name']) {
-						$found = true;
-						break;
-					}
+			foreach ($themelet_hierarchy['themes'] as $theme) {
+				if ($name_val == $theme['properties']['name']) {
+					$found = true;
+					break;
 				}
 			}
 			if (!$found) break;
@@ -1141,12 +1035,10 @@ if ($action == 'duplicate') {
 		$new_codename_val = $new_codename_val_base;
 		for ($i = 1; $i <= 26; $i++) {
 			$found = false;
-			foreach (['devdist', 'current'] as $mode1) {
-				foreach ($themelet_hierarchy[$mode1]['themes'] as $theme) {
-					if ($new_codename_val == $theme['properties']['codename']) {
-						$found = true;
-						break;
-					}
+			foreach ($themelet_hierarchy['themes'] as $theme) {
+				if ($new_codename_val == $theme['properties']['codename']) {
+					$found = true;
+					break;
 				}
 			}
 			if (!$found) break;
@@ -1158,7 +1050,7 @@ if ($action == 'duplicate') {
 
 	$form = new Form('index.php?module=style-themes&amp;action=duplicate&amp;codename='.urlencode($codename), 'post');
 
-	$form_container = new FormContainer($lang->sprintf($lang->duplicate_theme_named, htmlspecialchars_uni($themelet_hierarchy[$modes[0]]['themes'][$codename]['properties']['name']).get_theme_name_apx($codename)));
+	$form_container = new FormContainer($lang->sprintf($lang->duplicate_theme_named, htmlspecialchars_uni($themelet_hierarchy['themes'][$codename]['properties']['name']).get_theme_name_apx($codename)));
 	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $name_val, array('id' => 'name')), 'name');
 	$form_container->output_row($lang->new_codename, $lang->new_codename_duplicate_desc.' '.$lang->original_vs_board_themes_desc, $form->generate_text_box('new_codename', $new_codename_val, array('id' => 'new_codename')), 'new_codename');
 	$dup_checked = ['child_full' => '', 'child_exact' => '', 'child_resolved' => '', 'sibling_exact' => '', 'sibling_resolved' => ''];
@@ -1174,11 +1066,6 @@ if ($action == 'duplicate') {
 		<dt><label style="display: block;"><input type="radio" name="dup_type" value="sibling_exact" '.$dup_checked['sibling_exact'].' style="vertical-align: middle;" /> '.$lang->dup_type_sibling_exact.'</label></dt><br />
 		<dt><label style="display: block;"><input type="radio" name="dup_type" value="sibling_resolved" '.$dup_checked['sibling_resolved'].' style="vertical-align: middle;" /> '.$lang->dup_type_sibling_resolved.'</label></dt>
 	</dl>');
-	if (!$have_devdist) {
-		$form_container->output_row('', '', $form->generate_check_box('create_devdist', '1', $lang->create_devdist, array('checked' => $mybb->get_input('create_devdist'), 'id' => 'create_devdist'))."<br /><small>{$lang->create_devdist_desc}</small>");
-	} else if (!$have_current) {
-		$form_container->output_row('', '', $form->generate_check_box('create_current', '1', $lang->create_current, array('checked' => $mybb->get_input('create_current'), 'id' => 'create_current'))."<br /><small>{$lang->create_current_desc}</small>");
-	}
 
 	$form_container->end();
 
@@ -1254,10 +1141,7 @@ if ($action == 'delete') {
 
 	if($mybb->request_method == "post")
 	{
-		$props = read_json_file("{$src_dir}/current/theme.json");
-		if (!$props) {
-			$props = read_json_file("{$src_dir}/devdist/theme.json");
-		}
+		$props = read_json_file("{$src_dir}/theme.json");
 		$theme_name = !empty($props['name']) ? $props['name'] : '';
 
 		rmdir_recursive($src_dir);
@@ -1280,7 +1164,7 @@ if ($action == 'edit') {
 	$plugins->run_hooks("admin_style_themes_edit");
 
 	if ($mybb->request_method == 'post' && !$mybb->get_input('do')) {
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$errors[] = $lang->error_immutable_theme;
 		} else {
 			$new_properties = array(
@@ -1349,7 +1233,7 @@ if ($action == 'edit') {
 			else
 			{
 				$unused_name = true;
-				foreach ($themelet_hierarchy[$mode]['themes'] as $t_code => $a) {
+				foreach ($themelet_hierarchy['themes'] as $t_code => $a) {
 					if ($a['properties']['name'] == $new_properties['name'] && $codename != $t_code) {
 						$unused_name = false;
 						break;
@@ -1370,7 +1254,7 @@ if ($action == 'edit') {
 				$plugins->run_hooks("admin_style_fs_themes_edit_commit");
 
 				if (!write_json_file(
-					MYBB_ROOT."inc/themes/{$codename}/{$mode}/theme.json",
+					MYBB_ROOT."inc/themes/{$codename}/theme.json",
 					$new_properties
 				)) {
 					$errors[] = $lang->error_failed_to_save_theme;
@@ -1406,7 +1290,7 @@ if ($action == 'edit') {
 
 	$page->output_nav_tabs($sub_tabs, 'edit');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -1483,7 +1367,7 @@ if ($action == 'edit') {
 
 	$form_container->end();
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons = array();
 		$buttons[] = $form->generate_submit_button($lang->save_theme_properties);
 		$form->output_submit_wrapper($buttons);
@@ -1503,7 +1387,7 @@ if ($action == 'stylesheets') {
 	if ($mybb->request_method == 'post' && $mybb->input['do'] == 'save_orders'
 	    &&
 	    !empty($mybb->input['disporder']) && !empty($mybb->input['disporder_specifiers'])) {
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$errors[] = $lang->error_immutable_theme;
 		} else {
 			$disporders_in = $mybb->get_input('disporder', MyBB::INPUT_ARRAY);
@@ -1513,8 +1397,7 @@ if ($action == 'stylesheets') {
 				$disporders[$ordernum] = parse_res_spec1($disporder_specifiers[$key]);
 			}
 			ksort($disporders);
-			$mode = $mybb->settings['themelet_dev_mode'] ? 'devdist' : 'current';
-			$resource_file = MYBB_ROOT."inc/themes/{$codename}/{$mode}/resources.json";
+			$resource_file = MYBB_ROOT."inc/themes/{$codename}/resources.json";
 			$resources = read_json_file($resource_file, $err_msg, false);
 			if ($resources) {
 				$new_ss_list = [];
@@ -1551,7 +1434,7 @@ if ($action == 'stylesheets') {
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -1707,7 +1590,7 @@ if ($action == 'stylesheets') {
 		$popup->add_item($lang->edit_style, 'index.php?module=style-themes&amp;action=edit_stylesheet&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']));
 		$popup->add_item($lang->properties, 'index.php?module=style-themes&amp;action=stylesheet_properties&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']));
 
-		if (empty($inheritance_chain) && is_mutable_theme($codename, $mode)) {
+		if (empty($inheritance_chain) && is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$popup->add_item($lang->delete_revert, 'index.php?module=style-themes&amp;action=delete_stylesheet&amp;file='.urlencode($ss_name).'&amp;codename='.urlencode($theme['codename']).'&amp;my_post_key='.urlencode($mybb->post_code), "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 
@@ -1723,7 +1606,7 @@ if ($action == 'stylesheets') {
 
 	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']).get_theme_name_apx($codename));
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons = array($form->generate_submit_button($lang->save_stylesheet_order));
 		$form->output_submit_wrapper($buttons);
 	}
@@ -1775,7 +1658,7 @@ if ($action == 'stylesheet_properties') {
 
 	if($mybb->request_method == "post")
 	{
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$errors[] = $lang->error_immutable_theme;
 		}
 		if(!$errors)
@@ -1784,7 +1667,7 @@ if ($action == 'stylesheet_properties') {
 
 			// Update the stylesheet
 
-			$resource_file = MYBB_ROOT."inc/themes/{$codename}/{$mode}/resources.json";
+			$resource_file = MYBB_ROOT."inc/themes/{$codename}/resources.json";
 			$resources = read_json_file($resource_file, $err_msg, false);
 			if ($err_msg) {
 				flash_message($err_msg, 'error');
@@ -1823,7 +1706,7 @@ if ($action == 'stylesheet_properties') {
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheet_properties}");
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -2006,7 +1889,7 @@ if ($action == 'stylesheet_properties') {
 
 	$form_container->end();
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_submit_button($lang->save_stylesheet_properties);
 
 		$form->output_submit_wrapper($buttons);
@@ -2080,11 +1963,11 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 	if($mybb->request_method == "post")
 	{
 		$err_msg = false;
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$err_msg = $lang->error_immutable_theme;
 		} else {
 			// TODO: Abstract this code given that it is duplicated for saving in "advanced" mode below
-			$base_dir = MYBB_ROOT."inc/themes/{$codename}/$mode";
+			$base_dir = MYBB_ROOT."inc/themes/{$codename}";
 			if ($inheritance['orig_plugin']) {
 				$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
 			} else {
@@ -2192,7 +2075,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	} else if ($is_inherited) {
 		$last = end(array_keys($inheritance['inheritance_chain']));
@@ -2266,7 +2149,7 @@ if ($action == 'edit_stylesheet' && (!isset($mybb->input['mode']) || $mybb->inpu
 
 	echo "</div>";
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_reset_button($lang->reset);
 		$buttons[] = $form->generate_submit_button($lang->save_changes, array('id' => 'save', 'name' => 'save'));
 		$buttons[] = $form->generate_submit_button($lang->save_changes_and_close, array('id' => 'save_close', 'name' => 'save_close'));
@@ -2302,12 +2185,12 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 	{
 		// Now we have the new stylesheet, save it
 
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$err_msg = $lang->error_immutable_theme;
 		} else {
 			// TODO: Abstract this code given that it is duplicated for saving in "simple" mode above
 			$err_msg = false;
-			$base_dir = MYBB_ROOT."inc/themes/{$codename}/$mode";
+			$base_dir = MYBB_ROOT."inc/themes/{$codename}";
 			if ($inheritance['orig_plugin']) {
 				$save_dir = "$base_dir/ext.{$inheritance['orig_plugin']}/styles/";
 			} else {
@@ -2389,7 +2272,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet_advanced');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	} else if ($is_inherited) {
 		$page->output_alert($lang->sprintf($lang->stylesheet_inherited, htmlspecialchars_uni(get_theme_name($inheritance['inheritance_chain'][1]['codename']))), "ajax_alert");
@@ -2406,7 +2289,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 	$table->construct_row();
 	$table->output($lang->full_stylesheet_for.' '.htmlspecialchars_uni($filename), 1, 'tfixed');
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_submit_button($lang->save_changes, array('id' => 'save', 'name' => 'save'));
 		$buttons[] = $form->generate_submit_button($lang->save_changes_and_close, array('id' => 'save_close', 'name' => 'save_close'));
 
@@ -2435,7 +2318,7 @@ if ($action == 'edit_stylesheet' && $mybb->input['mode'] == 'advanced') {
 if ($action == 'delete_stylesheet') {
 	$plugins->run_hooks("admin_style_themes_delete_stylesheet");
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		flash_message($lang->error_immutable_theme, 'error');
 		admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
 	}
@@ -2482,7 +2365,7 @@ if ($action == 'delete_stylesheet') {
 		// modules dependency directory.
 
 		$base_abs_path = preg_replace('(\\.[^\\.]*$)', '', $filename);
-		$base_abs_path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/".($plugin_code ? 'ext.'.$plugin_code : $namespace)."/{$component}/{$base_abs_path}";
+		$base_abs_path = MYBB_ROOT."inc/themes/{$codename}/".($plugin_code ? 'ext.'.$plugin_code : $namespace)."/{$component}/{$base_abs_path}";
 
 		if ($is_scss) {
 			if (is_dir($base_abs_path)) {
@@ -2498,7 +2381,7 @@ if ($action == 'delete_stylesheet') {
 		}
 
 		$err_msg = false;
-		$resource_file = MYBB_ROOT."inc/themes/{$codename}/{$mode}/resources.json";
+		$resource_file = MYBB_ROOT."inc/themes/{$codename}/resources.json";
 		$resources = read_json_file($resource_file, $err_msg, false);
 		if ($resources) {
 			unset($resources['stylesheets'][$mybb->input['file']]);
@@ -2548,7 +2431,7 @@ if ($action == 'add_stylesheet') {
 
 	if($mybb->request_method == "post")
 	{
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			$errors[] = $lang->error_immutable_theme;
 		} else {
 			if (!verify_post_check($mybb->get_input('my_post_key'))) {
@@ -2589,7 +2472,7 @@ if ($action == 'add_stylesheet') {
 
 			if(!$errors)
 			{
-				$dest_base = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$mybb->input['namespace']}/styles/";
+				$dest_base = MYBB_ROOT."inc/themes/{$codename}/{$mybb->input['namespace']}/styles/";
 				$is_scss = false;
 				if($mybb->input['add_type'] == 1)
 				{
@@ -2612,9 +2495,9 @@ if ($action == 'add_stylesheet') {
 							$inheritance = resolve_themelet_resource($specifier, /*$use_themelet_cache = */false, /*$return_type = */RTR_RETURN_INHERITANCE, /*$min_override = */true, /*$scss_override = */true);
 							$arr = array_pop($inheritance['inheritance_chain']);
 							if ($arr['is_plugin']) {
-								$src_base = MYBB_ROOT."inc/plugins/{$arr['codename']}/interface/{$mode}/ext/styles/";
+								$src_base = MYBB_ROOT."inc/plugins/{$arr['codename']}/interface/ext/styles/";
 							} else {
-								$src_base = MYBB_ROOT."inc/themes/{$arr['codename']}/{$mode}/{$namespace}/styles/";
+								$src_base = MYBB_ROOT."inc/themes/{$arr['codename']}/{$namespace}/styles/";
 							}
 							$src_deps_dir_name = preg_replace('(\\.[^\\.]*$)', '', $mybb->input['import']);
 							$src_deps_path_abs = $src_base.$src_deps_dir_name;
@@ -2654,7 +2537,7 @@ if ($action == 'add_stylesheet') {
 				if (!$errors) {
 					$attached = get_ss_attach_from_input($errors);
 
-					$resource_file = MYBB_ROOT."inc/themes/{$codename}/{$mode}/resources.json";
+					$resource_file = MYBB_ROOT."inc/themes/{$codename}/resources.json";
 					$resources = read_json_file($resource_file, $err_msg, false);
 					if ($resources) {
 						$resources['stylesheets'][$new_spec] = $attached;
@@ -2702,7 +2585,7 @@ if ($action == 'add_stylesheet') {
 
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -2915,7 +2798,7 @@ if ($action == 'add_stylesheet') {
 
 	$form_container->end();
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_submit_button($lang->save_stylesheet);
 
 		$form->output_submit_wrapper($buttons);
@@ -2952,7 +2835,7 @@ $(function() {
 }
 
 if ($action == 'set_default') {
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		flash_message($lang->error_cannot_set_to_default, 'error');
 		admin_redirect('index.php?module=style-themes');
 	}
@@ -2976,9 +2859,7 @@ if ($action == 'set_default') {
 }
 
 if ($action == 'force') {
-	$mode = 'current';
-
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, false)) {
 		flash_message($lang->error_cannot_force_theme, 'error');
 		admin_redirect('index.php?module=style-themes');
 	}
@@ -3011,7 +2892,7 @@ if ($action == 'force') {
 		{
 			$theme['allowedgroups'] = 'all';
 			write_json_file(
-				MYBB_ROOT."inc/themes/{$theme['codename']}/{$mode}/theme.json",
+				MYBB_ROOT."inc/themes/{$theme['codename']}/theme.json",
 				$theme
 			);
 		}
@@ -3039,7 +2920,7 @@ if ($action == 'templates') {
 
 	$page->output_nav_tabs($sub_tabs, 'edit_templates');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -3048,10 +2929,10 @@ if ($action == 'templates') {
 	$table->construct_header($lang->actions_ucf, array('class' => 'align_center'));
 
 	$namespaces = [];
-	$plugins_a = $themelet_hierarchy[$mode]['plugins'];
+	$plugins_a = $themelet_hierarchy['plugins'];
 
 	foreach (array_merge(array_reverse($themes[$codename]['ancestors']), [$codename]) as $cname) {
-		$tpl_root = MYBB_ROOT."inc/themes/{$cname}/{$mode}/";
+		$tpl_root = MYBB_ROOT."inc/themes/{$cname}/";
 		$dh = opendir($tpl_root);
 		if ($dh) {
 			while ($dir = readdir($dh)) {
@@ -3111,7 +2992,7 @@ if ($action == 'templates') {
 			$tpls_a[$namespace] = [];
 		}
 		foreach (array_merge(array_reverse($themes[$codename]['ancestors']), [$codename]) as $cname) {
-			$dir = MYBB_ROOT."inc/themes/{$cname}/{$mode}/{$namespace}/templates";
+			$dir = MYBB_ROOT."inc/themes/{$cname}/{$namespace}/templates";
 			get_tpls_r($dir, $tpls_a[$namespace]);
 		}
 	}
@@ -3121,18 +3002,18 @@ if ($action == 'templates') {
 		if (empty($tpls_a[$key])) {
 			$tpls_a[$key] = [];
 		}
-		$dir = MYBB_ROOT."inc/plugins/{$pcode}/interface/{$mode}/ext/templates";
+		$dir = MYBB_ROOT."inc/plugins/{$pcode}/interface/ext/templates";
 		get_tpls_r($dir, $tpls_a[$key]);
 
 		// This handles the situation in which the plugin isn't currently present in the filesystem
 		// yet the theme with codename $codename is overriding one of its templates anyway.
 		foreach (array_merge(array_reverse($themes[$codename]['ancestors']), [$codename]) as $cname) {
-			$dir = MYBB_ROOT."inc/themes/{$cname}/{$mode}/{$key}/templates";
+			$dir = MYBB_ROOT."inc/themes/{$cname}/{$key}/templates";
 			get_tpls_r($dir, $tpls_a[$key]);
 		}
 	}
 
-	function output_tpls_r($codename, $mode, $namespace, $tpls_a, $table, $path = '', $indent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') {
+	function output_tpls_r($codename, $namespace, $tpls_a, $table, $path = '', $indent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') {
 		global $mybb, $lang;
 
 		sort($tpls_a);
@@ -3142,9 +3023,9 @@ if ($action == 'templates') {
 				$table->construct_cell($indent.htmlspecialchars_uni($entry['dirname']));
 				$table->construct_cell('<a href="index.php?module=style-themes&amp;action=add_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode("{$path_sl}{$entry['dirname']}")."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
 				$table->construct_row();
-				output_tpls_r($codename, $mode, $namespace, $entry['entries'], $table, "{$path_sl}{$entry['dirname']}", "{$indent}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+				output_tpls_r($codename, $namespace, $entry['entries'], $table, "{$path_sl}{$entry['dirname']}", "{$indent}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			} else {
-				$path_to_test = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace}/templates/{$path_sl}{$entry}";
+				$path_to_test = MYBB_ROOT."inc/themes/{$codename}/{$namespace}/templates/{$path_sl}{$entry}";
 				$is_inherited = !file_exists($path_to_test);
 				if ($is_inherited) {
 					$class = 'inherited_res';
@@ -3173,7 +3054,7 @@ if ($action == 'templates') {
 		$table->construct_cell("<strong>{$name}</strong> {$lang->$lang_key}<br>\n");
 		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=add_template&amp;codename=".urlencode($codename)."&amp;namespace=".urlencode($namespace)."\">{$lang->add_template_here}</a>", array('class' => 'align_center'));
 		$table->construct_row();
-		output_tpls_r($codename, $mode, $namespace, $tpls['entries'], $table);
+		output_tpls_r($codename, $namespace, $tpls['entries'], $table);
 	}
 
 	$table->output($lang->sprintf($lang->templates_in_theme, htmlspecialchars_uni($theme['name'])).get_theme_name_apx($codename));
@@ -3217,7 +3098,7 @@ if ($action == 'edit_template') {
 	$plugins->run_hooks('admin_style_themes_edit_template');
 
 	if ($mybb->request_method == 'post') {
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			flash_message($lang->error_immutable_theme);
 			admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 		}
@@ -3234,7 +3115,7 @@ if ($action == 'edit_template') {
 			$errors[] = $lang->sprintf($lang->error_invalid_template_name, htmlspecialchars_uni($template_path_new));
 		}
 		if (!$errors) {
-			$path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace_new}/templates/{$template_path_new}";
+			$path = MYBB_ROOT."inc/themes/{$codename}/{$namespace_new}/templates/{$template_path_new}";
 
 			$plugins->run_hooks('admin_style_themes_edit_template_commit');
 
@@ -3277,7 +3158,7 @@ if ($action == 'edit_template') {
 
 	$page->output_nav_tabs($sub_tabs, 'edit_template');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	} else if ($is_inherited) {
 		$last = end(array_keys($inheritance['inheritance_chain']));
@@ -3296,7 +3177,7 @@ if ($action == 'edit_template') {
 	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
 	$form_container->end();
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
 		$buttons[] = $form->generate_submit_button($lang->save_close, array('name' => 'close'));
 
@@ -3321,7 +3202,7 @@ if ($action == 'add_template') {
 	$template_path = $mybb->get_input('template_path');
 
 	if ($mybb->request_method == 'post') {
-		if (!is_mutable_theme($codename, $mode)) {
+		if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 			flash_message($lang->error_immutable_theme);
 			admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 		}
@@ -3345,7 +3226,7 @@ if ($action == 'add_template') {
 		}
 
 		if (!$errors) {
-			$path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace}/templates/{$template_path}";
+			$path = MYBB_ROOT."inc/themes/{$codename}/{$namespace}/templates/{$template_path}";
 
 			if (file_exists($path)) {
 				$errors[] = $lang->sprintf($lang->error_template_already_exists, '<a href="index.php?module=style-themes&amp;action=edit_template&amp;codename='.urlencode($codename).'&amp;namespace='.urlencode($namespace).'&amp;template_path='.urlencode($template_path).'">', '</a>');
@@ -3377,7 +3258,7 @@ if ($action == 'add_template') {
 
 	$page->output_nav_tabs($sub_tabs, 'add_template');
 
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$page->output_alert($lang->warning_immutable_theme);
 	}
 
@@ -3392,7 +3273,7 @@ if ($action == 'add_template') {
 	$form_container->output_row('', '', $form->generate_text_area('template_body', $template_body, array('id' => 'template_body', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
 	$form_container->end();
 
-	if (is_mutable_theme($codename, $mode)) {
+	if (is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		$buttons[] = $form->generate_submit_button($lang->save, array('name' => 'save'));
 
 		$form->output_submit_wrapper($buttons);
@@ -3406,7 +3287,7 @@ if ($action == 'add_template') {
 }
 
 if ($action == 'delete_template') {
-	if (!is_mutable_theme($codename, $mode)) {
+	if (!is_mutable_theme($codename, $mybb->settings['themelet_dev_mode'])) {
 		flash_message($lang->error_immutable_theme, 'error');
 		admin_redirect('index.php?module=style-themes&amp;action=templates&amp;codename='.urlencode($codename));
 	}
@@ -3414,7 +3295,7 @@ if ($action == 'delete_template') {
 	$namespace     = $mybb->get_input('namespace');
 	$template_path = $mybb->get_input('template_path');
 
-	$path = MYBB_ROOT."inc/themes/{$codename}/{$mode}/{$namespace}/templates/{$template_path}";
+	$path = MYBB_ROOT."inc/themes/{$codename}/{$namespace}/templates/{$template_path}";
 
 	// Does the template not exist?
 	if (!file_exists($path)) {
@@ -3453,31 +3334,6 @@ if ($action == 'delete_template') {
 	}
 }
 
-if ($action == 'create_devdist') {
-	// Validate the supplied theme codename.
-	if (!is_valid_theme_code($codename)) {
-		flash_message($lang->sprintf($lang->error_invalid_theme_codename, htmlspecialchars_uni($codename)), 'error');
-		admin_redirect('index.php?module=style-themes');
-	}
-
-	if (!verify_post_check($mybb->get_input('my_post_key'))) {
-		flash_message($lang->invalid_post_verify_key2, 'error');
-		admin_redirect('index.php?module=style-themes&amp;action=stylesheets&amp;codename='.urlencode($codename));
-	}
-
-	$basedir = MYBB_ROOT."inc/themes/$codename/";
-	if (file_exists($basedir.'devdist')) {
-		flash_message($lang->sprintf($lang->error_devdist_dir_already_exists, htmlspecialchars_uni($basedir.'devdist')), 'error');
-	} else if (!file_exists($basedir.'current')) {
-		flash_message($lang->sprintf($lang->error_current_dir_does_not_exist, htmlspecialchars_uni($basedir.'current')), 'error');
-	} else if (!cp_or_mv_recursively("{$basedir}current", "{$basedir}devdist", /*$del_source = */false, $error)) {
-		flash_message($error, 'error');
-	} else {
-		flash_message($lang->success_created_devdist, 'success');
-	}
-	admin_redirect('index.php?module=style-themes');
-}
-
 if ($action == 'toggle_themelet_dev_mode') {
 	if (!verify_post_check($mybb->get_input('my_post_key'))) {
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -3508,29 +3364,6 @@ if (!$action) {
 	build_theme_list();
 
 	$table->output($lang->themes);
-
-	if ($mode == 'devdist') {
-		$with_no_devdist = [];
-		foreach (array_keys($themelet_hierarchy['current']['themes']) as $cname) {
-			if (!array_key_exists($cname, $themelet_hierarchy['devdist']['themes'])) {
-				$with_no_devdist[$cname] = $themelet_hierarchy['current']['themes'][$cname]['properties']['name'];
-			}
-		}
-
-		if ($with_no_devdist) {
-			$table2 = new Table;
-			$table2->construct_header($lang->theme);
-			$table2->construct_header($lang->create_missing_devdist_q);
-			$table2->construct_header($lang->recommended_q);
-			foreach ($with_no_devdist as $cname => $name) {
-				$table2->construct_cell(htmlspecialchars_uni($name));
-				$table2->construct_cell('<a href="index.php?module=style-themes&amp;action=create_devdist&amp;codename='.urlencode($cname).'&amp;my_post_key='.$mybb->post_code.'">'.$lang->create_missing_devdist.'</a>');
-				$table2->construct_cell(is_mutable_theme($cname, 'current') ? $lang->not_recomm_mutable_already : $lang->yes);
-				$table2->construct_row();
-			}
-			$table2->output($lang->themes_with_no_devdist);
-		}
-	}
 
 	$page->output_footer();
 }
@@ -3578,40 +3411,6 @@ function output_codepress_js() {
 			});
 		</script>';
 	}
-}
-
-/**
- * Gets a list of staged theme files.
- *
- * @param boolean $show_errs If true, and an error occurs, the error is displayed inline; otherwise, errors are ignored.
- * @return array Keys are theme codenames; values are theme manifest data as extracted from the relevant manifest file.
- */
-function get_staged_themes($show_errs = true)
-{
-	global $lang, $page;
-
-	$themes_list = [];
-	$dh = @opendir(MYBB_ROOT.'staging/themes/');
-	if ($dh) {
-		while (($theme_code = readdir($dh))) {
-			if (in_array($theme_code, ['.', '..']) || !is_dir(MYBB_ROOT."staging/themes/$theme_code")) {
-				continue;
-			}
-			$info_file = MYBB_ROOT."staging/themes/$theme_code/theme.json";
-			if ($themeinfo = read_json_file($info_file, $errmsg, $show_errs)) {
-				if (empty($themeinfo['version'])) {
-					if ($show_errs) {
-						$page->output_inline_error($lang->sprintf($lang->error_missing_manifest_version, htmlspecialchars_uni($info_file)));
-					}
-				} else	$themes_list[$theme_code] = $themeinfo;
-			} else if ($show_errs) {
-				$page->output_inline_error($lang->sprintf($lang->error_bad_staged_json_file, htmlspecialchars_uni($info_file)));
-			}
-		}
-		@closedir($dh);
-	}
-
-	return $themes_list;
 }
 
 function get_ss_attach_from_input(&$errors) {
