@@ -8,7 +8,7 @@ function clone_and_archive_default_theme()
 	$board_codename = 'board.default';
 	// Create a board theme inheriting from core.default
 	$board_dir = MYBB_ROOT."inc/themes/{$board_codename}/";
-	if (!file_exists($board_dir) {
+	if (!file_exists($board_dir)) {
 		if (!mkdir($board_dir, 0777, true)) {
 			$output->print_error('Failed to create the directory: "'.htmlspecialchars_uni($board_dir).'".');
 		} else {
