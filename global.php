@@ -459,6 +459,17 @@ if(!empty($theme['logo']) && !preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $the
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
+// Load Main Templates and Cached Templates
+if(isset($templatelist))
+{
+	$templatelist .= ',';
+}
+else
+{
+	$templatelist = '';
+}
+$templates->cache($db->escape_string($templatelist));
+
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
 $timenow = my_date($mybb->settings['timeformat'], TIME_NOW);
@@ -843,6 +854,11 @@ $task_cache = $cache->read('tasks');
 if(!$task_cache['nextrun'])
 {
 	$task_cache['nextrun'] = TIME_NOW;
+}
+
+if($task_cache['nextrun'] <= TIME_NOW)
+{
+	$task_image = $mybb->settings['bburl'] . '/task.php';
 }
 
 // Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
