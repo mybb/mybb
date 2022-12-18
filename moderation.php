@@ -2752,12 +2752,12 @@ switch($mybb->input['action'])
 			preg_match("#thread-([0-9]+)?#i", $mybb->input['threadurl'], $threadmatch);
 			preg_match("#post-([0-9]+)?#i", $mybb->input['threadurl'], $postmatch);
 
-			if($threadmatch[1])
+			if(!empty($threadmatch[1]))
 			{
 				$parameters['tid'] = $threadmatch[1];
 			}
 
-			if($postmatch[1])
+			if(!empty($postmatch[1]))
 			{
 				$parameters['pid'] = $postmatch[1];
 			}
