@@ -861,6 +861,11 @@ if(!$task_cache['nextrun'])
 	$task_cache['nextrun'] = TIME_NOW;
 }
 
+if($task_cache['nextrun'] <= TIME_NOW)
+{
+	$task_image = $mybb->settings['bburl'] . '/task.php';
+}
+
 // Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
 $mybb->settings['footer'] = [];
 
