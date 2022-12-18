@@ -1120,7 +1120,7 @@ if ($action == 'add') {
 if ($action == 'delete') {
 	// Does the theme not exist?
 	$src_dir = MYBB_ROOT."inc/themes/{$codename}";
-	if (!is_dir($src_dir)) {
+	if (!is_dir($src_dir) || !trim($codename)) {
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
@@ -1156,7 +1156,7 @@ if ($action == 'delete') {
 	}
 	else
 	{
-		$page->output_confirm_action('index.php?module=style-themes&amp;action=delete&amp;codename='.urlencode($theme['codename']), $lang->confirm_theme_deletion);
+		$page->output_confirm_action('index.php?module=style-themes&amp;action=delete&amp;codename='.urlencode($codename), $lang->confirm_theme_deletion);
 	}
 }
 
