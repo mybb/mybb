@@ -87,18 +87,13 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
  */
 function get_unsearchable_forums($pid=0, $first=1)
 {
-	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $forumpass;
+	global $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $forumpass;
 
 	$pid = (int)$pid;
 
 	if(!is_array($forum_cache))
 	{
-		// Get Forums
-		$query = $db->simple_select("forums", "fid,parentlist,password,active", '', array('order_by' => 'pid, disporder'));
-		while($forum = $db->fetch_array($query))
-		{
-			$forum_cache[$forum['fid']] = $forum;
-		}
+		cache_forums();
 	}
 	if(!is_array($permissioncache))
 	{
