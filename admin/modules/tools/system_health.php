@@ -238,7 +238,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_cell($lang->please_wait);
 		$table->construct_row();
 
-		$table->output($converting_table." {$mybb->input['table']}");
+		$table->output($lang->sprintf($lang->converting_table, $mybb->input['table']));
 
 		$db->set_table_prefix($old_table_prefix);
 
@@ -280,6 +280,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET {$character_set} COLLATE {$collation}");
 
 		// Fetch any fulltext keys
+		$fulltext_to_create = array();
 		if($db->supports_fulltext($mybb->input['table']))
 		{
 			$table_structure = $db->show_create_table($mybb->input['table']);
@@ -357,12 +358,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 
 		// Any fulltext indexes to recreate?
-		if(is_array($fulltext_to_create))
+		foreach($fulltext_to_create as $name => $fields)
 		{
-			foreach($fulltext_to_create as $name => $fields)
-			{
-				$db->create_fulltext_index($mybb->input['table'], $fields, $name);
-			}
+			$db->create_fulltext_index($mybb->input['table'], $fields, $name);
 		}
 
 		$db->set_table_prefix($old_table_prefix);
@@ -438,7 +436,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 
-	if($mybb->input['table'] || $mybb->input['do'] == "all")
+	if(!empty($mybb->input['table']) || $mybb->input['do'] == "all")
 	{
 		if(!empty($mybb->input['mb4']) && version_compare($db->get_version(), '5.5.3', '<'))
 		{
