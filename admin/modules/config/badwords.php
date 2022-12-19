@@ -207,6 +207,43 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
+			$query = $db->simple_select("badwords", "bid", "badword = '".$db->escape_string($mybb->input['badword'])."' AND bid != '".$badword['bid']."'");
+
+			if($db->num_rows($query))
+			{
+				$errors[] = $lang->error_bad_word_filtered;
+			}
+		}
+
+		$badword_check = trim($mybb->input['badword']);
+
+		if($mybb->get_input('regex', MyBB::INPUT_INT))
+		{
+			// Check validity of defined regular expression
+			if((@preg_match('#'.$badword_check.'#is', null) === false))
+			{
+				$errors[] = $lang->error_invalid_regex;
+			}
+		}
+		else
+		{
+			if(!isset($parser) || !is_object($parser))
+			{
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser;
+			}
+
+			$badword_check = $parser->generate_regex($badword_check);
+		}
+
+		// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
+		if(@preg_match('#'.$badword_check.'#is', $mybb->input['replacement']))
+		{
+			$errors[] = $lang->error_replacement_word_invalid;
+		}
+
+		if(!$errors)
+		{
 			$updated_badword = array(
 				"badword" => $db->escape_string($mybb->input['badword']),
 				"regex" => $mybb->get_input('regex', MyBB::INPUT_INT),
