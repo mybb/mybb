@@ -693,6 +693,12 @@ if($mybb->input['action'] == "profile")
 
 	if($mybb->usergroup['cancustomtitle'] == 1)
 	{
+		$maxlength = '';
+		if($mybb->settings['customtitlemaxlength'] > 0)
+		{
+			$maxlength = " maxlength=\"{$mybb->settings['customtitlemaxlength']}\"";
+		}
+
 		if($mybb->usergroup['usertitle'] == "")
 		{
 			$defaulttitle = '';

@@ -13398,7 +13398,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>{$code}</td>
 </tr>]]></template>
-		<template name="usercp_profile_customtitle" version="1805"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_profile_customtitle" version="1833"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->custom_usertitle}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -13415,7 +13415,7 @@ if(use_xmlhttprequest == "1")
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$mybb->settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
+<td><input type="text" class="textbox" name="usertitle" size="25"{$maxlength} value="{$newtitle}" /></td>
 </tr>
 {$reverttitle}
 </table>
