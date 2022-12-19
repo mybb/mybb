@@ -276,12 +276,12 @@ if(empty($theme))
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
 	if($load_from_forum)
 	{
-		$db->update_query('forums', array('style' => 0), "style = '{$style}'");
+		$db->update_query('forums', array('style' => 'board.default'), "style = '{$style}'");
 	}
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	elseif($load_from_user)
 	{
-		$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
+		$db->update_query('users', array('style' => 'board.default'), "style = '{$mybb->user['style']}'");
 	}
 
 	// Load the first available theme
