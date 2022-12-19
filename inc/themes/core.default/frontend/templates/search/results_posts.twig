@@ -60,7 +60,7 @@
         {% if results.show_inline_moderation %}
             <div class="sort-results">
                 <h3 class="sort-results__title">{{ lang.inline_thread_moderation }}</h3>
-                <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
+                {{ attach(resource='jscripts/inline_moderation.js', absolute=true) }}
                 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
                     <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                     <input type="hidden" name="tid" value="0" />

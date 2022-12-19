@@ -24,6 +24,17 @@ function app(?string $className = null, array $parameters = [])
     return Container::getInstance()->make($className, $parameters);
 }
 
+function strip_frontend_ns($name)
+{
+    static $strip = '@frontend/';
+    static $strip_len;
+    if (!$strip_len) $strip_len = strlen($strip);
+    if (my_substr($name, 0, $strip_len) === $strip) {
+        $name = my_substr($name, $strip_len);
+    }
+    return $name;
+}
+
 /**
  * Render a view using the Twig template system.
  *
@@ -40,6 +51,10 @@ function template(string $name, array $context = [])
 {
     /** @var Environment $twig */
     $twig = app(Environment::class);
+
+    // Strip explicit default namespace (frontend) because we don't register it with the loader.
+    // Instead, we register it as the main namespace (i.e., when $name doesn't begin with an @).
+    $name = strip_frontend_ns($name);
 
     return $twig->render($name, $context);
 }

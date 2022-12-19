@@ -398,7 +398,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 	$user = array_merge($user, array(
 		"uid" => $mybb->user['uid'],
-		"style" => $mybb->get_input('style', MyBB::INPUT_INT),
+		"style" => $mybb->input['style'],
 		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
 		"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 		"timezone" => $db->escape_string($mybb->get_input('timezoneoffset')),
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "options")
 		$user['style'] = '';
 	}
 
-	$stylelist = build_theme_select("style", $user['style']);
+	$stylelist = build_fs_theme_select("style", $user['style'], /*$effective_uid = */$mybb->user['uid']);
 
 	$plugins->run_hooks('usercp_options_end');
 

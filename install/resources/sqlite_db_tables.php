@@ -266,7 +266,7 @@ $tables[] = "CREATE TABLE mybb_forums (
 	requireprefix tinyint(1) NOT NULL default '0',
 	password varchar(50) NOT NULL default '',
 	showinjump tinyint(1) NOT NULL default '0',
-	style smallint NOT NULL default '0',
+	style varchar(30) NOT NULL DEFAULT '',
 	overridestyle tinyint(1) NOT NULL default '0',
 	rulestype tinyint(1) NOT NULL default '0',
 	rulestitle varchar(200) NOT NULL default '',
@@ -730,48 +730,6 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 	data TEXT NOT NULL
 );";
 
-$tables[] = "CREATE TABLE mybb_templategroups (
-	gid INTEGER PRIMARY KEY,
-	prefix varchar(50) NOT NULL default '',
-	title varchar(100) NOT NULL default '',
-	isdefault tinyint(1) NOT NULL default '0'
-);";
-
-$tables[] = "CREATE TABLE mybb_templates (
-	tid INTEGER PRIMARY KEY,
-	title varchar(120) NOT NULL default '',
-	template TEXT NOT NULL,
-	sid smallint NOT NULL default '0',
-	version varchar(20) NOT NULL default '0',
-	status varchar(10) NOT NULL default '',
-	dateline int(10) NOT NULL default '0'
-);";
-
-$tables[] = "CREATE TABLE mybb_templatesets (
-	sid INTEGER PRIMARY KEY,
-	title varchar(120) NOT NULL default ''
-);";
-
-$tables[] = "CREATE TABLE mybb_themes (
-	tid INTEGER PRIMARY KEY,
-	name varchar(100) NOT NULL default '',
-	pid smallint NOT NULL default '0',
-	def tinyint(1) NOT NULL default '0',
-	properties TEXT NOT NULL,
-	stylesheets TEXT NOT NULL,
-	allowedgroups TEXT NOT NULL
-);";
-
-$tables[] = "CREATE TABLE mybb_themestylesheets(
-	sid INTEGER PRIMARY KEY,
-	name varchar(30) NOT NULL default '',
-	tid smallint NOT NULL default '0',
-	attachedto TEXT NOT NULL,
-	stylesheet LONGTEXT NOT NULL,
-	cachefile varchar(100) NOT NULL default '',
-	lastmodified int NOT NULL default '0'
-);";
-
 $tables[] = "CREATE TABLE mybb_threadprefixes (
 	pid INTEGER PRIMARY KEY,
 	prefix varchar(120) NOT NULL default '',
@@ -991,7 +949,7 @@ $tables[] = "CREATE TABLE mybb_users (
 	dstcorrection tinyint(1) NOT NULL default '0',
 	buddylist TEXT NOT NULL,
 	ignorelist TEXT NOT NULL,
-	style smallint NOT NULL default '0',
+	style varchar(30) NOT NULL DEFAULT '',
 	away tinyint(1) NOT NULL default '0',
 	awaydate int(10) NOT NULL default '0',
 	returndate varchar(15) NOT NULL default '',

@@ -296,7 +296,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   requireprefix tinyint(1) NOT NULL default '0',
   password varchar(50) NOT NULL default '',
   showinjump tinyint(1) NOT NULL default '0',
-  style smallint unsigned NOT NULL default '0',
+  style varchar(30) NOT NULL DEFAULT '',
   overridestyle tinyint(1) NOT NULL default '0',
   rulestype tinyint(1) NOT NULL default '0',
   rulestitle varchar(200) NOT NULL default '',
@@ -822,55 +822,6 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 	PRIMARY KEY (lid)
 ) ENGINE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_templategroups (
-  gid int unsigned NOT NULL auto_increment,
-  prefix varchar(50) NOT NULL default '',
-  title varchar(100) NOT NULL default '',
-  isdefault tinyint(1) NOT NULL default '0',
-  PRIMARY KEY (gid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_templates (
-  tid int unsigned NOT NULL auto_increment,
-  title varchar(120) NOT NULL default '',
-  template text NOT NULL,
-  sid smallint NOT NULL default '0',
-  version varchar(20) NOT NULL default '0',
-  status varchar(10) NOT NULL default '',
-  dateline int unsigned NOT NULL default '0',
-  KEY sid (sid, title),
-  PRIMARY KEY (tid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_templatesets (
-  sid smallint unsigned NOT NULL auto_increment,
-  title varchar(120) NOT NULL default '',
-  PRIMARY KEY (sid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_themes (
-  tid smallint unsigned NOT NULL auto_increment,
-  name varchar(100) NOT NULL default '',
-  pid smallint unsigned NOT NULL default '0',
-  def tinyint(1) NOT NULL default '0',
-  properties text NOT NULL,
-  stylesheets text NOT NULL,
-  allowedgroups text NOT NULL,
-  PRIMARY KEY (tid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_themestylesheets (
-	sid int unsigned NOT NULL auto_increment,
-	name varchar(30) NOT NULL default '',
-	tid smallint unsigned NOT NULL default '0',
-	attachedto text NOT NULL,
-	stylesheet longtext NOT NULL,
-	cachefile varchar(100) NOT NULL default '',
-	lastmodified int unsigned NOT NULL default '0',
-	KEY tid (tid),
-	PRIMARY KEY (sid)
-) ENGINE=MyISAM;";
-
 $tables[] = "CREATE TABLE mybb_threadprefixes (
 	pid int unsigned NOT NULL auto_increment,
 	prefix varchar(120) NOT NULL default '',
@@ -1107,7 +1058,7 @@ $tables[] = "CREATE TABLE mybb_users (
   dstcorrection tinyint(1) NOT NULL default '0',
   buddylist text NOT NULL,
   ignorelist text NOT NULL,
-  style smallint unsigned NOT NULL default '0',
+  style varchar(30) NOT NULL DEFAULT '',
   away tinyint(1) NOT NULL default '0',
   awaydate int(10) unsigned NOT NULL default '0',
   returndate varchar(15) NOT NULL default '',

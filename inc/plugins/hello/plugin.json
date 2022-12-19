@@ -1,0 +1,11 @@
+{
+	"codename": "hello",
+	"langfile": "hello",
+	"name": "Hello World!",
+	"description_key": "hello_desc",
+	"website": "https://mybb.com",
+	"author": "MyBB Group",
+	"authorsite": "https://mybb.com",
+	"version": "2.0",
+	"compatibility": "19*"
+}

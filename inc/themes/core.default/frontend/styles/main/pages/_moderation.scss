@@ -1,0 +1,254 @@
+.awaiting-moderation {
+
+    &__type {
+
+        @include bp-medium {
+            width: 45%;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__count {
+        margin: 0;
+        color: $alt-font-color-1;
+    }
+
+    &__latest {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+
+        @include bp-medium {
+            width: 45%;
+        }
+    }
+
+    &__latest-title {
+        color: $alt-font-color-1;
+
+        &:after {
+            content: ":";
+        }
+    }
+}
+
+.ban-duration {
+    margin-#{$left}: 4px;
+    font-size: 0.9em;
+    color: $alt-font-color-1;
+
+    &--imminent {
+        font-weight: bold;
+        color: $danger-color;
+    }
+
+    &--high {
+        color: $danger-color;
+    }
+
+    &--moderate {
+        color: $moderate-color;
+    }
+
+    &--low {
+        color: $success-color;
+    }
+}
+
+.icon--announcement {
+    margin-#{$right}: 8px;
+    font-size: 0.8em;
+    vertical-align: middle;
+}
+
+.report {
+
+    .row__primary,
+    .row__secondary {
+
+        @include bp-small {
+            width: 45%;
+        }
+    }
+
+    &__reason {
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+
+    &__count {
+        font-size: 0.9em;
+    }
+
+    &__last-reporter {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+
+        a {
+            color: $alt-font-color-1;
+        }
+    }
+
+    &__last-report-date {
+        display: block;
+    }
+}
+
+.mod-log {
+
+    .row__primary,
+    .row__secondary {
+
+        @include bp-small {
+            width: 45%;
+        }
+    }
+
+    &__date {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+
+    .list--mod-log {
+        line-height: 1.4em;
+    }
+
+}
+
+.warning-log {
+
+    .row__primary,
+    .row__secondary {
+
+        @include bp-small {
+            width: 45%;
+        }
+    }
+
+    &__warning {
+        font-size: 0.9em;
+    }
+
+    &__issued_by {
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+
+    &__issued-date,
+    &__expiry-date,
+    &__revoked-date,
+    &__post {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+
+    &__expiry-date--expired {
+        color: $moderate-color;
+    }
+
+    &__details {
+        float: $right;
+
+        .button {
+            margin: 0;
+        }
+    }
+
+    &__revoked {
+        color: $moderate-color;
+    }
+}
+
+.mod-queue {
+
+    &__mass-controls {
+        padding: 5px 0;
+        text-align: center;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        @include bp-medium {
+            flex-direction: row;
+        }
+    }
+
+    &__header-section {
+        margin-bottom: 8px;
+
+        @include bp-medium {
+            margin: 0;
+        }
+    }
+
+    &__subject {
+        margin: 0;
+        font-size: 1em;
+        font-weight: normal;
+        color: $alt-font-color-1;
+    }
+
+    &__author,
+    &__date,
+    &__forum,
+    &__post {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+
+        a {
+            color: $alt-font-color-1;
+        }
+    }
+
+    &__author,
+    &__date {
+        display: inline-block;
+    }
+
+    &__author {
+        margin-top: 3px;
+
+        &:after {
+            content: ",";
+        }
+    }
+
+    &__message {
+        margin-top: 3px;
+        font-size: 0.9em;
+    }
+}
+
+.warning-level {
+    position: relative;
+    box-sizing: border-box;
+    height: 24px;
+    margin: 8px 0;
+    clear: both;
+    background: $background-1;
+    border-radius: 4px;
+
+    &__bar {
+        position: absolute;
+        top: 0;
+        #{$left}: 0;
+        bottom: 0;
+        z-index: 1;
+        box-sizing: border-box;
+        border-radius: 3px;
+
+        &--current {
+            background: $major-heading-background;
+        }
+
+        &--total {
+            background: $background-4;
+        }
+    }
+}

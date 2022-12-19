@@ -1,0 +1,188 @@
+
+.compose {
+
+    &__primary-section {
+        padding-bottom: 0;
+
+        &--padding {
+            padding-bottom: 20px;
+        }
+    }
+
+    &__subject {
+
+        @include bp-medium {
+            display: flex;
+            align-items: center;
+        }
+
+        .select-field {
+            flex: 0 0 auto;
+        }
+
+        .textbox--subject {
+            flex: 1 1 100%;
+        }
+    }
+
+    &__container {
+
+        @include bp-large {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    &__message {
+
+        @include bp-large {
+            width: 78%;
+        }
+    }
+
+    &__smilies {
+        display: none;
+
+        @include bp-large {
+            display: block;
+            width: 20%;
+        }
+    }
+
+    &__option-buttons {
+        margin-top: 5px;
+
+        .button {
+            margin: side-values(0 5px 0 0);
+        }
+    }
+
+    &__hidden-section {
+        display: none;
+    }
+
+    &__checkbox {
+        display: none;
+    }
+}
+
+.smilie-inserter {
+    padding: 10px;
+    text-align: center;
+    background: $background-1;
+    border-radius: $radius;
+
+    &__title {
+        padding-bottom: 5px;
+        margin: side-values(0 0 10px 0);
+        font-size: 0.9em;
+        font-weight: normal;
+        color: $alt-font-color-1;
+        border-bottom: 1px solid $border-1;
+    }
+
+    &__grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    &__smilie {
+        box-sizing: border-box;
+        width: 25%;
+        padding: 5px;
+
+        img {
+            cursor: pointer;
+        }
+    }
+
+    &__more {
+        margin-top: 10px;
+        padding-top: 5px;
+        font-size: 0.9em;
+        border-top: 1px solid $border-1;
+    }
+}
+
+#multiquote_unloaded {
+    @include container;
+    margin-top: 8px;
+    font-size: 0.9em;
+}
+
+#show-post-options:checked ~ .compose__hidden-section--options,
+#show-post-poll:checked ~ .compose__hidden-section--poll,
+#show-attachments:checked ~ .compose__hidden-section--attachments {
+    display: block;
+}
+
+#show-post-options:checked ~ .compose__primary-section .compose__option-button--options,
+#show-post-poll:checked ~ .compose__primary-section .compose__option-button--poll,
+#show-attachments:checked ~ .compose__primary-section .compose__option-button--attachments {
+    color: $link-hover;
+}
+
+.quick-reply {
+
+    &__options {
+        @include container;
+        display: none;
+        margin: side-values(5px 12px 12px 12px);
+        font-size: 0.9em;
+    }
+
+    &__option {
+        margin-#{$right}: 12px;
+        cursor: pointer;
+    }
+
+    &__checkbox {
+        margin-#{$right}: 4px;
+    }
+
+    textarea {
+        padding: 0;
+        border: none;
+    }
+}
+
+#show-quick-reply-options:checked ~ .quick-reply__options {
+    display: block;
+}
+
+.uploaded-attachment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+
+    @include bp-medium {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &__details {
+        padding-#{$left}: 30px;
+        font-size: 0.9em;
+        line-height: 1.4;
+    }
+
+    &__icon {
+        float: $left;
+        margin-#{$left}: -26px;
+    }
+
+    &__file-name {
+        display: block;
+    }
+
+    &__file-size {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+
+    &__buttons {
+
+    }
+}

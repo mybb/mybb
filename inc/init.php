@@ -220,11 +220,7 @@ if($mybb->use_shutdown == true)
 $version = $cache->read("version");
 if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] < $mybb->version_code)
 {
-	$version_history = $cache->read("version_history");
-	if(empty($version_history) || file_exists(MYBB_ROOT."install/resources/upgrade".(int)(end($version_history)+1).".php"))
-	{
-		$mybb->trigger_generic_error("board_not_upgraded");
-	}
+	$mybb->trigger_generic_error("board_not_upgraded");
 }
 
 require_once __DIR__.'/src/bootstrap.php';

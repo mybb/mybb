@@ -1,0 +1,80 @@
+$dark: false !default;
+
+@if $dark {
+    // Theme colors
+    $primary-color: #005084;
+    $secondary-color: #d05100;
+
+
+    // Font colors
+    $font-color: #ddd;
+    $invert-font-color: #fff;
+    $alt-font-color-1: #aaa;
+    $alt-font-color-2: #777;
+    $alt-font-color-3: #717171;
+    $alt-font-color-4: #6e6e6e;
+
+
+    // Border colors
+    $border-1: #3a3a3a;
+    $border-2: #444;
+    $border-3: #555;
+    $dark-border-1: #222;
+    $dark-border-2: #999;
+    $dark-border-3: #666;
+    $primary-color-border: #003151;
+
+
+    // Background colors
+    $background-default: #222;
+    $background-1: #292929;
+    $background-2: #333;
+    $background-3: #444;
+    $background-4: #555;
+    $dark-background-1: #1a1a1a;
+    $dark-background-2: #333;
+    $dark-background-3: #222;
+    $dark-background-4: #444;
+    $unread-count: #eb5257;
+
+
+    // Status background & border colors
+    $new-icon-color: $primary-color;
+    // $status-highlight: #ebf4fb;
+    // $status-highlight-border: #afd9fa;
+    $status-deleted: #864ddf;
+    $status-deleted-border: #864ddf;
+    $status-deleted-font-color: #fff;
+    $status-pending: #c00;
+    $status-pending-border: #c00;
+    $status-pending-font-color: #fff;
+
+    // Success / danger colors
+    // $success-color: #68c000;
+    // $success-color-border: #5dac00;
+    // $moderate-color: #d7611e;
+    // $moderate-color-border: #c1571b;
+    // $danger-color: #eb5257;
+    // $danger-color-border: #d3494e;
+
+
+    // Link colors
+    $link-default: #eee;
+    $link-hover: $secondary-color;
+
+
+    // Button colors
+    $button-default: $primary-color;
+    $button-hover: $secondary-color;
+
+
+    // Heading colors
+    $major-heading-background: #444;
+
+
+    // Font smothing
+    body {
+        -webkit-font-smoothing: antialiased;
+    }
+
+}

@@ -25,9 +25,6 @@
         lang.restore_thread = "{{ lang.restore_thread }}";
     // -->
     </script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/jeditable/jeditable.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/thread.js') }}" defer></script>
 {% endblock jscripts %}
 
 {% block body %}
@@ -214,7 +211,6 @@
                     lang.ratings_update_error = "{{ lang.ratings_update_error }}";
                 // -->
                 </script>
-                <script type="text/javascript" src="{{ asset_url('jscripts/rating.js') }}"></script>
                 <div class="inline_rating">
                     <strong class="float_left" style="padding-right: 10px;">{{ lang.thread_rating }}</strong>
                     <ul class="star_rating{{ thread.not_rated }}" id="rating_thread_{{ thread.tid }}">

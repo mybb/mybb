@@ -144,7 +144,7 @@ function import_theme_xml($xml, $options=array())
 
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && empty($options['no_templates']))
-	{	
+	{
 		$templates = $theme['templates']['template'];
 		if(is_array($templates))
 		{
@@ -1126,8 +1126,6 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 		}
 	}
 
-	$cache->update_default_theme();
-
 	return true;
 }
 
@@ -1233,7 +1231,7 @@ function cache_themes()
 
 	if(empty($theme_cache) || !is_array($theme_cache))
 	{
-		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
+		$query = $db->simple_select("themes", "*", "", array('order_by' => "title"));
 		while($theme = $db->fetch_array($query))
 		{
 			$theme['users'] = 0;
@@ -1261,46 +1259,65 @@ function cache_themes()
  * @param int $parent
  * @param int $depth
  */
-function build_theme_list($parent=0, $depth=0)
+function build_theme_list($parent='', $depth = 0, &$themes_done = [])
 {
-	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
-	static $theme_cache;
+	global $mybb, $db, $table, $lang, $page, $cache; // Global $table is bad, but it will have to do for now
+	static $theme_cache, $themelet_hierarchy;
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	if (empty($themelet_hierarchy)) {
+		$themelet_hierarchy = get_themelet_hierarchy();
+	}
 
 	$padding = $depth*20; // Padding
 
+	if(!$cache->read('default_theme'))
+	{
+		$cache->update_default_theme();
+	}
+	$def_theme = $cache->read('default_theme');
+
+	$themes = $themelet_hierarchy['themes'];
+
 	if(!is_array($theme_cache))
 	{
-		$themes = cache_themes();
+		$theme_cache = [];
 		$query = $db->simple_select("users", "style, COUNT(uid) AS users", "", array('group_by' => 'style'));
 		while($user_themes = $db->fetch_array($query))
 		{
 			if($user_themes['style'] == 0)
 			{
-				$user_themes['style'] = $themes['default'];
+				$user_themes['style'] = $def_theme['codename'];
 			}
-
-			if(isset($themes[$user_themes['style']]['users']) && $themes[$user_themes['style']]['users'] > 0)
-			{
-				$themes[$user_themes['style']]['users'] += (int)$user_themes['users'];
-			}
-			else
-			{
-				$themes[$user_themes['style']]['users'] = (int)$user_themes['users'];
-			}
-		}
-
-		// Restrucure the theme array to something we can "loop-de-loop" with
-		foreach($themes as $key => $theme)
-		{
-			if($key == "default")
+			if(empty($themes[$user_themes['style']]))
 			{
 				continue;
 			}
+			else if(empty($themes[$user_themes['style']]['properties']['users']))
+			{
+				$themes[$user_themes['style']]['properties']['users'] = 0;
+			}
+			$themes[$user_themes['style']]['properties']['users'] += (int)$user_themes['users'];
+		}
 
-			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
+		// Restructure the theme array to something we can "loop-de-loop" with
+		foreach($themes as $codename => $theme)
+		{
+			$p_codename = reset($theme['ancestors']);
+			if($p_codename == 0)
+			{
+				$p_codename = '';
+			}
+			if(!isset($theme_cache[$p_codename]))
+			{
+				$theme_cache[$p_codename] = [];
+			}
+			if (empty($theme['properties']['users'])) {
+				$theme['properties']['users'] = 0;
+			}
+			$theme_cache[$p_codename][$theme['properties']['codename']] = $theme['properties'];
 		}
 		$theme_cache['num_themes'] = count($themes);
-		unset($themes);
 	}
 
 	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]))
@@ -1308,55 +1325,83 @@ function build_theme_list($parent=0, $depth=0)
 		return;
 	}
 
-	foreach($theme_cache[$parent] as $theme)
-	{
-		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
-		$set_default = '';
-		if($theme['tid'] > 1)
-		{
-			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
-			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($theme['name'])."</a>";
+	$themelist = $theme_cache[$parent];
 
-			// We must have at least the master and 1 other active theme
-			if($theme_cache['num_themes'] > 2)
+	// Handle themes - other than core.default - with missing parents: treat them as top-level
+	// themes like core.default
+	$missing_parents = [];
+	if ($parent == '') {
+		foreach ($theme_cache as $p => $theme) {
+			if (!isset($themes[$p])) {
+				$missing_parents[] = $p;
+			}
+		}
+		$missing_parents = array_diff($missing_parents, ['num_themes']);
+		foreach ($missing_parents as $missing_parent) {
+			$themelist = array_merge($themelist, $theme_cache[$missing_parent]);
+		}
+	}
+
+	foreach($themelist as $theme)
+	{
+		$popup = new PopupMenu("theme_".str_replace('.', '_', $theme['codename']), $lang->options);
+		$set_default = '';
+		if(!empty($theme['codename']))
+		{
+			$theme_name_esc = htmlspecialchars_uni($theme['name']);
+			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}");
+			$theme_name_url = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;codename={$theme['codename']}\">".$theme_name_esc."</a>".get_theme_name_apx($theme['codename']);
+
+			if ($theme_cache['num_themes'] > 2 && substr($theme['codename'], 0, 5) != 'core.')
 			{
-				$popup->add_item($lang->delete_theme, "index.php?module=style-themes&amp;action=delete&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
+				$popup->add_item($lang->delete_theme, "index.php?module=style-themes&amp;action=delete&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
 			}
 
-			if($theme['def'] != 1)
+			if($theme['codename'] != $def_theme['codename'])
 			{
-				$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}");
-				$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
+				if (is_mutable_theme($theme['codename'], $mybb->settings['themelet_dev_mode'])) {
+					$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}");
+					$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
+				}
 			}
 			else
 			{
 				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
-			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			if(is_mutable_theme($theme['codename'], $mybb->settings['themelet_dev_mode'])) {
+				$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;codename={$theme['codename']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			}
 			$set_default = "<div class=\"float_right\">{$set_default}</div>";
 		}
-		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;tid={$theme['tid']}");
-		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
-		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
+		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;codename={$theme['codename']}");
+		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;codename={$theme['codename']}");
+		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme_name_url}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=style-themes&amp;action=stylesheets&amp;codename={$theme['codename']}\">{$lang->stylesheets}</a> | <a href=\"index.php?module=style-themes&amp;action=templates&amp;codename={$theme['codename']}\">{$lang->templates}</a>", array('class' => 'align_center'));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 
+		$themes_done[] = $theme['codename'];
+
 		// Fetch & build any child themes
-		build_theme_list($theme['tid'], ++$depth);
+		if (!in_array($theme['codename'], $missing_parents)) {
+			build_theme_list($theme['codename'], ++$depth, $themes_done);
+		}
 	}
 }
 
 /**
  * returns an array which can be sent to generate_select_box()
  *
- * @param int $ignoretid
+ * @param int $ignorecodename
  * @param int  $parent
  * @param int  $depth
  *
+ * @deprecated Instead, use build_fs_theme_select() in inc/functions.php.
+ *
  * @return null|string
  */
-function build_theme_array($ignoretid = null, $parent=0, $depth=0)
+function build_theme_array($ignorecodename = null, $parent=0, $depth=0)
 {
 	global $list;
 	static $theme_cache;
@@ -1377,21 +1422,21 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 		unset($theme);
 	}
 
-	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]) || $ignoretid === $parent)
+	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]) || $ignorecodename === $parent)
 	{
 		return null;
 	}
 
 	foreach($theme_cache[$parent] as $theme)
 	{
-		if($ignoretid === $theme['tid'])
+		if($ignorecodename === $theme['tid'])
 		{
 			continue;
 		}
 
 		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
 		// Fetch & build any child themes
-		build_theme_array($ignoretid, $theme['tid'], $depth+1);
+		build_theme_array($ignorecodename, $theme['codename'], $depth+1);
 	}
 
 	if(!$parent)

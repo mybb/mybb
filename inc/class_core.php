@@ -501,24 +501,60 @@ class MyBB {
 	/**
 	 * Get the path to an asset using the CDN URL if configured.
 	 *
-	 * @param string $path    The path to the file.
+	 * @param string $path    The path to a resource file, or a theme/plugin resource specifier.
+	 *                        For a description of resource specifiers, see the comment block
+	 *                        above the resolve_themelet_resource() function in the file:
+	 *                        inc/functions_themes.php.
 	 * @param bool   $use_cdn Whether to use the configured CDN options.
 	 *
 	 * @return string The complete URL to the asset.
 	 */
 	public function get_asset_url($path = '', $use_cdn = true)
 	{
+		global $mybb;
+
 		$path = (string) $path;
 		$path = ltrim($path, '/');
 
 		if(substr($path, 0, 4) != 'http')
 		{
-			if(substr($path, 0, 2) == './')
-			{
+			$spec = false;
+			if (my_substr($path, 0, 1) == '@') {
+				list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($path);
+				$spec = $plugin_code
+				         ? "~cp~{$plugin_code}:{$component}:{$filename}"
+				         : "~ct~{$namespace}:{$component}:{$filename}";
+			} else {
+				$spec_type1 = my_strtolower(substr($path, 0, 4));
+				$spec_type2 = my_strtolower(substr($path, 0, 3));
+				if (($spec_type1 === '~cp~' || $spec_type1 === '~ct~') && substr_count($path, ':') == 2
+				    ||
+				    (($spec_type2 === '~p~' || $spec_type2 === '~t~') && substr_count($path, ':') == 3)
+				) {
+					$spec = $path;
+				}
+			}
+
+			if ($spec) {
+				// We have a themelet resource which requires resolution (and
+				// potentially processing/caching). Resolve it, potentially,
+				// afterwards, processing/caching it too).
+				require_once MYBB_ROOT.'inc/functions_themes.php';
+
+				$path_new = resolve_themelet_resource(
+					$spec,
+					/*$use_themelet_cache = */true,
+					/*$return_type = */RTR_RETURN_PATH
+				);
+
+				if (!empty($path_new)) {
+					$path = $path_new;
+				}
+			} else if (substr($path, 0, 2) == './') {
 				$path = substr($path, 2);
 			}
 
-			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
+			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']) && !$mybb->settings['themelet_dev_mode'])
 			{
 				$base_path = rtrim($this->settings['cdnurl'], '/');
 			}

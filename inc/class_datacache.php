@@ -918,7 +918,7 @@ class datacache
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$reportcount = $db->fetch_field($query, 'reportcount');
-		
+
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$dateline = $db->fetch_field($query, 'dateline');
 
@@ -992,13 +992,28 @@ class datacache
 	/**
 	 * Update default_theme cache
 	 */
-	function update_default_theme()
+	function update_default_theme($theme = [])
 	{
 		global $db;
 
-		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
-		$theme = $db->fetch_array($query);
-		$this->update("default_theme", $theme);
+		if(empty($theme))
+		{
+			// Default to the first board theme, or else to the first theme in general
+			// if this function is called without a theme
+			require_once MYBB_ROOT.'inc/functions_themes.php';
+			$themelet_hierarchy = get_themelet_hierarchy();
+			$theme = [];
+			foreach ($themelet_hierarchy['themes'] as $codename => $theme_a) {
+				if (substr($theme_a['properties']['codename'], 0, 6) == 'board.') {
+					$theme = $theme_a['properties'];
+					break;
+				}
+			}
+			if (!$theme) {
+				$theme = reset($themelet_hierarchy['themes'])['properties'];
+			}
+		}
+		$this->update('default_theme', $theme);
 	}
 
 	/**

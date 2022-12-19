@@ -1,0 +1,117 @@
+/*!
+*   MyBB 2.0 - https://mybb.com - @mybb - MIT license
+*/
+
+@mixin bp-large {
+    @media only screen and (min-width: $bp-large) {
+        @content;
+    }
+}
+
+@mixin bp-large-max {
+    @media only screen and (max-width: $bp-large) {
+        @content;
+    }
+}
+
+@mixin bp-medium {
+    @media only screen and (min-width: $bp-medium) {
+        @content;
+    }
+}
+
+@mixin bp-medium-max {
+    @media only screen and (max-width: $bp-medium - 1) {
+        @content;
+    }
+}
+
+@mixin bp-small {
+    @media only screen and (min-width: $bp-small - 1) {
+        @content;
+    }
+}
+
+@mixin bp-small-max {
+    @media only screen and (max-width: $bp-small - 1) {
+        @content;
+    }
+}
+
+@mixin black-transparency($transparency) {
+    color: rgba(0,0,0,$transparency);
+}
+
+@mixin white-transparency($transparency) {
+    color: rgba(255,255,255,$transparency);
+}
+
+@mixin transform($transform) {
+    -webkit-transform: $transform;
+    -moz-transform: $transform;
+    -ms-transform: $transform;
+    -o-transform: $transform;
+}
+
+@mixin clearfix {
+    &:after {
+        display: table;
+        clear: both;
+        content: "";
+    }
+}
+
+@mixin hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0 0 0 0);
+}
+
+@mixin avatar($size) {
+    width: #{$size}px;
+    height: #{$size}px;
+
+    $icon-size: $size/2;
+
+    .avatar {
+        width: #{$size}px;
+        height: #{$size}px;
+
+        &__icon {
+            font-size: #{$icon-size}px;
+        }
+    }
+}
+
+@mixin container {
+    padding: 12px;
+    margin-bottom: 20px;
+    background: $background-1;
+    border-radius: $radius;
+
+    &--small {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    &--adjacent {
+        margin-bottom: 0;
+    }
+
+    &--modal {
+        padding: 8px 24px;
+        margin: -8px -14px 0 -14px;
+        border-bottom: 1px solid $border-1;
+        border-radius: 0;
+    }
+}

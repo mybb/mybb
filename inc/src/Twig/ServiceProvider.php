@@ -12,6 +12,7 @@ use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
 use MyLanguage;
 use pluginSystem;
+use Twig\DeferredExtension\DeferredExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -51,27 +52,30 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bind(LoaderInterface::class, function () {
+            global $theme, $mybb, $cache;
+
             $loader = new FilesystemLoader();
-
-            $themeName = 'core.default'; // TODO
-            $themePath = __DIR__ . '/../../themes/' . $themeName . '/';
-            $namespaceDirectories = [
-                'frontend',
-                'parser',
-            ];
-
-            $mainNamespace = 'frontend';
-
-            foreach ($namespaceDirectories as $namespaceDirectory) {
-                if ($namespaceDirectory === $mainNamespace) {
-                    $targetNamespace = FilesystemLoader::MAIN_NAMESPACE;
-                } else {
-                    $targetNamespace = $namespaceDirectory;
+            /* Some template-rendering functions such as get_reputation() are called from both the
+             * front end and the ACP, so we need to make sure that the global $theme is initialised
+             * for the ACP - we just set it to the default.
+             */
+            if (empty($theme)) {
+                if (!$cache->read('default_theme')) {
+                    $cache->update_default_theme();
                 }
+                $theme = $cache->read('default_theme');
+            }
+            $current_theme = $theme['codename'];
+            require_once MYBB_ROOT.'inc/functions_themes.php';
+            $twig_dirs = get_twig_dirs($current_theme, /*$use_themelet_cache = */true);
 
-                $path = $themePath . $namespaceDirectory . '/templates';
-
-                $loader->addPath($path, $targetNamespace);
+            foreach($twig_dirs as $twig_dir) {
+                if (is_array($twig_dir)) {
+                    list($dir, $namespace) = $twig_dir;
+                    $loader->addPath($dir, $namespace);
+                } else {
+                    $loader->addPath($twig_dir);
+                }
             }
 
             return $loader;
@@ -94,6 +98,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $env->addExtension($container->make(ThemeExtension::class));
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
+            $env->addExtension($container->make(DeferredExtension::class));
 
             // TODO: this shouldn't be registered in live environments
             $env->addExtension(new DebugExtension());

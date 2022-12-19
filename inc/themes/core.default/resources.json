@@ -1,0 +1,135 @@
+{
+	"stylesheets": {
+		"@frontend\/styles\/main.css": [
+			{
+				"script": "global",
+				"actions": ["global"]
+			}
+		]
+	},
+	"jscripts": {
+		"jscripts/jquery.js": {
+			"attached_to": [{"script": "global"}]
+		},
+		"jscripts/jquery.plugins.min.js": {
+			"attached_to": [{"script": "global"}],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/general.js": {
+			"attached_to": [{"script": "global"}],
+			"depends_on": [
+				"jscripts/jquery.js",
+				"jscripts/jquery.plugins.min.js"
+			]
+		},
+		"jscripts/jeditable/jeditable.min.js": {
+			"attached_to": [
+				{
+					"script": "forumdisplay.php"
+				},
+				{
+					"script": "showthread.php"
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/inline_edit.js": {
+			"attached_to": [
+				{
+					"script": "forumdisplay.php"
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/rating.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/inline_moderation.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/select2/select2.min.js": {
+			"attributes": {"defer": "defer"}
+		},
+		"jscripts/report.js": {
+			"attached_to": [
+				{
+					"script": "member.php",
+					"actions": ["profile"]
+				},
+				{
+					"script": "reputation.php",
+					"actions": [""]
+				},
+				{
+					"script": "showthread.php"
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/jquery.validate.min.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/regvalidator.js": {
+			"attached_to": [
+				{
+					"script": "member.php",
+					"actions": ["register"]
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/question.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/sceditor/jquery.sceditor.bbcode.min.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/bbcodes_sceditor.js": {
+			"depends_on": [
+				"jscripts/jquery.js",
+				"jscripts/jquery.sceditor.bbcode.min.js"
+			]
+		},
+		"jscripts/sceditor/plugins/undo.js": {
+			"depends_on": ["jscripts/jquery.sceditor.bbcode.min.js"]
+		},
+		"jscripts/post.js": {
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/inline_reports.js": {
+			"attached_to": [
+				{
+					"script": "modcp.php",
+					"actions": ["reports"]
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/usercp.js": {
+			"attached_to": [
+				{
+					"script": "private.php",
+					"actions": ["send"]
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"jscripts/thread.js": {
+			"attached_to": [
+				{
+					"script": "showthread.php",
+					"actions": ["thread"]
+				}
+			],
+			"depends_on": ["jscripts/jquery.js"]
+		},
+		"https://use.fontawesome.com/releases/v5.4.1/js/all.js": {
+			"attached_to": [{"script": "global"}],
+			"attributes": {
+				"defer": "defer",
+				"integrity": "sha384-L469/ELG4Bg9sDQbl0hvjMq8pOcqFgkSpwhwnslzvVVGpDjYJ6wJJyYjvG3u8XW7",
+				"crossorigin": "anonymous"
+			}
+		}
+	}
+}

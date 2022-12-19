@@ -274,13 +274,13 @@ else
 		}
 
 		$collation = $db->build_create_table_collation();
-		
+
 		$engine = '';
 		if($db->type == "mysql" || $db->type == "mysqli")
 		{
 			$engine = 'ENGINE=MyISAM';
 		}
-		
+
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
@@ -337,16 +337,8 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		if(end($version_history) == reset($key_order) && empty($mybb->input['force']))
-		{
-			$output->print_contents($lang->upgrade_not_needed);
-			$output->print_footer("finished");
-		}
-		else
-		{
-			$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
-			$output->print_footer("doupgrade");
-		}
+		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
+		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
@@ -416,9 +408,26 @@ else
  */
 function upgradethemes()
 {
-	global $output, $db, $system_upgrade_detail, $lang, $mybb;
+	global $output, $db, $system_upgrade_detail, $lang, $mybb, $cache;
 
 	$output->print_header($lang->upgrade_templates_reverted);
+
+	require_once MYBB_ROOT.'install/common.php';
+
+	clone_and_archive_default_theme();
+
+	$output->print_contents($lang->upgrade_templates_reverted_success);
+	$output->print_footer("rebuildsettings");
+
+	return;
+
+
+
+
+	/** TODO: Migrate as necessary to 1.9 any of the below 1.8 code (now being
+	 * skipped due to the return statement above). Delete the rest.
+	 */
+
 
 	$charset = $db->build_create_table_collation();
 
@@ -439,17 +448,20 @@ function upgradethemes()
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
-		$db->drop_table("themes");
-		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themes (
-		 tid smallint unsigned NOT NULL auto_increment,
-		 name varchar(100) NOT NULL default '',
-		 pid smallint unsigned NOT NULL default '0',
-		 def smallint(1) NOT NULL default '0',
-		 properties text NOT NULL,
-		 stylesheets text NOT NULL,
-		 allowedgroups text NOT NULL,
-		 PRIMARY KEY (tid)
-		) ENGINE=MyISAM{$charset};");
+		/**
+		 * Commented out for safety despite the above `return` because 1.9 uses a new `themes` table structure.
+		 */
+// 		$db->drop_table("themes");
+// 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themes (
+// 		 tid smallint unsigned NOT NULL auto_increment,
+// 		 name varchar(100) NOT NULL default '',
+// 		 pid smallint unsigned NOT NULL default '0',
+// 		 def smallint(1) NOT NULL default '0',
+// 		 properties text NOT NULL,
+// 		 stylesheets text NOT NULL,
+// 		 allowedgroups text NOT NULL,
+// 		 PRIMARY KEY (tid)
+// 		) ENGINE=MyISAM{$charset};");
 
 		$db->drop_table("themestylesheets");
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
@@ -559,9 +571,6 @@ function upgradethemes()
 			}
 		}
 	}
-
-	$output->print_contents($lang->upgrade_templates_reverted_success);
-	$output->print_footer("rebuildsettings");
 }
 
 /**
@@ -635,7 +644,7 @@ function buildcaches()
  */
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang, $config, $plugins;
+	global $db, $output, $mybb, $lang, $config, $plugins, $cache;
 
 	ob_start();
 	$output->print_header($lang->upgrade_complete);
@@ -701,6 +710,7 @@ function upgradedone()
 		}
 	}
 
+	$cache->update_default_theme();
 	$output->print_contents($lang->sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }

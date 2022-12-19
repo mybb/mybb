@@ -17,9 +17,9 @@ var ThemeSelector = {
 	 * @param  number the theme id
 	 * @return void
 	 */
-	init: function(url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
+	init: function(url, saveUrl, selector, styleSheet, file, selectorForm, codename) {
 		// verify input
-		if (!url || !saveUrl || !selector || !styleSheet || !file || !selectorForm || !tid) {
+		if (!url || !saveUrl || !selector || !styleSheet || !file || !selectorForm || !codename) {
 			return;
 		}
 
@@ -30,7 +30,7 @@ var ThemeSelector = {
 		ThemeSelector.styleSheet = styleSheet;
 		ThemeSelector.file = file;
 		ThemeSelector.selectorForm = selectorForm;
-		ThemeSelector.tid = tid;
+		ThemeSelector.codename = codename;
 
 		ThemeSelector.background = $("#css_bits\\[background\\]").val();
 		ThemeSelector.width = $("#css_bits\\[width\\]").val();
@@ -44,7 +44,7 @@ var ThemeSelector = {
 
 		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
 		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
-		
+
 
 		$(window).on('beforeunload', function(event){
 			if(ThemeSelector.isChanged())
@@ -53,8 +53,8 @@ var ThemeSelector = {
 			}
 		});
 
-		
-		
+
+
 		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
 		ThemeSelector.selectorForm.on("submit", ThemeSelector.updateSelector);
     },
@@ -82,7 +82,7 @@ var ThemeSelector = {
 
 		ThemeSelector.saveCheck(e, true);
 
-		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
+		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&codename=" + encodeURIComponent(ThemeSelector.codename) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
 
 		ThemeSelector.selectorGoText = $("#mini_spinner").html();
 		$("#mini_spinner").html("&nbsp;<img src=\"" + ThemeSelector.miniSpinnerImage + "\" style=\"vertical-align: middle;\" alt=\"\" /> ");
@@ -163,7 +163,7 @@ var ThemeSelector = {
 	 */
 	saveCheck: function(e, isAjax) {
 
-	
+
 		if (ThemeSelector.isClosing == true) {
 			return true;
 		}
@@ -172,9 +172,9 @@ var ThemeSelector = {
 			e.preventDefault();
 
 		if (ThemeSelector.isChanged()) {
-			
+
 			e.preventDefault();
-			
+
 			if(isAjax == false)
 				return save_changes_lang_string;
 			else
@@ -219,7 +219,7 @@ var ThemeSelector = {
 			'font_weight': $('#css_bits\\[font_weight\\]').val()
 		};
 
-		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
+		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&codename=" + encodeURIComponent(ThemeSelector.codename) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
 
 		if (isAjax == true) {
 			postData += "&ajax=1";
@@ -305,7 +305,7 @@ var ThemeSelector = {
 	styleSheet: null,
 	file: null,
 	selectorForm: null,
-	tid: null,
+	codename: null,
 	miniSpinnerImage: "../images/spinner.gif",
 	isAjax: false,
 	specific_count: 0,

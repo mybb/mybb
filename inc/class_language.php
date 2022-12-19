@@ -21,7 +21,7 @@ class MyLanguage
 
 	/**
 	 * The language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
@@ -30,7 +30,7 @@ class MyLanguage
 
 	/**
 	 * The fallback language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
@@ -135,13 +135,31 @@ class MyLanguage
 	}
 
 	/**
+	 * A wrapper around load() with plugin-friendly argument order.
+	 *
+	 * @param string  $section       The section name.
+	 * @param string  $plugin_code   The codename of the plugin if we are loading one of a plugin's sections.
+	 *                               If not supplied, it is assumed to be identical to $section.
+	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
+	 * @param boolean $supress_error supress the error if the file doesn't exist?
+	 */
+	function loadp($section, $plugin_code='', $forceuserarea=false, $supress_error=false)
+	{
+		if (empty($plugin_code)) {
+			$plugin_code = $section;
+		}
+		$this->load($section, $forceuserarea, $supress_error, $plugin_code);
+	}
+
+	/**
 	 * Load the language variables for a section.
 	 *
 	 * @param string $section The section name.
 	 * @param boolean $forceuserarea Should use the user area even if in admin? For example for datahandlers
 	 * @param boolean $supress_error supress the error if the file doesn't exist?
+	 * @param string  $plugin_code   The codename of the plugin if we are loading one of a plugin's sections.
 	 */
-	function load($section, $forceuserarea=false, $supress_error=false)
+	function load($section, $forceuserarea=false, $supress_error=false, $plugin_code='')
 	{
 		$language = $this->language;
 		$fallback = $this->fallback;
@@ -152,8 +170,16 @@ class MyLanguage
 			$fallback = str_replace('/admin', '', $fallback);
 		}
 
-		$lfile = $this->path."/".$language."/".$section.".lang.php";
-		$ffile = $this->path."/".$fallback."/".$section.".lang.php";
+		if($plugin_code)
+		{
+			$lfile = MYBB_ROOT."inc/plugins/{$plugin_code}/languages/{$language}/{$section}.lang.php";
+			$ffile = MYBB_ROOT."inc/plugins/{$plugin_code}/languages/{$fallback}/{$section}.lang.php";
+		}
+		else
+		{
+			$lfile = $this->path."/".$language."/".$section.".lang.php";
+			$ffile = $this->path."/".$fallback."/".$section.".lang.php";
+		}
 
 		if(file_exists($lfile))
 		{

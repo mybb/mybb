@@ -97,7 +97,7 @@
         </section>
     </form>
     <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css?ver=1807" />
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/select2/select2.min.js?ver=1806"></script>
+    {{ attach(resource='jscripts/select2/select2.min.js', absolute=true) }}
     <script type="text/javascript">
     <!--
     if(use_xmlhttprequest == "1")

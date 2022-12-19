@@ -110,9 +110,8 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 }
 
 // Select the board theme to use.
-$loadstyle = '';
-$load_from_forum = $load_from_user = 0;
-$style = array();
+$load_from_forum = $load_from_user = false;
+$style = 'board.default'; // Default to the default board style.
 
 // The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
@@ -123,7 +122,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 
 	$user = array(
 		'uid' => $mybb->user['uid'],
-		'style' => $mybb->get_input('theme', MyBB::INPUT_INT),
+		'style' => $mybb->input['theme'],
 		'usergroup' => $mybb->user['usergroup'],
 		'additionalgroups' => $mybb->user['additionalgroups']
 	);
@@ -155,16 +154,16 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 // Cookied theme!
 elseif(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
 }
 
 // This user has a custom theme set in their profile
-if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
+if(!empty($mybb->user['style']))
 {
-	$mybb->user['style'] = (int)$mybb->user['style'];
+	$mybb->user['style'] = $mybb->user['style'];
 
-	$loadstyle = "tid = '{$mybb->user['style']}'";
-	$load_from_user = 1;
+	$style = $mybb->user['style'];
+	$load_from_user = true;
 }
 
 $valid = array(
@@ -191,8 +190,11 @@ if(in_array($current_page, $valid))
 
 		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
-			$style = $forum_cache[$fid];
-			$load_from_forum = 1;
+			if($forum_cache[$fid]['overridestyle'] || empty($style))
+			{
+				$style = $forum_cache[$fid]['style'];
+				$load_from_forum = true;
+			}
 		}
 	}
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
@@ -202,8 +204,11 @@ if(in_array($current_page, $valid))
 
 		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
-			$style = $forum_cache[$fid];
-			$load_from_forum = 1;
+			if($forum_cache[$fid]['overridestyle'] || empty($style))
+			{
+				$style = $forum_cache[$fid]['style'];
+				$load_from_forum = true;
+			}
 		}
 	}
 	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
@@ -213,98 +218,88 @@ if(in_array($current_page, $valid))
 
 		if($db->num_rows($query) > 0 && $fid = $db->fetch_field($query, 'fid'))
 		{
-			$style = $forum_cache[$fid];
-			$load_from_forum = 1;
+			if($forum_cache[$fid]['overridestyle'] || empty($style))
+			{
+				$style = $forum_cache[$fid]['style'];
+				$load_from_forum = true;
+			}
 		}
 	}
 	// We have a forum id - simply load the theme from it
 	elseif(isset($mybb->input['fid']) && isset($forum_cache[$mybb->input['fid']]))
 	{
-		$style = $forum_cache[$mybb->input['fid']];
-		$load_from_forum = 1;
+		if($forum_cache[$mybb->input['fid']]['overridestyle'] || empty($style))
+		{
+			$style = $forum_cache[$mybb->input['fid']]['style'];
+			$load_from_forum = true;
+		}
 	}
 }
 unset($valid);
 
-// From all of the above, a theme was found
-if(isset($style['style']) && $style['style'] > 0)
-{
-	$style['style'] = (int)$style['style'];
-
-	// This theme is forced upon the user, overriding their selection
-	if($style['overridestyle'] == 1 || !isset($mybb->user['style']))
-	{
-		$loadstyle = "tid = '{$style['style']}'";
-	}
-}
-
-// After all of that no theme? Load the board default
-if(empty($loadstyle))
-{
-	$loadstyle = "def='1'";
-}
+require_once MYBB_ROOT.'inc/functions_themes.php';
+$themelet_hierarchy = get_themelet_hierarchy();
 
 // Fetch the theme to load from the cache
-if($loadstyle != "def='1'")
+if($style && !empty($themelet_hierarchy['themes'][$style]))
 {
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
+	$theme = $themelet_hierarchy['themes'][$style]['properties'];
 
-	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if(!empty($theme) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
-		if($load_from_user == 1)
+		if($load_from_user)
 		{
-			$db->update_query('users', array('style' => 0), "style='{$mybb->user['style']}' AND uid='{$mybb->user['uid']}'");
+			$db->update_query('users', array('style' => ''), "style='{$mybb->user['style']}' AND uid='{$mybb->user['uid']}'");
 		}
 
 		if(isset($mybb->cookies['mybbtheme']))
 		{
 			my_unsetcookie('mybbtheme');
 		}
-
-		$loadstyle = "def='1'";
 	}
+
+	$load_from_forum = $load_from_user = false;
 }
 
-if($loadstyle == "def='1'")
-{
+if(empty($theme)) {
 	if(!$cache->read('default_theme'))
 	{
 		$cache->update_default_theme();
 	}
 
 	$theme = $cache->read('default_theme');
-
-	$load_from_forum = $load_from_user = 0;
 }
 
 // No theme was found - we attempt to load the master or any other theme
-if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
+if(empty($theme))
 {
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
-	if($load_from_forum == 1)
+	if($load_from_forum)
 	{
-		$db->update_query('forums', array('style' => 0), "style = '{$style['style']}'");
+		$db->update_query('forums', array('style' => 'board.default'), "style = '{$style}'");
 	}
 	// Missing theme was from a user, run a query to set any users using the theme to the default
-	elseif($load_from_user == 1)
+	elseif($load_from_user)
 	{
-		$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
+		$db->update_query('users', array('style' => 'board.default'), "style = '{$mybb->user['style']}'");
 	}
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	// Load the first available theme
+	$theme = reset($themelet_hierarchy['themes'])['properties'];
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
-$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
-$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
-if(!empty($theme['color']))
+$stylesheet_scripts = [];
+$resources = read_json_file(MYBB_ROOT."inc/themes/$style/resources.json", $err_msg, /*$show_errs =*/false);
+if(!empty($resources['stylesheets']))
 {
-	$stylesheet_scripts[] = $theme['color'];
+	$theme['stylesheets'] = $resources['stylesheets'];
+	$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
+	if(!empty($theme['color']))
+	{
+		$stylesheet_scripts[] = $theme['color'];
+	}
 }
 $stylesheet_actions = array("global");
 if(!empty($mybb->input['action']))
@@ -400,7 +395,7 @@ if(!empty($css_php_script_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if(!empty($theme['imgdir']) && my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -423,7 +418,7 @@ if(my_validate_url($theme['imgdir']))
 }
 else
 {
-	$img_directory = $theme['imgdir'];
+	$img_directory = !empty($theme['imgdir']) ? $theme['imgdir'] : '';
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
@@ -459,21 +454,10 @@ else
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
-if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
+if(!empty($theme['logo']) && !preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
-
-// Load Main Templates and Cached Templates
-if(isset($templatelist))
-{
-	$templatelist .= ',';
-}
-else
-{
-	$templatelist = '';
-}
-$templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
@@ -876,18 +860,17 @@ if($mybb->settings['showlanguageselect'] != 0)
 
 	if(count($mybb->settings['footer']['langselect']) > 1)
 	{
-		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
+		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(false, 'language');
 	}
 }
 
 // Are we showing the quick theme selection box?
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
-
+	$mybb->settings['footer']['themeselect']['options'] = build_fs_theme_select("theme", $mybb->user['style'], /*$effective_uid = */$mybb->user['uid'], /*$usergroup_override = */false, /*$footer = */true);
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{
-		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(true, 'theme');
+		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(false, 'theme');
 	}
 }
 

@@ -164,7 +164,7 @@ else
 		'database_info' => $lang->db_config,
 		'create_tables' => $lang->table_creation,
 		'populate_tables' => $lang->data_insertion,
-		'templates' => $lang->theme_install,
+		'default_theme' => $lang->theme_install,
 		'configuration' => $lang->board_config,
 		'adminuser' => $lang->admin_user,
 		'final' => $lang->finish_setup,
@@ -187,8 +187,8 @@ else
 		case 'populate_tables':
 			populate_tables();
 			break;
-		case 'templates':
-			insert_templates();
+		case 'default_theme':
+			install_default_theme();
 			break;
 		case 'configuration':
 			configure();
@@ -1039,6 +1039,28 @@ EOF;
 	$output->print_footer('requirements_check');
 }
 
+function my_is_dir_writable($dir, $dir_friendly, &$errors, &$status)
+{
+	global $lang;
+
+	if (my_substr($dir, -1) != '/') {
+		$dir .= '/';
+	}
+	$writable = @fopen(MYBB_ROOT."{$dir}test.write", 'w');
+	if (!$writable) {
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_unwritable_dir, $dir_friendly, $dir));
+		$status = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	} else {
+		$status = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($writable);
+	  	@my_chmod(MYBB_ROOT.$dir, '0777');
+	  	@my_chmod(MYBB_ROOT."{$dir}test.write", '0777');
+		@unlink(MYBB_ROOT."{$dir}test.write");
+	}
+
+	return $writable;
+}
+
 /**
  * Check our requirements
  */
@@ -1156,58 +1178,42 @@ function requirements_check()
 	}
 
 	// Check cache directory is writable
-	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
-	if(!$cachewritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
-		$cachestatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('cache/', 'cache', $errors, $cachestatus)) {
 		$showerror = 1;
-	}
-	else
-	{
-		$cachestatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($cachewritable);
-	  	@my_chmod(MYBB_ROOT.'cache', '0777');
-	  	@my_chmod(MYBB_ROOT.'cache/test.write', '0777');
-		@unlink(MYBB_ROOT.'cache/test.write');
 	}
 
 	// Check upload directory is writable
-	$uploadswritable = @fopen(MYBB_ROOT.'uploads/test.write', 'w');
-	if(!$uploadswritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
-		$uploadsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('uploads/', 'uploads', $errors, $uploadsstatus)) {
 		$showerror = 1;
-	}
-	else
-	{
-		$uploadsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($uploadswritable);
-	  	@my_chmod(MYBB_ROOT.'uploads', '0777');
-	  	@my_chmod(MYBB_ROOT.'uploads/test.write', '0777');
-		@unlink(MYBB_ROOT.'uploads/test.write');
 	}
 
 	// Check avatar directory is writable
-	$avatarswritable = @fopen(MYBB_ROOT.'uploads/avatars/test.write', 'w');
-	if(!$avatarswritable)
-	{
-		$errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
-		$avatarsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+	if (!my_is_dir_writable('uploads/avatars/', 'avatars', $errors, $avatarsstatus)) {
 		$showerror = 1;
 	}
-	else
-	{
-		$avatarsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($avatarswritable);
-		@my_chmod(MYBB_ROOT.'uploads/avatars', '0777');
-	  	@my_chmod(MYBB_ROOT.'uploads/avatars/test.write', '0777');
-		@unlink(MYBB_ROOT.'uploads/avatars/test.write');
-  	}
+
+	// Check themes directory is writable
+	if (!my_is_dir_writable('inc/themes/', 'themes', $errors, $themestatus)) {
+		$showerror = 1;
+	}
+
+	// Check plugins directory is writable (so that we can copy its `devdist` to `current`)
+	if (!my_is_dir_writable('inc/plugins/', 'plugins', $errors, $pluginstatus)) {
+		$showerror = 1;
+	}
+
+	// Check storage directory is writable
+	if (!my_is_dir_writable('storage/', 'storage', $errors, $storagestatus)) {
+		$showerror = 1;
+	}
+
+	// Check themelets storage directory is writable
+	if (!my_is_dir_writable('storage/themelets/', 'themelets storage', $errors, $themeletsstoragestatus)) {
+		$showerror = 1;
+	}
 
 	// Output requirements page
-	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus, $themestatus, $pluginstatus, $storagestatus, $themeletsstoragestatus);
 
 	if($showerror == 1)
 	{
@@ -1743,17 +1749,16 @@ function populate_tables()
 		$db->query("SELECT setval('{$config['database']['table_prefix']}profilefields_fid_seq', (SELECT max(fid) FROM {$config['database']['table_prefix']}profilefields));");
 		$db->query("SELECT setval('{$config['database']['table_prefix']}smilies_sid_seq', (SELECT max(sid) FROM {$config['database']['table_prefix']}smilies));");
 		$db->query("SELECT setval('{$config['database']['table_prefix']}spiders_sid_seq', (SELECT max(sid) FROM {$config['database']['table_prefix']}spiders));");
-		$db->query("SELECT setval('{$config['database']['table_prefix']}templategroups_gid_seq', (SELECT max(gid) FROM {$config['database']['table_prefix']}templategroups));");
 	}
 
 	echo $lang->populate_step_inserted;
-	$output->print_footer('templates');
+	$output->print_footer('default_theme');
 }
 
 /**
  * Install our theme
  */
-function insert_templates()
+function install_default_theme()
 {
 	global $mybb, $output, $cache, $db, $lang;
 
@@ -1767,10 +1772,29 @@ function insert_templates()
 
 	echo $lang->theme_step_importing;
 
-	$db->delete_query("themes");
+	require_once MYBB_ROOT.'install/common.php';
+
+	clone_and_archive_default_theme();
+
+	my_rmdir_recursive(MYBB_ROOT."cache/themes");
+	my_rmdir_recursive(MYBB_ROOT."cache/views", array(MYBB_ROOT."cache/views/index.html"));
+
+	echo $lang->theme_step_imported;
+	$output->print_footer('configuration');
+
+	return;
+
+
+
+
+	/** TODO: Migrate as necessary to 1.9 any of the below 1.8 code (now being
+	 * skipped due to the return statement above). In particular, handle 1.9 theme
+	 * stylesheets and properties, including colours. Then, delete any redundant 1.8 code.
+	 */
+
+
 	$db->delete_query("templates");
 	$db->delete_query("themestylesheets");
-	my_rmdir_recursive(MYBB_ROOT."cache/themes", array(MYBB_ROOT."cache/themes/index.html"));
 
 	$insert_array = array(
 		'title' => 'Default Templates'
@@ -1857,9 +1881,6 @@ function insert_templates()
 	}
 
 	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(my_serialize($properties)), "stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid = '{$tid}'");
-
-	echo $lang->theme_step_imported;
-	$output->print_footer('configuration');
 }
 
 /**

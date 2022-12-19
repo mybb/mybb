@@ -40,3 +40,57 @@ ins, del {
 del {
 	background: #fdd;
 }
+
+.inherited_res {
+	color: #aaa;
+}
+
+.have_own_copy_res {
+	color: #df8c97;
+}
+
+.core_theme {
+	font-style: italic;
+	color: #733;
+
+}
+
+.orig_theme {
+	font-style: italic;
+	color: #040;
+
+}
+
+.devdist_indicator {
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 3px;
+	padding: 8px;
+	margin-bottom: 3px;
+}
+
+.devdist_indicator a {
+	font-weight: bold;
+}
+
+.devdist_indicator-on {
+	border-color: #ffcf3d;
+	background-color: #ffea7e;
+}
+
+.devdist_indicator-on a {
+	color: green;
+}
+
+.devdist_indicator-off {
+	border-color: #aaff00;
+	background-color: #d3ff73;
+}
+
+.devdist_indicator-off a {
+	color: #c66300;
+}
+
+.ddi_onoff {
+	font-weight: bold;
+}

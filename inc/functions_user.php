@@ -255,9 +255,17 @@ function verify_user_password($user, $password)
 		/** @var Illuminate\Contracts\Hashing\Hasher $hashDriver */
 		$hashDriver = \MyBB\app('hash')->driver($parameters['user']['password_algorithm']);
 
-		return $hashDriver->check($parameters['password'], $parameters['user']['password'], [
+		$result = $hashDriver->check($parameters['password'], $parameters['user']['password'], [
 			'salt' => $user['salt'],
 		]);
+
+		if (!$result && user_password_needs_rehash($user)) {
+			// Support older password hashing in case of upgrading from 1.8.x to 1.9.x
+			$hash = md5(md5($user['salt']).md5($password));
+			$result = my_hash_equals($user['password'], $hash);
+		}
+
+		return $result;
 	}
 }
 

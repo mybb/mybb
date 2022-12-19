@@ -1,0 +1,408 @@
+.thread-list {
+
+    &--no-footer {
+        border-bottom: 1px solid $border-1;
+    }
+
+    &__announcements,
+    &__sticky-threads {
+        border-bottom: 3px solid $border-1;
+    }
+
+    &__select-all {
+        display: none;
+        padding: 12px;
+        text-align: center;
+        border-bottom: 3px solid $border-1;
+    }
+
+    .sort-threads {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+        background: $background-3;
+        border-radius: $radius;
+
+        @include bp-small {
+            padding: side-values(8px 12px 8px 40px);
+        }
+
+        &--alt {
+            background: none;
+            border-bottom: 1px solid $border-1;
+            border-radius: 0;
+        }
+
+        &__link {
+
+            &:link,
+            &:visited {
+                color: $alt-font-color-1;
+            }
+
+            &:hover {
+                color: $link-hover;
+                text-decoration: none;
+            }
+        }
+
+        &__order {
+            margin-#{$left}: 2px;
+
+            a:link,
+            a:visited {
+                color: $alt-font-color-1;
+            }
+
+            a:hover,
+            a:active {
+                color: $link-hover;
+            }
+        }
+
+        &__column {
+
+            &--latest {
+
+                @include bp-small-max {
+                    flex: 1 0 40%;
+                    margin-#{$right}: 10px;
+                    text-align: $right;
+                }
+            }
+        }
+
+        // Hide sort by author link on small screens
+        &__author {
+
+            @include bp-medium-max {
+                display: none;
+            }
+        }
+    }
+
+    // Column widths
+    .sort-threads__column,
+    .thread__column {
+        box-sizing: border-box;
+
+        &--primary {
+
+            @include bp-small {
+                flex: 1 1 50%;
+                padding-#{$right}: 12px;
+            }
+        }
+
+        &--replies {
+            display: none;
+
+            @include bp-medium {
+                display: block;
+                flex: 0 0 10%;
+                min-width: 90px;
+                text-align: center;
+            }
+        }
+
+        &--latest {
+
+            @include bp-small {
+                flex: 0 0 28%;
+                min-width: 220px;
+                max-width: 280px;
+                padding-#{$left}: 12px;
+            }
+        }
+
+        &--checkbox {
+            text-align: $right;
+
+            @include bp-small {
+                flex: 0 0 auto;
+                min-width: 20px;
+                text-align: center;
+            }
+        }
+    }
+
+    .thread {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding-#{$left}: 66px;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        @include bp-small {
+            flex-direction: row;
+            align-items: center;
+            padding-#{$left}: 40px;
+        }
+
+        &__column {
+            // Column widths handled above
+
+            &--primary,
+            &--latest {
+                overflow: auto;
+                word-wrap: break-word;
+
+                @include bp-small-max {
+                    width: 100%; // width override for small screens
+                }
+            }
+
+            &--checkbox {
+
+                @include bp-small-max {
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                }
+            }
+        }
+
+        &--selected {
+            background-color: $status-highlight;
+        }
+
+        // TODO: change class in code to thread--selected
+        &.trow_selected {
+            @extend .thread--selected;
+        }
+
+        &--sticky:last-of-type {
+            border-bottom-width: 3px;
+        }
+
+        a.thread__status {
+            display: inline-block;
+            margin-top: 1px;
+            margin-#{$left}: 6px;
+            font-size: 0.8em;
+            color: $new-icon-color;
+            vertical-align: top;
+
+            @include bp-small {
+                float: $left;
+                margin-#{$left}: -25px;
+            }
+        }
+
+        &__title {
+            margin: 0;
+            font-size: 1em;
+            font-weight: normal;
+        }
+
+        &--unread {
+
+            .thread__title {
+                font-weight: bold;
+            }
+        }
+
+        &--announcement {
+
+            .thread__title,
+            .thread__author {
+                display: block;
+
+                @include bp-small {
+                    display: inline-block;
+                }
+            }
+
+            .thread__status {
+                float: $left;
+                margin-#{$left}: -42px;
+
+                @include bp-small {
+                    margin-#{$left}: -28px;
+                }
+            }
+        }
+
+        &__author,
+        &__forum {
+            display: none;
+            margin: side-values(3px 0 0 0);
+            font-size: 0.8em;
+            color: $alt-font-color-2;
+
+            @include bp-small {
+                display: block;
+            }
+
+            a:link,
+            a:visited {
+                color: $alt-font-color-1;
+            }
+        }
+
+        &__message {
+            margin-top: 3px;
+            font-size: 0.9em;
+        }
+
+        &__notification {
+            margin: side-values(3px 0 0 0);
+            font-size: 0.8em;
+        }
+
+        &__icons {
+            display: block;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            font-size: 14px;
+            color: $alt-font-color-2;
+
+            @include bp-medium {
+                float: $right;
+                margin: side-values(0 0 0 16px);
+            }
+        }
+
+        &__icon {
+            display: inline-block;
+            margin-#{$right}: 2px;
+
+            @include bp-medium {
+                margin-#{$right}: 0;
+                margin-#{$left}: 2px;
+            }
+
+            &--sticky {
+                color: $secondary-color;
+            }
+        }
+
+        &__pages {
+            margin-top: 3px;
+            font-size: 0.8em;
+
+            @include bp-medium {
+                float: $right;
+            }
+        }
+
+        &__page-legend {
+            margin-#{$right}: 2px;
+            color: $alt-font-color-1;
+        }
+
+        &__page-link {
+            display: inline-block;
+            padding: 1px 5px;
+            margin: 0 1px;
+            background: $background-1;
+            border-radius: $radius - 1;
+            text-decoration: none;
+
+            &:hover,
+            &:active {
+                background: $button-hover;
+                color: $invert-font-color;
+            }
+        }
+
+        &__replies {
+            margin: 0;
+        }
+
+        &__reply-legend {
+            display: block;
+            font-size: 0.7em;
+            color: $alt-font-color-3;
+            text-transform: lowercase;
+        }
+
+        &__reply-count {
+            color: $alt-font-color-1;
+        }
+
+        &__unapproved-replies {
+            padding: 1px 4px;
+            font-size: 0.7em;
+            font-weight: normal;
+            color: $status-pending-font-color;
+            text-decoration: none;
+            background: $status-pending;
+            border-radius: 2px;
+        }
+
+        &__latest-post {
+            display: inline-block;
+            margin: 0;
+
+            @include bp-small {
+                display: block;
+            }
+
+            .avatar-profile-link {
+                position: absolute;
+                top: 12px;
+                left: 8px;
+
+                @include bp-small {
+                    position: static;
+                    float: $left;
+                    display: inline-block;
+                    margin: side-values(0 12px 0 0);
+                }
+            }
+
+            &__text {
+                display: inline;
+                font-size: 0.8em;
+                color: $alt-font-color-2;
+
+                @include bp-small {
+                    @include visually-hidden;
+                }
+            }
+
+            &__author {
+                display: inline-block;
+                font-size: 0.8em;
+
+                @include bp-small-max {
+
+                    a:link,
+                    a:visited {
+                        color: $alt-font-color-1;
+                    }
+                }
+
+                @include bp-small {
+                    display: block;
+                    font-size: 1em;
+                }
+            }
+
+            a.thread__latest-post__date {
+                display: block;
+                font-size: 0.8em;
+                color: $alt-font-color-1;
+            }
+        }
+
+        &--moderator {
+
+            .thread__icons {
+
+                @include bp-small-max {
+                    margin-#{$right}: 24px;
+                }
+            }
+        }
+    }
+}

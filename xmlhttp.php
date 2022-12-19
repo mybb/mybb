@@ -116,15 +116,15 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	// Load the first available theme
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+	$theme = reset($themelet_hierarchy['themes'])['properties'];
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if(!empty($theme['imgdir']) && my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -147,11 +147,11 @@ if(my_validate_url($theme['imgdir']))
 }
 else
 {
-	$img_directory = $theme['imgdir'];
+	$img_directory = empty($theme['imgdir']) ? '' : $theme['imgdir'];
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
-		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($img_directory, '/');
 	}
 
 	if(!@is_dir($img_directory))

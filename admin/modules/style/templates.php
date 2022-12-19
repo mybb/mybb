@@ -1954,7 +1954,7 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, 'templates');
 
 	$themes = array();
-	$query = $db->simple_select("themes", "name,tid,properties", "tid != '1'");
+	$query = $db->simple_select("themes", "title,tid,properties", "tid != '1'");
 	while($theme = $db->fetch_array($query))
 	{
 		$tbits = my_unserialize($theme['properties']);

@@ -32,7 +32,7 @@ if(!$mybb->user['uid'])
 $pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // if we already have the post information...
-if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
+if(isset($style['pid']) && isset($style['type']) && $style['pid'] == $pid && $style['type'] != 'f')
 {
 	$post = &$style;
 }

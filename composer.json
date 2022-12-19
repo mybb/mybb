@@ -27,6 +27,8 @@
         "illuminate/events": "8.*",
         "illuminate/hashing": "8.*",
         "illuminate/routing": "8.*",
+        "rybakit/twig-deferred-extension": "^3.0",
+        "scssphp/scssphp": "^1.10.3",
         "twig/twig": "^3.3"
     },
     "require-dev": {

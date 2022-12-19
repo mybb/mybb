@@ -18,9 +18,6 @@
         lang.post_fetch_error = "{{ lang.post_fetch_error }}";
     // -->
     </script>
-    <!-- jeditable (jquery) -->
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/jeditable/jeditable.min.js"></script>
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_edit.js?ver=1808"></script>
 {% endblock jscripts %}
 
 {% block body %}
@@ -145,7 +142,7 @@
                                 {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
                             </strong>
                         </span>
-                        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
+                        {{ attach(resource='jscripts/rating.js', absolute=true, attrs={'defer': 'defer'}) }}
                         <script type="text/javascript">
                         <!--
                             lang.stars = [];

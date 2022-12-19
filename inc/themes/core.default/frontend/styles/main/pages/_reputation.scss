@@ -1,0 +1,122 @@
+.reputation-summary {
+    display: flex;
+    flex-direction: column;
+
+    @include bp-medium {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &__block {
+
+        &--stats {
+        }
+
+        &--counts {
+
+            @include bp-medium-max {
+                padding-top: 20px;
+                margin-top: 20px;
+                border-top: 2px solid $border-1;
+            }
+        }
+    }
+}
+
+.reputation-table {
+    font-size: 0.9em;
+
+    &__row {
+
+        .reputation-table__cell {
+            border-bottom: 1px solid $border-1;
+        }
+
+        &--header {
+
+        }
+
+        &--footer {
+
+            .reputation-table__cell {
+                border-bottom: 0;
+            }
+        }
+
+    }
+
+    &__cell {
+        padding: 4px 8px;
+
+        &--legend {
+            color: $alt-font-color-2;
+            text-align: $right;
+        }
+
+        &--count {
+            text-align: center;
+        }
+    }
+}
+
+.reputation-ratings {
+    margin-top: 10px;
+}
+
+.reputation-rating {
+    padding: side-values(0 0 10px 0);
+    margin-bottom: 15px;
+    line-height: 1.4;
+    border: 1px solid $border-1;
+    border-radius: $radius;
+
+    &__meta {
+        padding: 10px 12px;
+        background: $background-1;
+        border-radius: corner-values($radius $radius 0 0);
+    }
+
+    &__user-rep {
+        font-size: 0.8em;
+    }
+
+    &__date {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8em;
+        color: $alt-font-color-1;
+
+        @include bp-medium {
+            float: $right;
+            margin-top: 2px;
+        }
+    }
+
+    &__link {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8em;
+        color: $alt-font-color-2;
+
+        a:link,
+        a:visited {
+            color: $alt-font-color-1;
+        }
+
+        a:hover,
+        a:active {
+            color: $alt-font-color-1;
+            text-decoration: underline;
+        }
+    }
+
+    &__comment {
+        padding: 12px;
+    }
+
+    &__controls {
+        padding: 0 12px;
+        text-align: $right;
+    }
+
+}

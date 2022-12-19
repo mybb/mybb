@@ -16,9 +16,11 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->plugins, "index.php?module=config-plugins");
 
+$action = $mybb->get_input('action');
+
 $plugins->run_hooks("admin_config_plugins_begin");
 
-if($mybb->input['action'] == "browse")
+if($action == "browse")
 {
 	$page->add_breadcrumb_item($lang->browse_plugins);
 
@@ -197,7 +199,7 @@ if($mybb->input['action'] == "browse")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "check")
+if($action == "check")
 {
 	$plugins_list = get_plugins_list();
 
@@ -372,8 +374,124 @@ if($mybb->input['action'] == "check")
 	$page->output_footer();
 }
 
-// Activates or deactivates a specific plugin
-if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate")
+$is_upload = ($action == 'upload');
+if($is_upload)
+{
+	if(!class_exists('ZipArchive'))
+	{
+		flash_message($lang->error_no_ziparchive_for_plugin, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	else if(empty($_FILES['plugin_upload']['tmp_name']))
+	{
+		flash_message($lang->error_no_plugin_uploaded, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+	else
+	{
+		$maxtries = 100;
+		$tmpdir = create_temp_dir();
+		if (!$tmpdir)
+		{
+			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else if(!mkdir($tmpdir.'/extracted/', 0777, true))
+		{
+			rmdir_recursive($tmpdir);
+			flash_message($lang->error_plugin_unzip_tmpdir_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else if(!move_uploaded_file($_FILES['plugin_upload']['tmp_name'], $tmpdir.'/'.$_FILES['plugin_upload']['name']))
+		{
+			rmdir_recursive($tmpdir);
+			flash_message($lang->error_move_uploaded_plugin_failed, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+		else
+		{
+			$za = new ZipArchive;
+			$res = $za->open($tmpdir.'/'.$_FILES['plugin_upload']['name']);
+			if($res !== true)
+			{
+				rmdir_recursive($tmpdir);
+				flash_message($lang->sprintf($lang->error_plugin_unzip_open_failed, $res), 'error');
+				admin_redirect('index.php?module=config-plugins');
+			}
+			else
+			{
+				if(!$za->extractTo($tmpdir.'/extracted/'))
+				{
+					rmdir_recursive($tmpdir);
+					flash_message($lang->error_plugin_unzip_failed, 'error');
+					admin_redirect('index.php?module=config-plugins');
+				}
+				$za->close();
+				$top_lvl_files = glob($tmpdir.'/extracted/*');
+				if(count($top_lvl_files) != 1)
+				{
+					rmdir_recursive($tmpdir);
+					flash_message($lang->error_plugin_unzip_multi_or_none_root, 'error');
+					admin_redirect('index.php?module=config-plugins');
+
+				}
+				else
+				{
+					$do_integrate = false;
+					$plugin_code = basename($top_lvl_files[0]);
+					$file = basename("{$plugin_code}.php");
+					if(file_exists(MYBB_ROOT."inc/plugins/{$plugin_code}/{$file}"))
+					{
+						$action = 'upgrade';
+						$plugininfo    = read_json_file("{$top_lvl_files[0]}/plugin.json");
+						$pi_integrated = read_json_file(MYBB_ROOT."inc/plugins/{$plugin_code}/plugin.json");
+
+						if(isset($pi_integrated['version'])
+							&&
+							isset($plugininfo['version'])
+							&&
+							version_compare($pi_integrated['version'], $plugininfo['version']) >= 0
+							&&
+							empty($mybb->input['ignore_vers'])
+						)
+						{
+							rmdir_recursive($tmpdir);
+							flash_message($lang->error_plugin_uploaded_less_or_equal_vers, 'error');
+							admin_redirect('index.php?module=config-plugins');
+						}
+						else
+						{
+							rmdir_recursive(MYBB_ROOT."inc/plugins/{$plugin_code}/{$file}");
+							$do_integrate = true;
+						}
+					}
+					else
+					{
+						$action = 'activate';
+						$do_integrate = true;
+					}
+					if ($do_integrate)
+					{
+						// For access to the new `_is_installed()` function below
+						require_once "{$top_lvl_files[0]}}/{$file}";
+
+						// We use cp_or_mv_recursively() rather than rename() because of this PHP bug:
+						// https://bugs.php.net/bug.php?id=54097
+						if (!cp_or_mv_recursively($top_lvl_files[0], MYBB_ROOT."inc/plugins/{$plugin_code}", /*$del_source = */true, $error))
+						{
+							rmdir_recursive($tmpdir);
+							flash_message($lang->sprintf($lang->error_plugin_move_fail, $error), 'error');
+							admin_redirect('index.php?module=config-plugins');
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Upgrades, activates, or deactivates a specific plugin
+if($action == 'activate' || $action == 'deactivate' || $action == 'upgrade')
 {
 	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
@@ -381,21 +499,28 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		admin_redirect("index.php?module=config-plugins");
 	}
 
-	if($mybb->input['action'] == "activate")
+	$do_upgrade = false;
+
+	if($action == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate");
+	}
+	else if($action == 'upgrade')
+	{
+		$do_upgrade = true;
+		$plugins->run_hooks('admin_config_plugins_upgrade');
 	}
 	else
 	{
 		$plugins->run_hooks("admin_config_plugins_deactivate");
 	}
 
-	$codename = $mybb->input['plugin'];
+	$codename = !empty($plugin_code) ? $plugin_code : $mybb->input['plugin'];
 	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
 
-	// Check if the file exists and throw an error if it doesn't
-	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
+	$integrated = file_exists(MYBB_ROOT."inc/plugins/{$codename}/{$file}");
+	if(!$integrated)
 	{
 		flash_message($lang->error_invalid_plugin, 'error');
 		admin_redirect("index.php?module=config-plugins");
@@ -404,7 +529,11 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$plugins_cache = $cache->read("plugins");
 	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
 
-	require_once MYBB_ROOT."inc/plugins/$file";
+	// Note: The new plugin file is instead included above (i.e., when $do_upgrade is true)
+	if(!$do_upgrade)
+	{
+		require_once MYBB_ROOT."inc/plugins/{$codename}/{$file}";
+	}
 
 	$installed_func = "{$codename}_is_installed";
 	$installed = true;
@@ -415,22 +544,52 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 	$install_uninstall = false;
 
-	if($mybb->input['action'] == "activate")
+	if($do_upgrade)
 	{
-		$message = $lang->success_plugin_activated;
+		$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/{$codename}/plugin.json");
 
-		// Plugin is compatible with this version?
-		if($plugins->is_compatible($codename) == false)
+		// Check the plugin's compatibility with the current MyBB version
+		if($plugins->is_compatible($plugininfo['compatibility']) == false)
 		{
 			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
-			admin_redirect("index.php?module=config-plugins");
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		// Try to archive plugin's themelet
+		require_once MYBB_ROOT.'inc/functions_themes.php';
+		if(!archive_themelet($codename, /*$is_plugin_themelet = */true, $err_msg))
+		{
+			flash_message($err_msg, 'error');
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		// Run any custom upgrade function as required
+		if($installed && function_exists("{$codename}_upgrade"))
+		{
+			call_user_func("{$codename}_upgrade");
+		}
+		$message = $lang->success_plugin_updated;
+	}
+
+	if($do_upgrade || $action == "activate")
+	{
+		if(!$do_upgrade)
+		{
+			$message = $lang->success_plugin_activated;
+		} else {
+			// Plugin is compatible with this version?
+			$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/{$codename}/plugin.json");
+			if (empty($plugininfo['compatibility']) || $plugins->is_compatible($plugininfo['compatibility']) == false) {
+				flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
+				admin_redirect("index.php?module=config-plugins");
+			}
 		}
 
 		// If not installed and there is a custom installation function
 		if($installed == false && function_exists("{$codename}_install"))
 		{
 			call_user_func("{$codename}_install");
-			$message = $lang->success_plugin_installed;
+			$message = $do_upgrade ? $lang->success_plugin_upgraded_install_activated : $lang->success_plugin_installed;
 			$install_uninstall = true;
 		}
 
@@ -442,7 +601,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		$active_plugins[$codename] = $codename;
 		$executed[] = 'activate';
 	}
-	else if($mybb->input['action'] == "deactivate")
+	else if($action == "deactivate")
 	{
 		$message = $lang->success_plugin_deactivated;
 
@@ -468,9 +627,13 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	// Log admin action
 	log_admin_action($codename, $install_uninstall);
 
-	if($mybb->input['action'] == "activate")
+	if($action == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate_commit");
+	}
+	else if($do_upgrade)
+	{
+		$plugins->run_hooks('admin_config_plugins_upgrade_commit');
 	}
 	else
 	{
@@ -481,7 +644,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	admin_redirect("index.php?module=config-plugins");
 }
 
-if(!$mybb->input['action'])
+if(!$action)
 {
 	$page->output_header($lang->plugins);
 
@@ -517,36 +680,53 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("admin_config_plugins_plugin_list");
 
+	$form = new Form('index.php?module=config-plugins&amp;action=upload', 'post', '', 1);
+	$table = new Table;
+	$table->construct_header($lang->upload_plugin_desc);
+	$table->construct_cell($form->generate_file_upload_box('plugin_upload', array('style' => 'width: 230px;')).
+	                       $form->generate_check_box('ignore_vers', 1, $lang->plugin_ignore_vers).
+	                       ' '.
+	                       $form->generate_submit_button($lang->install_uploaded_plugin));
+	$table->construct_row();
+	$table->output($lang->upload_plugin);
+	$form->end();
+
 	if(!empty($plugins_list))
 	{
 		$a_plugins = $i_plugins = array();
 
-		foreach($plugins_list as $plugin_file)
+		if(!empty($plugins_list))
 		{
-			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
-			$codename = str_replace(".php", "", $plugin_file);
-			$infofunc = $codename."_info";
-
-			if(!function_exists($infofunc))
+			foreach($plugins_list as $plugin_file)
 			{
-				continue;
-			}
+				$codename = str_replace('.php', '', $plugin_file);
+				$plugininfo = read_json_file(MYBB_ROOT."inc/plugins/{$codename}/plugin.json", $err_msg, /*$show_errs = */false);
+				if(!$plugininfo)
+				{
+					continue;
+				}
+				plugininfo_keys_to_raw($plugininfo, true);
+				$plugininfo['codename'] = $codename;
+				require_once MYBB_ROOT."inc/plugins/{$codename}/{$codename}.php";
+				$dyndescfunc = $codename.'_dyndesc';
+				if(function_exists($dyndescfunc))
+				{
+					$dyndescfunc($plugininfo['description']);
+				}
 
-			$plugininfo = $infofunc();
-			$plugininfo['codename'] = $codename;
+				if(isset($active_plugins[$codename]))
+				{
+					// This is an active plugin
+					$plugininfo['is_active'] = 1;
 
-			if(isset($active_plugins[$codename]))
-			{
-				// This is an active plugin
-				$plugininfo['is_active'] = 1;
-
-				$a_plugins[] = $plugininfo;
-			}
-			else
-			{
-				// Either installed and not active or completely inactive
-				$plugininfo['is_active'] = 0;
-				$i_plugins[] = $plugininfo;
+					$a_plugins[] = $plugininfo;
+				}
+				else
+				{
+					// Either installed and not active or completely inactive
+					$plugininfo['is_active'] = 0;
+					$i_plugins[] = $plugininfo;
+				}
 			}
 		}
 
@@ -599,30 +779,6 @@ if(!$mybb->input['action'])
 }
 
 /**
- * @return array
- */
-function get_plugins_list()
-{
-	// Get a list of the plugin files which exist in the plugins directory
-	$dir = @opendir(MYBB_ROOT."inc/plugins/");
-	if($dir)
-	{
-		while($file = readdir($dir))
-		{
-			$ext = get_extension($file);
-			if($ext == "php")
-			{
-				$plugins_list[] = $file;
-			}
-		}
-		@sort($plugins_list);
-	}
-	@closedir($dir);
-
-	return $plugins_list;
-}
-
-/**
  * @param array $plugin_list
  */
 function build_plugin_list($plugin_list)
@@ -641,7 +797,7 @@ function build_plugin_list($plugin_list)
 			$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 		}
 
-		if($plugins->is_compatible($plugininfo['codename']) == false)
+		if($plugins->is_compatible($plugininfo['compatibility']) == false)
 		{
 			$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
 		}
@@ -675,8 +831,12 @@ function build_plugin_list($plugin_list)
 
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 
+		if(!empty($plugininfo['upgradeable']))
+		{
+			$table->construct_cell('<a href="index.php?module=config-plugins&amp;action=upgrade&amp;plugin='.$plugininfo['codename'].'&amp;my_post_key='.$mybb->post_code.'">'.($installed ? $lang->upgrade_plugin : $lang->upgrade_install_activate_plugin).'</a>', array("class" => "align_center", "colspan" => 2));
+		}
 		// Plugin is not installed at all
-		if($installed == false)
+		else if($installed == false)
 		{
 			if($compatibility_warning)
 			{

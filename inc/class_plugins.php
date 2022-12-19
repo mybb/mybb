@@ -34,9 +34,9 @@ class pluginSystem
 		{
 			foreach($pluginList['active'] as $plugin)
 			{
-				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/{$plugin}.php"))
+				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/{$plugin}/{$plugin}.php"))
 				{
-					require_once MYBB_ROOT."inc/plugins/{$plugin}.php";
+					require_once MYBB_ROOT."inc/plugins/{$plugin}/{$plugin}.php";
 				}
 			}
 		}
@@ -241,50 +241,12 @@ class pluginSystem
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
-	 * @param string $plugin The name of the plugin.
+	 * @param string $compatibilities The compatibility string of the plugin.
 	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
-	function is_compatible(string $plugin): bool
-	{
-		global $mybb;
-
-		// Ignore potentially missing plugins.
-		if(!file_exists(MYBB_ROOT."inc/plugins/{$plugin}.php"))
-		{
-			return true;
-		}
-
-		require_once MYBB_ROOT."inc/plugins/{$plugin}.php";
-
-		$infoFunc = "{$plugin}_info";
-		if(!function_exists($infoFunc))
-		{
-			return false;
-		}
-
-		$pluginInfo = $infoFunc();
-
-		// No compatibility set or compatibility = * - assume compatible
-		if(empty($pluginInfo['compatibility']) || $pluginInfo['compatibility'] == "*")
-		{
-			return true;
-		}
-
-		$compatibility = explode(",", $pluginInfo['compatibility']);
-		foreach($compatibility as $version)
-		{
-			$version = trim($version);
-			$version = str_replace("*", ".+", preg_quote($version));
-			$version = str_replace("\.+", ".+", $version);
-			if(preg_match("#{$version}#i", $mybb->version_code))
-			{
-				return true;
-			}
-		}
-
-		// Nothing matches
-		return false;
+	function is_compatible(string $compatibilities): bool {
+		return is_compatible($compatibilities);
 	}
 }
 

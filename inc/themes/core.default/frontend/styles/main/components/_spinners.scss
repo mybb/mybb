@@ -1,0 +1,13 @@
+.spinner {
+
+    &__icon {
+        display: block;
+        margin: side-values(10px auto 25px auto);
+        font-size: 1.4em;
+        color: $alt-font-color-1;
+
+        .fa-spin {
+            display: block;
+        }
+    }
+}

@@ -1,0 +1,51 @@
+.form {
+    margin-bottom: 40px;
+    border: 1px solid $border-1;
+    border-radius: 4px;
+
+    &--alt {
+        background-color: $background-2;
+        border: none;
+    }
+
+    &--modal {
+        margin-bottom: 0;
+        border: none;
+    }
+
+    &--delete {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 12px;
+        margin-bottom: 30px;
+
+        .form__submit {
+            background: none;
+        }
+    }
+
+    .buttons {
+        margin: -5px;
+    }
+
+    &__submit {
+        padding: 10px 0;
+        text-align: center;
+        background: $background-1;
+        border-radius: corner-values(0 0 $radius $radius);
+
+        &:first-child {
+            border-radius: $radius;
+        }
+    }
+}
+
+.inline-form {
+
+    .textbox,
+    .select-field,
+    .button {
+        margin: 3px;
+    }
+}

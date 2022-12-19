@@ -4,9 +4,47 @@ namespace MyBB\Twig\Extensions;
 
 use DB_Base;
 use MyBB;
+use Illuminate\Container\Container;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
+use Twig\Node\Node;
+use Twig\Node\ModuleNode;
+use Twig\NodeVisitor\NodeVisitorInterface;
+use Twig\Compiler;
+
+class MyBBTwigDispNode extends Node
+{
+    public function compile(\Twig\Compiler $compiler): void
+    {
+        $compiler
+            ->write("\$this->env->getExtension('".ThemeExtension::class."')->onDisplayMyBBTwigTemplate(\$this, \$context);\n")
+        ;
+    }
+}
+
+class MyBBTwigNodeVisitor implements NodeVisitorInterface
+{
+    public function enterNode(Node $node, Environment $env): Node
+    {
+        if ($node instanceof ModuleNode) {
+            $node->setNode('display_start', new MyBBTwigDispNode);
+        }
+
+        return $node;
+    }
+
+    public function leaveNode(Node $node, Environment $env): ?Node
+    {
+        return $node;
+    }
+
+    public function getPriority(): int
+    {
+        return 0;
+    }
+}
 
 /**
  * A Twig extension class to provide functionality related to themes and assets.
@@ -29,6 +67,16 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     private $altRowState;
 
     /**
+     * @var array $twigTemplateContexts
+     */
+    private $twigTemplateContexts;
+
+    /**
+     * @var array $attachedJsFilesAttrs
+     */
+    private $attachedJsFilesAttrs = [];
+
+    /**
      * Create a new instance of the ThemeExtension.
      *
      * @param \MyBB $mybb
@@ -42,12 +90,33 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $this->altRowState = null;
     }
 
+    public function getNodeVisitors(): array
+    {
+        return [new MyBBTwigNodeVisitor(static::class)];
+    }
+
+    public function onDisplayMyBBTwigTemplate($node, &$context)
+    {
+        global $plugins;
+
+        $tpl = $node->getTemplateName();
+        if (empty($this->twigTemplateContexts[$tpl])) {
+            $this->twigTemplateContexts[$tpl] = [];
+        }
+        $this->twigTemplateContexts[$tpl][] = $context;
+
+        $params = ['name' => $tpl, 'context' => &$context];
+        $plugins->run_hooks('template', $params);
+    }
+
     public function getFunctions()
     {
         return [
             new TwigFunction('asset_url', [$this, 'getAssetUrl']),
             new TwigFunction('alt_trow', [$this, 'altTrow']),
             new TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
+            new TwigFunction('get_jscripts', [$this, 'getJscripts'], ['needs_context' => true]),
+            new TwigFunction('attach', [$this, 'attach']),
         ];
     }
 
@@ -103,18 +172,20 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getStylesheets() : \Generator
     {
-        // TODO: Optimise this function - it looks like it can be improved at a glance
-        $theme = $GLOBALS['theme'];
+        global $theme, $cache, $mybb;
 
-        $alreadyLoaded = [];
+        $themeStylesheets = $stylesheets_a = [];
 
-        if (!is_array($theme['stylesheets'])) {
-            $theme['stylesheets'] = my_unserialize($theme['stylesheets']);
+        require_once MYBB_ROOT.'inc/functions_themes.php';
+        $color = !empty($theme['color']) ? $theme['color'] : '';
+        $stylesheets_a[''] = get_themelet_stylesheets($theme['codename'], $color, false, false);
+        foreach ($cache->read('plugins')['active'] as $plugin_code) {
+            $stylesheets_a[$plugin_code] = get_themelet_stylesheets($plugin_code, $color, false, true);
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
-        if (!empty($theme['color'])) {
-            $stylesheetScripts[] = $theme['color'];
+        if (!empty($color)) {
+            $stylesheetScripts[] = $color;
         }
 
         $stylesheetActions = array("global");
@@ -128,47 +199,318 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                     continue;
                 }
 
-                if (!empty($theme['stylesheets'][$stylesheetScript][$stylesheet_action])) {
-                    // Actually add the stylesheets to the list
-                    foreach ($theme['stylesheets'][$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
-                        if (!empty($alreadyLoaded[$pageStylesheet])) {
-                            continue;
+                foreach ($stylesheets_a as $codename => $stylesheets) {
+                    if (!empty($stylesheets[$stylesheetScript][$stylesheet_action])) {
+                        // Actually add the stylesheets to the list
+                        foreach ($stylesheets[$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
+                            $minify = !empty($mybb->settings['minifycss']);
+                            list($plugin_code, $namespace, $component, $filename) = parse_res_spec1($pageStylesheet);
+                            if ($minify && my_strtolower(substr($filename, -8)) !== '.min.css') {
+                                $filename = substr($filename, 0, -3).'min.css';
+                            }
+                            if (empty($plugin_code)) {
+                                $res_spec = "~ct~{$namespace}:{$component}:{$filename}"; // Current theme stylesheet
+                            } else {
+                                $res_spec = "~cp~{$plugin_code}:{$component}:{$filename}"; // Plugin stylesheet for current theme
+                            }
+                            if (!empty($themeStylesheets[$res_spec])) {
+                                continue;
+                            }
+                            $stylesheetUrl = $this->mybb->get_asset_url($res_spec);
+                            $themeStylesheets[$res_spec] = $stylesheetUrl;
                         }
-
-                        if (strpos($pageStylesheet, 'css.php') !== false) {
-                            $stylesheetUrl = $this->mybb->settings['bburl'] . '/' . $pageStylesheet;
-                        } else {
-                            $stylesheetUrl = $this->mybb->get_asset_url($pageStylesheet);
-                        }
-
-                        if ($this->mybb->settings['minifycss']) {
-                            $stylesheetUrl = str_replace('.css', '.min.css', $stylesheetUrl);
-                        }
-
-                        if (strpos($pageStylesheet, 'css.php') !== false) {
-                            // We need some modification to get it working with the displayorder
-                            $queryString = parse_url($stylesheetUrl, PHP_URL_QUERY);
-                            $id = (int)my_substr($queryString, 11);
-                            $query = $this->db->simple_select("themestylesheets", "name", "sid={$id}");
-                            $realName = $this->db->fetch_field($query, "name");
-                            $themeStylesheets[$realName] = $stylesheetUrl;
-                        } else {
-                            $themeStylesheets[basename($pageStylesheet)] = $stylesheetUrl;
-                        }
-
-                        $alreadyLoaded[$pageStylesheet] = 1;
                     }
                 }
             }
         }
-        unset($actions);
 
-        if (!empty($themeStylesheets) && is_array($theme['disporder'])) {
+        // Return the stylesheet paths we've found via yielding, honouring their display order.
+        if (!empty($themeStylesheets) && isset($theme['disporder']) && is_array($theme['disporder'])) {
             foreach ($theme['disporder'] as $style_name => $order) {
                 if (!empty($themeStylesheets[$style_name])) {
-                    yield $themeStylesheets[$style_name];
+                    $style_path = $themeStylesheets[$style_name];
+                    unset($themeStylesheets[$style_name]);
+                    yield $style_path;
                 }
             }
         }
+        // Now for those without a display order. Mostly (solely?), these will be plugin stylesheets.
+        foreach ($themeStylesheets as $style_path) {
+           yield $style_path;
+        }
+    }
+
+    public function checkConditions($conditions, $template)
+    {
+        if (!array_key_exists($template, $this->twigTemplateContexts)) {
+            return false;
+        }
+        $conditions_met = false;
+        foreach ($this->twigTemplateContexts[$template] as $context) {
+            $conditions_met = true;
+            foreach ((array)$conditions as $key => $value) {
+                if (is_int($key)) {
+                    $item = $value;
+                    $test_val = true;
+                } else {
+                    $item = $key;
+                    $test_val = $value;
+                }
+                $item_is_missing = false;
+                $curr = $context;
+                $a = explode('.', $item);
+                foreach ($a as $i => $k) {
+                    if (is_object($curr) && !property_exists($curr, $k)
+                        ||
+                        !is_object($curr) && !isset($curr[$k])
+                    ) {
+                        $item_is_missing = true;
+                        break;
+                    } else {
+                        $curr = is_object($curr) ? $curr->$k : $curr[$k];
+                    }
+                }
+                if ($item_is_missing || $curr != $test_val) {
+                    $conditions_met = false;
+                    break;
+                }
+            }
+            if ($conditions_met) {
+                break;
+            }
+        }
+
+        // Earlier return possible
+        return $conditions_met;
+    }
+
+    /**
+     * Get a list of all the Javascript files applicable to the current page.
+     *
+     * @return \Generator A generator object that yields each file, as an array of:
+     *                    'path'       => String. The full URL.
+     *                    'attributes' => String. Attributes for the <script> tag.
+     */
+    public function getJscripts($context): \Generator
+    {
+        global $mybb, $theme;
+
+        require_once MYBB_ROOT.'inc/functions_themes.php';
+        $jscripts = get_theme_jscripts($theme['codename']);
+
+        // Most negative is highest priority (in terms of dependency).
+        $file_priorities = [];
+
+        if (!empty($jscripts)) {
+            foreach ($jscripts as $scriptname => $scriptdata) {
+                $priority = -1;
+                $has_been_attached = isset($this->attachedJsFilesAttrs[$scriptname]);
+                if (!isset($scriptdata['attached_to'])) {
+                    $scriptdata['attached_to'] = [['' => '']];
+                } else if (empty($scriptdata['attached_to'])) {
+                    $scriptdata['attached_to'] = [['script' => 'global']];
+                }
+                foreach ($scriptdata['attached_to'] as $attached_to) {
+                    $is_global = isset($attached_to['script']) && empty($attached_to['script']) && isset($attached_to['template']) && empty($attached_to['template']);
+                    $have_script = !empty($attached_to['script']);
+                    $script_matches = $have_script && ($attached_to['script'] == 'global' || $attached_to['script'] == basename($_SERVER['PHP_SELF']));
+                    $have_template = !empty($attached_to['template']);
+                    $template_matches = $have_template && in_array($attached_to['template'], array_keys($this->twigTemplateContexts));
+                    if ($has_been_attached
+                        ||
+                        (
+                         ($is_global
+                          ||
+                          ($have_script && $script_matches && (!$have_template || $template_matches))
+                          ||
+                          (!$have_script && $have_template && $template_matches)
+                         )
+                         &&
+                         (empty($attached_to['ext'])
+                          ||
+                          $attached_to['ext'] == $mybb->get_input('ext')
+                         )
+                         &&
+                         (empty($attached_to['actions'])
+                          ||
+                          in_array('global', $attached_to['actions'])
+                          ||
+                          in_array($mybb->get_input('action'), $attached_to['actions'])
+                         )
+                         &&
+                         (!$have_template
+                          ||
+                          empty($attached_to['conditional_on'])
+                          ||
+                          $this->checkConditions((array)$attached_to['conditional_on'], $attached_to['template'])
+                         )
+                        )
+                    ) {
+                        $attrs = empty($scriptdata['attributes']) ? [] : $scriptdata['attributes'];
+                        if (empty($this->attachedJsFilesAttrs[$scriptname])) {
+                            $this->attachedJsFilesAttrs[$scriptname] = $attrs;
+                        } else {
+                            $this->attachedJsFilesAttrs[$scriptname] = array_merge($this->attachedJsFilesAttrs[$scriptname], $attrs);
+                        }
+
+                        if (!array_key_exists($scriptname, $file_priorities)) {
+                            $file_priorities[$scriptname] = ['specifier' => $scriptdata['specifier'], 'priorities' => []];
+                        }
+                        $file_priorities[$scriptname]['priorities'][] = $priority;
+
+                        $depends_on = [];
+                        if (!empty($scriptdata['depends_on'])) {
+                            $depends_on = $scriptdata['depends_on'];
+                        }
+                        do {
+                            $parents = [];
+                            $priority -= 1;
+                            foreach ($depends_on as $dependable) {
+                                if (!array_key_exists($dependable, $file_priorities)) {
+                                    $file_priorities[$dependable] = ['specifier' => $dependable, 'priorities' => []];
+                                }
+                                $file_priorities[$dependable]['priorities'][] = $priority;
+                                $dep_deps = empty($jscripts[$dependable]['depends_on'])
+                                                ? []
+                                                : $jscripts[$dependable]['depends_on'];
+                                $parents = array_merge($parents, $dep_deps);
+                            }
+                            $depends_on = $parents;
+                        } while (!empty($depends_on));
+                        break;
+                    }
+                }
+            }
+        }
+
+        $js_files = $js_files_pr = [];
+        foreach ($file_priorities as $file_path => $priorities) {
+            // Find the highest priority (most negative value) for the script (in terms of dependency).
+            $priority = min($priorities['priorities']);
+            if (empty($js_files_pr[$priority])) {
+                $js_files_pr[$priority] = [];
+            }
+            $js_files_pr[$priority][] = ['specifier' => $priorities['specifier'], 'file_path' => $file_path];
+        }
+        ksort($js_files_pr);
+        foreach ($js_files_pr as $entries) {
+            foreach ($entries as $entry) {
+                $attributes = '';
+                if (!empty($this->attachedJsFilesAttrs[$entry['file_path']])) {
+                    foreach ($this->attachedJsFilesAttrs[$entry['file_path']] as $attr => $val) {
+                        $attributes .= ' '.htmlspecialchars_uni($attr).'="'.htmlspecialchars_uni($val).'"';
+                    }
+                }
+                $js_files[] = [
+                    'path' => $mybb->get_asset_url($entry['specifier']),
+                    'attributes' => $attributes
+                ];
+            }
+        }
+
+        foreach ($js_files as $entry) {
+            yield $entry;
+        }
+    }
+
+    /**
+     * Attach a resource to a page.
+     *
+     * @param string  $resource The resource as either a specifier or path relative to MYBB_ROOT.
+     * @param string  $type     The type of resource. Currently only the "script" type (Javascript files)
+     *                          is supported. If empty, the type is auto-detected from the extension of $resource.
+     * @param string  $attrs    An array of attributes to include in the final rendered tag for the resource.
+     * @param boolean $absolute If true, $resource represents a path relative to MYBB_ROOT. If false, it represents
+     *                          a themelet resource specifier, e.g., '@frontend/jscripts/my.js'.
+     * @param boolean $local    If true, render the final tag immediately. Otherwise, defer it until the end of
+     *                          processing to be finally rendered in the <head> tag.
+     * @param array   $data     An array of data to convert into JSON and include as the value of one of the
+     *                          rendered tag's attributes, such as "data-json".
+     * @todo  Implement the functionality of the $data parameter: e.g., by converting it to JSON and setting it as
+     *        the value of some sort of attribute like "data-json" of a <script> tag.
+     * @todo  Support resources other than Javascript files, especially stylesheets and images.
+     *
+     * @return None
+     */
+    public function attach($resource, $type = '', $attrs = [], $absolute = false, $local = false, $data = [])
+    {
+        if (!$type) {
+            switch (my_strtolower(get_extension($resource))) {
+                case 'js':
+                $type = 'script';
+                break;
+            }
+        }
+
+        if ($type !== 'script') {
+            error('`attach_resource()` was called in a Twig template for a resource other than a Javascript file ('.htmlspecialchars_uni($resource).'). This is not yet supported.');
+        }
+
+        if (!$absolute || $local) {
+            $namespace = $this->parseName($resource)[0];
+            if (!$namespace) {
+                $namespace = $this->parseName($this->getTwigTemplateName())[0];
+            }
+            if (!$namespace) {
+                $namespace = 'frontend';
+            }
+        }
+        if (!$absolute) {
+            if (my_substr($resource, 0, 1) == '@') {
+                $resource = normalise_res_spec1($resource);
+            } else {
+                $resource = "@{$namespace}/{$resource}";
+            }
+        }
+
+        if ($local) {
+            $twig = Container::getInstance()->make(Environment::class);
+            echo $twig->render("partials/{$type}.twig", ['tag' => ['path' => $resource, 'attrs' => $attrs]]);
+        } else {
+            if (!empty($this->attachedJsFilesAttrs[$resource])) {
+                $attrs = array_merge($this->attachedJsFilesAttrs[$resource], $attrs);
+            }
+            $this->attachedJsFilesAttrs[$resource] = $attrs;
+        }
+    }
+
+    // Heavily based on https://stackoverflow.com/a/44648744/3126722
+    // except that it returns the name of the template at the top of
+    // the hierarchy rather than that at the bottom.
+    public function getTwigTemplateName()
+    {
+        foreach (array_reverse(debug_backtrace()) as $trace) {
+            if (isset($trace['object'])
+                &&
+                (strpos($trace['class'], 'TwigTemplate') !== false)
+                &&
+                'Twig_Template' !== get_class($trace['object'])
+            ) {
+                return $trace['object']->getTemplateName();
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Based on FilesystemLoader::parseName() but without the possibility of throwing an error
+     * nor with a default namespace parameter.
+     */
+    public function parseName(string $name): array
+    {
+        if (isset($name[0]) && '@' == $name[0]) {
+            if (false === $pos = strpos($name, '/')) {
+                $namespace = $name;
+                $shortname = '';
+            } else {
+                $namespace = substr($name, 1, $pos - 1);
+                $shortname = substr($name, $pos + 1);
+            }
+
+            return [$namespace, $shortname];
+        }
+
+        return ['', $name];
     }
 }

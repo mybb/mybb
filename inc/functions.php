@@ -3754,7 +3754,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 				'toolbar' => $toolbar,
 				'emoticons' => $emoticons,
 				'editor_language' => $editor_language,
-				'bind' => $bind
+				'bind' => $bind,
+				'theme' => $theme
 			]);
 		}
 	}
@@ -5205,6 +5206,113 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  * Build a theme selection menu
  *
  * @param string $name The name of the menu
+ * @param int $selected The codename of the selected theme
+ * @param boolean $usergroup_override Whether or not to override usergroup permissions
+ *                                    (true to override)
+ * @param boolean $footer Whether or not theme select is in the footer
+ *                        (true if it is)
+ * @param boolean $count_override Whether or not to override output based on theme count
+ *                                (true to override)
+ * @param boolean $return_opts_only If false, returns the HTML for a select element.
+ *                                  If true, returns a list of options suitable for supplying to
+ *                                    Form::generate_select_box()
+ * @param string $ignoredtheme The codename of a theme to omit from the list.
+ *
+ * @return Mixed Either a string of HTML (when $return_opts_only is false) or an array of options
+ *               (when $return_opts_only is true).
+ */
+function build_fs_theme_select($name, $selected = '', $effective_uid = 0, $usergroup_override = false, $footer = false, $count_override = false, $return_opts_only = false, $ignoredtheme = '', $skip_core_orig = true)
+{
+	global $lang;
+
+	$ret = '';
+	$num_themes = 0;
+	$themeselect_options = [];
+
+	if(!isset($lang->use_default))
+	{
+		$lang->use_default = $lang->lang_select_default;
+	}
+
+	build_fs_theme_select_r(
+		/*$theme_code = */'',
+		/*$depth = */'',
+		$effective_uid,
+		$usergroup_override,
+		$ignoredtheme,
+		$num_themes,
+		$themeselect_options,
+		$skip_core_orig
+	);
+
+	if ($return_opts_only) {
+		$ret = [];
+		foreach ($themeselect_options as $arr) {
+			$ret[$arr['tid']] = $arr['depth'].$arr['title'];
+		}
+	} else if ($num_themes > 1 || $count_override == true) {
+		$ret = \MyBB\template('misc/themeselect.twig', [
+			'footer' => $footer,
+			'selected' => $selected,
+			'options' => $themeselect_options,
+			'name' => $name
+		]);
+	}
+
+	return $ret;
+}
+
+function build_fs_theme_select_r($theme_code = '', $depth = '', $effective_uid = 0, $usergroup_override = false, $ignoredtheme = '', &$num_themes = 0, &$themeselect_options = [], $skip_core_orig = true)
+{
+	global $mybb;
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+
+	$themes = $themelet_hierarchy['themes'];
+
+	foreach ($themes as $t_code => $theme)
+	{
+		if (!empty($theme['ancestors'][0]) && $theme['ancestors'][0] == $theme_code
+		    ||
+		    empty($theme['ancestors'][0]) && $theme_code == ''
+		) {
+			$new_depth = $depth;
+			if ((empty($ignoredtheme) || $t_code != $ignoredtheme)
+			    &&
+			    (!$skip_core_orig || is_mutable_theme($theme['properties']['codename']))
+			    &&
+			    (!$effective_uid
+			     ||
+			     is_member($theme['properties']['allowedgroups'], $effective_uid)
+			     ||
+			     $theme['properties']['allowedgroups'] == 'all'
+			     ||
+			     $usergroup_override == true
+			    )
+			) {
+				$themeselect_options[] = [
+					'tid' => $t_code,
+					'title' => $theme['properties']['name'],
+					'depth' => $depth,
+				];
+				++$num_themes;
+				$new_depth = $depth.'--';
+			}
+			if (!empty($theme['children'])) {
+				build_fs_theme_select_r($t_code, $new_depth, $effective_uid, $usergroup_override, $ignoredtheme, $num_themes, $themeselect_options, $skip_core_orig);
+			}
+		}
+	}
+}
+
+/**
+ * Build a theme selection menu
+ *
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to the above build_fs_theme_select() alternative.
+ *
+ * @param string $name The name of the menu
  * @param int $selected The ID of the selected theme
  * @param int $tid The ID of the parent theme to select from
  * @param string $depth The current selection depth
@@ -5219,7 +5327,6 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if($tid == 0)
 	{
-		$tid = 1;
 		$num_themes = 0;
 		$themeselect_options = [];
 
@@ -5229,15 +5336,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 		}
 	}
 
-	if(!is_array($tcache))
-	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
-
-		while($theme = $db->fetch_array($query))
-		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
-		}
-	}
+	build_tcache();
 
 	if(is_array($tcache[$tid]))
 	{
@@ -5246,14 +5345,10 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 			// Show theme if allowed, or if override is on
 			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
-
-				if($theme['pid'] != 0)
-				{
-					$theme['depth'] = $depth;
-					$themeselect_options[] = $theme;
-					++$num_themes;
-					$depthit = $depth."--";
-				}
+				$theme['depth'] = $depth;
+				$themeselect_options[] = $theme;
+				++$num_themes;
+				$depthit = $depth."--";
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
@@ -5263,7 +5358,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 		}
 	}
 
-	if($tid == 1 && ($num_themes > 1 || $count_override == true))
+	if($tid == 0 && ($num_themes > 1 || $count_override == true))
 	{
 		return \MyBB\template('misc/themeselect.twig', [
 			'footer' => $footer,
@@ -5279,7 +5374,67 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 }
 
 /**
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to code based on the get_themelet_hierarchy() function.
+ */
+function build_tcache()
+{
+	global $db, $tcache;
+
+	if(!is_array($tcache))
+	{
+		require_once MYBB_ROOT.'inc/functions_themes.php';
+		$themelet_hierarchy = get_themelet_hierarchy();
+
+		$themes = [];
+
+		$query = $db->simple_select('themes', 'tid, package, title, allowedgroups');
+
+		while($theme = $db->fetch_array($query))
+		{
+			$themes[$theme['package']] = $theme;
+		}
+		foreach($themes as $theme)
+		{
+			if(isset($themelet_hierarchy['themes'][$theme['package']]['ancestors']))
+			{
+				$ancestors = $themelet_hierarchy['themes'][$theme['package']]['ancestors'];
+				$first_pid = 0;
+				if(!empty($ancestors[0]))
+				{
+					$first_parent = $ancestors[0];
+					$first_pid = $themes[$first_parent]['tid'];
+				}
+				$theme['pid'] = $first_pid;
+				$tcache[$first_pid][$theme['tid']] = $theme;
+			}
+		}
+	}
+}
+
+/**
+ * Get the properties of a theme.
+ *
+ * @param int $codename The codename of the theme.
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
+ */
+function get_fs_theme($codename)
+{
+	global $mybb;
+
+	require_once MYBB_ROOT.'inc/functions_themes.php';
+	$themelet_hierarchy = get_themelet_hierarchy();
+
+	return $themelet_hierarchy['themes'][$codename]['properties']
+	         ? $themelet_hierarchy['themes'][$codename]['properties']
+	         : false;
+}
+
+/**
  * Get the theme data of a theme id.
+ *
+ * @deprecated No longer meaningful, nor used in core code. Plugins which use this function should switch
+ * to the above get_fs_theme() alternative.
  *
  * @param int $tid The theme id of the theme.
  * @return boolean|array False if no valid theme, Array with the theme data otherwise
@@ -5288,15 +5443,7 @@ function get_theme($tid)
 {
 	global $tcache, $db;
 
-	if(!is_array($tcache))
-	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
-
-		while($theme = $db->fetch_array($query))
-		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
-		}
-	}
+	build_tcache();
 
 	$s_theme = false;
 
@@ -9090,4 +9237,388 @@ function mk_path_abs($path, $base = MYBB_ROOT)
 	}
 
 	return $path;
+}
+
+/**
+ * Attempt to read a JSON file (such as a manifest) and return its contents as an array.
+ *
+ * @param string $json_file The path to the JSON file.
+ * @param boolean $show_errs If true and an error occurs, display the error inline. If not in the ACP, exit thereafter.
+ * @return array
+ */
+function read_json_file($json_file, &$err_msg = '', $show_errs = true)
+{
+	global $lang, $page, $error_handler;
+
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
+
+	$ret = [];
+
+	if (!file_exists($json_file)) {
+		$err_msg = $lang->sprintf($lang->error_missing_json_file, $json_file);
+		if ($show_errs) {
+			if (defined('IN_ADMINCP')) {
+				$page->output_inline_error($err_msg);
+			} else {
+				$error_handler->error(MYBB_GENERAL, $err_msg);
+			}
+		}
+	} else if (!is_file($json_file) || !is_readable($json_file)) {
+		$err_msg = $lang->sprintf($lang->error_unreadable_json_file, $json_file);
+		if ($show_errs) {
+			if (defined('IN_ADMINCP')) {
+				$page->output_inline_error($err_msg);
+			} else	$error_handler->error(MYBB_GENERAL, $err_msg);
+		}
+	} else {
+		$json = file_get_contents($json_file);
+		if ($json === false) {
+			$err_msg = $lang->sprintf($lang->error_fgc_failed_for_json_file, $json_file);
+			if ($show_errs) {
+				if (defined('IN_ADMINCP')) {
+					$page->output_inline_error($err_msg);
+				} else	$error_handler->error(MYBB_GENERAL, $err_msg);
+			}
+		} else {
+			$ret = json_decode($json, true);
+			if (!is_array($ret)) {
+				$err_msg = $lang->sprintf($lang->error_invalid_json_in_file, $json_file);
+				if ($show_errs) {
+					if (defined('IN_ADMINCP')) {
+						$page->output_inline_error($err_msg);
+					} else	$error_handler->error(MYBB_GENERAL, $err_msg);
+				} else	$ret = [];
+			}
+		}
+	}
+
+	return $ret;
+}
+
+/**
+ * Attempt to write an array to a JSON file.
+ *
+ * @param string $json_file The path to the JSON file.
+ * @param array $data The array to write to the file.
+ *
+ * @return boolean True on success, false on failure.
+ */
+function write_json_file($json_file, $data)
+{
+	$json = json_encode($data, JSON_PRETTY_PRINT);
+	if (!$json) {
+		return false;
+	} else	return file_put_contents($json_file, $json);
+}
+
+/**
+ * Recursively copy or move the files/directories within directory $source into directory $dest,
+ * such that if a destination directory already exists, files and/or directories are copied into it
+ * without otherwise affecting it. The only difference between copying and moving is that, when
+ * moving, the source directory is recursively deleted after being copied to the destination.
+ *
+ * @param string $source The source directory.
+ * @param string $dest The destination directory.
+ * @param boolean $del_source True for "move" dynamics (the $source directory is deleted after
+ *                            copying it to $dest); false for "copy" dynamics (the $source directory
+ *                            is not altered).
+ * @param string $error Stores any error messages.
+ *
+ * @return boolean True on success; false on failure.
+ */
+function cp_or_mv_recursively($source, $dest, $del_source = false, &$error = '')
+{
+	global $lang;
+
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
+
+	$source_dirs = [];
+	$moved = [];
+	$error = '';
+	if (!file_exists($dest) && !mkdir($dest, 0755, true)) {
+		$error = $lang->sprintf(
+			$lang->error_failed_move_create_dir_backing_out,
+			$dest
+		);
+		goto backout_cp_or_mv_recursively;
+	}
+	try {
+		$rci = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
+	} catch (Exception $e) {
+		$error = $lang->sprintf($lang->error_exception_caught_backing_out, $e->getMessage());
+		goto backout_cp_or_mv_recursively;
+	}
+
+	foreach (
+		$iterator = new \RecursiveIteratorIterator(
+			$rci,
+			\RecursiveIteratorIterator::SELF_FIRST
+		) as $item
+	) {
+		if ($item->isDir()) {
+			$dir = $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
+				$error = $lang->sprintf(
+					$lang->error_failed_move_create_dir_backing_out,
+					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
+				);
+				goto backout_cp_or_mv_recursively;
+			} else {
+				$source_dirs[] = $source.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			}
+		} else {
+			$func = $del_source ? 'rename' : 'copy';
+			if (!$func($item, $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname())) {
+				$error = $lang->sprintf(
+					$lang->error_failed_move_backing_out,
+					$item,
+					$dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname()
+				);
+				goto backout_cp_or_mv_recursively;
+			} else {
+				$moved[(string)$item] = $dest.DIRECTORY_SEPARATOR.$iterator->getSubPathname();
+			}
+		}
+	}
+
+	if ($del_source) {
+		rmdir_recursive($source);
+	}
+
+	return true;
+
+backout_cp_or_mv_recursively:
+	foreach ($source_dirs as $dir) {
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+	}
+	foreach ($moved as $from => $to) {
+		if ($del_source) rename($to, $from);
+	}
+
+	// Earlier return possible
+	return false;
+}
+
+// Copied from https://stackoverflow.com/a/15111679 with edits for coding style
+// TODO: Try to reconcile this with the preexisting similar function my_rmdir_recursive() above,
+// which I (Laird) have belatedly discovered.
+function rmdir_recursive($dirPath)
+{
+    if (!empty($dirPath) && is_dir($dirPath)) {
+        $dirObj= new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS); //upper dirs not included,otherwise DISASTER HAPPENS :)
+        $files = new RecursiveIteratorIterator($dirObj, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $path) {
+            $path->isDir() && !$path->isLink() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+        }
+        rmdir($dirPath);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @return array
+ */
+function get_plugins_list()
+{
+	// Get a list of the plugin files which exist in the plugins directory
+	$plugins_list = [];
+	$base = MYBB_ROOT.'inc/plugins/';
+	$dir = @opendir($base);
+	if ($dir) {
+		while ($plugin_code = readdir($dir)) {
+			$p_file = "{$base}{$plugin_code}/{$plugin_code}.php";
+			if (is_readable($p_file) && is_file($p_file)) {
+				$plugins_list[] = $plugin_code;
+			}
+		}
+		@sort($plugins_list);
+	}
+	@closedir($dir);
+
+	return $plugins_list;
+}
+
+/**
+ * Determine via its plugin.json file the name of the current plugin with codename $plugin_code.
+ *
+ * @param string $plugin_code The codename (directory) of the plugin for which to find the name.
+ * @param string $err_msg Stores the messages for any errors encountered.
+ * @return Mixed Boolean false if an error was encountered (in which case $err_msg will be set),
+ *               and the version number as a string on success.
+ */
+function get_plugin_name($plugin_code, &$err_msg = '')
+{
+    static $name = [];
+
+    if (isset($name[$plugin_code])) {
+        return $name[$plugin_code];
+    }
+
+    $err_msg = '';
+    $manifest_file = MYBB_ROOT."inc/plugins/$plugin_code/plugin.json";
+    $plugininfo = read_json_file($manifest_file, $err_msg, false);
+    plugininfo_keys_to_raw($plugininfo, /*$show_errs = */false);
+    if (!isset($plugininfo['name'])) {
+        if (!$err_msg) {
+            $err_msg = 'The manifest file at "'.htmlspecialchars_uni($manifest_file).
+            '" does not supply a valid `name` property (or is non-existent, unreadable, or corrupt.';
+        }
+        $name[$plugin_code] = false;
+    } else {
+        $name[$plugin_code] = $plugininfo['name'];
+    }
+
+    return $name[$plugin_code];
+}
+
+/**
+ * Translates any `[field]_key` fields in the supplied plugin info into `[field]` keys using the language key stipulated
+ * by those `_key` fields. Checks whether this can be done for the fields `name` and `description`.
+ *
+ * @param array $plugininfo An array of plugin info, e.g., as retrieved from a plugin.json file.
+ * @param boolean $show_errs If true, then output an inline error message on error; otherwise, ignore errors.
+ */
+function plugininfo_keys_to_raw(&$plugininfo, $show_errs = true)
+{
+	global $lang, $page;
+
+	if (!empty($plugininfo['langfile'])) {
+		$lang->load($plugininfo['langfile'], /*$forceuserarea=*/false, /*$supress_error=*/false, $plugininfo['codename']);
+		foreach (['name', 'description'] as $key) {
+			if (isset($plugininfo[$key]) && isset($plugininfo[$key.'_key'])) {
+				if ($show_errs) {
+					$page->output_inline_error($lang->sprintf($lang->error_pl_json_both_key_and_raw, $key, $key.'_key', $plugininfo['codename']));
+				}
+			} else if (!empty($plugininfo[$key.'_key'])) {
+				$plugininfo[$key] = $lang->{$plugininfo[$key.'_key']};
+			}
+		}
+	}
+}
+
+/**
+ * Creates a randomly-named temporary directory in the system temporary directory.
+ *
+ * @return Mixed The path as a string on success; boolean false on failure.
+ */
+function create_temp_dir() {
+	$path_base = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.mt_rand().microtime(true);
+	$path = $path_base;
+	for ($i = 1; $i <= 10; $i++) {
+		if (mkdir($path, 0777)) {
+			return $path;
+		} else {
+			$path = $path_base.$i;
+		}
+	}
+	return false;
+}
+
+/**
+ * Zips the $sourcepath directory into the $zip_filename zip archive, overwriting any existing
+ * archive.
+ *
+ * @param string $sourcepath The path to the directory to zip.
+ * @param string $zip_filename The path to the file to zip it into.
+ * @param string $err_msg Stores any error message when an error is encountered (and thus when
+ *                        false is returned).
+ *
+ * @return boolean True on success; false on failure (in which case $err_msg will be set).
+ */
+function zip_directory($sourcepath, $zip_filename, &$err_msg = '')
+{
+	global $lang;
+
+	// Load the user area language file even if in the ACP, so we don't have to duplicate
+	// language strings.
+	$lang->load('global', /*$forceuserarea = */true, /*$supress_error = */true);
+
+	$ret = false;
+
+	if (!class_exists('ZipArchive')) {
+		$err_msg = $lang->error_zip_missing_class;
+	} else if (!chdir($sourcepath)) {
+		$err_msg = $lang->sprintf($lang->error_zip_chdir_failed, $sourcepath);
+	} else {
+		$zip = new ZipArchive();
+		if ($zip->open($zip_filename, ZipArchive::CREATE) !== true) {
+			$err_msg = $lang->sprintf($lang->error_zip_create_failed, $zip_filename);;
+		} else {
+			$sourcepath = str_replace('\\', '/', realpath($sourcepath));
+
+			if (is_dir($sourcepath) === true) {
+				if ($zip->addEmptyDir(basename($sourcepath)) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_dir_failed, basename($sourcepath));
+				}
+				if ($zip->addPattern('(.*)', '.', array('add_path' => basename($sourcepath).'/', 'remove_all_path' => true)) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_dir_contents_failed, $sourcepath);
+				}
+
+				$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourcepath), RecursiveIteratorIterator::SELF_FIRST);
+
+				foreach ($files as $filepath) {
+					// Ignore files; we only want directories
+					if (!is_dir($filepath)) continue;
+
+					$filepath = str_replace('\\', '/', $filepath);
+
+					// Ignore "." and ".." directories
+					if (in_array(substr($filepath, strrpos($filepath, '/')+1), array('.', '..'))) {
+						continue;
+					}
+
+					$filepath = realpath($filepath);
+					$local_filepath = basename($sourcepath).'/'.str_replace($sourcepath.'/', '', $filepath);
+
+					if ($zip->addEmptyDir($local_filepath) === false) {
+						$err_msg = $lang->sprintf($lang->error_zip_add_dir_failed, $local_filepath);
+					}
+					if (!chdir($filepath)) {
+						$err_msg = $lang->sprintf($lang->error_zip_chdir_failed, $local_filepath);
+					} else if ($zip->addPattern('(.*)', '.', array('add_path' => $local_filepath.'/', 'remove_all_path' => true)) === false) {
+						$err_msg = $lang->sprintf($lang->error_zip_add_dir_contents_failed, $local_filepath);
+					}
+				}
+			} else if (is_file($sourcepath) === true) {
+				$local_filepath = basename($sourcepath);
+				if ($zip->addFile($sourcepath, $local_filepath) === false) {
+					$err_msg = $lang->sprintf($lang->error_zip_add_file_failed, $local_filepath);
+				}
+			}
+			if (!$zip->close()) {
+				$err_msg = $lang->sprintf($lang->error_zip_close_archive_failed, $zip_filename);
+			} else	$ret = true;
+		}
+	}
+
+	return $ret;
+}
+
+function is_compatible(string $compatibilities): bool {
+	global $mybb;
+
+	// No compatibility set or compatibility = * - assume compatible
+	if (empty($compatibilities || $compatibilities == "*")) {
+		return true;
+	}
+
+	$compatibility = explode(",", $compatibilities);
+	foreach ($compatibility as $version) {
+		$version = trim($version);
+		$version = str_replace("*", ".+", preg_quote($version));
+		$version = str_replace("\.+", ".+", $version);
+		if (preg_match("#{$version}#i", $mybb->version_code)) {
+			return true;
+		}
+	}
+
+	// Nothing matches
+	return false;
 }

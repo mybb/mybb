@@ -57,6 +57,9 @@ function forum_action_handler($action)
 	if(isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
+		if (!empty($actions[$action]['plugin'])) {
+			$page->plugin = $actions[$action]['plugin'];
+		}
 		return $actions[$action]['file'];
 	}
 	else

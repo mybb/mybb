@@ -286,7 +286,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   requireprefix smallint NOT NULL default '0',
   password varchar(50) NOT NULL default '',
   showinjump smallint NOT NULL default '0',
-  style smallint NOT NULL default '0',
+  style varchar(30) NOT NULL DEFAULT '',
   overridestyle smallint NOT NULL default '0',
   rulestype smallint NOT NULL default '0',
   rulestitle varchar(200) NOT NULL default '',
@@ -787,53 +787,6 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 	PRIMARY KEY(lid)
 );";
 
-$tables[] = "CREATE TABLE mybb_templategroups (
-  gid serial,
-  prefix varchar(50) NOT NULL default '',
-  title varchar(100) NOT NULL default '',
-  isdefault smallint NOT NULL default '0',
-  PRIMARY KEY (gid)
-);";
-
-$tables[] = "CREATE TABLE mybb_templates (
-  tid serial,
-  title varchar(120) NOT NULL default '',
-  template text NOT NULL default '',
-  sid smallint NOT NULL default '0',
-  version varchar(20) NOT NULL default '0',
-  status varchar(10) NOT NULL default '',
-  dateline int NOT NULL default '0',
-  PRIMARY KEY (tid)
-);";
-
-$tables[] = "CREATE TABLE mybb_templatesets (
-  sid serial,
-  title varchar(120) NOT NULL default '',
-  PRIMARY KEY (sid)
-);";
-
-$tables[] = "CREATE TABLE mybb_themes (
-  tid serial,
-  name varchar(100) NOT NULL default '',
-  pid smallint NOT NULL default '0',
-  def smallint NOT NULL default '0',
-  properties text NOT NULL default '',
-  stylesheets text NOT NULL default '',
-  allowedgroups text NOT NULL default '',
-  PRIMARY KEY (tid)
-);";
-
-$tables[] = "CREATE TABLE mybb_themestylesheets(
-	sid serial,
-	name varchar(30) NOT NULL default '',
-	tid numeric(10,0) NOT NULL default '0',
-	attachedto text NOT NULL,
-	stylesheet text NOT NULL,
-	cachefile varchar(100) NOT NULL default '',
-	lastmodified numeric(30,0) NOT NULL default '0',
-	PRIMARY KEY(sid)
-);";
-
 $tables[] = "CREATE TABLE mybb_threadprefixes (
 	pid serial,
 	prefix varchar(120) NOT NULL default '',
@@ -1060,7 +1013,7 @@ $tables[] = "CREATE TABLE mybb_users (
   dstcorrection smallint NOT NULL default '0',
   buddylist text NOT NULL default '',
   ignorelist text NOT NULL default '',
-  style smallint NOT NULL default '0',
+  style varchar(30) NOT NULL DEFAULT '',
   away smallint NOT NULL default '0',
   awaydate int NOT NULL default '0',
   returndate varchar(15) NOT NULL default '',
