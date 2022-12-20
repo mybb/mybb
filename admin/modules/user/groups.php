@@ -238,30 +238,28 @@ if($mybb->input['action'] == "join_requests")
 	$num_requests = $db->fetch_field($query, "num_requests");
 
 	$per_page = 20;
-
-	if($mybb->input['page'] > 0)
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
 	{
-		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($current_page-1)*$per_page;
-		$pages = $num_requests / $per_page;
-		$pages = ceil($pages);
-		if($current_page > $pages)
+		$start = ($pagenum - 1) * $per_page;
+		$pages = ceil($num_requests / $per_page);
+		if($pagenum > $pages)
 		{
 			$start = 0;
-			$current_page = 1;
+			$pagenum = 1;
 		}
 	}
 	else
 	{
 		$start = 0;
-		$current_page = 1;
+		$pagenum = 1;
 	}
 
 	// Do we need to construct the pagination?
 	$pagination = '';
 	if($num_requests > $per_page)
 	{
-		$pagination = draw_admin_pagination($page, $per_page, $num_requests, "index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}");
+		$pagination = draw_admin_pagination($pagenum, $per_page, $num_requests, "index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}");
 		echo $pagination;
 	}
 
