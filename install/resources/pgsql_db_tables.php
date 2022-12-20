@@ -304,7 +304,8 @@ $tables[] = "CREATE TABLE mybb_forums (
 $tables[] = "CREATE TABLE mybb_forumsread (
   fid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0'
+  dateline int NOT NULL default '0',
+  UNIQUE (fid, uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
@@ -889,7 +890,8 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0'
+  dateline int NOT NULL default '0',
+  UNIQUE (tid, uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
