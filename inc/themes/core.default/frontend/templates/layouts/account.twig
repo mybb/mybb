@@ -56,6 +56,12 @@
                 <span class="section-menu__text">{{ lang.nav_subscriptions }}</span>
             </a>
         </li>
+        <li class="section-menu__item section-menu__item--securitylog{% if mybb.input.action == 'securitylog' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=securitylog" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'file-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_securitylog }}</span>
+            </a>
+        </li>
     </ul>
 </nav>
 

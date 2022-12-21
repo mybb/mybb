@@ -130,6 +130,9 @@ switch($mybb->input['action'])
 	case "attachments":
 		add_breadcrumb($lang->ucp_nav_attachments);
 		break;
+	case "securitylog":
+		add_breadcrumb($lang->ucp_nav_securitylog);
+		break;
 }
 
 if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
@@ -3338,6 +3341,91 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	}
 	$plugins->run_hooks('usercp_do_attachments_end');
 	redirect("usercp.php?action=attachments", $lang->attachments_deleted);
+}
+
+if($mybb->input['action'] == "securitylog")
+{
+	// Pagination
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+
+	$perpage = $mybb->settings['threadsperpage'];
+
+	$plugins->run_hooks('usercp_securitylog_start');
+
+	$query = $db->query("
+        SELECT COUNT(uid) AS count
+        FROM ".TABLE_PREFIX."securitylog
+        WHERE uid='".$mybb->user['uid']."'
+    ");
+	$rescount = $db->fetch_field($query, "count");
+
+	// Figure out if we need to display multiple pages.
+	if($mybb->get_input('page') != "last")
+	{
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	}
+
+	$postcount = (int)$rescount;
+	$pages = $postcount / $perpage;
+	$pages = ceil($pages);
+
+	if($mybb->get_input('page') == "last")
+	{
+		$page = $pages;
+	}
+
+	if($page > $pages || $page <= 0)
+	{
+		$page = 1;
+	}
+
+	if($page)
+	{
+		$start = ($page - 1) * $perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+
+	if($postcount > $perpage)
+	{
+		$multipage = multipage($postcount, $perpage, $page, "usercp.php?action=securitylog");
+	}
+
+	$securitylog = [];
+	$query = $db->query("
+        SELECT *
+        FROM ".TABLE_PREFIX."securitylog
+        WHERE uid='".$mybb->user['uid']."'
+        ORDER BY dateline DESC
+        LIMIT {$start}, {$perpage}
+    ");
+	while($logitem = $db->fetch_array($query))
+	{
+		$information = '';
+		$logitem['date'] = my_date('relative', $logitem['dateline']);
+
+		$information = 'security_log_'.$logitem['type'];
+		$logitem['information'] = $lang->$information;
+
+		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
+
+		$plugins->run_hooks('usercp_securitylog_result');
+
+		$securitylog[] = $logitem;
+	}
+
+	$plugins->run_hooks('usercp_securitylog_end');
+
+	output_page(\MyBB\template('usercp/securitylog.twig', [
+		'multipage' => $multipage,
+		'securitylog' => $securitylog,
+	]));
 }
 
 if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")

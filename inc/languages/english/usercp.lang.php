@@ -28,6 +28,7 @@ $l['nav_drafts'] = "Drafts";
 $l['nav_attachments'] = "Attachments";
 $l['nav_subscriptions'] = "Subscriptions";
 $l['nav_removesubscription'] = "Remove Subscription";
+$l['nav_securitylog'] = "Security Log";
 
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";
@@ -432,3 +433,13 @@ $l['buddyrequest_accepted'] = 'The selected buddy request has been accepted.';
 $l['buddyrequest_declined'] = 'The selected buddy request has been declined.';
 $l['user_doesnt_exist'] = 'The end user no longer exists.';
 $l['buddyrequests_sent_success'] = 'Buddy requests sent successfully.';
+
+$l['security_log'] = "Security Log";
+$l['no_security_logs'] = "No Security actions have been logged.";
+$l['security_log_failed_login'] = "Failed Login";
+$l['security_log_failed_login_admincp'] = "Failed Login (Admin CP)";
+$l['security_log_incorrect_pin'] = "Incorrect Admin CP Pin";
+$l['security_log_changed_email'] = "Changed Email Address";
+$l['security_log_changed_password'] = "Changed Password";
+$l['security_log_lost_password'] = "Lost Password email sent";
+$l['security_log_reset_password'] = "Password reset email sent";
