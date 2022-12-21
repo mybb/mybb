@@ -629,8 +629,7 @@ $tables[] = "CREATE TABLE mybb_securitylog (
 	uid int NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default '',
 	dateline int NOT NULL default '0',
-	type varchar(50) NOT NULL default '',
-	data TEXT NOT NULL
+	type varchar(50) NOT NULL default ''
  );";
 
 $tables[] = "CREATE TABLE mybb_searchlog (

@@ -4135,9 +4135,8 @@ function gzip_encode($contents, $level = 1)
  *
  * @param string $type The type of security action to log.
  * @param int $uid The user ID (if not specified, $mybb->user will be used).
- * @param array $data Any miscellaneous data of the security action.
  */
-function log_security_action($type, $uid = 0, $data = array())
+function log_security_action($type, $uid = 0)
 {
 	global $mybb, $db;
 
@@ -4148,18 +4147,11 @@ function log_security_action($type, $uid = 0, $data = array())
 		$uid = $mybb->user['uid'];
 	}
 
-	// Any extra data - we my_serialize and insert in to its own column
-	if(is_array($data))
-	{
-		$data = my_serialize($data);
-	}
-
 	$sql_array = array(
 		"uid" => $uid,
 		"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
 		"dateline" => TIME_NOW,
-		"type" => $db->escape_string($type),
-		"data" => $db->escape_string($data)
+		"type" => $db->escape_string($type)
 	);
 
 	$db->insert_query("securitylog", $sql_array);

@@ -239,7 +239,7 @@ if(!$mybb->input['action'])
 	");
 	while($logitem = $db->fetch_array($query))
 	{
-		$information = $data = $username = '';
+		$information = $username = '';
 
 		$plugins->run_hooks("admin_tools_securitylog_item");
 
@@ -258,11 +258,6 @@ if(!$mybb->input['action'])
 		else
 		{
 			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->guest);
-		}
-
-		if(is_array($logitem['data']))
-		{
-			$data = my_unserialize($logitem['data']);
 		}
 
 		$information = 'security_log_'.$logitem['type'];
