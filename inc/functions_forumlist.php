@@ -17,7 +17,7 @@
 */
 function build_forumbits($pid=0, $depth=1)
 {
-	global $db, $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
+	global $db, $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
 	static $private_forums;
 
 	$forum_listing = '';
@@ -519,7 +519,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
  */
 function get_forum_unapproved($forum)
 {
-	global $lang, $templates;
+	global $lang;
 
 	$unapproved_threads = $unapproved_posts = '';
 
@@ -539,7 +539,6 @@ function get_forum_unapproved($forum)
 			}
 
 			$forum['unapprovedposts'] = my_number_format($forum['unapprovedposts']);
-			eval("\$unapproved_posts = \"".$templates->get("forumbit_depth2_forum_unapproved_posts")."\";");
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -554,7 +553,6 @@ function get_forum_unapproved($forum)
 			}
 
 			$forum['unapprovedthreads'] = my_number_format($forum['unapprovedthreads']);
-			eval("\$unapproved_threads = \"".$templates->get("forumbit_depth2_forum_unapproved_threads")."\";");
 		}
 	}
 	return array(

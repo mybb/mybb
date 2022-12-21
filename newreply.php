@@ -11,16 +11,6 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method";
-$templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
-$templatelist .= ",postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,newreply_modoptions_close,newreply_modoptions_stick";
-$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,post_attachments_viewlink,postbit_attachments_attachment,newreply_signature";
-$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_javascript,postbit_groupimage,postbit_attachments,newreply_postoptions";
-$templatelist .= ",postbit_rep_button,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link";
-$templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored";
-$templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_multiselect,postbit_reputation,postbit_www,postbit_away,postbit_icon,postbit_email,postbit_report,postbit,postbit_warn";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -1271,70 +1261,74 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], get_thread_link($tid));
 		}
 
+		$pidin = array();
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
 		}
 
-		$pidin = implode(",", $pidin);
+		if(!empty($pidin))
+            {
+            $pidin = implode(",", $pidin);
 
-		// Fetch attachments
-		$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
-		while($attachment = $db->fetch_array($query))
-		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-		}
+            // Fetch attachments
+            $query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
+            while($attachment = $db->fetch_array($query))
+            {
+                $attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+            }
 
-		$posts = [];
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC, pid DESC
-		");
+            $posts = [];
+            $query = $db->query("
+                SELECT p.*, u.username AS userusername
+                FROM ".TABLE_PREFIX."posts p
+                LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+                WHERE pid IN ($pidin)
+                ORDER BY dateline DESC, pid DESC
+            ");
 
-		while($post = $db->fetch_array($query))
-		{
-			if($post['userusername'])
-			{
-				$post['username'] = $post['userusername'];
-			}
+            while($post = $db->fetch_array($query))
+            {
+                if($post['userusername'])
+                {
+                    $post['username'] = $post['userusername'];
+                }
 
-			$post['postdate'] = my_date('relative', $post['dateline']);
+                $post['postdate'] = my_date('relative', $post['dateline']);
 
-			$parser_options = array(
-				"allow_html" => $forum['allowhtml'],
-				"allow_mycode" => $forum['allowmycode'],
-				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode'],
-				"allow_videocode" => $forum['allowvideocode'],
-				"me_username" => $post['username'],
-				"filter_badwords" => 1
-			);
+                $parser_options = array(
+                    "allow_html" => $forum['allowhtml'],
+                    "allow_mycode" => $forum['allowmycode'],
+                    "allow_smilies" => $forum['allowsmilies'],
+                    "allow_imgcode" => $forum['allowimgcode'],
+                    "allow_videocode" => $forum['allowvideocode'],
+                    "me_username" => $post['username'],
+                    "filter_badwords" => 1
+                );
 
-			if($post['smilieoff'] == 1)
-			{
-				$parser_options['allow_smilies'] = 0;
-			}
+                if($post['smilieoff'] == 1)
+                {
+                    $parser_options['allow_smilies'] = 0;
+                }
 
-			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_imgcode'] = 0;
-			}
+                if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+                {
+                    $parser_options['allow_imgcode'] = 0;
+                }
 
-			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_videocode'] = 0;
-			}
+                if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+                {
+                    $parser_options['allow_videocode'] = 0;
+                }
 
-			$plugins->run_hooks("newreply_threadreview_post");
+                $plugins->run_hooks("newreply_threadreview_post");
 
-			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+                $post['message'] = $parser->parse_message($post['message'], $parser_options);
 
-			$posts[] = $post;
-		}
+                $posts[] = $post;
+            }
+        }
 	}
 
 	$newreply['showpostoptions'] = false;

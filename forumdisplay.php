@@ -957,9 +957,19 @@ if(!empty($threadCache) && is_array($threadCache))
 			}
 			else
 			{
-				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-				$thread['width'] = (int)round($thread['averagerating']) * 20;
 				$thread['numratings'] = (int)$thread['numratings'];
+				
+				if($thread['numratings'] == 0)
+				{
+					$thread['averagerating'] = 0;
+					$thread['width'] = 0;
+				}
+				else
+				{
+					$thread['averagerating'] = (float)round($thread['averagerating'], 2);
+					$thread['width'] = (int)round($thread['averagerating']) * 20;
+				}
+
 				$thread['rating'] = 'normal';
 			}
 		}
@@ -1155,11 +1165,6 @@ if($mybb->user['uid'])
 if($foruminfo['type'] != "c")
 {
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
-
-	// Populate Forumsort
-	$forumsort = '';
-	eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
-
 	$plugins->run_hooks("forumdisplay_threadlist");
 }
 

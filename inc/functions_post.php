@@ -209,10 +209,22 @@ function build_postbit($post, $post_type=0)
 	}
 	// Fetch display group data.
 	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-	if(!$post['displaygroup'])
+
+	if(empty($post['displaygroup']))
 	{
 		$post['displaygroup'] = $post['usergroup'];
 	}
+
+	// Set to hardcoded Guest usergroup ID (1) for guest author or deleted user.
+	if(empty($post['usergroup']))
+	{
+		$post['usergroup'] = 1;
+	}
+	if(empty($post['displaygroup']))
+	{
+		$post['displaygroup'] = 1;
+	}
+
 	$displaygroup = usergroup_displaygroup($post['displaygroup']);
 	if(is_array($displaygroup))
 	{
@@ -524,6 +536,8 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
+		$post['userstars'] = '';
+		$post['useravatar'] = '';
 
 		$usergroup['title'] = $lang->na;
 
@@ -927,7 +941,6 @@ function build_postbit($post, $post_type=0)
 			if($mybb->user['uid'] && $post['visible'] == 0 && $post['uid'] == $mybb->user['uid'] && !is_moderator($fid, "canviewunapprove"))
 			{
 				$ignored_message = $lang->sprintf($lang->postbit_post_under_moderation, $post['username']);
-				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 

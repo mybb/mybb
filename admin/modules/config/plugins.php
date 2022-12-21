@@ -219,7 +219,7 @@ if($mybb->input['action'] == "check")
 			}
 			$plugininfo = $infofunc();
 			$plugininfo['guid'] = isset($plugininfo['guid']) ? trim($plugininfo['guid']) : null;
-			$plugininfo['codename'] = trim($plugininfo['codename']);
+			$plugininfo['codename'] = isset($plugininfo['codename']) ? trim($plugininfo['codename']) : null;
 
 			if($plugininfo['codename'] != "")
 			{
@@ -306,8 +306,12 @@ if($mybb->input['action'] == "check")
 		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
 			$plugin['download_url']['value'] = htmlspecialchars_uni($plugin['download_url']['value']);
-			$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
 			$plugin['version']['value'] = htmlspecialchars_uni($plugin['version']['value']);
+
+			if(isset($plugin['vulnerable']['value']))
+			{
+				$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
+			}
 
 			if($is_vulnerable)
 			{

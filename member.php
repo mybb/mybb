@@ -15,18 +15,6 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 
-$templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
-$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_warninglevel_link,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions_manageban,member_profile_adminoptions,member_profile";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_referrals_link,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
-$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
-$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,member_viewnotes";
-$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
-$templatelist .= ",member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_pm,member_profile_contact_details,member_profile_modoptions_manageban";
-$templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
-$templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
-$templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -830,7 +818,7 @@ if($mybb->input['action'] == "register")
 				$ref = $db->fetch_array($query);
 				$select['referrername'] = $ref['username'];
 			}
-			else if(isset($referrer))
+			else if(!empty($referrer))
 			{
 				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
@@ -878,9 +866,9 @@ if($mybb->input['action'] == "register")
 
 				$profilefield['type_multiselect'] = $profilefield['type_select'] = $profilefield['type_radio'] = $profilefield['type_checkbox'] = $profilefield['type_textarea'] = $profilefield['type_text'] = false;
 				$seloptions = array();
-				$thing = explode("\n", $profilefield['type'], "2");
+				$thing = explode("\n", $profilefield['type'], 2);
 				$type = trim($thing[0]);
-				$options = $thing[1];
+				$options = isset($thing[1]) ? $thing[1] : null;
 				$profilefield['field'] = "fid{$profilefield['fid']}";
 
 				if(!empty($errors) && isset($mybb->input['profile_fields'][$field]))
@@ -2254,8 +2242,8 @@ if($mybb->input['action'] == "profile")
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 
 	// Get the user title for this user
-	unset($memprofile['user_title']);
 	unset($stars);
+	$memprofile['user_title'] = '';
 	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
@@ -2269,9 +2257,12 @@ if($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		// No usergroup title so get a default one
-		$usertitles = $cache->read('usertitles');
+		if(!isset($usertitles))
+		{
+			$usertitles = $cache->read('usertitles');
+		}
 
+		// No usergroup title so get a default one
 		if(is_array($usertitles))
 		{
 			foreach($usertitles as $title)
@@ -2293,9 +2284,9 @@ if($mybb->input['action'] == "profile")
 		// Set the number of stars if display group has constant number of stars
 		$stars = $displaygroup['stars'];
 	}
-	else if(!$stars)
+	else if(!isset($stars))
 	{
-		if(!is_array($usertitles))
+		if(!isset($usertitles))
 		{
 			$usertitles = $cache->read('usertitles');
 		}
@@ -2312,6 +2303,11 @@ if($mybb->input['action'] == "profile")
 					break;
 				}
 			}
+		}
+
+		if(!isset($stars))
+		{
+			$stars = 0;
 		}
 	}
 
@@ -2546,51 +2542,59 @@ if($mybb->input['action'] == "profile")
 		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
 		$memban = $db->fetch_array($query);
 
-		if($memban['reason'])
+		if($db->num_rows($query))
 		{
-			$memprofile['banned_reason'] = $parser->parse_badwords($memban['reason']);
-		}
-		else
-		{
-			$memprofile['banned_reason'] = $lang->na;
-		}
-
-		$memprofile['perm_ban'] = false;
-		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
-		{
-			$memprofile['perm_ban'] = true;
-			$memprofile['banlength'] = $lang->permanent;
-			$memprofile['banned_class'] = "normal_banned";
-		}
-		else
-		{
-			// Set up the array of ban times.
-			$bantimes = fetch_ban_times();
-
-			$memprofile['banlength'] = $bantimes[$memban['bantime']];
-			$remaining = $memban['lifted'] - TIME_NOW;
-
-			$memprofile['timeremaining'] = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-			if($remaining < 3600)
+			if($memban['reason'])
 			{
-				$memprofile['banned_class'] = "high_banned";
-			}
-			else if($remaining < 86400)
-			{
-				$memprofile['banned_class'] = "moderate_banned";
-			}
-			else if($remaining < 604800)
-			{
-				$memprofile['banned_class'] = "low_banned";
+				$memprofile['banned_reason'] = $parser->parse_badwords($memban['reason']);
 			}
 			else
 			{
+				$memprofile['banned_reason'] = $lang->na;
+			}
+
+			$memprofile['perm_ban'] = false;
+			if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
+			{
+				$memprofile['perm_ban'] = true;
+				$memprofile['banlength'] = $lang->permanent;
 				$memprofile['banned_class'] = "normal_banned";
 			}
-		}
+			else
+			{
+				// Set up the array of ban times.
+				$bantimes = fetch_ban_times();
 
-		$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+				$memprofile['banlength'] = $bantimes[$memban['bantime']];
+				$remaining = $memban['lifted'] - TIME_NOW;
+
+				$memprofile['timeremaining'] = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+				if($remaining < 3600)
+				{
+					$memprofile['banned_class'] = "high_banned";
+				}
+				else if($remaining < 86400)
+				{
+					$memprofile['banned_class'] = "moderate_banned";
+				}
+				else if($remaining < 604800)
+				{
+					$memprofile['banned_class'] = "low_banned";
+				}
+				else
+				{
+					$memprofile['banned_class'] = "normal_banned";
+				}
+			}
+
+			$memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+		}
+		else
+		{
+			// TODO: more specific output for converted/merged boards where no ban record is merged.
+			$bannedbit = '';
+		}
 	}
 
 	$memprofile['showadminoptions'] = false;

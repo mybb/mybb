@@ -195,7 +195,7 @@ class captcha
 
 	function build_hcaptcha()
 	{
-		global $lang, $mybb, $templates;
+		global $lang, $mybb, $templates, $theme;
 
 		// This will build a hCaptcha
 		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [

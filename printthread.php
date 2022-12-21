@@ -11,8 +11,6 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "forumdisplay_password_wrongpass,forumdisplay_password";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -237,7 +235,7 @@ output_page(\MyBB\template('printthread/printthread.twig', [
  */
 function makeprintablenav($pid = 0, $depth = "--")
 {
-	global $mybb, $db, $pforumcache, $fid, $forum, $lang, $templates;
+	global $mybb, $db, $pforumcache, $fid, $forum, $lang;
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);

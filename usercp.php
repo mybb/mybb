@@ -12,23 +12,6 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
-$templatelist = "usercp,usercp_nav,usercp_changename,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted,usercp_subscriptions_thread_icon";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_warnings_warning_post";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove,usercp_resendactivation";
-$templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_forumsubscriptions_none";
-$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector";
-$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder";
-$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts,usercp_options_language,usercp_options_date_format,usercp_latest_subscribed,usercp_warnings";
-$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
-$templatelist .= ",usercp_warnings_warning,usercp_nav_messenger_tracking,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
-$templatelist .= ",codebuttons,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists,usercp_latest_subscribed_threads,usercp_nav_home";
-$templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user,usercp_options";
-$templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum,usercp_editlists_user";
-$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email,usercp_options_pms";
-$templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
-$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_options_quick_reply";
-$templatelist .= ",usercp_addsubscription_thread,forumdisplay_password,forumdisplay_password_wrongpass,";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_search.php";
@@ -3549,7 +3532,7 @@ if(!$mybb->input['action'])
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
 
-			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
+			if(!isset($forumpermissions['canonlyviewownthreads']) || $forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -3595,7 +3578,7 @@ if(!$mybb->input['action'])
 				{
 					$plugins->run_hooks("usercp_thread_subscriptions_thread");
 
-					if($thread['tid'])
+					if(!empty($thread['tid']))
 					{
 						$thread['subject'] = $parser->parse_badwords($thread['subject']);
 						$thread['subject'] = htmlspecialchars_uni($thread['subject']);
@@ -3818,7 +3801,7 @@ if(!$mybb->input['action'])
 				$thread['folder_label'] = '';
 
 				// Folder Icons
-				if($thread['doticon'])
+				if(!empty($thread['doticon']))
 				{
 					$thread['folder'] = "dot_";
 					$thread['folder_label'] .= $lang->icon_dot;

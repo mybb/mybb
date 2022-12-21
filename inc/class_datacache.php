@@ -53,6 +53,21 @@ class datacache
 	public $cache_debug;
 
 	/**
+	 * @var array
+	 */
+	public $moderators;
+
+	/**
+	 * @var array
+	 */
+	public $built_moderators;
+
+	/**
+	 * @var array
+	 */
+	public $moderators_forum_cache;
+
+	/**
 	 * Build cache data.
 	 *
 	 */
@@ -666,22 +681,13 @@ class datacache
 		$topreferrer = $db->fetch_array($query);
 
 		$timesearch = TIME_NOW - 86400;
-		switch($db->type)
-		{
-			case 'pgsql':
-				$group_by = $db->build_fields_string('users', 'u.');
-				break;
-			default:
-				$group_by = 'p.uid';
-				break;
-		}
 
 		$query = $db->query("
 			SELECT u.uid, u.username, COUNT(*) AS poststoday
 			FROM {$db->table_prefix}posts p
 			LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
 			WHERE p.dateline > {$timesearch} AND p.visible=1
-			GROUP BY {$group_by}
+			GROUP BY u.uid, u.username
 			ORDER BY poststoday DESC
 		");
 

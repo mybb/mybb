@@ -182,9 +182,6 @@ else
 	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
-$templatelist = "postbit_editedby,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
-$templates->cache($db->escape_string($templatelist));
-
 if($lang->settings['charset'])
 {
 	$charset = $lang->settings['charset'];
@@ -638,9 +635,9 @@ else if($mybb->input['action'] == "edit_post")
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
 				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+// 				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
 			}
-			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+// 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
 
 		// Send our headers.
