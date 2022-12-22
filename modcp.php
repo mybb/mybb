@@ -3261,12 +3261,6 @@ if($mybb->input['action'] == "editprofile")
 		$newtitle = '';
 	}
 
-	$maxlength = '';
-	if($mybb->settings['customtitlemaxlength'] > 0)
-	{
-		$maxlength = " maxlength=\"{$mybb->settings['customtitlemaxlength']}\"";
-	}
-
 	$birthday_year = $mybb->input['birthday_year'];
 	$user_website = $mybb->input['website'];
 	$user_icq = $mybb->input['icq'];
