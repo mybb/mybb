@@ -54,7 +54,7 @@ if($mybb->input['action'] == "add")
 		if($mybb->get_input('regex', MyBB::INPUT_INT))
 		{
 			// Check validity of defined regular expression
-			if((@preg_match('#'.$badword.'#is', null) === false))
+			if((@preg_match('#'.$badword.'#is', '') === false))
 			{
 				$errors[] = $lang->error_invalid_regex;
 			}
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "edit")
 		if($mybb->get_input('regex', MyBB::INPUT_INT))
 		{
 			// Check validity of defined regular expression
-			if((@preg_match('#'.$badword_check.'#is', null) === false))
+			if((@preg_match('#'.$badword_check.'#is', '') === false))
 			{
 				$errors[] = $lang->error_invalid_regex;
 			}
