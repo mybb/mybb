@@ -1272,10 +1272,11 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
-			<description><![CDATA[Maximum length a user can enter for the custom user title. Set to 0 to disable the limitation.]]></description>
+			<description><![CDATA[Maximum length a user can enter for the custom user title. Cannot be over 250 characters.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
-min=0]]></optionscode>
+min=1
+max=250]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
