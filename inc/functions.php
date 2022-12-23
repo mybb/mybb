@@ -9031,7 +9031,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		}
 	}
 
-	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(empty($pm['subject']) || empty($pm['message']) || empty($pm['touid']) || (empty($pm['receivepms']) && !$admin_override))
 	{
 		return false;
 	}
