@@ -151,6 +151,11 @@ if($mybb->input['action'] == "lift")
 
 		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 
+		if($ban['oldgroup'] == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
 		$cache->update_moderators();
 
 		// Log admin action
@@ -412,6 +417,11 @@ if(!$mybb->input['action'])
 				$plugins->run_hooks("admin_user_banning_start_commit");
 
 				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
+
+				if($insert_array['oldgroup'] == 5)
+				{
+					$cache->update_awaitingactivation();
+				}
 
 				// Log admin action
 				log_admin_action($user['uid'], $user['username'], $lifted);
