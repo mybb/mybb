@@ -1315,6 +1315,8 @@ class PostDataHandler extends DataHandler
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
 					);
+					// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+					$pm['sender']['uid'] = -1;
 					send_pm($pm, -1, true);
 				}
 			}

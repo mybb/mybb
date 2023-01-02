@@ -9049,6 +9049,15 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	$recipients_bcc = array();
 
+	// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($pm['sender']['uid']) && $pm['sender']['uid'] === -1 && $fromid === -1)
+	{
+		$sender = array(
+			"uid" => 0,
+			"username" => ''
+		);
+	}
+
 	// Determine user ID
 	if((int)$fromid == 0)
 	{
@@ -9070,6 +9079,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"do" => '',
 		"pmid" => ''
 	);
+
+	// (continued) Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($sender))
+	{
+		$pm['sender'] = $sender;
+	}
 
 	if(isset($session))
 	{
