@@ -112,6 +112,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
 			{
 				$sender_uid = -1;
+				// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+				$pm['sender']['uid'] = -1;
 			}
 
 			// Some kind of friendly error notification
