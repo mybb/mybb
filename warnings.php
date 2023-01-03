@@ -228,10 +228,11 @@ if($mybb->input['action'] == "warn")
             WHERE w.pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'
             ORDER BY w.expired ASC, w.dateline DESC
         ");
-		$first = true;
+		$last_expired = -1;
+
 		while($warning = $db->fetch_array($query))
 		{
-			if($warning['expired'] != $last_expired || $first)
+			if($warning['expired'] != $last_expired)
 			{
 				if($warning['expired'] == 0)
 				{
@@ -243,7 +244,6 @@ if($mybb->input['action'] == "warn")
 				}
 			}
 			$last_expired = $warning['expired'];
-			$first = false;
 
 			$warning['username'] = htmlspecialchars_uni($warning['username']);
 			$warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
