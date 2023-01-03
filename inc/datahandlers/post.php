@@ -1210,7 +1210,7 @@ class PostDataHandler extends DataHandler
 
 			while($subscribedmember = $db->fetch_array($query))
 			{
-				if($done_users[$subscribedmember['uid']])
+				if(isset($done_users[$subscribedmember['uid']]))
 				{
 					continue;
 				}
@@ -1225,7 +1225,7 @@ class PostDataHandler extends DataHandler
 				    continue;
 				}
 
-				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
+				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthreads'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
 				{
 					// User isn't a moderator or the author of the thread...
 					continue;
