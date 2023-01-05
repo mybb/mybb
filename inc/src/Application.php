@@ -3,6 +3,7 @@
 namespace MyBB;
 
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\MaintenanceMode;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Arr;
@@ -548,6 +549,16 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
+     * Get an instance of the maintenance mode manager implementation.
+     *
+     * @return \Illuminate\Contracts\Foundation\MaintenanceMode
+     */
+    public function maintenanceMode()
+    {
+        return $this->make(MaintenanceMode::class);
+    }
+
+    /**
      * Determine if the application is currently down for maintenance.
      *
      * @return bool
@@ -564,7 +575,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @param  \Closure  $callback
      * @return $this
      */
-    public function terminating(\Closure $callback)
+    public function terminating($callback)
     {
         $this->terminatingCallbacks[] = $callback;
 
@@ -755,10 +766,10 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      *
      * @return string
      */
-    public function storagePath()
-	{
+    public function storagePath($path = '')
+    {
         return '';
-	}
+    }
 
     /**
      * Get the current application locale.
@@ -769,6 +780,16 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
 	{
         return '';
 	}
+
+    /**
+     * Set the current application locale.
+     *
+     * @param  string  $locale
+     * @return void
+     */
+    public function setLocale($locale)
+    {
+    }
 
     /**
      * Get the application namespace.
@@ -783,27 +804,6 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
 	}
 
     /**
-     * Set the current application locale.
-     *
-     * @param  string  $locale
-     * @return void
-     */
-    public function setLocale($locale)
-	{
-        return '';
-	}
-
-    /**
-     * Determine if middleware has been disabled for the application.
-     *
-     * @return bool
-     */
-    public function shouldSkipMiddleware()
-	{
-        return '';
-	}
-
-    /**
      * Get the path to the cached services.php file.
      *
      * @return string
@@ -811,6 +811,16 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     public function getCachedServicesPath()
     {
         return '';
+    }
+
+    /**
+     * Determine if middleware has been disabled for the application.
+     *
+     * @return bool
+     */
+    public function shouldSkipMiddleware()
+    {
+        return false;
     }
 
     /**

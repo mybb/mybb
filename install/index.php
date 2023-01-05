@@ -1066,7 +1066,7 @@ function requirements_check()
 	}
 
 	// Check PHP Version
-	if(version_compare(PHP_VERSION, '5.2.0', "<"))
+	if(version_compare(PHP_VERSION, '8.1.0', "<"))
 	{
 		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_phpversion, PHP_VERSION));
 		$phpversion = $lang->sprintf($lang->req_step_span_fail, PHP_VERSION);
