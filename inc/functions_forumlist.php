@@ -111,7 +111,7 @@ SQL;
 
 						while($thread = $db->fetch_array($query))
 						{
-							if(!$private_forums[$thread['fid']])
+							if(!isset($private_forums[$thread['fid']]))
 							{
 								$private_forums[$thread['fid']] = $thread;
 							}
