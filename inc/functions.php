@@ -561,7 +561,10 @@ function &get_my_mailhandler($use_buitlin = false)
 			}
 		}
 
-		$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+		}
 
 		return $my_mailhandler_builtin;
 	}
@@ -571,7 +574,10 @@ function &get_my_mailhandler($use_buitlin = false)
 	{
 		require_once MYBB_ROOT . "inc/class_mailhandler.php";
 
-		$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+		}
 
 		// If no plugin has ever created the mail handler, resort to use the built-in one.
 		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
@@ -637,12 +643,18 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 		'continue_process' => &$continue_process,
 	);
 
-	$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+	}
 
 	// Build the mail message.
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
 
-	$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+	}
 
 	// Check if the hooked plugins still suggest to send the mail.
 	if($continue_process)
@@ -650,7 +662,10 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 		$is_mail_sent = $mail->send();
 	}
 
-	$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+	}
 
 	return $is_mail_sent;
 }
