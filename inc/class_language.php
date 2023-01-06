@@ -157,11 +157,11 @@ class MyLanguage
 
 		if(file_exists($lfile))
 		{
-			require_once $lfile;
+			require $lfile;
 		}
 		elseif(file_exists($ffile))
 		{
-			require_once $ffile;
+			require $ffile;
 		}
 		else
 		{
