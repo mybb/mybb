@@ -222,7 +222,10 @@ class errorHandler {
 
 		$file = str_replace(MYBB_ROOT, "", $file);
 
-		$this->has_errors = true;
+		if($type == MYBB_SQL || strpos(strtolower($this->error_types[$type]), 'warning') === false)
+		{
+			$this->has_errors = true;
+		}
 
 		if(defined("IN_TASK"))
 		{
