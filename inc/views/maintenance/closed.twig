@@ -1,0 +1,30 @@
+{% extends 'maintenance/maintenance.twig' %}
+{% set minimal = true %}
+{% set maintenance_type = 'closed' %}
+{% block body %}
+    <main>
+        <h2>{{ title }}</h2>
+        {{ message|raw }}
+    </main>
+    <section class="footnote">
+        <p class="footnote__controls">
+            {% if mybb.user.uid %}
+                <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}">{{ lang.welcome_logout }}</a>
+            {% else %}
+                <a href="{{ mybb.settings.bburl }}/member.php?action=login">{{ lang.welcome_login }}</a>
+            {% endif %}
+
+            {% if
+                mybb.settings.contactlink is not empty and
+                (
+                    mybb.settings.contactlink != "contact.php" or
+                    (
+                        mybb.settings.contact == 1 and
+                        (mybb.user.uid > 0 or mybb.settings.contact_guests == 1)
+                    )
+                )
+            %}
+                &mdash; <a href="{{ mybb.settings.contactlink }}">{{ lang.bottomlinks_contactus }}</a>
+            {% endif %}
+    </section>
+{% endblock body %}
