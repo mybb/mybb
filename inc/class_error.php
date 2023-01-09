@@ -456,35 +456,70 @@ class errorHandler {
 			defined("IN_UPGRADE")
 		);
 
+		$generic_message = 'The software behind this site has experienced a problem and cannot continue. Please try again later.';
+		$details = '';
+
+		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
+		if(
+			!empty($mybb->settings['contactlink']) &&
+			(
+				!empty($mybb->settings['contact']) &&
+				!$is_in_contact &&
+				(
+					$mybb->settings['contactlink'] == "contact.php" &&
+					(
+						!isset($mybb->user['uid']) ||
+						($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
+						$mybb->user['uid'] > 0
+					)
+				) ||
+				$mybb->settings['contactlink'] != "contact.php"
+			)
+		)
+		{
+			if(
+				!my_validate_url($mybb->settings['contactlink'], true, true) &&
+				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+			)
+			{
+				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+			}
+
+			$details .= <<<HTML
+			<p>If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.</p>
+			HTML;
+		}
+
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
-			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
 			if($show_details)
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
-				$error_message .= "<dl>\n";
-				$error_message .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
+
+				$details = "<h3>Technical Details</h3>";
+				$details .= "<dl>\n";
+				$details .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
 				if($message['query'] != "")
 				{
-					$error_message .= "<dt>Query:</dt>\n<dd>{$message['query']}</dd>\n";
+					$details .= "<dt>Query:</dt>\n<dd>{$message['query']}</dd>\n";
 				}
-				$error_message .= "</dl>\n";
+				$details .= "</dl>\n";
 			}
 		}
 		else
 		{
 			$title = "MyBB Internal Error";
-			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
 			if($show_details)
 			{
-				$error_message .= "<dl>\n";
-				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
-				$error_message .= "<dt>Error Message:</dt>\n<dd>{$message}</dd>\n";
+				$details = "<h3>Technical Details</h3>";
+				$details .= "<dl>\n";
+				$details .= "<dt>Error Type</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
+				$details .= "<dt>Error Message</dt>\n<dd>{$message}</dd>\n";
 				if(!empty($file))
 				{
-					$error_message .= "<dt>Location:</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
+					$details .= "<dt>Location</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
 					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
 					{
 						$code_pre = @file($file);
@@ -550,15 +585,15 @@ class errorHandler {
 							$code = @nl2br($code);
 						}
 
-						$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
+						$details .= "<dt>Code</dt><dd><pre>{$code}</pre></dd>\n";
 					}
 				}
 				$backtrace = $this->generate_backtrace(trace: $trace);
 				if($backtrace && !in_array($type, $this->mybb_error_types))
 				{
-					$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
+					$details .= "<dt>Backtrace</dt><dd>{$backtrace}</dd>\n";
 				}
-				$error_message .= "</dl>\n";
+				$details .= "</dl>\n";
 			}
 		}
 
@@ -571,152 +606,100 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
-		$contact_site_owner = '';
-		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(
-			!empty($mybb->settings['contactlink']) &&
-			(
-				!empty($mybb->settings['contact']) &&
-				!$is_in_contact &&
-				(
-					$mybb->settings['contactlink'] == "contact.php" &&
-					(
-						!isset($mybb->user['uid']) ||
-						($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
-						$mybb->user['uid'] > 0
-					)
-				) ||
-				$mybb->settings['contactlink'] != "contact.php"
-			)
-		)
+		$support_extra = '';
+		if(isset($lang->settings['support_link'], $lang->settings['support_name']))
 		{
-			if(
-				!my_validate_url($mybb->settings['contactlink'], true, true) &&
-				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
-			)
-			{
-				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-			}
+			$support_link = htmlspecialchars_uni($lang->settings['support_link']);
+			$support_name = htmlspecialchars_uni($lang->settings['support_name']);
 
-			$contact_site_owner = <<<HTML
- If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.
-HTML;
+			$support_extra = <<<HTML
+			or <a href="{$support_link}" target="_blank" rel="noopener">{$support_name}</a>
+			HTML;
 		}
 
-		$additional_name = '';
-		$docs_link = 'https://docs.mybb.com';
-		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
-		$support_link = 'https://community.mybb.com/';
-
-		if(isset($lang->settings['docs_link']))
-		{
-			$docs_link = $lang->settings['docs_link'];
-		}
-
-		if(isset($lang->settings['common_issues_link']))
-		{
-			$common_issues_link = $lang->settings['common_issues_link'];
-		}
-
-		if(isset($lang->settings['support_link']))
-		{
-			$support_link = $lang->settings['support_link'];
-		}
-
-
-		if(isset($lang->settings['additional_name']))
-		{
-			$additional_name = $lang->settings['additional_name'];
-		}
-
-		$contact = <<<HTML
-<p>
-	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
-</p>
-
-<p>
-	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
-</p>
-HTML;
+		$html = <<<HTML
+		<main>
+			<section>
+				<h2>{$title}</h2>
+				<p>{$generic_message}</p>
+				{$details}
+			</section>
+		</main>
+		<section class="footnote">
+			<p>If you own this board, visit <a href="https://mybb.com/support" target="_blank" rel="noopener">mybb.com/support</a> {$support_extra} for documentation and technical support.</p>
+		</section>
+		HTML;
 
 		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
+			// full-page error message
+
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
 
-			$file_name = basename($_SERVER['SCRIPT_FILENAME']);
-			if(function_exists('htmlspecialchars_uni'))
+			try
 			{
-				$file_name = htmlspecialchars_uni($file_name);
+				// attempt to render using Twig
+
+				require_once MYBB_ROOT . 'inc/src/Maintenance/functions_http.php';
+
+				\MyBB\Maintenance\httpOutputError(
+					$title,
+					$generic_message,
+					[
+						'details' => $details,
+						'support_extra' => $support_extra,
+					],
+				);
 			}
-			else
+			catch(Throwable)
 			{
-				$file_name = htmlspecialchars($file_name);
+				// render with static version of the `maintenance/error.twig` template
+
+				$logo = file_get_contents(MYBB_ROOT . 'inc/views/logo.svg');
+
+				echo <<<HTML
+				<html lang="en">
+				<head>
+					<meta charset="UTF-8">
+					<meta http-equiv="X-UA-Compatible" content="ie=edge">
+					<meta name="robots" content="noindex">
+
+					<title>{$title}</title>
+
+					<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/main.css" />
+				</head>
+				<body class="maintenance maintenance--minimal maintenance--error">
+					<div class="container">
+						<div class="page">
+							{$html}
+						</div>
+
+						<footer>
+							<div class="powered-by powered-by--logo">
+								<a href="https://mybb.com" title="Forum software by MyBB" target="_blank" rel="noopener">
+									{$logo}
+								</a>
+							</div>
+						</footer>
+					</div>
+				</body>
+				</html>
+				HTML;
 			}
-
-			echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head profile="http://gmpg.org/xfn/11">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{$bbname} - Internal Error</title>
-	<style type="text/css">
-		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
-		a:link { color: #026CB1; text-decoration: none;	}
-		a:visited {	color: #026CB1;	text-decoration: none; }
-		a:hover, a:active {	color: #000; text-decoration: underline; }
-		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
-		h1 { margin: 0; background: url({$file_name}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
-		#content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-		h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; }
-		.invisible { display: none; }
-		#error { padding: 6px; }
-		#footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
-		dt { font-weight: bold; }
-	</style>
-</head>
-<body>
-	<div id="container">
-		<div id="logo">
-			<h1><a href="https://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
-		</div>
-
-		<div id="content">
-			<h2>{$title}</h2>
-
-			<div id="error">
-				{$error_message}
-				<p id="footer">{$contact}</p>
-			</div>
-		</div>
-	</div>
-</body>
-</html>
-EOF;
 		}
 		else
 		{
-			echo <<<EOF
-	<style type="text/css">
-		#mybb_error_content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-		#mybb_error_content a:link { color: #026CB1; text-decoration: none;	}
-		#mybb_error_content a:visited {	color: #026CB1;	text-decoration: none; }
-		#mybb_error_content a:hover, a:active {	color: #000; text-decoration: underline; }
-		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; border-bottom: none; }
-		#mybb_error_error { padding: 6px; }
-		#mybb_error_footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
-		#mybb_error_content dt { font-weight: bold; }
-	</style>
-	<div id="mybb_error_content">
-		<h2>{$title}</h2>
-		<div id="mybb_error_error">
-		{$error_message}
-			<p id="mybb_error_footer">{$contact}</p>
-		</div>
-	</div>
-EOF;
+			// embedded error message
+
+			echo <<<HTML
+			<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/error.css" />
+			<div class="mybb_error">
+				{$html}
+			</div>
+			HTML;
 		}
 
 		exit(1);
