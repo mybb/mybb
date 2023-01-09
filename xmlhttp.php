@@ -205,14 +205,16 @@ $plugins->run_hooks("xmlhttp");
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($mybb->input['action'], $closed_bypass))
 {
 	// Show error
-	if(!$mybb->settings['boardclosed_reason'])
+	if($mybb->settings['boardclosed_reason'])
 	{
-		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+		$message = $mybb->settings['boardclosed_reason'];
+	}
+	else
+	{
+		$message = $lang->boardclosed_reason;
 	}
 
-	$lang->error_boardclosed .= "<br /><em>{$mybb->settings['boardclosed_reason']}</em>";
-
-	xmlhttp_error($lang->error_boardclosed);
+	xmlhttp_error($message);
 }
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)

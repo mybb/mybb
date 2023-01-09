@@ -499,7 +499,10 @@ $plugins->run_hooks('global_intermediate');
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
 	$headerMessages[] = [
-		'message' => $lang->bbclosed_warning
+		'message' => $lang->sprintf(
+			$lang->bbclosed_warning,
+			'index.php?boardclosed_preview=1',
+		)
 	];
 }
 
@@ -919,6 +922,7 @@ if(is_banned_ip($session->ipaddress, true))
 	error($lang->error_banned);
 }
 
+// Board Closed
 $closed_bypass = array(
 	'member.php' => array(
 		'login',
@@ -929,32 +933,59 @@ $closed_bypass = array(
 	'contact.php',
 );
 
-// If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
 if(
-	$mybb->settings['boardclosed'] == 1 &&
-	$mybb->usergroup['canviewboardclosed'] != 1 &&
-	!in_array($current_page, $closed_bypass) &&
-	!(
-		isset($closed_bypass[$current_page]) &&
-		in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+	(
+		($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1) ||
+		($mybb->get_input('boardclosed_preview') == '1' && $mybb->usergroup['cancp'] == 1)
+	) &&
+	(
+		!in_array($current_page, $closed_bypass) &&
+		(
+			!is_array($closed_bypass[$current_page]) ||
+			!in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+		)
 	)
 )
 {
+	$lang->load('global');
+
 	// Show error
-	if(!$mybb->settings['boardclosed_reason'])
-	{
-		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
-	}
-
-	$lang->error_boardclosed .= \MyBB\template('messages/boardclosed_reason.twig');
-
-	if(!$mybb->get_input('modal'))
-	{
-		error($lang->error_boardclosed);
+	if($mybb->settings['boardclosed_title']) {
+		$title = $mybb->settings['boardclosed_title'];
 	}
 	else
 	{
-		echo(\MyBB\template('modals/boardclosed.twig'));
+		$title = $lang->boardclosed;
+	}
+
+	if($mybb->settings['boardclosed_reason']) {
+		$message = $mybb->settings['boardclosed_reason'];
+	}
+	else
+	{
+		$message = $lang->boardclosed_reason;
+	}
+
+	http_response_code(503);
+
+	if(!$mybb->get_input('modal'))
+	{
+		require_once MYBB_ROOT.'inc/src/Maintenance/functions_http.php';
+
+		output_page(
+			\MyBB\Maintenance\template('maintenance/closed.twig', [
+				'page_title' => $title,
+				'title' => $title,
+				'message' => $message,
+			])
+		);
+	}
+	else
+	{
+		echo(\MyBB\template('modals/boardclosed.twig', [
+			'title' => $title,
+			'message' => $message,
+		]));
 	}
 	exit;
 }

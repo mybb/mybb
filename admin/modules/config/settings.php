@@ -1978,7 +1978,6 @@ function print_setting_peekers()
 	global $plugins;
 
 	$peekers = array(
-		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
 		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
