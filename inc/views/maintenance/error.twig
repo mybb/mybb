@@ -1,0 +1,21 @@
+{% extends 'maintenance/maintenance.twig' %}
+{% set minimal = true %}
+{% set maintenance_type = 'error' %}
+
+{% block body %}
+    <main>
+        <section>
+            <h2>{{ title }}</h2>
+            <p>{{ message|raw }}</p>
+
+            {% if details %}
+                {{ details|raw }}
+            {% endif %}
+        </section>
+    </main>
+    <section class="footnote">
+        <p>
+            If you own this board, visit <a href="https://mybb.com/support" target="_blank" rel="noopener">mybb.com/support</a> {{ support_extra|raw }} for documentation and technical support.
+        </p>
+    </section>
+{% endblock body %}
