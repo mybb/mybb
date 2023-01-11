@@ -50,8 +50,8 @@ require_once MYBB_ROOT."inc/class_timers.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
-$lang->set_path(INSTALL_ROOT.'resources/');
-$lang->load('language');
+$lang->set_path(MYBB_ROOT.'inc/languages');
+$lang->load('maintenance');
 
 // If we're upgrading from an SQLite installation, make sure we still work.
 if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 'sqlite2')
