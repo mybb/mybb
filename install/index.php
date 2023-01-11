@@ -1682,7 +1682,7 @@ function create_tables()
 		$structure_file = 'mysql_db_tables.php';
 	}
 
-	require_once INSTALL_ROOT."resources/{$structure_file}";
+	require_once MYBB_ROOT."inc/schemas/{$structure_file}";
 	foreach($tables as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
@@ -1725,7 +1725,7 @@ function populate_tables()
 		$population_file = 'mysql_db_inserts.php';
 	}
 
-	require_once INSTALL_ROOT."resources/{$population_file}";
+	require_once MYBB_ROOT."inc/seeds/{$population_file}";
 	foreach($inserts as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['database']['table_prefix'].'\\1\\2', $val);
@@ -1777,7 +1777,7 @@ function insert_templates()
 	);
 	$templateset = $db->insert_query("templatesets", $insert_array);
 
-	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+	$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme.xml');
 	if(!empty($mybb->config['admin_dir']) && file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
@@ -1806,7 +1806,7 @@ function insert_templates()
 	unset($properties['inherited']['templateset']);
 
 	// 1.8: Stylesheet Colors
-	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
+	$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme_colors.xml');
 
 	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
@@ -2057,7 +2057,7 @@ EOF;
 		echo $lang->admin_step_setupsettings;
 		$adminuser = $adminemail = '';
 
-		$settings = file_get_contents(INSTALL_ROOT.'resources/settings.xml');
+		$settings = file_get_contents(MYBB_ROOT.'inc/seeds/settings.xml');
 		$parser = create_xml_parser($settings);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
@@ -2128,7 +2128,7 @@ EOF;
 		@fclose($file);
 
 		include_once MYBB_ROOT."inc/functions_task.php";
-		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+		$tasks = file_get_contents(MYBB_ROOT.'inc/seeds/tasks.xml');
 		$parser = create_xml_parser($tasks);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
@@ -2166,7 +2166,7 @@ EOF;
 
 		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
-		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
+		$views = file_get_contents(MYBB_ROOT.'inc/seeds/adminviews.xml');
 		$parser = create_xml_parser($views);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
@@ -2276,7 +2276,7 @@ function install_done()
 	echo $lang->done_step_usergroupsinserted;
 
 	// Insert all of our user groups from the XML file
-	$usergroup_settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
+	$usergroup_settings = file_get_contents(MYBB_ROOT.'inc/seeds/usergroups.xml');
 	$parser = create_xml_parser($usergroup_settings);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -2366,7 +2366,7 @@ function install_done()
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_adminoptions;
-	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
+	$adminoptions = file_get_contents(MYBB_ROOT.'inc/seeds/adminoptions.xml');
 	$parser = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -2459,7 +2459,7 @@ function install_done()
 	$cache->update_reportreasons(true);
 
 	$version_history = array();
-	$dh = opendir(INSTALL_ROOT."resources");
+	$dh = opendir(MYBB_ROOT.'inc/upgrades');
 	while(($file = readdir($dh)) !== false)
 	{
 		if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))

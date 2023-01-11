@@ -556,7 +556,7 @@ function upgrade12_dbchanges2()
 
 
 	include_once MYBB_ROOT."inc/functions_task.php";
-	$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+	$tasks = file_get_contents(MYBB_ROOT.'inc/seeds/tasks.xml');
 	$parser = create_xml_parser($tasks);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -913,7 +913,7 @@ function upgrade12_dbchanges4()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions TEXT NOT NULL ");
 	}
 
-	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
+	$adminoptions = file_get_contents(MYBB_ROOT.'inc/seeds/adminoptions.xml');
 	$parser = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -1238,7 +1238,7 @@ function upgrade12_dbchanges5()
 		PRIMARY KEY(vid)
 	) ENGINE=MyISAM{$collation};");
 
-	$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
+	$views = file_get_contents(MYBB_ROOT.'inc/seeds/adminviews.xml');
 	$parser = create_xml_parser($views);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -1877,7 +1877,7 @@ function upgrade12_redothemes()
 	) ENGINE=MyISAM{$collation};");
 
 	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
-	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+	$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme.xml');
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
@@ -1894,7 +1894,7 @@ function upgrade12_redothemes()
 	// Import master theme
 	if(import_theme_xml($contents, array("tid" => 1, "no_templates" => 1, "version_compat" => 1)) === -1)
 	{
-		$output->print_error("Please make sure your install/resources/mybb_theme.xml file is uploaded correctly.");
+		$output->print_error("Please make sure your inc/seeds/mybb_theme.xml file is uploaded correctly.");
 	}
 
 	// Fetch out default stylesheets from master

@@ -55,7 +55,7 @@ function upgrade17_dbchanges2()
 
 	// Update our version history first
 	$version_history = array();
-	$dh = opendir(INSTALL_ROOT."resources");
+	$dh = opendir(MYBB_ROOT."inc/upgrades");
 	while(($file = readdir($dh)) !== false)
 	{
 		if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
