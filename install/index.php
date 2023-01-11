@@ -55,8 +55,8 @@ if(file_exists(MYBB_ROOT."/inc/config.php"))
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
-$lang->set_path(INSTALL_ROOT.'resources');
-$lang->load('language');
+$lang->set_path(MYBB_ROOT.'inc/languages');
+$lang->load('maintenance');
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
