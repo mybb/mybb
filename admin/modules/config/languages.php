@@ -181,6 +181,13 @@ if($mybb->input['action'] == "quick_phrases")
 {
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
+
+	if(in_array($editlang, array('.', '..')))
+	{
+		flash_message($lang->error_folders_fail, 'error');
+		admin_redirect("index.php?module=config-languages");
+	}
+
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
 
 	$page->add_breadcrumb_item(preg_replace("<\?|\?>", "<span>?</span>", htmlspecialchars_uni($languages[$editlang])), "index.php?module=config-languages&amp;action=quick_edit&amp;lang=".htmlspecialchars_uni($editlang));
@@ -376,11 +383,26 @@ if($mybb->input['action'] == "edit")
 {
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
+
+	if(in_array($editlang, array('.', '..')))
+	{
+		flash_message($lang->error_folders_fail, 'error');
+		admin_redirect("index.php?module=config-languages");
+	}
+
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
 
 	$page->add_breadcrumb_item(preg_replace("<\?|\?>", "<span>?</span>", htmlspecialchars_uni($languages[$editlang])), "index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang));
 
 	$editwith = basename($mybb->get_input('editwith'));
+
+	if(in_array($editwith, array('.', '..')))
+	{
+		flash_message($lang->error_folders_fail, 'error');
+		admin_redirect("index.php?module=config-languages");
+	}
+
+
 	$editwithfolder = '';
 
 	if($editwith)
@@ -421,6 +443,13 @@ if($mybb->input['action'] == "edit")
 	{
 		// Validate input
 		$file = basename($mybb->input['file']);
+
+		if(in_array($file, array('.', '..')))
+		{
+			flash_message($lang->error_folders_fail, 'error');
+			admin_redirect("index.php?module=config-languages");
+		}
+
 		if($mybb->get_input('inadmin') == 1)
 		{
 			$file = 'admin/'.$file;

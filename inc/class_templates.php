@@ -148,9 +148,9 @@ class templates
 
 		if(!$template_xml)
 		{
-			if(@file_exists(MYBB_ROOT."install/resources/mybb_theme.xml"))
+			if(@file_exists(MYBB_ROOT."inc/seeds/mybb_theme.xml"))
 			{
-				$template_xml = simplexml_load_file(MYBB_ROOT."install/resources/mybb_theme.xml");
+				$template_xml = simplexml_load_file(MYBB_ROOT."inc/seeds/mybb_theme.xml");
 			}
 			else
 			{

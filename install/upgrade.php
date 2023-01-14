@@ -50,8 +50,8 @@ require_once MYBB_ROOT."inc/class_timers.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
-$lang->set_path(INSTALL_ROOT.'resources/');
-$lang->load('language');
+$lang->set_path(MYBB_ROOT.'inc/languages');
+$lang->load('maintenance');
 
 // If we're upgrading from an SQLite installation, make sure we still work.
 if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 'sqlite2')
@@ -287,7 +287,7 @@ else
 			UNIQUE (title)
 		) {$engine}{$collation};");
 
-		$dh = opendir(INSTALL_ROOT."resources");
+		$dh = opendir(MYBB_ROOT.'inc/upgrades');
 
 		$upgradescripts = array();
 		while(($file = readdir($dh)) !== false)
@@ -319,7 +319,7 @@ else
 		foreach($key_order as $k => $key)
 		{
 			$file = $upgradescripts[$key];
-			$upgradescript = file_get_contents(INSTALL_ROOT."resources/$file");
+			$upgradescript = file_get_contents(MYBB_ROOT."inc/upgrades/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
 			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
@@ -351,7 +351,7 @@ else
 	elseif($mybb->input['action'] == "doupgrade")
 	{
 		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
-		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
+		require_once MYBB_ROOT."inc/upgrades/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
 		if($db->table_exists("datacache") && !empty($upgrade_detail['requires_deactivated_plugins']) && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);
@@ -463,7 +463,7 @@ function upgradethemes()
 			PRIMARY KEY(sid)
 		) ENGINE=MyISAM{$charset};");
 
-		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+		$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme.xml');
 		if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 		{
 			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
@@ -495,7 +495,7 @@ function upgradethemes()
 	else
 	{
 		// Re-import master
-		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+		$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme.xml');
 		if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 		{
 			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
@@ -518,7 +518,7 @@ function upgradethemes()
 	$sid = -2;
 
 	// Now deal with the master templates
-	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+	$contents = @file_get_contents(MYBB_ROOT.'inc/seeds/mybb_theme.xml');
 	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
@@ -749,7 +749,7 @@ function next_function($from, $func="dbchanges")
 		$cache->update("version_history", $version_history);
 
 		$from = $from+1;
-		if(file_exists(INSTALL_ROOT."resources/upgrade".$from.".php"))
+		if(file_exists(MYBB_ROOT."inc/upgrades/upgrade".$from.".php"))
 		{
 			$function = next_function($from);
 		}
@@ -769,7 +769,7 @@ function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript, $upgrade_detail;
 
-	require_once INSTALL_ROOT."resources/".$module;
+	require_once MYBB_ROOT."inc/upgrades/".$module;
 	if($currentscript != $module)
 	{
 		foreach($upgrade_detail as $key => $val)
@@ -937,7 +937,7 @@ function sync_settings($redo=0)
 			$settings[$setting['name']] = $setting['sid'];
 		}
 	}
-	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
+	$settings_xml = file_get_contents(MYBB_ROOT."inc/seeds/settings.xml");
 	$parser = create_xml_parser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -1106,7 +1106,7 @@ function sync_tasks($redo=0)
 	}
 
 	require_once MYBB_ROOT."inc/functions_task.php";
-	$task_file = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+	$task_file = file_get_contents(MYBB_ROOT.'inc/seeds/tasks.xml');
 	$parser = create_xml_parser($task_file);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();

@@ -339,7 +339,7 @@ if($mybb->user['uid'] == 0)
 	$forumsread = array();
 	if(isset($mybb->cookies['mybb']['forumread']))
 	{
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
 	}
 }
 else

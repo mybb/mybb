@@ -180,7 +180,7 @@ if($mybb->input['action'] == "results")
 
 		if(isset($mybb->cookies['mybb']['forumread']))
 		{
-			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
 		}
 		else
 		{

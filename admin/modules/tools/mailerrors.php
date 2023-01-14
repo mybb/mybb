@@ -138,9 +138,9 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
-	if(!empty($mybb->input['page']) && $mybb->input['page'] > 1)
+	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 		$pages = ceil($total_rows / $per_page);
 		if($mybb->input['page'] > $pages)
@@ -251,7 +251,7 @@ if(!$mybb->input['action'])
 
 	$form->end();
 
-	echo "<br />".draw_admin_pagination($mybb->get_input('page'), $per_page, $total_rows, "index.php?module=tools-mailerrors&amp;page={page}{$additional_criteria}");
+	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-mailerrors&amp;page={page}{$additional_criteria}");
 
 	$form = new Form("index.php?module=tools-mailerrors", "post");
 	$form_container = new FormContainer($lang->filter_system_email_log);
