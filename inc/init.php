@@ -115,6 +115,10 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 	$mybb->settings = $settings;
 }
 
+$error_handler->errortypemedium = $mybb->settings['errortypemedium'];
+$error_handler->errorlogmedium = $mybb->settings['errorlogmedium'];
+$error_handler->errorloglocation = $mybb->settings['errorloglocation'];
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {

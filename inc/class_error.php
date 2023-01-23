@@ -130,8 +130,15 @@ class errorHandler {
 	/**
 	 * Initializes the error handler
 	 *
+	 * @param 'warning'|'error'|'both'|'none' $errortypemedium The type of errors to show with detailed information
+	 * @param 'none'|'log'|'email'|'both' $errorlogmedium The type of the error handling to use
+	 * @param string $errorloglocation The location of the log to send errors to, if specified
 	 */
-	function __construct()
+	function __construct(
+		public string $errortypemedium = '',
+		public string $errorlogmedium = '',
+		public string $errorloglocation = '',
+	)
 	{
 		// Lets set the error handler in here so we can just do $handler = new errorHandler() and be all set up.
 		$error_types = E_ALL;
@@ -185,26 +192,6 @@ class errorHandler {
 
 		$this->has_errors = true;
 
-		// For some reason in the installer this setting is set to "<"
-		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
-		{
-			$errortypemedium = $mybb->settings['errortypemedium'];
-		}
-		else
-		{
-			$errortypemedium = "none";
-		}
-
-		if(isset($mybb->settings['errorlogmedium']))
-		{
-			$errorlogmedium = $mybb->settings['errorlogmedium'];
-		}
-		else
-		{
-			$errorlogmedium = 'none';
-		}
-
 		if(defined("IN_TASK"))
 		{
 			global $task;
@@ -221,13 +208,13 @@ class errorHandler {
 		}
 
 		// Saving error to log file.
-		if($errorlogmedium == "log" || $errorlogmedium == "both")
+		if($this->errorlogmedium == "log" || $this->errorlogmedium == "both")
 		{
 			$this->log_error($type, $message, $file, $line);
 		}
 
 		// Are we emailing the Admin a copy?
-		if($errorlogmedium == "mail" || $errorlogmedium == "both")
+		if($this->errorlogmedium == "mail" || $this->errorlogmedium == "both")
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
@@ -245,7 +232,7 @@ class errorHandler {
 				$this->output_error($type, $message, $file, $line);
 			}
 			// PHP Warning
-			elseif(in_array($errortypemedium, array('warning', 'both')))
+			elseif(in_array($this->errortypemedium, array('warning', 'both')))
 			{
 				$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
 				echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
@@ -355,9 +342,9 @@ class errorHandler {
 		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
-		if(isset($mybb->settings['errorloglocation']) && trim($mybb->settings['errorloglocation']) != "")
+		if(trim($this->errorloglocation) != "")
 		{
-			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
+			@error_log($error_data, 3, $this->errorloglocation);
 		}
 		else
 		{
@@ -428,20 +415,9 @@ class errorHandler {
 			$bbname = "MyBB";
 		}
 
-		// For some reason in the installer this setting is set to "<"
-		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
-		{
-			$errortypemedium = $mybb->settings['errortypemedium'];
-		}
-		else
-		{
-			$errortypemedium = "none";
-		}
-
 		$show_details = (
 			$this->force_display_errors ||
-			in_array($errortypemedium, array('both', 'error')) ||
+			in_array($this->errortypemedium, array('both', 'error')) ||
 			defined("IN_INSTALL") ||
 			defined("IN_UPGRADE")
 		);
