@@ -4202,7 +4202,7 @@ if(!$mybb->input['action'])
 		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
 	}
 	// Make reputations row
-	$reputations = '';
+	$reputation = '';
 	if($mybb->usergroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation_link = get_reputation($mybb->user['reputation']);
