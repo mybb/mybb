@@ -16,6 +16,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[0]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[0]]></canpostthreads>
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
@@ -58,6 +59,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canbeinvisible><![CDATA[0]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
@@ -107,6 +109,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
@@ -199,6 +202,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
@@ -384,6 +388,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[0]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[0]]></canpostthreads>
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
@@ -476,6 +481,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
@@ -568,6 +574,7 @@
 		<canviewthreads><![CDATA[0]]></canviewthreads>
 		<canviewprofiles><![CDATA[0]]></canviewprofiles>
 		<candlattachments><![CDATA[0]]></candlattachments>
+		<canviewboardclosed><![CDATA[0]]></canviewboardclosed>
 		<canpostthreads><![CDATA[0]]></canpostthreads>
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
