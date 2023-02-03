@@ -756,7 +756,7 @@ class postParser
 		$ptrn = array('/\\\\/', '/([\[\^\$\.\|\?\(\)\{\}]{1})/', '/\*\++/', '/\++\*/', '/\*+/');
 		$rplc = array('\\\\\\\\','\\\\${1}', '*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
-		
+
 		// Count + and generate pattern
 		$bad_word = explode('+', $bad_word);
 		$trap = "";
@@ -773,13 +773,13 @@ class postParser
 				$plus++;
 			}
 		}
-		
+
 		// Handle trailing +
 		if($plus > 1)
 		{
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
-		
+
 		return '\b'.$trap.'\b';
 	}
 
@@ -1491,7 +1491,7 @@ class postParser
 		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
 		$fragments = array();
-		if($parsed_url['fragment'])
+		if(isset($parsed_url['fragment']))
 		{
 			$fragments = explode("&", $parsed_url['fragment']);
 		}
@@ -1584,7 +1584,7 @@ class postParser
 				}
 				break;
 			case "youtube":
-				if($fragments[0])
+				if(isset($fragments[0]))
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
@@ -1920,9 +1920,9 @@ class postParser
 			"$2 ($1)",
 			"",
 		);
-		
+
 		$messageBefore = "";
-		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition. 
+		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition.
 		for($cnt = 1; $cnt < 20 && $message != $messageBefore; $cnt++)
 		{
 			$messageBefore = $message;
