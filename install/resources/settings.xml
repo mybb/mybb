@@ -1562,6 +1562,14 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="attachimagestock">
+			<title>Default Image Path</title>
+			<description><![CDATA[Select a default image to use for image attachments when users have no permission to download.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[images/attachment_stock.svg]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="13" isdefault="1">
 		<setting name="enablememberlist">

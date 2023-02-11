@@ -999,7 +999,16 @@ function get_post_attachments($id, &$post)
 				{
 					$attachment['dateuploaded'] = $attachment['dateline'];
 				}
+
 				$attachdate = my_date('normal', $attachment['dateuploaded']);
+
+				$attachment_url = 'attachment.php';
+
+				if(!$forumpermissions['candlattachments'])
+				{
+					$attachment_url = $mybb->settings['attachimagestock'];
+				}
+
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
