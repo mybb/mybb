@@ -361,7 +361,7 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	}
 
 	/**
-	 * Output a database error.
+	 * Trigger a database error.
 	 *
 	 * @param string $string The string to present as an error.
 	 *
@@ -370,27 +370,12 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	public function error($string = '')
 	{
 		if ($this->error_reporting) {
-			if (class_exists("errorHandler")) {
-				global $error_handler;
-
-				if(!is_object($error_handler))
-				{
-					require_once MYBB_ROOT."inc/class_error.php";
-					$error_handler = new errorHandler();
-				}
-
-				$error = array(
-					"error_no" => $this->error_number(),
-					"error" => $this->error_string(),
-					"query" => $string
-				);
-
-				$error_handler->error(MYBB_SQL, $error);
-			} else {
-				trigger_error("<strong>[SQL] [". $this->error_number() ."]" . $this->error_string() . " </strong><br />{$string}", E_USER_ERROR);
-			}
-
-			return true;
+			throw new DbException(
+				$this->error_string(),
+				$this->error_number(),
+				$string,
+				$this->lastPdoException,
+			);
 		} else {
 			return false;
 		}

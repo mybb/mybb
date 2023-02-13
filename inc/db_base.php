@@ -118,7 +118,7 @@ interface DB_Base
 	function error_string();
 
 	/**
-	 * Output a database error.
+	 * Trigger a database error.
 	 *
 	 * @param string $string The string to present as an error.
 	 */
