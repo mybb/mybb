@@ -88,17 +88,6 @@ if(function_exists('mysqli_connect'))
 	);
 }
 
-if(function_exists('mysql_connect'))
-{
-	$dboptions['mysql'] = array(
-		'class' => 'DB_MySQL',
-		'title' => 'MySQL',
-		'short_title' => 'MySQL',
-		'structure_file' => 'mysql_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
-	);
-}
-
 if(function_exists('pg_connect'))
 {
 	$dboptions['pgsql'] = array(
@@ -1444,14 +1433,13 @@ function create_tables()
 		case "pgsql_pdo":
 			$db = new PostgresPdoDbDriver();
 			break;
-		case "mysqli":
-			$db = new DB_MySQLi;
-			break;
 		case "mysql_pdo":
 			$db = new MysqlPdoDbDriver();
 			break;
+		case "mysqli":
+		case "mysql":
 		default:
-			$db = new DB_MySQL;
+			$db = new DB_MySQLi;
 	}
  	$db->error_reporting = 0;
 
@@ -2503,7 +2491,7 @@ function install_done()
 /**
  * @param array $config
  *
- * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite|PostgresPdoDbDriver|MysqlPdoDbDriver
+ * @return DB_MySQLi|DB_PgSQL|DB_SQLite|PostgresPdoDbDriver|MysqlPdoDbDriver
  */
 function db_connection($config)
 {
@@ -2519,14 +2507,13 @@ function db_connection($config)
 		case "pgsql_pdo":
 			$db = new PostgresPdoDbDriver();
 			break;
-		case "mysqli":
-			$db = new DB_MySQLi;
-			break;
 		case "mysql_pdo":
 			$db = new MysqlPdoDbDriver();
 			break;
+		case "mysqli":
+		case "mysql":
 		default:
-			$db = new DB_MySQL;
+			$db = new DB_MySQLi;
 	}
 
 	// Connect to Database

@@ -75,14 +75,13 @@ switch($config['database']['type'])
 	case "pgsql_pdo":
 		$db = new PostgresPdoDbDriver();
 		break;
-	case "mysqli":
-		$db = new DB_MySQLi;
-		break;
 	case "mysql_pdo":
 		$db = new MysqlPdoDbDriver();
 		break;
+	case "mysqli":
+	case "mysql":
 	default:
-		$db = new DB_MySQL;
+		$db = new DB_MySQLi;
 }
 
 // Connect to Database
