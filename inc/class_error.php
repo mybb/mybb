@@ -176,6 +176,7 @@ class errorHandler {
 			$exception->getMessage(),
 			$exception->getFile(),
 			$exception->getLine(),
+			trace: $exception->getTrace(),
 		);
 	}
 
@@ -187,9 +188,10 @@ class errorHandler {
 	 * @param string $file The error file
 	 * @param integer $line The error line
 	 * @param boolean $allow_output Whether or not output is permitted
+	 * @param ?array $trace The stack trace
 	 * @return boolean True if parsing was a success, otherwise assume a error
 	 */
-	function error($type, $message, $file=null, $line=0, $allow_output=true)
+	function error($type, $message, $file=null, $line=0, $allow_output=true, $trace=null)
 	{
 		global $mybb;
 
@@ -226,13 +228,13 @@ class errorHandler {
 		// Saving error to log file.
 		if($this->errorlogmedium == "log" || $this->errorlogmedium == "both")
 		{
-			$this->log_error($type, $message, $file, $line);
+			$this->log_error($type, $message, $file, $line, trace: $trace);
 		}
 
 		// Are we emailing the Admin a copy?
 		if($this->errorlogmedium == "mail" || $this->errorlogmedium == "both")
 		{
-			$this->email_error($type, $message, $file, $line);
+			$this->email_error($type, $message, $file, $line, trace: $trace);
 		}
 
 		if($allow_output === true)
@@ -240,18 +242,19 @@ class errorHandler {
 			// SQL Error
 			if($type == MYBB_SQL)
 			{
-				$this->output_error($type, $message, $file, $line);
+				$this->output_error($type, $message, $file, $line, trace: $trace);
 			}
 			// PHP Error/Exception
 			elseif(strpos(strtolower($this->error_types[$type]), 'warning') === false)
 			{
-				$this->output_error($type, $message, $file, $line);
+				$this->output_error($type, $message, $file, $line, trace: $trace);
 			}
 			// PHP Warning
 			elseif(in_array($this->errortypemedium, array('warning', 'both')))
 			{
 				$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-				echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+
+				echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace(trace: $trace)."</div>";
 			}
 		}
 
@@ -328,8 +331,9 @@ class errorHandler {
 	 * @param string $message Warning message
 	 * @param string $file Warning file
 	 * @param integer $line Warning line
+	 * @param ?array $trace The stack trace
 	 */
-	function log_error($type, $message, $file, $line)
+	function log_error($type, $message, $file, $line, $trace=null)
 	{
 		global $mybb;
 
@@ -341,7 +345,7 @@ class errorHandler {
 		// Do not log something that might be executable
 		$message = str_replace('<?', '< ?', $message);
 
-		$back_trace = $this->generate_backtrace(false, 2);
+		$back_trace = $this->generate_backtrace(false, 2, trace: $trace);
 
 		if($back_trace)
 		{
@@ -375,9 +379,10 @@ class errorHandler {
 	 * @param string $message Warning message
 	 * @param string $file Warning file
 	 * @param integer $line Warning line
+	 * @param ?array $trace The stack trace
 	 * @return bool returns false if no admin email is set
 	 */
-	function email_error($type, $message, $file, $line)
+	function email_error($type, $message, $file, $line, $trace=null)
 	{
 		global $mybb;
 
@@ -391,12 +396,10 @@ class errorHandler {
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
 
-		if(function_exists('debug_backtrace'))
+		$trace = $this->generate_backtrace(false, trace: $trace);
+
+		if($trace)
 		{
-			ob_start();
-			debug_print_backtrace();
-			$trace = ob_get_contents();
-			ob_end_clean();
 
 			$back_trace = "\nBack Trace: {$trace}";
 		}
@@ -417,8 +420,9 @@ class errorHandler {
 	 * @param string $message
 	 * @param string $file
 	 * @param int $line
+	 * @param ?array $trace The stack trace
 	 */
-	function output_error($type, $message, $file, $line)
+	function output_error($type, $message, $file, $line, $trace=null)
 	{
 		global $mybb, $parser, $lang;
 
@@ -535,7 +539,7 @@ class errorHandler {
 						$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 					}
 				}
-				$backtrace = $this->generate_backtrace();
+				$backtrace = $this->generate_backtrace(trace: $trace);
 				if($backtrace && !in_array($type, $this->mybb_error_types))
 				{
 					$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
@@ -709,13 +713,20 @@ EOF;
 	 *
 	 * @return string The generated backtrace
 	 */
-	function generate_backtrace($html=true, $strip=1)
+	function generate_backtrace($html=true, $strip=1, $trace=null)
 	{
 		$backtrace = '';
-		if(function_exists("debug_backtrace"))
+
+		if($trace === null && function_exists("debug_backtrace"))
 		{
 			$trace = debug_backtrace(1<<1 /* DEBUG_BACKTRACE_IGNORE_ARGS */);
 
+			// Strip off calls from trace
+			$trace = array_slice($trace, $strip);
+		}
+
+		if($trace !== null)
+		{
 			if($html)
 			{
 				$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
@@ -725,9 +736,6 @@ EOF;
 				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
 				$backtrace .= "</tr></thead>\n<tbody>\n";
 			}
-
-			// Strip off calls from trace
-			$trace = array_slice($trace, $strip);
 
 			$i = 0;
 
