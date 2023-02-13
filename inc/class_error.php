@@ -21,6 +21,7 @@ define("MYBB_INSTALL_DIR_EXISTS", 43);
 define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
+define("MYBB_UNCAUGHT_EXCEPTION", 47);
 define("MYBB_DEPENDENCIES_NOT_INSTALLED", 48);
 
 if(!defined("E_RECOVERABLE_ERROR"))
@@ -73,6 +74,7 @@ class errorHandler {
 		MYBB_SQL_LOAD_ERROR				=> 'MyBB Error',
 		MYBB_CACHE_NO_WRITE				=> 'MyBB Error',
 		MYBB_CACHEHANDLER_LOAD_ERROR	=> 'MyBB Error',
+		MYBB_UNCAUGHT_EXCEPTION			=> 'Uncaught Exception',
 		MYBB_DEPENDENCIES_NOT_INSTALLED	=> 'Dependencies Not Installed',
 	);
 
@@ -148,6 +150,7 @@ class errorHandler {
 		}
 		error_reporting($error_types);
 		set_error_handler(array(&$this, "error_callback"), $error_types);
+		set_exception_handler(array(&$this, "exception_callback"));
 	}
 
 	/**
@@ -161,6 +164,19 @@ class errorHandler {
 	function error_callback($type, $message, $file=null, $line=0)
 	{
 		return $this->error($type, $message, $file, $line);
+	}
+
+	/**
+	 * Passes relevant arguments for error processing.
+	 */
+	function exception_callback(Throwable $exception): void
+	{
+		$this->error(
+			MYBB_UNCAUGHT_EXCEPTION,
+			$exception->getMessage(),
+			$exception->getFile(),
+			$exception->getLine(),
+		);
 	}
 
 	/**
@@ -226,7 +242,7 @@ class errorHandler {
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
-			// PHP Error
+			// PHP Error/Exception
 			elseif(strpos(strtolower($this->error_types[$type]), 'warning') === false)
 			{
 				$this->output_error($type, $message, $file, $line);
