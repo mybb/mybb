@@ -79,7 +79,7 @@ class errorHandler {
 	);
 
 	/**
-	 * Array of MyBB error types
+	 * Array of MyBB error types for which special messages are shown instead of debug traces
 	 *
 	 * @var array
 	 */
