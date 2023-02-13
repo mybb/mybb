@@ -171,13 +171,27 @@ class errorHandler {
 	 */
 	function exception_callback(Throwable $exception): void
 	{
-		$this->error(
-			MYBB_UNCAUGHT_EXCEPTION,
-			$exception->getMessage(),
-			$exception->getFile(),
-			$exception->getLine(),
-			trace: $exception->getTrace(),
-		);
+		if ($exception instanceof DbException)
+		{
+			$this->error(
+				MYBB_SQL,
+				array(
+					'error_no' => $exception->getCode(),
+					'error' => $exception->getMessage(),
+					'query' => $exception->getQuery(),
+				),
+			);
+		}
+		else
+		{
+			$this->error(
+				MYBB_UNCAUGHT_EXCEPTION,
+				$exception->getMessage(),
+				$exception->getFile(),
+				$exception->getLine(),
+				trace: $exception->getTrace(),
+			);
+		}
 	}
 
 	/**

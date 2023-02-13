@@ -447,7 +447,7 @@ class DB_SQLite implements DB_Base
 	}
 
 	/**
-	 * Output a database error.
+	 * Trigger a database error.
 	 *
 	 * @param string $string The string to present as an error.
 	 * @param PDOStatement $query
@@ -473,27 +473,11 @@ class DB_SQLite implements DB_Base
 				$error = $this->error_string($query);
 			}
 
-			if(class_exists("errorHandler"))
-			{
-				global $error_handler;
-
-				if(!is_object($error_handler))
-				{
-					require_once MYBB_ROOT."inc/class_error.php";
-					$error_handler = new errorHandler();
-				}
-
-				$error = array(
-					"error_no" => $error_no,
-					"error" => $error,
-					"query" => $string
-				);
-				$error_handler->error(MYBB_SQL, $error);
-			}
-			else
-			{
-				trigger_error("<strong>[SQL] [{$error_no}] {$error}</strong><br />{$string}", E_USER_ERROR);
-			}
+			throw new DbException(
+				$error,
+				$error_no,
+				$string,
+			);
 		}
 	}
 
