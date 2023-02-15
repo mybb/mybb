@@ -296,7 +296,7 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
 	$theme = $db->fetch_array($query);
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
+$theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
