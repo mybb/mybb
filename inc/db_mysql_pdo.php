@@ -249,7 +249,7 @@ HTML;
 	{
 		global $mybb;
 
-		if (!is_array($array)) {
+		if (!is_array($array) || empty($array)) {
 			return;
 		}
 

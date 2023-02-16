@@ -207,7 +207,7 @@ HTML;
 
 	public function insert_query_multiple($table, $array)
 	{
-		if (!is_array($array)){
+		if (!is_array($array) || empty($array)){
 			return;
 		}
 
