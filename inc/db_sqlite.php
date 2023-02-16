@@ -719,7 +719,7 @@ class DB_SQLite implements DB_Base
 			return;
 		}
 		// Field names
-		$fields = array_keys($array[0]);
+		$fields = array_keys($array[array_key_first($array)]);
 		$fields = implode(",", $fields);
 
 		$insert_rows = array();
