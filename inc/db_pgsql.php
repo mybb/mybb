@@ -817,7 +817,7 @@ class DB_PgSQL implements DB_Base
 	{
 		global $mybb;
 
-		if(!is_array($array))
+		if(!is_array($array) || empty($array))
 		{
 			return;
 		}
