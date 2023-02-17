@@ -27,6 +27,7 @@
         "illuminate/events": "^9.0",
         "illuminate/hashing": "^9.0",
         "illuminate/routing": "^9.0",
+        "laravel/helpers": "^1.6",
         "twig/twig": "^3.5"
     },
     "require-dev": {
