@@ -23,10 +23,7 @@ function upgrade15_dbchanges()
 {
 	global $db, $output, $mybb, $cache;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	if($db->type != "pgsql")
 	{
@@ -60,34 +57,15 @@ function upgrade15_dbchanges()
 			}
 		}
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("15_usernameverify");
-}
-
-function upgrade15_usernameverify()
-{
-	global $db, $output, $mybb;
-
-	$output->print_header("Performing Queries");
-
-	echo "<p><span style=\"font-size: xx-large\">WARNING - PLEASE READ THE FOLLOWING:</span> The next step of this process will remove <strong>ALL</strong> commas (,) from the <i>usernames</i> of your forum whom contain them. The reason for this change is commas in usernames can make the private messages in MyBB return errors when sending to these users.</p>";
-	flush();
-
-	$contents .= "Click next to continue with the upgrade process once you have read the warning.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("15_usernameupdate");
 }
 
 function upgrade15_usernameupdate()
 {
 	global $db, $output, $mybb, $plugins;
 
-	$output->print_header("Performing Queries");
+	// Performing Queries
 
-	echo "<p>Performing username updates..</p>";
-	flush();
+	// Performing username updates..
 
 	require_once MYBB_ROOT."inc/datahandler.php";
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
@@ -136,16 +114,12 @@ function upgrade15_usernameupdate()
 
 	if(!empty($not_renameable))
 	{
-		echo "<span style=\"color: red;\">NOTICE:</span> The following users could not be renamed automatically. Please rename these users in the Admin CP manually after the upgrade process has finished completing:<br />
-		<ul>
-		<li>";
-		echo implode('</li>\n<li>', $not_renameable);
-		echo "</li>
-		</ul>";
+		return [
+			'warning' => [
+				'message' => 'The following users could not be renamed automatically. Please rename these users in the Admin CP manually after the upgrade process has finished completing.',
+				'list' => $not_renameable,
+			]
+		];
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("15_done");
 }
 

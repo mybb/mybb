@@ -22,9 +22,7 @@ function upgrade20_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Repairing Database Sequences");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
+	// Repairing Database Sequences
 
 	// Update the sequences for pgSQL - #1094, #1248
 	if($mybb->config['database']['type'] == "pgsql")
@@ -42,8 +40,5 @@ function upgrade20_dbchanges()
 	}
 
 	$db->add_column("adminviews", "custom_profile_fields", "text NOT NULL AFTER conditions");
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("20_done");
 }
 

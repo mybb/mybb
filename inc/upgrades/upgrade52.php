@@ -22,10 +22,7 @@ function upgrade52_dbchanges()
 {
 	global $output, $cache, $db, $mybb;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	// Add new setting for new usergroup permission if group members can hide online status
 	if(!$db->field_exists('canbeinvisible', 'usergroups'))
@@ -67,11 +64,6 @@ function upgrade52_dbchanges()
 	), "gid = 1");
 
 	$cache->update_usergroups();
-  
-	$added_tasks = sync_tasks();
 
-	echo "<p>Added {$added_tasks} new tasks.</p>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("52_done");
+	\MyBB\Maintenance\syncTasks();
 }

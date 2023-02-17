@@ -23,13 +23,13 @@ function upgrade3_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Attachment Conversion to Files");
+	$errors = [];
 
-	$contents = "<p>The first step of the upgrade process from RC4 is to move your attachments and avatars to the file system.</p>";
+	// Attachment Conversion to Files
 
 	if(!@is_dir("../uploads/"))
 	{
-		$errors = "<p>../uploads/ Does not exist in your forums' directory. Please create this directory.";
+		$errors[] = "../uploads/ Does not exist in your forums' directory. Please create this directory.";
 	}
 	else
 	{
@@ -38,13 +38,13 @@ function upgrade3_dbchanges()
 			@my_chmod("../uploads", '0777');
 			if(!@is_writable("../uploads/"))
 			{
-				$errors = "<p>../uploads/ is not writable! Please chmod this directory so it's writable (766 or 777).";
+				$errors[] = "../uploads/ is not writable! Please chmod this directory so it's writable (766 or 777).";
 			}
 		}
 	}
 	if(!@is_dir("../uploads/avatars/"))
 	{
-		$errors .= "<p>../uploads/avatars/ Does not exist. Please create this directory.";
+		$errors[] = "../uploads/avatars/ Does not exist. Please create this directory.";
 	}
 	else
 	{
@@ -53,61 +53,29 @@ function upgrade3_dbchanges()
 			@my_chmod("../uploads/avatars/", '0777');
 			if(!is_writable("../uploads/avatars/"))
 			{
-				$errors = "<p>../uploads/avatars/ is not writable! Please chmod this directory so it's writable (766 or 777).";
+				$errors[] = "../uploads/avatars/ is not writable! Please chmod this directory so it's writable (766 or 777).";
 			}
 		}
 	}
 
 	if($errors)
 	{
-		$output->print_contents($contents."<p><span style=\"color: red\">To be able to do this you must perform the following:</span></p>$errors");
-		$output->print_footer("3_dbchanges");
-		exit;
+		return [
+			'error' => [
+				'title' => 'Error',
+				'list' => $errors,
+			]
+		];
 	}
-
-	$contents .= "<p>Okay, we've determined that the specified directory settings have been met.</p>If you wish to change the number of attachments to process per page then you can do so below.</p>";
-	$contents .= "<p><strong>Attachments Per Page:</strong> <input type=\"text\" size=\"3\" value=\"50\" name=\"attachmentspage\" /></p>";
-	$contents .= "<p>Once you're ready, press next to begin the conversion.</p>";
-
-	$output->print_contents($contents);
-	$output->print_footer("3_convertattachments");
 }
 
 function upgrade3_convertattachments()
 {
 	global $db, $output, $settings;
 
-	$output->print_header("Attachment Conversion to Files");
-
-	if(!$_POST['attachmentspage'])
-	{
-		$app = 50;
-	}
-	else
-	{
-		$app = (int)$_POST['attachmentspage'];
-	}
-
-	if($_POST['attachmentstart'])
-	{
-		$startat = (int)$_POST['attachmentstart'];
-		$upper = $startat+$app;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $app;
-		$lower = 1;
-	}
+	// Attachment Conversion to Files
 
 	require_once MYBB_ROOT."inc/settings.php";
-
-	$query = $db->simple_select("attachments", "COUNT(aid) AS attachcount");
-	$cnt = $db->fetch_array($query);
-
-	$contents .= "<p>Converting attachments $lower to $upper (".$cnt['attachcount']." Total)</p>";
-	echo "<p>Converting attachments $lower to $upper (".$cnt['attachcount']." Total)</p>";
 
 	if($db->field_exists("uid", "attachments"))
 	{
@@ -148,7 +116,7 @@ function upgrade3_convertattachments()
 		FROM ".TABLE_PREFIX."attachments a
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 		WHERE a.donecon != '1'
-		ORDER BY a.aid ASC LIMIT {$app}
+		ORDER BY a.aid ASC
 	");
 	while($attachment = $db->fetch_array($query))
 	{
@@ -177,76 +145,27 @@ function upgrade3_convertattachments()
 		unset($thumbnail);
 	}
 
-	echo "<p>Done.</p>";
-	$query = $db->simple_select("attachments", "COUNT(aid) AS attachrem", "donecon != '1'");
-	$cnt = $db->fetch_array($query);
-
-	if($cnt['attachrem'] != 0)
+	if($db->field_exists("donecon", "attachments"))
 	{
-		$nextact = "3_convertattachments";
-		$startat = $startat+$app;
-		$contents .= "<p><input type=\"hidden\" name=\"attachmentspage\" value=\"$app\" /><input type=\"hidden\" name=\"attachmentstart\" value=\"$startat\" />Done. Click Next to move on to the next set of attachments.</p>";
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP donecon");
 	}
-	else
+
+	if($db->field_exists("filedata", "attachments"))
 	{
-		if($db->field_exists("donecon", "attachments"))
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP donecon");
-		}
-
-		if($db->field_exists("filedata", "attachments"))
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP filedata");
-		}
-
-		if($db->field_exists("thumbnailsm", "attachments"))
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm");
-		}
-		$nextact = "3_convertavatars";
-		$contents .= "<p>Done</p><p>All attachments have been moved to the file system. The next step is converting avatars to the file system.</p>";
-		$contents .= "<p>If you wish to change the number of uploaded avatars to process per page then you can do so below.</p>";
-		$contents .= "<p><strong>Avatars Per Page:</strong> <input type=\"text\" size=\"3\" value=\"200\" name=\"userspage\" /></p>";
-		$contents .= "<p>Once you're ready, press next to begin the conversion.</p>";
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP filedata");
 	}
-	$output->print_contents($contents);
-	$output->print_footer($nextact);
+
+	if($db->field_exists("thumbnailsm", "attachments"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm");
+	}
 }
 
 function upgrade3_convertavatars()
 {
 	global $db, $output;
 
-	$output->print_header("Avatar Conversion to Files");
-
-	if(!$_POST['userspage'])
-	{
-		$app = 50;
-	}
-	else
-	{
-		$app = (int)$_POST['userspage'];
-	}
-
-	if($_POST['avatarstart'])
-	{
-		$startat = (int)$_POST['avatarstart'];
-		$upper = $startat+$app;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $app;
-		$lower = 1;
-	}
-
-	require_once MYBB_ROOT."inc/settings.php";
-
-	$query = $db->simple_select("avatars", "COUNT(uid) AS avatarcount");
-	$cnt = $db->fetch_array($query);
-
-	$contents .= "<p>Converting avatars $lower to $upper (".$cnt['avatarcount']." Total)</p>";
+	// Avatar Conversion to Files
 
 	// Add temporary column
 	if(!$db->field_exists("donecon", "avatars"))
@@ -260,7 +179,7 @@ function upgrade3_convertavatars()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD avatartype varchar(10) NOT NULL AFTER avatar;");
 
-	$query = $db->simple_select("avatars", "*", "donecon != '1'", array('order_by' => 'uid', 'order_dir' => 'asc', 'limit' => $app));
+	$query = $db->simple_select("avatars", "*", "donecon != '1'", array('order_by' => 'uid', 'order_dir' => 'asc'));
 	while($avatar = $db->fetch_array($query))
 	{
 		$ext = "";
@@ -286,7 +205,12 @@ function upgrade3_convertavatars()
 			$fp = @fopen("../uploads/avatars/".$filename, "wb");
 			if(!$fp)
 			{
-				die("Unable to create file. Please check permissions and refresh page.");
+				return [
+					'error' => [
+						'title' => 'Error',
+						'message' => 'Unable to create file. Please check permissions and refresh page.',
+					]
+				];
 			}
 			fwrite($fp, $avatar['avatar']);
 			fclose($fp);
@@ -295,33 +219,16 @@ function upgrade3_convertavatars()
 		}
 	}
 
-	echo "<p>Done.</p>";
-	$query = $db->simple_select("avatars", "COUNT(uid) AS avatarsrem", "donecon!='1'");
-	$cnt = $db->fetch_array($query);
-
-	if($cnt['avatarsrem'] != 0)
-	{
-		$nextact = "3_convertavatars";
-		$startat = $startat+$app;
-		$contents .= "<p><input type=\"hidden\" name=\"userspage\" value=\"$app\" /><input type=\"hidden\" name=\"avatarstart\" value=\"$startat\" />Done. Click Next to move on to the next set of avatars.</p>";
-	}
-	else
-	{
-		$db->drop_table("avatars");
-		$nextact = "3_dbchanges2";
-		$contents .= "<p>Done</p><p>All avatars have been moved to the file system. The next step is performing the necessary database modifications for MyBB Gold.</p>";
-	}
-	$output->print_contents($contents);
-	$output->print_footer($nextact);
+	$db->drop_table("avatars");
 }
 
 function upgrade3_dbchanges2()
 {
 	global $db, $output;
 
-	$output->print_header("Database Changes");
+	// Database Changes
 
-	$contents = "<p>Performing necessary database changes.</p>";
+	// Performing necessary database changes.
 
 	if($db->field_exists("additionalgroups", "users"))
 	{
@@ -501,9 +408,7 @@ function upgrade3_dbchanges2()
 	  cache mediumtext NOT NULL,
 	  PRIMARY KEY(title)
 	) ENGINE=MyISAM{$collation};");
-
-	$contents .= "<p>Done</p>";
-	$contents .= "<p>Dropping settings and rebuilding them...";
+	// Dropping settings and rebuilding them...
 
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settinggroups (gid, name, description, disporder, isdefault) VALUES (1, 'General Configuration', 'This section contains various settings such as your board name and url, as well as your website name and url.', 2, 'yes');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settinggroups (gid, name, description, disporder, isdefault) VALUES (3, 'Date and Time Formats', 'Here you can specify the different date and time formats used to display dates and times on the forums.', 4, 'yes');");
@@ -632,19 +537,15 @@ function upgrade3_dbchanges2()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'decpoint', 'Decimal Point', 'The decimal point you use in your region.', 'text', '.', 1, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'thousandssep', 'Thousands Numeric Separator', 'The punctuation you want to use .  (for example, the setting \',\' with the number 1200 will give you a number such as 1,200)', 'text', ',', 1, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'showvernum', 'Show Version Numbers', 'Allows you to turn off the public display of version numbers in MyBB.', 'onoff', 'off', 1, 1);");
-
-	echo "Done</p>";
-	$output->print_contents($contents);
-	$output->print_footer("3_dbchanges3");
 }
 
 function upgrade3_dbchanges3()
 {
 	global $db, $output;
 
-	$output->print_header("Database Field Size Changes");
+	// Database Field Size Changes
 
-	$contents = "<p>Performing necessary database field size changes.</p>";
+	// Performing necessary database field size changes.
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminlog CHANGE uid uid int unsigned NOT NULL;");
 
@@ -815,10 +716,4 @@ function upgrade3_dbchanges3()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usertitles CHANGE utid utid smallint unsigned NOT NULL auto_increment;");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usertitles CHANGE posts posts int unsigned NOT NULL;");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usertitles CHANGE stars stars smallint(4) NOT NULL;");
-
-	echo "Done</p>";
-
-	$contents .= "<span style=\"color: red; font-weight: bold;\">WARNING:</span> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
-	$output->print_contents($contents);
-	$output->print_footer("3_done");
 }

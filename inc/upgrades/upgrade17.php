@@ -23,33 +23,20 @@ function upgrade17_dbchanges()
 {
 	global $db, $output, $mybb, $cache;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	echo "<p>Adding index to private messages table ... ";
-	flush();
+	// Performing Queries
+	// Adding index to private messages table ...
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `toid` )");
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("17_dbchanges2");
 }
 
 function upgrade17_dbchanges2()
 {
 	global $db, $output, $mybb, $cache;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	// Update our version history first
 	$version_history = array();
@@ -159,23 +146,13 @@ function upgrade17_dbchanges2()
 
 	$db->update_query("forums", array('allowvideocode' => '1'));
 	$db->update_query("calendars", array('allowvideocode' => '1'));
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("17_dbchanges3");
 }
 
 function upgrade17_dbchanges3()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	if($db->field_exists('canundovotes', 'usergroups'))
 	{
@@ -265,24 +242,13 @@ function upgrade17_dbchanges3()
 			$db->add_column("users", "usernotes", "text NOT NULL");
 			$db->add_column("users", "referrals", "int unsigned NOT NULL default '0' AFTER referrer");
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("17_dbchanges4");
 }
 
 function upgrade17_dbchanges4()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	if($db->field_exists('remember', 'users'))
 	{
@@ -382,17 +348,7 @@ function upgrade17_dbchanges4()
 			) ENGINE=MyISAM;");
 	}
 
-	$added_tasks = sync_tasks();
-
-	echo "<p>Added {$added_tasks} new tasks.</p>";
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("17_dbchanges5");
+	\MyBB\Maintenance\syncTasks();
 }
 
 function upgrade17_dbchanges5()
@@ -409,13 +365,14 @@ function upgrade17_dbchanges5()
 	}
 	else
 	{
-		$output->print_error("Please make sure your admin directory is uploaded correctly.");
+		return [
+			'error' => [
+				'message' => 'Please make sure your admin directory is uploaded correctly.',
+			]
+		];
 	}
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	$db->update_query("spiders", array('name' => 'Bing'), "name='MSN Search'");
 	$db->update_query("spiders", array('useragent' => 'Googlebot', 'name' => 'Google'), "useragent='google'");
@@ -455,126 +412,30 @@ function upgrade17_dbchanges5()
 	change_admin_permission('config', 'thread_prefixes');
 	change_admin_permission('tools', 'file_verification');
 	change_admin_permission('tools', 'statistics');
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("17_dbchanges6");
 }
 
 function upgrade17_dbchanges6()
 {
 	global $db, $output;
 
-	$output->print_header("Post IP Repair Conversion");
+	// Post IP Repair Conversion
 
-	if(!$_POST['ipspage'])
-	{
-		$ipp = 5000;
-	}
-	else
-	{
-		$ipp = (int)$_POST['ipspage'];
-	}
-
-	if($_POST['ipstart'])
-	{
-		$startat = (int)$_POST['ipstart'];
-		$upper = $startat+$ipp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $ipp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['ipcount'])
-	{
-		$upper = $cnt['ipcount'];
-	}
-
-	echo "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-	flush();
-
-	$ipaddress = false;
-
-	$query = $db->simple_select("posts", "ipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("posts", "ipaddress, pid");
 	while($post = $db->fetch_array($query))
 	{
 		$db->update_query("posts", array('longipaddress' => (int)my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
-		$ipaddress = true;
 	}
-
-	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
-	{
-		$nextact = "17_dbchanges6";
-		$startat = $startat+$ipp;
-		$contents = "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of post ips.</p>";
-	}
-	else
-	{
-		$nextact = "17_dbchanges7";
-		$contents = "<p>Done</p><p>All post ips have been successfully repaired. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade17_dbchanges7()
 {
 	global $db, $output;
 
-	$output->print_header("User IP Repair Conversion");
+	// User IP Repair Conversion
 
-	if(!$_POST['ipspage'])
-	{
-		$ipp = 5000;
-	}
-	else
-	{
-		$ipp = (int)$_POST['ipspage'];
-	}
-
-	if($_POST['ipstart'])
-	{
-		$startat = (int)$_POST['ipstart'];
-		$upper = $startat+$ipp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $ipp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['ipcount'])
-	{
-		$upper = $cnt['ipcount'];
-	}
-
-	$contents .= "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-
-	$ipaddress = false;
 	$update_array = array();
 
-	$query = $db->simple_select("users", "regip, lastip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("users", "regip, lastip, uid", "");
 	while($user = $db->fetch_array($query))
 	{
 		$update_array = array(
@@ -585,27 +446,7 @@ function upgrade17_dbchanges7()
 		$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 
 		$update_array = array();
-		$ipaddress = true;
 	}
-
-	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
-	{
-		$nextact = "17_dbchanges7";
-		$startat = $startat+$ipp;
-		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
-	}
-	else
-	{
-		$nextact = "17_redoconfig";
-		$contents .= "<p>Done</p><p>All user ips have been successfully repaired. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade17_redoconfig()
@@ -614,7 +455,7 @@ function upgrade17_redoconfig()
 
 	$config = $orig_config;
 
-	$output->print_header("Rewriting config.php");
+	// Rewriting config.php
 
 	if(!is_array($config['memcache']))
 	{
@@ -624,9 +465,11 @@ function upgrade17_redoconfig()
 		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 		if(!$fh)
 		{
-			echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
-			$output->print_footer("17_redoconfig");
-			exit;
+			return [
+				'error' => [
+					'message' => 'Unable to open inc/config.php. You need to changes the permissions of inc/config.php so it is writable.',
+				]
+			];
 		}
 
 		if(!$config['memcache_host'])
@@ -801,13 +644,6 @@ function upgrade17_redoconfig()
 		fwrite($fh, $configdata);
 		fclose($fh);
 	}
-	echo "<p>The configuration file has been successfully rewritten.</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("17_updatecss");
 }
 function upgrade17_updatecss()
 {
@@ -823,10 +659,14 @@ function upgrade17_updatecss()
 	}
 	else
 	{
-		$output->print_error("Please make sure your admin directory is uploaded correctly.");
+		return [
+			'error' => [
+				'message' => 'Please make sure your admin directory is uploaded correctly.',
+			]
+		];
 	}
 
-	$output->print_header("Updating CSS");
+	// Updating CSS
 
 	$query = $db->simple_select("themestylesheets", "*", "name='global.css' OR name='usercp.css'");
 	while($theme = $db->fetch_array($query))
@@ -848,14 +688,6 @@ function upgrade17_updatecss()
 		);
 		$db->update_query("themestylesheets", $update_stylesheet, "sid='{$theme['sid']}'");
 	}
-
-	echo "<p>The CSS has been successfully updated.</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-
-	global $footer_extra;
-	//$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("17_done");
 }
 
 function upgrade_css_140_to_160($name, $css)

@@ -23,10 +23,7 @@ function upgrade14_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	// TODO: Need to check for PostgreSQL / SQLite support
 
@@ -140,39 +137,25 @@ function upgrade14_dbchanges()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."datacache ADD PRIMARY KEY (title)");
 		}
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("14_dbchanges1");
 }
 
 function upgrade14_dbchanges1()
 {
 	global $db, $output;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX longipaddress (longipaddress)");
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("14_dbchanges2");
 }
 
 function upgrade14_dbchanges2()
 {
 	global $db, $output;
 
-	$output->print_header("Cleaning up old Settings &amp; Groups");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Cleaning up old Settings &amp; Groups
 
 	$db->delete_query("settinggroups", "name='banning' AND isdefault='0'", 1);
 
@@ -206,9 +189,5 @@ function upgrade14_dbchanges2()
 <br /><br />Cookies are small text documents stored on your computer; the cookies set by this forum can only be used on this website and pose no security risk.
 <br /><br />Cookies on this forum also track the specific topics you have read and when you last read them.
 <br /><br />To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies&amp;key={1}\">here</a>.")), "hid='3'", 1);
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("14_done");
 }
 

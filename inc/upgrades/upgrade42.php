@@ -22,10 +22,7 @@ function upgrade42_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('ipaddress', 'pollvotes'))
 	{
@@ -44,7 +41,4 @@ function upgrade42_dbchanges()
 			$db->add_column("pollvotes", "ipaddress", "varbinary(16) NOT NULL default ''");
 			break;
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("42_done");
 }

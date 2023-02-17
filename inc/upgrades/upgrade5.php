@@ -16,7 +16,7 @@
 $upgrade_detail = array(
 	"revert_all_templates" => 1,
 	"revert_all_themes" => 1,
-	"revert_all_settings" => 2,
+	"revert_all_settings" => 1,
 	"requires_deactivated_plugins" => 1,
 );
 
@@ -24,9 +24,7 @@ function upgrade5_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
+	// Performing Queries
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL;");
 	if($db->field_exists('totalpms', "users"))
@@ -174,6 +172,13 @@ function upgrade5_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
+
+
+	if($db->field_exists('title', "settinggroups"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settinggroups DROP title;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."settinggroups ADD title varchar(220) NOT NULL default ''");
 
 
 	$db->write_query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' WHERE canrunmaint='yes'");
@@ -396,193 +401,44 @@ function upgrade5_dbchanges()
 
 	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
 	$db->write_query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
-
-	$contents .= "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("5_redoconfig");
-}
-
-function upgrade5_redoconfig()
-{
-	global $db, $output, $config, $mybb;
-	$output->print_header("Rewriting config.php");
-
-	$uid = 0;
-	if($mybb->input['username'] != '' && !$mybb->input['uid'])
-	{
-		$user = get_user_by_username($mybb->input['username']);
-
-		$uid = (int)$user['uid'];
-
-		if(!$uid)
-		{
-			echo "<p><span style=\"color: red; font-weight: bold;\">The username you entered could not be found.</span><br />Please ensure you corectly enter a valid username.</p>";
-		}
-	}
-	else if($mybb->input['uid'])
-	{
-		$uid = $mybb->input['uid'];
-	}
-
-	if(!$uid)
-	{
-		echo "<p>Please enter your primary administrator username. The user ID of the username you enter here will be written in to the new configuration file which will prevent this account from being banned, edited or deleted.</p>";
-		echo "<p>Username:</p>";
-		echo "<p><input type=\"text\" name=\"username\" value=\"\" />";
-		$output->print_footer("5_redoconfig");
-		exit;
-	}
-
-	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
-	if(!$fh)
-	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p><input type=\"hidden\" name=\"uid\" value=\"{$uid}\" />";
-		$output->print_footer("5_redoconfig");
-		exit;
-	}
-
-	if(!$config['admindir'])
-	{
-		$config['admindir'] = "admin";
-	}
-
-	if(!$config['cachestore'])
-	{
-		$config['cachestore'] = "db";
-	}
-	$configdata = "<?php
-/**
- * Database configuration
- */
-
-\$config['dbtype'] = '{$config['database']['type']}';
-\$config['hostname'] = '{$config['database']['hostname']}';
-\$config['username'] = '{$config['database']['username']}';
-\$config['password'] = '{$config['database']['password']}';
-\$config['database'] = '{$config['database']['database']}';
-\$config['table_prefix'] = '{$config['database']['table_prefix']}';
-
-/**
- * Admin CP directory
- *  For security reasons, it is recommended you
- *  rename your Admin CP directory. You then need
- *  to adjust the value below to point to the
- *  new directory.
- */
-
-\$config['admin_dir'] = '{$config['admindir']}';
-
-/**
- * Hide all Admin CP links
- *  If you wish to hide all Admin CP links
- *  on the front end of the board after
- *  renaming your Admin CP directory, set this
- *  to 1.
- */
-
-\$config['hide_admin_links'] = 0;
-
-/**
- * Data-cache configuration
- *  The data cache is a temporary cache
- *  of the most commonly accessed data in MyBB.
- *  By default, the database is used to store this data.
- *
- *  If you wish to use the file system (cache/ directory)
- *  you can change the value below to 'files' from 'db'.
- */
-
-\$config['cache_store'] = '{$config['cachestore']}';
-
-/**
- * Super Administrators
- *  A comma separated list of user IDs who cannot
- *  be edited, deleted or banned in the Admin CP.
- *  The administrator permissions for these users
- *  cannot be altered either.
- */
-
-\$config['super_admins'] = '{$uid}';
-
-?".">";
-
-	fwrite($fh, $configdata);
-	fclose($fh);
-	echo "<p>The configuration file has successfully been rewritten.</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_footer("5_lastposts");
-
 }
 
 function upgrade5_lastposts()
 {
 	global $db, $output;
-	$output->print_header("Rebuilding Last Post Columns");
+	// Rebuilding Last Post Columns
 
-	if(!$_POST['tpp'])
+	// Updating {$start} to {$end} of {$num_threads}...
+
+	$query = $db->simple_select("threads", "tid, firstpost", "closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc"));
+
+	while($thread = $db->fetch_array($query))
 	{
-		echo "<p>The next step in the upgrade process involves rebuilding the last post information for every thread in your forum. Below, please enter the number of threads to process per page.</p>";
-		echo "<p><strong>Threads Per Page:</strong> <input type=\"text\" size=\"3\" value=\"200\" name=\"tpp\" /></p>";
-		echo "<p>Once you're ready, press next to begin the rebuild process.</p>";
-		$output->print_footer("5_lastposts");
-	}
-	else
-	{
-		$query = $db->simple_select("threads", "COUNT(*) as num_threads", "closed NOT LIKE 'moved|%'");
-		$num_threads = $db->fetch_field($query, 'num_threads');
-		$tpp = (int)$_POST['tpp'];
-		$start = (int)$_POST['start'];
-		$end = $start+$tpp;
-		if($end > $num_threads)
+		$recount_thread = get_thread($thread['tid']);
+		$count = array();
+
+		$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$thread['tid']}' AND pid!='{$recount_thread['firstpost']}' AND visible='1'");
+		$count['replies'] = $db->fetch_field($query, "replies");
+
+		// Unapproved posts
+		$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "tid='{$thread['tid']}' AND pid != '{$recount_thread['firstpost']}' AND visible='0'");
+		$count['unapprovedposts'] = $db->fetch_field($query, "unapprovedposts");
+
+		// Attachment count
+		$query = $db->query("
+				SELECT COUNT(aid) AS attachment_count
+				FROM ".TABLE_PREFIX."attachments a
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+				WHERE p.tid='{$thread['tid']}' AND a.visible=1
+		");
+		$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
+
+		$db->update_query("threads", $count, "tid='{$thread['tid']}'");
+		update_thread_data($thread['tid']);
+
+		if($thread['firstpost'] == 0)
 		{
-			$end = $num_threads;
-		}
-		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
-
-		$query = $db->simple_select("threads", "tid, firstpost", "closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
-
-		while($thread = $db->fetch_array($query))
-		{
-			$recount_thread = get_thread($thread['tid']);
-			$count = array();
-
-			$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$thread['tid']}' AND pid!='{$recount_thread['firstpost']}' AND visible='1'");
-			$count['replies'] = $db->fetch_field($query, "replies");
-
-			// Unapproved posts
-			$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "tid='{$thread['tid']}' AND pid != '{$recount_thread['firstpost']}' AND visible='0'");
-			$count['unapprovedposts'] = $db->fetch_field($query, "unapprovedposts");
-
-			// Attachment count
-			$query = $db->query("
-					SELECT COUNT(aid) AS attachment_count
-					FROM ".TABLE_PREFIX."attachments a
-					LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-					WHERE p.tid='{$thread['tid']}' AND a.visible=1
-			");
-			$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
-
-			$db->update_query("threads", $count, "tid='{$thread['tid']}'");
-			update_thread_data($thread['tid']);
-
-			if($thread['firstpost'] == 0)
-			{
-				update_first_post($thread['tid']);
-			}
-		}
-		echo "<p>Done</p>";
-		if($end >= $num_threads)
-		{
-			echo "<p>The rebuild process has completed successfully. Click next to continue with the upgrade.";
-			$output->print_footer("5_forumlastposts");
-		}
-		else
-		{
-			echo "<p>Click Next to continue with the build process.</p>";
-			echo "<input type=\"hidden\" name=\"tpp\" value=\"{$tpp}\" />";
-			echo "<input type=\"hidden\" name=\"start\" value=\"{$end}\" />";
-			$output->print_footer("5_lastposts");
+			update_first_post($thread['tid']);
 		}
 	}
 }
@@ -590,24 +446,21 @@ function upgrade5_lastposts()
 function upgrade5_forumlastposts()
 {
 	global $db, $output;
-	$output->print_header("Rebuilding Forum Last Posts");
-	echo "<p>Rebuilding last post information for forums..</p>";
+	// Rebuilding Forum Last Posts
+	// Rebuilding last post information for forums..
 	$query = $db->simple_select("forums", "fid");
 	while($forum = $db->fetch_array($query))
 	{
 		update_forum_lastpost($forum['fid']);
 	}
-	echo "<p>Done";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_footer("5_indexes");
 }
 
 function upgrade5_indexes()
 {
 	global $db, $output;
 
-	$output->print_header("Indexing");
-	echo "<p>Checking and creating fulltext database indexes..</p>";
+	// Indexing
+	// Checking and creating fulltext database indexes..
 
 
 	if($db->is_fulltext("threads", "subject"))
@@ -630,8 +483,4 @@ function upgrade5_indexes()
 			$db->create_fulltext_index("posts", "message");
 		}
 	}
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("5_done");
 }

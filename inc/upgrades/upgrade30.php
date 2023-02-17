@@ -22,10 +22,7 @@ function upgrade30_dbchanges()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	$db->update_query('settings', array('value' => -1), 'name IN (\'postmergefignore\', \'postmergeuignore\') AND value=\'\'');
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
@@ -326,22 +323,13 @@ function upgrade30_dbchanges()
 	}
 
 	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges2");
 }
 
 function upgrade30_dbchanges2()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('ipaddress', 'privatemessages'))
 	{
@@ -476,22 +464,13 @@ function upgrade30_dbchanges2()
 	}
 
 	$db->update_query('forums', array('usethreadcounts' => 1), 'usepostcounts = 1');
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges3");
 }
 
 function upgrade30_dbchanges3()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('cansoftdeleteposts', 'moderators'))
 	{
@@ -612,22 +591,13 @@ function upgrade30_dbchanges3()
 			$db->add_column("moderators", "canviewmodlog", "tinyint(1) NOT NULL default '0' AFTER canmanagereportedposts");
 			break;
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges4");
 }
 
 function upgrade30_dbchanges4()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('emailfloodtime', 'usergroups'))
 	{
@@ -743,22 +713,13 @@ function upgrade30_dbchanges4()
 		"type" => 2
 	);
 	$db->update_query("maillogs", $update_array, "tid > '0'");
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges5");
 }
 
 function upgrade30_dbchanges5()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->table_exists("questions"))
 	{
@@ -857,22 +818,13 @@ function upgrade30_dbchanges5()
 				PRIMARY KEY (sid)
 			) ENGINE=MyISAM{$collation}");
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges6");
 }
 
 function upgrade30_dbchanges6()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->table_exists("buddyrequests"))
 	{
@@ -1100,7 +1052,7 @@ function upgrade30_dbchanges6()
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
-	echo "<p>Updating usergroup permissions...</p>";
+	// Updating usergroup permissions...
 	$groups = array();
 	$usergroups = $cache->read('usergroups');
 
@@ -1219,7 +1171,7 @@ function upgrade30_dbchanges6()
 </select>')), "name='timezoneoffset'");
 
 	// Update tasks
-	$added_tasks = sync_tasks();
+	\MyBB\Maintenance\syncTasks();
 
 	// For the version check task, set a random date and hour (so all MyBB installs don't query mybb.com all at the same time)
 	$update_array = array(
@@ -1228,93 +1180,29 @@ function upgrade30_dbchanges6()
 	);
 
 	$db->update_query("tasks", $update_array, "file = 'versioncheck'");
-
-	echo "<p>Added {$added_tasks} new tasks.</p>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_threadcount");
 }
 
 function upgrade30_threadcount()
 {
 	global $db, $output;
 
-	$output->print_header("Counting user thread count");
+	// Counting user thread count
 
-	if(!$_POST['theadspage'])
-	{
-		$threads = 500;
-	}
-	else
-	{
-		$threads = (int)$_POST['theadspage'];
-	}
-
-	if($_POST['threadstart'])
-	{
-		$startat = (int)$_POST['threadstart'];
-		$upper = $startat+$threads;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $threads;
-		$lower = 0;
-	}
-
-	$query = $db->simple_select("users", "COUNT(uid) AS usercount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['usercount'])
-	{
-		$upper = $cnt['usercount'];
-	}
-
-	echo "<p>Counting thread count of user #{$lower} to #{$upper} ({$cnt['usercount']} Total)</p>";
-	flush();
-
-	$threadnum = false;
-
-	$query = $db->simple_select("users", "threadnum, uid", "", array('limit_start' => $lower, 'limit' => $threads));
+	$query = $db->simple_select("users", "threadnum, uid");
 	while($thread = $db->fetch_array($query))
 	{
 		$query2 = $db->simple_select("threads", "COUNT(tid) AS thread_count", "uid='{$thread['uid']}' AND visible = 1");
 		$num_threads = $db->fetch_field($query2, "thread_count");
 
 		$db->update_query("users", array('threadnum' => $num_threads), "uid = '{$thread['uid']}'");
-
-		$threadnum = true;
 	}
-
-	$remaining = $upper-$cnt['usercount'];
-	if($remaining && $threadnum)
-	{
-		$nextact = "30_threadcount";
-		$startat = $startat+$threads;
-		$contents = "<p><input type=\"hidden\" name=\"theadspage\" value=\"$threads\" /><input type=\"hidden\" name=\"threadstart\" value=\"$startat\" />Done. Click Next to move on to the next set of thread counts.</p>";
-	}
-	else
-	{
-		$nextact = "30_dbchanges_optimize1";
-		$contents = "<p>Done</p><p>All users have had their thread count counted. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade30_dbchanges_optimize1()
 {
 	global $output, $mybb, $db;
 
-	$output->print_header("Optimizing Database");
-
-	echo "<p>Performing necessary optimization queries...</p>";
-	flush();
+	// Optimizing Database
 
 	switch($db->type)
 	{
@@ -1404,23 +1292,14 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
 		}
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_optimize2");
 }
 
 function upgrade30_dbchanges_optimize2()
 {
 	global $output, $mybb, $db;
 
-	$output->print_header("Optimizing Database");
-
-	echo "<p>Performing necessary optimization queries...</p>";
-	echo "<p>Adding indexes to tables...</p>";
-	flush();
+	// Optimizing Database
+	// Adding indexes to tables...
 
 	if($db->index_exists('sessions', 'location1'))
 	{
@@ -1477,7 +1356,7 @@ function upgrade30_dbchanges_optimize2()
 		}
 	}
 
-	echo "<p>Dropping old indexes from tables...</p>";
+	// Dropping old indexes from tables...
 
 	if($db->index_exists('attachments', 'posthash'))
 	{
@@ -1503,22 +1382,13 @@ function upgrade30_dbchanges_optimize2()
 	{
 		$db->drop_index('users', 'birthday');
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_optimize3");
 }
 
 function upgrade30_dbchanges_optimize3()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Optimizing Database");
-
-	echo "<p>Performing necessary optimization queries...</p>";
-	flush();
+	// Optimizing Database
 
 	$to_tinyint = array(
 		"adminoptions" => array("codepress"),
@@ -1556,7 +1426,7 @@ function upgrade30_dbchanges_optimize3()
 
 	foreach($to_tinyint as $table => $columns)
 	{
-		echo "<p>{$table}: Converting column type to tinyint</p>";
+		// {$table}: Converting column type to tinyint
 		$change_column = array();
 		foreach($columns as $column)
 		{
@@ -1578,22 +1448,13 @@ function upgrade30_dbchanges_optimize3()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 		}
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_optimize4");
 }
 
 function upgrade30_dbchanges_optimize4()
 {
 	global $cache, $output, $mybb, $db;
 
-	$output->print_header("Optimizing Database");
-
-	echo "<p>Performing necessary optimization queries...</p>";
-	flush();
+	// Optimizing Database
 
 	$to_int = array(
 		"adminlog" => array("dateline"),
@@ -1637,7 +1498,7 @@ function upgrade30_dbchanges_optimize4()
 
 	foreach($to_int as $table => $columns)
 	{
-		echo "<p>{$table}: Converting column type to int</p>";
+		// {$table}: Converting column type to int
 		$change_column = array();
 		foreach($columns as $column)
 		{
@@ -1659,19 +1520,13 @@ function upgrade30_dbchanges_optimize4()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 		}
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_smilies");
 }
 
 function upgrade30_dbchanges_smilies()
 {
 	global $cache, $output, $db;
 
-	$output->print_header("Updating Smilies");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Smilies
 
 	if($db->type == 'pgsql')
 	{
@@ -1725,412 +1580,210 @@ function upgrade30_dbchanges_smilies()
 	}
 
 	$cache->update_smilies();
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_ip");
 }
 
 function upgrade30_dbchanges_ip()
 {
-	global $mybb, $db, $output;
+	global $db, $output;
 
-	$output->print_header("IP Conversion");
+	// IP Conversion
 
-	$ipstart = $iptable = '';
+	// Updating post table (1/2)...
 
-	switch($mybb->input['iptask'])
+	if($db->field_exists('longipaddress', 'posts'))
 	{
-		case 8:
-			echo "<p>Adding database indices (3/3)...</p>";
-			flush();
+		// This may take a while
+		$db->drop_column("posts", "longipaddress");
+	}
 
-			if(!$db->index_exists('users', 'lastip'))
-			{
-				// This may take a while
-				if($db->type == "mysql" || $db->type == "mysqli")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
-				}
-				elseif($db->type == "pgsql")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`lastip`)");
-				}
-			}
-			$next_task = 9;
-			break;
-		case 7:
-			echo "<p>Adding database indices (2/3)...</p>";
-			flush();
 
-			if(!$db->index_exists('users', 'regip'))
-			{
-				// This may take a while
-				if($db->type == "mysql" || $db->type == "mysqli")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
-				}
-				elseif($db->type == "pgsql")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`regip`)");
-				}
-			}
-			$next_task = 8;
-			break;
-		case 6:
-			echo "<p>Adding database indices (1/3)...</p>";
-			flush();
+	// Updating user table (1/4)...
 
-			if(!$db->index_exists('posts', 'ipaddress'))
-			{
-				// This may take a while
-				if($db->type == "mysql" || $db->type == "mysqli")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
-				}
-				elseif($db->type == "pgsql")
-				{
-					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`ipaddress`)");
-				}
-			}
-			$next_task = 7;
-			break;
-		case 5:
-			if(!$_POST['ipspage'])
-			{
-				$ipp = 5000;
-			}
-			else
-			{
-				$ipp = (int)$_POST['ipspage'];
-			}
+	if($db->field_exists('longregip', 'users'))
+	{
+		// This may take a while
+		$db->drop_column("users", "longregip");
+	}
 
-			if($_POST['ipstart'])
-			{
-				$startat = (int)$_POST['ipstart'];
-				$upper = $startat+$ipp-1;
-				$lower = $startat;
-			}
-			else
-			{
-				$startat = 0;
-				$upper = $ipp;
-				$lower = 0;
-			}
 
-			$next_task = 5;
-			switch($mybb->input['iptable'])
+	// Updating user table (2/4)...
+
+	if($db->field_exists('longlastip', 'users'))
+	{
+		// This may take a while
+		$db->drop_column("users", "longlastip");
+	}
+
+
+	// Skip conversion
+	$db->delete_query('adminsessions');
+	$db->delete_query('searchlog');
+
+	$data = array(
+		'adminlog' => 'ipaddress',
+		'adminsessions' => 'ip',
+		'maillogs' => 'ipaddress',
+		'moderatorlog' => 'ipaddress',
+		'posts' => 'ipaddress',
+		'searchlog' => 'ipaddress',
+		'sessions' => 'ip',
+		'threadratings' => 'ipaddress',
+		'users' => 'lastip',
+	);
+
+	foreach($data as $table => $column)
+	{
+		// Truncate invalid IPs
+		$db->write_query("UPDATE ".TABLE_PREFIX."{$table} SET {$column} = SUBSTR({$column}, 16) WHERE LENGTH({$column})>16");
+		switch($db->type)
+		{
+			case "pgsql":
+				// Drop default value before converting the column
+				$db->modify_column($table, $column, false, false);
+				$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
+				break;
+			case "sqlite":
+				$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
+				break;
+			default:
+				$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
+				break;
+		}
+	}
+
+	for ($iptable = 1; $iptable <= 10; $iptable++)
+	{
+		switch($iptable)
+		{
+			case 7:
+				$query = $db->simple_select("users", "uid, regip, lastip", "");
+				break;
+			case 6:
+				$query = $db->simple_select("threadratings", "rid, ipaddress", "");
+				break;
+			case 5:
+				$query = $db->simple_select("sessions", "sid, ip", "");
+				break;
+			case 4:
+				$query = $db->simple_select("posts", "pid, ipaddress", "");
+				break;
+			case 3:
+				$query = $db->simple_select("moderatorlog", "DISTINCT(ipaddress)", "");
+				break;
+			case 2:
+				$query = $db->simple_select("maillogs", "mid, ipaddress", "");
+				break;
+			default:
+				$query = $db->simple_select("adminlog", "DISTINCT(ipaddress)", "");
+				break;
+		}
+		while($data = $db->fetch_array($query))
+		{
+			// Skip invalid IPs
+			switch($iptable)
 			{
 				case 7:
-					echo "<p>Converting user IPs...</p>";
-					flush();
-					$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
-					if($db->type == "mysql" || $db->type == "mysqli")
+					$ip1 = my_inet_pton($db->unescape_binary($data['regip']));
+					$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
+					if($ip1 === false && $ip2 === false)
 					{
-						$next_task = 6;
+						continue 2;
 					}
-					else
+					break;
+				case 5:
+					$ip = my_inet_pton($db->unescape_binary($data['ip']));
+					if($ip === false)
 					{
-						$next_task = 9;
+						continue 2;
 					}
 					break;
 				case 6:
-					echo "<p>Converting thread rating IPs...</p>";
-					flush();
-					$query = $db->simple_select("threadratings", "COUNT(rid) AS ipcount");
-					break;
-				case 5:
-					echo "<p>Converting session IPs...</p>";
-					flush();
-					$query = $db->simple_select("sessions", "COUNT(sid) AS ipcount");
-					break;
 				case 4:
-					echo "<p>Converting post IPs...</p>";
-					flush();
-					$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
-					break;
 				case 3:
-					echo "<p>Converting moderator log IPs...</p>";
-					flush();
-					$query = $db->simple_select("moderatorlog", "COUNT(DISTINCT ipaddress) AS ipcount");
-					break;
 				case 2:
-					echo "<p>Converting mail log IPs...</p>";
-					flush();
-					$query = $db->simple_select("maillogs", "COUNT(mid) AS ipcount");
-					break;
 				default:
-					echo "<p>Converting admin log IPs...</p>";
-					flush();
-					$query = $db->simple_select("adminlog", "COUNT(DISTINCT ipaddress) AS ipcount");
+					$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
+					if($ip === false)
+					{
+						continue 2;
+					}
 					break;
 			}
-			$cnt = $db->fetch_array($query);
 
-			if($upper > $cnt['ipcount'])
-			{
-				$upper = $cnt['ipcount'];
-			}
-
-			echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-			flush();
-
-			$ipaddress = false;
-
-			switch($mybb->input['iptable'])
+			switch($iptable)
 			{
 				case 7:
-					$query = $db->simple_select("users", "uid, regip, lastip", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".(int)$data['uid']."'");
 					break;
 				case 6:
-					$query = $db->simple_select("threadratings", "rid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".(int)$data['rid']."'");
 					break;
 				case 5:
-					$query = $db->simple_select("sessions", "sid, ip", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".(int)$data['sid']."'");
 					break;
 				case 4:
-					$query = $db->simple_select("posts", "pid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".(int)$data['pid']."'");
 					break;
 				case 3:
-					$query = $db->simple_select("moderatorlog", "DISTINCT(ipaddress)", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 					break;
 				case 2:
-					$query = $db->simple_select("maillogs", "mid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".(int)$data['mid']."'");
 					break;
 				default:
-					$query = $db->simple_select("adminlog", "DISTINCT(ipaddress)", "", array('limit_start' => $lower, 'limit' => $ipp));
-					$mybb->input['iptable'] = 1;
+					$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 					break;
 			}
-			while($data = $db->fetch_array($query))
-			{
-				// Skip invalid IPs
-				switch($mybb->input['iptable'])
-				{
-					case 7:
-						$ip1 = my_inet_pton($db->unescape_binary($data['regip']));
-						$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
-						if($ip1 === false && $ip2 === false)
-						{
-							continue 2;
-						}
-						break;
-					case 5:
-						$ip = my_inet_pton($db->unescape_binary($data['ip']));
-						if($ip === false)
-						{
-							continue 2;
-						}
-						break;
-					case 6:
-					case 4:
-					case 3:
-					case 2:
-					default:
-						$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
-						if($ip === false)
-						{
-							continue 2;
-						}
-						break;
-				}
-
-				switch($mybb->input['iptable'])
-				{
-					case 7:
-						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".(int)$data['uid']."'");
-						break;
-					case 6:
-						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".(int)$data['rid']."'");
-						break;
-					case 5:
-						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".(int)$data['sid']."'");
-						break;
-					case 4:
-						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".(int)$data['pid']."'");
-						break;
-					case 3:
-						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
-						break;
-					case 2:
-						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".(int)$data['mid']."'");
-						break;
-					default:
-						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
-						break;
-				}
-				$ipaddress = true;
-			}
-
-			$remaining = $upper-$cnt['ipcount'];
-			if($remaining && $ipaddress)
-			{
-				$startat = $startat+$ipp;
-				$ipstart = "<input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />";
-				$iptable = $mybb->input['iptable'];
-			}
-			else
-			{
-				$iptable = $mybb->input['iptable']+1;
-			}
-			if($iptable <= 10)
-			{
-				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"$iptable\" />";
-			}
-			break;
-		case 4:
-			$next_task = 4;
-			switch($mybb->input['iptable'])
-			{
-				case 10:
-					echo "<p>Updating user table (4/4)...</p>";
-					flush();
-
-					$table = 'users';
-					$column = 'lastip';
-					$next_task = 5;
-					break;
-				case 9:
-					echo "<p>Updating user table (3/4)...</p>";
-					flush();
-
-					$table = 'users';
-					$column = 'regip';
-					break;
-				case 8:
-					echo "<p>Updating threadreating table...</p>";
-					flush();
-
-					$table = 'threadratings';
-					$column = 'ipaddress';
-					break;
-				case 7:
-					echo "<p>Updating session table...</p>";
-					flush();
-
-					$table = 'sessions';
-					$column = 'ip';
-					break;
-				case 6:
-					echo "<p>Updating searchlog table...</p>";
-					flush();
-
-					$table = 'searchlog';
-					$column = 'ipaddress';
-					// Skip conversion
-					$db->delete_query('searchlog');
-					break;
-				case 5:
-					echo "<p>Updating post table (2/2)...</p>";
-					flush();
-
-					$table = 'posts';
-					$column = 'ipaddress';
-					break;
-				case 4:
-					echo "<p>Updating moderatorlog table...</p>";
-					flush();
-
-					$table = 'moderatorlog';
-					$column = 'ipaddress';
-					break;
-				case 3:
-					echo "<p>Updating maillog table...</p>";
-					flush();
-
-					$table = 'maillogs';
-					$column = 'ipaddress';
-					break;
-				case 2:
-					echo "<p>Updating adminsession table...</p>";
-					flush();
-
-					$table = 'adminsessions';
-					$column = 'ip';
-					// Skip conversion
-					$db->delete_query('adminsessions');
-					break;
-				default:
-					echo "<p>Updating adminlog table...</p>";
-					flush();
-
-					$mybb->input['iptable'] = 1;
-					$table = 'adminlog';
-					$column = 'ipaddress';
-					break;
-			}
-			// Truncate invalid IPs
-			$db->write_query("UPDATE ".TABLE_PREFIX."{$table} SET {$column} = SUBSTR({$column}, 16) WHERE LENGTH({$column})>16");
-			switch($db->type)
-			{
-				case "pgsql":
-					// Drop default value before converting the column
-					$db->modify_column($table, $column, false, false);
-					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
-					break;
-				case "sqlite":
-					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
-					break;
-				default:
-					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
-					break;
-			}
-			if($mybb->input['iptable'] < 10)
-			{
-				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"".($mybb->input['iptable']+1)."\" />";
-			}
-			break;
-		case 3:
-			echo "<p>Updating user table (2/4)...</p>";
-			flush();
-
-			if($db->field_exists('longlastip', 'users'))
-			{
-				// This may take a while
-				$db->drop_column("users", "longlastip");
-			}
-			$next_task = 4;
-			break;
-		case 2:
-			echo "<p>Updating user table (1/4)...</p>";
-			flush();
-
-			if($db->field_exists('longregip', 'users'))
-			{
-				// This may take a while
-				$db->drop_column("users", "longregip");
-			}
-			$next_task = 3;
-			break;
-		default:
-			echo "<p>Updating post table (1/2)...</p>";
-			flush();
-
-			if($db->field_exists('longipaddress', 'posts'))
-			{
-				// This may take a while
-				$db->drop_column("posts", "longipaddress");
-			}
-			$next_task = 2;
-			break;
+		}
 	}
 
-	if($next_task == 9)
+
+	// Adding database indices (1/3)...
+
+	if(!$db->index_exists('posts', 'ipaddress'))
 	{
-		$contents = "<p>Click next to continue with the upgrade process.</p>";
-		$nextact = "30_updatetheme";
+		// This may take a while
+		if($db->type == "mysql" || $db->type == "mysqli")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
+		}
+		elseif($db->type == "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`ipaddress`)");
+		}
 	}
-	else
+
+
+	// Adding database indices (2/3)...
+
+	if(!$db->index_exists('users', 'regip'))
 	{
-		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversion.</p>";
-
-		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-		$nextact = "30_dbchanges_ip";
+		// This may take a while
+		if($db->type == "mysql" || $db->type == "mysqli")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
+		}
+		elseif($db->type == "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`regip`)");
+		}
 	}
 
-	$output->print_contents($contents);
 
-	$output->print_footer($nextact);
+	// Adding database indices (3/3)...
+
+	if(!$db->index_exists('users', 'lastip'))
+	{
+		// This may take a while
+		if($db->type == "mysql" || $db->type == "mysqli")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
+		}
+		elseif($db->type == "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`lastip`)");
+		}
+	}
 }
 
 function upgrade30_updatetheme()
@@ -2147,18 +1800,21 @@ function upgrade30_updatetheme()
 	}
 	else
 	{
-		$output->print_error("Please make sure your admin directory is uploaded correctly.");
+		return [
+			'error' => [
+				'message' => 'Please make sure your admin directory is uploaded correctly.',
+			]
+		];
 	}
 
-	$output->print_header("Updating Themes");
+	// Updating Themes
 
 	// New default user star
-	$contents = "<p>Updating the Default user star image... ";
+	// Updating the Default user star image...
 	$db->update_query("usergroups", array('starimage' => 'images/star.png'), "starimage='images/star.gif'");
-	$contents .= "done.</p>";
 
-	$contents .= "<p>Adding new stylesheets... ";
-	
+	// Adding new stylesheets...
+
 	$query = $db->simple_select("themes", "*", "tid='1'");
 
 	$theme = $db->fetch_array($query);
@@ -2239,9 +1895,7 @@ function upgrade30_updatetheme()
 
 	$db->update_query("themes", $update_array, "tid = '1'");
 
-	$contents .= "done.</p>";
-
-	$contents .= "<p>Adding a disporder to all stylesheets... ";
+	// Adding a disporder to all stylesheets...
 
 	$query = $db->simple_select("themes", "tid,properties,stylesheets");
 	while($theme = $db->fetch_array($query))
@@ -2293,9 +1947,7 @@ function upgrade30_updatetheme()
 		$db->update_query("themes", array("properties" => $db->escape_string(my_serialize($properties))), "tid='{$theme['tid']}'");
 	}
 
-	$contents .= "done.</p>";
-
-	$contents .= "<p>Adding the Default colors... ";
+	// Adding the Default colors...
 
 	$query = $db->simple_select("themes", "*", "tid = '2'");
 
@@ -2372,113 +2024,9 @@ function upgrade30_updatetheme()
 		}
 	}
 
-	$contents .= "done.</p>";
-
-	$contents .= '<p>Re-caching and minifying existing stylesheets...</p>';
+	// Re-caching and minifying existing stylesheets...
 
 	$num_re_cached = recache_existing_styles();
-
-	$contents .= "Done. {$num_re_cached} stylesheets re-cached.";
-
-	echo $contents;
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-
-	if(!isset($config['secret_pin']) && is_writable(MYBB_ROOT."inc/config.php"))
-	{
-		$output->print_footer("30_acppin");
-	}
-	else
-	{
-		$output->print_footer("30_done");
-	}
-}
-
-function upgrade30_acppin()
-{
-	global $config, $output;
-
-	$output->print_header("Add an ACP PIN");
-
-	echo "<p>We added a new security function in 1.8: The possibility to set a security PIN which you need to enter the ACP.<br />\n";
-	echo "If you don't want to set a PIN you can simply skip this step (leave the field below empty). You can still set the PIN later (see the docs to see how).</p>\n";
-	echo '<div class="border_wrapper">
-			<div class="title">ACP PIN Configuration</div>
-			<table class="general" cellspacing="0">
-				<tbody>
-				<tr>
-					<th colspan="2" class="first last">ACP Security PIN</th>
-				</tr>
-				<tr class="first">
-					<td class="first"><label for="bbname">PIN:</label></td>
-					<td class="last alt_col"><input type="password" class="text_input" name="pin" id="pin" value="'.$config['secret_pin'].'" /></td>
-				</tr>
-				</tbody>
-			</table>
-		</div>';
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-
-	$output->print_footer("30_acppin_submit");
-}
-
-function upgrade30_acppin_submit()
-{
-	global $db, $mybb, $output, $config;
-
-	$output->print_header("Writing the config file");
-
-	$content = "<p>We're now writing your PIN (if you've entered one) to the config.php file... ";
-
-	if(!is_writable(MYBB_ROOT."inc/config.php"))
-	{
-		$content .= "Failed (config.php not writable)";
-	}
-	else if(isset($config['secret_pin']))
-	{
-		$content .= "Skipped (PIN already set)";
-	}
-	else
-	{
-		$pin = addslashes($mybb->get_input('pin'));
-
-		$file = @fopen(MYBB_ROOT."inc/config.php", "r+");
-
-		$contents = '';
-		while(!@feof($file))
-		{
-			$contents .= @fread($file, 8436);
-		}
-
-		$contents_temp = str_replace(array("\r", "\t", "\n", " ", "\0", "\x0B"), '', $contents);
-
-		// Set the pointer before the closing php tag to remove it
-		$pos = strrpos($contents, "?>");
-		if(my_substr($contents_temp, -2) == "?>")
-		{
-			@fseek($file, $pos, SEEK_SET);
-		}
-
-		@fwrite($file, "
-/**
- * Admin CP Secret PIN
- *  If you wish to request a PIN
- *  when someone tries to login
- *  on your Admin CP, enter it below.
- */
-
-\$config['secret_pin'] = '{$pin}';");
-
-		@fclose($file);
-
-		$content .= "Done";		
-	}
-
-	echo $content."</p>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-
-	$output->print_footer("30_done");
 }
 
 /**
