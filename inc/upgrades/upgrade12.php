@@ -29,9 +29,7 @@ function upgrade12_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Integer Conversion Project");
-
-	$perpage = 10000;
+	// Integer Conversion Project
 
 	$to_int = array(
 		"announcements" => array("aid", "allowhtml", "allowmycode", "allowsmilies"),
@@ -61,256 +59,108 @@ function upgrade12_dbchanges()
 		}
 	}
 
-	// Continuing?
-	if($mybb->input['last_table'])
-	{
-		$current_table = $mybb->input['last_table'];
-	}
-	else
-	{
-		$current_table = array_keys($to_int);
-		$current_table = $current_table[0];
-		echo "<p>MyBB 1.4 represents a huge leap forward for the MyBB project.</p><p>Due to this, lots of information in the database needs to be converted to a new format.</p>";
-	}
-
-	echo "<p>MyBB is now currently converting a section of data to the new format, this may take a while.</p>";
-
-	$remaining = $perpage;
-
-	$final_table = array_keys($to_int);
-	$final_table = $final_table[count($final_table)-1];
-
-	$next_act = "12_dbchanges";
-
-	$start = $mybb->get_input('start', MyBB::INPUT_INT);
-	$count = $mybb->input['count'];
-
 	foreach($to_int as $table => $columns)
 	{
-		if($table == $current_table)
+		$columns_sql = implode(",", $columns);
+		$primary_key = $columns[0];
+
+		$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $primary_key));
+		while($row = $db->fetch_array($query))
 		{
-			$form_fields['last_table'] = $current_table;
-			if($remaining <= 0)
+			$updated_row = array();
+			foreach($columns as $column)
 			{
-				break;
-			}
-			$columns_sql = implode(",", $columns);
-			$primary_key = $columns[0];
-			if(!$mybb->input['count'])
-			{
-				$query = $db->simple_select($table, "COUNT({$primary_key}) AS count");
-				$count = $form_fields['count'] = $db->fetch_field($query, "count");
-			}
-			if($start <= $count)
-			{
-				$end = $start+$perpage;
-				if($end > $count) $end = $count;
-				echo "<p>{$table}: Converting {$start} to {$end} of {$count}</p>";
-				flush();
-				$form_fields['start'] = $perpage+$start;
-
-				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $primary_key, 'limit_start' => $start, 'limit' => $remaining));
-				while($row = $db->fetch_array($query))
+				if($column == $primary_key || is_int($row[$column])) continue;
+				if($row[$column] == "yes" || $row[$column] == "on")
 				{
-					$updated_row = array();
-					foreach($columns as $column)
-					{
-						if($column == $primary_key || is_int($row[$column])) continue;
-						if($row[$column] == "yes" || $row[$column] == "on")
-						{
-							$updated_row[$column] = 1;
-						}
-						else if($row[$column] == "off" || $row[$column] == "no" || $row[$column] == 'new' || $row[$column] == "")
-						{
-							$updated_row[$column] = 0;
-						}
-					}
-					if(count($updated_row) > 0)
-					{
-						$db->update_query($table, $updated_row, "{$primary_key}={$row[$primary_key]}");
-					}
-					--$remaining;
+					$updated_row[$column] = 1;
+				}
+				else if($row[$column] == "off" || $row[$column] == "no" || $row[$column] == 'new' || $row[$column] == "")
+				{
+					$updated_row[$column] = 0;
 				}
 			}
-			else
+			if(count($updated_row) > 0)
 			{
-				echo "<p>{$table}: Converting column type</p>";
-				flush();
-				$change_column = array();
-				foreach($columns as $column)
-				{
-					// Closed does not get converted to an int
-					if($column == $primary_key || ($table == "threads" && $column == "closed"))
-					{
-						continue;
-					}
-					$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
-				}
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
-
-				if($table == $final_table)
-				{
-					// Finished, after all this!
-					$next_act = "12_dbchanges1";
-				}
-				else
-				{
-					$tbl_keys = array_keys($to_int);
-					$current = array_search($current_table, $tbl_keys);
-					$form_fields['last_table'] = $current_table = $tbl_keys[$current+1];
-					$form_fields['start'] = $start = 0;
-					$form_fields['count'] = $count = $mybb->input['count'] = 0;
-				}
+				$db->update_query($table, $updated_row, "{$primary_key}={$row[$primary_key]}");
 			}
 		}
-	}
 
-	// Still converting
-	if($next_act == "12_dbchanges")
-	{
-		echo "<p>Done</p>";
-		echo "<p>Click next to continue with the integer conversion process.</p>";
-		foreach($form_fields as $key => $val)
+		// {$table}: Converting column type
+		$change_column = array();
+		foreach($columns as $column)
 		{
-			echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$val}\" />";
+			// Closed does not get converted to an int
+			if($column == $primary_key || ($table == "threads" && $column == "closed"))
+			{
+				continue;
+			}
+			$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
 		}
-		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-		$output->print_footer($next_act);
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 	}
-	else
-	{
-		// Convert settings table
-		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
-		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
-		echo "<p>Done</p>";
-		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
-		echo "<p>Click next to continue with the upgrade process.</p>";
-		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
-		$output->print_footer($next_act);
-	}
+	// Convert settings table
+	$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
+	$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
 }
 
 function upgrade12_dbchanges1()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	echo "<p>Adding index to private messages table ... ";
-	flush();
+	// Performing Queries
+	// Adding index to private messages table ...
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
-
-	echo "done.</p>";
-
-	$contents = "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges_post1");
 }
 
 function upgrade12_dbchanges_post1()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	echo "<p>Adding index to posts table ... ";
-	flush();
+	// Performing Queries
+	// Adding index to posts table ...
 
 	// This will take a LONG time on huge post databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
-
-	echo "done.</p>";
-	flush();
-
-	$contents = "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges_post2");
 }
 
 function upgrade12_dbchanges_post2()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
+	// Performing Queries
 
 	if($db->field_exists('longipaddress', "posts"))
 	{
-		echo "<p>Dropping longipaddress column in posts table ... ";
-		flush();
+		// Dropping longipaddress column in posts table ...
 
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP longipaddress;");
-
-		echo "done.</p>";
-		flush();
 	}
 
-	echo "<p>Adding longipaddress column to posts table ... ";
-	flush();
+	// Adding longipaddress column to posts table ...
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(11) NOT NULL default '0' AFTER ipaddress");
-
-	echo "done.</p>";
-	flush();
-
-	$contents = "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges_user");
 }
 
 function upgrade12_dbchanges_user()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	echo "<p>Adding index to users table ... ";
-	flush();
+	// Performing Queries
+	// Adding index to users table ...
 
 	// This will take a LONG time on huge user databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `lastvisit` )");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `regdate` )");
-
-	echo "done.</p>";
-	flush();
-
-	$contents = "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges2");
 }
 
 function upgrade12_dbchanges2()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	if($db->field_exists('recipients', "privatemessages"))
 	{
@@ -761,25 +611,15 @@ function upgrade12_dbchanges2()
 
 	$db->update_query("settings", array('optionscode' => $db->escape_string('php
 <select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".(isset($lang->setting_searchtype_standard)?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".(isset($lang->setting_searchtype_fulltext)?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
-
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges3");
 }
 
 function upgrade12_dbchanges3()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Converting Ban Filters");
+	// Converting Ban Filters
 
-	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
-	flush();
+	// Converting existing banned IP addresses, email addresses and usernames..
 
 	$db->drop_table("banfilters");
 
@@ -837,25 +677,13 @@ function upgrade12_dbchanges3()
 			$db->insert_query("banfilters", $new_ban);
 		}
 	}
-
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges4");
 }
 
 function upgrade12_dbchanges4()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	$db->drop_table("spiders");
 	$db->drop_table("stats");
@@ -1068,25 +896,13 @@ function upgrade12_dbchanges4()
 	$stats['numusers'] = $db->fetch_field($query, 'users');
 
 	update_stats($stats, true);
-
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges5");
 }
 
 function upgrade12_dbchanges5()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
-	flush();
+	// Performing Queries
 
 	$db->drop_table("templategroups");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."templategroups (
@@ -1283,15 +1099,6 @@ function upgrade12_dbchanges5()
 	{
 		$db->update_query("users", array('avatardimensions' => $avatardimensions), "uid='{$user['uid']}'", 1);
 	}
-
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_redoconfig");
 }
 
 function upgrade12_redoconfig()
@@ -1300,7 +1107,7 @@ function upgrade12_redoconfig()
 
 	$config = $orig_config;
 
-	$output->print_header("Rewriting config.php");
+	// Rewriting config.php
 
 	if(!is_array($config['database']))
 	{
@@ -1310,9 +1117,11 @@ function upgrade12_redoconfig()
 		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 		if(!$fh)
 		{
-			echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
-			$output->print_footer("12_redoconfig");
-			exit;
+			return [
+				'error' => [
+					'message' => 'Unable to open inc/config.php. Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.',
+				]
+			];
 		}
 
 		if(!$config['memcache_host'])
@@ -1440,57 +1249,15 @@ function upgrade12_redoconfig()
 		fwrite($fh, $configdata);
 		fclose($fh);
 	}
-	echo "<p>The configuration file has successfully been rewritten.</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_dbchanges6");
 }
 
 function upgrade12_dbchanges6()
 {
 	global $db, $output;
 
-	$output->print_header("Post IP Conversion");
+	// Post IP Conversion
 
-	if(!$_POST['ipspage'])
-	{
-		$ipp = 5000;
-	}
-	else
-	{
-		$ipp = (int)$_POST['ipspage'];
-	}
-
-	if($_POST['ipstart'])
-	{
-		$startat = (int)$_POST['ipstart'];
-		$upper = $startat+$ipp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $ipp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['ipcount'])
-	{
-		$upper = $cnt['ipcount'];
-	}
-
-	echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-	flush();
-
-	$ipaddress = false;
-
-	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid");
 	while($post = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
@@ -1498,71 +1265,18 @@ function upgrade12_dbchanges6()
 		{
 			$db->update_query("posts", array('longipaddress' => my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
 		}
-		$ipaddress = true;
 	}
-
-	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
-	{
-		$nextact = "12_dbchanges6";
-		$startat = $startat+$ipp;
-		$contents = "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of post ips.</p>";
-	}
-	else
-	{
-		$nextact = "12_dbchanges7";
-		$contents = "<p>Done</p><p>All post ips have been converted to the new ip format. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade12_dbchanges7()
 {
 	global $db, $output;
 
-	$output->print_header("User IP Conversion");
+	// User IP Conversion
 
-	if(!$_POST['ipspage'])
-	{
-		$ipp = 5000;
-	}
-	else
-	{
-		$ipp = (int)$_POST['ipspage'];
-	}
-
-	if($_POST['ipstart'])
-	{
-		$startat = (int)$_POST['ipstart'];
-		$upper = $startat+$ipp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $ipp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['ipcount'])
-	{
-		$upper = $cnt['ipcount'];
-	}
-
-	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-
-	$ipaddress = false;
 	$update_array = array();
 
-	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid");
 	while($user = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
@@ -1582,66 +1296,14 @@ function upgrade12_dbchanges7()
 		}
 
 		$update_array = array();
-		$ipaddress = true;
 	}
-
-	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
-	{
-		$nextact = "12_dbchanges7";
-		$startat = $startat+$ipp;
-		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
-	}
-	else
-	{
-		$nextact = "12_dbchanges8";
-		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade12_dbchanges8()
 {
 	global $db, $output;
 
-	$output->print_header("Event Conversion");
-
-	if(!$_POST['eventspage'])
-	{
-		$epp = 50;
-	}
-	else
-	{
-		$epp = (int)$_POST['eventspage'];
-	}
-
-	if($_POST['eventstart'])
-	{
-		$startat = (int)$_POST['eventstart'];
-		$upper = $startat+$epp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $epp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("events", "COUNT(eid) AS eventcount");
-	$cnt = $db->fetch_array($query);
-
-	if($upper > $cnt['eventcount'])
-	{
-		$upper = $cnt['eventcount'];
-	}
-
-	$contents .= "<p>Converting events {$lower} to {$upper} ({$cnt['eventcount']} Total)</p>";
+	// Event Conversion
 
 	// Just started - add fields
 	if(!$db->field_exists("donecon", "events"))
@@ -1721,7 +1383,7 @@ function upgrade12_dbchanges8()
 
 	if($db->field_exists('date', "events"))
 	{
-		$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid", "limit" => $epp));
+		$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid"));
 		while($event = $db->fetch_array($query))
 		{
 			$e_date = explode("-", $event['date']);
@@ -1736,45 +1398,20 @@ function upgrade12_dbchanges8()
 			);
 			$db->update_query("events", $updated_event, "eid='{$event['eid']}'", 1);
 		}
-
-		$date = true;
 	}
-	else
+
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
+	if($db->field_exists('date', "events"))
 	{
-		$date = false;
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
 	}
-
-	$query = $db->simple_select("events", "COUNT(eid) AS remaining", "donecon!=1");
-	$remaining = $db->fetch_field($query, "remaining");
-	if($remaining && $date)
-	{
-		$nextact = "12_dbchanges8";
-		$startat = $startat+$epp;
-		$contents .= "<p><input type=\"hidden\" name=\"eventspage\" value=\"$epp\" /><input type=\"hidden\" name=\"eventstart\" value=\"$startat\" />Done. Click Next to move on to the next set of events.</p>";
-	}
-	else
-	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
-		if($db->field_exists('date', "events"))
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
-		}
-		$nextact = "12_redothemes";
-		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer($nextact);
 }
 
 function upgrade12_redothemes()
 {
 	global $db, $output, $config, $mybb;
 
-	$output->print_header("Converting themes");
+	// Converting themes
 
 	if(!@is_dir(MYBB_ROOT.'cache/'))
 	{
@@ -1800,9 +1437,11 @@ function upgrade12_redothemes()
 
 	if($not_writable)
 	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
-		$output->print_footer("12_redothemes");
-		exit;
+		return [
+			'error' => [
+				'message' => 'Unable to write to the cache/ directory. Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777).',
+			]
+		];
 	}
 
 	$not_writable = false;
@@ -1830,9 +1469,11 @@ function upgrade12_redothemes()
 
 	if($not_writable)
 	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/themes/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
-		$output->print_footer("12_redothemes");
-		exit;
+		return [
+			'error' => [
+				'message' => 'Unable to write to the cache/themes/ directory. Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777).',
+			]
+		];
 	}
 
 	if($db->field_exists('themebits', "themes") && !$db->field_exists('properties', "themes"))
@@ -1886,13 +1527,21 @@ function upgrade12_redothemes()
 	}
 	else
 	{
-		$output->print_error("Please make sure your admin directory is uploaded correctly.");
+		return [
+			'error' => [
+				'message' => 'Please make sure your admin directory is uploaded correctly.',
+			]
+		];
 	}
 
 	// Import master theme
 	if(import_theme_xml($contents, array("tid" => 1, "no_templates" => 1, "version_compat" => 1)) === -1)
 	{
-		$output->print_error("Please make sure your inc/seeds/mybb_theme.xml file is uploaded correctly.");
+		return [
+			'error' => [
+				'message' => 'Please make sure your install/resources/mybb_theme.xml file is uploaded correctly.',
+			]
+		];
 	}
 
 	// Fetch out default stylesheets from master
@@ -1982,12 +1631,4 @@ function upgrade12_redothemes()
 
 		$db->update_query("templates", array('template' => $db->escape_string($template['template'])), "tid='{$template['tid']}'");
 	}
-
-	echo "<p>Your themes have successfully been converted to the new theme system.</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-
-	global $footer_extra;
-	//$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_footer("12_done");
 }

@@ -23,9 +23,9 @@ function upgrade1_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Database Changes since Release Candidate 2");
+	// Database Changes since Release Candidate 2
 
-	$contents .= "<p>Making necessary database modifications...";
+	// Making necessary database modifications...
 
 	if($db->field_exists('regip', "users"))
 	{
@@ -190,8 +190,6 @@ function upgrade1_dbchanges()
 
 	$db->write_query("UPDATE themes SET smallfont='Verdana', smallfontsize='11px', normalfont='Verdana', normalfontsize='13px', largefont='Verdana', largefontsize='20px';");
 
-	$contents .= "done</p>";
-
 	$db->drop_table("settinggroups", false, false);
 	$db->write_query("CREATE TABLE settinggroups (
 	  gid smallint(6) NOT NULL auto_increment,
@@ -214,15 +212,12 @@ function upgrade1_dbchanges()
 	  gid smallint(6) NOT NULL default '0',
 	  PRIMARY KEY  (sid)
 	);");
-
-	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
-	$output->print_footer("1_dbchanges2");
 }
 function upgrade1_dbchanges2()
 {
 	global $db, $output;
 
-	$output->print_header("Database Changes since Release Candidate 2");
+	// Database Changes since Release Candidate 2
 
 	$db->write_query("DELETE FROM themes");
 	$arr = @file("./resources/theme.mybb");
@@ -263,18 +258,15 @@ function upgrade1_dbchanges2()
 	$db->write_query("INSERT INTO themes (tid,name,templateset$tquery1) VALUES ('','((master))','$sid'$tquery2)");
 	$thetid = $db->write_query("INSERT INTO themes (tid,name,templateset$tquery1) VALUES ('','$thname','$sid2'$tquery2)");
 	$db->write_query("UPDATE themes SET def='1' WHERE tid='$thetid'");
-
-	$output->print_contents("Theme imported<p>Please click next to continue with the upgrade process.</p>");
-	$output->print_footer("1_dbchanges3");
 }
 function upgrade1_dbchanges3()
 {
 
 	global $db, $output;
 
-	$output->print_header("Database Changes since Release Candidate 2");
+	// Database Changes since Release Candidate 2
 
-	$contents .= "<p>Reinserting all board settings...";
+	// Reinserting all board settings...
 
 	$db->write_query("INSERT INTO `settinggroups` (`gid`, `name`, `description`, `disporder`, `isdefault`) VALUES (1, 'General Configuration', 'This section contains various settings such as your board name and url, as well as your website name and url.', 2, 'yes');");
 	$db->write_query("INSERT INTO `settinggroups` (`gid`, `name`, `description`, `disporder`, `isdefault`) VALUES (3, 'Date and Time Formats', 'Here you can specify the different date and time formats used to display dates and times on the forums.', 4, 'yes');");
@@ -402,7 +394,4 @@ function upgrade1_dbchanges3()
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (119, 'attachthumbnails', 'Show Attached Thumbnails in Posts', 'Do you want to show the generated thumbnails for attached images inside the posts?', 'yesno', 'yes', 11, 13);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (120, 'polloptionlimit', 'Maximum Poll Option Length', 'The maximum length that each poll option can be. (Set to 0 to disable).', 'text', '250', 1, 13);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (122, 'timezoneoffset', 'Default Timezone Offset', 'Here you can set the default timezone offset for guests and members using the default offset.', 'text', '+10', 5, 3);");
-
-	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
-	$output->print_footer("1_done");
 }

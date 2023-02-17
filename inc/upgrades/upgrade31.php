@@ -22,9 +22,7 @@ function upgrade31_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='sendthread'");
 	if($db->fetch_field($query, "numexists") == 0)
@@ -51,7 +49,4 @@ function upgrade31_dbchanges()
 		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
 	}
 	$db->update_query('helpdocs', array('document' => $db->escape_string($helpdoc['document'])), 'hid=\'3\'');
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("31_done");
 }

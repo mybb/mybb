@@ -22,9 +22,7 @@ function upgrade36_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('enabled', 'attachtypes'))
 	{
@@ -84,18 +82,13 @@ function upgrade36_dbchanges()
 	{
 		$db->insert_query("templategroups", array('prefix' => 'mycode', 'title' => '<lang:group_mycode>', 'isdefault' => '1'));
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("36_dbchanges2");
 }
 
 function upgrade36_dbchanges2()
 {
 	global $output, $db, $cache;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('reasonid', 'reportedcontent'))
 	{
@@ -227,7 +220,4 @@ function upgrade36_dbchanges2()
 
 	// Any reason not converted is treated as "Other" with extra text specified
 	$db->update_query("reportedcontent", array('reasonid' => 1), "reason != ''");
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("36_done");
 }

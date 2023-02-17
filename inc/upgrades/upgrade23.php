@@ -23,8 +23,7 @@ function upgrade23_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
+	// Updating Database
 
 	if($db->field_exists('canusecustomtools', 'moderators'))
 	{
@@ -50,7 +49,4 @@ function upgrade23_dbchanges()
 	}
 
 	$db->update_query('moderators', array('canusecustomtools' => 1), "canmanagethreads = '1'");
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("23_done");
 }

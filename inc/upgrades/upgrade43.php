@@ -22,16 +22,14 @@ function upgrade43_dbchanges()
 {
 	global $output, $mybb, $db, $cache;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
-	
+	// Updating Database
+
 	if($mybb->settings['captchaimage'] == 2)
 	{
 		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
 		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\')'); // Clean out stored credential keys
 	}
-	
+
 	if($db->field_exists('aim', 'users'))
 	{
 		$db->drop_column('users', 'aim');
@@ -82,7 +80,4 @@ function upgrade43_dbchanges()
             ), "uid = '".$uid."' AND dateline = '".$dateline."' AND ipaddress = ".$ip_address);
         }
     }
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("43_done");
 }

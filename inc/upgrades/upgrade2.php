@@ -23,9 +23,9 @@ function upgrade2_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Database Changes since Release Candidate 3");
+	// Database Changes since Release Candidate 3
 
-	$contents .= "<p>Making necessary database modifications...";
+	// Making necessary database modifications...
 
 	$db->drop_table("badwords");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."badwords (
@@ -164,18 +164,14 @@ function upgrade2_dbchanges()
 	  dateline int(10) NOT NULL,
 	  UNIQUE KEY tiduid (tid, uid)
 	);");
-	$contents .= "done</p>";
-
-	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
-	$output->print_footer("2_dbchanges2");
 }
 
 function upgrade2_dbchanges2()
 {
 	global $db, $output;
 
-	$output->print_header("Database Changes since Release Candidate 3");
-	$contents .= "<p>Reinserting settings...";
+	// Database Changes since Release Candidate 3
+	// Reinserting settings...
 
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'boardclosed', 'Board Closed', 'If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />\r\n<br />\r\n<b>Administrators will still be able to view the forums.</b>', 'yesno', 'no', 1, 26);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'boardclosed_reason', 'Board Closed Reason', 'If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.', 'textarea', 'These forums are currently closed for maintenance. Please check back later.', 2, 26);");
@@ -283,7 +279,4 @@ function upgrade2_dbchanges2()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'reportmethod', 'Reported Posts Medium', 'Please select from the list how you want reported posts to be dealt with. Storing them in the database is probably the better of the options listed.', 'radio\r\ndb=Stored in the Database\r\npms=Sent as Private Messages\r\nemail=Sent via Email', 'db', 1, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'threadreadcut', 'Read Threads in Database (Days)', 'The number of days that you wish to keep thread read information in the database. For large boards, we do not recommend a high number as the board will become slower. Set to 0 to disable.', 'text', '7', 3, 8);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'announcementlimit', 'Announcements Limit', 'The number of forum announcements to  show in the thread listing on the forum display pages. Set to 0 to show all active announcements.', 'text', '2', 10, 7);");
-
-	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
-	$output->print_footer("2_done");
 }

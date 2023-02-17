@@ -22,9 +22,7 @@ function upgrade35_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('subscriptionkey', 'threadsubscriptions'))
 	{
@@ -46,21 +44,13 @@ function upgrade35_dbchanges()
 	$db->update_query('settings', array('value' => '1'), "name='captchaimage' AND value='3'");
 	$db->delete_query('settings', "name IN ('ayahpublisherkey', 'ayahscoringkey')");
 	$db->delete_query('templates', "title IN ('member_register_regimage_ayah', 'post_captcha_ayah')");
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_dbchanges2");
 }
 
 function upgrade35_dbchanges2()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary optimization queries...</p>";
-	flush();
+	// Updating Database
 
 	switch($db->type)
 	{
@@ -99,21 +89,13 @@ function upgrade35_dbchanges2()
 			$db->modify_column("threads", "replies", "int(100) unsigned NOT NULL default '0'");
 			break;
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_dbchanges3");
 }
 
 function upgrade35_dbchanges3()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary optimization queries...</p>";
-	flush();
+	// Updating Database
 
 	switch($db->type)
 	{
@@ -146,21 +128,14 @@ function upgrade35_dbchanges3()
 			$db->modify_column("warninglevels", "percentage", "smallint(3) unsigned NOT NULL default '0'");
 			break;
 	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_dbchanges4");
 }
 
 function upgrade35_dbchanges4()
 {
 	global $mybb, $output;
 
-	$output->print_header("Adding index files");
-	echo "<p>Adding index files to attachment directories...</p>";
-	flush();
+	// Adding index files
+	// Adding index files to attachment directories...
 
 	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 	$dir = @opendir($uploadspath_abs);
@@ -181,7 +156,4 @@ function upgrade35_dbchanges4()
 
 		@closedir($dir);
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_done");
 }

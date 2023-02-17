@@ -24,16 +24,9 @@ function upgrade6_dbchanges()
 {
 	global $db, $output, $mybb;
 
-	$output->print_header("Performing Queries");
-
-	echo "<p>Performing necessary upgrade queries..</p>";
+	// Performing Queries
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL");
-
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("6_done");
 }
 

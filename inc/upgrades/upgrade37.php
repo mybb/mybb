@@ -22,9 +22,7 @@ function upgrade37_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
+	// Updating Database
 
 	if($db->field_exists('canviewdeletionnotice', 'usergroups'))
 	{
@@ -47,7 +45,4 @@ function upgrade37_dbchanges()
 			$db->add_column("usergroups", "canviewdeletionnotice", "tinyint(1) NOT NULL default '0' AFTER caneditattachments");
 			break;
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("37_done");
 }
