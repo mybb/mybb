@@ -377,6 +377,27 @@ $l['no_theme_functions_file'] = 'No theme functions file has been found. Make su
 $l['operation_error_title'] = '{1} — Error';
 $l['operation_error_message'] = 'The operation failed. Please check error logs for details.';
 $l['operation_warning_title'] = '{1} — Warning';
+
+// navigation
+$l['retry'] = 'Retry';
+$l['retry_operation_confirm'] = 'Retry operation before proceeding?';
+$l['retry_parameter_input'] = 'Change parameter values?';
+$l['step_finish'] = 'Next';
+$l['step_final_finish'] = 'Finish';
+$l['waiting_for_operation'] = 'Waiting for {1}…';
+$l['waiting_for_operation_hidden'] = 'Waiting…';
+$l['redirecting'] = 'Redirecting…';
+#endregion
+
+#region CLI
+$l['using_env_parameter_value'] = 'Using environment variable <{3}> for {1}';
+$l['using_env_parameter_value_revealed'] = 'Using environment variable <{3}> for {1}: "{2}"';
+
+$l['using_default_parameter_value'] = 'Using default parameter value for {1}';
+$l['using_default_parameter_value_revealed'] = 'Using default parameter value for {1}: "{2}"';
+
+$l['unknown_operation'] = 'Unknown operation "{1}"';
+$l['unknown_parameter'] = 'Unknown process parameter "{1}"';
 #endregion
 
 #region fatal errors
