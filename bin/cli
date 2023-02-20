@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use MyBB\Console\Command\InstallCommand;
+use MyBB\Console\Command\UpgradeCommand;
+
+define("IN_MYBB", 1);
+define("IN_INSTALL", 1);
+define('MINIMUM_PHP_VERSION', '8.1');
+define('MYBB_ROOT', dirname(dirname(__FILE__)) . "/");
+define("INSTALL_ROOT", MYBB_ROOT . "/install/");
+
+if (version_compare(PHP_VERSION, MINIMUM_PHP_VERSION, '<')) {
+    exit('Error: PHP &ge; ' . MINIMUM_PHP_VERSION . ' required (currently running ' . PHP_VERSION . ').');
+}
+
+require_once MYBB_ROOT . 'inc/src/Maintenance/init.php';
+
+$app = new Application('MyBB', MyBB\Application::VERSION);
+
+$app->addCommands([
+    new InstallCommand(),
+    new UpgradeCommand(),
+]);
+
+$app->run();
