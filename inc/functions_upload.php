@@ -14,7 +14,7 @@
  * @return int maximum allowed filesize
  */
 function get_php_upload_limit()
-{	
+{
 	$maxsize = array(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
 	$maxsize = array_filter($maxsize); // Remove empty values
 
@@ -189,7 +189,7 @@ function remove_avatars($uid, $exclude="")
 
 /**
  * Create the attachment directory index file.
- * 
+ *
  * @param string $path The path to the attachment directory to create the file in.
  */
 function create_attachment_index($path)
@@ -229,12 +229,12 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check we have a valid extension
-    	$ext = get_extension(my_strtolower($avatar['name']));
-    	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
-    	{
-        	$ret['error'] = $lang->error_avatartype;
-        	return $ret;
-    	}
+	$ext = get_extension(my_strtolower($avatar['name']));
+	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
+	{
+		$ret['error'] = $lang->error_avatartype;
+		return $ret;
+	}
 
 	if(defined('IN_ADMINCP'))
 	{
@@ -807,7 +807,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 							$update_attachment = true;
 						}
 					}
-					
+
 					if(!$exists && $mybb->get_input('updateattachment') && $mybb->get_input('updateconfirmed', MyBB::INPUT_INT) != 1)
 					{
 						$ret['errors'][] = $lang->sprintf($lang->error_updatefailed, $filename);
