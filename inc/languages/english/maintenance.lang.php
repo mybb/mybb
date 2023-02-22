@@ -33,6 +33,38 @@ $l['unknown_operation'] = 'Unknown operation "{1}"';
 $l['unknown_parameter'] = 'Unknown process parameter "{1}"';
 #endregion
 
+#region GUI
+$l['optional'] = 'optional';
+$l['show_password'] = 'Show Password';
+$l['weak_password'] = 'Weak password';
+
+// language select
+$l['select_language'] = 'Select language';
+$l['change_language'] = 'Go';
+
+// versionCheck action
+$l['version_check'] = 'Check Latest Version';
+$l['version_check_active'] = 'Checking for updates…';
+$l['version_check_newer'] = 'The most recent version is <a href="https://mybb.com/download" target="_blank">{1}</a>';
+$l['version_check_latest'] = 'Latest version';
+$l['version_check_error'] = 'Could not check automatically — visit <a href="https://mybb.com" target="_blank" rel="noreferrer">MyBB.com</a>';
+
+// insecure transport warning
+$l['insecure_transport'] = 'No Secure Connection';
+$l['insecure_transport_message'] = 'Sensitive information entered here may be visible to others. You should ensure the server supports HTTPS, and use the <code>https://</code> protocol before proceeding.';
+
+// miscellaneous
+$l['support'] = 'Need help? Check the MyBB <a href="https://docs.mybb.com" target="_blank">Documentation</a> and <a href="https://mybb.com/support" target="_blank">Support channels</a>.';
+$l['powered_by_phrases'] = 'Constructing new forum on
+Bringing people together with
+Getting ready for
+Connecting people through
+A community just right on
+Instilling potential with
+Forum to the letter on
+Soon to be powered by';
+#endregion
+
 #region fatal errors
 $l['locked_title'] = 'Unlock to Continue';
 $l['locked'] = 'Please remove the <code>{1}</code> file from the <code>install/</code> directory and try again in order to install or upgrade this MyBB board.';

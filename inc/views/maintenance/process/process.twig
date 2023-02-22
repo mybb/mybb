@@ -1,0 +1,128 @@
+{% embed 'maintenance/maintenance.twig' %}
+{% set page_title = attribute(lang, processName ~ '_page_title') %}
+{% set header_title = attribute(lang, processName ~ '_header_title') %}
+{% set maintenance_type = processName %}
+
+{% block head -%}
+    <link rel="stylesheet" href="{{ relative_asset_path }}/jscripts/maintenance/process.css" />
+    <link rel="stylesheet" href="{{ relative_asset_path }}/jscripts/fonts/fontawesome/css/all.min.css" />
+
+    {% if noscriptRedirectLocation and not explicitStepRequest %}
+        <noscript>
+            <meta http-equiv="refresh" content="0;url={{ noscriptRedirectLocation }}">
+        </noscript>
+    {% endif %}
+{% endblock %}
+
+{% block interfaceOptions %}
+    {% if languages|length > 1 %}
+        <form method="get" data-submit-on-change>
+            <input type="hidden" name="process" value="{{ processName }}">
+
+            {% for name, value in nonDefaultFlagValues %}
+                <input type="hidden" name="{{ name }}" value="{{ value }}">
+            {% endfor %}
+
+            <label>
+                <i class="icon fa-fw fas fa-language" title="{{ lang.select_language }}"></i>
+                <select name="language">
+                    {% for name, title in languages %}
+                        <option value="{{ name }}" {{ name == lang.language ? 'selected' }}>{{ title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="{{ lang.change_language }}">
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% include 'maintenance/process/nav.twig' %}
+    <main>
+        {% for stepName, step in stepPlans %}
+            <section class="step" data-step="{{ stepName }}" {{ step.initial ? 'data-displayed' }}>
+                {% set heading = step.heading ?? attribute(lang, processName ~ '_step_' ~ stepName ~ '_heading') %}
+                {% if heading %}
+                    <h2>{{ heading }}</h2>
+                {% endif %}
+
+                {% set description = step.description ?? attribute(lang, processName ~ '_step_' ~ stepName ~ '_description') %}
+                {% if description %}
+                    <p>{{ description|raw }}</p>
+                {% endif %}
+
+                {% set instructions = step.instructions ?? attribute(lang, processName ~ '_step_' ~ stepName ~ '_instructions') %}
+                {% if instructions %}
+                    <p>{{ instructions|raw }}</p>
+                {% endif %}
+
+                {% if step.definitionList %}
+                    <dl>
+                        {% for definition in step.definitionList %}
+                            <dt data-name="{{ definition.name }}">{{ definition.title }}
+                            <dd>
+                                {% if definition.value is iterable %}
+                                    {% for value in definition.value %}
+                                        <li>{{ value|striptags('<abbr>')|raw }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {{ definition.value|striptags('<abbr>')|raw }}
+                                {% endif %}
+                            </dd>
+                        {% endfor %}
+                    </dl>
+                {% endif %}
+
+                <div class="alerts">
+                    {%- for alert in step.alerts -%}
+                        {% include 'maintenance/process/alert.twig' with alert %}
+                    {%- endfor -%}
+                </div>
+
+                {% embed 'maintenance/process/form.twig' %}{% endembed %}
+            </section>
+        {% endfor %}
+    </main>
+
+    <section class="footnote">
+        <p>{{ lang.support|raw }}</p>
+    </section>
+
+    {% if not minimal %}
+        <template data-name="alert">
+            {% include 'maintenance/process/alert.twig' %}
+        </template>
+        <template data-name="alertRetryButton">
+            <button title="{{ lang.retry }}" data-retry><i class="fas fa-redo"></i></button>
+        </template>
+    {% endif %}
+{% endblock %}
+
+
+{% block beforeBodyEnd %}
+    {% if not minimal %}
+        {% for variableName in [
+            'lang',
+            'processName',
+            'stepPlans',
+            'operationPlans',
+            'parameterPlans',
+            'flagValues',
+            'nonDefaultFlagValues',
+            'operationSubset',
+            'stateVariables',
+            'useDefaults',
+            'finishUrl',
+        ] %}
+            <script type="application/json" data-json="{{ variableName }}">{{ _context[variableName]|json_encode|raw }}</script>
+        {% endfor %}
+
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/zxcvbn.js"></script>
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/interactive.js"></script>
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/form.js"></script>
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/ProcessController.js"></script>
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/process.js"></script>
+    {% endif %}
+{% endblock %}
+
+{% endembed %}

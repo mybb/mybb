@@ -1,0 +1,100 @@
+{% set parameterValueConditions = (parameter.conditions ?? [])|filter(v => v.type is same as 'parameterValue') %}
+{% if parameterValueConditions %}
+    {% set parameterConditionsText =
+        parameterValueConditions|map(condition =>
+            attribute(lang, 'parameter_' ~ condition['name'] ~ '_title') ~
+            ': ' ~
+            (
+                condition['in']|map(value => parameterPlans[condition.name].options[value])
+                |filter(value => value is not null)
+                |join('/')
+            )
+        )
+        |join('; ') %}
+{% endif %}
+
+{#
+    Visibility - used only for displayed Steps in no-JS clients, basing on state variables from previous Steps.
+    Managed dynamically by the JS controller.
+#}
+{% set effectivelyHidden = (parameter.conditions ?? [])|filter(
+    condition =>
+        condition.type is same as 'stateVariable' and
+        null not in condition.in and
+        stateVariables[condition.name] not in condition.in
+) %}
+
+{#
+    `required` attribute - skipped for elements that are hidden for the current Step,
+    or may only apply conditionally on potential no-JS clients. Managed dynamically by the JS controller.
+#}
+{% set effectivelyRequired =
+    parameter.required and
+    not effectivelyHidden and
+    not (parameterValueConditions and explicitStepRequest)
+%}
+
+<label
+    for="{{ parameterName }}"
+    {{ effectivelyHidden ? 'hidden' }}
+    {{ parameter.prominent ? 'class="prominent"' }}
+>
+    {% if parameter.type not in ['checkbox'] %}
+        <p class="title">
+            {{ attribute(lang, 'parameter_' ~ parameterName ~ '_title') }}
+
+            {% if parameterConditionsText %}
+                <span class="condition">({{ parameterConditionsText }})</span>
+            {% endif %}
+        </p>
+        <p class="description">{{ attribute(lang, 'parameter_' ~ parameterName ~ '_description') }}</p>
+    {% endif %}
+
+    {% if parameter.type in ['text', 'email', 'password'] %}
+        <div class="field-container">
+            <input
+                type="{{ parameter.type }}"
+                name="{{ parameterName }}"
+                value="{{ parameter.value ?? parameter.defaultValue }}"
+                maxlength="{{ parameter.maxlength }}"
+                autocomplete="{{ parameter.autocomplete }}"
+                {{ effectivelyRequired ? 'required' }}
+
+                {{ parameter.required ? 'data-required' }}
+                {{ parameter.feedback ? 'data-feedback' }}
+                {{ parameter.passwordScore ? 'data-password-score' }}
+
+                {% if parameter.type == 'password' %}
+                    data-password-peekable
+                    data-password-revealed="{{ parameter.passwordRevealed ? 1 : 0 }}"
+                {% endif %}
+            >
+        </div>
+    {% elseif parameter.type in ['select'] %}
+        <div class="field-container">
+            <select
+                name="{{ parameterName }}"
+                {{ effectivelyRequired ? 'required' }}
+
+                {{ parameter.required ? 'data-required' }}
+                {{ parameter.feedback ? 'data-feedback' }}
+            >
+                {% for value, title in parameter.options %}
+                    <option value="{{ value }}" {{ (parameter.value ?? parameter.defaultValue) == value ? 'selected="selected"' }}>{{ title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% elseif parameter.type in ['checkbox'] %}
+        <input type="hidden" name="{{ parameterName }}" value="0">
+        <input
+            type="{{ parameter.type }}"
+            name="{{ parameterName }}"
+            {{ (parameter.value ?? parameter.defaultValue) is same as(true) ? 'checked' }}
+            {{ effectivelyRequired ? 'required' }}
+
+            {{ parameter.required ? 'data-required' }}
+            {{ parameter.feedback ? 'data-feedback' }}
+        >
+        <span>{{ attribute(lang, 'parameter_' ~ parameterName ~ '_title')|raw }}</span>
+    {% endif %}
+</label>
