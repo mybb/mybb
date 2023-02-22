@@ -1,0 +1,33 @@
+{% if operation.listed %}
+    {% set operationIconClasses = {
+        'board_settings': 'fas fa-cog',
+        'build_cache': 'far fa-hdd',
+        'configuration_file': 'far fa-file-code',
+        'database_population': 'fas fa-file-import',
+        'database_structure': 'fas fa-drafting-compass',
+        'file_verification': 'fas fa-heartbeat',
+        'lock': 'fas fa-lock',
+        'requirements_check': 'fas fa-clipboard-check',
+        'update_settings': 'fas fa-cog',
+        'user_account': 'fas fa-user-plus',
+    } %}
+    {% set iconClasses = operationIconClasses[operationName]|default('fas fa-cube') %}
+
+    <div class="operation-container">
+        <div
+            class="operation {{ operation.completed ? 'operation--completed' }}"
+            data-operation="{{ operationName }}"
+            title="{{ attribute(lang, 'operation_' ~ operationName ~ '_title') ?? operationName }}"
+            {% if (operation.conditions ?? [])|filter(
+                condition =>
+                    condition.type is same as 'stateVariable' and
+                    null not in condition.in and
+                    stateVariables[condition.name] not in condition.in
+            ) %}
+                hidden
+            {% endif %}
+        >
+            <i class="fa-fw {{ iconClasses }}"></i>
+        </div>
+    </div>
+{% endif %}

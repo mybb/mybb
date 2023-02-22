@@ -1,0 +1,16 @@
+<nav>
+    {% for stepName, step in stepPlans %}
+        <div class="step" data-step="{{ stepName }}"{{ step.initial ? ' data-displayed' }}>
+            <p class="title">{{ attribute(lang, processName ~ '_step_' ~ stepName ~ '_title') }}</p>
+            <div class="operations">
+                <div>
+                {% for operationName in step.operationNames %}
+                    {% set operation = operationPlans[operationName] %}
+
+                    {% include 'maintenance/process/nav_operation.twig' %}
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</nav>
