@@ -236,13 +236,6 @@ class InstallModel extends Model
             ],
             'lock' => [
                 'parameters' => [],
-                'conditions' => [
-                    [
-                        'type' => 'flagValue',
-                        'name' => 'development_mode',
-                        'in' => [false],
-                    ],
-                ],
                 'callback' => $this->lockOperation(...),
             ],
         ]);
