@@ -14,7 +14,7 @@ cache/*
 uploads/*
 
 # MyBB Misc
-install/lock
+install/lock*
 error.log
 .htaccess
 !admin/backups/.htaccess
