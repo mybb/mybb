@@ -371,8 +371,8 @@ abstract class AbstractPdoDbDriver implements DB_Base
 	{
 		if ($this->error_reporting) {
 			throw new DbException(
-				$this->error_string(),
-				$this->error_number(),
+				$this->error_string() ?? '',
+				0,
 				$string,
 				$this->lastPdoException,
 			);
