@@ -3,6 +3,7 @@
 
 use Symfony\Component\Console\Application;
 use MyBB\Console\Command\InstallCommand;
+use MyBB\Console\Command\StatusCommand;
 use MyBB\Console\Command\UpgradeCommand;
 
 define("IN_MYBB", 1);
@@ -21,6 +22,7 @@ $app = new Application('MyBB', MyBB\Application::VERSION);
 
 $app->addCommands([
     new InstallCommand(),
+    new StatusCommand(),
     new UpgradeCommand(),
 ]);
 
