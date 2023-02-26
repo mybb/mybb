@@ -39,7 +39,7 @@ enum InstallationState: int
         return $state;
     }
 
-    public static function getDescription(\MyLanguage $lang, bool $correctOldConfigFormat = false): ?string
+    public static function getDescription(\MyLanguage $lang, bool $correctOldConfigFormat = false): string
     {
         return match (self::get($correctOldConfigFormat)) {
             self::CONFIGURATION_FILE => $lang->installation_state_configuration_file,
@@ -48,7 +48,7 @@ enum InstallationState: int
                 $lang->installation_state_installed,
                 getDatacacheVersion(),
             ),
-            default => null,
+            self::NONE => $lang->installation_state_none,
         };
     }
 }

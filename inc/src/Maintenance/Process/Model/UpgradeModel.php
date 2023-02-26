@@ -349,12 +349,10 @@ class UpgradeModel extends Model
         $list = [];
 
         // installation state
-        $value = InstallationState::getDescription($lang);
-
-        if ($value !== null) {
+        if (InstallationState::get() !== InstallationState::NONE) {
             $list[] = [
                 'title' => $lang->installation_state,
-                'value' => $value,
+                'value' => InstallationState::getDescription($lang),
             ];
         }
 
