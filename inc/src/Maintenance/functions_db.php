@@ -319,7 +319,7 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
                         $parameters['user'] ?? null,
                         $parameters['password'] ?? null,
                         [
-                            PDO::ATTR_TIMEOUT => max($timeoutSeconds, 1),
+                            PDO::ATTR_TIMEOUT => max((int)$timeoutSeconds, 1),
                             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         ]
                     );
