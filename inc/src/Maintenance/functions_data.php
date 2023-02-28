@@ -207,6 +207,10 @@ function createDatabaseStructure(array $config, DB_Base $db): void
             $val = preg_replace('#;$#', $db->build_create_table_collation() . ";", $val);
             preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
             if (!empty($match[1])) {
+                if ($db->type == 'sqlite') {
+                    $db->close_cursors();
+                }
+
                 $db->drop_table(my_substr($match[1], my_strlen($config['database']['table_prefix'])));
             }
             $db->write_query($val);
