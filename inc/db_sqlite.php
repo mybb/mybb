@@ -474,9 +474,9 @@ class DB_SQLite implements DB_Base
 			}
 
 			throw new DbException(
-				$error,
-				$error_no,
 				$string,
+				$error_no,
+				$query,
 			);
 		}
 	}
@@ -1303,7 +1303,7 @@ class DB_SQLite implements DB_Base
 						case 'change':
 							if(sizeof($defparts) <= 3)
 							{
-								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', E_USER_WARNING);
+								$this->error('near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', $fullquery, E_USER_WARNING);
 								return false;
 							}
 
@@ -1311,7 +1311,7 @@ class DB_SQLite implements DB_Base
 							{
 								if($newcols[$defparts[1]] != $defparts[1])
 								{
-									$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+									$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery);
 									return false;
 								}
 
@@ -1335,14 +1335,14 @@ class DB_SQLite implements DB_Base
 							}
 							else
 							{
-								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
+								$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery, E_USER_WARNING);
 								return false;
 							}
 							break;
 						case 'drop':
 							if(sizeof($defparts) < 2)
 							{
-								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
+								$this->error('near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error', $fullquery);
 								return false;
 							}
 
@@ -1363,12 +1363,12 @@ class DB_SQLite implements DB_Base
 							}
 							else
 							{
-								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+								$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery);
 								return false;
 							}
 							break;
 						default:
-							$this->error($fullquery, 'near "'.$prevword.'": syntax error');
+							$this->error('near "'.$prevword.'": syntax error', $fullquery);
 							return false;
 					}
 
