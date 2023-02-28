@@ -323,6 +323,15 @@ abstract class MaintenanceProcessCommand extends Command
 
         if ($this->input->isInteractive()) {
             $this->executeStepParameterInteraction($stepPlan, $unresolvedStepParameters);
+        } else {
+            $unresolvedRequiredStepParameterValues = array_filter(
+                $unresolvedStepParameters,
+                fn ($parameterPlan) => !empty($parameterPlan['required']),
+            );
+
+            if ($unresolvedRequiredStepParameterValues !== []) {
+                return self::STEP_FAILURE;
+            }
         }
 
 
