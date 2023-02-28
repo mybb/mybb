@@ -149,7 +149,11 @@ function getDatacacheVersion(): ?string
     if ($cache === null) {
         return null;
     } else {
-        return $cache->read('version')['version'] ?? null;
+        try {
+            return $cache->read('version', true)['version'] ?? null;
+        } catch (\Exception) {
+            return null;
+        }
     }
 }
 
