@@ -83,6 +83,11 @@ abstract class MaintenanceProcessCommand extends Command
         return $phrase;
     }
 
+    private static function getParameterEnvironmentVariableName(string $parameterName): string
+    {
+        return strtoupper(static::$applicationName . '_' . static::getDefaultName() . '_' . $parameterName);
+    }
+
     protected function configure(): void
     {
         $this->addOption(
@@ -452,7 +457,7 @@ abstract class MaintenanceProcessCommand extends Command
                             $this->lang->{'using_' . $origin . '_parameter_value' . ($revealed ? '_revealed' : null)},
                             $this->lang->{'parameter_' . $parameterName . '_title'},
                             OutputFormatter::escape($value),
-                            static::$applicationName . '_' . static::getDefaultName() . '_' . $parameterName,
+                            self::getParameterEnvironmentVariableName($parameterName),
                         ) .
                         '</signal>';
                 }
@@ -628,13 +633,7 @@ abstract class MaintenanceProcessCommand extends Command
 
                             break;
                         case self::PARAMETER_ORIGIN_ENV:
-                            $value = getenv(
-                                strtoupper(
-                                    static::$applicationName . '_' .
-                                    static::getDefaultName() . '_' .
-                                    $parameterName
-                                )
-                            );
+                            $value = getenv(self::getParameterEnvironmentVariableName($parameterName));
 
                             if ($value !== false) {
                                 $resolvedValue = $value;
