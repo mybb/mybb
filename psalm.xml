@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<psalm
+    cacheDirectory=".psalmCache"
+    errorLevel="2"
+    reportInfo="false"
+    skipChecksOnUnresolvableIncludes="true"
+    resolveFromConfigFile="true"
+>
+    <projectFiles>
+        <directory name="install" />
+        <directory name="inc/src/Console" />
+        <directory name="inc/src/Http/Controllers/Maintenance" />
+        <directory name="inc/src/Maintenance" />
+        <ignoreFiles>
+            <file name="*.php" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <InaccessibleProperty errorLevel="suppress" />
+        <MissingClosureReturnType errorLevel="suppress" />
+        <PropertyNotSetInConstructor errorLevel="suppress" />
+        <RedundantPropertyInitializationCheck errorLevel="suppress" />
+
+        <!-- handled by IDE -->
+        <PossiblyUndefinedVariable errorLevel="suppress" />
+        <UndefinedClass errorLevel="suppress" />
+        <UndefinedFunction errorLevel="suppress" />
+        <UndefinedConstant errorLevel="suppress" />
+        <UnresolvableInclude errorLevel="suppress" />
+    </issueHandlers>
+</psalm>
