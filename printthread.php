@@ -20,6 +20,7 @@ $parser = new postParser;
 
 // Load global language phrases
 $lang->load("printthread");
+$lang->load("archive");
 
 $plugins->run_hooks("printthread_start");
 
