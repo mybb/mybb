@@ -44,9 +44,9 @@ if(!$mybb->input['action'])
 		{
 			$page->output_inline_error(
 				$lang->sprintf(
-                    $lang->file_verification_checksums_missing,
-                    'inc/checksums',
-                )
+					$lang->file_verification_checksums_missing,
+					'inc/checksums',
+				)
 			);
 		}
 		else
