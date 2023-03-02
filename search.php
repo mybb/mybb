@@ -473,7 +473,7 @@ if($mybb->input['action'] == "results")
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 			{
-				if($thread['lastread'])
+				if(isset($thread['lastread']))
 				{
 					$last_read = $thread['lastread'];
 				}
