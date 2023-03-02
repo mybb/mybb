@@ -283,7 +283,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$thumbnail = generate_thumbnail($avatarpath."/".$filename, $avatarpath, $filename, $maxheight, $maxwidth);
-				if(!$thumbnail['filename'])
+				if(empty($thumbnail['filename']))
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
