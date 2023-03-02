@@ -434,7 +434,7 @@ function build_postbit($post, $post_type=0)
 
 			// Fetch profile fields to display
 			$pfcache = $cache->read('profilefields');
-		
+
 			if(is_array($pfcache))
 			{
 				foreach($pfcache as $profilefield)
@@ -443,7 +443,7 @@ function build_postbit($post, $post_type=0)
 					{
 						continue;
 					}
-		
+
 					$profile_fields[$profilefield['fid']] = $profilefield;
 				}
 			}
@@ -701,7 +701,7 @@ function build_postbit($post, $post_type=0)
 			$post['inlinecheck'] = "";
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
-		$post_number = my_number_format($postcounter);
+		$post_number = $postcounter;
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
@@ -749,7 +749,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['iplogged'] = '';
 	$show_ips = $mybb->settings['logip'];
-	
+
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if($post_type == 2)
 	{
@@ -1040,8 +1040,8 @@ function get_post_attachments($id, &$post)
 						if ($forumpermissions['candlattachments'])
 						{
 							eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-						} 
-						else 
+						}
+						else
 						{
 							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 							if($tcount == 5)
