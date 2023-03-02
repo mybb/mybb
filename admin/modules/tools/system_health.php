@@ -238,7 +238,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_cell($lang->please_wait);
 		$table->construct_row();
 
-		$table->output($converting_table." {$mybb->input['table']}");
+		$table->output($lang->convert_table." {$mybb->input['table']}");
 
 		$db->set_table_prefix($old_table_prefix);
 
@@ -357,7 +357,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 
 		// Any fulltext indexes to recreate?
-		if(is_array($fulltext_to_create))
+		if(!empty($fulltext_to_create))
 		{
 			foreach($fulltext_to_create as $name => $fields)
 			{
@@ -438,7 +438,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 
-	if($mybb->input['table'] || $mybb->input['do'] == "all")
+	if(!empty($mybb->input['table']) || $mybb->input['do'] == "all")
 	{
 		if(!empty($mybb->input['mb4']) && version_compare($db->get_version(), '5.5.3', '<'))
 		{
