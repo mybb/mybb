@@ -602,6 +602,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 {
 	$plugins->run_hooks("editpost_action_start");
 
+	$preview = '';
 	if(!isset($mybb->input['previewpost']))
 	{
 		$icon = $post['icon'];
