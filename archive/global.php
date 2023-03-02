@@ -212,7 +212,7 @@ if($mybb->settings['forcelogin'] == 1)
 // Load Limiting - DIRECTORY_SEPARATOR checks if running windows
 if(DIRECTORY_SEPARATOR != '\\')
 {
-	if($uptime = @exec('uptime'))
+	if(function_exists('uptime') ? $uptime = @exec('uptime') : false)
 	{
 		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 		$load = $regs[1];
