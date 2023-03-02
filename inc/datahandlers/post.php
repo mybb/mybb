@@ -515,7 +515,7 @@ class PostDataHandler extends DataHandler
 		$permissions = user_permissions($uid);
 
 		// Fetch the forum this post is being made in
-		if(!$post['fid'])
+		if(empty['fid'])
 		{
 			$query = $db->simple_select('posts', 'fid', "pid = '{$post['pid']}'");
 			$post['fid'] = $db->fetch_field($query, 'fid');
