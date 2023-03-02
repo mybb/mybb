@@ -230,7 +230,7 @@ $l['directory_not_writable'] = 'The <code>{1}</code> directory is not writable. 
 $l['file_not_writable'] = 'The <code>{1}</code> file is not writable. Please <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noreferrer">adjust permissions</a> to allow it to be written to.';
 $l['lock_file_not_writable'] = 'Could not create the lock file <code>{1}</code>. Please remove the install directory before proceeding to your forum.';
 
-$l['file_verification_checksums_missing'] = 'Could not verify files because the <code>{1}</code> file is missing. This file may not be included in development-only versions.';
+$l['file_verification_checksums_missing'] = 'Could not verify files because the <code>{1}</code> file is missing. You can download the file from an <a href="https://mybb.com/download" target="_blank" rel="noreferrer">original MyBB package</a>. This file may not be included in development-only versions.';
 $l['file_verification_failed'] = 'The following files ({1}) may be corrupted. You should copy them again from the <a href="https://mybb.com/download" target="_blank">original package</a> before proceeding.';
 $l['file_verification_changed'] = 'Modified: {1}';
 $l['file_verification_missing'] = 'Missing: {1}';
