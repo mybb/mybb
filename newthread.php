@@ -1103,7 +1103,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		if(!$parser)
+		if(empty($parser))
 		{
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new postParser;
