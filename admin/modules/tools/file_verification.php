@@ -36,97 +36,69 @@ if(!$mybb->input['action'])
 
 		$page->output_header($lang->file_verification." - ".$lang->checking);
 
-		$file = explode("\n", @file_get_contents("https://mybb.com/checksums/release_mybb_{$mybb->version_code}.txt"));
+		require_once MYBB_ROOT.'inc/src/Maintenance/functions_core.php';
 
-		if(strstr($file[0], "<?xml") !== false || empty($file[0]))
+		$bad_files = \MyBB\Maintenance\getFileVerificationErrors();
+
+		if($bad_files === null)
 		{
-			$page->output_inline_error($lang->error_communication);
-			$page->output_footer();
-			exit;
-		}
-
-		// Parser-up our checksum file from the MyBB Server
-		foreach($file as $line)
-		{
-			$parts = explode(" ", $line, 2);
-			if(empty($parts[0]) || empty($parts[1]))
-			{
-				continue;
-			}
-
-			if(substr($parts[1], 0, 7) == "./admin")
-			{
-				$parts[1] = "./{$mybb->config['admin_dir']}".substr($parts[1], 7);
-			}
-
-			if(file_exists(MYBB_ROOT."forums.php") && !file_exists(MYBB_ROOT."portal.php"))
-			{
-				if(trim($parts[1]) == "./index.php")
-				{
-					$parts[1] = "./forums.php";
-				}
-				elseif($parts[1] == "./portal.php")
-				{
-					$parts[1] = "./index.php";
-				}
-			}
-
-			if(!file_exists(MYBB_ROOT."inc/plugins/hello.php") && $parts[1] == "./inc/plugins/hello.php")
-			{
-				continue;
-			}
-
-			if(!is_dir(MYBB_ROOT."install/") && substr($parts[1], 0, 10) == "./install/")
-			{
-				continue;
-			}
-
-			$checksums[trim($parts[1])][] = $parts[0];
-		}
-
-		$bad_files = verify_files();
-
-		$plugins->run_hooks("admin_tools_file_verification_check_commit_start");
-
-		$table = new Table;
-		$table->construct_header($lang->file);
-		$table->construct_header($lang->status, array("class" => "align_center", "width" => 100));
-
-		foreach($bad_files as $file)
-		{
-			switch($file['status'])
-			{
-				case "changed":
-					$file['status'] = $lang->changed;
-					$color = "#F22B48";
-					break;
-				case "missing":
-					$file['status'] = $lang->missing;
-					$color = "#5B5658";
-					break;
-			}
-
-			$table->construct_cell("<strong><span style=\"color: {$color};\">".htmlspecialchars_uni(substr($file['path'], 2))."</span></strong>");
-
-			$table->construct_cell("<strong><span style=\"color: {$color};\">{$file['status']}</span></strong>", array("class" => "align_center"));
-			$table->construct_row();
-		}
-
-		$no_errors = false;
-		if($table->num_rows() == 0)
-		{
-			$no_errors = true;
-			$table->construct_cell($lang->no_corrupt_files_found, array('colspan' => 3));
-			$table->construct_row();
-		}
-
-		if($no_errors)
-		{
-			$table->output($lang->file_verification.": ".$lang->no_problems_found);
+			$page->output_inline_error(
+				$lang->sprintf(
+                    $lang->file_verification_checksums_missing,
+                    'inc/checksums',
+                )
+			);
 		}
 		else
 		{
-			$table->output($lang->file_verification.": ".$lang->found_problems);
+			$plugins->run_hooks("admin_tools_file_verification_check_commit_start");
+
+			$table = new Table;
+			$table->construct_header($lang->file);
+			$table->construct_header($lang->status, array("class" => "align_center", "width" => 100));
+
+			if(array_merge_recursive($bad_files) === [])
+			{
+				$table->construct_cell($lang->no_corrupt_files_found, array('colspan' => 3));
+				$table->construct_row();
+
+				$table->output($lang->file_verification.": ".$lang->no_problems_found);
+			}
+			else
+			{
+				$list = [];
+
+				foreach($bad_files as $status => $files)
+				{
+					foreach ($files as $relativePath)
+					{
+						$displayPath = htmlspecialchars_uni(substr($relativePath, 2));
+
+						switch($status)
+						{
+							case "changed":
+								$displayStatus = $lang->changed;
+								$color = "#F22B48";
+								break;
+							case "missing":
+								$displayStatus = $lang->missing;
+								$color = "#5B5658";
+								break;
+						}
+
+						$table->construct_cell(
+							"<strong><span style=\"color: {$color};\">{$displayPath}</span></strong>"
+						);
+						$table->construct_cell(
+							"<strong><span style=\"color: {$color};\">{$displayStatus}</span></strong>",
+							array("class" => "align_center")
+						);
+						$table->construct_row();
+					}
+				}
+
+				$table->output($lang->file_verification.": ".$lang->found_problems);
+			}
 		}
 
 		$page->output_footer();
