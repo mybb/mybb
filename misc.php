@@ -721,11 +721,11 @@ elseif($mybb->input['action'] == "whoposted")
 			$profile_link = build_profile_link($poster_name, $poster['uid']);
 		}
 		$numposts += $poster['posts'];
+		$poster['posts'] = my_number_format($poster['posts']);
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
 	}
 	$numposts = my_number_format($numposts);
-	$poster['posts'] = my_number_format($poster['posts']);
 	if($modal)
 	{
 		eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
