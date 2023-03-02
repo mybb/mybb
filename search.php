@@ -60,7 +60,7 @@ if($mybb->input['action'] == "results")
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
-	if(!$search['sid'])
+	if(isset($search['sid']) && !$search['sid'])
 	{
 		error($lang->error_invalidsearch);
 	}
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "results")
 			break;
 		case "lastpost":
 		default:
-			if($search['resulttype'] == "threads")
+			if(isset($search['resulttype']) && $search['resulttype'] == "threads")
 			{
 				$sortfield = "t.lastpost";
 				$sortby = "lastpost";
@@ -152,7 +152,7 @@ if($mybb->input['action'] == "results")
 
 	// Work out if we have terms to highlight
 	$highlight = "";
-	if($search['keywords'])
+	if(isset($search['keywords']))
 	{
 		if($mybb->seo_support == true)
 		{
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Show search results as 'threads'
-	if($search['resulttype'] == "threads")
+	if(isset($search['resulttype']) && $search['resulttype'] == "threads")
 	{
 		$threadcount = 0;
 
@@ -723,7 +723,7 @@ if($mybb->input['action'] == "results")
 	}
 	else // Displaying results as posts
 	{
-		if(!$search['posts'])
+		if(empty($search['posts']))
 		{
 			error($lang->error_nosearchresults);
 		}
