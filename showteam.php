@@ -189,7 +189,7 @@ while($user = $db->fetch_array($query))
 		$group = $user['usergroup'];
 	}
 
-	if($usergroups[$group] && $group != 6)
+	if(isset($usergroups[$group]) && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
 	}
