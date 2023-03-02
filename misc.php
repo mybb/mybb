@@ -405,15 +405,15 @@ elseif($mybb->input['action'] == "help")
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
 				$langdocvar = "d".$helpdoc['hid']."_document";
-				if($lang->$langnamevar)
+				if(isset($lang->$langnamevar))
 				{
 					$helpdoc['name'] = $lang->$langnamevar;
 				}
-				if($lang->$langdescvar)
+				if(isset($lang->$langdescvar))
 				{
 					$helpdoc['description'] = $lang->$langdescvar;
 				}
-				if($lang->$langdocvar)
+				if(isset($lang->$langdocvar))
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
 				}
@@ -476,11 +476,11 @@ elseif($mybb->input['action'] == "help")
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if($lang->$langnamevar)
+								if(isset($lang->$langnamevar))
 								{
 									$helpdoc['name'] = $lang->$langnamevar;
 								}
-								if($lang->$langdescvar)
+								if(isset($lang->$langdescvar))
 								{
 									$helpdoc['description'] = $lang->$langdescvar;
 								}
