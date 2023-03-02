@@ -1647,7 +1647,7 @@ function perform_search_mysql_ft($search)
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1709,7 +1709,7 @@ function perform_search_mysql_ft($search)
 
 	// Searching a specific thread?
 	$tidsql = '';
-	if($search['tid'])
+	if(isset($search['tid']) && $search['tid'])
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
@@ -1727,7 +1727,7 @@ function perform_search_mysql_ft($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(!$search['tid'])
+		if(isset($search['tid']) && !$search['tid'])
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
