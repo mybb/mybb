@@ -66,11 +66,9 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$list = [];
-
 				foreach($bad_files as $status => $files)
 				{
-					foreach ($files as $relativePath)
+					foreach($files as $relativePath)
 					{
 						$displayPath = htmlspecialchars_uni(substr($relativePath, 2));
 
