@@ -161,19 +161,6 @@ function getDatabaseSuggestionCredentialSets(): array
             ['name' => 'user'],
         ];
 
-        // location-dependent
-        $values = [
-            $_SERVER['SERVER_NAME'] ?? null,
-            basename(realpath(MYBB_ROOT)),
-        ];
-
-        foreach ($values as $value) {
-            if (!empty($value)) {
-                $credentialSets[] = ['user' => $value, 'password' => $value];
-                $credentialSets[] = ['name' => $value];
-            }
-        }
-
         // engines to try for each generic host name
         foreach ($credentialSets as $credentialSet) {
             if (isset($credentialSet['host']) && !isset($credentialSet['engine'])) {
@@ -186,6 +173,19 @@ function getDatabaseSuggestionCredentialSets(): array
                 }
 
                 array_splice($credentialSets, array_search($credentialSet, $credentialSets), 1, $credentialSetProduct);
+            }
+        }
+
+        // location-dependent
+        $values = [
+            $_SERVER['SERVER_NAME'] ?? null,
+            basename(realpath(MYBB_ROOT)),
+        ];
+
+        foreach ($values as $value) {
+            if (!empty($value)) {
+                $credentialSets[] = ['user' => $value, 'password' => $value];
+                $credentialSets[] = ['name' => $value];
             }
         }
 
