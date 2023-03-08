@@ -140,17 +140,20 @@ function getDatabaseSuggestionCredentialSets(): array
     if ($engines !== []) {
         // general credentials
         $credentialSets = [
+            // server
             ['host' => 'localhost'],
             ['host' => 'db'],
             ['host' => 'database'],
-            ['host' => 'postgresql'],
-            ['host' => 'postgres'],
-            ['host' => 'pgsql'],
-            ['host' => 'mysql'],
+            ['engine' => 'mysql', 'host' => 'mysql'],
+            ['engine' => 'pgsql', 'host' => 'postgresql'],
+            ['engine' => 'pgsql', 'host' => 'postgres'],
+            ['engine' => 'pgsql', 'host' => 'pgsql'],
 
+            // authentication
             ['user' => 'mybb', 'password' => 'mybb'],
             ['user' => 'user', 'password' => 'user'],
 
+            // database
             ['name' => 'db'],
             ['name' => 'database'],
             ['name' => 'mybb'],
@@ -171,11 +174,19 @@ function getDatabaseSuggestionCredentialSets(): array
             }
         }
 
-        // engines
-        foreach ($engines as $engine) {
-            array_unshift($credentialSets, [
-                'engine' => $engine,
-            ]);
+        // engines to try for each generic host name
+        foreach ($credentialSets as $credentialSet) {
+            if (isset($credentialSet['host']) && !isset($credentialSet['engine'])) {
+                $credentialSetProduct = [];
+
+                foreach ($engines as $engine) {
+                    $credentialSetProduct[] = array_merge($credentialSet, [
+                        'engine' => $engine,
+                    ]);
+                }
+
+                array_splice($credentialSets, array_search($credentialSet, $credentialSets), 1, $credentialSetProduct);
+            }
         }
 
         // existing configuration
