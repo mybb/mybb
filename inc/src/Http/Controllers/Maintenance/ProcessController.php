@@ -29,7 +29,11 @@ class ProcessController
         if ($request->has('process') && in_array($request->get('process'), $processNames, true)) {
             $processName = $request->get('process');
         } else {
-            $processName = InstallationState::get() === InstallationState::INSTALLED ? 'upgrade' : 'install';
+            $processName =
+                InstallationState::get() === InstallationState::INSTALLED && !MyBB\Maintenance\developmentEnvironment()
+                    ? 'upgrade'
+                    : 'install'
+                ;
         }
 
         $this->initializeProcess($processName, $request);
