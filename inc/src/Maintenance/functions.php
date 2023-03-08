@@ -34,11 +34,16 @@ function createLockFile(string $type = null): void
 
     if (is_writable(INSTALL_ROOT)) {
         $handle = @fopen(INSTALL_ROOT . $filename, 'w');
-        $result = @fwrite($handle, '1');
-        @fclose($handle);
 
-        if ($result === false || $result === 0) {
+        if ($handle === false) {
             throw new \Exception('Failed to create lock file');
+        } else {
+            $result = @fwrite($handle, '1');
+            @fclose($handle);
+
+            if ($result === false || $result === 0) {
+                throw new \Exception('Failed to create lock file');
+            }
         }
     } else {
         throw new \Exception('Lock file directory not writable');
