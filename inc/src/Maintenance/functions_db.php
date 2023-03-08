@@ -28,6 +28,7 @@ function getDatabaseDriversData(): array
     return [
         // non-PDO extensions
         'mysqli' => [
+            'driver' => 'mysqli',
             'engine' => 'mysql',
             'extension' => 'mysqli',
             'class' => 'DB_MySQLi',
@@ -37,6 +38,7 @@ function getDatabaseDriversData(): array
             'default_port' => 3306,
         ],
         'pgsql' => [
+            'driver' => 'pgsql',
             'engine' => 'pgsql',
             'extension' => 'pgsql',
             'class' => 'DB_PgSQL',
@@ -48,6 +50,7 @@ function getDatabaseDriversData(): array
 
         // PDO extension
         'mysql_pdo' => [
+            'driver' => 'mysql_pdo',
             'engine' => 'mysql',
             'extension' => 'pdo',
             'class' => 'MysqlPdoDbDriver',
@@ -57,6 +60,7 @@ function getDatabaseDriversData(): array
             'default_port' => 3306,
         ],
         'pgsql_pdo' => [
+            'driver' => 'pgsql_pdo',
             'engine' => 'pgsql',
             'extension' => 'pdo',
             'class' => 'PostgresPdoDbDriver',
@@ -66,6 +70,7 @@ function getDatabaseDriversData(): array
             'default_port' => 5432,
         ],
         'sqlite' => [
+            'driver' => 'sqlite',
             'engine' => 'sqlite',
             'extension' => 'pdo',
             'class' => 'DB_SQLite',
@@ -105,7 +110,7 @@ function getAvailableDatabaseDriversData(bool $legacy = true): array
     );
 }
 
-function getDatabaseEngineDriver(string $engine): ?string
+function getDatabaseEngineDriverData(string $engine): ?array
 {
     $availableDrivers = getAvailableDatabaseDriversData(false);
 
@@ -117,9 +122,9 @@ function getDatabaseEngineDriver(string $engine): ?string
         ),
     );
 
-    $driver = array_search($engine, $engineDrivers);
+    $driverName = array_search($engine, $engineDrivers);
 
-    return $driver === false ? null : $driver;
+    return $driverName === false ? null : $availableDrivers[$driverName];
 }
 
 function getDatabaseSuggestionCredentialSets(): array
@@ -231,30 +236,28 @@ function getDsn(array $parameters): ?string
 {
     $dsn = null;
 
-    $availableDriversData = getAvailableDatabaseDriversData();
+    if (isset($parameters['engine'])) {
+        $driverData = getDatabaseEngineDriverData($parameters['engine']);
 
-    if (isset($parameters['engine']) && array_key_exists($parameters['engine'], $availableDriversData)) {
-        $driverData = $availableDriversData[$parameters['engine']];
+        if ($driverData !== null) {
+            if (isset($driverData['default_port']) && isset($parameters['host']) && $parameters['host'] !== '') {
+                // client-server DBMS
 
-        if (isset($driverData['default_port']) && isset($parameters['host']) && $parameters['host'] !== '') {
-            // client-server DBMS
+                $host = getDatabaseHostData($parameters['host']);
 
-            $host = getDatabaseHostData($parameters['host']);
-
-            #if (isset($parameters['user'], $parameters['password'])) {
                 $dsn = $parameters['engine'] . ':host=' . $host['name'] . ';port=' . ($host['port'] ?? $driverData['default_port']);
 
                 if (!empty($parameters['name'])) {
                     $dsn .= ';dbname=' . $parameters['name'];
                 }
-            #}
-        } elseif (
-            !isset($driverData['default_port']) &&
-            !empty($parameters['path'])
-        ) {
-            // embedded DBMS
+            } elseif (
+                !isset($driverData['default_port']) &&
+                !empty($parameters['path'])
+            ) {
+                // embedded DBMS
 
-            $dsn = $parameters['engine'] . ':' . $parameters['path'];
+                $dsn = $parameters['engine'] . ':' . $parameters['path'];
+            }
         }
     }
 
@@ -295,106 +298,109 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
         ],
     ];
 
-    $availableDriversData = getAvailableDatabaseDriversData();
+    if (isset($parameters['engine'])) {
+        $driverData = getDatabaseEngineDriverData($parameters['engine']);
 
-    if (isset($parameters['engine']) && array_key_exists($parameters['engine'], $availableDriversData)) {
-        $results['checks']['engine'] = true;
+        if ($driverData !== null) {
+            $results['checks']['engine'] = true;
 
-        $dsn = getDsn($parameters);
+            $dsn = getDsn($parameters);
 
-        if ($dsn !== null) {
-            // prevent filename-related issues
-            if (
-                empty($parameters['path']) ||
-                preg_match('/^(.*\/)?[\w._-]+[\w]+$/', $parameters['path']) === 1
-            ) {
-                // track file created for testing purposes to delete later
-                if (!empty($parameters['path']) && !file_exists($parameters['path'])) {
-                    $temporaryFilePath = $parameters['path'];
-                }
-
-                try {
-                    $pdo = new PDO(
-                        $dsn,
-                        $parameters['user'] ?? null,
-                        $parameters['password'] ?? null,
-                        [
-                            PDO::ATTR_TIMEOUT => max((int)$timeoutSeconds, 1),
-                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        ]
-                    );
-
-                    $results['checks']['server'] = true;
-                    $results['checks']['authentication'] = true;
-
-                    if (!empty($parameters['name']) || $parameters['engine'] === 'sqlite') {
-                        $results['checks']['database'] = true;
+            if ($dsn !== null) {
+                // prevent filename-related issues
+                if (
+                    empty($parameters['path']) ||
+                    preg_match('/^(.*\/)?[\w._-]+[\w]+$/', $parameters['path']) === 1
+                ) {
+                    // track file created for testing purposes to delete later
+                    if (!empty($parameters['path']) && !file_exists($parameters['path'])) {
+                        $temporaryFilePath = $parameters['path'];
                     }
 
-                    if ($results['checks']['database'] === true && isset($parameters['table_prefix'])) {
-                        switch ($parameters['engine']) {
-                            case 'sqlite':
-                                $statement = $pdo->prepare(<<<'SQL'
-                                    SELECT
-                                        COUNT(*) AS n
-                                        FROM sqlite_master
-                                        WHERE type = 'table' AND name LIKE :name ESCAPE '\'
-                                SQL
-                                );
-                                $statement->execute([
-                                    ':name' => addcslashes($parameters['table_prefix'], '\\%_') . '%',
-                                ]);
-                                break;
-                            default:
-                                /** @var string $parameters['name'] */
+                    try {
+                        $pdo = new PDO(
+                            $dsn,
+                            $parameters['user'] ?? null,
+                            $parameters['password'] ?? null,
+                            [
+                                PDO::ATTR_TIMEOUT => max((int)$timeoutSeconds, 1),
+                                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            ]
+                        );
 
-                                $statement = $pdo->prepare(<<<'SQL'
-                                    SELECT
-                                        COUNT(*) AS n
-                                        FROM information_schema.tables
-                                        WHERE (table_catalog = :schema OR table_schema = :schema) AND table_name LIKE :name
-                                SQL
-                                );
-                                $statement->execute([
-                                    ':schema' => $parameters['name'],
-                                    ':name' => addcslashes($parameters['table_prefix'], '\\%_') . '%',
-                                ]);
-                                break;
+                        $results['checks']['server'] = true;
+                        $results['checks']['authentication'] = true;
+
+                        if (!empty($parameters['name']) || $parameters['engine'] === 'sqlite') {
+                            $results['checks']['database'] = true;
                         }
 
-                        $results['checks']['prefix_tables'] = (int)($statement->fetch()['n'] ?? null);
-                    }
-                } catch (PDOException $e) {
-                    $results['checks'] = array_merge(
-                        $results['checks'],
-                        getDatabaseTestResultsFromException($e, $parameters),
-                    );
+                        if ($results['checks']['database'] === true && isset($parameters['table_prefix'])) {
+                            switch ($parameters['engine']) {
+                                case 'sqlite':
+                                    $statement = $pdo->prepare(<<<'SQL'
+                                        SELECT
+                                            COUNT(*) AS n
+                                            FROM sqlite_master
+                                            WHERE type = 'table' AND name LIKE :name ESCAPE '\'
+                                    SQL
+                                    );
+                                    $statement->execute([
+                                        ':name' => addcslashes($parameters['table_prefix'], '\\%_') . '%',
+                                    ]);
+                                    break;
+                                default:
+                                    /** @var string $parameters['name'] */
 
-                    $results['message'] = $e->getMessage();
-                    $results['code'] = $e->getCode();
-                } finally {
-                    if (isset($temporaryFilePath)) {
-                        unlink($temporaryFilePath);
+                                    $statement = $pdo->prepare(<<<'SQL'
+                                        SELECT
+                                            COUNT(*) AS n
+                                            FROM information_schema.tables
+                                            WHERE (table_catalog = :schema OR table_schema = :schema) AND table_name LIKE :name
+                                    SQL
+                                    );
+                                    $statement->execute([
+                                        ':schema' => $parameters['name'],
+                                        ':name' => addcslashes($parameters['table_prefix'], '\\%_') . '%',
+                                    ]);
+                                    break;
+                            }
+
+                            $results['checks']['prefix_tables'] = (int)($statement->fetch()['n'] ?? null);
+                        }
+                    } catch (PDOException $e) {
+                        $results['checks'] = array_merge(
+                            $results['checks'],
+                            getDatabaseTestResultsFromException($e, $parameters),
+                        );
+
+                        $results['message'] = $e->getMessage();
+                        $results['code'] = $e->getCode();
+                    } finally {
+                        if (isset($temporaryFilePath)) {
+                            unlink($temporaryFilePath);
+                        }
+                    }
+                }
+            } elseif (isset($parameters['host'])) {
+                $host = getDatabaseHostData($parameters['host']);
+
+                if (isset($driverData['default_port'])) {
+                    try {
+                        $results['checks']['server'] = @fsockopen(
+                            $host['name'],
+                            $host['port'] ?? $driverData['default_port'],
+                            $_,
+                            $_,
+                            $timeoutSeconds
+                        ) !== false;
+                    } catch (\Exception) {
+                        $results['checks']['server'] = false;
                     }
                 }
             }
-        } elseif (isset($parameters['host'])) {
-            $host = getDatabaseHostData($parameters['host']);
-            $driverData = $availableDriversData[$parameters['engine']];
-
-            if (isset($driverData['default_port'])) {
-                try {
-                    $results['checks']['server'] = @fsockopen(
-                        $host['name'],
-                        $host['port'] ?? $driverData['default_port'],
-                        $_,
-                        $_,
-                        $timeoutSeconds
-                    ) !== false;
-                } catch (\Exception) {
-                    $results['checks']['server'] = false;
-                }
-            }
+        } else {
+            $results['checks']['engine'] = false;
         }
     } else {
         $results['checks']['engine'] = false;

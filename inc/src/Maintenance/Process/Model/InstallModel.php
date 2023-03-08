@@ -436,7 +436,7 @@ class InstallModel extends Model
         ) {
             $testConfig = [
                 'database' => [
-                    'type' => \MyBB\Maintenance\getDatabaseEngineDriver($process->getParameterValue('db_engine')),
+                    'type' => \MyBB\Maintenance\getDatabaseEngineDriverData($process->getParameterValue('db_engine'))['driver'],
                     'database' => $process->getParameterValue('db_engine') === 'sqlite'
                         ? $process->getParameterValue('db_path')
                         : $process->getParameterValue('db_name'),

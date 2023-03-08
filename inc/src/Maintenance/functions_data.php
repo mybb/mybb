@@ -193,9 +193,7 @@ function writeConfigurationFile(array $config): void
 
 function createDatabaseStructure(array $config, DB_Base $db): void
 {
-    $driverName = str_replace('_pdo', '', $config['database']['type']);
-
-    $file = getAvailableDatabaseDriversData()[ $driverName ]['structure_file'] ?? null;
+    $file = getAvailableDatabaseDriversData()[ $config['database']['type'] ]['structure_file'] ?? null;
     $filePath = MYBB_ROOT . 'inc/schemas/' . $file;
 
     if ($file !== null && file_exists($filePath)) {
