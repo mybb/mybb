@@ -13,6 +13,7 @@ $l['operation_warning_title'] = '{1} — Warning';
 
 // navigation
 $l['retry'] = 'Retry';
+$l['retry_step'] = 'Retry?';
 $l['retry_operation_confirm'] = 'Retry operation before proceeding?';
 $l['retry_parameter_input'] = 'Change parameter values?';
 $l['step_finish'] = 'Next';

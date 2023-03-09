@@ -241,13 +241,22 @@ abstract class MaintenanceProcessCommand extends Command
             do {
                 $stepResult = $this->executeStep($stepPlan, $stepNonInteractiveParameterValueOrigins);
 
-                if ($stepResult === self::STEP_FAILURE) {
+                if ($stepResult === self::STEP_SUCCESS) {
+                    break;
+                } elseif ($stepResult === self::STEP_FAILURE) {
                     return false;
+                } elseif ($stepResult === self::STEP_FAILURE_RETRYABLE) {
+                    if (
+                        $this->input->isInteractive() &&
+                        $this->io->confirm($this->lang->retry_step, true)
+                    ) {
+                        // collect parameter values interactively on subsequent attempts
+                        $stepNonInteractiveParameterValueOrigins = [];
+                    } else {
+                        return false;
+                    }
                 }
-
-                // collect parameter values interactively on subsequent attempts
-                $stepNonInteractiveParameterValueOrigins = [];
-            } while ($stepResult === self::STEP_FAILURE_RETRYABLE);
+            } while (true);
         }
 
         $this->finishProcess();
