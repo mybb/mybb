@@ -13,6 +13,7 @@ use MyBB;
 use MyLanguage;
 use pluginSystem;
 use PostDataHandler;
+use Throwable;
 
 use function MyBB\app;
 
@@ -186,7 +187,7 @@ function writeConfigurationFile(array $config): void
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate(MYBB_ROOT . "inc/config.php");
         }
-    } catch (Exception) {
+    } catch (Throwable) {
         throw new Exception();
     }
 }
