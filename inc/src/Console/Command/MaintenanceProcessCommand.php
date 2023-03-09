@@ -771,36 +771,38 @@ abstract class MaintenanceProcessCommand extends Command
         $title = $this->lang->{'parameter_' . $parameterPlan['name'] . '_title'};
         $defaultValue = $parameterPlan['defaultValue'] ?? null;
 
-        switch ($parameterPlan['type']) {
-            case 'text':
-            case 'email':
-                $value = $this->io->ask($title, $defaultValue);
-                break;
-            case 'password':
-                if (
-                    ($parameterPlan['passwordRevealed'] ?? null) === true ||
-                    isset($parameterPlan['defaultValue'])
-                ) {
+        do {
+            switch ($parameterPlan['type']) {
+                case 'text':
+                case 'email':
                     $value = $this->io->ask($title, $defaultValue);
-                } else {
-                    $value = $this->io->askHidden($title);
-                }
-                break;
-            case 'select':
-                $value = $this->io->choice(
-                    $title,
-                    array_map('strval', array_keys($parameterPlan['options'])),
-                    $defaultValue,
-                );
-                break;
-            case 'checkbox':
-                $value = $this->io->confirm($title, $defaultValue == true) ? '1' : '0';
-                break;
-            default:
-                throw new \InvalidArgumentException('Unknown parameter type');
-        }
+                    break;
+                case 'password':
+                    if (
+                        ($parameterPlan['passwordRevealed'] ?? null) === true ||
+                        isset($parameterPlan['defaultValue'])
+                    ) {
+                        $value = $this->io->ask($title, $defaultValue);
+                    } else {
+                        $value = $this->io->askHidden($title);
+                    }
+                    break;
+                case 'select':
+                    $value = $this->io->choice(
+                        $title,
+                        array_map('strval', array_keys($parameterPlan['options'])),
+                        $defaultValue,
+                    );
+                    break;
+                case 'checkbox':
+                    $value = $this->io->confirm($title, $defaultValue == true) ? '1' : '0';
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Unknown parameter type');
+            }
 
-        $this->io->newLine();
+            $this->io->newLine();
+        } while ($parameterPlan['required'] === true && $value === null);
 
         return $value;
     }
