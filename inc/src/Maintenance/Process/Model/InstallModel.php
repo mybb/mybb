@@ -332,7 +332,7 @@ class InstallModel extends Model
         ]);
 
         $this->setFinishUrl(function (Runtime $process): string {
-            $url = $process->getParameterValue('bburl');
+            $url = $process->getParameterValue('bburl') ?? '..';
 
             if ($process->getFlagValue('development_mode') === true && $process->getOperationSubset() === null) {
                 $url .= '/showthread.php?tid=1&pid=2#pid2'; // post with installation details in the "Welcome" thread
