@@ -60,7 +60,7 @@ if($mybb->input['action'] == "results")
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
-	if(isset($search['sid']) && !$search['sid'])
+	if(empty($search['sid']))
 	{
 		error($lang->error_invalidsearch);
 	}
@@ -152,7 +152,7 @@ if($mybb->input['action'] == "results")
 
 	// Work out if we have terms to highlight
 	$highlight = "";
-	if(isset($search['keywords']))
+	if(!empty($search['keywords']))
 	{
 		if($mybb->seo_support == true)
 		{
