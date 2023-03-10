@@ -1709,7 +1709,7 @@ function perform_search_mysql_ft($search)
 
 	// Searching a specific thread?
 	$tidsql = '';
-	if(isset($search['tid']) && $search['tid'])
+	if(!empty($search['tid']))
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
@@ -1727,7 +1727,7 @@ function perform_search_mysql_ft($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(isset($search['tid']) && !$search['tid'])
+		if(!empty($search['tid']))
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
