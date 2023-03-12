@@ -422,6 +422,14 @@ class ProcessController extends EventTarget {
 			this.#$('.alert', $alert).appendChild($list);
 		}
 
+		if (content.hasOwnProperty('raw')) {
+			const $details = this.#$context.createElement('small');
+
+			$details.innerText = lang['operation_error_details_http'];
+
+			this.#$('.alert', $alert).appendChild($details);
+		}
+
 		if (typeof operation === 'object') {
 			this.#$('.alert', $alert).setAttribute('data-operation', operation.name);
 

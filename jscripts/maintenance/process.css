@@ -96,6 +96,7 @@ main .step:not([data-displayed]) { display: none; }
 .alert a { color: inherit; font-weight: bold; }
 .alert a[href^="http"]:after { margin-left: 4px; font-family: var(--symbol-font); font-weight: 900; content: "\f35d"; }
 .alert ul { margin-top: 10px; }
+.alert small { opacity: 0.8; }
 
 fieldset { margin-bottom: 10px; padding: 12px; border: solid 1px var(--page-element-border-color); border-radius: 4px; }
 fieldset:not(:has(> label)) { display: none; }

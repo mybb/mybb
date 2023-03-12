@@ -24,6 +24,8 @@ $l['redirecting'] = 'Redirecting…';
 #endregion
 
 #region CLI
+$l['operation_error_details_cli'] = 'Additional details may be available with the "-v" (verbose) parameter.';
+
 $l['using_env_parameter_value'] = 'Using environment variable <{3}> for {1}';
 $l['using_env_parameter_value_revealed'] = 'Using environment variable <{3}> for {1}: "{2}"';
 
@@ -35,6 +37,8 @@ $l['unknown_parameter'] = 'Unknown process parameter "{1}"';
 #endregion
 
 #region GUI
+$l['operation_error_details_http'] = 'Additional details may be available in the web console.';
+
 $l['optional'] = 'optional';
 $l['show_password'] = 'Show Password';
 $l['weak_password'] = 'Weak password';

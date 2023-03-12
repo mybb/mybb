@@ -742,8 +742,14 @@ abstract class MaintenanceProcessCommand extends Command
 
         foreach (['error', 'warning'] as $type) {
             if (isset($operationResults[$type])) {
+                $message = $operationResults[$type]['message'];
+
+                if (isset($operationResults[$type]['raw'])) {
+                    $message .= "\n\n" . $this->lang->operation_error_details_cli;
+                }
+
                 $this->io->$type(
-                    static::format($operationResults[$type]['title'] . "\n\n" . $operationResults[$type]['message'])
+                    static::format($operationResults[$type]['title'] . "\n\n" . $message)
                 );
 
                 if (isset($operationResults[$type]['list'])) {
