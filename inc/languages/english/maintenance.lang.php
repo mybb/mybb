@@ -8,7 +8,7 @@
 
 #region Process - common
 $l['operation_error_title'] = '{1} — Error';
-$l['operation_error_message'] = 'The operation failed. Please check error logs for details.';
+$l['operation_error_message'] = 'The operation failed. Please check the <code>error.log</code> file for details.';
 $l['operation_warning_title'] = '{1} — Warning';
 
 // navigation
