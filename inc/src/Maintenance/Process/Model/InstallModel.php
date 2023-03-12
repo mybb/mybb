@@ -188,7 +188,13 @@ class InstallModel extends Model
                     ],
                     'adminemail' => [
                         'type' => 'email',
-                        'defaultValue' => fn() => \MyBB\Maintenance\getSuggestedAdminEmail(),
+                        'defaultValue' => function (Runtime $process) {
+                            return \MyBB\Maintenance\getSuggestedAdminEmail() ?? (
+                                $process->getFlagValue('development_mode') === true
+                                    ? 'admin@example.localhost'
+                                    : null
+                            );
+                        },
                         'required' => true,
                     ],
                     'acp_pin' => [
