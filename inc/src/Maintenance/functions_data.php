@@ -961,15 +961,15 @@ function getSuggestedBoardUrl(): ?string
 
 function getSuggestedAdminEmail(): ?string
 {
-    $url = getSettingValue('adminemail');
+    $value = getSettingValue('adminemail');
 
-    if ($url === null) {
+    if ($value === null) {
         if (isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL)) {
-            $url = $_SERVER['SERVER_ADMIN'];
+            $value = $_SERVER['SERVER_ADMIN'];
         }
     }
 
-    return $url;
+    return $value;
 }
 
 /**
