@@ -76,7 +76,7 @@ header .title { margin-left: 12px; font-size: 1.8em; color: var(--header-title-f
 .page main h2 { margin-bottom: 20px; font-family: var(--display-font); font-size: 1.8em; font-weight: 400; }
 .page--standard main h2 { margin-bottom: 40px; }
 .page main h3 { margin-bottom: 20px; font-family: var(--display-font); font-size: 1.2em; font-weight: 400; color: var(--page-subheading-fg-color); }
-.page main p:not(:first-child) { margin-top: 6px; }
+.page main > p:not(:first-child) { margin-top: 6px; }
 .page main section > p:last-of-type:not(:last-child) { margin-bottom: 30px; }
 .page code { padding: 2px 4px; font-family: monospace; }
 .page pre code { padding: 0; display: block; width: 100%; overflow: auto; }

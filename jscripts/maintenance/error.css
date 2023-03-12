@@ -23,7 +23,7 @@
 .mybb_error main { padding: 30px; line-height: 26px; }
 .mybb_error main h2 { margin-bottom: 20px; font-size: 1.8em; font-weight: 400; }
 .mybb_error main h3 { margin-bottom: 20px; font-size: 1.2em; font-weight: 400; color: var(--page-subheading-fg-color); }
-.mybb_error main p:not(:first-child) { margin-top: 6px; }
+.mybb_error main > p:not(:first-child) { margin-top: 6px; }
 .mybb_error main section > p:last-of-type:not(:last-child) { margin-bottom: 30px; }
 .mybb_error code { padding: 2px 4px; font-family: monospace; }
 .mybb_error pre code { padding: 0; display: block; }
