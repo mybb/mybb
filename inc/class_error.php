@@ -440,15 +440,6 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
-		if(isset($mybb->settings['bbname']))
-		{
-			$bbname = $mybb->settings['bbname'];
-		}
-		else
-		{
-			$bbname = "MyBB";
-		}
-
 		$show_details = (
 			$this->force_display_errors ||
 			in_array($this->errortypemedium, array('both', 'error')) ||
