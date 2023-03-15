@@ -713,7 +713,7 @@ class errorHandler {
 			$trace = array_slice($trace, $strip);
 		}
 
-		if($trace !== null)
+		if($trace)
 		{
 			if($html)
 			{
