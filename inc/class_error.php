@@ -440,6 +440,16 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
+		$title = match($type)
+		{
+			MYBB_SQL => "MyBB SQL Error",
+			default => "MyBB Internal Error",
+		};
+
+		$generic_message = 'The software behind this site has experienced a problem and cannot continue. Please try again later.';
+
+		$data = [];
+
 		$show_details = (
 			$this->force_display_errors ||
 			in_array($this->errortypemedium, array('both', 'error')) ||
@@ -447,8 +457,101 @@ class errorHandler {
 			defined("IN_UPGRADE")
 		);
 
-		$generic_message = 'The software behind this site has experienced a problem and cannot continue. Please try again later.';
+		if($show_details)
+		{
+			if($type == MYBB_SQL)
+			{
+				$data['SQL Error'] = $message['error_no'].' - '.$message['error'];
+
+				if($message['query'] != "")
+				{
+					$data['Query'] = $message['query'];
+				}
+			}
+			else
+			{
+				$data['Error Type'] = "{$this->error_types[$type]} ($type)";
+				$data['Error Message'] = $message;
+
+				if(!empty($file))
+				{
+					$data['Location'] = $file.':'.$line;
+					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
+					{
+						$code_pre = @file($file);
+
+						$code = "";
+
+						for($i = -4; $i <= 2; $i++)
+						{
+							if(isset($code_pre[$line+$i-1]))
+							{
+								$code .= ($line+$i) . ".\t".$code_pre[$line+$i-1];
+							}
+						}
+
+						unset($code_pre);
+
+						$data['Code'] = $code;
+					}
+				}
+
+				$backtrace = $this->generate_backtrace(trace: $trace);
+				if($backtrace && !in_array($type, $this->mybb_error_types))
+				{
+					$data['Backtrace'] = $backtrace;
+				}
+			}
+		}
+
 		$details = '';
+
+		if($data)
+		{
+			if(isset($data['Code']))
+			{
+				$parser_exists = false;
+
+				if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
+				{
+					if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
+					{
+						@require_once MYBB_ROOT."inc/class_parser.php";
+						$parser = new postParser;
+						$parser_exists = true;
+					}
+				}
+				else
+				{
+					$parser_exists = true;
+				}
+
+				if($parser_exists)
+				{
+					$data['Code'] = $parser->mycode_parse_php($data['Code'], true);
+				}
+				else
+				{
+					$data['Code'] = @nl2br($data['Code']);
+				}
+			}
+
+			$details .= "<h3>Technical Details</h3>";
+			$details .= "<dl>\n";
+
+			foreach($data as $key => $value)
+			{
+				if(!in_array($key, ['Code', 'Backtrace']))
+				{
+					$value = htmlspecialchars_uni($value);
+				}
+
+				$details .= "<dt>{$key}</dt>\n";
+				$details .= "<dd>{$value}</dd>\n";
+			}
+
+			$details .= "</dl>\n";
+		}
 
 		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
 		if(
@@ -476,116 +579,9 @@ class errorHandler {
 				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}
 
-			$details .= <<<HTML
+			$generic_message .= <<<HTML
 			<p>If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.</p>
 			HTML;
-		}
-
-		if($type == MYBB_SQL)
-		{
-			$title = "MyBB SQL Error";
-			if($show_details)
-			{
-				$message['query'] = htmlspecialchars_uni($message['query']);
-				$message['error'] = htmlspecialchars_uni($message['error']);
-
-				$details = "<h3>Technical Details</h3>";
-				$details .= "<dl>\n";
-				$details .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
-				if($message['query'] != "")
-				{
-					$details .= "<dt>Query:</dt>\n<dd>{$message['query']}</dd>\n";
-				}
-				$details .= "</dl>\n";
-			}
-		}
-		else
-		{
-			$title = "MyBB Internal Error";
-			if($show_details)
-			{
-				$details = "<h3>Technical Details</h3>";
-				$details .= "<dl>\n";
-				$details .= "<dt>Error Type</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
-				$details .= "<dt>Error Message</dt>\n<dd>{$message}</dd>\n";
-				if(!empty($file))
-				{
-					$details .= "<dt>Location</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
-					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
-					{
-						$code_pre = @file($file);
-
-						$code = "";
-
-						if(isset($code_pre[$line-4]))
-						{
-							$code .= $line-3 . ". ".$code_pre[$line-4];
-						}
-
-						if(isset($code_pre[$line-3]))
-						{
-							$code .= $line-2 . ". ".$code_pre[$line-3];
-						}
-
-						if(isset($code_pre[$line-2]))
-						{
-							$code .= $line-1 . ". ".$code_pre[$line-2];
-						}
-
-						$code .= $line . ". ".$code_pre[$line-1]; // The actual line.
-
-						if(isset($code_pre[$line]))
-						{
-							$code .= $line+1 . ". ".$code_pre[$line];
-						}
-
-						if(isset($code_pre[$line+1]))
-						{
-							$code .= $line+2 . ". ".$code_pre[$line+1];
-						}
-
-						if(isset($code_pre[$line+2]))
-						{
-							$code .= $line+3 . ". ".$code_pre[$line+2];
-						}
-
-						unset($code_pre);
-
-						$parser_exists = false;
-
-						if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
-						{
-							if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
-							{
-								@require_once MYBB_ROOT."inc/class_parser.php";
-								$parser = new postParser;
-								$parser_exists = true;
-							}
-						}
-						else
-						{
-							$parser_exists = true;
-						}
-
-						if($parser_exists)
-						{
-							$code = $parser->mycode_parse_php($code, true);
-						}
-						else
-						{
-							$code = @nl2br($code);
-						}
-
-						$details .= "<dt>Code</dt><dd><pre>{$code}</pre></dd>\n";
-					}
-				}
-				$backtrace = $this->generate_backtrace(trace: $trace);
-				if($backtrace && !in_array($type, $this->mybb_error_types))
-				{
-					$details .= "<dt>Backtrace</dt><dd>{$backtrace}</dd>\n";
-				}
-				$details .= "</dl>\n";
-			}
 		}
 
 		if(isset($lang->settings['charset']))
