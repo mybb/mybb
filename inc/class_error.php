@@ -451,6 +451,7 @@ class errorHandler {
 		$data = [];
 
 		$show_details = (
+			PHP_SAPI === 'cli' ||
 			$this->force_display_errors ||
 			in_array($this->errortypemedium, array('both', 'error')) ||
 			defined("IN_INSTALL") ||
@@ -496,7 +497,7 @@ class errorHandler {
 					}
 				}
 
-				$backtrace = $this->generate_backtrace(trace: $trace);
+				$backtrace = $this->generate_backtrace(html: PHP_SAPI !== 'cli', trace: $trace);
 				if($backtrace && !in_array($type, $this->mybb_error_types))
 				{
 					$data['Backtrace'] = $backtrace;
@@ -504,189 +505,236 @@ class errorHandler {
 			}
 		}
 
-		$details = '';
-
-		if($data)
+		if(PHP_SAPI === 'cli')
 		{
-			if(isset($data['Code']))
-			{
-				$parser_exists = false;
+			$sequences = [
+				'color' => [
+					'red' => stream_isatty(STDOUT) ? "\033[1;31m" : '',
+					'gray' => stream_isatty(STDOUT) ? "\033[1;30m" : '',
+					'reset' => stream_isatty(STDOUT) ? "\033[0m" : '',
+				],
+			];
 
-				if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
+			$separator = $sequences['color']['red'].str_repeat('~', 40)."\n".$sequences['color']['reset'];
+
+			$details = '';
+
+			if($data)
+			{
+				$details = "\nTechnical Details\n\n";
+
+				foreach($data as $key => $value)
 				{
-					if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
+					$details .=
+						$key."\n".
+						$sequences['color']['gray'].
+						$value.
+						$sequences['color']['reset'].
+						"\n\n"
+					;
+				}
+			}
+
+			echo
+				"\n".
+				$separator.
+				$sequences['color']['red'].
+				$title.
+				$sequences['color']['reset'].
+				"\n".
+				$generic_message."\n".
+				$separator.
+				$details.
+				$separator.
+				"\n"
+			;
+		}
+		else
+		{
+			$details = '';
+
+			if($data)
+			{
+				if(isset($data['Code']))
+				{
+					$parser_exists = false;
+
+					if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
 					{
-						@require_once MYBB_ROOT."inc/class_parser.php";
-						$parser = new postParser;
+						if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
+						{
+							@require_once MYBB_ROOT."inc/class_parser.php";
+							$parser = new postParser;
+							$parser_exists = true;
+						}
+					}
+					else
+					{
 						$parser_exists = true;
 					}
-				}
-				else
-				{
-					$parser_exists = true;
+
+					if($parser_exists)
+					{
+						$data['Code'] = $parser->mycode_parse_php($data['Code'], true);
+					}
+					else
+					{
+						$data['Code'] = @nl2br($data['Code']);
+					}
 				}
 
-				if($parser_exists)
+				$details .= "<h3>Technical Details</h3>";
+				$details .= "<dl>\n";
+
+				foreach($data as $key => $value)
 				{
-					$data['Code'] = $parser->mycode_parse_php($data['Code'], true);
+					if(!in_array($key, ['Code', 'Backtrace']))
+					{
+						$value = htmlspecialchars_uni($value);
+					}
+
+					$details .= "<dt>{$key}</dt>\n";
+					$details .= "<dd>{$value}</dd>\n";
 				}
-				else
-				{
-					$data['Code'] = @nl2br($data['Code']);
-				}
+
+				$details .= "</dl>\n";
 			}
 
-			$details .= "<h3>Technical Details</h3>";
-			$details .= "<dl>\n";
-
-			foreach($data as $key => $value)
-			{
-				if(!in_array($key, ['Code', 'Backtrace']))
-				{
-					$value = htmlspecialchars_uni($value);
-				}
-
-				$details .= "<dt>{$key}</dt>\n";
-				$details .= "<dd>{$value}</dd>\n";
-			}
-
-			$details .= "</dl>\n";
-		}
-
-		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(
-			!empty($mybb->settings['contactlink']) &&
-			(
-				!empty($mybb->settings['contact']) &&
-				!$is_in_contact &&
-				(
-					$mybb->settings['contactlink'] == "contact.php" &&
-					(
-						!isset($mybb->user['uid']) ||
-						($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
-						$mybb->user['uid'] > 0
-					)
-				) ||
-				$mybb->settings['contactlink'] != "contact.php"
-			)
-		)
-		{
+			$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
 			if(
-				!my_validate_url($mybb->settings['contactlink'], true, true) &&
-				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+				!empty($mybb->settings['contactlink']) &&
+				(
+					!empty($mybb->settings['contact']) &&
+					!$is_in_contact &&
+					(
+						$mybb->settings['contactlink'] == "contact.php" &&
+						(
+							!isset($mybb->user['uid']) ||
+							($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
+							$mybb->user['uid'] > 0
+						)
+					) ||
+					$mybb->settings['contactlink'] != "contact.php"
+				)
 			)
 			{
-				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-			}
+				if(
+					!my_validate_url($mybb->settings['contactlink'], true, true) &&
+					my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+				)
+				{
+					$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+				}
 
-			$generic_message .= <<<HTML
-			<p>If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.</p>
-			HTML;
-		}
-
-		if(isset($lang->settings['charset']))
-		{
-			$charset = $lang->settings['charset'];
-		}
-		else
-		{
-			$charset = 'UTF-8';
-		}
-
-		$support_extra = '';
-		if(isset($lang->settings['support_link'], $lang->settings['support_name']))
-		{
-			$support_link = htmlspecialchars_uni($lang->settings['support_link']);
-			$support_name = htmlspecialchars_uni($lang->settings['support_name']);
-
-			$support_extra = <<<HTML
-			or <a href="{$support_link}" target="_blank" rel="noopener">{$support_name}</a>
-			HTML;
-		}
-
-		$html = <<<HTML
-		<main>
-			<section>
-				<h2>{$title}</h2>
-				<p>{$generic_message}</p>
-				{$details}
-			</section>
-		</main>
-		<section class="footnote">
-			<p>If you own this board, visit <a href="https://mybb.com/support" target="_blank" rel="noopener">mybb.com/support</a> {$support_extra} for documentation and technical support.</p>
-		</section>
-		HTML;
-
-		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
-		{
-			// full-page error message
-
-			@header('HTTP/1.1 503 Service Temporarily Unavailable');
-			@header('Status: 503 Service Temporarily Unavailable');
-			@header('Retry-After: 1800');
-			@header("Content-type: text/html; charset={$charset}");
-
-			try
-			{
-				// attempt to render using Twig
-
-				require_once MYBB_ROOT . 'inc/src/Maintenance/functions_http.php';
-
-				\MyBB\Maintenance\httpOutputError(
-					$title,
-					$generic_message,
-					[
-						'details' => $details,
-						'support_extra' => $support_extra,
-					],
-				);
-			}
-			catch(Throwable)
-			{
-				// render with static version of the `maintenance/error.twig` template
-
-				$logo = file_get_contents(MYBB_ROOT . 'inc/views/logo.svg');
-
-				echo <<<HTML
-				<html lang="en">
-				<head>
-					<meta charset="UTF-8">
-					<meta http-equiv="X-UA-Compatible" content="ie=edge">
-					<meta name="robots" content="noindex">
-
-					<title>{$title}</title>
-
-					<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/main.css" />
-				</head>
-				<body class="maintenance maintenance--minimal maintenance--error">
-					<div class="container">
-						<div class="page">
-							{$html}
-						</div>
-
-						<footer>
-							<div class="powered-by powered-by--logo">
-								<a href="https://mybb.com" title="Forum software by MyBB" target="_blank" rel="noopener">
-									{$logo}
-								</a>
-							</div>
-						</footer>
-					</div>
-				</body>
-				</html>
+				$generic_message .= <<<HTML
+				<p>If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.</p>
 				HTML;
 			}
-		}
-		else
-		{
-			// embedded error message
 
-			echo <<<HTML
-			<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/error.css" />
-			<div class="mybb_error">
-				{$html}
-			</div>
+			if(isset($lang->settings['charset']))
+			{
+				$charset = $lang->settings['charset'];
+			}
+			else
+			{
+				$charset = 'UTF-8';
+			}
+
+			$support_extra = '';
+			if(isset($lang->settings['support_link'], $lang->settings['support_name']))
+			{
+				$support_link = htmlspecialchars_uni($lang->settings['support_link']);
+				$support_name = htmlspecialchars_uni($lang->settings['support_name']);
+
+				$support_extra = <<<HTML
+				or <a href="{$support_link}" target="_blank" rel="noopener">{$support_name}</a>
+				HTML;
+			}
+
+			$html = <<<HTML
+			<main>
+				<section>
+					<h2>{$title}</h2>
+					<p>{$generic_message}</p>
+					{$details}
+				</section>
+			</main>
+			<section class="footnote">
+				<p>If you own this board, visit <a href="https://mybb.com/support" target="_blank" rel="noopener">mybb.com/support</a> {$support_extra} for documentation and technical support.</p>
+			</section>
 			HTML;
+
+			if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
+			{
+				// full-page error message
+
+				@header('HTTP/1.1 503 Service Temporarily Unavailable');
+				@header('Status: 503 Service Temporarily Unavailable');
+				@header('Retry-After: 1800');
+				@header("Content-type: text/html; charset={$charset}");
+
+				try
+				{
+					// attempt to render using Twig
+
+					require_once MYBB_ROOT . 'inc/src/Maintenance/functions_http.php';
+
+					\MyBB\Maintenance\httpOutputError(
+						$title,
+						$generic_message,
+						[
+							'details' => $details,
+							'support_extra' => $support_extra,
+						],
+					);
+				}
+				catch(Throwable)
+				{
+					// render with static version of the `maintenance/error.twig` template
+
+					$logo = file_get_contents(MYBB_ROOT . 'inc/views/logo.svg');
+
+					echo <<<HTML
+					<html lang="en">
+					<head>
+						<meta charset="UTF-8">
+						<meta http-equiv="X-UA-Compatible" content="ie=edge">
+						<meta name="robots" content="noindex">
+
+						<title>{$title}</title>
+
+						<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/main.css" />
+					</head>
+					<body class="maintenance maintenance--minimal maintenance--error">
+						<div class="container">
+							<div class="page">
+								{$html}
+							</div>
+
+							<footer>
+								<div class="powered-by powered-by--logo">
+									<a href="https://mybb.com" title="Forum software by MyBB" target="_blank" rel="noopener">
+										{$logo}
+									</a>
+								</div>
+							</footer>
+						</div>
+					</body>
+					</html>
+					HTML;
+				}
+			}
+			else
+			{
+				// embedded error message
+
+				echo <<<HTML
+				<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/maintenance/error.css" />
+				<div class="mybb_error">
+					{$html}
+				</div>
+				HTML;
+			}
 		}
 
 		exit(1);
