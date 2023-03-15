@@ -16,7 +16,7 @@ require_once MYBB_ROOT . 'inc/class_error.php';
 $error_handler = new errorHandler(
     errortypemedium: 'none',
     errorlogmedium: 'log',
-    errorloglocation: INSTALL_ROOT . '/error.log',
+    errorloglocation: MYBB_ROOT . '/error.log',
 );
 
 // global
@@ -65,6 +65,9 @@ if (InstallationState::get() === InstallationState::INSTALLED) {
     $mybb->settings = \MyBB\Maintenance\getCorrectedSettings(
         \MyBB\Maintenance\getSettings(true)
     );
+
+    $error_handler->errorlogmedium = $mybb->settings['errorlogmedium'] ?? '';
+    $error_handler->errorloglocation = $mybb->settings['errorloglocation'] ?? '';
 
     $cache = new datacache(); // global variable used in upgrade scripts
     $cache->cache();
