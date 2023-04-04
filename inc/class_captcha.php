@@ -429,8 +429,7 @@ class captcha
 			}
 			else
 			{
-				// We have an hCaptcha or hCaptcha invisible to handle
-				// Contact hCaptcha and see if our hCaptcha was successful
+				// Contact CF-Turnstile and see if our CF-Turnstile request was successful
 				$response = fetch_remote_file($this->verify_server, array(
 					'secret' => $mybb->settings['cfturnstileprivatekey'],
 					'remoteip' => $session->ipaddress,
