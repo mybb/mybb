@@ -799,7 +799,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
-	$event['timezone'] = (float)$event['timezone'];
+	$event['timezone'] = isset($event['timezone']) ? (float) $event['timezone'] : 0;
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
