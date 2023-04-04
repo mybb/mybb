@@ -87,7 +87,7 @@ class EventDataHandler extends DataHandler
 	function verify_description()
 	{
 		$description = &$this->data['description'];
-		$description = trim($description);
+		$description = trim_blank_chrs($description);
 		if(!$description)
 		{
 			$this->set_error("missing_description");
