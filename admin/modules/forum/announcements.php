@@ -589,11 +589,11 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// Gather start and end date data
-		$startday = $mybb->input['starttime_day'];
+		$startday = $mybb->get_input('starttime_day', MyBB::INPUT_INT);
 		$start_time = $mybb->input['starttime_time'];
-		$startmonth = $mybb->input['starttime_month'];
+		$startmonth = $mybb->get_input('starttime_month', MyBB::INPUT_INT);
 		$startmonthsel[$startmonth] = 'selected="selected"';
-		$startdateyear = $mybb->input['starttime_year'];
+		$startdateyear = $mybb->get_input('starttime_year', MyBB::INPUT_INT);
 
 		if($mybb->input['endtime_type'] == 1)
 		{
@@ -601,11 +601,11 @@ if($mybb->input['action'] == "edit")
 			$endtime_checked[1] = 'checked="checked"';
 			$endtime_checked[2] = '';
 
-			$endday = $mybb->input['endtime_day'];
+			$endday = $endmonth = $mybb->get_input('endtime_day', MyBB::INPUT_INT);
 			$endtime = $mybb->input['endtime_time'];
-			$endmonth = $mybb->input['endtime_month'];
+			$endmonth = $mybb->get_input('endtime_month', MyBB::INPUT_INT);
 			$endmonthsel[$endmonth] = 'selected';
-			$enddateyear = $mybb->input['endtime_year'];
+			$enddateyear = $mybb->get_input('endtime_year', MyBB::INPUT_INT);
 		}
 		else
 		{
