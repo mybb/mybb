@@ -70,7 +70,7 @@ class EventDataHandler extends DataHandler
 	function verify_name()
 	{
 		$name = &$this->data['name'];
-		$name = trim($name);
+		$name = trim_blank_chrs($name);
 		if(!$name)
 		{
 			$this->set_error("missing_name");
