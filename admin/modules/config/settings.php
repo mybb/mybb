@@ -1704,6 +1704,7 @@ if($mybb->input['action'] == "change")
 					$multivalue = explode(',', $setting['value']);
 				}
 
+				$option_list = array();
 				for($i = 0; $i < $typecount; $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
@@ -1758,7 +1759,6 @@ if($mybb->input['action'] == "change")
 						$setting_code .= $form->generate_hidden_field("isvisible_{$setting['name']}", 1);
 					}
 				}
-				$option_list = array();
 			}
 
 			// Do we have a custom language variable for this title or description?
