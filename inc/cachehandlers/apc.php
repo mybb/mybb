@@ -60,7 +60,7 @@ class apcCacheHandler implements CacheHandlerInterface
 		if(apc_exists($this->unique_id."_".$name))
 		{
 			$data = apc_fetch($this->unique_id."_".$name);
-			return unserialize($data);
+			return my_unserialize($data);
 		}
 
 		return false;
