@@ -297,11 +297,6 @@ function clean_keywords($keywords)
 		$keywords = " ".$keywords;
 	}
 
-	if(!$keywords)
-	{
-		error($lang->error_nosearchterms);
-	}
-
 	return $keywords;
 }
 
