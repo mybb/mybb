@@ -5686,10 +5686,12 @@ function get_theme($tid)
  */
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
-	$message = str_replace("<", "&lt;", $message);
-	$message = str_replace(">", "&gt;", $message);
-	$message = str_replace("\"", "&quot;", $message);
+	if ($message !== null) {
+		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
+	}
+	$message = is_string($message) ? str_replace("<", "&lt;", $message) : $message;
+	$message = is_string($message) ? str_replace(">", "&gt;", $message) : $message;
+	$message = is_string($message) ? str_replace("\"", "&quot;", $message) : $message;
 	return $message;
 }
 
