@@ -1800,7 +1800,7 @@ if($mybb->input['action'] == "export")
 	$plugins->run_hooks("private_export_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folder_name = $folder_id = '';
+	$folderlist_folder = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);

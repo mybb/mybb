@@ -666,6 +666,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
+	$forumjump = '';
 	if($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
@@ -798,6 +799,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Can this user perform searches? If so, we can show them the "Search thread" form
+	$search_thread='';
 	if($forumpermissions['cansearch'] != 0)
 	{
 		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
@@ -1524,7 +1526,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Get users viewing this thread
-	$usersbrowsing = '';
+	$usersbrowsing='';
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
