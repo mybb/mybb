@@ -204,6 +204,7 @@ if(!$mybb->get_input('action'))
 if($mybb->input['action'] == "newpost")
 {
 	// First, figure out what time the thread or forum were last read
+	$lastread = $cutoff = 0;
 	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 

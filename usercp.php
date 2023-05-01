@@ -2412,6 +2412,7 @@ if($mybb->input['action'] == "editsig")
 	else
 	{
 		// User is allowed to edit their signature
+		$smilieinserter = '';
 		if($mybb->settings['sigsmilies'] == 1)
 		{
 			$sigsmilies = $lang->on;
