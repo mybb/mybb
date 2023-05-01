@@ -436,6 +436,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("reputation_add_start");
+	$delete_button = '';
 
 	// If we have an existing reputation for this user, the user can modify or delete it.
 	$user['username'] = htmlspecialchars_uni($user['username']);

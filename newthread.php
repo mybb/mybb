@@ -186,6 +186,7 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
 			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			$attach_mod_options = '';
 			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
 			$ret['template'] = $attemplate;
 
@@ -1103,7 +1104,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		if(!$parser)
+		if(empty($parser))
 		{
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new postParser;

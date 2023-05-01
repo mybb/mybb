@@ -276,6 +276,7 @@ else
 }
 
 // Get the users browsing this forum.
+$usersbrowsing = '';
 if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
