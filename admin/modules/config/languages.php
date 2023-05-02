@@ -1032,7 +1032,7 @@ if($mybb->input['action'] == "edit")
 					}
 
 					$table->construct_cell($icon_issues, array("class" => "langeditor_issues"));
-					$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang)."&amp;editwith=".htmlspecialchars_uni($editwith)."&amp;file={$mybb->config['admin_dir']}/".htmlspecialchars_uni($file)."&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "langeditor_edit"));
+					$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang=".htmlspecialchars_uni($editlang)."&amp;editwith=".htmlspecialchars_uni($editwith)."&amp;file=".htmlspecialchars_uni($file)."&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "langeditor_edit"));
 					$table->construct_row();
 				}
 			}
