@@ -172,6 +172,7 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
+$forumjump = '';
 if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
@@ -275,6 +276,7 @@ else
 }
 
 // Get the users browsing this forum.
+$usersbrowsing = '';
 if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];

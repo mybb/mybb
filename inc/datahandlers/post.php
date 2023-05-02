@@ -515,7 +515,7 @@ class PostDataHandler extends DataHandler
 		$permissions = user_permissions($uid);
 
 		// Fetch the forum this post is being made in
-		if(!$post['fid'])
+		if(empty($post['fid']))
 		{
 			$query = $db->simple_select('posts', 'fid', "pid = '{$post['pid']}'");
 			$post['fid'] = $db->fetch_field($query, 'fid');
@@ -1210,7 +1210,7 @@ class PostDataHandler extends DataHandler
 
 			while($subscribedmember = $db->fetch_array($query))
 			{
-				if($done_users[$subscribedmember['uid']])
+				if(isset($done_users[$subscribedmember['uid']]))
 				{
 					continue;
 				}
@@ -1225,7 +1225,7 @@ class PostDataHandler extends DataHandler
 				    continue;
 				}
 
-				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
+				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthreads'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
 				{
 					// User isn't a moderator or the author of the thread...
 					continue;
@@ -1315,6 +1315,8 @@ class PostDataHandler extends DataHandler
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
 					);
+					// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+					$pm['sender']['uid'] = -1;
 					send_pm($pm, -1, true);
 				}
 			}

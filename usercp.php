@@ -2412,6 +2412,7 @@ if($mybb->input['action'] == "editsig")
 	else
 	{
 		// User is allowed to edit their signature
+		$smilieinserter = '';
 		if($mybb->settings['sigsmilies'] == 1)
 		{
 			$sigsmilies = $lang->on;
@@ -3640,7 +3641,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
 
-		if($joinrequest['rid'])
+		if(!empty($joinrequest['rid']))
 		{
 			error($lang->already_sent_join_request);
 		}
@@ -4202,7 +4203,7 @@ if(!$mybb->input['action'])
 		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
 	}
 	// Make reputations row
-	$reputations = '';
+	$reputation = '';
 	if($mybb->usergroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation_link = get_reputation($mybb->user['reputation']);

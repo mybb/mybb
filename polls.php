@@ -980,7 +980,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$query = $db->simple_select("pollvotes", "*", "{$user_check} AND pid='".$poll['pid']."'");
 	$votecheck = $db->fetch_array($query);
 
-	if($votecheck['vid'])
+	if(!empty($votecheck['vid']))
 	{
 		error($lang->error_alreadyvoted);
 	}
