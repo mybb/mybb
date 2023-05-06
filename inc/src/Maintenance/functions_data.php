@@ -128,6 +128,8 @@ function writeConfigurationFile(array $config): void
      *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
      */
 
+    // \$config['database']['encoding'] = 'utf8mb4';
+
     /**
      * Automatic Log Pruning
      *  The MyBB task system can automatically prune
