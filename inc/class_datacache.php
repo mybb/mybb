@@ -137,6 +137,9 @@ class datacache
 				$this->cache[$data['title']] = my_unserialize($data['cache']);
 			}
 		}
+
+		// Check cache's existence and rebuild any if missing.
+		$this->check_cache('core');
 	}
 
 	/**
@@ -149,6 +152,7 @@ class datacache
 	function read($name, $hard=false)
 	{
 		global $db, $mybb;
+		static $availability = true;
 
 		// Already have this cache and we're not doing a hard refresh? Return cached copy
 		if(isset($this->cache[$name]) && $hard == false)
@@ -185,10 +189,18 @@ class datacache
 			// No data returned - cache gone bad?
 			if($data === false)
 			{
+				// Test the cache store's availability. Trigger a warning or an error on failure.
+				// A warning will permit the forum continue to run.
+				if($availability && !$this->test_availability())
+				{
+					$mybb->trigger_generic_error("cache_runtime_error");
+					$availability = false;
+				}
+
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-				$data = my_unserialize($cache_data['cache']);
+				$data = unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -208,7 +220,7 @@ class datacache
 		// Else, using internal database cache
 		else
 		{
-			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
+			$query = $db->simple_select("datacache", "title,cache", "title='{$name}'");
 			$cache_data = $db->fetch_array($query);
 
 			if(empty($cache_data['title']))
@@ -463,6 +475,113 @@ class datacache
 				return $db->fetch_size("datacache");
 			}
 		}
+	}
+
+	/**
+	 * Test if the cache store can work properly.
+	 *
+	 * @return bool True on yes, false on no.
+	 */
+	function test_availability()
+	{
+		$content = md5((string) constant("TIME_NOW"));
+
+		if($this->handler instanceof CacheHandlerInterface)
+		{
+			$this->handler->put($content, $content);
+			$content_stored = $this->handler->fetch($content);
+			$this->handler->delete($content);
+			return $content_stored == $content;
+		}
+
+		// Always return false if no external cache store is used.
+		return false;
+	}
+
+	/**
+	 * Check cache from files or db, and recreate it if it's missing.
+	 *
+	 * @param string $package The cache type, 'core', 'core_*', 'plugin_*', 'all'.
+	 * @param array $name The cache components to check.
+	 * @return bool True on successfully rebuilt cache, false otherwise.
+	 */
+	function check_cache($package = 'core', $cache_names = array())
+	{
+		// Ensure the value is fetched from the original datacache table.
+		$this->read('cache_checked', true);
+
+		// Only continue check if forced and cache is out-dated or non-existent.
+		if(isset($this->cache['cache_checked']) && TIME_NOW - $this->cache['cache_checked'] < 60 * 10)	//TODO: hard coded time?
+		{
+			return false;
+		}
+
+		// The order is concerned, since some cache is relying on others, i.e., rebuilding 'forumpermissions' relies on 'forums' and 'usergroups' cache.
+		$cache_core = array('version', 'attachtypes', 'smilies', 'badwords', 'forums', 'usergroups', 'moderators', 'forumpermissions', 'stats', 'statistics', 'usertitles', 'reportedcontent', 'awaitingactivation', 'mycode', 'profilefields', 'posticons', 'spiders', 'bannedips', 'banned', 'bannedemails', 'birthdays', 'groupleaders', 'threadprefixes', 'forumsdisplay', /*'plugins', 'internal_settings', */'default_theme', 'reportreasons');
+
+		$cache_core_pkg = array();
+		$cache_plugin = array();
+		$cache_to_check = array();
+
+		if(strpos($package, 'core_') !== false)
+		{
+			$core_pkg_name = substr($package, strpos($package, 'core_'));
+			//TODO: implement core package cache check, like $cache_core_pkg[] = array('name' => $core_pkg_name, 'cache' => $core_pkg_name->get_cache_keys());
+		}
+		if(strpos($package, 'plugin_') !== false)
+		{
+			$plugin_name = substr($package, strpos($package, 'plugin_'));
+			//TODO: implement plugin's cache check, like $cache_plugin[] = array('name' => $plugin_name, 'cache' => $plugin[$plugin_name]->get_cache_keys();
+		}
+
+		foreach($cache_names as $name)
+		{
+			if($package == 'core' && in_array($name, $cache_core))
+			{
+				$cache_to_check['core'][] = $name;
+			}
+			else if(!empty($cache_core_pkg) && in_array($name, $cache_core_pkg))
+			{
+				$cache_to_check[$core_pkg_name][] = $name;
+			}
+			else if(!empty($cache_plugin) && in_array($name, $cache_plugin))
+			{
+				$cache_to_check[$plugin_name][] = $name;
+			}
+		}
+
+		if(empty($cache_names))
+		{
+			if($package == 'core' || $package == 'all')
+			{
+				$cache_to_check['core'] = $cache_core;
+			}
+			else if(!empty($cache_core_pkg) || $package == 'all')
+			{
+				$cache_to_check[$core_pkg_name] = $cache_core_pkg;
+			}
+			else if(!empty($cache_plugin) || $package == 'all')
+			{
+				$cache_to_check[$plugin_name] = $cache_plugin;
+			}
+		}
+
+		foreach($cache_to_check['core'] as $core_cache)
+		{
+			// If forced to read from database, the cache key should exist with value of false.
+			if($this->read($core_cache, true) === false)
+			{
+				$update = 'update_'.$core_cache;
+				if(method_exists($this, $update))
+				{
+					call_user_func(array($this, $update));
+					continue;
+				}
+			}
+		}
+
+		$this->update('cache_checked', TIME_NOW);
+		return true;
 	}
 
 	/**
