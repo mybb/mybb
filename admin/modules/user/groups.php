@@ -1084,7 +1084,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$public_options = array(
 			$form->generate_check_box("joinable", 1, $lang->user_joinable, array("checked" => $mybb->input['joinable'])),
-			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->get_input('moderate',MyBB::INPUT_INT))),
+			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->get_input('moderate', MyBB::INPUT_INT))),
 			$form->generate_check_box("invite", 1, $lang->invite_only, array("checked" => $mybb->input['invite'])),
 			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->get_input('candisplaygroup', MyBB::INPUT_INT))),
 			);
