@@ -405,15 +405,15 @@ elseif($mybb->input['action'] == "help")
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
 				$langdocvar = "d".$helpdoc['hid']."_document";
-				if($lang->$langnamevar)
+				if(isset($lang->$langnamevar))
 				{
 					$helpdoc['name'] = $lang->$langnamevar;
 				}
-				if($lang->$langdescvar)
+				if(isset($lang->$langdescvar))
 				{
 					$helpdoc['description'] = $lang->$langdescvar;
 				}
-				if($lang->$langdocvar)
+				if(isset($lang->$langdocvar))
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
 				}
@@ -476,11 +476,11 @@ elseif($mybb->input['action'] == "help")
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if($lang->$langnamevar)
+								if(isset($lang->$langnamevar))
 								{
 									$helpdoc['name'] = $lang->$langnamevar;
 								}
-								if($lang->$langdescvar)
+								if(isset($lang->$langdescvar))
 								{
 									$helpdoc['description'] = $lang->$langdescvar;
 								}
@@ -721,11 +721,11 @@ elseif($mybb->input['action'] == "whoposted")
 			$profile_link = build_profile_link($poster_name, $poster['uid']);
 		}
 		$numposts += $poster['posts'];
+		$poster['posts'] = my_number_format($poster['posts']);
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
 	}
 	$numposts = my_number_format($numposts);
-	$poster['posts'] = my_number_format($poster['posts']);
 	if($modal)
 	{
 		eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1832">
+<theme name="MyBB Master Style" version="1834">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -6156,8 +6156,8 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_smilies_no_smilies" version="1808"><![CDATA[<tr>
 <td class="{$class}">{$lang->no_smilies}</td>
 </tr>]]></template>
-		<template name="misc_smilies_popup" version="1800"><![CDATA[<div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
+		<template name="misc_smilies_popup" version="1834"><![CDATA[<div class="modal">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->smilies_listing}</strong></td>

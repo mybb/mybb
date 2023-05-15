@@ -1696,47 +1696,32 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
-	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
-	{
-		return $groupperms;
-	}
-
 	$current_permissions = array();
 	$only_view_own_threads = 1;
 	$only_reply_own_threads = 1;
 
-	foreach($groups as $gid)
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
-		if(!empty($groupscache[$gid]))
+		$current_permissions = $groupperms;
+	}
+	else
+	{
+		foreach($groups as $gid)
 		{
-			$level_permissions = array();
-
-			// If our permissions arn't inherited we need to figure them out
-			if(empty($fpermcache[$fid][$gid]))
-			{
-				$parents = explode(',', $forum_cache[$fid]['parentlist']);
-				rsort($parents);
-				if(!empty($parents))
-				{
-					foreach($parents as $parent_id)
-					{
-						if(!empty($fpermcache[$parent_id][$gid]))
-						{
-							$level_permissions = $fpermcache[$parent_id][$gid];
-							break;
-						}
-					}
-				}
-			}
-			else
+			// If this forum has custom or inherited permissions for the currently looped group.
+			if(!empty($fpermcache[$fid][$gid]))
 			{
 				$level_permissions = $fpermcache[$fid][$gid];
 			}
-
-			// If we STILL don't have forum permissions we use the usergroup itself
-			if(empty($level_permissions))
+			// Or, use the group permission instead, if available. Some forum permissions not existing here will be added back later.
+			else if(!empty($groupscache[$gid]))
 			{
 				$level_permissions = $groupscache[$gid];
+			}
+			// No permission is available for the currently looped group, probably we have bad data here.
+			else
+			{
+				continue;
 			}
 
 			foreach($level_permissions as $permission => $access)
@@ -1757,24 +1742,25 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				$only_reply_own_threads = 0;
 			}
 		}
+
+		if(count($current_permissions) == 0)
+		{
+			$current_permissions = $groupperms;
+		}
 	}
 
 	// Figure out if we can view more than our own threads
-	if($only_view_own_threads == 0)
+	if($only_view_own_threads == 0 || !isset($current_permissions["canonlyviewownthreads"]))
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
 	}
 
 	// Figure out if we can reply more than our own threads
-	if($only_reply_own_threads == 0)
+	if($only_reply_own_threads == 0 || !isset($current_permissions["canonlyreplyownthreads"]))
 	{
 		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
-	if(count($current_permissions) == 0)
-	{
-		$current_permissions = $groupperms;
-	}
 	return $current_permissions;
 }
 
@@ -9045,7 +9031,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		}
 	}
 
-	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(empty($pm['subject']) || empty($pm['message']) || empty($pm['touid']) || (empty($pm['receivepms']) && !$admin_override))
 	{
 		return false;
 	}
@@ -9070,6 +9056,15 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	$recipients_bcc = array();
 
+	// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($pm['sender']['uid']) && $pm['sender']['uid'] === -1 && $fromid === -1)
+	{
+		$sender = array(
+			"uid" => 0,
+			"username" => ''
+		);
+	}
+
 	// Determine user ID
 	if((int)$fromid == 0)
 	{
@@ -9091,6 +9086,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"do" => '',
 		"pmid" => ''
 	);
+
+	// (continued) Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($sender))
+	{
+		$pm['sender'] = $sender;
+	}
 
 	if(isset($session))
 	{

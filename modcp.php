@@ -3672,6 +3672,7 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching post IP addresses
 		if(isset($mybb->input['search_posts']))
 		{
+			$post_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
@@ -3766,6 +3767,7 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching user IP addresses
 		if(isset($mybb->input['search_users']))
 		{
+			$user_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
