@@ -585,9 +585,11 @@ class EventDataHandler extends DataHandler
 			$this->event_update_data['endtime'] = (int)$event['endtime'];
 			$this->event_update_data['usingtime'] = isset($event['usingtime']) ? (int) $event['usingtime'] : 0;
 		}
-		else
+		
+		if(!isset($event['starttime'], $event['endtime']))
 		{
-			$this->event_update_data['endtime'] = 0;
+  			$this->event_update_data['endtime'] = 0;
+ 		 	$this->event_update_data['usingtime'] = 0;
 		}
 
 		if(isset($event['repeats']))
