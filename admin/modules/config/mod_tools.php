@@ -2220,7 +2220,7 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container->output_row($lang->approve_unapprove_posts." <em>*</em>", '', $form->generate_select_box('approveposts', $approve_unapprove, $mybb->input['approveposts'], array('id' => 'approveposts')), 'approveposts');
 	$form_container->end();
 
-	$selectoptions = "<option value=\"-1\"" . ($do_not_split_checked ?? '') . " {$lang->do_not_split}</option>\n";
+	$selectoptions = "<option value=\"-1\"" . ($do_not_split_checked ?? '') . ">{$lang->do_not_split}</option>\n";
 	$selectoptions .= "<option value=\"-2\"" . ($split_same_checked ?? '') . " style=\"border-bottom: 1px solid #000;\">{$lang->split_to_same_forum}</option>\n";
 
 	$form_container = new FormContainer($lang->split_posts);
