@@ -343,7 +343,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	}
 
 	// No errors, insert
-	if(!$errors)
+	if(empty($errors))
 	{
 		$new_leader = array(
 			"gid" => $group['gid'],
@@ -468,7 +468,7 @@ if($mybb->input['action'] == "leaders")
 
 	$form = new Form("index.php?module=user-groups&amp;action=add_leader&amp;gid={$group['gid']}", "post");
 
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
@@ -627,7 +627,7 @@ if($mybb->input['action'] == "edit_leader")
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	}
 
-	if(!$errors)
+	if(empty($errors))
 	{
 		$mybb->input = array_merge($mybb->input, $leader);
 	}
@@ -680,7 +680,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
 
-		if(!$errors)
+		if(empty($errors))
 		{
 			if($mybb->get_input('stars') < 1)
 			{
@@ -764,7 +764,7 @@ if($mybb->input['action'] == "add")
 	$page->output_nav_tabs($sub_tabs, 'add_group');
 	$form = new Form("index.php?module=user-groups&amp;action=add", "post");
 
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
@@ -836,7 +836,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_cannot_have_both_types;
 		}
 
-		if(!$errors)
+		if(empty($errors))
 		{
 			if($mybb->get_input('joinable') == 1)
 			{
@@ -1003,7 +1003,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_nav_tabs($sub_tabs, 'edit_group');
 
 	// If we have any error messages, show them
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
