@@ -94,7 +94,9 @@ class redisCacheHandler implements CacheHandlerInterface
 		{
 			return false;
 		}
-		return my_unserialize($data);
+
+		// use PHP's own unserialize() for performance reasons
+		return unserialize($data, array('allowed_classes' => false));
 	}
 
 	/**
