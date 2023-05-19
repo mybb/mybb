@@ -1,0 +1,51 @@
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.9rem;
+    color: $alt-font-color-1;
+    text-transform: uppercase;
+    background: $background-3;
+    border-radius: $radius;
+
+    &--float {
+        float: $right;
+    }
+
+    &--good {
+        color: $invert-font-color;
+        background-color: $success-color;
+    }
+
+    &--medium {
+        color: $invert-font-color;
+        background-color: $moderate-color;
+    }
+
+    &--bad {
+        color: $invert-font-color;
+        background-color: $danger-color;
+    }
+
+    &--thread-prefix {
+        margin-#{$right}: 5px;
+    }
+
+    &--thread-status {
+        margin-#{$left}: 5px;
+        font-size: 0.75rem;
+    }
+
+    &--post-status {
+        margin-bottom: 10px;
+    }
+
+    &--deleted {
+        color: $status-deleted-font-color;
+        background-color: $status-deleted;
+    }
+
+    &--awaiting-approval {
+        color: $status-pending-font-color;
+        background-color: $status-pending;
+    }
+}

@@ -1,0 +1,110 @@
+/*
+ * Stepper v3.0.7 - 2014-05-07
+ * A jQuery plugin for cross browser number inputs. Part of the Formstone Library.
+ * http://formstone.it/stepper/
+ *
+ * Copyright 2014 Ben Plum; MIT Licensed
+ */
+
+.stepper {
+    border-radius: 3px;
+    margin: side-values(0 0 10px 0);
+    overflow: hidden;
+    position: relative;
+    width: 130px;
+    border: 1px solid $border-1;
+
+    .stepper-input {
+        background: $background-default;
+        border: 0;
+        font-size: 0.9em;
+        margin: 0;
+        overflow: hidden;
+        padding: 4px 10px;
+        text-align: center;
+        width: 100%;
+        width: 60px;
+        margin: 0 35px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        z-index: 49;
+        -moz-appearance: textfield;
+    }
+
+    .stepper-input:focus {
+        outline: 0;
+    }
+
+    .stepper-input::-webkit-inner-spin-button,
+    .stepper-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .stepper-arrow {
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        padding: 0px 0;
+        position: absolute;
+        width: 35px;
+        text-align: center;
+        z-index: 50;
+        color: $background-default;
+
+        &:before {
+            font-size: 14px;
+            margin: side-values(0 10px 0 10px);
+            font-family: "FontAwesome";
+            color: $alt-font-color-1;
+        }
+
+        &:hover {
+            color: $alt-font-color-1;
+        }
+
+        &:active {
+            background: $button-hover;
+
+            &:before {
+                color: $invert-font-color;
+            }
+        }
+    }
+
+    .stepper-arrow.up {
+        float: $right;
+        top: 0;
+        #{$right}: 0;
+        border-#{$left}: 1px solid $border-1;
+
+        &:before {
+            content: "\f067";
+        }
+    }
+
+    .stepper-arrow.down {
+        float: $left;
+        top: 0;
+        #{$left}: 0;
+        border-#{$right}: 1px solid $border-1;
+
+        &:before {
+            content: "\f068";
+        }
+    }
+
+    &.disabled {
+        .stepper-input {
+            background: $background-default;
+            border-color: $border-1;
+            color: $alt-font-color-3;
+        }
+
+        .stepper-arrow {
+            background: $background-default;
+            border-color: $border-1;
+            cursor: default;
+        }
+    }
+}

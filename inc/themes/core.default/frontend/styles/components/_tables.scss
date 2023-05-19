@@ -1,0 +1,21 @@
+.table {
+    width: 100%;
+
+    &.table--bordered {
+        border-radius: 5px;
+        border-collapse: separate;
+
+        td {
+            border-bottom: 1px solid $border-1;
+        }
+    }
+
+    td, th {
+        padding: 10px;
+    }
+
+    thead {
+        color: $invert-font-color;
+        background: $primary-color;
+    }
+}

@@ -1,0 +1,76 @@
+.row {
+    position: relative;
+    padding: 14px 12px;
+    line-height: 1.4;
+    border-bottom: 1px solid $border-1;
+
+    &--form {
+        padding: 18px 12px;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &:last-child {
+            padding-bottom: 6px;
+            border-bottom: 0;
+        }
+    }
+
+    &--no-border {
+        border-bottom: none;
+    }
+
+    &--form.row--border-top {
+        padding-top: 12px;
+        border-top: 1px solid $border-1;
+    }
+
+    &--simple-columns {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        @include bp-small {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    &__secondary {
+
+        @include bp-small-max {
+            padding: side-values(8px 10px);
+            margin-top: 6px;
+            background: $background-1;
+            border-radius: $radius;
+        }
+    }
+
+    &__controls {
+        flex-shrink: 0;
+
+        @include bp-small-max {
+            margin-top: 6px;
+        }
+
+        @include bp-small {
+            margin-#{$left}: 10px;
+        }
+    }
+
+    &__select-control {
+
+        @include bp-small-max {
+            position: absolute;
+            top: 14px;
+            right: 12px;
+            float: $right;
+        }
+    }
+
+    &__description {
+        margin: 0;
+        font-size: 0.9em;
+    }
+}
