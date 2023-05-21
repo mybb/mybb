@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1827" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1830" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -1382,6 +1382,7 @@ a.button.new_reply_button span {
 	background-position: 0 -360px;
 }
 
+a.button.closed_mod_button span,
 a.button.closed_button span {
 	background-position: 0 -380px;
 }
@@ -11687,6 +11688,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_moderationoptions_unapprove" version="1818"><![CDATA[<option class="option_mirage" value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
+		<template name="showthread_newreply_closed_moderator" version="1830"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_mod_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>&nbsp;]]></template>
 		<template name="showthread_poll" version="1800"><![CDATA[<form action="polls.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
