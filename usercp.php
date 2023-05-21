@@ -4197,6 +4197,8 @@ if(!$mybb->input['action'])
 	$avatar_username = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
+	$mybb->user['email'] = htmlspecialchars_uni($mybb->user['email']);
+
 	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
