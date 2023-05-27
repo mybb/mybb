@@ -172,7 +172,7 @@ class captcha
 		}
 		elseif($this->type == captcha::CFTURNSTILE && $mybb->settings['cfturnstilepublickey'] && $mybb->settings['cfturnstileprivatekey'])
 		{
-			// We want to use hCaptcha or hCaptcha invisible, set the server options
+			// JS and backend server validation
 			$this->server = "//challenges.cloudflare.com/turnstile/v0/api.js";
 			$this->verify_server = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
