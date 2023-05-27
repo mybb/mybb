@@ -1749,7 +1749,7 @@ class postParser
 			$last_char = my_substr($matches['link'], -1);
 			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
 			{
-				$matches[4] = my_substr($matches['link'], 0, -1);
+				$matches['link'] = my_substr($matches['link'], 0, -1);
 				$external = $last_char.$external;
 				$last_char = my_substr($matches['link'], -1);
 			}
