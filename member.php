@@ -1906,7 +1906,7 @@ if($mybb->input['action'] == "login")
 		{
 			$login_captcha->build_hcaptcha();
 		}
-		elseif($login_captcha->type->type == captcha::CFTURNSTILE)
+		elseif($login_captcha->type == captcha::CFTURNSTILE)
 		{
 			$post_captcha->build_cfturnstile();
 		}
