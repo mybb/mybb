@@ -285,17 +285,7 @@ function clean_keywords($keywords)
 
 	// Search for "and" or "or" and remove if it's at the beginning
 	$keywords = trim($keywords);
-	if(my_strpos($keywords, "or ") === 0)
-	{
-		$keywords = substr_replace($keywords, "", 0, 2);
-		$keywords = " ".$keywords;
-	}
-
-	if(my_strpos($keywords, "and ") === 0)
-	{
-		$keywords = substr_replace($keywords, "", 0, 3);
-		$keywords = " ".$keywords;
-	}
+	$keywords = preg_replace('/^((and|or)(\s|$))+/', '', $keywords);
 
 	if(!$keywords)
 	{
