@@ -684,7 +684,7 @@ class WarningsHandler extends DataHandler
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
 			"tid" => (int)$warning['type'],
-			"pid" => isset($warning['pid']) ? (int)$warning['pid'] : 0,
+			"pid" => (int)$warning['pid'],
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,

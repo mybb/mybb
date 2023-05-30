@@ -135,7 +135,6 @@ $l['birthdate'] = "Birthdate:";
 $l['icq_number'] = "ICQ Number:";
 $l['skype_id'] = "Skype ID:";
 $l['google_id'] = "Google Hangouts ID:";
-$l['away_notice_away'] = "You have been marked away since {1}";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";

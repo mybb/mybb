@@ -283,7 +283,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$thumbnail = generate_thumbnail($avatarpath."/".$filename, $avatarpath, $filename, $maxheight, $maxwidth);
-				if(empty($thumbnail['filename']))
+				if(!$thumbnail['filename'])
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
@@ -823,7 +823,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 						}
 						else if(isset($attachedfile['aid']) && $mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 						{
-							$ret['success'][] = array($attachedfile['aid'], get_attachment_icon(get_extension($filename)), htmlspecialchars_uni($filename), get_friendly_size($FILE['size']));
+							$ret['success'][] = array($attachedfile['aid'], get_attachment_icon(get_extension($filename)), $filename, get_friendly_size($FILE['size']));
 						}
 					}
 				}

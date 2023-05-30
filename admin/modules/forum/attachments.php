@@ -883,7 +883,7 @@ if(!$mybb->input['action'])
 						$pagination_url .= "&{$var}=".urlencode($mybb->input[$var]);
 					}
 				}
-				if(!empty($mybb->input['forum']) && is_array($mybb->input['forum']))
+				if(is_array($mybb->input['forum']) && !empty($mybb->input['forum']))
 				{
 					foreach($mybb->input['forum'] as $fid)
 					{

@@ -293,7 +293,6 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Now we're done with that we loop through each recipient
-		$pm['recipients'] = array();
 		foreach($recipients as $user)
 		{
 			// Collect group permissions for this recipient.
@@ -544,10 +543,13 @@ class PMDataHandler extends DataHandler
 
 		$uid = 0;
 
-		// Build recipient list
-		$recipient_list = array();
-		if(isset($pm['recipients']) && is_array($pm['recipients']))
+		if(!is_array($pm['recipients']))
 		{
+			$recipient_list = array();
+		}
+		else
+		{
+			// Build recipient list
 			foreach($pm['recipients'] as $recipient)
 			{
 				if(!empty($recipient['bcc']))

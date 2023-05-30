@@ -12,16 +12,16 @@ Responding to security incidents includes both general and MyBB-specific actions
 
 ## Reporting Vulnerabilities
 
-If you have discovered a potential vulnerability or security risk, we encourage you to responsibly disclose it to us via the [**Private Inquiries**](https://community.mybb.com/forum-135.html) forum. You can also reach us at security@mybb.com for security concerns, however we recommend using Private Inquiries for better communication.
+If you have discovered a potential vulnerability or security risk, we encourage you to responsibly disclose it to us via the [**Private Inquiries**](https://community.mybb.com/forum-135.html) forum. You can also reach us at security@mybb.com for security concerns, however we recommend using Private Inquiries for best feedback.
 
-Open [**mybb.com/security**](https://mybb.com/get-involved/security/#composing-a-good-report) for complete instructions on how to report vulnerabilities to maximize efficiency, help MyBB secure users as soon as possible, and receive official recognition. You will also learn which areas we focus on, how to limit harm to other people, and how the disclosure process will look like.
+Open [**mybb.com/security**](https://mybb.com/get-involved/security/#composing-a-good-report) with complete instructions on how to report vulnerabilities to maximize the efficiency, help MyBB secure users as soon as possible and receive recognition. You will also learn what issues we look after, how to limit harm to other people and what the disclosure process will look like.
 
 ---
 
 ## Known Security Issues
 
 ### Executive Summary
-MyBB 1.x is known to be affected by documented vulnerabilities related to possible XSS attacks from members with access to the Admin Control Panel (ACP) and possible anticipated vulnerabilities that may be caused by incorrect variable type handling, error-prone implementation of the MyCode parser, improper user input filtering, improper HTML filtering (where it is partially sanitized), insufficient session control mechanisms, weak cryptographic primitive algorithms (e.g. during password hashing), insufficient user and group permission control, common usage of [`eval()`](https://secure.php.net/eval) statements and possible usage of outdated libraries and 3rd-party software.
+MyBB 1.x is known to be affected by documented vulnerabilities related to possible XSS attacks from members with access to the Admin Control Panel (ACP) and possible anticipated vulnerabilities that may be caused by incorrect variable type handling, error-prone implementation on the MyCode parser, improper user input filtering, improper HTML filtering (where it is partially sanitized), insufficient session control mechanisms, weak cryptographic primitives (e.g. password hashing algorithms), insufficient user and group permission control, common usage of [`eval()`](https://secure.php.net/eval) statements and possible usage of outdated libraries and 3rd-party software.
 
 Documented unaddressed, and anticipated vulnerabilities can lead to damage and/or loss of data and servers and can pose a threat to privacy, safety and/or security of forum administrators and their end users.
 

@@ -49,11 +49,6 @@ $(function ($) {
 		}
 	};
 
-	for (var i in mybbCmd.video) {
-		var item = mybbCmd.video[i];
-		$.sceditor.defaultOptions.allowedIframeUrls.push(item.url);
-	}
-
 	// Add custom MyBB CSS
 	$('<style type="text/css">' +
 		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' : 'left') + '; }' +

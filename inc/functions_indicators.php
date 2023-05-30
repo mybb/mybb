@@ -106,11 +106,11 @@ function fetch_unread_count($fid)
 
 		if(isset($mybb->cookies['mybb']['threadread']))
 		{
-			$threadsread = my_unserialize($mybb->cookies['mybb']['threadread'], false);
+			$threadsread = my_unserialize($mybb->cookies['mybb']['threadread']);
 		}
 		if(isset($mybb->cookies['mybb']['forumread']))
 		{
-			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
+			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 		}
 
 		if(!empty($threadsread))

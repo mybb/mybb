@@ -95,8 +95,6 @@ if($mybb->user['suspendposting'] == 1)
 check_forum_password($forum['fid']);
 
 // If MyCode is on for this forum and the MyCode editor is enabled in the Admin CP, draw the code buttons and smilie inserter.
-$codebuttons = '';
-$smilieinserter = '';
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies']);
@@ -186,7 +184,6 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
 			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
-			$attach_mod_options = '';
 			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
 			$ret['template'] = $attemplate;
 
@@ -694,7 +691,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$posticons = get_post_icons();
 		}
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
-		$numpolloptions = "2";
 	}
 
 	// Otherwise, this is our initial visit to this page.
@@ -1104,7 +1100,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		if(empty($parser))
+		if(!$parser)
 		{
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new postParser;

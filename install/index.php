@@ -1138,8 +1138,8 @@ function requirements_check()
 	else
 	{
 		$configstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($configwritable);
 	}
+	@fclose($configwritable);
 
 	// Check settings file is writable
 	$settingswritable = @fopen(MYBB_ROOT.'inc/settings.php', 'w');
@@ -1152,8 +1152,8 @@ function requirements_check()
 	else
 	{
 		$settingsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
-		@fclose($settingswritable);
 	}
+	@fclose($settingswritable);
 
 	// Check cache directory is writable
 	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
@@ -1162,6 +1162,7 @@ function requirements_check()
 		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
 		$cachestatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
+		@fclose($cachewritable);
 	}
 	else
 	{
@@ -1179,6 +1180,7 @@ function requirements_check()
 		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
 		$uploadsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
+		@fclose($uploadswritable);
 	}
 	else
 	{
@@ -1196,6 +1198,7 @@ function requirements_check()
 		$errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
 		$avatarsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
+		@fclose($avatarswritable);
 	}
 	else
 	{

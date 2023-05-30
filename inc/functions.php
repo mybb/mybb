@@ -581,17 +581,14 @@ function &get_my_mailhandler($use_buitlin = false)
 			{
 				require_once MYBB_ROOT . "inc/mailhandlers/php.php";
 				$my_mailhandler_builtin = new PhpMail();
-				if(!empty($mybb->config['mail_parameters']))
+				if(!empty($mybb->settings['mail_parameters']))
 				{
-					$my_mailhandler_builtin->additional_parameters = $mybb->config['mail_parameters'];
+					$my_mailhandler_builtin->additional_parameters = $mybb->settings['mail_parameters'];
 				}
 			}
 		}
 
-		if(isset($plugins) && is_object($plugins))
-		{
-			$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
-		}
+		$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
 
 		return $my_mailhandler_builtin;
 	}
@@ -601,10 +598,7 @@ function &get_my_mailhandler($use_buitlin = false)
 	{
 		require_once MYBB_ROOT . "inc/class_mailhandler.php";
 
-		if(isset($plugins) && is_object($plugins))
-		{
-			$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
-		}
+		$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
 
 		// If no plugin has ever created the mail handler, resort to use the built-in one.
 		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
@@ -670,18 +664,12 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 		'continue_process' => &$continue_process,
 	);
 
-	if(isset($plugins) && is_object($plugins))
-	{
-		$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
-	}
+	$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
 
 	// Build the mail message.
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
 
-	if(isset($plugins) && is_object($plugins))
-	{
-		$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
-	}
+	$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
 
 	// Check if the hooked plugins still suggest to send the mail.
 	if($continue_process)
@@ -689,10 +677,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 		$is_mail_sent = $mail->send();
 	}
 
-	if(isset($plugins) && is_object($plugins))
-	{
-		$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
-	}
+	$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
 
 	return $is_mail_sent;
 }
@@ -1696,32 +1681,47 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
+	{
+		return $groupperms;
+	}
+
 	$current_permissions = array();
 	$only_view_own_threads = 1;
 	$only_reply_own_threads = 1;
 
-	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
+	foreach($groups as $gid)
 	{
-		$current_permissions = $groupperms;
-	}
-	else
-	{
-		foreach($groups as $gid)
+		if(!empty($groupscache[$gid]))
 		{
-			// If this forum has custom or inherited permissions for the currently looped group.
-			if(!empty($fpermcache[$fid][$gid]))
+			$level_permissions = array();
+
+			// If our permissions arn't inherited we need to figure them out
+			if(empty($fpermcache[$fid][$gid]))
+			{
+				$parents = explode(',', $forum_cache[$fid]['parentlist']);
+				rsort($parents);
+				if(!empty($parents))
+				{
+					foreach($parents as $parent_id)
+					{
+						if(!empty($fpermcache[$parent_id][$gid]))
+						{
+							$level_permissions = $fpermcache[$parent_id][$gid];
+							break;
+						}
+					}
+				}
+			}
+			else
 			{
 				$level_permissions = $fpermcache[$fid][$gid];
 			}
-			// Or, use the group permission instead, if available. Some forum permissions not existing here will be added back later.
-			else if(!empty($groupscache[$gid]))
+
+			// If we STILL don't have forum permissions we use the usergroup itself
+			if(empty($level_permissions))
 			{
 				$level_permissions = $groupscache[$gid];
-			}
-			// No permission is available for the currently looped group, probably we have bad data here.
-			else
-			{
-				continue;
 			}
 
 			foreach($level_permissions as $permission => $access)
@@ -1742,25 +1742,24 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				$only_reply_own_threads = 0;
 			}
 		}
-
-		if(count($current_permissions) == 0)
-		{
-			$current_permissions = $groupperms;
-		}
 	}
 
 	// Figure out if we can view more than our own threads
-	if($only_view_own_threads == 0 || !isset($current_permissions["canonlyviewownthreads"]))
+	if($only_view_own_threads == 0)
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
 	}
 
 	// Figure out if we can reply more than our own threads
-	if($only_reply_own_threads == 0 || !isset($current_permissions["canonlyreplyownthreads"]))
+	if($only_reply_own_threads == 0)
 	{
 		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
+	if(count($current_permissions) == 0)
+	{
+		$current_permissions = $groupperms;
+	}
 	return $current_permissions;
 }
 
@@ -2347,7 +2346,7 @@ function my_get_array_cookie($name, $id)
 		return false;
 	}
 
-	$cookie = my_unserialize($mybb->cookies['mybb'][$name], false);
+	$cookie = my_unserialize($mybb->cookies['mybb'][$name]);
 
 	if(is_array($cookie) && isset($cookie[$id]))
 	{
@@ -2373,7 +2372,7 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 
 	if(isset($mybb->cookies['mybb'][$name]))
 	{
-		$newcookie = my_unserialize($mybb->cookies['mybb'][$name], false);
+		$newcookie = my_unserialize($mybb->cookies['mybb'][$name]);
 	}
 	else
 	{
@@ -2383,11 +2382,6 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	$newcookie[$id] = $value;
 	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
-
-	if(isset($mybb->cookies['mybb']) && !is_array($mybb->cookies['mybb']))
-	{
-		$mybb->cookies['mybb'] = array();
-	}
 
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
@@ -2407,13 +2401,12 @@ define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
  * - does not unserialize objects
  *
  * @param string $str
- * @param bool $unlimited Whether to apply limits defined in MAX_SERIALIZED_* constants
  * @return mixed
  * @throw Exception if $str is malformed or contains unsupported types (e.g., resources, objects)
  */
-function _safe_unserialize($str, $unlimited = true)
+function _safe_unserialize($str)
 {
-	if(!$unlimited && strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
+	if(strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
 	{
 		// input exceeds MAX_SERIALIZED_INPUT_LENGTH
 		return false;
@@ -2467,11 +2460,7 @@ function _safe_unserialize($str, $unlimited = true)
 			$value = substr($matches[2], 0, (int)$matches[1]);
 			$str = substr($matches[2], (int)$matches[1] + 2);
 		}
-		else if(
-			$type == 'a' &&
-			preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) &&
-			($unlimited || $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
-		)
+		else if($type == 'a' && preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) && $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
 		{
 			$expectedLength = (int)$matches[1];
 			$str = $matches[2];
@@ -2487,7 +2476,7 @@ function _safe_unserialize($str, $unlimited = true)
 			case 3: // in array, expecting value or another array
 				if($type == 'a')
 				{
-					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
@@ -2532,7 +2521,7 @@ function _safe_unserialize($str, $unlimited = true)
 				}
 				if($type == 'i' || $type == 's')
 				{
-					if(!$unlimited && count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
+					if(count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
 					{
 						// array size exceeds MAX_SERIALIZED_ARRAY_LENGTH
 						return false;
@@ -2554,7 +2543,7 @@ function _safe_unserialize($str, $unlimited = true)
 			case 0: // expecting array or value
 				if($type == 'a')
 				{
-					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
@@ -2591,10 +2580,9 @@ function _safe_unserialize($str, $unlimited = true)
  * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
  *
  * @param string $str
- * @param bool $unlimited
  * @return mixed
  */
-function my_unserialize($str, $unlimited = true)
+function my_unserialize($str)
 {
 	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
 	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
@@ -2603,7 +2591,7 @@ function my_unserialize($str, $unlimited = true)
 		mb_internal_encoding('ASCII');
 	}
 
-	$out = _safe_unserialize($str, $unlimited);
+	$out = _safe_unserialize($str);
 
 	if(isset($mbIntEnc))
 	{
@@ -7103,8 +7091,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "/(?<!&|&#)\b([[:alnum:]]*)(".preg_quote($word, "/").")(?![^<>]*?>)/ui";
-		$replacement = "$1<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$2</span>";
+		$find = "#(?!<.*?)(".preg_quote($word, "#").")(?![^<>]*?>)#ui";
+		$replacement = "<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$1</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 
@@ -9031,7 +9019,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		}
 	}
 
-	if(empty($pm['subject']) || empty($pm['message']) || empty($pm['touid']) || (empty($pm['receivepms']) && !$admin_override))
+	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
@@ -9056,15 +9044,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	$recipients_bcc = array();
 
-	// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
-	if(isset($pm['sender']['uid']) && $pm['sender']['uid'] === -1 && $fromid === -1)
-	{
-		$sender = array(
-			"uid" => 0,
-			"username" => ''
-		);
-	}
-
 	// Determine user ID
 	if((int)$fromid == 0)
 	{
@@ -9086,12 +9065,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"do" => '',
 		"pmid" => ''
 	);
-
-	// (continued) Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
-	if(isset($sender))
-	{
-		$pm['sender'] = $sender;
-	}
 
 	if(isset($session))
 	{

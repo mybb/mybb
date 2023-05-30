@@ -83,13 +83,18 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
  */
 function get_unsearchable_forums($pid=0, $first=1)
 {
-	global $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 
 	$pid = (int)$pid;
 
 	if(!is_array($forum_cache))
 	{
-		cache_forums();
+		// Get Forums
+		$query = $db->simple_select("forums", "fid,parentlist,password,active", '', array('order_by' => 'pid, disporder'));
+		while($forum = $db->fetch_array($query))
+		{
+			$forum_cache[$forum['fid']] = $forum;
+		}
 	}
 	if(!is_array($permissioncache))
 	{
@@ -1647,7 +1652,7 @@ function perform_search_mysql_ft($search)
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+		if($forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1709,7 +1714,7 @@ function perform_search_mysql_ft($search)
 
 	// Searching a specific thread?
 	$tidsql = '';
-	if(!empty($search['tid']))
+	if($search['tid'])
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
@@ -1727,7 +1732,7 @@ function perform_search_mysql_ft($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(empty($search['tid']))
+		if(!$search['tid'])
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost

@@ -942,9 +942,9 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1832"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1832"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1832"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1827"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1093,10 +1093,6 @@ EOF;
 			$warning_level = 100;
 		}
 		$warning_level = get_colored_warning_level($warning_level);
-	}
-	else
-	{
-		$warning_level = "-";
 	}
 
 	$age = $lang->na;
@@ -2009,17 +2005,7 @@ if($mybb->input['action'] == "merge")
 			merge_thread_ratings($source_user['uid'], $destination_user['uid']);
 
 			// Banning
-			switch($db->type)
-			{
-				case 'mysql':
-				case 'mysqli':
-					$where = "`admin` = '{$source_user['uid']}'";
-					break;
-				default:
-					$where = "admin = '{$source_user['uid']}'";
-					break;
-			}
-			$db->update_query("banned", array('admin' => $destination_user['uid']), $where);
+			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
 
 			// Carry over referrals
 			$db->update_query("users", array("referrer" => $destination_user['uid']), "referrer='{$source_user['uid']}' AND uid!='{$destination_user['uid']}'");
@@ -3413,11 +3399,6 @@ function build_users_view($view)
 		$userfield_sql = '1=1';
 		foreach($view['custom_profile_fields'] as $column => $input)
 		{
-			if(!preg_match('/^fid[0-9]+(_blank)?$/', $column))
-			{
-				continue;
-			}
-
 			if(is_array($input))
 			{
 				foreach($input as $value => $text)
@@ -4166,7 +4147,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => (isset($selected_options[$val]) && $val == $selected_options[$val] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":

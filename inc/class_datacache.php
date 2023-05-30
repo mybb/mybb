@@ -53,21 +53,6 @@ class datacache
 	public $cache_debug;
 
 	/**
-	 * @var array
-	 */
-	public $moderators;
-
-	/**
-	 * @var array
-	 */
-	public $built_moderators;
-
-	/**
-	 * @var array
-	 */
-	public $moderators_forum_cache;
-
-	/**
 	 * Build cache data.
 	 *
 	 */
@@ -134,8 +119,7 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache");
 			while($data = $db->fetch_array($query))
 			{
-				// use PHP's own unserialize() for performance reasons
-				$this->cache[$data['title']] = unserialize($data['cache'], array('allowed_classes' => false));
+				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
 	}
@@ -189,9 +173,7 @@ class datacache
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-
-				// use PHP's own unserialize() for performance reasons
-				$data = unserialize($cache_data['cache'], array('allowed_classes' => false));
+				$data = my_unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -220,8 +202,7 @@ class datacache
 			}
 			else
 			{
-				// use PHP's own unserialize() for performance reasons
-				$data = unserialize($cache_data['cache'], array('allowed_classes' => false));
+				$data = unserialize($cache_data['cache']);
 			}
 		}
 
@@ -685,13 +666,22 @@ class datacache
 		$topreferrer = $db->fetch_array($query);
 
 		$timesearch = TIME_NOW - 86400;
+		switch($db->type)
+		{
+			case 'pgsql':
+				$group_by = $db->build_fields_string('users', 'u.');
+				break;
+			default:
+				$group_by = 'p.uid';
+				break;
+		}
 
 		$query = $db->query("
 			SELECT u.uid, u.username, COUNT(*) AS poststoday
 			FROM {$db->table_prefix}posts p
 			LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
 			WHERE p.dateline > {$timesearch} AND p.visible=1
-			GROUP BY u.uid, u.username
+			GROUP BY {$group_by}
 			ORDER BY poststoday DESC
 		");
 
@@ -1315,7 +1305,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='mostonline'");
-		$this->update("mostonline", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("mostonline", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_plugins()
@@ -1323,7 +1313,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='plugins'");
-		$this->update("plugins", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("plugins", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_last_backup()
@@ -1331,7 +1321,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='last_backup'");
-		$this->update("last_backup", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("last_backup", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_internal_settings()
@@ -1339,7 +1329,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='internal_settings'");
-		$this->update("internal_settings", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("internal_settings", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_version_history()
@@ -1347,7 +1337,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='version_history'");
-		$this->update("version_history", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("version_history", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_modnotes()
@@ -1355,7 +1345,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='modnotes'");
-		$this->update("modnotes", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("modnotes", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_adminnotes()
@@ -1363,6 +1353,6 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
-		$this->update("adminnotes", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("adminnotes", unserialize($db->fetch_field($query, "cache")));
 	}
 }

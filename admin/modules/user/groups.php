@@ -238,28 +238,30 @@ if($mybb->input['action'] == "join_requests")
 	$num_requests = $db->fetch_field($query, "num_requests");
 
 	$per_page = 20;
-	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
-	if($pagenum)
+
+	if($mybb->input['page'] > 0)
 	{
-		$start = ($pagenum - 1) * $per_page;
-		$pages = ceil($num_requests / $per_page);
-		if($pagenum > $pages)
+		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
+		$start = ($current_page-1)*$per_page;
+		$pages = $num_requests / $per_page;
+		$pages = ceil($pages);
+		if($current_page > $pages)
 		{
 			$start = 0;
-			$pagenum = 1;
+			$current_page = 1;
 		}
 	}
 	else
 	{
 		$start = 0;
-		$pagenum = 1;
+		$current_page = 1;
 	}
 
 	// Do we need to construct the pagination?
 	$pagination = '';
 	if($num_requests > $per_page)
 	{
-		$pagination = draw_admin_pagination($pagenum, $per_page, $num_requests, "index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}");
+		$pagination = draw_admin_pagination($page, $per_page, $num_requests, "index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}");
 		echo $pagination;
 	}
 
@@ -808,7 +810,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu >]))(\s*[^>]*)>#si", $mybb->get_input('namestyle')))
+		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->get_input('namestyle')))
 		{
 			$errors[] = $lang->error_disallowed_namestyle_username;
 			$mybb->input['namestyle'] = $usergroup['namestyle'];
@@ -1145,7 +1147,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");
 
 	// Remove these options if the group being editied is Guest (GID=1)
-	if($usergroup['gid'] != 1)
+	if($usergroup['gid'] != 1) 
 	{
 		$editing_options = array(
 			$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),

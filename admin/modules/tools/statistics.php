@@ -69,9 +69,9 @@ if(!$mybb->input['action'])
 
 	$last_dateline = 0;
 
-	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
-	if($mybb->input['page'] > 1)
+	if(!empty($mybb->input['page']) && $mybb->input['page'] > 1)
 	{
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else

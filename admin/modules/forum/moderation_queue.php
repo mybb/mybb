@@ -309,10 +309,9 @@ if($mybb->get_input('type') == "posts" || $mybb->get_input('type') == "")
 	{
 		// Figure out if we need to display multiple pages.
 		$per_page = 15;
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
-		if($mybb->input['page'] > 0)
+		if($mybb->get_input('page') > 0)
 		{
-			$current_page = $mybb->input['page'];
+			$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_posts / $per_page;
 			$pages = ceil($pages);
@@ -462,10 +461,9 @@ if($mybb->get_input('type') == "attachments" || $mybb->get_input('type') == "")
 	{
 		// Figure out if we need to display multiple pages.
 		$per_page = 15;
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		if($mybb->input['page'] > 0)
 		{
-			$current_page = $mybb->input['page'];
+			$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_attachments / $per_page;
 			$pages = ceil($pages);

@@ -12,7 +12,8 @@ function task_checktables($task)
 {
 	global $db, $mybb, $lang, $plugins;
 
-	if(!in_array($db->type, array('mysql', 'mysqli')))
+	// Sorry SQLite, you don't have a decent way of checking if the table is corrupted or not.
+	if($db->type == "sqlite")
 	{
 		return;
 	}

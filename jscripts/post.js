@@ -215,15 +215,8 @@ var Post = {
 		if (Post.fileInput.prop('files').length) {
 			var common = Post.getCommonFiles();
 			if (common.length) {
-				var list = document.createElement('ul');
-
-				$.map(common, function (val) {
-					var e = document.createElement('li');
-					e.textContent = val;
-					list.append(e);
-				});
-
-				MyBB.prompt(lang.update_confirm.replace("{1}", list.outerHTML), {
+				common = '<ul><li>' + common.join('</li><li>') + '</li></ul>';
+				MyBB.prompt(lang.update_confirm.replace("{1}", common), {
 					buttons: [
 						{ title: yes_confirm, value: true },
 						{ title: no_confirm, value: false }

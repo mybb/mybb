@@ -8,7 +8,6 @@
  *
  */
 
-#[AllowDynamicProperties]
 class MyLanguage
 {
 
@@ -157,11 +156,11 @@ class MyLanguage
 
 		if(file_exists($lfile))
 		{
-			require $lfile;
+			require_once $lfile;
 		}
 		elseif(file_exists($ffile))
 		{
-			require $ffile;
+			require_once $ffile;
 		}
 		else
 		{

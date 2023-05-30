@@ -54,9 +54,7 @@ if($mybb->input['action'] == 'view')
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	// use PHP's own unserialize() for performance reasons
-	$cachecontents = unserialize($cacheitem['cache'], array('allowed_classes' => false));
-
+	$cachecontents = unserialize($cacheitem['cache']);
 	if(empty($cachecontents))
 	{
 		$cachecontents = $lang->error_empty_cache;
@@ -228,7 +226,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->size, array("class" => "align_center", "width" => 100));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
-	$query = $db->simple_select("datacache", "*", "", array("order_by" => "title"));
+	$query = $db->simple_select("datacache");
 	while($cacheitem = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong><a href=\"index.php?module=tools-cache&amp;action=view&amp;title=".urlencode($cacheitem['title'])."\">{$cacheitem['title']}</a></strong>");

@@ -10,20 +10,6 @@
 class MysqlPdoDbDriver extends AbstractPdoDbDriver
 {
 	/**
-	 * The title of this layer.
-	 *
-	 * @var string
-	 */
-	public $title = "MySQL (PDO)";
-
-	/**
-	 * The short title of this layer.
-	 *
-	 * @var string
-	 */
-	public $short_title = "MySQL (PDO)";
-
-	/**
 	 * Explanation of a query.
 	 *
 	 * @var string

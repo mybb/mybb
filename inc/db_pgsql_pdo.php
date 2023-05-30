@@ -10,20 +10,6 @@
 class PostgresPdoDbDriver extends AbstractPdoDbDriver
 {
 	/**
-	 * The title of this layer.
-	 *
-	 * @var string
-	 */
-	public $title = "PostgreSQL (PDO)";
-
-	/**
-	 * The short title of this layer.
-	 *
-	 * @var string
-	 */
-	public $short_title = "PostgreSQL (PDO)";
-
-	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
@@ -180,13 +166,22 @@ HTML;
 
 	public function insert_query($table, $array)
 	{
+		global $mybb;
+
 		if (!is_array($array)) {
 			return false;
 		}
 
-		$values = $this->build_value_string($table, $array);
+		foreach ($array as $field => $value) {
+			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+				$array[$field] = $value;
+			} else {
+				$array[$field] = $this->quote_val($value);
+			}
+		}
 
 		$fields = implode(",", array_keys($array));
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} ({$fields})
@@ -207,6 +202,8 @@ HTML;
 
 	public function insert_query_multiple($table, $array)
 	{
+		global $mybb;
+
 		if (!is_array($array)){
 			return;
 		}
@@ -217,7 +214,15 @@ HTML;
 
 		$insert_rows = array();
 		foreach ($array as $values) {
-			$insert_rows[] = "(".$this->build_value_string($table, $values).")";
+			foreach ($values as $field => $value) {
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+					$values[$field] = $value;
+				} else {
+					$values[$field] = $this->quote_val($value);
+				}
+			}
+
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 
 		$insert_rows = implode(", ", $insert_rows);
@@ -237,7 +242,25 @@ HTML;
 			return false;
 		}
 
-		$query = $this->build_field_value_string($table, $array, $no_quote);
+		$comma = "";
+		$query = "";
+		$quote = "'";
+
+		if ($no_quote == true) {
+			$quote = "";
+		}
+
+		foreach($array as $field => $value) {
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+				$query .= "{$comma}{$field}={$value}";
+			} else {
+				$quoted_value = $this->quote_val($value, $quote);
+
+				$query .= "{$comma}{$field}={$quoted_value}";
+			}
+
+			$comma = ', ';
+		}
 
 		if(!empty($where)) {
 			$query .= " WHERE {$where}";
@@ -379,42 +402,18 @@ HTML;
 		$primary_key = $this->fetch_field($query, 'column_name');
 
 		$query = $this->write_query("
-			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length, numeric_precision, numeric_precision_radix, numeric_scale
+			SELECT column_name as Field, data_type as Extra
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
 
 		$field_info = array();
 		while ($field = $this->fetch_array($query)) {
-			if ($field['column_name'] == $primary_key) {
-				$field['_key'] = 'PRI';
-			} else {
-				$field['_key'] = '';
+			if ($field['field'] == $primary_key) {
+				$field['extra'] = 'auto_increment';
 			}
 
-			if (!is_null($field['column_default']) && stripos($field['column_default'], 'nextval') !== false) {
-				$field['_extra'] = 'auto_increment';
-			} else {
-				$field['_extra'] = '';
-			}
-
-			// bit, character, text fields.
-			if (!is_null($field['character_maximum_length'])) {
-				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
-			}
-			// numeric/decimal fields.
-			else if ($field['numeric_precision_radix'] == 10 && !is_null($field['numeric_precision']) && !is_null($field['numeric_scale'])) {
-				$field['data_type'] .= '('.(int)$field['numeric_precision'].','.(int)$field['numeric_scale'].')';
-			}
-
-			$field_info[] = array(
-				'Field' => $field['column_name'],
-				'Type' => $field['data_type'],
-				'Null' => $field['is_nullable'],
-				'Key' => $field['_key'],
-				'Default' => $field['column_default'],
-				'Extra' => $field['_extra'],
-			);
+			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
 		}
 
 		return $field_info;
@@ -471,12 +470,8 @@ HTML;
 			$table_prefix = $this->table_prefix;
 		}
 
-		$table_prefix_bak = $this->table_prefix;
-		$this->table_prefix = '';
-		$fields = array_column($this->show_fields_from($table_prefix.$table), 'Field');
-
 		if ($hard == false) {
-			if($this->table_exists($table_prefix.$table))
+			if($this->table_exists($table))
 			{
 				$this->write_query("DROP TABLE {$table_prefix}{$table}");
 			}
@@ -484,24 +479,11 @@ HTML;
 			$this->write_query("DROP TABLE {$table_prefix}{$table}");
 		}
 
-		$this->table_prefix = $table_prefix_bak;
+		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
+		$field = $this->fetch_field($query, 'column_name');
 
-		if(!empty($fields)) {
-			foreach ($fields as &$field) {
-				$field = "{$table_prefix}{$table}_{$field}_seq";
-			}
-			unset($field);
-
-			if (version_compare($this->get_version(), '8.2.0', '>=')) {
-				$fields = implode(', ', $fields);
-				$this->write_query("DROP SEQUENCE IF EXISTS {$fields}");
-			} else {
-				$fields = "'" . implode("', '", $fields) . "'";
-				$query = $this->query("SELECT sequence_name as field FROM information_schema.sequences WHERE sequence_name in ({$fields}) AND sequence_schema = 'public'");
-				while ($row = $this->fetch_array($query)) {
-					$this->write_query("DROP SEQUENCE {$row['field']}");
-				}
-			}
+		if ($field) {
+			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
 		}
 	}
 
@@ -527,72 +509,32 @@ HTML;
 			$main_field = $default_field;
 		}
 
+		$update = false;
+		$search_bit = array();
+
 		if (!is_array($main_field)) {
 			$main_field = array($main_field);
 		}
 
-		if(version_compare($this->get_version(), '9.5.0', '>='))
-		{
-			// ON CONFLICT clause supported
-
-			$main_field_csv = implode(',', $main_field);
-
-			// INSERT-like list of fields and values
-			$fields = implode(",", array_keys($replacements));
-			$values = $this->build_value_string($table, $replacements);
-
-			// UPDATE-like SET list, using special EXCLUDED table to avoid passing values twice
-			$reassignment_values = array();
-			$true_replacement_keys = array_diff(
-				array_keys($replacements),
-				array_flip($main_field)
-			);
-			foreach($true_replacement_keys as $key)
-			{
-				$reassignment_values[$key] = 'EXCLUDED.' . $key;
-			}
-
-			$reassignments = $this->build_field_value_string($table, $reassignment_values, true);
-
-			$this->write_query("
-				INSERT
-				INTO {$this->table_prefix}{$table} ({$fields})
-				VALUES ({$values})
-				ON CONFLICT ($main_field_csv) DO UPDATE SET {$reassignments}
-			");
-		}
-		else
-		{
-			// manual SELECT and UPDATE/INSERT (prone to TOCTOU issues)
-
-			$update = false;
-			$search_bit = array();
-
-			if (!is_array($main_field)) {
-				$main_field = array($main_field);
-			}
-
-			foreach ($main_field as $field) {
-				if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-					$search_bit[] = "{$field} = ".$replacements[$field];
-				} else {
-					$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
-				}
-			}
-
-			$search_bit = implode(" AND ", $search_bit);
-
-			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-
-			if ($this->fetch_field($query, "count") == 1) {
-				$update = true;
-			}
-
-			if ($update === true) {
-				return $this->update_query($table, $replacements, $search_bit);
+		foreach ($main_field as $field) {
+			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
+				$search_bit[] = "{$field} = ".$replacements[$field];
 			} else {
-				return $this->insert_query($table, $replacements);
+				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
 			}
+		}
+
+		$search_bit = implode(" AND ", $search_bit);
+		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+
+		if ($this->fetch_field($query, "count") == 1) {
+			$update = true;
+		}
+
+		if ($update === true) {
+			return $this->update_query($table, $replacements, $search_bit);
+		} else {
+			return $this->insert_query($table, $replacements);
 		}
 	}
 
@@ -720,70 +662,6 @@ HTML;
 		}
 
 		return $fieldstring;
-	}
-
-	/**
-	 * @param string $table
-	 * @param array $array
-	 * @param bool $no_quote
-	 *
-	 * @return string
-	 */
-	protected function build_field_value_string($table, $array, $no_quote = false)
-	{
-		global $mybb;
-
-		$strings = array();
-
-		if ($no_quote == true)
-		{
-			$quote = "";
-		}
-		else
-		{
-			$quote = "'";
-		}
-
-		foreach($array as $field => $value)
-		{
-			if(!isset($mybb->binary_fields[$table][$field]) || !$mybb->binary_fields[$table][$field])
-			{
-				$value = $this->quote_val($value, $quote);
-			}
-
-			$strings[] = "{$field}={$value}";
-		}
-
-		$string = implode(', ', $strings);
-
-		return $string;
-	}
-
-	/**
-	 * @param string $table
-	 * @param array $array
-	 *
-	 * @return string
-	 */
-	protected function build_value_string($table, $array)
-	{
-		global $mybb;
-
-		$values = array();
-
-		foreach($array as $field => $value)
-		{
-			if(!isset($mybb->binary_fields[$table][$field]) || !$mybb->binary_fields[$table][$field])
-			{
-				$value = $this->quote_val($value);
-			}
-
-			$values[$field] = $value;
-		}
-
-		$string = implode(",", $values);
-
-		return $string;
 	}
 
 	public function __set($name, $value)

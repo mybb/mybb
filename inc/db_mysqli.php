@@ -74,11 +74,6 @@ class DB_MySQLi implements DB_Base
 	public $current_link;
 
 	/**
-	 * @var array
-	 */
-	public $connections = array();
-
-	/**
 	 * The database name.
 	 *
 	 * @var string
@@ -182,10 +177,7 @@ class DB_MySQLi implements DB_Base
 			}
 		}
 
-		if(isset($config['encoding']))
-		{
-			$this->db_encoding = $config['encoding'];
-		}
+		$this->db_encoding = $config['encoding'];
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
