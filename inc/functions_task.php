@@ -33,7 +33,7 @@ function run_task($tid=0)
 	}
 
 	// No task? Return
-	if(empty($task['tid']))
+	if(!$task['tid'])
 	{
 		$cache->update_tasks();
 		return false;

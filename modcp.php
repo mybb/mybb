@@ -3672,7 +3672,6 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching post IP addresses
 		if(isset($mybb->input['search_posts']))
 		{
-			$post_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
@@ -3767,7 +3766,6 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching user IP addresses
 		if(isset($mybb->input['search_users']))
 		{
-			$user_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
@@ -3938,13 +3936,13 @@ if($mybb->input['action'] == "ipsearch")
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
-					if(empty($ipaddress['username']))
+					if(!$ipaddress['username'])
 					{
 						$ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					}
 					$ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
 					$trow = alt_trow();
-					if(empty($ipaddress['subject']))
+					if(!$ipaddress['subject'])
 					{
 						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 					}

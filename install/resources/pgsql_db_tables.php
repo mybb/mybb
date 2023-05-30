@@ -304,8 +304,7 @@ $tables[] = "CREATE TABLE mybb_forums (
 $tables[] = "CREATE TABLE mybb_forumsread (
   fid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0',
-  UNIQUE (fid, uid)
+  dateline int NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
@@ -888,8 +887,7 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0',
-  UNIQUE (tid, uid)
+  dateline int NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
@@ -908,6 +906,16 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid3 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
+$query = $db->write_query("SELECT column_name
+						  FROM information_schema.constraint_column_usage
+						  WHERE table_name = '".$config['tableprefix']."userfields'
+						  AND constraint_name = '".$config['tableprefix']."userfields_pkey'
+						  LIMIT 1");
+$main_field = $db->fetch_field($query, 'column_name');
+if(!empty($main_field))
+{
+	$tables[] = "DROP SEQUENCE mybb_userfields_ufid_seq;";
+}
 $tables[] = "CREATE SEQUENCE mybb_userfields_ufid_seq;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (

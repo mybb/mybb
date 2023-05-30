@@ -23,24 +23,6 @@ Learn more on the MyBB development page:
 
 If you need any help with sending your code contributions, the [GitHub Help site](https://docs.github.com/en/github) is a good place to start. You can also get in touch with MyBB developers and the Community through our [support channels](https://mybb.com/support/).
 
-## Running MyBB
-
-MyBB requires a web server with PHP support and a database. [MyBB Documentation &mdash; Requirements &rarr;](https://docs.mybb.com/1.8/install/requirements/)
-
-If you want to use a manually-managed stack, copy code from the desired repository branch to your web server's HTTP-exposed directory.
-- Code for MyBB &le; 1.8 can be run as-is.
-- Code for MyBB &ge; 1.9 references external dependencies, installed using [Composer](https://getcomposer.org/) (`composer install`).
-
-To quickly setup a **self-contained development stack** with PHP + Xdebug + Composer auto-installation, web server, and database system(s), use [Docker](https://www.docker.com/products/docker-desktop/) Compose:
-
-```sh
-$ git clone https://github.com/mybb/mybb.git
-$ git clone https://github.com/mybb/deploy.git
-$ cd deploy
-$ docker compose up
-```
-[Using MyBB's Development Stack &rarr;](https://github.com/mybb/deploy/)
-
 ## MyBB on GitHub
 
 ### Branches

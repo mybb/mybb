@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'forumdisplay.php');
 
-$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_searchforum,forumdisplay_forumsort,forumdisplay_thread_rating,forumdisplay_threadlist_rating";
+$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules_link,forumdisplay_orderarrow,forumdisplay_newthread";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumbit_subforums,forumbit_moderators,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden";
@@ -95,7 +95,7 @@ if($mybb->user['uid'] == 0)
 	$forumsread = array();
 	if(isset($mybb->cookies['mybb']['forumread']))
 	{
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 
  	if(is_array($forumsread) && empty($forumsread))
@@ -172,7 +172,6 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
-$forumjump = '';
 if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
@@ -276,7 +275,6 @@ else
 }
 
 // Get the users browsing this forum.
-$usersbrowsing = '';
 if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -791,7 +789,7 @@ if($has_announcements == true)
 	$cookie = array();
 	if(isset($mybb->cookies['mybb']['announcements']))
 	{
-		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']), false);
+		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 	}
 
 	$announcementlist = '';
@@ -1131,18 +1129,9 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 			else
 			{
+				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
+				$thread['width'] = (int)round($thread['averagerating'])*20;
 				$thread['numratings'] = (int)$thread['numratings'];
-
-				if($thread['numratings'] == 0)
-				{
-					$thread['averagerating'] = 0;
-					$thread['width'] = 0;
-				}
-				else
-				{
-					$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-					$thread['width'] = (int)round($thread['averagerating']) * 20;
-				}
 
 				$not_rated = '';
 				if(!isset($thread['rated']) || empty($thread['rated']))

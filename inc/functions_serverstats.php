@@ -51,35 +51,35 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 
 	// MySQL Version
 	$info['mysql'] = 0;
-	if(isset($phpinfo['mysql']['Client API version']))
+	if(array_key_exists('mysql', $phpinfo))
 	{
 		$info['mysql'] = $phpinfo['mysql']['Client API version'];
 	}
 
 	// PostgreSQL Version
 	$info['pgsql'] = 0;
-	if(isset($phpinfo['pgsql']['PostgreSQL(libpq) Version']))
+	if(array_key_exists('pgsql', $phpinfo))
 	{
 		$info['pgsql'] = $phpinfo['pgsql']['PostgreSQL(libpq) Version'];
 	}
 
 	// SQLite Version
 	$info['sqlite'] = 0;
-	if(isset($phpinfo['sqlite']['SQLite Library']))
+	if(array_key_exists('sqlite', $phpinfo))
 	{
 		$info['sqlite'] = $phpinfo['sqlite']['SQLite Library'];
 	}
 
 	// Iconv Library Extension Version
 	$info['iconvlib'] = 0;
-	if(isset($phpinfo['iconv']['iconv implementation'], $phpinfo['iconv']['iconv library version']))
+	if(array_key_exists('iconv', $phpinfo))
 	{
 		$info['iconvlib'] = html_entity_decode($phpinfo['iconv']['iconv implementation'])."|".$phpinfo['iconv']['iconv library version'];
 	}
 
 	// Check GD & Version
 	$info['gd'] = 0;
-	if(isset($phpinfo['gd']['GD Version']))
+	if(array_key_exists('gd', $phpinfo))
 	{
 		$info['gd'] = $phpinfo['gd']['GD Version'];
 	}

@@ -512,8 +512,6 @@ if($mybb->input['action'] == "profile")
 				continue;
 			}
 
-			$userfield = $code = $select = $val = $options = $expoptions = $useropts = '';
-			$seloptions = array();
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
@@ -528,6 +526,7 @@ if($mybb->input['action'] == "profile")
 				$options = array();
 			}
 			$field = "fid{$profilefield['fid']}";
+			$select = '';
 			if($errors)
 			{
 				if(!isset($mybb->input['profile_fields'][$field]))
@@ -684,6 +683,13 @@ if($mybb->input['action'] == "profile")
 				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
 			$altbg = alt_trow();
+			$code = "";
+			$select = "";
+			$val = "";
+			$options = "";
+			$expoptions = "";
+			$useropts = "";
+			$seloptions = array();
 		}
 	}
 	if($customfields)
@@ -2412,7 +2418,6 @@ if($mybb->input['action'] == "editsig")
 	else
 	{
 		// User is allowed to edit their signature
-		$smilieinserter = '';
 		if($mybb->settings['sigsmilies'] == 1)
 		{
 			$sigsmilies = $lang->on;
@@ -3641,7 +3646,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
 
-		if(!empty($joinrequest['rid']))
+		if($joinrequest['rid'])
 		{
 			error($lang->already_sent_join_request);
 		}
@@ -4197,15 +4202,13 @@ if(!$mybb->input['action'])
 	$avatar_username = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
-	$mybb->user['email'] = htmlspecialchars_uni($mybb->user['email']);
-
 	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
 		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
 	}
 	// Make reputations row
-	$reputation = '';
+	$reputations = '';
 	if($mybb->usergroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation_link = get_reputation($mybb->user['reputation']);
@@ -4375,7 +4378,7 @@ if(!$mybb->input['action'])
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
 
-			if(!isset($forumpermissions['canonlyviewownthreads']) || $forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
+			if($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid'])
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
@@ -4424,7 +4427,7 @@ if(!$mybb->input['action'])
 					$folder_label = '';
 					$gotounread = '';
 
-					if(!empty($thread['tid']))
+					if($thread['tid'])
 					{
 						$bgcolor = alt_trow();
 						$thread['subject'] = $parser->parse_badwords($thread['subject']);
@@ -4681,7 +4684,7 @@ if(!$mybb->input['action'])
 				}
 
 				// Folder Icons
-				if(!empty($thread['doticon']))
+				if($thread['doticon'])
 				{
 					$folder = "dot_";
 					$folder_label .= $lang->icon_dot;

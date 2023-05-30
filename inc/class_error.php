@@ -180,10 +180,7 @@ class errorHandler {
 
 		$file = str_replace(MYBB_ROOT, "", $file);
 
-		if($type == MYBB_SQL || strpos(strtolower($this->error_types[$type]), 'warning') === false)
-		{
-			$this->has_errors = true;
-		}
+		$this->has_errors = true;
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');

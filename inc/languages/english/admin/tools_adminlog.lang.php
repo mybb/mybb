@@ -91,6 +91,7 @@ $l['admin_log_config_plugins_activate'] = "Activated plugin: {1}";
 $l['admin_log_config_plugins_activate_install'] = "Activated and installed plugin: {1}";
 $l['admin_log_config_plugins_deactivate'] = "Deactivated plugin: {1}";
 $l['admin_log_config_plugins_deactivate_uninstall'] = "Deactivated and uninstalled plugin: {1}";
+$l['admin_log_config_plugins_delete'] = "Deleted plugin: {1}";
 
 $l['admin_log_config_post_icons_add'] = "Added post icon #{1} ({2})";
 $l['admin_log_config_post_icons_add_multiple'] = "Added multiple post icons";

@@ -149,13 +149,6 @@ if($mybb->input['action'] == "backup")
 
 		@set_time_limit(0);
 
-		// create an array with table prefix appended for checks, as full table names are accepted
-		$binary_fields_prefixed = array();
-		foreach($mybb->binary_fields as $table => $fields)
-		{
-			$binary_fields_prefixed[TABLE_PREFIX.$table] = $fields;
-		}
-
 		if($mybb->input['method'] == 'disk')
 		{
 			$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
@@ -254,30 +247,13 @@ if($mybb->input['action'] == "backup")
 						{
 							$insert .= $comma."NULL";
 						}
+						else if($db->engine == 'mysqli')
+						{
+							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
+						}
 						else
 						{
-							if($db->engine == 'mysqli')
-							{
-								if(!empty($binary_fields_prefixed[$table][$field]))
-								{
-									$insert .= $comma."X'".mysqli_real_escape_string($db->read_link, bin2hex($row[$field]))."'";
-								}
-								else
-								{
-									$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
-								}
-							}
-							else
-							{
-								if(!empty($binary_fields_prefixed[$table][$field]))
-								{
-									$insert .= $comma.$db->escape_binary($db->unescape_binary($row[$field]));
-								}
-								else
-								{
-									$insert .= $comma."'".$db->escape_string($row[$field])."'";
-								}
-							}
+							$insert .= $comma."'".$db->escape_string($row[$field])."'";
 						}
 						$comma = ',';
 					}

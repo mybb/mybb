@@ -65,11 +65,6 @@ class DefaultPage
 	public $show_post_verify_error = '';
 
 	/**
-	 * @var string
-	 */
-	public $_menu;
-
-	/**
 	 * Output the page header.
 	 *
 	 * @param string $title The title of the page.

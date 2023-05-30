@@ -57,10 +57,7 @@ class session
 		$this->packedip = my_inet_pton($this->ipaddress);
 
 		// Find out the user agent.
-		if(isset($_SERVER['HTTP_USER_AGENT']))
-		{
-			$this->useragent = $_SERVER['HTTP_USER_AGENT'];
-		}
+		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
 
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
@@ -212,7 +209,7 @@ class session
 		if($mybb->user['dateformat'] != 0 && $mybb->user['dateformat'] != '')
 		{
 			global $date_formats;
-			if(!empty($date_formats[$mybb->user['dateformat']]))
+			if($date_formats[$mybb->user['dateformat']])
 			{
 				$mybb->settings['dateformat'] = $date_formats[$mybb->user['dateformat']];
 			}
@@ -222,7 +219,7 @@ class session
 		if($mybb->user['timeformat'] != 0 && $mybb->user['timeformat'] != '')
 		{
 			global $time_formats;
-			if(!empty($time_formats[$mybb->user['timeformat']]))
+			if($time_formats[$mybb->user['timeformat']])
 			{
 				$mybb->settings['timeformat'] = $time_formats[$mybb->user['timeformat']];
 			}
@@ -354,10 +351,6 @@ class session
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
 		$mybb->user['invisible'] = 0;
-		$mybb->user['moderateposts'] = 0;
-		$mybb->user['showquickreply'] = 1;
-		$mybb->user['signature'] = '';
-		$mybb->user['suspendposting'] = 0;
 
 		// Has this user visited before? Lastvisit need updating?
 		if(isset($mybb->cookies['mybb']['lastvisit']))

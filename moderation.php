@@ -420,7 +420,7 @@ switch($mybb->input['action'])
 			$method_selected = array('move' => 'checked="checked"', 'redirect' => '', 'copy' => '');
 
 			$mybb->input['delayedmoderation']['redirect_expire'] = '';
-			$mybb->input['delayedmoderation']['subject'] = isset($thread['subject']) ? $thread['subject'] : '';
+			$mybb->input['delayedmoderation']['subject'] = $thread['subject'];
 			$mybb->input['delayedmoderation']['threadurl'] = '';
 
 			$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "delayedmoderation[new_forum]");
@@ -2666,9 +2666,6 @@ switch($mybb->input['action'])
 			clearinline($tid, 'thread');
 		}
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
-
-		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
-
 		eval("\$moveposts = \"".$templates->get("moderation_inline_moveposts")."\";");
 		output_page($moveposts);
 		break;
@@ -2692,12 +2689,12 @@ switch($mybb->input['action'])
 			preg_match("#thread-([0-9]+)?#i", $mybb->input['threadurl'], $threadmatch);
 			preg_match("#post-([0-9]+)?#i", $mybb->input['threadurl'], $postmatch);
 
-			if(!empty($threadmatch[1]))
+			if($threadmatch[1])
 			{
 				$parameters['tid'] = $threadmatch[1];
 			}
 
-			if(!empty($postmatch[1]))
+			if($postmatch[1])
 			{
 				$parameters['pid'] = $postmatch[1];
 			}

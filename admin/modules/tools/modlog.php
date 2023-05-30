@@ -161,22 +161,19 @@ if(!$mybb->input['action'])
 	$where = 'WHERE 1=1';
 
 	// Searching for entries by a particular user
-	$mybb->input['uid'] = $mybb->get_input('uid', MyBB::INPUT_INT);
-	if($mybb->input['uid'] > 0)
+	if(!empty($mybb->input['uid']))
 	{
-		$where .= " AND l.uid='".$mybb->input['uid']."'";
+		$where .= " AND l.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 	}
 
 	// Searching for entries in a specific forum
-	$mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
-	if($mybb->input['fid'] > 0)
+	if($mybb->get_input('fid') > 0)
 	{
-		$where .= " AND l.fid='".$mybb->input['fid']."'";
+		$where .= " AND l.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 
 	// Order?
-	$mybb->input['sortby'] = $mybb->get_input('sortby');
-	switch($mybb->input['sortby'])
+	switch($mybb->get_input('sortby'))
 	{
 		case "username":
 			$sortby = "u.username";

@@ -276,7 +276,7 @@ class SmtpMail extends MailHandler
 		$this->connection = @fsockopen($this->host, $this->port, $error_number, $error_string, $this->timeout);
 
 		// DIRECTORY_SEPARATOR checks if running windows
-		if(is_resource($this->connection) && function_exists('stream_set_timeout') && DIRECTORY_SEPARATOR != '\\')
+		if(function_exists('stream_set_timeout') && DIRECTORY_SEPARATOR != '\\')
 		{
 			@stream_set_timeout($this->connection, $this->timeout, 0);
 		}

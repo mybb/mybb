@@ -131,7 +131,7 @@ class DataHandler
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
-			if(!isset($lang->$lang_string))
+			if(!$lang->$lang_string)
 			{
 				$errors[] = $error['error_code'];
 				continue;

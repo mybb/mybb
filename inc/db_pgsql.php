@@ -25,13 +25,6 @@ class DB_PgSQL implements DB_Base
 	public $short_title = "PostgreSQL";
 
 	/**
-	 * The type of db software being used.
-	 *
-	 * @var string
-	 */
-	public $type;
-
-	/**
 	 * A count of the number of queries.
 	 *
 	 * @var int
@@ -72,11 +65,6 @@ class DB_PgSQL implements DB_Base
 	 * @var resource
 	 */
 	public $current_link;
-
-	/**
-	 * @var array
-	 */
-	public $connections = array();
 
 	/**
 	 * Explanation of a query.
@@ -955,7 +943,7 @@ class DB_PgSQL implements DB_Base
 	{
 		if(function_exists("pg_escape_string"))
 		{
-			$string = pg_escape_string($this->read_link, $string);
+			$string = pg_escape_string($string);
 		}
 		else
 		{
@@ -1158,50 +1146,19 @@ class DB_PgSQL implements DB_Base
 		$primary_key = $this->fetch_field($query, 'column_name');
 
 		$query = $this->write_query("
-			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length, numeric_precision, numeric_precision_radix, numeric_scale
+			SELECT column_name as Field, data_type as Extra
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
 		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
-			if($field['column_name'] == $primary_key)
+			if($field['field'] == $primary_key)
 			{
-				$field['_key'] = 'PRI';
-			}
-			else
-			{
-				$field['_key'] = '';
+				$field['extra'] = 'auto_increment';
 			}
 
-			if(stripos($field['column_default'], 'nextval') !== false)
-			{
-				$field['_extra'] = 'auto_increment';
-			}
-			else
-			{
-				$field['_extra'] = '';
-			}
-
-			// bit, character, text fields.
-			if(!is_null($field['character_maximum_length']))
-			{
-				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
-			}
-			// numeric/decimal fields.
-			else if($field['numeric_precision_radix'] == 10 && !is_null($field['numeric_precision']) && !is_null($field['numeric_scale']))
-			{
-				$field['data_type'] .= '('.(int)$field['numeric_precision'].','.(int)$field['numeric_scale'].')';
-			}
-
-			$field_info[] = array(
-				'Field' => $field['column_name'],
-				'Type' => $field['data_type'],
-				'Null' => $field['is_nullable'],
-				'Key' => $field['_key'],
-				'Default' => $field['column_default'],
-				'Extra' => $field['_extra'],
-			);
+			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
 		}
 
 		return $field_info;
@@ -1314,13 +1271,9 @@ class DB_PgSQL implements DB_Base
 			$table_prefix = $this->table_prefix;
 		}
 
-		$table_prefix_bak = $this->table_prefix;
-		$this->table_prefix = '';
-		$fields = array_column($this->show_fields_from($table_prefix.$table), 'Field');
-
 		if($hard == false)
 		{
-			if($this->table_exists($table_prefix.$table))
+			if($this->table_exists($table))
 			{
 				$this->write_query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1330,30 +1283,13 @@ class DB_PgSQL implements DB_Base
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 
-		$this->table_prefix = $table_prefix_bak;
+		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
+		$field = $this->fetch_field($query, 'column_name');
 
-		if(!empty($fields))
+		// Do we not have a primary field?
+		if($field)
 		{
-			foreach($fields as &$field)
-			{
-				$field = "{$table_prefix}{$table}_{$field}_seq";
-			}
-			unset($field);
-
-			if(version_compare($this->get_version(), '8.2.0', '>='))
-			{
-				$fields = implode(', ', $fields);
-				$this->write_query("DROP SEQUENCE IF EXISTS {$fields}");
-			}
-			else
-			{
-				$fields = "'".implode("', '", $fields)."'";
-				$query = $this->query("SELECT sequence_name as field FROM information_schema.sequences WHERE sequence_name in ({$fields}) AND sequence_schema = 'public'");
-				while($row = $this->fetch_array($query))
-				{
-					$this->write_query("DROP SEQUENCE {$row['field']}");
-				}
-			}
+			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
 		}
 	}
 
@@ -1630,7 +1566,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_binary($string)
 	{
-		return "'".pg_escape_bytea($this->read_link, $string)."'";
+		return "'".pg_escape_bytea($string)."'";
 	}
 
 	/**

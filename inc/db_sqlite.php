@@ -67,11 +67,6 @@ class DB_SQLite implements DB_Base
 	public $link;
 
 	/**
-	 * @var array
-	 */
-	public $connections = array();
-
-	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
@@ -925,8 +920,8 @@ class DB_SQLite implements DB_Base
 	 */
 	function optimize_table($table)
 	{
-		// SQLite doesn't support table level optimization.
-		// Using `VACUUM [main | $db_name]` may also be blocked by any opened query cursor, hence generating an error.
+		$query = $this->query("VACUUM ".$this->table_prefix.$table."");
+		$query->closeCursor();
 	}
 
 	/**
@@ -968,34 +963,25 @@ class DB_SQLite implements DB_Base
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->write_query("PRAGMA TABLE_INFO('".$this->table_prefix.$table."')");
-		$field_info = array();
-		while($field = $this->fetch_array($query))
-		{
-			if(!empty($field['pk']))
-			{
-				$field['_key'] = 'PRI';
-				$field['_extra'] = 'auto_increment';
-			}
-			else
-			{
-				$field['_key'] = '';
-				$field['_extra'] = '';
-			}
-
-			// SQLite allows NULLs in most PRIMARY KEY columns due to a bug in early versions, even in an INTEGER PRIMARY KEY column, read https://sqlite.org/lang_createtable.html for details. We won't fix this for consistency among other database engines.
-			$field['_nullable'] = $field['notnull'] ? 'NO' : 'YES';
-
-			$field_info[] = array(
-				'Field' => $field['name'],
-				'Type' => $field['type'],
-				'Null' => $field['_nullable'],
-				'Key' => $field['_key'],
-				'Default' => $field['dflt_value'],
-				'Extra' => $field['_extra'],
-			);
-		}
+		$old_tbl_prefix = $this->table_prefix;
+		$this->set_table_prefix("");
+		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$old_tbl_prefix}{$table}'");
+		$this->set_table_prefix($old_tbl_prefix);
+		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
 		$query->closeCursor();
+
+		preg_match('#\((.*)\)#s', $table, $matches);
+
+		$field_info = array();
+		$table_cols = explode(',', trim($matches[1]));
+		foreach($table_cols as $declaration)
+		{
+			$entities = preg_split('#\s+#', trim($declaration));
+			$column_name = preg_replace('/"?([^"]+)"?/', '\1', $entities[0]);
+
+			$field_info[] = array('Extra' => $entities[1], 'Field' => $column_name);
+		}
+
 		return $field_info;
 	}
 
@@ -1089,11 +1075,9 @@ class DB_SQLite implements DB_Base
 			$table_prefix = $this->table_prefix;
 		}
 
-		$table_prefix_bak = $this->table_prefix;
-		$this->table_prefix = '';
 		if($hard == false)
 		{
-			if($this->table_exists($table_prefix.$table))
+			if($this->table_exists($table))
 			{
 				$query = $this->query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1102,7 +1086,6 @@ class DB_SQLite implements DB_Base
 		{
 			$query = $this->query('DROP TABLE '.$table_prefix.$table);
 		}
-		$this->table_prefix = $table_prefix_bak;
 
 		if(isset($query))
 		{
