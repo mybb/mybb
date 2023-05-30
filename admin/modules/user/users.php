@@ -441,6 +441,8 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=user-users");
 	}
 
+	$rowspan = 6;
+
 	$plugins->run_hooks("admin_user_users_edit");
 
 	if($mybb->request_method == "post")
@@ -1107,7 +1109,7 @@ EOF;
 
 	$postnum = my_number_format($user['postnum']);
 
-	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
+	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => (int)$rowspan, 'width' => 1));
 	$table->construct_cell("<strong>{$lang->email_address}:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
 	$table->construct_cell("<strong>{$lang->last_active}:</strong> {$last_active}");
 	$table->construct_row();
@@ -1126,6 +1128,8 @@ EOF;
 	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['regip'])));
 	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
 	$table->construct_row();
+
+	$plugins->run_hooks("admin_user_users_edit_overview_table");
 
 	$username = htmlspecialchars_uni($user['username']);
 	$table->output("{$lang->user_overview}: {$username}");
