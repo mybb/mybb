@@ -230,6 +230,7 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
 			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			$attach_mod_options = '';
 			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
 			$ret['template'] = $attemplate;
 
@@ -1243,6 +1244,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$reviewmore = '';
+	$threadreview = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
 		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
@@ -1263,84 +1265,88 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
+		$pidin = array();
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
 		}
 
-		$pidin = implode(",", $pidin);
-
-		// Fetch attachments
-		$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
-		while($attachment = $db->fetch_array($query))
+		if(!empty($pidin))
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			$pidin = implode(",", $pidin);
+
+			// Fetch attachments
+			$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
+			$query = $db->query("
+				SELECT p.*, u.username AS userusername
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+				WHERE pid IN ($pidin)
+				ORDER BY dateline DESC, pid DESC
+			");
+			$postsdone = 0;
+			$altbg = "trow1";
+			$reviewbits = '';
+			while($post = $db->fetch_array($query))
+			{
+				if($post['userusername'])
+				{
+					$post['username'] = $post['userusername'];
+				}
+				$reviewpostdate = my_date('relative', $post['dateline']);
+				$parser_options = array(
+					"allow_html" => $forum['allowhtml'],
+					"allow_mycode" => $forum['allowmycode'],
+					"allow_smilies" => $forum['allowsmilies'],
+					"allow_imgcode" => $forum['allowimgcode'],
+					"allow_videocode" => $forum['allowvideocode'],
+					"me_username" => $post['username'],
+					"filter_badwords" => 1
+				);
+				if($post['smilieoff'] == 1)
+				{
+					$parser_options['allow_smilies'] = 0;
+				}
+
+				if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+				{
+					$parser_options['allow_imgcode'] = 0;
+				}
+
+				if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+				{
+					$parser_options['allow_videocode'] = 0;
+				}
+
+				$post['username'] = htmlspecialchars_uni($post['username']);
+
+				if($post['visible'] != 1)
+				{
+					$altbg = "trow_shaded";
+				}
+
+				$plugins->run_hooks("newreply_threadreview_post");
+
+				$post['message'] = $parser->parse_message($post['message'], $parser_options);
+				get_post_attachments($post['pid'], $post);
+				$reviewmessage = $post['message'];
+				eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
+				if($altbg == "trow1")
+				{
+					$altbg = "trow2";
+				}
+				else
+				{
+					$altbg = "trow1";
+				}
+			}
+			eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 		}
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC, pid DESC
-		");
-		$postsdone = 0;
-		$altbg = "trow1";
-		$reviewbits = '';
-		while($post = $db->fetch_array($query))
-		{
-			if($post['userusername'])
-			{
-				$post['username'] = $post['userusername'];
-			}
-			$reviewpostdate = my_date('relative', $post['dateline']);
-			$parser_options = array(
-				"allow_html" => $forum['allowhtml'],
-				"allow_mycode" => $forum['allowmycode'],
-				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode'],
-				"allow_videocode" => $forum['allowvideocode'],
-				"me_username" => $post['username'],
-				"filter_badwords" => 1
-			);
-			if($post['smilieoff'] == 1)
-			{
-				$parser_options['allow_smilies'] = 0;
-			}
-
-			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_imgcode'] = 0;
-			}
-
-			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_videocode'] = 0;
-			}
-
-			$post['username'] = htmlspecialchars_uni($post['username']);
-
-			if($post['visible'] != 1)
-			{
-				$altbg = "trow_shaded";
-			}
-
-			$plugins->run_hooks("newreply_threadreview_post");
-
-			$post['message'] = $parser->parse_message($post['message'], $parser_options);
-			get_post_attachments($post['pid'], $post);
-			$reviewmessage = $post['message'];
-			eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
-			if($altbg == "trow1")
-			{
-				$altbg = "trow2";
-			}
-			else
-			{
-				$altbg = "trow1";
-			}
-		}
-		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
 
 	// Hide signature option if no permission

@@ -1800,7 +1800,7 @@ if($mybb->input['action'] == "export")
 	$plugins->run_hooks("private_export_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folder_name = $folder_id = '';
+	$folderlist_folder = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
@@ -2237,7 +2237,7 @@ if(!$mybb->input['action'])
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = my_unserialize($row['recipients']);
-			if(is_array($recipients['to']) && count($recipients['to']))
+			if(isset($recipients['to']) && is_array($recipients['to']) && count($recipients['to']))
 			{
 				$get_users = array_merge($get_users, $recipients['to']);
 			}
@@ -2337,6 +2337,10 @@ if(!$mybb->input['action'])
 				{
 					foreach($recipients['to'] as $uid)
 					{
+						if(!isset($cached_users[$uid]))
+						{
+							continue;
+						}
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
 						$user['username'] = htmlspecialchars_uni($user['username']);
@@ -2352,6 +2356,10 @@ if(!$mybb->input['action'])
 						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
 						foreach($recipients['bcc'] as $uid)
 						{
+							if(!isset($cached_users[$uid]))
+							{
+								continue;
+							}
 							$profilelink = get_profile_link($uid);
 							$user = $cached_users[$uid];
 							$user['username'] = htmlspecialchars_uni($user['username']);

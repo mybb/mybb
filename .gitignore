@@ -47,3 +47,5 @@ Thumbs.db
 
 # Generic git files
 *.orig
+
+inc/vendor

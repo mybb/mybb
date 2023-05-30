@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.29";
+	public $version = "1.8.34";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1829;
+	public $version_code = 1834;
 
 	/**
 	 * The current working directory.
@@ -184,6 +184,22 @@ class MyBB {
 	 * @var string
 	 */
 	public $asset_url = null;
+
+	/**
+	 * @var array
+	 */
+	public $session = array();
+
+	/**
+	 * @var string
+	 */
+	public $post_code;
+
+	/**
+	 * @var array
+	 */
+	public $admin;
+
 	/**
 	 * String input constant for use with get_input().
 	 *

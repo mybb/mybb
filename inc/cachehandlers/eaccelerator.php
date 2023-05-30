@@ -63,7 +63,8 @@ class eacceleratorCacheHandler implements CacheHandlerInterface
 			return false;
 		}
 
-		return unserialize($data);
+		// use PHP's own unserialize() for performance reasons
+		return unserialize($data, array('allowed_classes' => false));
 	}
 
 	/**

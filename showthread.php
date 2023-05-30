@@ -204,6 +204,7 @@ if(!$mybb->get_input('action'))
 if($mybb->input['action'] == "newpost")
 {
 	// First, figure out what time the thread or forum were last read
+	$lastread = $cutoff = 0;
 	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 
@@ -666,6 +667,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
+	$forumjump = '';
 	if($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
@@ -798,6 +800,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Can this user perform searches? If so, we can show them the "Search thread" form
+	$search_thread='';
 	if($forumpermissions['cansearch'] != 0)
 	{
 		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
@@ -1127,7 +1130,7 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['showsimilarthreads'] != 0)
 	{
 		$own_perm = '';
-		if($forumpermissions['canonlyviewownthreads'] == 1)
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
 		{
 			$own_perm = " AND t.uid={$mybb->user['uid']}";
 		}
@@ -1524,6 +1527,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Get users viewing this thread
+	$usersbrowsing='';
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];

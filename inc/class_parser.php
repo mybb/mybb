@@ -1469,7 +1469,7 @@ class postParser
 	*/
 	function mycode_parse_video($video, $url)
 	{
-		global $templates;
+		global $mybb, $templates;
 
 		if(empty($video) || empty($url))
 		{
@@ -1479,8 +1479,8 @@ class postParser
 		// Check URL is a valid URL first, as `parse_url` doesn't check validity.
 		if(false === filter_var($url, FILTER_VALIDATE_URL))
 		{
-            return "[video={$video}]{$url}[/video]";
-        }
+			return "[video={$video}]{$url}[/video]";
+		}
 
 		$parsed_url = @parse_url(urldecode($url));
 		if($parsed_url === false)
@@ -1488,109 +1488,125 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$fragments = array();
-		if($parsed_url['fragment'])
-		{
-			$fragments = explode("&", $parsed_url['fragment']);
-		}
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
-		if($video == "liveleak")
+		$fragments = empty($parsed_url['fragment']) ? array() : explode("&", $parsed_url['fragment']);
+
+		if($video == "liveleak" && !empty($parsed_url['query']))
 		{
 			// The query part can start with any alphabet, but set only 'i' to catch in index key later
 			$parsed_url['query'] = "i".substr($parsed_url['query'], 1);
 		}
 
-		$queries = explode("&", $parsed_url['query']);
+		$queries = empty($parsed_url['query']) ? array() : explode("&", $parsed_url['query']);
 
 		$input = array();
 		foreach($queries as $query)
 		{
-			list($key, $value) = explode("=", $query);
-			$key = str_replace("amp;", "", $key);
-			$input[$key] = $value;
+			$query_array = explode("=", $query);
+			if(count($query_array) == 2)
+			{
+				list($key, $value) = $query_array;
+				$key = str_replace("amp;", "", $key);
+				$input[$key] = $value;
+			}
 		}
 
-		$path = explode('/', $parsed_url['path']);
+		$path = empty($parsed_url['path']) ? array() : explode('/', $parsed_url['path']);
 
 		switch($video)
 		{
 			case "dailymotion":
-				if(isset($path[2]))
+				if(!empty($path[2]))
 				{
 					list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://dai.ly/fds123
 				}
 				break;
 			case "metacafe":
-				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
-				$title = htmlspecialchars_uni($path[3]);
+				if(!empty($path[2]))
+				{
+					$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
+				}
 				break;
 			case "myspacetv":
-				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				if(!empty($path[4]))
+				{
+					$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				}
 				break;
 			case "facebook":
-				if(isset($input['v']))
+				if(!empty($input['v']))
 				{
 					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
 				}
-				elseif(substr($path[3], 0, 3) == 'vb.')
+				elseif(!empty($path[3]) && substr($path[3], 0, 3) == 'vb.' && !empty($path[4]))
 				{
 					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
 				}
-				else
+				elseif(!empty($path[3]))
 				{
 					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
 				}
 				break;
 			case "mixer":
-				$id = $path[1]; // https://mixer.com/streamer
+				if(!empty($path[1]))
+				{
+					$id = $path[1]; // https://mixer.com/streamer
+				}
 				break;
 			case "liveleak":
-				$id = $input['i']; // http://www.liveleak.com/view?i=123
+				if(!empty($input['i']))
+				{
+					$id = $input['i']; // http://www.liveleak.com/view?i=123
+				}
 				break;
 			case "yahoo":
-				if(isset($path[2]))
+				if(!empty($path[2]))
 				{
 					$id = $path[2]; // http://xy.screen.yahoo.com/fds/fds-123.html
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
 				}
 				// Support for localized portals
-				$domain = explode('.', $parsed_url['host']);
-				if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
+				if(!empty($parsed_url['host']))
 				{
-					$local = "{$domain[0]}.";
-				}
-				else
-				{
-					$local = '';
+					$domain = explode('.', $parsed_url['host']);
+					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
+					{
+						$local = "{$domain[0]}.";
+					}
+					else
+					{
+						$local = '';
+					}
 				}
 				break;
 			case "vimeo":
-				if(isset($path[3]))
+				if(!empty($path[3]))
 				{
 					$id = $path[3]; // http://vimeo.com/fds/fds/fds123
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://vimeo.com/fds123
 				}
 				break;
 			case "youtube":
-				if($fragments[0])
+				if(!empty($fragments[0]))
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
-				elseif($input['v'])
+				elseif(!empty($input['v']))
 				{
 					$id = $input['v']; // http://www.youtube.com/watch?v=fds123
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://www.youtu.be/fds123
 				}
@@ -1733,7 +1749,7 @@ class postParser
 			$last_char = my_substr($matches['link'], -1);
 			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
 			{
-				$matches[4] = my_substr($matches['link'], 0, -1);
+				$matches['link'] = my_substr($matches['link'], 0, -1);
 				$external = $last_char.$external;
 				$last_char = my_substr($matches['link'], -1);
 			}

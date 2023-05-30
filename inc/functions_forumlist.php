@@ -103,7 +103,7 @@ function build_forumbits($pid=0, $depth=1)
 
 						while($thread = $db->fetch_array($query))
 						{
-							if(!$private_forums[$thread['fid']])
+							if(!isset($private_forums[$thread['fid']]))
 							{
 								$private_forums[$thread['fid']] = $thread;
 							}
@@ -364,7 +364,8 @@ function build_forumbits($pid=0, $depth=1)
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 			}
 
-			// Moderator column is not off
+			// Moderator column
+			$modlist = '';
 			if($mybb->settings['modlist'] != 0)
 			{
 				$done_moderators = array(
@@ -420,10 +421,6 @@ function build_forumbits($pid=0, $depth=1)
 				if($moderators)
 				{
 					eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
-				}
-				else
-				{
-					$modlist = '';
 				}
 			}
 
@@ -490,7 +487,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	global $mybb, $lang, $db, $unread_forums;
 
 	// This forum is a redirect, so override the folder icon with the "offlink" icon.
-	if($forum['linkto'] != '')
+	if(!empty($forum['linkto']))
 	{
 		$folder = "offlink";
 		$altonoff = $lang->forum_redirect;

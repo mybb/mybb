@@ -195,9 +195,19 @@ function build_postbit($post, $post_type=0)
 	// Fetch display group data.
 	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
-	if(!$post['displaygroup'])
+	if(empty($post['displaygroup']))
 	{
 		$post['displaygroup'] = $post['usergroup'];
+	}
+
+	// Set to hardcoded Guest usergroup ID (1) for guest author or deleted user.
+	if(empty($post['usergroup']))
+	{
+		$post['usergroup'] = 1;
+	}
+	if(empty($post['displaygroup']))
+	{
+		$post['displaygroup'] = 1;
 	}
 
 	$displaygroup = usergroup_displaygroup($post['displaygroup']);
@@ -521,6 +531,8 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
+		$post['userstars'] = '';
+		$post['useravatar'] = '';
 
 		$usergroup['title'] = $lang->na;
 

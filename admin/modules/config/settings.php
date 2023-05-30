@@ -293,8 +293,8 @@ if($mybb->input['action'] == "add")
 		}
 
 		// do some type filtering
-		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
-		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		$mybb->input['type'] = $mybb->get_input('type');
+		if(!ctype_alnum($mybb->input['type']) || strtolower($mybb->input['type']) == "php")
 		{
 			$mybb->input['type'] = "";
 		}
@@ -496,8 +496,8 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// do some type filtering
-		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
-		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		$mybb->input['type'] = $mybb->get_input('type');
+		if(!ctype_alnum($mybb->input['type']) || strtolower($mybb->input['type']) == "php")
 		{
 			$mybb->input['type'] = "";
 		}
@@ -1283,7 +1283,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid'], '', true, "lax");
+			my_setcookie("adminsid", $admin_session['sid'], '', true, "strict");
 		}
 
 		if(isset($mybb->input['upsetting']['statstopreferrer']) && $mybb->input['upsetting']['statstopreferrer'] != $mybb->settings['statstopreferrer'])
@@ -1404,6 +1404,8 @@ if($mybb->input['action'] == "change")
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
 
+		$groupinfo['title'] = htmlspecialchars_uni($groupinfo['title']);
+
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
@@ -1447,6 +1449,8 @@ if($mybb->input['action'] == "change")
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
 
+		$groupinfo['title'] = htmlspecialchars_uni($groupinfo['title']);
+
 		$form_container = new FormContainer($groupinfo['title']);
 
 		if(empty($cache_settings[$groupinfo['gid']]))
@@ -1462,6 +1466,8 @@ if($mybb->input['action'] == "change")
 
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{
+			$setting['name'] = htmlspecialchars_uni($setting['name']);
+
 			$options = "";
 			$type = explode("\n", $setting['optionscode']);
 			$type[0] = trim($type[0]);
@@ -1698,6 +1704,7 @@ if($mybb->input['action'] == "change")
 					$multivalue = explode(',', $setting['value']);
 				}
 
+				$option_list = array();
 				for($i = 0; $i < $typecount; $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
@@ -1752,7 +1759,6 @@ if($mybb->input['action'] == "change")
 						$setting_code .= $form->generate_hidden_field("isvisible_{$setting['name']}", 1);
 					}
 				}
-				$option_list = array();
 			}
 
 			// Do we have a custom language variable for this title or description?

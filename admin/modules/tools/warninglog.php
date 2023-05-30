@@ -488,7 +488,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$user_filters[$key] = null;
+			$user_filters[$key] = '';
 		}
 	}
 

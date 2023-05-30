@@ -1281,10 +1281,11 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
-			<description><![CDATA[Maximum length a user can enter for the custom user title. Set to 0 to disable the limitation.]]></description>
+			<description><![CDATA[Maximum length a user can enter for the custom user title. Cannot be over 250 characters.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
-min=0]]></optionscode>
+min=1
+max=250]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2042,7 +2043,7 @@ min=1]]></optionscode>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[php
-<select name=\"upsetting[{$setting['name']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
+<select name=\"upsetting[{$setting['name']}]\"><option value=\"standard\">".(isset($lang->setting_searchtype_standard)?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".(isset($lang->setting_searchtype_fulltext)?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
 			<settingvalue><![CDATA[standard]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2330,7 +2331,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="mail_parameters">
 			<title>Additional Parameters for PHP's mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank" rel="noopener">More information</a>]]></description>
+			<description><![CDATA[<strong>Not supported.</strong> Additional parameters can be set in the <a href="https://docs.mybb.com/1.8/faq/mail/#additional-parameters-for-phps-mail">Configuration File</a> instead.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>

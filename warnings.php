@@ -116,6 +116,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
 			{
 				$sender_uid = -1;
+				// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+				$pm['sender']['uid'] = -1;
 			}
 
 			// Some kind of friendly error notification
@@ -231,11 +233,11 @@ if($mybb->input['action'] == "warn")
 			WHERE w.pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'
 			ORDER BY w.expired ASC, w.dateline DESC
 		");
-		$first = true;
+		$last_expired = -1;
 		$warnings = '';
 		while($warning = $db->fetch_array($query))
 		{
-			if($warning['expired'] != $last_expired || $first)
+			if($warning['expired'] != $last_expired)
 			{
 				if($warning['expired'] == 0)
 				{
@@ -247,7 +249,6 @@ if($mybb->input['action'] == "warn")
 				}
 			}
 			$last_expired = $warning['expired'];
-			$first = false;
 
 			$post_link = "";
 			$warning['username'] = htmlspecialchars_uni($warning['username']);
