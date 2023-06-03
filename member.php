@@ -1721,7 +1721,12 @@ if($mybb->input['action'] == "resetpassword")
 		{
 			$input_username = '';
 		}
-		$input_username = htmlspecialchars_uni($mybb->input['username']);
+		$input_username = '';
+
+		if(!empty($mybb->input['username']))
+		{
+			$input_username = htmlspecialchars_uni($mybb->input['username']);
+		}
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		output_page($activate);
