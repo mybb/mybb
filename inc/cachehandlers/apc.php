@@ -61,8 +61,8 @@ class apcCacheHandler implements CacheHandlerInterface
 		{
 			$data = apc_fetch($this->unique_id."_".$name);
 
-			// use PHP's own unserialize() for performance reasons
-			return unserialize($data, array('allowed_classes' => false));
+			// use native_unserialize() over my_unserialize() for performance reasons
+			return native_unserialize($data);
 		}
 
 		return false;
