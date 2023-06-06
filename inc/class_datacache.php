@@ -134,8 +134,8 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache");
 			while($data = $db->fetch_array($query))
 			{
-				// use PHP's own unserialize() for performance reasons
-				$this->cache[$data['title']] = unserialize($data['cache'], array('allowed_classes' => false));
+				// use native_unserialize() over my_unserialize() for performance reasons
+				$this->cache[$data['title']] = native_unserialize($data['cache']);
 			}
 		}
 	}
@@ -190,8 +190,8 @@ class datacache
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
 
-				// use PHP's own unserialize() for performance reasons
-				$data = unserialize($cache_data['cache'], array('allowed_classes' => false));
+				// use native_unserialize() over my_unserialize() for performance reasons
+				$data = native_unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -220,8 +220,8 @@ class datacache
 			}
 			else
 			{
-				// use PHP's own unserialize() for performance reasons
-				$data = unserialize($cache_data['cache'], array('allowed_classes' => false));
+				// use native_unserialize() over my_unserialize() for performance reasons
+				$data = native_unserialize($cache_data['cache']);
 			}
 		}
 
