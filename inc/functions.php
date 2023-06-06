@@ -2614,6 +2614,25 @@ function my_unserialize($str, $unlimited = true)
 }
 
 /**
+ * Unserializes data using PHP's `unserialize()`, and its safety options if possible.
+ * This function should only be used for values from trusted sources.
+ *
+ * @param string $str
+ * @return mixed
+ */
+function native_unserialize($str)
+{
+	if(version_compare(PHP_VERSION, '7.0.0', '>='))
+	{
+		return unserialize($str, array('allowed_classes' => false));
+	}
+	else
+	{
+		return unserialize($str);
+	}
+}
+
+/**
  * Credits go to https://github.com/piwik
  * Safe serialize() replacement
  * - output a strict subset of PHP's native serialized representation
