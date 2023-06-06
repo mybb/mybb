@@ -54,8 +54,8 @@ if($mybb->input['action'] == 'view')
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	// use PHP's own unserialize() for performance reasons
-	$cachecontents = unserialize($cacheitem['cache'], array('allowed_classes' => false));
+	// use native_unserialize() over my_unserialize() for performance reasons
+	$cachecontents = native_unserialize($cacheitem['cache']);
 
 	if(empty($cachecontents))
 	{
