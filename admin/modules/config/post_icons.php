@@ -143,7 +143,7 @@ if($mybb->input['action'] == "add_multiple")
 						$ext = get_extension($file);
 						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 						{
-							if(!$aicons[$path.$file])
+							if(!isset($aicons[$path.$file]))
 							{
 								$icons[] = $file;
 							}
