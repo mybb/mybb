@@ -26,6 +26,20 @@ class PhpMail extends MailHandler
 	*/
 	public $additional_parameters = '';
 
+    /**
+     * Path where the sendmail program can be found.
+     *
+     * @var string
+     */
+    public $sendmail = '';
+
+    /**
+     * Which "From:" mail address should be used in mail sent directly via SMTP.
+     *
+     * @var string
+     */
+    public $sendmail_from = '';
+
 	/**
 	 * Sends the email.
 	 *

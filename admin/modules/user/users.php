@@ -1273,15 +1273,21 @@ EOF;
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
 
 	$date_format_options = array($lang->use_default);
-	foreach($date_formats as $key => $format)
+	if(isset($date_formats))
 	{
-		$date_format_options[$key] = my_date($format, TIME_NOW, "", 0);
+		foreach($date_formats as $key => $format)
+		{
+			$date_format_options[$key] = my_date($format, TIME_NOW, "", 0);
+		}
 	}
 
 	$time_format_options = array($lang->use_default);
-	foreach($time_formats as $key => $format)
+	if(isset($time_formats))
 	{
-		$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
+		foreach($time_formats as $key => $format)
+		{
+			$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
+		}
 	}
 
 	$date_options = array(
@@ -2983,7 +2989,7 @@ if($mybb->input['action'] == "inline_edit")
 			$page->output_footer();
 			break;
 		case 'multiusergroup':
-			if($mybb->input['processed'] == 1)
+			if($mybb->get_input('processed', \MyBB::INPUT_INT) === 1)
 			{
 				// Determine additional usergroups
 				if(is_array($mybb->input['additionalgroups']))
@@ -3083,12 +3089,12 @@ if($mybb->input['action'] == "inline_edit")
 				$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 			}
 
-			if(!is_array($mybb->input['additionalgroups']))
+			if(!$mybb->get_input('additionalgroups', \MyBB::INPUT_ARRAY))
 			{
-				$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
+				$mybb->input['additionalgroups'] = explode(',', $mybb->get_input('additionalgroups'));
 			}
 
-			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
 			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 

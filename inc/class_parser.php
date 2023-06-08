@@ -1490,7 +1490,14 @@ class postParser
 
 		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
-		$fragments = empty($parsed_url['fragment']) ? array() : explode("&", $parsed_url['fragment']);
+        if(!is_array($parsed_url) || !array_key_exists($parsed_url['fragment']))
+        {
+            $fragments = array();
+        }
+        else
+        {
+            $fragments = explode("&", $parsed_url['fragment']);
+        }
 
 		if($video == "liveleak" && !empty($parsed_url['query']))
 		{
@@ -1574,7 +1581,7 @@ class postParser
 					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
 				}
 				// Support for localized portals
-				if(!empty($parsed_url['host']))
+                if(is_array($parsed_url) && array_key_exists($parsed_url['host']))
 				{
 					$domain = explode('.', $parsed_url['host']);
 					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))

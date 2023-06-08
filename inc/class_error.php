@@ -178,7 +178,14 @@ class errorHandler {
 			return true;
 		}
 
-		$file = str_replace(MYBB_ROOT, "", $file);
+        if(isset($file))
+        {
+            $file = str_replace(MYBB_ROOT, "", $file);
+        }
+        else
+        {
+            $file = "";
+        }
 
 		if($type == MYBB_SQL || strpos(strtolower($this->error_types[$type]), 'warning') === false)
 		{
