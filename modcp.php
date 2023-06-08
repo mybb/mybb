@@ -2849,6 +2849,8 @@ if($mybb->input['action'] == "editprofile")
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
 
+    $awaysection = '';
+
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$awaycheck = array('', '');

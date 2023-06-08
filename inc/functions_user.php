@@ -583,7 +583,7 @@ function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
-	$draftstart = $draftend = '';
+	$draftstart = $draftend = $attachmentop = '';
 	$draftcount = $lang->ucp_nav_drafts;
 
 	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible = '-2' AND uid = '{$mybb->user['uid']}'");

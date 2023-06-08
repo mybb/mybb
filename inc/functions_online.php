@@ -400,6 +400,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "report";
 			break;
 		case "reputation":
+            if(!isset($parameters['action']))
+            {
+                $parameters['action'] = '';
+            }
 			if(!isset($parameters['uid']))
 			{
 				$parameters['uid'] = 0;
