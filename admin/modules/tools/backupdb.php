@@ -147,7 +147,8 @@ if($mybb->input['action'] == "backup")
 			admin_redirect("index.php?module=tools-backupdb&action=backup");
 		}
 
-		@set_time_limit(0);
+		if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+			@set_time_limit(0);
 
 		// create an array with table prefix appended for checks, as full table names are accepted
 		$binary_fields_prefixed = array();

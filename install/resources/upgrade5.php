@@ -20,7 +20,8 @@ $upgrade_detail = array(
 	"requires_deactivated_plugins" => 1,
 );
 
-@set_time_limit(0);
+if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+	@set_time_limit(0);
 
 function upgrade5_dbchanges()
 {

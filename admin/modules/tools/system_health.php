@@ -184,7 +184,8 @@ if($mybb->input['action'] == "utf8_conversion")
 			flash_message($lang->error_utf8mb4_version, 'error');
 			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
 		}
-		@set_time_limit(0);
+		if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+			@set_time_limit(0);
 
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');

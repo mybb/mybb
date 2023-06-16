@@ -14,7 +14,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-@set_time_limit(0);
+if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+	@set_time_limit(0);
 
 $page->add_breadcrumb_item($lang->file_verification, "index.php?module=tools-file_verification");
 

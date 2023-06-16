@@ -19,7 +19,8 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
+if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+	@set_time_limit(0);
 
 /* Nothing to do from 1.4.5 to 1.4.13 */
 
