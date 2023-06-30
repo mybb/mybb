@@ -2485,11 +2485,16 @@ function install_done()
 	if(is_writable('./'))
 	{
 		$lock = @fopen('./lock', 'w');
-		$written = @fwrite($lock, '1');
-		@fclose($lock);
-		if($written)
+
+		if($lock !== false)
 		{
-			echo $lang->done_step_locked;
+			$written = @fwrite($lock, '1');
+			@fclose($lock);
+
+			if($written)
+			{
+				echo $lang->done_step_locked;
+			}
 		}
 	}
 	if(!$written)
