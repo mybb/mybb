@@ -24,7 +24,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function register()
     {
-        $this->app->bind(CoreExtension::class, function (Container $container) {
+        $this->app->singleton(CoreExtension::class, function (Container $container) {
             return new CoreExtension(
                 $container->make(MyBB::class),
                 $container->make(MyLanguage::class),
@@ -33,24 +33,24 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->bind(ThemeExtension::class, function (Container $container) {
+        $this->app->singleton(ThemeExtension::class, function (Container $container) {
             return new ThemeExtension(
                 $container->make(MyBB::class),
                 $container->make(DB_Base::class)
             ) ;
         });
 
-        $this->app->bind(LangExtension::class, function (Container $container) {
+        $this->app->singleton(LangExtension::class, function (Container $container) {
             return new LangExtension(
                 $container->make(MyLanguage::class)
             );
         });
 
-        $this->app->bind(UrlExtension::class, function () {
+        $this->app->singleton(UrlExtension::class, function () {
             return new UrlExtension();
         });
 
-        $this->app->bind(LoaderInterface::class, function () {
+        $this->app->singleton(LoaderInterface::class, function () {
             $loader = new FilesystemLoader();
 
             $themeName = 'core.default'; // TODO
@@ -77,14 +77,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return $loader;
         });
 
-        $this->app->bind('twig.options', function () {
+        $this->app->singleton('twig.options', function () {
             return [
                 'debug' => true, // TODO: In live environments this should be false
                 'cache' => __DIR__ . '/../../../cache/views',
             ];
         });
 
-        $this->app->bind(Environment::class, function (Container $container) {
+        $this->app->singleton(Environment::class, function (Container $container) {
             $env = new Environment(
                 $container->make(LoaderInterface::class),
                 $container->make('twig.options')
