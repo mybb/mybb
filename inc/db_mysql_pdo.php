@@ -49,84 +49,14 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 	{
 		global $plugins;
 
-		$duration = format_time_duration($qtime);
-		$queryText = htmlspecialchars_uni($string);
-
-		$debug_extra = '';
-		if ($plugins->current_hook) {
-			$debug_extra = <<<HTML
-<div style="float_right">(Plugin Hook: {$plugins->current_hook})</div>
-HTML;
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->querylist[$this->query_count]['plugin_hook'] = $plugins->current_hook;
 		}
 
 		if (preg_match('/^\\s*SELECT\\b/i', $string) === 1) {
 			$query = $this->current_link->query("EXPLAIN {$string}");
 
-			$this->explain .= <<<HTML
-<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
-	<tr>
-		<td colspan="8" style="background-color: #ccc;">
-			{$debug_extra}<div><strong>#{$this->query_count} - Select Query</strong></div>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="8" style="background-color: #fefefe;">
-			<span style="font-family: Courier; font-size: 14px;">{$queryText}</span>
-		</td>
-	</tr>
-	<tr style="background-color: #efefef">
-		<td><strong>Table</strong></td>
-		<td><strong>Type</strong></td>
-		<td><strong>Possible Keys</strong></td>
-		<td><strong>Key</strong></td>
-		<td><strong>Key Length</strong></td>
-		<td><strong>Ref</strong></td>
-		<td><strong>Rows</strong></td>
-		<td><strong>Extra</strong></td>
-	</tr>
-HTML;
-
-			while ($table = $query->fetch(PDO::FETCH_ASSOC)) {
-				$this->explain .= <<<HTML
-<tr bgcolor="#ffffff">
-	<td>{$table['table']}</td>
-	<td>{$table['type']}</td>
-	<td>{$table['possible_keys']}</td>
-	<td>{$table['key']}</td>
-	<td>{$table['key_len']}</td>
-	<td>{$table['ref']}</td>
-	<td>{$table['rows']}</td>
-	<td>{$table['Extra']}</td>
-</tr>
-HTML;
-			}
-
-			$this->explain .= <<<HTML
-<tr>
-	<td colspan="8" style="background-color: #fff;">
-		Query Time: {$duration}
-	</td>
-</tr>
-</table>
-<br />
-HTML;
-		} else {
-			$this->explain .= <<<HTML
-<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
-	<tr>
-		<td style="background-color: #ccc;">
-			{$debug_extra}<div><strong>#{$this->query_count} - Write Query</strong></div>
-		</td>
-	</tr>
-	<tr style="background-color: #fefefe;">
-		<td><span style="font-family: Courier; font-size: 14px;">{$queryText}</span></td>
-	</tr>
-	<tr>
-		<td bgcolor="#ffffff">Query Time: {$duration}</td>
-	</tr>
-</table>
-<br/>
-HTML;
+			$this->querylist[$this->query_count]['plan'] = $query->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;

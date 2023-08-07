@@ -54,68 +54,16 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 
 	public function explain_query($string, $qtime)
 	{
-		$duration = format_time_duration($qtime);
-		$queryText = htmlspecialchars_uni($string);
+		global $plugins;
+
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->querylist[$this->query_count]['plugin_hook'] = $plugins->current_hook;
+		}
 
 		if (preg_match('/^\\s*SELECT\\b/i', $string) === 1) {
 			$query = $this->current_link->query("EXPLAIN {$string}");
 
-			$this->explain .= <<<HTML
-<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
-	<tr>
-		<td colspan="8" style="background-color: #ccc;">
-			<strong>#{$this->query_count} - Select Query</strong>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="8" style="background-color: #fefefe;">
-			<span style=\"font-family: Courier; font-size: 14px;">{$queryText}</span>
-		</td>
-	<tr style="background-color: #efefef">
-		<td>
-			<strong>Info</strong>
-		</td>
-	</tr>
-HTML;
-
-			while ($table = $query->fetch(PDO::FETCH_ASSOC)) {
-				$this->explain .= <<<HTML
-	<tr style="background-color: #fff">
-		<td>{$table['QUERY PLAN']}</td>
-	</tr>
-HTML;
-			}
-
-			$this->explain .= <<<HTML
-	<tr>
-		<td colspan="8" style="background-color: #fff;">
-			Query Time: {$duration}
-		</td>
-	</tr>
-</table>
-<br />
-HTML;
-		} else {
-			$this->explain .= <<<HTML
-<table style="background-color: #666;" width="95%" cellpadding="4" cellspacing="1" align="center">
-	<tr>
-		<td style="background-color: #ccc;">
-			<strong>#{$this->query_count} - Write Query</strong>
-		</td>
-	</tr>
-	<tr style="background-color: #fefefe;">
-		<td>
-			<span style="font-family: Courier; font-size: 14px;">{$queryText}</span>
-		</td>
-	</tr>
-	<tr>
-		<td style="background-color: #fff">
-			Query Time: {$duration}
-		</td>
-	</tr>
-</table>
-<br />
-HTML;
+			$this->querylist[$this->query_count]['plan'] = $query->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;
