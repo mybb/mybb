@@ -747,6 +747,7 @@ class errorHandler {
 	 * Generates a backtrace if the server supports it.
 	 *
 	 * @return string The generated backtrace
+	 * @deprecated Use inc/functions.php's generate_backtrace() instead.
 	 */
 	function generate_backtrace($html=true, $strip=1, $trace=null)
 	{
