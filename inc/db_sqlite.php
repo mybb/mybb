@@ -276,6 +276,7 @@ class DB_SQLite implements DB_Base
 
 		$this->querylist[$this->query_count]['query'] = $string;
 		$this->querylist[$this->query_count]['time'] = $qtime;
+		$this->querylist[$this->query_count]['trace'] = generate_backtrace(false, 2);
 	}
 
 	/**
