@@ -277,13 +277,16 @@ class MyBB {
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
 
-		if($_SERVER['REQUEST_METHOD'] == "POST")
+		if(isset($_SERVER['REQUEST_METHOD']))
 		{
-			$this->request_method = "post";
-		}
-		else if($_SERVER['REQUEST_METHOD'] == "GET")
-		{
-			$this->request_method = "get";
+			if($_SERVER['REQUEST_METHOD'] == "POST")
+			{
+				$this->request_method = "post";
+			}
+			else if($_SERVER['REQUEST_METHOD'] == "GET")
+			{
+				$this->request_method = "get";
+			}
 		}
 
 		// If we've got register globals on, then kill them too
