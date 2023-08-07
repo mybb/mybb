@@ -81,6 +81,11 @@ class DefaultPage
 	{
 		global $mybb, $admin_session, $lang, $plugins;
 
+		if($mybb->debug_mode)
+		{
+			debug_page();
+		}
+
 		$args = array(
 			'this' => &$this,
 			'title' => &$title,
@@ -237,10 +242,6 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
 		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
-		if($mybb->debug_mode)
-		{
-			echo $db->explain;
-		}
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
