@@ -44,6 +44,15 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
+require_once MYBB_ROOT.'inc/src/Stopwatch/Stopwatch.php';
+require_once MYBB_ROOT.'inc/src/Stopwatch/Event.php';
+require_once MYBB_ROOT.'inc/src/Stopwatch/Period.php';
+
+$stopwatch = new \MyBB\Stopwatch\Stopwatch();
+
+$stopwatch->start('main');
+$stopwatch->start('core.init');
+
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
@@ -233,6 +242,8 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 
 require_once __DIR__.'/src/bootstrap.php';
 
+MyBB\app()->instance(\MyBB\Stopwatch\Stopwatch::class, $stopwatch);
+
 use Illuminate\Support\Arr;
 
 MyBB\app('config')->set(
@@ -246,6 +257,8 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }
+
+$stopwatch->stop('core.init');
 
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))

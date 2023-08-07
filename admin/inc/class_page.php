@@ -1,4 +1,7 @@
 <?php
+
+use MyBB\Stopwatch\Stopwatch;
+
 /**
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
@@ -203,7 +206,9 @@ lang.saved = \"{$lang->saved}\";
 	 */
 	function output_footer($quit=true)
 	{
-		global $mybb, $maintimer, $db, $lang, $plugins;
+		global $mybb, $db, $lang, $plugins;
+
+		$stopwatch = \MyBB\app(Stopwatch::class);
 
 		$args = array(
 			'this' => &$this,
@@ -214,7 +219,7 @@ lang.saved = \"{$lang->saved}\";
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
-		$totaltime = format_time_duration($maintimer->stop());
+		$totaltime = format_time_duration($stopwatch->stop('main'));
 		$querycount = $db->query_count;
 
 		if(my_strpos(getenv("REQUEST_URI"), "?"))
