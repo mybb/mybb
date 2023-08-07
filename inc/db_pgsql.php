@@ -375,48 +375,17 @@ class DB_PgSQL implements DB_Base
 	 */
 	function explain_query($string, $qtime)
 	{
+		global $plugins;
+
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->querylist[$this->query_count]['plugin_hook'] = $plugins->current_hook;
+		}
+
 		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = pg_query($this->current_link, "EXPLAIN $string");
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>Info</strong></td>\n".
-				"</tr>\n";
 
-			while($table = pg_fetch_assoc($query))
-			{
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['QUERY PLAN']."</td>\n".
-					"</tr>\n";
-			}
-			$this->explain .=
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
-		}
-		else
-		{
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #fefefe;\">\n".
-				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
+			$this->querylist[$this->query_count]['plan'] = pg_fetch_all($query);
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;

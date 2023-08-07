@@ -388,67 +388,15 @@ class DB_MySQLi implements DB_Base
 	{
 		global $plugins;
 
-		$debug_extra = '';
-		if($plugins->current_hook)
-		{
-			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->querylist[$this->query_count]['plugin_hook'] = $plugins->current_hook;
 		}
+
 		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = mysqli_query($this->current_link, "EXPLAIN $string");
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>Table</strong></td>\n".
-				"<td><strong>Type</strong></td>\n".
-				"<td><strong>Possible Keys</strong></td>\n".
-				"<td><strong>Key</strong></td>\n".
-				"<td><strong>Key Length</strong></td>\n".
-				"<td><strong>Ref</strong></td>\n".
-				"<td><strong>Rows</strong></td>\n".
-				"<td><strong>Extra</strong></td>\n".
-				"</tr>\n";
 
-			while($table = mysqli_fetch_assoc($query))
-			{
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['table']."</td>\n".
-					"<td>".$table['type']."</td>\n".
-					"<td>".$table['possible_keys']."</td>\n".
-					"<td>".$table['key']."</td>\n".
-					"<td>".$table['key_len']."</td>\n".
-					"<td>".$table['ref']."</td>\n".
-					"<td>".$table['rows']."</td>\n".
-					"<td>".$table['Extra']."</td>\n".
-					"</tr>\n";
-			}
-			$this->explain .=
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
-		}
-		else
-		{
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Write Query</strong></div></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #fefefe;\">\n".
-				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
+			$this->querylist[$this->query_count]['plan'] = mysqli_fetch_all($query);
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;
