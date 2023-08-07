@@ -27,7 +27,6 @@ require_once MYBB_ROOT . 'inc/functions.php';
 require_once MYBB_ROOT . 'inc/class_core.php';
 require_once MYBB_ROOT . 'inc/class_datacache.php';
 require_once MYBB_ROOT . 'inc/class_language.php';
-require_once MYBB_ROOT . 'inc/class_timers.php';
 
 require_once MYBB_ROOT . 'inc/db_base.php';
 require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
