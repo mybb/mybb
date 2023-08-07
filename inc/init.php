@@ -240,7 +240,11 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 	}
 }
 
+$stopwatch->start('core.init.bootstrap');
+
 require_once __DIR__.'/src/bootstrap.php';
+
+$stopwatch->stop('core.init.bootstrap');
 
 MyBB\app()->instance(\MyBB\Stopwatch\Stopwatch::class, $stopwatch);
 
