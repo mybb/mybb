@@ -201,7 +201,7 @@ function createDatabaseStructure(array $config, DB_Base $db): void
 
     if ($file !== null && file_exists($filePath)) {
         /** @var array $tables */
-        require_once $filePath;
+        require $filePath;
 
         foreach ($tables as $val) {
             $val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['database']['table_prefix'] . '\\1\\2', $val);
