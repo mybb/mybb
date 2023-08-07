@@ -1,5 +1,8 @@
 <?php
 
+use MyBB\Stopwatch\Stopwatch;
+
+use function MyBB\app;
 use function MyBB\template;
 
 /**
@@ -134,6 +137,8 @@ class postParser
 	{
 		global $plugins, $mybb;
 
+		$stopwatchPeriod = app(Stopwatch::class)->start(group: 'core.parser.parse');
+
 		$original_message = $message;
 
 		$this->clear_needed = false;
@@ -267,6 +272,8 @@ class postParser
 		}
 
 		$message = $plugins->run_hooks('parse_message_end', $message);
+
+		$stopwatchPeriod->stop();
 
 		if ($this->output_allowed($original_message, $message) === true)
 		{
@@ -2004,6 +2011,8 @@ class postParser
 			'XML_ERR_TAG_NAME_MISMATCH' => 76, // the parser may output tags closed in different levels and siblings
 		);
 
+		$stopwatchPeriod = app(Stopwatch::class)->start(group: 'core.parser.validate');
+
 		libxml_use_internal_errors(true);
 		@libxml_disable_entity_loader(true);
 
@@ -2012,6 +2021,8 @@ class postParser
 		$errors = libxml_get_errors();
 
 		libxml_use_internal_errors(false);
+
+		$stopwatchPeriod->stop();
 
 		if(
 			$errors &&
