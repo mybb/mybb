@@ -1,0 +1,92 @@
+:root {
+	--bg-color-1: #DDD;
+	--bd-color-1: #DDD;
+	--fg-color-1: #222;
+
+	--bg-color-darken-1: lch(0 0 0 / 0.05);
+
+	--page-bg-color: #FFF;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg-color-1: #333;
+		--bd-color-1: #444;
+		--fg-color-1: #DDD;
+
+		--bg-color-darken-1: lch(0 0 0 / 0.2);
+
+		--page-bg-color: #1D1D1D;
+	}
+}
+
+.proportion-graph__item:nth-child(1) { --color: hsl(230, 80%, 60%); }
+.proportion-graph__item:nth-child(2) { --color: hsl(40, 80%, 60%); }
+.proportion-graph__item:nth-child(3) { --color: hsl(330, 80%, 60%); }
+.proportion-graph__item:nth-child(4) { --color: hsl(80, 80%, 60%); }
+
+
+:root {
+	--bg-step: 15%;
+	--bd-step: 15%;
+	--fg-step: 10%;
+
+	--bg-color-2: color-mix(in srgb, var(--bg-color-1), transparent calc(var(--bg-step) * 2));
+
+	--bd-color-2: color-mix(in srgb, var(--bd-color-1), transparent calc(var(--bd-step) * 2));
+
+	--fg-color-2: color-mix(in srgb, var(--fg-color-1), transparent calc(var(--fg-step) * 2));
+	--fg-color-3: color-mix(in srgb, var(--fg-color-1), transparent calc(var(--fg-step) * 3));
+
+
+	--page-fg-color: var(--fg-color-1);
+
+	color-scheme: light dark;
+}
+
+pre { margin: 0; white-space: pre-wrap; }
+
+
+body { background-color: var(--page-bg-color); font-family: sans-serif; color: var(--page-fg-color); }
+
+header { display: flex; padding: 10px; align-items: center; }
+.logotype, h1 { display: inline; color: var(--fg-color-1); }
+.logotype svg { height: 45px; width: auto; fill: var(--fg-color-1); }
+h1 { margin-left: 12px; font-size: 32px; font-weight: normal; }
+
+article { padding: 10px; }
+
+section h2 { margin-bottom: 10px; border-bottom: solid 2px var(--bg-color-1); font-size: 1.5em; font-weight: normal; line-height: 2; color: var(--fg-color-1); }
+section h2:only-child { display: none; }
+
+h3 { font-size: 1.1em; color: var(--fg-color-3); }
+
+ul { padding: 0; border: solid 1px var(--bd-color-1); border-radius: 4px; list-style-type: none; }
+ul li { margin: 0; padding: 6px; }
+ul li:not(:last-child) { border-bottom: solid 1px var(--bd-color-1); }
+
+dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; }
+dl > div { padding: 10px; border: solid 1px var(--bd-color-1); border-radius: 4px; }
+dt { margin-bottom: 6px; font-size: 0.8em; color: var(--fg-color-3); }
+dd { margin: 0; font-size: 0.9em; }
+
+table { width: 100%; border-collapse: collapse; }
+table :is(th, td) { border: solid 1px var(--bd-color-1); font-size: 0.95em; }
+table th { padding: 4px 6px; background-color: var(--bg-color-1); color: var(--fg-color-3); white-space: nowrap; }
+table td { padding: 6px; text-align: center; color: var(--fg-color-2); }
+
+table table :is(th, td) { border-color: var(--bd-color-2); }
+table table th { background-color: var(--bg-color-2); font-size: 0.75em; font-weight: normal; color: var(--fg-color-3); }
+table table td { color: var(--fg-color-2); }
+
+table .raw { text-align: left; }
+table .numeric { text-align: right; }
+
+details summary { padding: 2px; font-size: 0.8em; color: var(--fg-color-3); cursor: pointer; }
+details pre { margin: 2px 0; padding: 6px; background: var(--bg-color-darken-1); border-radius: 4px; line-height: 1.5; color: var(--fg-color-2); }
+
+.proportion-graph { margin-bottom: 30px; }
+.proportion-graph__legend > div { background: color-mix(in hsl, var(--color) 10%, transparent); border-color: var(--color); }
+.proportion-graph__legend > div dt { color: var(--fg-color-1); }
+.proportion-graph__visual { display: flex; width: 100%; }
+.proportion-graph__visual div { margin: 0 2px; height: 10px; background-color: var(--color); }

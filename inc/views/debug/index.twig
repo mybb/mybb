@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="robots" content="noindex" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>MyBB Debug Information</title>
+        <link rel="stylesheet" href="{{ mybb.settings.bburl }}/jscripts/debug.css" />
+    </head>
+    <body>
+        <header>
+            <div class="logotype" title="MyBB">
+                {% include 'logotype.svg' %}
+            </div>
+            <h1>Debug Information</h1>
+        </header>
+        <article>
+            {% import 'debug/components.twig' as components %}
+
+            {% macro visualize(data, type, title) %}
+                {% if data|length > 0 %}
+                    <h3>{{ title|raw }}</h3>
+
+                    {% if type == 'definitionList' %}
+                        {{ components.definitionList(data) }}
+                    {% elseif type == 'list' %}
+                        {{ components.list(data) }}
+                    {% elseif type == 'proportionGraph' %}
+                        {{ components.proportionGraph(data) }}
+                    {% elseif type == 'stopwatchGroupEvents' %}
+                        {{ components.stopwatchGroupEvents(data) }}
+                    {% elseif type == 'databaseQueries' %}
+                        {{ components.databaseQueries(data) }}
+                    {% elseif type == 'cacheCalls' %}
+                        {{ components.cacheCalls(data) }}
+                    {% endif %}
+                {% endif %}
+            {% endmacro %}
+
+            <section>
+                {{ _self.visualize(data.timing, 'definitionList', 'Timing') }}
+            </section>
+
+            <section>
+                {{ _self.visualize(data.stagesTiming, 'proportionGraph', 'Timing by Stage') }}
+            </section>
+
+            <section>
+                {{ _self.visualize(data.resources, 'definitionList', 'Resources') }}
+            </section>
+
+            <section>
+                {{ _self.visualize(data.status, 'definitionList', 'Status') }}
+            </section>
+
+            <section>
+                {{ _self.visualize(data.opcache, 'definitionList', 'OPcache') }}
+            </section>
+
+            <section>
+                <h2>Cache</h2>
+                {{ _self.visualize(data.cache, 'cacheCalls', 'Cache Calls (<code>' ~ mybb.config.cache_store ~ '</code>)') }}
+            </section>
+
+            <section>
+                <h2>Database</h2>
+                {{ _self.visualize(data.dbConnections, 'list', 'Connections') }}
+                {{ _self.visualize(data.dbQueries, 'databaseQueries', 'Queries (' ~ data.dbQueries|length ~ ')') }}
+            </section>
+
+            <section>
+                <h2>Processing</h2>
+                {{ _self.visualize(data.parserParsingEvents, 'stopwatchGroupEvents', 'MyCode Parsing') }}
+                {{ _self.visualize(data.parserValidationEvents, 'stopwatchGroupEvents', 'MyCode Validation') }}
+            </section>
+
+            <section>
+                <h2>View</h2>
+                {{ _self.visualize(data.dbTemplates, 'list', 'DB Templates Used (Loaded for this Page)') }}
+                {{ _self.visualize(data.dbTemplatesUncached, 'list', 'DB Templates Requiring Additional Calls (Not Cached at Startup)') }}
+                {{ _self.visualize(data.twigTemplateEvents, 'stopwatchGroupEvents', 'Twig Templates') }}
+                {{ _self.visualize(data.assetPublishEvents, 'stopwatchGroupEvents','Asset Publishing') }}
+            </section>
+        </article>
+    </body>
+</html>

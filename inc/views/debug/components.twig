@@ -1,0 +1,183 @@
+{% macro format_time_duration(time) -%}
+    {%- set reference = (1000000 * time)|round(2) -%}
+
+    {%- if reference < 1000 -%}
+        {{- (time * 1000000)|round(2)|number_format ~ " μs" -}}
+    {%- elseif reference >= 1000 and reference < 1000000 -%}
+        {{- (time * 1000)|round(2)|number_format ~ " ms" -}}
+    {%- else -%}
+        {{- time|round(3) ~ " seconds" -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro format_memory(value) -%}
+    {{- (value / 1024 / 1024)|round(4) ~ ' MiB' -}}
+{%- endmacro %}
+
+
+{% macro definitionList(data) %}
+    <dl>
+        {% for title, value in data %}
+            <div class="entry">
+                <dt>{{ title|raw }}</dt>
+                <dd>{{ value }}</dd>
+            </div>
+        {% endfor %}
+    </dl>
+{% endmacro %}
+
+{% macro list(data) %}
+    <ul>
+        {% for value in data %}
+            <li><code>{{ value }}</code></li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro proportionGraph(data) %}
+    {% set total = data|reduce((carry, value) => carry + value, 0) %}
+
+    <div class="proportion-graph">
+
+        <dl class="proportion-graph__legend">
+            {% for title, value in data %}
+                {% set ratio = (value / total) * 100 %}
+
+                <div class="proportion-graph__item">
+                    <dt>{{ title|raw }}</dt>
+                    <dd>{{ _self.format_time_duration(value) }} &mdash; {{ ratio|round(2) }}%</dd>
+                </div>
+            {% endfor %}
+        </dl>
+
+        <div class="proportion-graph__visual">
+            {% for value in data %}
+                {% set ratio = (value / total) * 100 %}
+
+                <div class="proportion-graph__item" style="width:{{ ratio }}%"></div>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro cacheCalls(data) %}
+    {% set time = data|reduce((carry, event) => carry + event.time, 0) %}
+
+    <table>
+        <thead>
+            <tr>
+                <th width="10%"># ({{ data|length }})</th>
+                <th width="10%">Method</th>
+                <th width="40%">Key</th>
+                <th width="10%">Status</th>
+                <th width="20%">Time ({{ _self.format_time_duration(time) }})</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in data %}
+                <tr>
+                    <td class="numeric">{{ loop.index }}</td>
+                    <td>{{ entry.method }}</td>
+                    <td class="raw"><code>{{ entry.key }}</code></td>
+                    <td>{{ entry.hit ? 'HIT' : 'MISS' }}</td>
+                    <td class="numeric">{{ _self.format_time_duration(entry.time) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro databaseQueries(queries) %}
+    {% for query in queries %}
+        <table>
+            <thead>
+                <tr>
+                    <th width="10%" class="raw">#{{ loop.index }}</th>
+                    <th>
+                        {% if query.plugin_hook %}
+                            Plugin Hook: <code>{{ query.plugin_hook }}</code>
+                        {% endif %}
+                    </th>
+                    <th width="10%" class="numeric">{{ _self.format_time_duration(query.time) }}</th>
+                </tr>
+            </thead>
+            <tr>
+                <td colspan="3" class="raw"><code>{{ query.query }}</code></td>
+            </tr>
+            {% if query.plan|length > 0 %}
+                <tr>
+                    <td colspan="3">
+                        <table>
+                            <tr>
+                                {% for column in query.plan|first|keys %}
+                                    <th>{{ column }}</th>
+                                {% endfor %}
+                            </tr>
+
+                            {% for row in query.plan %}
+                                <tr>
+                                    {% for cell in row %}
+                                        <td class="raw">
+                                            <code>
+                                                <pre>{{ cell }}</pre>
+                                            </code>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td colspan="3" class="raw">
+                    <details>
+                        <summary>Stack Trace</summary>
+                        <pre>{{ query.trace }}</pre>
+                    </details>
+                </td>
+            </tr>
+        </table>
+        <br>
+    {% endfor %}
+{% endmacro %}
+
+{% macro stopwatchGroupEvents(events) %}
+    {% set calls = events|reduce((carry, event) => carry + event.periods|length, 0) %}
+    {% set time = events|reduce((carry, event) => carry + event.duration, 0) %}
+    {% set peakMemory = events|reduce((carry, event) => max(carry, event.peakMemory), 0) %}
+
+    <table>
+        <thead>
+            <tr>
+                <th width="50%">Name ({{ events|length }})</th>
+                <th width="10%">Calls ({{ calls }})</th>
+                <th width="20%">Time ({{ _self.format_time_duration(time) }})</th>
+                <th width="20%">Peak Memory ({{ _self.format_memory(peakMemory) }})</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, event in events %}
+                {% set periods = event.periods|length %}
+
+                <tr>
+                    <td class="raw"><code>{{ key is same as loop.index ? '#' ~ (key + 1) : key }}</code></td>
+                    <td class="numeric">{{ periods }}</td>
+                    <td class="numeric">{{ _self.format_time_duration(event.duration) }}</td>
+                    <td class="numeric">{{ _self.format_memory(event.peakMemory) }}</td>
+                </tr>
+
+                {% if event.periods|length > 1 %}
+                    {% for period in event.periods %}
+                        <tr>
+                            <td></td>
+                            <td>#{{ loop.index }}</td>
+                            <td>{{ _self.format_time_duration(period.duration) }}</td>
+                            <td>{{ _self.format_memory(period.peakMemory) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
