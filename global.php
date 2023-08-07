@@ -19,6 +19,8 @@ $shutdown_queries = $shutdown_functions = array();
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
 
+$stopwatch->start('core.global');
+
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
 
@@ -1129,4 +1131,4 @@ if ($colcookie) {
 // Run hooks for end of global.php
 $plugins->run_hooks('global_end');
 
-$globaltime = $maintimer->getTime();
+$stopwatch->stop('core.global');

@@ -16,24 +16,31 @@
 function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
-	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	global $debug, $templatecache, $templatelist, $parsetime;
+
+	$stopwatch = \MyBB\app(\MyBB\Stopwatch\Stopwatch::class);
+
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
-	$totaltime = format_time_duration($maintimer->stop());
+
+	$mainDuration = $stopwatch->stop('main');
+
+	$totaltime = format_time_duration($mainDuration);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
+
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
-			$phptime = $maintimer->totaltime - $db->query_time;
+			$phptime = $mainDuration - $db->query_time;
 			$query_time = $db->query_time;
 
-			if($maintimer->totaltime > 0)
+			if($mainDuration > 0)
 			{
-				$percentphp = number_format((($phptime / $maintimer->totaltime) * 100), 2);
-				$percentsql = number_format((($query_time / $maintimer->totaltime) * 100), 2);
+				$percentphp = number_format((($phptime / $mainDuration) * 100), 2);
+				$percentsql = number_format((($query_time / $mainDuration) * 100), 2);
 			}
 			else
 			{

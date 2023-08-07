@@ -2,6 +2,7 @@
 
 namespace MyBB;
 
+use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\BreadcrumbManager;
 use Psr\Container\ContainerInterface;
 
@@ -38,5 +39,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 $mybb->settings['bburl']
             );
         });
+
+        $this->app->singleton(Stopwatch::class);
     }
 }
