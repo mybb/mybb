@@ -3,6 +3,7 @@
 namespace MyBB;
 
 use Illuminate\Container\Container;
+use MyBB\Stopwatch\Stopwatch;
 use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 
@@ -38,10 +39,16 @@ function app(?string $className = null, array $parameters = [])
  */
 function template(string $name, array $context = [])
 {
+    $stopwatchPeriod = app(Stopwatch::class)->start($name, 'core.view.template');
+
     /** @var Environment $twig */
     $twig = app(Environment::class);
 
-    return $twig->render($name, $context);
+    $result = $twig->render($name, $context);
+
+    $stopwatchPeriod->stop();
+
+    return $result;
 }
 
 /**
