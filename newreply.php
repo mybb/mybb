@@ -595,6 +595,10 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						my_unsetcookie("multiquote");
 					}
 				}
+				if(is_array($quoted_ids) && count($quoted_ids) > 0)
+				{
+					$quoted_ids = implode("|", $quoted_ids);
+				}
 			}
 		}
 

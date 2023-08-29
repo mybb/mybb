@@ -572,17 +572,14 @@ class session
 	 */
 	function get_special_locations()
 	{
-		global $mybb;
+		global $mybb, $db;
 		$array = array('1' => '', '2' => '');
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0 && $mybb->get_input('fid', MyBB::INPUT_INT) < 4294967296)
 		{
 			$array[1] = $mybb->get_input('fid', MyBB::INPUT_INT);
-			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
-			global $db;
-
 			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0 && $mybb->get_input('tid', MyBB::INPUT_INT) < 4294967296)
 			{
 				$array[2] = $mybb->get_input('tid', MyBB::INPUT_INT);
@@ -596,11 +593,17 @@ class session
 				);
 				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 				$post = $db->fetch_array($query);
-				$array[2] = $post['tid'];
+				if($post)
+				{
+					$array[2] = $post['tid'];
+				}
 			}
 
 			$thread = get_thread($array[2]);
-			$array[1] = $thread['fid'];
+			if($thread))
+			{
+				$array[1] = $thread['fid'];
+			}
 		}
 		return $array;
 	}

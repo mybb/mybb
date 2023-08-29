@@ -997,7 +997,7 @@ function get_post_attachments($id, &$post)
 
 				if(!$attachment['dateuploaded'])
 				{
-					$attachment['dateuploaded'] = $attachment['dateline'];
+					$attachment['dateuploaded'] = $post['dateline'];
 				}
 				$attachdate = my_date('normal', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
@@ -1030,7 +1030,7 @@ function get_post_attachments($id, &$post)
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
 						{
-							$thumblist .= "<br />";
+							$post['thumblist'] .= "<br />";
 							$tcount = 0;
 						}
 						++$tcount;
@@ -1046,7 +1046,7 @@ function get_post_attachments($id, &$post)
 							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 							if($tcount == 5)
 							{
-								$thumblist .= "<br />";
+								$post['thumblist'] .= "<br />";
 								$tcount = 0;
 							}
 							++$tcount;

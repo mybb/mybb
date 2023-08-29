@@ -427,6 +427,7 @@ if($mybb->input['action'] == "profile")
 		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
 
+	$awaysection = '';
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$awaycheck = array('', '');
@@ -746,6 +747,7 @@ if($mybb->input['action'] == "profile")
 		$customtitle = "";
 	}
 
+	$website = '';
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
 		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");

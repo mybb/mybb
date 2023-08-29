@@ -1456,7 +1456,7 @@ if($mybb->input['action'] == "resendactivation")
 	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
-	if($activation['validated'] == 1)
+	if($activation && $activation['validated'] == 1)
 	{
 		error($lang->error_activated_by_admin);
 	}

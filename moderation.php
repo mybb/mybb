@@ -40,6 +40,12 @@ $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 $pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 $modal = $mybb->get_input('modal', MyBB::INPUT_INT);
 
+if($mybb->user['uid'] == 0)
+{
+	error_no_permission();
+}
+
+
 if($pid)
 {
 	$post = get_post($pid);
@@ -126,7 +132,6 @@ if(in_array($mybb->input['action'], $log_multithreads_actions))
 
 	unset($tids);
 }
-
 $mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
