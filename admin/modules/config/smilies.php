@@ -150,7 +150,7 @@ if($mybb->input['action'] == "edit")
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
-	if(!$smilie))
+	if(!$smilie)
 	{
 		flash_message($lang->error_invalid_smilie, 'error');
 		admin_redirect("index.php?module=config-smilies");

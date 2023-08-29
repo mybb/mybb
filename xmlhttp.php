@@ -992,7 +992,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	$plugins->run_hooks("xmlhttp_username_availability");
 
-	if(!$user)
+	if($user)
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
 		echo json_encode($lang->username_taken);

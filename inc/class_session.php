@@ -600,7 +600,7 @@ class session
 			}
 
 			$thread = get_thread($array[2]);
-			if($thread))
+			if($thread)
 			{
 				$array[1] = $thread['fid'];
 			}

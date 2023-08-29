@@ -132,6 +132,7 @@ if(in_array($mybb->input['action'], $log_multithreads_actions))
 
 	unset($tids);
 }
+
 $mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
