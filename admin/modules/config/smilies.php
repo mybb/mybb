@@ -150,7 +150,7 @@ if($mybb->input['action'] == "edit")
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
-	if(empty($smilie['sid']))
+	if(!$smilie))
 	{
 		flash_message($lang->error_invalid_smilie, 'error');
 		admin_redirect("index.php?module=config-smilies");
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "delete")
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
-	if(empty($smilie['sid']))
+	if(!$smilie)
 	{
 		flash_message($lang->error_invalid_smilie, 'error');
 		admin_redirect("index.php?module=config-smilies");

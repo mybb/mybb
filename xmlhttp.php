@@ -89,7 +89,7 @@ if($loadstyle != "def='1'")
 	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
 	$theme = $db->fetch_array($query);
 
-	if(isset($theme['tid']) && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
 		if(isset($mybb->cookies['mybbtheme']))
 		{
@@ -992,7 +992,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	$plugins->run_hooks("xmlhttp_username_availability");
 
-	if(!empty($user['uid']))
+	if(!$user)
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
 		echo json_encode($lang->username_taken);

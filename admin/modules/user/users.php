@@ -219,7 +219,7 @@ if($mybb->input['action'] == "activate_user")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(empty($user['uid']) || $user['usergroup'] != 5)
+	if(!$user || $user['usergroup'] != 5)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -435,7 +435,7 @@ if($mybb->input['action'] == "edit")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(empty($user['uid']))
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -1759,7 +1759,7 @@ if($mybb->input['action'] == "delete")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(empty($user['uid']))
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");

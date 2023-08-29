@@ -3021,7 +3021,7 @@ switch($mybb->input['action'])
 
 		$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 		$user = get_user($uid);
-		if(empty($user['uid']) || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
+		if(!$user || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
 			error($lang->purgespammer_invalid_user);
 		}

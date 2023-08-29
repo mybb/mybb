@@ -47,7 +47,7 @@ if($mybb->input['action'] == "edit")
 
 	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$email = $db->fetch_array($query);
-	if(empty($email['mid']))
+	if(!$email)
 	{
 		flash_message($lang->error_invalid_mid, 'error');
 		admin_redirect("index.php?module=user-mass_mail");
@@ -300,7 +300,7 @@ if($mybb->input['action'] == "edit")
 	echo $form->generate_hidden_field("mid", $email['mid']);
 
 	$mid_add = '';
-	if($email['mid'])
+	if(!empty($email['mid']))
 	{
 		$mid_add = "&amp;mid={$email['mid']}";
 	}
@@ -632,7 +632,7 @@ if($mybb->input['action'] == "send")
 	{
 		$query = $db->simple_select("massemails", "*", "status=0 and mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 		$email = $db->fetch_array($query);
-		if(empty($email['mid']) && $mybb->input['step'] != 1)
+		if(!$email && $mybb->input['step'] != 1)
 		{
 			flash_message($lang->error_invalid_mid, 'error');
 			admin_redirect("index.php?module=user-mass_mail");
@@ -1283,7 +1283,7 @@ if($mybb->input['action'] == "send")
 
 		if($mybb->get_input('format') == 2)
 		{
-			if($mybb->get_input('automatic_text') && !$email['mid'])
+			if($mybb->get_input('automatic_text') && empty($email['mid']))
 			{
 				$automatic_text_check = true;
 				$text_display = 'display: none';

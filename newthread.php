@@ -39,7 +39,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$query = $db->simple_select("posts", "*", "tid='".$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
-	if(empty($thread['tid']) || empty($post['pid']) || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
+	if(!$thread || !$post || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
 	{
 		error($lang->invalidthread);
 	}

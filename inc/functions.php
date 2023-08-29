@@ -3906,7 +3906,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if(!empty($subscription) && $subscription['tid'])
+		if($subscription)
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}

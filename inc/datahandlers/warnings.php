@@ -68,7 +68,7 @@ class WarningsHandler extends DataHandler
 
 		$user = get_user($warning['uid']);
 
-		if(empty($user['uid']))
+		if(!$user)
 		{
 			$this->set_error('error_invalid_user');
 			return false;
@@ -100,7 +100,7 @@ class WarningsHandler extends DataHandler
 
 		$post = get_post($warning['pid']);
 
-		if(empty($post['pid']))
+		if(!$post)
 		{
 			$this->set_error('error_invalid_post');
 			return false;

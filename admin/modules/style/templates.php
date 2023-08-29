@@ -1435,7 +1435,7 @@ if($mybb->input['action'] == "delete_set")
 	$set = $db->fetch_array($query);
 
 	// Does the template not exist?
-	if(empty($set['sid']))
+	if(!$set)
 	{
 		flash_message($lang->error_invalid_template_set, 'error');
 		admin_redirect("index.php?module=style-templates");

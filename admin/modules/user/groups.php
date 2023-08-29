@@ -122,7 +122,7 @@ if($mybb->input['action'] == "approve_join_request")
 	$query = $db->simple_select("joinrequests", "*", "rid='".$mybb->input['rid']."'");
 	$request = $db->fetch_array($query);
 
-	if(empty($request['rid']))
+	if(!$request)
 	{
 		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "deny_join_request")
 	$query = $db->simple_select("joinrequests", "*", "rid='".$mybb->input['rid']."'");
 	$request = $db->fetch_array($query);
 
-	if(empty($request['rid']))
+	if(!$request)
 	{
 		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -181,7 +181,7 @@ if($mybb->input['action'] == "join_requests")
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
-	if(empty($group['gid']) || $group['type'] != 4)
+	if(!$group || $group['type'] != 4)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -316,7 +316,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
-	if(empty($group['gid']))
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-group");
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	$plugins->run_hooks("admin_user_groups_add_leader");
 
 	$user = get_user_by_username($mybb->input['username'], array('fields' => 'username'));
-	if(empty($user['uid']))
+	if(!$user)
 	{
 		$errors[] = $lang->error_invalid_username;
 	}
@@ -383,7 +383,7 @@ if($mybb->input['action'] == "leaders")
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
-	if(empty($group['gid']))
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -543,7 +543,7 @@ if($mybb->input['action'] == "delete_leader")
 		WHERE l.lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$leader = $db->fetch_array($query);
 
-	if(empty($leader['lid']))
+	if(!$leader)
 	{
 		flash_message($lang->error_invalid_group_leader, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -593,7 +593,7 @@ if($mybb->input['action'] == "edit_leader")
 	");
 	$leader = $db->fetch_array($query);
 
-	if(empty($leader['lid']))
+	if(!$leader)
 	{
 		flash_message($lang->error_invalid_group_leader, 'error');
 		admin_redirect("index.php?module=user-groups");
@@ -801,7 +801,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$usergroup = $db->fetch_array($query);
 
-	if(empty($usergroup['gid']))
+	if(!$usergroup)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-group");
@@ -1286,7 +1286,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$usergroup = $db->fetch_array($query);
 
-	if(empty($usergroup['gid']))
+	if(!$usergroup)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-groups");

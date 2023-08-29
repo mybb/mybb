@@ -26,7 +26,7 @@ switch($action)
 		if($announcement['fid'] != -1)
 		{
 			$forum = get_forum($announcement['fid']);
-			if(empty($forum['fid']) || $forum['password'] !== '')
+			if(!$forum || $forum['password'] !== '')
 			{
 				archive_error($lang->error_invalidforum);
 			}
@@ -80,7 +80,7 @@ switch($action)
 
 		// Fetch the forum this thread is in
 		$forum = get_forum($thread['fid']);
-		if(empty($forum['fid']) || $forum['password'] !== '')
+		if(!$forum || $forum['password'] !== '')
 		{
 			archive_error($lang->error_invalidforum);
 		}

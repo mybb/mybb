@@ -697,7 +697,7 @@ if(!$mybb->input['action'])
 		{
 			$user = get_user_by_username($mybb->input['username']);
 
-			if(empty($user['uid']))
+			if(!$user)
 			{
 				if($user_types == 1)
 				{

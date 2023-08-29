@@ -98,7 +98,7 @@ if($mybb->input['action'] == "delete")
 	$filter = $db->fetch_array($query);
 
 	// Does the filter not exist?
-	if(empty($filter['fid']))
+	if(!$filter)
 	{
 		flash_message($lang->error_invalid_filter, 'error');
 		admin_redirect("index.php?module=config-banning");

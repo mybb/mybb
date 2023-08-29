@@ -118,7 +118,7 @@ if($mybb->input['action'] == "delete")
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
-	if(empty($spider['sid']))
+	if(!$spider)
 	{
 		flash_message($lang->error_invalid_bot, 'error');
 		admin_redirect("index.php?module=config-spiders");
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "edit")
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
-	if(empty($spider['sid']))
+	if(!$spider)
 	{
 		flash_message($lang->error_invalid_bot, 'error');
 		admin_redirect("index.php?module=config-spiders");

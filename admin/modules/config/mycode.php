@@ -29,7 +29,7 @@ if($mybb->input['action'] == "toggle_status")
 	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$mycode = $db->fetch_array($query);
 
-	if(empty($mycode['cid']))
+	if(!$mycode)
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$mycode = $db->fetch_array($query);
 
-	if(empty($mycode['cid']))
+	if(!$mycode)
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
@@ -353,7 +353,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$mycode = $db->fetch_array($query);
 
-	if(empty($mycode['cid']))
+	if(!$mycode)
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");

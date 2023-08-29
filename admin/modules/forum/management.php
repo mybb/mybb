@@ -1922,7 +1922,7 @@ if($mybb->input['action'] == "deletemod")
 	$mod = $db->fetch_array($query);
 
 	// Does the forum not exist?
-	if(empty($mod['mid']))
+	if(!$mod)
 	{
 		flash_message($lang->error_invalid_moderator, 'error');
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
@@ -1992,7 +1992,7 @@ if($mybb->input['action'] == "delete")
 	$forum = $db->fetch_array($query);
 
 	// Does the forum not exist?
-	if(empty($forum['fid']))
+	if(!$forum)
 	{
 		flash_message($lang->error_invalid_forum, 'error');
 		admin_redirect("index.php?module=forum-management");

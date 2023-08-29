@@ -72,7 +72,7 @@ class session
 			{
 				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
 				$session = $db->fetch_array($query);
-				if(!empty($session) && $session['sid'])
+				if($session)
 				{
 					$this->sid = $session['sid'];
 				}
@@ -146,7 +146,7 @@ class session
 		$mybb->user = $db->fetch_array($query);
 
 		// Check the password if we're not using a session
-		if(empty($loginkey) || $loginkey !== $mybb->user['loginkey'] || !$mybb->user['uid'])
+		if(!$mybb->user || empty($loginkey) || $loginkey !== $mybb->user['loginkey'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;

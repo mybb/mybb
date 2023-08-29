@@ -24,7 +24,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	$query = $db->simple_select("warnings", "*", "wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'");
 	$warning = $db->fetch_array($query);
 
-	if(empty($warning['wid']))
+	if(!$warning)
 	{
 		flash_message($lang->error_invalid_warning, 'error');
 		admin_redirect("index.php?module=tools-warninglog");
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "view")
 	");
 	$warning = $db->fetch_array($query);
 
-	if(!$warning['wid'])
+	if(!$warning)
 	{
 		flash_message($lang->error_invalid_warning, 'error');
 		admin_redirect("index.php?module=tools-warninglog");

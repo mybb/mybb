@@ -583,7 +583,7 @@ class PMDataHandler extends DataHandler
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
-		if(!empty($draftcheck['pmid']))
+		if($draftcheck)
 		{
 			if($draftcheck['deletetime'])
 			{

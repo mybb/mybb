@@ -254,7 +254,7 @@ if($mybb->input['action'] == "edit")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(empty($task['tid']))
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -459,7 +459,7 @@ if($mybb->input['action'] == "delete")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(empty($task['tid']))
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(empty($task['tid']))
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -603,7 +603,7 @@ if($mybb->input['action'] == "run")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(empty($task['tid']))
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");

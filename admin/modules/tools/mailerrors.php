@@ -59,7 +59,7 @@ if($mybb->input['action'] == "view")
 	$query = $db->simple_select("mailerrors", "*", "eid='".$mybb->get_input('eid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
-	if(empty($log['eid']))
+	if(!$log)
 	{
 		exit;
 	}

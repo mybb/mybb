@@ -52,7 +52,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 
-	if(empty($user['uid']))
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}
@@ -710,7 +710,7 @@ if(!$mybb->input['action'])
 	}
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
-	if(empty($user['uid']))
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}

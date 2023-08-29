@@ -798,7 +798,7 @@ if($mybb->input['action'] == "delete")
 	$announcement = $db->fetch_array($query);
 
 	// Does the announcement not exist?
-	if(empty($announcement['aid']))
+	if(!$announcement)
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
 		admin_redirect("index.php?module=forum-announcements");

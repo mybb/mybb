@@ -52,7 +52,7 @@ if($mybb->input['action'] == "disable")
 	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$promotion = $db->fetch_array($query);
 
-	if(empty($promotion['pid']))
+	if(!$promotion)
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
@@ -98,7 +98,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$promotion = $db->fetch_array($query);
 
-	if(empty($promotion['pid']))
+	if(!$promotion)
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "enable")
 	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$promotion = $db->fetch_array($query);
 
-	if(empty($promotion['pid']))
+	if(!$promotion)
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");

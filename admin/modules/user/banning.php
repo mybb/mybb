@@ -62,7 +62,7 @@ if($mybb->input['action'] == "prune")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(empty($ban['uid']))
+	if(!$ban)
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -70,7 +70,7 @@ if($mybb->input['action'] == "prune")
 
 	$user = get_user($ban['uid']);
 
-	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
+	if(!$user || (is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -122,7 +122,7 @@ if($mybb->input['action'] == "lift")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(empty($ban['uid']))
+	if(!$ban)
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -130,7 +130,7 @@ if($mybb->input['action'] == "lift")
 
 	$user = get_user($ban['uid']);
 
-	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
+	if(!$user || (is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(empty($ban['uid']))
+	if(!$ban)
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -334,7 +334,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			if(empty($user['uid']))
+			if(!$user)
 			{
 				$errors[] = $lang->error_invalid_username;
 			}
