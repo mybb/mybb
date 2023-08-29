@@ -257,7 +257,7 @@ if($mybb->input['action'] == "edit")
 		$query = $db->simple_select("helpsections", "*", "sid = '".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 		$section = $db->fetch_array($query);
 
-		if(!$section['sid'])
+		if(empty($section['sid']))
 		{
 			flash_message($lang->error_missing_section_id, 'error');
 			admin_redirect("index.php?module=config-help_documents");
@@ -368,7 +368,7 @@ if($mybb->input['action'] == "edit")
 		$doc = $db->fetch_array($query);
 
 		// Invalid document?
-		if(!$doc['hid'])
+		if(empty($doc['hid']))
 		{
 			flash_message($lang->error_missing_hid, 'error');
 			admin_redirect("index.php?module=config-help_documents");
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "delete")
 			$section = $db->fetch_array($query);
 
 			// Invalid section?
-			if(!$section['sid'])
+			if(empty($section['sid']))
 			{
 				flash_message($lang->error_missing_section_id, 'error');
 				admin_redirect("index.php?module=config-help_documents");
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "delete")
 			$doc = $db->fetch_array($query);
 
 			// Invalid document?
-			if(!$doc['hid'])
+			if(empty($doc['hid']))
 			{
 				flash_message($lang->error_missing_hid, 'error');
 				admin_redirect("index.php?module=config-help_documents");

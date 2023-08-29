@@ -167,7 +167,7 @@ function task_delayedmoderation($task)
 					$mergetid = (int)$mergetid;
 					$mergethread = get_thread($mergetid);
 
-					if(!$mergethread['tid'])
+					if(empty($mergethread['tid']))
 					{
 						continue 2;
 					}

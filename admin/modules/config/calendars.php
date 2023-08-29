@@ -132,7 +132,7 @@ if($mybb->input['action'] == "permissions")
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
-	if(!$calendar['cid'])
+	if(empty($calendar['cid']))
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
@@ -280,7 +280,7 @@ if($mybb->input['action'] == "edit")
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
-	if(!$calendar['cid'])
+	if(empty($calendar['cid']))
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
@@ -380,7 +380,7 @@ if($mybb->input['action'] == "delete")
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
-	if(!$calendar['cid'])
+	if(empty($calendar['cid']))
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");

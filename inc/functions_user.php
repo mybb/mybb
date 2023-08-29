@@ -62,7 +62,7 @@ function validate_password_from_username($username, $password)
 
 	$user = get_user_by_username($username, $options);
 
-	if(!$user['uid'])
+	if(empty($user['uid']))
 	{
 		return false;
 	}

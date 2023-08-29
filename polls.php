@@ -1087,7 +1087,7 @@ if($mybb->input['action'] == "do_undovote")
 	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$poll = $db->fetch_array($query);
 
-	if(!$poll['pid'])
+	if(empty($poll['pid']))
 	{
 		error($lang->error_invalidpoll);
 	}

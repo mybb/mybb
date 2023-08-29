@@ -40,7 +40,7 @@ if($mybb->input['action'] == "joinrequests")
 $query = $db->simple_select("groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
 
-if(!$groupleader['uid'] && $mybb->usergroup['cancp'] != 1)
+if(empty($groupleader['uid']) && $mybb->usergroup['cancp'] != 1)
 {
 	error($lang->not_leader_of_this_group);
 }
@@ -63,7 +63,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 
 	$user = get_user_by_username($mybb->get_input('username'), $options);
 
-	if($user['uid'])
+	if(!empty($user['uid']))
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
 		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
@@ -101,14 +101,14 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 
 	$user = get_user_by_username($mybb->get_input('inviteusername'), $options);
 
-	if($user['uid'])
+	if(!empty($user['uid']))
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
 		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			$query = $db->simple_select("joinrequests", "rid", "uid = '".(int)$user['uid']."' AND gid = '".(int)$gid."'", array("limit" => 1));
 			$pendinginvite = $db->fetch_array($query);
-			if($pendinginvite['rid'])
+			if(!empty($pendinginvite['rid']))
 			{
 				error($lang->error_alreadyinvited);
 			}

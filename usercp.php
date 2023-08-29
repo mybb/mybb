@@ -3717,7 +3717,7 @@ if($mybb->input['action'] == "usergroups")
 
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."' AND invite='1'");
 		$joinrequest = $db->fetch_array($query);
-		if($joinrequest['rid'])
+		if(!empty($joinrequest['rid']))
 		{
 			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', MyBB::INPUT_INT));
 			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."'");
@@ -4600,7 +4600,7 @@ if(!$mybb->input['action'])
 		foreach($threadcache as $thread)
 		{
 			$plugins->run_hooks("usercp_latest_threads_thread");
-			if($thread['tid'])
+			if(!empty($thread['tid']))
 			{
 				$bgcolor = alt_trow();
 				$folder = '';

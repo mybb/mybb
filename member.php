@@ -849,7 +849,7 @@ if($mybb->input['action'] == "register")
 			elseif(!empty($referrername))
 			{
 				$ref = get_user_by_username($referrername);
-				if(!$ref['uid'])
+				if(empty($ref['uid']))
 				{
 					$errors[] = $lang->error_badreferrer;
 				}
@@ -1277,7 +1277,7 @@ if($mybb->input['action'] == "activate")
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
-		if(!$activation['uid'])
+		if(empty($activation['uid']))
 		{
 			error($lang->error_alreadyactivated);
 		}

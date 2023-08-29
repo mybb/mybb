@@ -125,7 +125,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("reportreasons", "*", "rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
 	$reason = $db->fetch_array($query);
 
-	if(!$reason['rid'])
+	if(empty($reason['rid']))
 	{
 		flash_message($lang->error_invalid_reason, 'error');
 		admin_redirect("index.php?module=config-report_reasons");
@@ -243,7 +243,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("reportreasons", "*", "rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
 	$reason = $db->fetch_array($query);
 
-	if(!$reason['rid'])
+	if(empty($reason['rid']))
 	{
 		flash_message($lang->error_invalid_reason, 'error');
 		admin_redirect("index.php?module=config-report_reasons");

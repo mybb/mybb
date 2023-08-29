@@ -4263,7 +4263,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		");
 		$user = $db->fetch_array($query);
 
-		if($user['uid'])
+		if(!empty($user['uid']))
 		{
 			$existing_ban = true;
 		}
@@ -4287,7 +4287,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$user = get_user_by_username($mybb->input['username'], $options);
 
-		if(!$user['uid'])
+		if(empty($user['uid']))
 		{
 			$errors[] = $lang->invalid_username;
 		}

@@ -62,7 +62,7 @@ if($mybb->input['action'] == "prune")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(!$ban['uid'])
+	if(empty($ban['uid']))
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -122,7 +122,7 @@ if($mybb->input['action'] == "lift")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(!$ban['uid'])
+	if(empty($ban['uid']))
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -182,7 +182,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
-		if(!$ban['uid'])
+		if(empty($ban['uid']))
 		{
 			$errors[] = $lang->error_invalid_username;
 		}

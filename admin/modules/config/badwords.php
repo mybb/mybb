@@ -139,7 +139,7 @@ if($mybb->input['action'] == "delete")
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?
-	if(!$badword['bid'])
+	if(empty($badword['bid']))
 	{
 		flash_message($lang->error_invalid_bid, 'error');
 		admin_redirect("index.php?module=config-badwords");
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "edit")
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?
-	if(!$badword['bid'])
+	if(empty($badword['bid']))
 	{
 		flash_message($lang->error_invalid_bid, 'error');
 		admin_redirect("index.php?module=config-badwords");

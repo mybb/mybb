@@ -129,7 +129,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
-	if(!$question['qid'])
+	if(empty($question['qid']))
 	{
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
-	if(!$question['qid'])
+	if(empty($question['qid']))
 	{
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
@@ -287,7 +287,7 @@ if($mybb->input['action'] == "disable")
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
-	if(!$question['qid'])
+	if(empty($question['qid']))
 	{
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "enable")
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
-	if(!$question['qid'])
+	if(empty($question['qid']))
 	{
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");

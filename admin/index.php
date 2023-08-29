@@ -108,7 +108,7 @@ if($mybb->input['action'] == "unlock")
 	{
 		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
 
-		if(!$user['uid'])
+		if(empty($user['uid']))
 		{
 			$error = $lang->error_invalid_username;
 		}
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "unlock")
 	else if($mybb->input['uid'])
 	{
 		$user = get_user($mybb->input['uid']);
-		if(!$user['uid'])
+		if(empty($user['uid']))
 		{
 			$error = $lang->error_invalid_uid;
 		}

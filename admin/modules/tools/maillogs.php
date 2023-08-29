@@ -59,7 +59,7 @@ if($mybb->input['action'] == "view")
 	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
-	if(!$log['mid'])
+	if(empty($log['mid']))
 	{
 		exit;
 	}
@@ -209,7 +209,7 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['fromname'], array('fields' => 'uid, username'));
 		$from_filter = $user['username'];
 
-		if(!$user['uid'])
+		if(empty($user['uid']))
 		{
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");
@@ -240,7 +240,7 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($toname, array('fields' => 'username'));
 		$to_filter = $user['username'];
 
-		if(!$user['uid'])
+		if(empty($user['uid']))
 		{
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");

@@ -55,7 +55,7 @@ $forum = get_forum($thread['fid']);
 $forumpermissions = forum_permissions($forum['fid']);
 
 // Invalid forum?
-if(!$forum['fid'] || $forum['type'] != "f")
+if(empty($forum['fid']) || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }

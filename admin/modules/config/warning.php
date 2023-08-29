@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit_level")
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
-	if(!$level['lid'])
+	if(empty($level['lid']))
 	{
 		flash_message($lang->error_invalid_warning_level, 'error');
 		admin_redirect("index.php?module=config-warning");
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "delete_level")
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
-	if(!$level['lid'])
+	if(empty($level['lid']))
 	{
 		flash_message($lang->error_invalid_warning_level, 'error');
 		admin_redirect("index.php?module=config-warning");
@@ -529,7 +529,7 @@ if($mybb->input['action'] == "edit_type")
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
-	if(!$type['tid'])
+	if(empty($type['tid']))
 	{
 		flash_message($lang->error_invalid_warning_type, 'error');
 		admin_redirect("index.php?module=config-warning");
@@ -625,7 +625,7 @@ if($mybb->input['action'] == "delete_type")
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
-	if(!$type['tid'])
+	if(empty($type['tid']))
 	{
 		flash_message($lang->error_invalid_warning_type, 'error');
 		admin_redirect("index.php?module=config-warning");
