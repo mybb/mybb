@@ -573,32 +573,26 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				$quoted_ids = explode("|", $mybb->get_input('quoted_ids'));
 				$multiquote = explode("|", $mybb->cookies['multiquote']);
-				if(is_array($multiquote) && is_array($quoted_ids))
+				foreach($multiquote as $key => $quoteid)
 				{
-					foreach($multiquote as $key => $quoteid)
+					// If this ID was quoted, remove it from the multiquote list
+					if(in_array($quoteid, $quoted_ids))
 					{
-						// If this ID was quoted, remove it from the multiquote list
-						if(in_array($quoteid, $quoted_ids))
-						{
-							unset($multiquote[$key]);
-						}
-					}
-					// Still have an array - set the new cookie
-					if(is_array($multiquote))
-					{
-						$new_multiquote = implode(",", $multiquote);
-						my_setcookie("multiquote", $new_multiquote);
-					}
-					// Otherwise, unset it
-					else
-					{
-						my_unsetcookie("multiquote");
+						unset($multiquote[$key]);
 					}
 				}
-				if(is_array($quoted_ids) && count($quoted_ids) > 0)
+				// Still have an array - set the new cookie
+				if(!empty($multiquote))
 				{
-					$quoted_ids = implode("|", $quoted_ids);
+					$new_multiquote = implode(",", $multiquote);
+					my_setcookie("multiquote", $new_multiquote);
 				}
+				// Otherwise, unset it
+				else
+				{
+					my_unsetcookie("multiquote");
+				}
+				$quoted_ids = implode("|", $quoted_ids);
 			}
 		}
 
@@ -863,16 +857,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
 			}
-			if(is_array($quoted_ids) && count($quoted_ids) > 0)
-			{
-				$quoted_ids = implode("|", $quoted_ids);
-			}
+			$quoted_ids = implode("|", $quoted_ids);
 		}
 	}
 
 	if(isset($mybb->input['quoted_ids']))
 	{
-		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids', MyBB::INPUT_INT));
+		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids'));
 	}
 
 	if(isset($mybb->input['previewpost']))
