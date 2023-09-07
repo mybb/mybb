@@ -1728,7 +1728,12 @@ $do_captcha = $correct = false;
 $inline_errors = "";
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
-    verify_post_check($mybb->get_input('my_post_key'));
+	if(
+		!verify_post_check($mybb->get_input('my_post_key'), true) &&
+		!(isset($_SERVER['HTTP_SEC_FETCH_SITE']) && $_SERVER['HTTP_SEC_FETCH_SITE'] === 'same-origin')
+	) {
+		error($lang->invalid_post_code);
+	}
 
 	$errors = array();
 
