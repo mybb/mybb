@@ -4445,44 +4445,39 @@ function get_colored_warning_level($level)
 function get_ip()
 {
 	global $mybb, $plugins;
-
-	$ip = strtolower($_SERVER['REMOTE_ADDR']);
-
-	if($mybb->settings['ip_forwarded_check'])
+	$ip = $_SERVER['REMOTE_ADDR']; // Set basic IP first, skipping validation
+	
+	if ($mybb->settings['ip_forwarded_check'])
 	{
-		$addresses = array();
+		$filter_headers = array(
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_CLIENT_IP',
+			'HTTP_CF_CONNECTING_IP ', // Cloudflare Proxy
+			'HTTP_X_REAL_IP',
+			'HTTP_X_REMOTE_ADDR',
+			'HTTP_X_FORWARDED',
+			'HTTP_X_CLUSTER_CLIENT_IP',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED'
+		);
+		$scrutinized_ips = array();
 
-		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-		{
-			$addresses = explode(',', strtolower($_SERVER['HTTP_X_FORWARDED_FOR']));
+		foreach ($filter_headers as $header) {
+			if (isset($_SERVER[$header])) {
+				$scrutinized_ips[] = $_SERVER[$header];
+			}
 		}
-		elseif(isset($_SERVER['HTTP_X_REAL_IP']))
-		{
-			$addresses = explode(',', strtolower($_SERVER['HTTP_X_REAL_IP']));
-		}
+		$scrutinized_ips = explode(',', implode(',', $scrutinized_ips));
 
-		if(is_array($addresses))
-		{
-			foreach($addresses as $val)
-			{
-				$val = trim($val);
-				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
-				{
-					$ip = $val;
-					break;
-				}
+		foreach ($scrutinized_ips as $caught_ip) {
+			// Filter option set to validate IPv4, IPv6 and exclude private / reserved range
+			if ($caught_ip = filter_var(trim($caught_ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+				break; // Consider first match
 			}
 		}
 	}
-
-	if(!$ip)
-	{
-		if(isset($_SERVER['HTTP_CLIENT_IP']))
-		{
-			$ip = strtolower($_SERVER['HTTP_CLIENT_IP']);
-		}
-	}
+	
+	$ip = empty($caught_ip) ? $ip : $caught_ip;
 
 	if($plugins)
 	{
@@ -4490,7 +4485,7 @@ function get_ip()
 		$plugins->run_hooks("get_ip", $ip_array);
 	}
 
-	return $ip;
+	return strtolower($ip);
 }
 
 /**
