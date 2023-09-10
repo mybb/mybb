@@ -61,6 +61,7 @@ $l['ago'] = "ago";
 $l['user_last_active'] = "User was Last Active";
 $l['user_registered'] = "User Registered";
 $l['save_mass_mail'] = "Save Mass Mail";
+$l['additional_user_groups_desc'] = "Use CTRL to select multiple groups";
 
 $l['step_four'] = "Step 4";
 $l['delivery_method'] = "Delivery Method";
