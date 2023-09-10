@@ -828,9 +828,9 @@ class postParser
 
 		$size = (int)$size;
 
-		if($size < 1)
+		if($size < 7)
 		{
-			$size = 1;
+			$size = 7;
 		}
 
 		if($size > 50)
