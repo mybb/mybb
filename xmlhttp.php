@@ -647,7 +647,7 @@ else if($mybb->input['action'] == "edit_post")
 		header("Content-type: application/json; charset={$charset}");
 
 		$editedmsg_response = null;
-		if($editedmsg)
+		if(!empty($editedmsg))
 		{
 			$editedmsg_response = str_replace(array("\r", "\n"), "", $editedmsg);
 		}
