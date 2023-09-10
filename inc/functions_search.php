@@ -355,6 +355,7 @@ function clean_keywords_ft($keywords)
 	// Brace depth
 	$depth = 0;
 	$phrase_operator = '+';
+	$inquote = false;
 	foreach($keywords as $phrase)
 	{
 		$phrase = trim($phrase);
@@ -1526,7 +1527,7 @@ function perform_search_mysql_ft($search)
 	}
 	$post_usersql = '';
 	$thread_usersql = '';
-	if($search['author'])
+	if(!empty($search['author']))
 	{
 		$userids = array();
 		$search['author'] = my_strtolower($search['author']);
@@ -1560,7 +1561,7 @@ function perform_search_mysql_ft($search)
 		}
 	}
 	$datecut = $thread_datecut = $post_datecut = '';
-	if($search['postdate'])
+	if(!empty($search['author']))
 	{
 		if($search['pddir'] == 0)
 		{
@@ -1578,7 +1579,7 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_replycut = '';
-	if($search['numreplies'] != '' && $search['findthreadst'])
+	if(isset($search['numreplies']) && $search['numreplies'] != '' && $search['findthreadst'])
 	{
 		if((int)$search['findthreadst'] == 1)
 		{
@@ -1592,7 +1593,7 @@ function perform_search_mysql_ft($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
