@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2020 MyBB Group, All Rights Reserved
+ * Copyright 2020 MyBB Group
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license

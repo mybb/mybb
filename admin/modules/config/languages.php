@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "quick_phrases")
 
 					// Lets make nice credits header in language file
 					$lang_file_credits  = "<?php\n/**\n";
-					$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group, All Rights Reserved\n *\n";
+					$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group\n *\n";
 					$lang_file_credits .= " * Website: https://mybb.com\n";
 					$lang_file_credits .= " * License: https://mybb.com/about/license\n *\n */\n\n";
 					$lang_file_credits .= "// ".str_repeat('-',80)."\n";
@@ -501,7 +501,7 @@ if($mybb->input['action'] == "edit")
 
 				// Lets make nice credits header in language file
 				$lang_file_credits  = "<?php\n/**\n";
-				$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group, All Rights Reserved\n *\n";
+				$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group\n *\n";
 				$lang_file_credits .= " * Website: https://mybb.com\n";
 				$lang_file_credits .= " * License: https://mybb.com/about/license\n *\n */\n\n";
 				$lang_file_credits .= "// ".str_repeat('-',80)."\n";
