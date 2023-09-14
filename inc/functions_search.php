@@ -1565,7 +1565,7 @@ function perform_search_mysql_ft($search)
 		}
 	}
 	$datecut = $thread_datecut = $post_datecut = '';
-	if(!empty($search['author']))
+	if(!empty($search['postdate']))
 	{
 		if($search['pddir'] == 0)
 		{
