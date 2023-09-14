@@ -573,26 +573,28 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				$quoted_ids = explode("|", $mybb->get_input('quoted_ids'));
 				$multiquote = explode("|", $mybb->cookies['multiquote']);
-				foreach($multiquote as $key => $quoteid)
+				if(!empty($multiquote) && !empty($quoted_ids))
 				{
-					// If this ID was quoted, remove it from the multiquote list
-					if(in_array($quoteid, $quoted_ids))
+					foreach($multiquote as $key => $quoteid)
 					{
-						unset($multiquote[$key]);
+						// If this ID was quoted, remove it from the multiquote list
+						if(in_array($quoteid, $quoted_ids))
+						{
+							unset($multiquote[$key]);
+						}
+					}
+					// Still have an array - set the new cookie
+					if(!empty($multiquote))
+					{
+						$new_multiquote = implode(",", $multiquote);
+						my_setcookie("multiquote", $new_multiquote);
+					}
+					// Otherwise, unset it
+					else
+					{
+						my_unsetcookie("multiquote");
 					}
 				}
-				// Still have an array - set the new cookie
-				if(!empty($multiquote))
-				{
-					$new_multiquote = implode(",", $multiquote);
-					my_setcookie("multiquote", $new_multiquote);
-				}
-				// Otherwise, unset it
-				else
-				{
-					my_unsetcookie("multiquote");
-				}
-				$quoted_ids = implode("|", $quoted_ids);
 			}
 		}
 
