@@ -784,6 +784,7 @@ function build_postbit($post, $post_type=0)
 	$post['poststatus'] = '';
 	if(!$post_type && $post['visible'] != 1)
 	{
+		$status_type = '';
 		if(is_moderator($fid, "canviewdeleted") && $postcounter != 1 && $post['visible'] == -1)
 		{
 			$status_type = $lang->postbit_post_deleted;
