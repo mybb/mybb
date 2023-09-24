@@ -394,7 +394,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					$redirect = get_thread_link($tid);
 				}
 
-				if($mybb->input['ajax'] == 1)
+				if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
