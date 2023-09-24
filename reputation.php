@@ -151,6 +151,10 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid='0'");
 		$existing_reputation = $db->fetch_array($query);
+		if(!empty($existing_reputation['rid']))
+		{
+			$rid = $existing_reputation['rid'];
+		}
 		$rid = $existing_reputation['rid'];
 		$was_post = false;
 	}
