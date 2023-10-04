@@ -33,7 +33,7 @@ function fetch_wol_activity($location, $nopermission=false)
 		$filename = my_substr($split_loc[0], -my_strpos(strrev($split_loc[0]), "/"));
 	}
 	$parameters = array();
-	if($split_loc[1])
+	if(isset($split_loc[1]))
 	{
 		$temp = explode("&amp;", my_substr($split_loc[1], 1));
 		foreach($temp as $param)
@@ -352,7 +352,7 @@ function fetch_wol_activity($location, $nopermission=false)
 					}
 				}
 
-				if(!$user_activity['activity'])
+				if(empty($user_activity['activity']))
 				{
 					$user_activity['activity'] = "showresults";
 				}

@@ -221,7 +221,7 @@ if($mybb->input['action'] == "addevent")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -840,7 +840,7 @@ if($mybb->input['action'] == "editevent")
 		$calendar = $db->fetch_array($query);
 
 		// Invalid calendar?
-		if(!$calendar['cid'])
+		if(!$calendar)
 		{
 			error($lang->invalid_calendar);
 		}
@@ -2400,7 +2400,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}

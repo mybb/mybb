@@ -561,7 +561,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				$newreply['quoted_ids'] = explode("|", $mybb->get_input('quoted_ids'));
 				$multiquote = explode("|", $mybb->cookies['multiquote']);
-				if(is_array($multiquote) && is_array($newreply['quoted_ids']))
+				if(!empty($multiquote) && !empty($newreply['quoted_ids']))
 				{
 					foreach($multiquote as $key => $quoteid)
 					{
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						}
 					}
 					// Still have an array - set the new cookie
-					if(is_array($multiquote))
+					if(!empty($multiquote))
 					{
 						$new_multiquote = implode(",", $multiquote);
 						my_setcookie("multiquote", $new_multiquote);

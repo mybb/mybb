@@ -277,7 +277,7 @@ if($mybb->input['action'] == "newpost")
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}' {$visibleonly}", $options);
 	$newpost = $db->fetch_array($query);
 
-	if($newpost['pid'] && $lastread)
+	if($newpost && $lastread)
 	{
 		$highlight = '';
 		if($mybb->get_input('highlight'))
@@ -341,7 +341,7 @@ if($mybb->input['action'] == "nextnewest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
-	if(!$nextthread['tid'])
+	if(!$nextthread)
 	{
 		error($lang->error_nonextnewest);
 	}
@@ -371,7 +371,7 @@ if($mybb->input['action'] == "nextoldest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
-	if(!$nextthread['tid'])
+	if(!$nextthread)
 	{
 		error($lang->error_nonextoldest);
 	}
@@ -777,16 +777,16 @@ if($mybb->input['action'] == "thread")
 		");
 		$showpost = $db->fetch_array($query);
 
+		// Is there actually a pid to display?
+		if(!$showpost)
+		{
+			error($lang->error_invalidpost);
+		}
+
 		// Choose what pid to display.
 		if(!$mybb->input['pid'])
 		{
 			$mybb->input['pid'] = $showpost['pid'];
-		}
-
-		// Is there actually a pid to display?
-		if(!$showpost['pid'])
-		{
-			error($lang->error_invalidpost);
 		}
 
 		$attachcache = array();

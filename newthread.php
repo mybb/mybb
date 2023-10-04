@@ -30,10 +30,10 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$newthread['isdraft'] = true;
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
-	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
+	if(!$thread || !$post || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
 	{
 		error($lang->invalidthread);
 	}

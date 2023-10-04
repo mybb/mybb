@@ -377,7 +377,7 @@ function build_postbit($post, $post_type=0)
 			(!isset($post['visible']) || $post['visible'] == 1) &&
 			(!isset($thread['visible']) || $thread['visible'] == 1))
 		{
-			if(!$post['pid'])
+			if(empty($post['pid']))
 			{
 				$post['pid'] = 0;
 			}
@@ -1020,7 +1020,7 @@ function get_post_attachments($id, &$post)
 		$attachment['icon'] = get_attachment_icon($ext);
 		$attachment['downloads'] = my_number_format($attachment['downloads']);
 
-		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $attachment['dateline']);
+		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $post['dateline']);
 
 		// Support for [attachment=id] code
 		if(stripos($post['message'], "[attachment={$attachment['aid']}]") !== false)

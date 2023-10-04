@@ -827,7 +827,7 @@ if($mybb->input['action'] == "register")
 			else if(!empty($select['referrername']))
 			{
 				$ref = get_user_by_username($select['referrername']);
-				if(!$ref['uid'])
+				if(!$ref)
 				{
 					$errors[] = $lang->error_badreferrer;
 				}
@@ -1264,7 +1264,7 @@ if($mybb->input['action'] == "activate")
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
-		if(!$activation['uid'])
+		if(!$activation)
 		{
 			error($lang->error_alreadyactivated);
 		}
@@ -1349,7 +1349,7 @@ if($mybb->input['action'] == "resendactivation")
 	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
-	if($activation['validated'] == 1)
+	if($activation && $activation['validated'] == 1)
 	{
 		error($lang->error_activated_by_admin);
 	}

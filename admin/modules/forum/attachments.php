@@ -78,7 +78,7 @@ if($mybb->input['action'] == "delete")
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
-		$query = $db->simple_select("attachments", "aid,pid,posthash, filename", "aid IN (".implode(",", $mybb->input['aids']).")");
+		$query = $db->simple_select("attachments", "aid,pid,posthash,filename", "aid IN (".implode(",", $mybb->input['aids']).")");
 		while($attachment = $db->fetch_array($query))
 		{
 			if(!$attachment['pid'])
@@ -697,7 +697,7 @@ if(!$mybb->input['action'])
 		{
 			$user = get_user_by_username($mybb->input['username']);
 
-			if(!$user['uid'])
+			if(!$user)
 			{
 				if($user_types == 1)
 				{

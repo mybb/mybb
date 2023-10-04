@@ -3192,32 +3192,35 @@ function update_user_counters($uid, $changes = array())
 	// Fetch above counters for this user
 	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
 	$user = $db->fetch_array($query);
-
-	foreach($counters as $counter)
+	
+	if($user)
 	{
-		if(array_key_exists($counter, $changes))
+		foreach($counters as $counter)
 		{
-			if(substr($changes[$counter], 0, 2) == "+-")
+			if(array_key_exists($counter, $changes))
 			{
-				$changes[$counter] = substr($changes[$counter], 1);
-			}
-			// Adding or subtracting from previous value?
-			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
-			{
-				if((int)$changes[$counter] != 0)
+				if(substr($changes[$counter], 0, 2) == "+-")
 				{
-					$update_query[$counter] = $user[$counter] + $changes[$counter];
+					$changes[$counter] = substr($changes[$counter], 1);
 				}
-			}
-			else
-			{
-				$update_query[$counter] = $changes[$counter];
-			}
+				// Adding or subtracting from previous value?
+				if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+				{
+					if((int)$changes[$counter] != 0)
+					{
+						$update_query[$counter] = $user[$counter] + $changes[$counter];
+					}
+				}
+				else
+				{
+					$update_query[$counter] = $changes[$counter];
+				}
 
-			// Less than 0? That's bad
-			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
-			{
-				$update_query[$counter] = 0;
+				// Less than 0? That's bad
+				if(isset($update_query[$counter]) && $update_query[$counter] < 0)
+				{
+					$update_query[$counter] = 0;
+				}
 			}
 		}
 	}
@@ -3837,7 +3840,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if(!empty($subscription) && $subscription['tid'])
+		if($subscription)
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -6536,13 +6539,13 @@ function build_highlight_array($terms)
 		"~"
 	);
 	$terms = str_replace($bad_characters, '', $terms);
+	$words = array();
 
 	// Check if this is a "series of words" - should be treated as an EXACT match
 	if(my_strpos($terms, "\"") !== false)
 	{
 		$inquote = false;
 		$terms = explode("\"", $terms);
-		$words = array();
 		foreach($terms as $phrase)
 		{
 			$phrase = htmlspecialchars_uni($phrase);
@@ -6590,14 +6593,11 @@ function build_highlight_array($terms)
 		}
 	}
 
-	if(!is_array($words))
-	{
-		return false;
-	}
-
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
 	usort($words, 'build_highlight_array_sort');
+
+	$highlight_cache = array();
 
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)

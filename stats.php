@@ -163,7 +163,7 @@ $forum = $db->fetch_array($query);
 // Not 100% sure, but this conditional is not necessary.
 // We check at start whether is any thread, if not, we throw an error.
 // So at this point, we always have at least one forum to show.
-if(!empty($forum['fid']))
+if($forum)
 {
 	$top_forum = [
 		'name' => htmlspecialchars_uni(strip_tags($forum['name'])),

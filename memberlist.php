@@ -274,6 +274,8 @@ else
 
 	$memberlist['orderarrow'][$mybb->input['sort']] = true;
 
+	$referral_header = '';
+
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -332,6 +334,8 @@ else
 		{
 			$usergroup = array_merge($usergroup, $display_group);
 		}
+
+		$referral_bit = '';
 
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)

@@ -24,7 +24,7 @@ if($mybb->input['action'] == "delete_post_tool")
 	$tool = $db->fetch_array($query);
 
 	// Does the post tool not exist?
-	if(!$tool['tid'])
+	if(!$tool)
 	{
 		flash_message($lang->error_invalid_post_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
@@ -64,7 +64,7 @@ if($mybb->input['action'] == "delete_thread_tool")
 	$tool = $db->fetch_array($query);
 
 	// Does the post tool not exist?
-	if(!$tool['tid'])
+	if(!$tool)
 	{
 		flash_message($lang->error_invalid_thread_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools");
