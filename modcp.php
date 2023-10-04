@@ -4317,7 +4317,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
 	}
 
-	if(isset($usergroup) || empty($usergroup['isbannedgroup']))
+	if(!isset($usergroup) || empty($usergroup['isbannedgroup']))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}
