@@ -118,7 +118,7 @@ if($mybb->input['action'] == "editgroup")
 	$group = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$group['gid'])
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_gid2, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "deletegroup")
 	$group = $db->fetch_array($query);
 
 	// Does the setting group not exist?
-	if(!$group['gid'])
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_gid2, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -454,7 +454,7 @@ if($mybb->input['action'] == "edit")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$setting['sid'])
+	if(!$setting)
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings");
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "delete")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(empty($setting['sid']))
+	if(!$setting)
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");

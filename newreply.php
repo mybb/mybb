@@ -573,7 +573,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				$quoted_ids = explode("|", $mybb->get_input('quoted_ids'));
 				$multiquote = explode("|", $mybb->cookies['multiquote']);
-				if(is_array($multiquote) && is_array($quoted_ids))
+				if(!empty($multiquote) && !empty($quoted_ids))
 				{
 					foreach($multiquote as $key => $quoteid)
 					{
@@ -584,7 +584,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						}
 					}
 					// Still have an array - set the new cookie
-					if(is_array($multiquote))
+					if(!empty($multiquote))
 					{
 						$new_multiquote = implode(",", $multiquote);
 						my_setcookie("multiquote", $new_multiquote);
@@ -859,16 +859,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
 			}
-			if(is_array($quoted_ids) && count($quoted_ids) > 0)
-			{
-				$quoted_ids = implode("|", $quoted_ids);
-			}
+			$quoted_ids = implode("|", $quoted_ids);
 		}
 	}
 
 	if(isset($mybb->input['quoted_ids']))
 	{
-		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids', MyBB::INPUT_INT));
+		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids'));
 	}
 
 	if(isset($mybb->input['previewpost']))

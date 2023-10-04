@@ -304,7 +304,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("icons", "*", "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
 	$icon = $db->fetch_array($query);
 
-	if(!$icon['iid'])
+	if(!$icon)
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?module=config-post_icons");
@@ -387,7 +387,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("icons", "*", "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
 	$icon = $db->fetch_array($query);
 
-	if(!$icon['iid'])
+	if(!$icon)
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?module=config-post_icons");

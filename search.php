@@ -60,7 +60,7 @@ if($mybb->input['action'] == "results")
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
-	if(empty($search['sid']))
+	if(!$search)
 	{
 		error($lang->error_invalidsearch);
 	}

@@ -427,6 +427,7 @@ if($mybb->input['action'] == "profile")
 		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
 
+	$awaysection = '';
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$awaycheck = array('', '');
@@ -746,6 +747,7 @@ if($mybb->input['action'] == "profile")
 		$customtitle = "";
 	}
 
+	$website = '';
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
 		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");
@@ -3641,7 +3643,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
 
-		if(!empty($joinrequest['rid']))
+		if($joinrequest)
 		{
 			error($lang->already_sent_join_request);
 		}
@@ -3717,7 +3719,7 @@ if($mybb->input['action'] == "usergroups")
 
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."' AND invite='1'");
 		$joinrequest = $db->fetch_array($query);
-		if($joinrequest['rid'])
+		if($joinrequest)
 		{
 			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', MyBB::INPUT_INT));
 			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."'");
@@ -4600,7 +4602,7 @@ if(!$mybb->input['action'])
 		foreach($threadcache as $thread)
 		{
 			$plugins->run_hooks("usercp_latest_threads_thread");
-			if($thread['tid'])
+			if(!empty($thread['tid']))
 			{
 				$bgcolor = alt_trow();
 				$folder = '';

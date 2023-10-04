@@ -1010,9 +1010,12 @@ if($mybb->input['action'] == "read")
 		'namestyle' => 'namestyle'
 	);
 
-	foreach($data_key as $field => $key)
+	if(isset($groupscache[$pm['usergroup']]))
 	{
-		$pm[$key] = $groupscache[$pm['usergroup']][$field];
+		foreach($data_key as $field => $key)
+		{
+			$pm[$key] = $groupscache[$pm['usergroup']][$field];
+		}
 	}
 
 	if($pm['receipt'] == 1)

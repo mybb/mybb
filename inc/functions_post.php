@@ -358,7 +358,7 @@ function build_postbit($post, $post_type=0)
 		$post['button_rep'] = '';
 		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'] && (!isset($post['visible']) || $post['visible'] == 1) && (!isset($thread['visible']) || $thread['visible'] == 1))
 		{
-			if(!$post['pid'])
+			if(empty($post['pid']))
 			{
 				$post['pid'] = 0;
 			}
@@ -997,7 +997,7 @@ function get_post_attachments($id, &$post)
 
 				if(!$attachment['dateuploaded'])
 				{
-					$attachment['dateuploaded'] = $attachment['dateline'];
+					$attachment['dateuploaded'] = $post['dateline'];
 				}
 				$attachdate = my_date('normal', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
@@ -1030,7 +1030,7 @@ function get_post_attachments($id, &$post)
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
 						{
-							$thumblist .= "<br />";
+							$post['thumblist'] .= "<br />";
 							$tcount = 0;
 						}
 						++$tcount;
@@ -1046,7 +1046,7 @@ function get_post_attachments($id, &$post)
 							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 							if($tcount == 5)
 							{
-								$thumblist .= "<br />";
+								$post['thumblist'] .= "<br />";
 								$tcount = 0;
 							}
 							++$tcount;

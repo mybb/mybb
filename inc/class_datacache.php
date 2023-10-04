@@ -190,21 +190,28 @@ class datacache
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
 
-				// use native_unserialize() over my_unserialize() for performance reasons
-				$data = native_unserialize($cache_data['cache']);
-
-				// Update cache for handler
-				get_execution_time();
-
-				$hit = $this->handler->put($name, $data);
-
-				$call_time = get_execution_time();
-				$this->call_time += $call_time;
-				$this->call_count++;
-
-				if($mybb->debug_mode)
+				if($cache_data)
 				{
-					$this->debug_call('set:'.$name, $call_time, $hit);
+					// use native_unserialize() over my_unserialize() for performance reasons
+					$data = native_unserialize($cache_data['cache']);
+
+					// Update cache for handler
+					get_execution_time();
+
+					$hit = $this->handler->put($name, $data);
+
+					$call_time = get_execution_time();
+					$this->call_time += $call_time;
+					$this->call_count++;
+
+					if($mybb->debug_mode)
+					{
+						$this->debug_call('set:'.$name, $call_time, $hit);
+					}
+				}
+				else
+				{
+					$data = false;
 				}
 			}
 		}

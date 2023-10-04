@@ -200,14 +200,14 @@ else
 		);
 		$user = get_user_by_username($mybb->get_input('username'), $options);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
 		else
 		{
 			$user = validate_password_from_uid($user['uid'], $mybb->get_input('password'), $user);
-			if(!$user['uid'])
+			if(!$user)
 			{
 				$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
 			}
@@ -530,7 +530,7 @@ function upgradethemes()
 			$time = TIME_NOW;
 			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='".$db->escape_string($templatename)."'");
 			$oldtemp = $db->fetch_array($query);
-			if($oldtemp['tid'])
+			if($oldtemp)
 			{
 				$update_array = array(
 					'template' => $templatevalue,

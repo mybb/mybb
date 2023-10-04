@@ -113,7 +113,7 @@ if($endpart != "index.php")
 			WHERE a.aid='{$id}' AND startdate < '{$time}'  AND (enddate > '{$time}' OR enddate = 0)
 		");
 		$announcement = $db->fetch_array($query);
-		if(!$announcement['aid'])
+		if(!$announcement)
 		{
 			$action = "404";
 		}
@@ -122,7 +122,7 @@ if($endpart != "index.php")
 	{
 		$query = $db->simple_select("threads", "*", "tid='{$id}' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
-		if(!$thread['tid'])
+		if(!$thread)
 		{
 			$action = "404";
 		}
@@ -131,7 +131,7 @@ if($endpart != "index.php")
 	{
 		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!=0 AND password=''");
 		$forum = $db->fetch_array($query);
-		if(!$forum['fid'])
+		if(!$forum)
 		{
 			$action = "404";
 		}

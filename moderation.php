@@ -40,6 +40,12 @@ $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 $pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 $modal = $mybb->get_input('modal', MyBB::INPUT_INT);
 
+if($mybb->user['uid'] == 0)
+{
+	error_no_permission();
+}
+
+
 if($pid)
 {
 	$post = get_post($pid);
@@ -3016,7 +3022,7 @@ switch($mybb->input['action'])
 
 		$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 		$user = get_user($uid);
-		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
+		if(!$user || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
 			error($lang->purgespammer_invalid_user);
 		}

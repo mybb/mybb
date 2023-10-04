@@ -716,7 +716,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 								if($tcount == 5)
 								{
-									$thumblist .= "<br />";
+									$post['thumblist'] .= "<br />";
 									$tcount = 0;
 								}
 								++$tcount;

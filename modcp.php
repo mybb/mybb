@@ -4263,7 +4263,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		");
 		$user = $db->fetch_array($query);
 
-		if($user['uid'])
+		if($user)
 		{
 			$existing_ban = true;
 		}
@@ -4287,7 +4287,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$user = get_user_by_username($mybb->input['username'], $options);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$errors[] = $lang->invalid_username;
 		}
@@ -4312,9 +4312,12 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 	// Check banned group
 	$usergroups_cache = $cache->read('usergroups');
-	$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	if(isset($usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)]))
+	{
+		$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	}
 
-	if(empty($usergroup['gid']) || empty($usergroup['isbannedgroup']))
+	if(!isset($usergroup) || empty($usergroup['isbannedgroup']))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}

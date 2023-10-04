@@ -359,6 +359,8 @@ else
 	$sort = htmlspecialchars_uni($mybb->input['sort']);
 	eval("\$orderarrow['{$sort}'] = \"".$templates->get("memberlist_orderarrow")."\";");
 
+	$referral_header = '';
+
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -416,6 +418,8 @@ else
 		{
 			$usergroup = array_merge($usergroup, $display_group);
 		}
+
+		$referral_bit = '';
 
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)

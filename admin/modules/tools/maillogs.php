@@ -59,7 +59,7 @@ if($mybb->input['action'] == "view")
 	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
-	if(!$log['mid'])
+	if(!$log)
 	{
 		exit;
 	}
@@ -207,13 +207,14 @@ if(!$mybb->input['action'])
 	else if(!empty($mybb->input['fromname']))
 	{
 		$user = get_user_by_username($mybb->input['fromname'], array('fields' => 'uid, username'));
-		$from_filter = $user['username'];
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");
 		}
+
+		$from_filter = $user['username'];
 
 		$additional_sql_criteria .= "AND l.fromuid = '{$user['uid']}'";
 		$additional_criteria[] = "fromuid={$user['uid']}";
@@ -238,13 +239,14 @@ if(!$mybb->input['action'])
 	else if(!empty($mybb->input['toname']))
 	{
 		$user = get_user_by_username($toname, array('fields' => 'username'));
-		$to_filter = $user['username'];
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");
 		}
+
+		$to_filter = $user['username'];
 
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
 		$additional_criteria[] = "touid={$user['uid']}";

@@ -128,11 +128,11 @@ function import_theme_xml($xml, $options=array())
 
 	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
-	if(!empty($options['force_name_check']) && !empty($existingtheme['tid']))
+	if(!empty($options['force_name_check']) && $existingtheme)
 	{
 		return -3;
 	}
-	else if(!empty($existingtheme['tid']))
+	else if($existingtheme)
 	{
 		$options['tid'] = $existingtheme['tid'];
 	}

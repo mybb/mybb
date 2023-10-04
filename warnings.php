@@ -52,7 +52,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 
-	if(!$user['uid'])
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}
@@ -584,9 +584,9 @@ if($mybb->input['action'] == "view")
 	}
 
 	$user = get_user((int)$warning['uid']);
-	if(!$user)
+	if(empty($user))
 	{
-		$user['username'] = $lang->guest;
+		$user = array('uid' => 0, 'username' => $lang->guest);
 	}
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
@@ -599,7 +599,7 @@ if($mybb->input['action'] == "view")
 	$plugins->run_hooks("warnings_view_start");
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	if($user['uid'])
+	if(!empty($user['uid']))
 	{
 		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
@@ -710,7 +710,7 @@ if(!$mybb->input['action'])
 	}
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
-	if(!$user['uid'])
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}

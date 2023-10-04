@@ -1091,7 +1091,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
-		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+		if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
