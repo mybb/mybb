@@ -36,6 +36,7 @@ class PhpMail extends MailHandler
 		global $lang, $mybb;
 
 		// For some reason sendmail/qmail doesn't like \r\n
+		/*
 		$this->sendmail = @ini_get('sendmail_path');
 		if($this->sendmail)
 		{
@@ -43,6 +44,7 @@ class PhpMail extends MailHandler
 			$this->message = str_replace("\r\n", "\n", $this->message);
 			$this->delimiter = "\n";
 		}
+		*/
 
 		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
 		$this->sendmail_from = @ini_get('sendmail_from');
