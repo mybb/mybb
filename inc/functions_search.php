@@ -1583,7 +1583,7 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_replycut = '';
-	if(isset($search['numreplies']) && $search['numreplies'] != '' && $search['findthreadst'])
+	if(!empty($search['numreplies']) && $search['findthreadst'])
 	{
 		if((int)$search['findthreadst'] == 1)
 		{
