@@ -1243,7 +1243,7 @@ function perform_search_mysql($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
