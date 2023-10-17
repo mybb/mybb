@@ -1154,6 +1154,10 @@ if($mybb->input['action'] == "add_thread_tool")
 	$page->output_footer();
 }
 
+// This will be accounted for both GET and POST requests in both 'add_post_tool' / 'edit_post_tool'
+$do_not_split_checked = '';
+$split_same_checked = '';
+
 if($mybb->input['action'] == "edit_post_tool")
 {
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='p'");
@@ -1200,7 +1204,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		{
 			$mybb->input['group_1_groups'] = '';
 		}
-	
+
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
 			$mybb->input['approvethread'] = '';
@@ -1427,6 +1431,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	$form = new Form("index.php?module=config-mod_tools&amp;action=edit_post_tool", 'post');
 	echo $form->generate_hidden_field("tid", $mybb->input['tid']);
 
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -1508,11 +1513,9 @@ if($mybb->input['action'] == "edit_post_tool")
 		if($post_options['splitposts'] == '-1')
 		{
 			$do_not_split_checked = ' selected="selected"';
-			$split_same_checked = '';
 		}
 		else if($post_options['splitposts'] == '-2')
 		{
-			$do_not_split_checked = '';
 			$split_same_checked = ' selected="selected"';
 		}
 
@@ -2121,7 +2124,6 @@ if($mybb->input['action'] == "add_post_tool")
 		$mybb->input['newreply'] = '';
 		$mybb->input['newreplysubject'] = '{subject}';
 		$do_not_split_checked = ' selected="selected"';
-		$split_same_checked = '';
 		$mybb->input['deleteposts'] = '0';
 		$mybb->input['mergeposts'] = '0';
 		$mybb->input['approveposts'] = '';
