@@ -743,6 +743,11 @@ if($mybb->input['action'] == "register")
 				my_setcookie("coppauser", 1, -0);
 				$under_thirteen = true;
 			}
+			else
+			{
+				my_setcookie("coppauser", 0, -0);
+				$under_thirteen = false;
+			}
 			$mybb->request_method = "";
 		}
 		// Show DOB select form
