@@ -2069,31 +2069,31 @@ if($mybb->input['action'] == "do_modqueue")
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE aid IN (".implode(",", $attachments)."){$tflist_queue_attach}
-	");
-	while($attachment = $db->fetch_array($query))
-	{
-		if(!isset($mybb->input['attachments'][$attachment['aid']]))
+		");
+		while($attachment = $db->fetch_array($query))
 		{
-			continue;
-		}
-		$action = $mybb->input['attachments'][$attachment['aid']];
-		if($action == "approve")
-		{
-			$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
-			if(isset($attachment['tid']))
-            {
-				update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "+1"));
+			if(!isset($mybb->input['attachments'][$attachment['aid']]))
+			{
+				continue;
+			}
+			$action = $mybb->input['attachments'][$attachment['aid']];
+			if($action == "approve")
+			{
+				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "+1"));
+				}
+			}
+			else if($action == "delete")
+			{
+				remove_attachment($attachment['pid'], '', $attachment['aid']);
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "-1"));
+				}
 			}
 		}
-		else if($action == "delete")
-		{
-			remove_attachment($attachment['pid'], '', $attachment['aid']);
-			if(isset($attachment['tid']))
-            {
-				update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "-1"));
-			}
-		}
-	}
 
 	$plugins->run_hooks("modcp_do_modqueue_end");
 
