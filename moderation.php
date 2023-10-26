@@ -1037,7 +1037,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
 		output_page(\MyBB\template('moderation/move.twig', [
 			'loginbox' => $loginbox,
