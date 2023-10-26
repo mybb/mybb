@@ -1020,7 +1020,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
 		output_page($movethread);
 		break;
