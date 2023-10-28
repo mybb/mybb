@@ -2095,9 +2095,9 @@ if($mybb->input['action'] == "do_modqueue")
 			}
 		}
 
-	$plugins->run_hooks("modcp_do_modqueue_end");
+		$plugins->run_hooks("modcp_do_modqueue_end");
 
-	redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
+		redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
 	}
 }
 
