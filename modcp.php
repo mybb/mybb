@@ -1748,7 +1748,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
-            SELECT a.pid, a.aid
+            SELECT a.pid, a.aid, t.tid
             FROM  ".TABLE_PREFIX."attachments a
             LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
             LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -1764,10 +1764,18 @@ if($mybb->input['action'] == "do_modqueue")
 			if($action == "approve")
 			{
 				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "+1"));
+				}
 			}
 			elseif($action == "delete")
 			{
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "-1"));
+				}
 			}
 		}
 
