@@ -13,7 +13,7 @@ class ParserTest extends TestCase
      */
     private $parser;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::setupMybb();
 
@@ -51,7 +51,7 @@ class ParserTest extends TestCase
             );
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
