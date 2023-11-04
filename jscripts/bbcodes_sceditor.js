@@ -181,7 +181,7 @@ $(function ($) {
 				units = "",
 				parsed = parseInt(attrs.defaultattr, 10);
 			if (!isNaN(parsed)) {
-				size = attrs.defaultattr;
+				size = parsed;
 				if (size < 1) {
 					size = 1;
 				} else if (size > 50) {
