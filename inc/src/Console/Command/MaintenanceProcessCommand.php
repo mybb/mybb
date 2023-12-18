@@ -119,7 +119,7 @@ abstract class MaintenanceProcessCommand extends Command
     /**
      * @psalm-return Command::SUCCESS|Command::FAILURE
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->setupIO($input, $output);
 
