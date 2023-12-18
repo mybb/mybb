@@ -21,7 +21,7 @@
         "issues": "https://github.com/mybb/mybb/issues"
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-pdo": "*",
         "ext-json": "*",
         "illuminate/config": "^9.0",
