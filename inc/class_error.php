@@ -184,6 +184,16 @@ class errorHandler {
 		}
 		else
 		{
+			if (
+				str_starts_with(
+					$exception->getMessage(),
+					'An exception has been thrown during the rendering of a template',
+				) &&
+				$exception->getPrevious()
+			) {
+				$exception = $exception->getPrevious();
+			}
+
 			$this->error(
 				MYBB_UNCAUGHT_EXCEPTION,
 				$exception->getMessage(),
