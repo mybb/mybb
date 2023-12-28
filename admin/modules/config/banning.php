@@ -35,6 +35,28 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$errors[] = $lang->error_filter_already_banned;
 	}
 
+	if(!$errors && $mybb->input['type'] == 1)
+	{
+		$ip_address = $db->escape_string($mybb->input['filter']);
+		$subnet_mask = "0";
+		if(strpos($ip_address, "*") !== false)
+		{
+			$ip_address = str_replace("*", "0", $ip_address);
+		}
+		else if(strpos($ip_address, "/") !== false)
+		{
+			list($ip_address, $subnet_mask) = explode("/", $ip_address);
+		}
+
+		$is_valid_v4 = filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && $subnet_mask <= 32 && $subnet_mask >= 0;
+		$is_valid_v6 = filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) && $subnet_mask <= 128 && $subnet_mask >= 0;
+
+		if (!$is_valid_v4 && !$is_valid_v6 || !ctype_digit($subnet_mask))
+		{
+			$errors[] = $lang->error_invalid_filter;
+		}
+	}
+
 	if(!$errors)
 	{
 		$new_filter = array(
@@ -100,7 +122,7 @@ if($mybb->input['action'] == "delete")
 	// Does the filter not exist?
 	if(!$filter)
 	{
-		flash_message($lang->error_invalid_filter, 'error');
+		flash_message($lang->error_filter_not_found, 'error');
 		admin_redirect("index.php?module=config-banning");
 	}
 
