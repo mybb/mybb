@@ -2727,6 +2727,12 @@ function get_server_load()
 		{
 			// sys_getloadavg() will return an array with [0] being load within the last minute.
 			$serverload = sys_getloadavg();
+
+			if(!is_array($serverload))
+			{
+				return $lang->unknown;
+			}
+
 			$serverload[0] = round($serverload[0], 4);
 		}
 		else if(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
