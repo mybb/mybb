@@ -673,7 +673,7 @@ elseif($mybb->input['action'] == "whoposted")
 	// Does the user have permission to view this thread?
 	$forumpermissions = forum_permissions($forum['fid']);
 
-	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+	if(empty($forumpermissions) || $forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}

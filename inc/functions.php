@@ -1694,7 +1694,14 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
 
-	$groups = explode(",", $gid);
+    if(isset($gid))
+    {
+        $groups = explode(",", $gid);
+    }
+    else
+    {
+        $groups = array();
+    }
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
@@ -5742,7 +5749,14 @@ function my_number_format($number)
 	}
 	else
 	{
-		$parts = explode('.', $number);
+        if(isset($number))
+        {
+            $parts = explode('.', $number);
+        }
+        else
+        {
+            $parts = array();
+        }
 
 		if(isset($parts[1]))
 		{
@@ -6129,7 +6143,7 @@ function my_strlen($string)
 
 	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
-	if(strtolower($lang->settings['charset']) == "utf-8")
+	if(isset($lang->settings['charset']) && strtolower($lang->settings['charset']) == "utf-8")
 	{
 		// Get rid of any excess RTL and LTR override for they are the workings of the devil
 		$string = str_replace(dec_to_utf8(8238), "", $string);

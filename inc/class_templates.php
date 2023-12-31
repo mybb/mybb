@@ -95,16 +95,16 @@ class templates
 				$this->uncached_templates[$title] = $title;
 			}
 
-			if(!$gettemplate)
+            if(empty($gettemplate))
 			{
-				$gettemplate['template'] = "";
+				$gettemplate = array('template' => '');
 			}
 
 			$this->cache[$title] = $gettemplate['template'];
 		}
 		$template = $this->cache[$title];
 
-		if($htmlcomments)
+		if($htmlcomments && $template !== false)
 		{
 			if($mybb->settings['tplhtmlcomments'] == 1)
 			{

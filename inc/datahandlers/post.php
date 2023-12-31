@@ -1803,7 +1803,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
-		if($thread['posthash'])
+		if(!empty($thread['posthash']))
 		{
 			$thread['posthash'] = $db->escape_string($thread['posthash']);
 			$attachmentassign = array(
