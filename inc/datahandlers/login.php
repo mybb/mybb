@@ -281,6 +281,17 @@ class LoginDataHandler extends DataHandler
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
 		{
+			$type = '';
+			if(defined('IN_ADMINCP'))
+			{
+				$type = 'failed_login_admincp';
+			}
+			else
+			{
+				$type = 'failed_login';
+			}
+
+			log_security_action($type, $this->login_data['uid']);
 			return false;
 		}
 

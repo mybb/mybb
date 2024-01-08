@@ -247,6 +247,11 @@ $l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} 
 $l['admin_log_tools_spamlog_prune_email'] = "Pruned {4} spam logs older than {1} days with email {3}";
 $l['admin_log_tools_spamlog_prune_user_email'] = "Pruned {4} spam logs older than {1} days with username {2} and email {3}";
 
+$l['admin_log_tools_securitylog_prune'] = "Pruned {4} security logs older than {1} days";
+$l['admin_log_tools_securitylog_prune_user'] = "Pruned {4} security logs older than {1} days for user #{2}";
+$l['admin_log_tools_securitylog_prune_type'] = "Pruned {4} security logs older than {1} days for type {3}";
+$l['admin_log_tools_securitylog_prune_user_type'] = "Pruned {4} security logs older than {1} days for user #{2} and type {3}";
+
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
 $l['admin_log_tools_tasks_delete'] = "Deleted task #{1} ({2})";
@@ -307,5 +312,3 @@ $l['admin_log_user_users_inline_lift'] = "Lifted {1} user(s) bans";
 $l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})";
 
 $l['admin_log_admin_locked_out'] = 'Administrator login attempt for user #{1} ({2}) locked out.';
-
-

@@ -62,6 +62,7 @@ function tools_action_handler($action)
 		'modlog' => array('active' => 'modlog', 'file' => 'modlog.php'),
 		'warninglog' => array('active' => 'warninglog', 'file' => 'warninglog.php'),
 		'spamlog' => array('active' => 'spamlog', 'file' => 'spamlog.php'),
+		'securitylog' => array('active' => 'securitylog', 'file' => 'securitylog.php'),
 		'system_health' => array('active' => 'system_health', 'file' => 'system_health.php'),
 		'file_verification' => array('active' => 'file_verification', 'file' => 'file_verification.php'),
 		'statistics' => array('active' => 'statistics', 'file' => 'statistics.php'),
@@ -76,7 +77,8 @@ function tools_action_handler($action)
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?module=tools-mailerrors");
 	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?module=tools-warninglog");
 	$sub_menu['60'] = array("id" => "spamlog", "title" => $lang->spam_log, "link" => "index.php?module=tools-spamlog");
-	$sub_menu['70'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
+	$sub_menu['70'] = array("id" => "securitylog", "title" => $lang->security_log, "link" => "index.php?module=tools-securitylog");
+	$sub_menu['80'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
 
 	$sub_menu = $plugins->run_hooks("admin_tools_menu_logs", $sub_menu);
 
@@ -121,6 +123,7 @@ function tools_admin_permissions()
 		"mailerrors" => $lang->can_manage_system_mail_log,
 		"warninglog" => $lang->can_manage_user_warning_log,
 		"spamlog" => $lang->can_manage_spam_log,
+		"securitylog" => $lang->can_manage_security_log,
 		"php_info" => $lang->can_view_php_info,
 		"file_verification" => $lang->can_manage_file_verification,
 		"statistics" => $lang->can_view_statistics,

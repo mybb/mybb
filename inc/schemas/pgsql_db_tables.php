@@ -673,6 +673,13 @@ $tables[] = "CREATE TABLE mybb_reputation (
   PRIMARY KEY(rid)
 );";
 
+$tables[] = "CREATE TABLE mybb_securitylog (
+  uid int NOT NULL default '0',
+  ipaddress bytea NOT NULL default '',
+  dateline int NOT NULL default '0',
+  type varchar(50) NOT NULL default ''
+);";
+
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int NOT NULL default '0',

@@ -1496,6 +1496,8 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 						break;
 				}
 				my_mail($email, $emailsubject, $emailmessage);
+
+				log_security_action('lost_password', $user['uid']);
 			}
 
 			$plugins->run_hooks("member_do_lostpw_end");
@@ -1634,6 +1636,8 @@ if($mybb->input['action'] == "resetpassword")
 		$emailsubject = $lang->sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		my_mail($email, $emailsubject, $emailmessage);
+
+		log_security_action('reset_password', $user['uid']);
 
 		$plugins->run_hooks("member_resetpassword_reset");
 
