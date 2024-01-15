@@ -671,7 +671,7 @@ function upgradedone()
 			$lock_note = $lang->sprintf($lang->upgrade_locked, $config['admin_dir']);
 		}
 	}
-	if(!$written)
+	if(empty($written))
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
@@ -792,6 +792,12 @@ function get_upgrade_store($title)
 
 	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
+
+	if(!isset($data['contents']))
+	{
+		return null;
+	}
+
 	return my_unserialize($data['contents']);
 }
 
