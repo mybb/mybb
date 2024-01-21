@@ -7545,6 +7545,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			);
 		}
 
+		if(defined('CURLOPT_DISALLOW_USERNAME_IN_URL'))
+		{
+			$curlopt[CURLOPT_DISALLOW_USERNAME_IN_URL] = true;
+		}
+
 		if(!empty($post_body))
 		{
 			$curlopt[CURLOPT_POST] = 1;
