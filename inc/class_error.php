@@ -385,7 +385,11 @@ class errorHandler {
 		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
-		if(isset($mybb->settings['errorloglocation']) && trim($mybb->settings['errorloglocation']) != "")
+		if(
+			isset($mybb->settings['errorloglocation']) &&
+			trim($mybb->settings['errorloglocation']) != "" &&
+			substr($mybb->settings['errorloglocation'], -4) !== '.php'
+		)
 		{
 			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
