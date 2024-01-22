@@ -536,6 +536,10 @@ if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
 	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
 	my_unsetcookie('adminsid');
+	if($mybb->get_input('do') == 'login')
+	{
+		$login_message = $lang->error_mybb_not_admin_account;
+	}
 }
 
 if(!empty($mybb->user['uid']))
