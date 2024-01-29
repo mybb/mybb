@@ -52,7 +52,7 @@ $l['error_admin_session_expired'] = "Your administration session has expired.";
 $l['error_invalid_ip'] = "Your IP address is not valid for this session.";
 $l['error_mybb_admin_lockedout'] = "This account has been locked out.";
 $l['error_mybb_admin_lockedout_message'] = "Your account is currently locked out after failing to login {1} times. You have been sent an email with instructions on how to unlock your account.";
-$l['error_mybb_not_admin_account'] = "Username is not an administrator.";
+$l['error_mybb_not_admin_account'] = "You do not have permission to access the administration control panel.";
 
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_invalid_uid'] = "The user id you entered is invalid.";
