@@ -5594,6 +5594,18 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+<template name="member_register_regimage_cfturnstile" version="1823"><![CDATA[<br />
+<fieldset class="trow2">
+	<legend><strong>{$lang->human_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_cfturnstile}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_requiredfields" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->required_info}</strong></legend>
@@ -9601,7 +9613,20 @@ if(use_xmlhttprequest == "1")
 		<td><span class="smalltext">{$lang->verification_note_hcaptcha}</span></td>
 	</tr>
 	<tr>
-		<td><script type="text/javascript" src="{$server}"></script><div class="h-captcha" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+		<td><script type="text/javascript" src="{$server}"></script><div class="cf-turnstile" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
+<template name="post_captcha_cfturnstile" version="1823"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
+<td class="trow1">
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_cfturnstile}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="cf-turnstile" data-sitekey="{$public_key}" data-theme="{$captcha_theme}" data-size="{$captcha_size}"></div></td>
 	</tr>
 </table>
 </td>
