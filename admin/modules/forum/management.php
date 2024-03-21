@@ -317,7 +317,7 @@ if($mybb->input['action'] == "editmod")
 		if(!$errors)
 		{
 			$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-			$forum = get_forum($fid);
+			$forum = get_forum($fid, 1);
 			if($mod_data['isgroup'])
 			{
 				$mod = $groupscache[$mod_data['id']];
@@ -498,7 +498,7 @@ if($mybb->input['action'] == "permissions")
 		$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 		$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
-		$forum = get_forum($fid);
+		$forum = get_forum($fid, 1);
 
 		if((!$fid || !$gid) && $pid)
 		{
@@ -506,12 +506,12 @@ if($mybb->input['action'] == "permissions")
 			$result = $db->fetch_array($query);
 			$fid = $result['fid'];
 			$gid = $result['gid'];
-			$forum = get_forum($fid);
+			$forum = get_forum($fid, 1);
 		}
 
 		$update_array = $field_list = array();
 		$fields_array = $db->show_fields_from("forumpermissions");
-		if(is_array($mybb->input['permissions']))
+		if(isset($mybb->input['permissions']))
 		{
 			// User has set permissions for this group...
 			foreach($fields_array as $field)
@@ -1965,7 +1965,7 @@ if($mybb->input['action'] == "deletemod")
 
 		$cache->update_moderators();
 
-		$forum = get_forum($fid);
+		$forum = get_forum($fid, 1);
 
 		// Log admin action
 		if($isgroup)
@@ -2009,7 +2009,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-		$forum_info = get_forum($fid);
+		$forum = get_forum($fid, 1);
 
 		$delquery = "";
 		switch($db->type)
@@ -2108,7 +2108,7 @@ if(!$mybb->input['action'])
 	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	if($fid)
 	{
-		$forum = get_forum($fid);
+		$forum = get_forum($fid, 1);
 	}
 
 	$plugins->run_hooks("admin_forum_management_start");
@@ -2193,7 +2193,7 @@ if(!$mybb->input['action'])
 		}
 		elseif($mybb->get_input('add') == "moderators")
 		{
-			$forum = get_forum($fid);
+			$forum = get_forum($fid, 1);
 			if(!$forum)
 			{
 				flash_message($lang->error_invalid_forum, 'error');
@@ -2499,12 +2499,12 @@ if(!$mybb->input['action'])
 					$perms = $existing_permissions[$usergroup['gid']];
 					$default_checked = false;
 				}
-				elseif(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['fid']][$usergroup['gid']]) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
+				elseif(isset($forum['fid']) && is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['fid']][$usergroup['gid']]) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
 					$default_checked = true;
 				}
-				else if(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['pid']][$usergroup['gid']]) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
+				else if(isset($forum['pid']) && is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['pid']][$usergroup['gid']]) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum['pid']][$usergroup['gid']];
 					$default_checked = true;
