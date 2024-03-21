@@ -693,7 +693,7 @@ if(!$mybb->input['action'])
 		}
 
 		// Username matching
-		if($mybb->input['username'])
+		if(!empty($mybb->input['username']))
 		{
 			$user = get_user_by_username($mybb->input['username']);
 
@@ -752,11 +752,11 @@ if(!$mybb->input['action'])
 			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
 		);
 
-		if(!empty($mybb->input['dateuploaded']) && $mybb->request_method == "post")
+		if(!empty($mybb->input['dateuploaded']))
 		{
 			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
-		if(!empty($mybb->input['filesize']) && $mybb->request_method == "post")
+		if(!empty($mybb->input['filesize']))
 		{
 			$direction_fields['filesize'] *= 1024;
 		}
@@ -878,7 +878,7 @@ if(!$mybb->input['action'])
 				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
-					if($mybb->input[$var])
+					if($mybb->get_input($var))
 					{
 						$pagination_url .= "&{$var}=".urlencode($mybb->input[$var]);
 					}
