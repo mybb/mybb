@@ -980,7 +980,7 @@ if($mybb->input['action'] == "results")
 			{
 				$folder .= "new";
 				$folder_label .= $lang->icon_new;
-				$thread['newpostlink'] = get_thread_link($post['thread_lastpost']);
+				$thread['newpostlink'] = get_thread_link($post['tid'], 0, "newpost");
 				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}
