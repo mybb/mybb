@@ -707,7 +707,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Updates a warning in the database
 	*
-	* @return array Warning database details.
+	* @return array|false Warning database details.
 	*/
 	function update_warning()
 	{

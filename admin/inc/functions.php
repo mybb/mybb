@@ -694,7 +694,7 @@ function check_template($template)
  *
  * @param integer $uid The uid of the user
  * @param int $date A UNIX timestamp to delete posts that are older
- * @return array An array of threads to delete, threads/forums to recount
+ * @return array|false An array of threads to delete, threads/forums to recount
  */
 function delete_user_posts($uid, $date)
 {
