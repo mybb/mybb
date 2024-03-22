@@ -106,10 +106,13 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 	}
 }
 
-// Does this forum allow post icons? If so, fetch the post icons.
-if($forum['allowpicons'] != 0)
+if($mybb->settings['allowposticons'] == 1)
 {
-	$posticons = get_post_icons();
+	// Does this forum allow post icons? If so, fetch the post icons.
+	if($forum['allowpicons'] != 0)
+	{
+		$posticons = get_post_icons();
+	}
 }
 
 // If we have a currently logged in user then fetch the change user box.
@@ -689,10 +692,32 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$icon = $post['icon'];
-		if($forum['allowpicons'] != 0)
+		
+		if($mybb->settings['allowposticons'] == 1)
 		{
-			$posticons = get_post_icons();
+			if($forum['allowpicons'] != 0)
+			{
+				$posticons = get_post_icons();
+			}
 		}
+
+		if($postoptions['subscriptionmethod'] == "none")
+		{
+			$newthread['subscriptionmethod']['none'] = true;
+		}
+		else if($postoptions['subscriptionmethod'] == "email")
+		{
+			$newthread['subscriptionmethod']['email'] = true;
+		}
+		else if($postoptions['subscriptionmethod'] == "pm")
+		{
+			$newthread['subscriptionmethod']['pm'] = true;
+		}
+		else
+		{
+			$newthread['subscriptionmethod']['dont'] = true;
+		}
+		
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$numpolloptions = "2";
 	}

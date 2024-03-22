@@ -1474,10 +1474,18 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[12]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowposticons">
+			<title>Allow Post Icons</title>
+			<description><![CDATA[Do you want to allow users to use Post Icons?]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1485,7 +1493,7 @@ min=0]]></optionscode>
 		<setting name="alloweditreason">
 			<title>Allow Edit Reason</title>
 			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1493,7 +1501,7 @@ min=0]]></optionscode>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete for Users</title>
 			<description><![CDATA[If enabled, posts and threads deleted by users will be hidden and can be restored by moderators. Otherwise, these posts and threads will be deleted permanently.]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1501,14 +1509,6 @@ min=0]]></optionscode>
 		<setting name="announcementshtml">
 			<title>Allow HTML in Announcements</title>
 			<description><![CDATA[Allow moderators to enable HTML parsing in announcements?]]></description>
-			<disporder>23</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="showownunapproved">
-			<title>Access Own Unapproved Threads / Posts</title>
-			<description><![CDATA[Allow general users to access their own unapproved threads and posts.]]></description>
 			<disporder>24</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
