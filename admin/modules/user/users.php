@@ -632,7 +632,7 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			// Are we setting a new avatar from a URL?
-			else if(isset($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
+			else if(!empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				if(!$mybb->settings['allowremoteavatars'])
 				{
