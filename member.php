@@ -391,13 +391,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$captcha->invalidate_captcha();
 		}
 
-		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
+		if($mybb->settings['regtype'] != "randompass" && empty($mybb->cookies['coppauser']))
 		{
 			// Log them in
 			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
 		}
 
-		if(isset($mybb->cookies['coppauser']))
+		if(!empty($mybb->cookies['coppauser']))
 		{
 			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 			my_unsetcookie("coppauser");
@@ -741,7 +741,12 @@ if($mybb->input['action'] == "register")
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
 			{
 				my_setcookie("coppauser", 1, -0);
-				$under_thirteen = true;
+				$under_thirteen = false;
+			}
+			else
+			{
+				my_setcookie("coppauser", 0, -0);
+				$under_thirteen = false;
 			}
 			$mybb->request_method = "";
 		}
