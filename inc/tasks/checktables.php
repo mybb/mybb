@@ -17,7 +17,8 @@ function task_checktables($task)
 		return;
 	}
 
-	@set_time_limit(0);
+	if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+		@set_time_limit(0);
 
 	$ok = array(
 		"The storage engine for the table doesn't support check",

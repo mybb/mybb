@@ -19,7 +19,8 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
+if(strpos(ini_get('disable_functions'),'set_time_limit')===false)
+	@set_time_limit(0);
 
 function upgrade13_dbchanges()
 {
