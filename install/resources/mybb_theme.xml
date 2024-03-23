@@ -6779,7 +6779,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="modcp_banuser_lift" version="1801"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
 		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
-		<template name="modcp_editprofile" version="1822"><![CDATA[<html>
+		<template name="modcp_editprofile" version="1827"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -6787,6 +6787,7 @@ if(use_xmlhttprequest == "1")
 <!--
 	var mod_posts = '{$modpost_check}';
 	var susp_posts = '{$suspost_check}';
+	var susp_pm = '{$suspm_check}';
 // -->
 </script>
 </head>
@@ -6926,34 +6927,51 @@ if(use_xmlhttprequest == "1")
 									<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 										<tr>
 											<td>
-<dl style="margin-top: 0; margin-bottom: 0;">
-<dt><label><input type="checkbox" name="moderateposting" value="1" {$modpost_checked} class="checkbox" onclick="toggleSuspend('modposts');" id="modpost" /> {$lang->moderate_posts}</label></dt>
-<dd style="margin-top: 4px;" id="modposts_action">
-<table cellpadding="4">
-{$moderateposts_info}
-	<tr>
-		<td width="35%">{$lang->modpost_length}</td>
-		<td><input type="text" name="modpost_time" value="{$modpost_time}" class="textbox" style="width: 2em;" /> {$modpost_options}</td>
-	</tr>
-</table>
-</dd>
-</dl>
+												<dl style="margin-top: 0; margin-bottom: 0;">
+													<dt><label><input type="checkbox" name="moderateposting" value="1" {$modpost_checked} class="checkbox" onclick="toggleSuspend('modposts');" id="modpost" /> {$lang->moderate_posts}</label></dt>
+													<dd style="margin-top: 4px;" id="modposts_action">
+														<table cellpadding="4">
+														{$moderateposts_info}
+															<tr>
+																<td width="35%">{$lang->modpost_length}</td>
+																<td><input type="text" name="modpost_time" value="{$modpost_time}" class="textbox" style="width: 2em;" /> {$modpost_options}</td>
+															</tr>
+														</table>
+													</dd>
+												</dl>
 											</td>
 										</tr>
 										<tr>
 											<td>
-<dl style="margin-top: 0; margin-bottom: 0;">
-<dt><label><input type="checkbox" name="suspendposting" value="1" {$suspost_checked} class="checkbox" onclick="toggleSuspend('susposts');" id="suspost" /> {$lang->suspend_posts}</label></dt>
-<dd style="margin-top: 4px;" id="susposts_action">
-<table cellpadding="4">
-{$suspendposting_info}
-	<tr>
-		<td width="35%">{$lang->suspost_length}</td>
-		<td><input type="text" name="suspost_time" value="{$suspost_time}" class="textbox" style="width: 2em;" /> {$suspost_options}</td>
-	</tr>
-</table>
-</dd>
-</dl></td>
+												<dl style="margin-top: 0; margin-bottom: 0;">
+													<dt><label><input type="checkbox" name="suspendposting" value="1" {$suspost_checked} class="checkbox" onclick="toggleSuspend('susposts');" id="suspost" /> {$lang->suspend_posts}</label></dt>
+													<dd style="margin-top: 4px;" id="susposts_action">
+														<table cellpadding="4">
+														{$suspendposting_info}
+															<tr>
+																<td width="35%">{$lang->suspost_length}</td>
+																<td><input type="text" name="suspost_time" value="{$suspost_time}" class="textbox" style="width: 2em;" /> {$suspost_options}</td>
+															</tr>
+														</table>
+													</dd>
+												</dl>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<dl style="margin-top: 0; margin-bottom: 0;">
+													<dt><label><input type="checkbox" name="suspendprivatemessaging" value="1" {$suspm_checked} class="checkbox" onclick="toggleSuspend('suspm');" id="suspm" /> {$lang->suspend_pm}</label></dt>
+													<dd style="margin-top: 4px;" id="suspm_action">
+														<table cellpadding="4">
+														{$suspendpm_info}
+															<tr>
+																<td width="35%">{$lang->suspost_length}</td>
+																<td><input type="text" name="suspm_time" value="{$suspost_time}" class="textbox" style="width: 2em;" /> {$suspm_options}</td>
+															</tr>
+														</table>
+													</dd>
+												</dl>
+											</td>
 										</tr>
 									</table>
 								</fieldset>
@@ -6965,13 +6983,13 @@ if(use_xmlhttprequest == "1")
 								<fieldset class="trow1">
 									<legend><strong>{$lang->signature}</strong></legend>
 									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-<tr>
-<td class="trow1" width="80%">
-<textarea rows="15" cols="70" id="signature" name="signature">{$user['signature']}</textarea>
-{$codebuttons}
-</td>
-</tr>
-{$suspend_signature}
+										<tr>
+											<td class="trow1" width="80%">
+												<textarea rows="15" cols="70" id="signature" name="signature">{$user['signature']}</textarea>
+												{$codebuttons}
+											</td>
+										</tr>
+										{$suspend_signature}
 									</table>
 								</fieldset>
 							</td>
@@ -7008,6 +7026,11 @@ if(use_xmlhttprequest == "1")
 		$("#susposts_action").hide();
 	}
 
+	if(susp_pm == 0)
+	{
+		$("#suspm_action").hide();
+	}
+
 	function toggleSuspend(action)
 	{
 		if(action == "modposts")
@@ -7041,6 +7064,20 @@ if(use_xmlhttprequest == "1")
 			{
 				$("#suspost").attr("checked", true);
 				$("#susposts_action").show();
+			}
+		}
+
+		if(action == "suspm")
+		{
+			if($("#suspm").prop("checked") == false)
+			{
+				$("#suspm").attr("checked", false);
+				$("#suspm_action").hide();
+			}
+			else
+			{
+				$("#suspm").attr("checked", true);
+				$("#suspm_action").show();
 			}
 		}
 	}

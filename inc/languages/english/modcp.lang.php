@@ -248,18 +248,23 @@ $l['mod_notes'] = "Moderator Notes";
 $l['moderation'] = "Moderator Options";
 $l['moderate_posts'] = "Moderate this user's posts";
 $l['suspend_posts'] = "Suspend this user's posting privileges";
+$l['suspend_pm'] = "Suspend this user's private messaging privileges";
 $l['modpost_length'] = "Moderate for:";
 $l['suspost_length'] = "Suspend for:";
+$l['suspm_length'] = "Suspend for:";
 
 $l['moderateposts_for'] = "Moderated until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendposting_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendsignature_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendpm_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendposting_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
 $l['moderateposts_perm'] = "Moderated permanently.<br />Untick this option to remove, or change below.";
 $l['suspendsignature_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
+$l['suspendpm_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendposting_error'] = "You selected to suspend this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
+$l['suspendpm_error'] = "You selected to suspend this user's private messaging, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendmoderate_error'] = "You've selected to suspend and moderate the user's posts. Please select only one type of moderation.";
 
 $l['expire_hours'] = "hour(s)";

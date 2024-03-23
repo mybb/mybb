@@ -1012,6 +1012,8 @@ $tables[] = "CREATE TABLE mybb_users (
 	suspensiontime int NOT NULL default '0',
 	suspendsignature tinyint(1) NOT NULL default '0',
 	suspendsigtime int NOT NULL default '0',
+	suspendpm tinyint(1) NOT NULL default '0',
+	pmsuspensiontime int NOT NULL default '0',
 	coppauser tinyint(1) NOT NULL default '0',
 	classicpostbit tinyint(1) NOT NULL default '0',
 	loginattempts smallint(2) NOT NULL default '0',
