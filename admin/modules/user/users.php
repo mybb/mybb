@@ -482,20 +482,7 @@ if($mybb->input['action'] == "edit")
 			{
 				$mybb->input['away_year'] = my_date('Y', $awaydate);
 			}
-
-			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
-			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
-			$return_year = min($mybb->get_input('away_year', MyBB::INPUT_INT), 9999);
-
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				$away_in_past = true;
-			}
-
-			$returndate = "{$return_day}-{$return_month}-{$return_year}";
+			$returndate = implode('-', array($mybb->get_input('away_day', MyBB::INPUT_INT), $mybb->get_input('away_month', MyBB::INPUT_INT), $mybb->get_input('away_year', MyBB::INPUT_INT)));
 		}
 
 		// Set up user handler.
@@ -817,11 +804,6 @@ if($mybb->input['action'] == "edit")
 			if(!empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
 			{
 				$errors[] = $lang->suspendmoderate_error;
-			}
-
-			if(isset($away_in_past))
-			{
-				$errors[] = $lang->error_acp_return_date_past;
 			}
 
 			if(!$errors)

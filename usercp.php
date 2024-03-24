@@ -172,20 +172,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
-
-			$return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
-			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
-			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
-
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				error($lang->error_usercp_return_date_past);
-			}
-
-			$returndate = "{$return_day}-{$return_month}-{$return_year}";
+			$returndate = implode('-', array($mybb->get_input('awayday', MyBB::INPUT_INT), $mybb->get_input('awaymonth', MyBB::INPUT_INT), $mybb->get_input('awayyear', MyBB::INPUT_INT)));
 		}
 		else
 		{
@@ -334,7 +321,7 @@ if($mybb->input['action'] == "profile")
 
 	$plugins->run_hooks("usercp_profile_start");
 
-	$bdaydaysel = '';
+	$bdaydaysel = $selected = '';
 	for($day = 1; $day <= 31; ++$day)
 	{
 		if($bday[0] == $day)
@@ -433,19 +420,18 @@ if($mybb->input['action'] == "profile")
 		$awaycheck = array('', '');
 		if($errors)
 		{
-			if($user['away'] == 1)
+			if($mybb->get_input('away', MyBB::INPUT_INT) == 1)
 			{
 				$awaycheck[1] = "checked=\"checked\"";
+				$returndate = array($mybb->get_input('awayday', MyBB::INPUT_INT), $mybb->get_input('awaymonth', MyBB::INPUT_INT), $mybb->get_input('awayyear', MyBB::INPUT_INT));
+				$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 			}
 			else
 			{
 				$awaycheck[0] = "checked=\"checked\"";
+				$returndate = array(0, 0, "");
+				$user['awayreason'] = '';
 			}
-			$returndate = array();
-			$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
-			$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
-			$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
-			$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 		}
 		else
 		{
@@ -472,7 +458,7 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 
-		$returndatesel = '';
+		$returndatesel = $selected = '';
 		for($day = 1; $day <= 31; ++$day)
 		{
 			if($returndate[0] == $day)
@@ -483,7 +469,7 @@ if($mybb->input['action'] == "profile")
 			{
 				$selected = '';
 			}
-
+			
 			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
 

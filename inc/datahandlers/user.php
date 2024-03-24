@@ -352,43 +352,10 @@ class UserDataHandler extends DataHandler
 			return true;
 		}
 
-		// Sanitize any input we have
-		$birthday['day'] = (int)$birthday['day'];
-		$birthday['month'] = (int)$birthday['month'];
-		$birthday['year'] = (int)$birthday['year'];
-
-		// Error if a day and month exists, and the birthday day and range is not in range
-		if($birthday['day'] != 0 || $birthday['month'] != 0)
+		$validate_birthday = validate_date(array_values($birthday), array(0, TIME_NOW), true);
+		if($validate_birthday !== true)
 		{
-			if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
-			{
-				$this->set_error("invalid_birthday");
-				return false;
-			}
-		}
-
-		// Check if the day actually exists.
-		$months = get_bdays($birthday['year']);
-		if($birthday['month'] != 0 && $birthday['day'] > $months[$birthday['month']-1])
-		{
-			$this->set_error("invalid_birthday");
-			return false;
-		}
-
-		// Error if a year exists and the year is out of range
-		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
-		{
-			$this->set_error("invalid_birthday");
-			return false;
-		}
-		elseif($birthday['year'] == date("Y"))
-		{
-			// Error if birth date is in future
-			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
-			{
-				$this->set_error("invalid_birthday");
-				return false;
-			}
+			$this->set_error("invalid_birthday" . $validate_birthday);
 		}
 
 		// Error if COPPA is on, and the user hasn't verified their age / under 13
@@ -404,21 +371,8 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Make the user's birthday field
-		if($birthday['year'] != 0)
-		{
-			// If the year is specified, put together a d-m-y string
-			$user['bday'] = $birthday['day']."-".$birthday['month']."-".$birthday['year'];
-		}
-		elseif($birthday['day'] && $birthday['month'])
-		{
-			// If only a day and month are specified, put together a d-m string
-			$user['bday'] = $birthday['day']."-".$birthday['month']."-";
-		}
-		else
-		{
-			// No field is specified, so return an empty string for an unknown birthday
-			$user['bday'] = '';
-		}
+		$user['bday'] = implode('-', array_filter(array_values($birthday)));
+		
 		return true;
 	}
 
@@ -868,15 +822,13 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 
-			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
-			if(!$returnday || !$returnmonth || !$returnyear)
+			// Validate the return date
+			$validate_awaydate = validate_date($user['away']['returndate'], array(TIME_NOW));
+			if($validate_awaydate !== true)
 			{
-				$this->set_error("missing_returndate");
+				$this->set_error("invalid_returndate" . $validate_awaydate);
 				return false;
 			}
-
-			// Validate the return date lengths
-			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);
 		}
 		return true;
 	}
