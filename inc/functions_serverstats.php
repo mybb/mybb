@@ -129,8 +129,6 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'zlib' => array('bitwise' => 1, 'title' => 'zlib'),
 			'mbstring' => array('bitwise' => 2, 'title' => 'mbstring'),
 			'exif' => array('bitwise' => 4, 'title' => 'exif'),
-			'zlib' => array('bitwise' => 8, 'title' => 'zlib'),
-
 		),
 
 		'functions' => array(
