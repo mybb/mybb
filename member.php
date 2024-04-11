@@ -718,6 +718,8 @@ if($mybb->input['action'] == "register")
 		$birthday_year = '';
 	}
 
+	$under_thirteen = false;
+	
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
@@ -736,18 +738,16 @@ if($mybb->input['action'] == "register")
 
 			// Store DOB in cookie so we can save it with the registration
 			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$birthday_year}", -1);
-			$under_thirteen = false;
 
 			// User is <= 13, we mark as a coppa user
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
 			{
 				my_setcookie("coppauser", 1, -0);
-				$under_thirteen = false;
+				$under_thirteen = true;
 			}
 			else
 			{
 				my_setcookie("coppauser", 0, -0);
-				$under_thirteen = false;
 			}
 			$mybb->request_method = "";
 		}
