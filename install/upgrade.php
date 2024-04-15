@@ -671,7 +671,6 @@ function upgradedone()
 			$lock_note = $lang->sprintf($lang->upgrade_locked, $config['admin_dir']);
 		}
 	}
-
 	if(empty($written))
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
