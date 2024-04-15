@@ -108,7 +108,7 @@ if($mybb->input['action'] == "unlock")
 	{
 		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$error = $lang->error_invalid_username;
 		}
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "unlock")
 	else if($mybb->input['uid'])
 	{
 		$user = get_user($mybb->input['uid']);
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$error = $lang->error_invalid_uid;
 		}
@@ -526,7 +526,7 @@ if(isset($mybb->user['uid']))
 	$is_super_admin = is_super_admin($mybb->user['uid']);
 }
 
-if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
+if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
@@ -536,6 +536,10 @@ if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
 	my_unsetcookie('adminsid');
+	if($mybb->get_input('do') == 'login')
+	{
+		$login_message = $lang->error_mybb_not_admin_account;
+	}
 }
 
 if(!empty($mybb->user['uid']))

@@ -413,7 +413,7 @@ function get_admin_log_action($logitem)
 			}
 			break;
 		case 'admin_log_forum_management_copy': // Forum copy
-			if($logitem['data'][4])
+			if(!empty($logitem['data'][4]))
 			{
 				$lang_string .= '_with_permissions';
 			}

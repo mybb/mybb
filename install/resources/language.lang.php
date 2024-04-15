@@ -373,3 +373,4 @@ $l['no_permision'] = "You do not have permissions to run this process. You need 
 $l['no_theme_functions_file'] = 'No theme functions file has been found. Make sure that all files are uploaded properly.';
 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
+$l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";

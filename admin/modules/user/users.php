@@ -219,7 +219,7 @@ if($mybb->input['action'] == "activate_user")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'] || $user['usergroup'] != 5)
+	if(!$user || $user['usergroup'] != 5)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -435,7 +435,7 @@ if($mybb->input['action'] == "edit")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -632,7 +632,7 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			// Are we setting a new avatar from a URL?
-			else if($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
+			else if(!empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				if(!$mybb->settings['allowremoteavatars'])
 				{
@@ -943,7 +943,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1832"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1832"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1837"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1832"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -1548,7 +1548,10 @@ EOF;
 
 	if($errors)
 	{
-		$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
+		if(isset($mybb->input['avatar_url']))
+		{
+			$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
+		}
 	}
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -1763,7 +1766,7 @@ if($mybb->input['action'] == "delete")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");

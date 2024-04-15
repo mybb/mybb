@@ -314,7 +314,16 @@ class SmtpMail extends MailHandler
 					$this->fatal_error("The server did not understand the STARTTLS command. Reason: ".$this->get_error());
 					return false;
 				}
-				if(!@stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
+
+				$crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+				// Fix for PHP >=5.6.7 and <7.2 not including TLS 1.1 and 1.2
+				if(defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT'))
+				{
+					$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+					$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+				}
+
+				if(!@stream_socket_enable_crypto($this->connection, true, $crypto_method))
 				{
 					$this->fatal_error("Failed to start TLS encryption");
 					return false;

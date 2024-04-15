@@ -245,7 +245,7 @@ if($loadstyle != "def='1'")
 	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
 	$theme = $db->fetch_array($query);
 
-	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
 		if($load_from_user == 1)
 		{
@@ -1190,7 +1190,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 
-	if(!empty($referrer) && $referrer['uid'])
+	if($referrer)
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
 	}

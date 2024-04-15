@@ -633,7 +633,7 @@ class UserDataHandler extends DataHandler
 		{
 			$referrer = get_user_by_username($user['referrer']);
 
-			if(empty($referrer['uid']))
+			if(!$referrer)
 			{
 				$this->set_error('invalid_referrer', array($user['referrer']));
 				return false;

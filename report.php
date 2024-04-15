@@ -67,7 +67,7 @@ if($report_type == 'post')
 		// Check for a valid forum
 		$forum = get_forum($post['fid']);
 
-		if(!isset($forum['fid']))
+		if(!$forum)
 		{
 			$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 		}
@@ -87,7 +87,7 @@ else if($report_type == 'profile')
 {
 	$user = get_user($mybb->get_input('pid', MyBB::INPUT_INT));
 
-	if(!isset($user['uid']))
+	if(!$user)
 	{
 		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 	}

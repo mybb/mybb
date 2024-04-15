@@ -391,13 +391,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$captcha->invalidate_captcha();
 		}
 
-		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
+		if($mybb->settings['regtype'] != "randompass" && empty($mybb->cookies['coppauser']))
 		{
 			// Log them in
 			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
 		}
 
-		if(isset($mybb->cookies['coppauser']))
+		if(!empty($mybb->cookies['coppauser']))
 		{
 			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 			my_unsetcookie("coppauser");
@@ -718,6 +718,8 @@ if($mybb->input['action'] == "register")
 		$birthday_year = '';
 	}
 
+	$under_thirteen = false;
+	
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
@@ -743,6 +745,10 @@ if($mybb->input['action'] == "register")
 				my_setcookie("coppauser", 1, -0);
 				$under_thirteen = true;
 			}
+			else
+			{
+				my_setcookie("coppauser", 0, -0);
+			}
 			$mybb->request_method = "";
 		}
 		// Show DOB select form
@@ -763,7 +769,7 @@ if($mybb->input['action'] == "register")
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
+		if($mybb->settings['coppa'] != "disabled" && (!empty($mybb->cookies['coppauser']) || $under_thirteen))
 		{
 			if($mybb->settings['coppa'] == "deny")
 			{
@@ -849,7 +855,7 @@ if($mybb->input['action'] == "register")
 			elseif(!empty($referrername))
 			{
 				$ref = get_user_by_username($referrername);
-				if(!$ref['uid'])
+				if(!$ref)
 				{
 					$errors[] = $lang->error_badreferrer;
 				}
@@ -1277,7 +1283,7 @@ if($mybb->input['action'] == "activate")
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
-		if(!$activation['uid'])
+		if(!$activation)
 		{
 			error($lang->error_alreadyactivated);
 		}
@@ -1456,7 +1462,7 @@ if($mybb->input['action'] == "resendactivation")
 	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
-	if($activation['validated'] == 1)
+	if($activation && $activation['validated'] == 1)
 	{
 		error($lang->error_activated_by_admin);
 	}
@@ -1716,12 +1722,8 @@ if($mybb->input['action'] == "resetpassword")
 		}
 
 		$code = htmlspecialchars_uni($mybb->get_input('code'));
-
-		if(!isset($mybb->input['username']))
-		{
-			$input_username = '';
-		}
-		$input_username = htmlspecialchars_uni($mybb->input['username']);
+		
+		$input_username = htmlspecialchars_uni($mybb->get_input('username'));
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		output_page($activate);

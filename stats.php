@@ -160,7 +160,7 @@ if(!$statistics || $interval == 0 || TIME_NOW - $interval > $statistics['time'])
 $query = $db->simple_select('forums', 'fid, name, threads, posts', "type='f'$fidnot", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 $forum = $db->fetch_array($query);
 
-if(empty($forum['fid']))
+if(!$forum)
 {
 	$topforum = $lang->none;
 	$topforumposts = $lang->no;

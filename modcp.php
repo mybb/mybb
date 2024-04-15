@@ -2064,7 +2064,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
-			SELECT a.pid, a.aid
+			SELECT a.pid, a.aid, t.tid
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -2080,10 +2080,18 @@ if($mybb->input['action'] == "do_modqueue")
 			if($action == "approve")
 			{
 				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "+1"));
+				}
 			}
 			else if($action == "delete")
 			{
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "-1"));
+				}
 			}
 		}
 
@@ -2848,6 +2856,8 @@ if($mybb->input['action'] == "editprofile")
 		$bdaymonthsel[$month] = '';
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
+
+    $awaysection = '';
 
 	if($mybb->settings['allowaway'] != 0)
 	{
@@ -4261,7 +4271,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		");
 		$user = $db->fetch_array($query);
 
-		if($user['uid'])
+		if($user)
 		{
 			$existing_ban = true;
 		}
@@ -4285,7 +4295,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$user = get_user_by_username($mybb->input['username'], $options);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$errors[] = $lang->invalid_username;
 		}
@@ -4310,9 +4320,12 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 	// Check banned group
 	$usergroups_cache = $cache->read('usergroups');
-	$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	if(isset($usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)]))
+	{
+		$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	}
 
-	if(empty($usergroup['gid']) || empty($usergroup['isbannedgroup']))
+	if(!isset($usergroup) || empty($usergroup['isbannedgroup']))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}
