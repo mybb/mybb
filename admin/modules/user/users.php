@@ -1273,19 +1273,15 @@ EOF;
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
 
 	$date_format_options = array($lang->use_default);
-
 	foreach($date_formats as $key => $format)
 	{
 		$date_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
 	$time_format_options = array($lang->use_default);
-	if(isset($time_formats))
+	foreach($time_formats as $key => $format)
 	{
-		foreach($time_formats as $key => $format)
-		{
-			$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
-		}
+		$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
 	$date_options = array(
