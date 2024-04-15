@@ -1574,7 +1574,7 @@ class postParser
 					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
 				}
 				// Support for localized portals
-                if(is_array($parsed_url) && array_key_exists($parsed_url['host']))
+				if(!empty($parsed_url['host']))
 				{
 					$domain = explode('.', $parsed_url['host']);
 					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
