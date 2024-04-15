@@ -95,7 +95,7 @@ class templates
 				$this->uncached_templates[$title] = $title;
 			}
 
-            if(empty($gettemplate))
+			if(empty($gettemplate))
 			{
 				$gettemplate = array('template' => '');
 			}

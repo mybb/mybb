@@ -1490,7 +1490,7 @@ class postParser
 
 		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
-        $fragments = empty($parsed_url['fragment']) ? array() : explode("&", $parsed_url['fragment']);
+		$fragments = empty($parsed_url['fragment']) ? array() : explode("&", $parsed_url['fragment']);
 
 		if($video == "liveleak" && !empty($parsed_url['query']))
 		{
