@@ -360,7 +360,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield'], getuser($this->data['uid'])))
+		if($mybb->settings['allowgooglefield'] == '' || !is_member($mybb->settings['allowgooglefield'], get_user($this->data['uid'])))
 		{
 			$this->data['google'] = '';
 			return true;
