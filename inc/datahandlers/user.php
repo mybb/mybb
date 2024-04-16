@@ -385,7 +385,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield'], getuser($this->data['uid'])))
+		if($mybb->settings['allowskypefield'] == '' || !is_member($mybb->settings['allowskypefield'], get_user($this->data['uid'])))
 		{
 			$this->data['skype'] = '';
 			return true;
