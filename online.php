@@ -75,7 +75,7 @@ if($mybb->get_input('action') == "today")
 	while($online = $db->fetch_array($query))
 	{
 		$invisiblemark = '';
-		if($online['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
+		if($online['invisible'] == 1)
 		{
 			$invisiblemark = "*";
 		}

@@ -1144,7 +1144,7 @@ function build_wol_row($user)
 		if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 		{
 			// Append an invisible mark if the user is invisible
-			if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
+			if($user['invisible'] == 1)
 			{
 				$invisible_mark = "*";
 			}
