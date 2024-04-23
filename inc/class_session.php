@@ -357,6 +357,8 @@ class session
 		$mybb->user['moderateposts'] = 0;
 		$mybb->user['showquickreply'] = 1;
 		$mybb->user['signature'] = '';
+		$mybb->user['sourceeditor'] = 0;
+		$mybb->user['subscriptionmethod'] = 0;
 		$mybb->user['suspendposting'] = 0;
 
 		// Has this user visited before? Lastvisit need updating?
@@ -371,7 +373,7 @@ class session
 			{
 				$mybb->user['lastactive'] = (int)$mybb->cookies['mybb']['lastactive'];
 			}
-			if($time - $mybb->cookies['mybb']['lastactive'] > 900)
+			if($time - (int)$mybb->cookies['mybb']['lastactive'] > 900)
 			{
 				my_setcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];

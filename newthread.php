@@ -1032,6 +1032,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$attachbox = '';
 	}
 
+	$savedraftbutton = '';
 	if($mybb->user['uid'])
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");

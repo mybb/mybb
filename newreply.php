@@ -1184,6 +1184,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// If the user is logged in, provide a save draft button.
+	$savedraftbutton = '';
 	if($mybb->user['uid'])
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
