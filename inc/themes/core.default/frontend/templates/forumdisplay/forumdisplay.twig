@@ -142,7 +142,7 @@
                                 {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
                             </strong>
                         </span>
-                        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
+                        {{ asset('jscripts/rating.js', static=true, attributes={'defer': 'defer'}) }}
                         <script type="text/javascript">
                         <!--
                             lang.stars = [];
