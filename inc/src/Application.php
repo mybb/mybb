@@ -150,6 +150,8 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
         $this->registerDeferredProvider(Hashing\ServiceProvider::class);
 
         $this->registerDeferredProvider(Plugins\ServiceProvider::class);
+
+        $this->registerDeferredProvider(View\ServiceProvider::class);
     }
 
     /**

@@ -30,8 +30,9 @@
         "illuminate/hashing": "^10.0",
         "illuminate/routing": "^10.0",
         "laravel/helpers": "^1.7",
+        "scssphp/scssphp": "^1.12",
         "symfony/console": "^7.0",
-        "twig/twig": "^3.8"
+        "twig/twig": "^3.10"
     },
     "require-dev": {
         "mockery/mockery": "^1.5",
@@ -43,7 +44,8 @@
             "MyBB\\": "inc/src/"
         },
         "files": [
-            "inc/src/functions.php"
+            "inc/src/functions.php",
+            "inc/src/View/functions.php"
         ]
     },
     "autoload-dev": {

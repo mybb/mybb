@@ -2,7 +2,6 @@
 
 namespace MyBB\Twig;
 
-use DB_Base;
 use Illuminate\Contracts\Container\Container;
 use MyBB;
 use MyBB\Twig\Extensions\CoreExtension;
@@ -10,12 +9,14 @@ use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
 use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
+use MyBB\View\Runtime\Runtime;
 use MyLanguage;
 use pluginSystem;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
-use Twig\Loader\FilesystemLoader;
+use Twig\Extension\ProfilerExtension;
 use Twig\Loader\LoaderInterface;
+use Twig\Profiler\Profile;
 
 /** @property \MyBB\Application $app */
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -33,12 +34,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->singleton(ThemeExtension::class, function (Container $container) {
-            return new ThemeExtension(
-                $container->make(MyBB::class),
-                $container->make(DB_Base::class)
-            ) ;
-        });
+        $this->app->singleton(ThemeExtension::class);
 
         $this->app->singleton(LangExtension::class, function (Container $container) {
             return new LangExtension(
@@ -50,41 +46,25 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new UrlExtension();
         });
 
-        $this->app->singleton(LoaderInterface::class, function () {
-            $loader = new FilesystemLoader();
+        $this->app->singleton(LoaderInterface::class, function (Container $container) {
+            $view = $container->get(Runtime::class);
 
-            $themeName = 'core.default'; // TODO
-            $themePath = __DIR__ . '/../../themes/' . $themeName . '/';
-            $namespaceDirectories = [
-                'frontend',
-                'parser',
-            ];
-
-            $mainNamespace = 'frontend';
-
-            foreach ($namespaceDirectories as $namespaceDirectory) {
-                if ($namespaceDirectory === $mainNamespace) {
-                    $targetNamespace = FilesystemLoader::MAIN_NAMESPACE;
-                } else {
-                    $targetNamespace = $namespaceDirectory;
-                }
-
-                $path = $themePath . $namespaceDirectory . '/templates';
-
-                $loader->addPath($path, $targetNamespace);
-            }
-
-            return $loader;
+            return new ThemeletLoader($view->themelet, $view->getMainNamespace());
         });
 
-        $this->app->singleton('twig.options', function () {
+        $this->app->singleton('twig.options', function (Container $container) {
+            $mybb = $container->get(MyBB::class);
+
             return [
-                'debug' => true, // TODO: In live environments this should be false
+                'debug' => $mybb->dev_mode,
+                'auto_reload' => \MyBB\View\directive('twig.autoReload'),
                 'cache' => __DIR__ . '/../../../cache/views',
             ];
         });
 
         $this->app->singleton(Environment::class, function (Container $container) {
+            $mybb = $container->get(MyBB::class);
+
             $env = new Environment(
                 $container->make(LoaderInterface::class),
                 $container->make('twig.options')
@@ -95,8 +75,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
 
-            // TODO: this shouldn't be registered in live environments
-            $env->addExtension(new DebugExtension());
+            if ($mybb->dev_mode) {
+                $env->addExtension($container->make(DebugExtension::class));
+            }
+
+            if ($mybb->debug_mode && ($mybb->usergroup['cancp'] || $mybb->dev_mode)) {
+                $profile = new Profile();
+
+                $container->instance('twig.profile', $profile);
+
+                $env->addExtension(new ProfilerExtension($profile));
+            }
 
             return $env;
         });
@@ -110,6 +99,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             LangExtension::class,
             UrlExtension::class,
             LoaderInterface::class,
+            Environment::class,
         ];
     }
 }

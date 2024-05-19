@@ -466,6 +466,23 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
+// TODO determine package name from DB/cache; `core.default` already registered by default
+$packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
+
+\MyBB\app()->instance(
+	\MyBB\Extensions\Theme::class,
+	\MyBB\Extensions\Theme::get($packageName),
+);
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {
