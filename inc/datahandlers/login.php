@@ -109,7 +109,7 @@ class LoginDataHandler extends DataHandler
 				return true;
 			}
 		}
-		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+		else if(!empty($mybb->input['quick_login']) && !empty($mybb->input['quick_password']) && !empty($mybb->input['quick_username']))
 		{
 			$this->set_error('regimagerequired');
 			return false;
