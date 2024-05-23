@@ -252,20 +252,20 @@ foreach($usergroups as $usergroup)
 			$status = "offline";
 		}
 
-		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		if ($user['lastactive'])
 		{
-			if($user['lastactive'])
+			if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
 			{
 				$user['lastvisit'] = $lang->lastvisit_hidden;
 			}
 			else
 			{
-				$user['lastvisit'] = $lang->lastvisit_never;
+				$user['lastvisit'] = my_date('relative', $user['lastactive']);
 			}
 		}
 		else
 		{
-			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+			$user['lastvisit'] = $lang->lastvisit_never;
 		}
 
 		$bgcolor = alt_trow();
