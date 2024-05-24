@@ -10,7 +10,7 @@ use Twig\Environment;
 
 use function MyBB\app;
 
-const DEFAULT_THEME_PACKAGE = 'core.default';
+const DEFAULT_THEME_PACKAGE = 'core.base';
 
 /**
  * Passes data to Resources.

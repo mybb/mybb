@@ -466,7 +466,7 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
-// TODO determine package name from DB/cache; `core.default` already registered by default
+// TODO determine package name from DB/cache; `core.base` already registered by default
 $packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
 
 \MyBB\app()->instance(
