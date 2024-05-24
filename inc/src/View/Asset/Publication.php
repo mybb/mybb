@@ -159,7 +159,13 @@ class Publication
             return false;
         }
 
-        $fh = fopen($this->asset->getAbsolutePath(), 'c');
+        $path = $this->asset->getAbsolutePath();
+
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), recursive: true);
+        }
+
+        $fh = fopen($path, 'c');
 
         if (!$fh) {
             return false;
