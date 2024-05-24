@@ -472,7 +472,7 @@ if($mybb->input['action'] == "warn")
 
 	$plugins->run_hooks("warnings_warn_end");
 
-	output_page(\MyBB\template('warnings/warn.twig', [
+	output_page(\MyBB\View\template('warnings/warn.twig', [
 		'warnings' => $warnings,
 		'post' => $post,
 		'warn_errors' => $warn_errors,
@@ -662,7 +662,7 @@ if($mybb->input['action'] == "view")
 
 	$plugins->run_hooks("warnings_view_end");
 
-	output_page(\MyBB\template('warnings/view.twig', [
+	output_page(\MyBB\View\template('warnings/view.twig', [
 		'user' => $user,
 		'revoked_user' => $revoked_user,
 		'warning' => $warning,
@@ -826,7 +826,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("warnings_end");
 
-	output_page(\MyBB\template('warnings/warnings.twig', [
+	output_page(\MyBB\View\template('warnings/warnings.twig', [
 		'user' => $user,
 		'warning_level' => $warning_level,
 		'warnings' => $warnings

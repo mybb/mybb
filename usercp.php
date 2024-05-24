@@ -371,7 +371,7 @@ if($mybb->input['action'] == "profile")
 
 	$plugins->run_hooks('usercp_profile_end');
 
-	output_page(\MyBB\template('usercp/profile.twig', [
+	output_page(\MyBB\View\template('usercp/profile.twig', [
 		'errors' => $errors,
 		'requiredFields' => $requiredfields,
 		'customFields' => $customfields,
@@ -485,7 +485,7 @@ if($mybb->input['action'] == "options")
 
 	$plugins->run_hooks('usercp_options_end');
 
-	output_page(\MyBB\template('usercp/options.twig', [
+	output_page(\MyBB\View\template('usercp/options.twig', [
 		'errors' => $errors,
 		'user' => $user,
 		'date_formats' => $date_formats,
@@ -637,7 +637,7 @@ if($mybb->input['action'] == "email")
 
 	$plugins->run_hooks('usercp_email');
 
-	output_page(\MyBB\template('usercp/email.twig', [
+	output_page(\MyBB\View\template('usercp/email.twig', [
 		'errors' => $errors,
 		'email' => $email,
 		'email2' => $email2,
@@ -702,7 +702,7 @@ if($mybb->input['action'] == 'password')
 {
 	$plugins->run_hooks('usercp_password');
 
-	output_page(\MyBB\template('usercp/password.twig', [
+	output_page(\MyBB\View\template('usercp/password.twig', [
 		'errors' => $errors,
 	]));
 }
@@ -778,7 +778,7 @@ if($mybb->input['action'] == 'changename')
 
 	$plugins->run_hooks("usercp_changename_end");
 
-	output_page(\MyBB\template('usercp/changename.twig', [
+	output_page(\MyBB\View\template('usercp/changename.twig', [
 		'errors' => $errors,
         'username' => $username,
 	]));
@@ -1157,7 +1157,7 @@ if($mybb->input['action'] == "subscriptions")
 
 	$plugins->run_hooks('usercp_subscriptions_end');
 
-	output_page(\MyBB\template('usercp/subscribed_threads.twig', [
+	output_page(\MyBB\View\template('usercp/subscribed_threads.twig', [
 		'multipage' => $multipage,
 		'subscriptions' => $subscriptions,
 		'thread_count' => $threadcount,
@@ -1288,7 +1288,7 @@ if($mybb->input['action'] == 'forumsubscriptions')
 
 	$plugins->run_hooks('usercp_forumsubscriptions_end');
 
-	output_page(\MyBB\template('usercp/subscribed_forums.twig', [
+	output_page(\MyBB\View\template('usercp/subscribed_forums.twig', [
 		'forums' => $forums,
 	]));
 }
@@ -1428,7 +1428,7 @@ if($mybb->input['action'] == "addsubscription")
 		// Naming of the hook retained for backward compatibility while dropping usercp2.php
 		$plugins->run_hooks("usercp2_addsubscription_thread");
 
-		output_page(\MyBB\template('usercp/subscribe_thread.twig', [
+		output_page(\MyBB\View\template('usercp/subscribe_thread.twig', [
 			'thread' => $thread
 		]));
 		exit;
@@ -1530,7 +1530,7 @@ if($mybb->input['action'] == "removesubscription")
 		// Naming of the hook retained for backward compatibility while dropping usercp2.php
 		$plugins->run_hooks("usercp2_removesubscription_display_forum");
 
-		output_page(\MyBB\template('usercp/removesubscription_forum.twig', [
+		output_page(\MyBB\View\template('usercp/removesubscription_forum.twig', [
 			'forum' => $forum,
 			'errors' => $errors,
 		]));
@@ -1573,7 +1573,7 @@ if($mybb->input['action'] == "removesubscription")
 		// Naming of the hook retained for backward compatibility while dropping usercp2.php
 		$plugins->run_hooks("usercp2_removesubscription_display_thread");
 
-		output_page(\MyBB\template('usercp/removesubscription_thread.twig', [
+		output_page(\MyBB\View\template('usercp/removesubscription_thread.twig', [
 			'thread' => $thread,
 			'errors' => $errors,
 		]));
@@ -1729,7 +1729,7 @@ if($mybb->input['action'] == 'editsig')
 		$plugins->run_hooks('usercp_editsig_end');
 
 		// User either doesn't have permission, or has their signature suspended
-		$editsig = \MyBB\template('usercp/editsig_suspended.twig', [
+		$editsig = \MyBB\View\template('usercp/editsig_suspended.twig', [
 			'sig' => $sig,
 			'sigPreview' => $sigpreview,
 			'showSigType' => $show_sig_type,
@@ -1795,7 +1795,7 @@ if($mybb->input['action'] == 'editsig')
 
 		$plugins->run_hooks('usercp_editsig_end');
 
-		$editsig = \MyBB\template('usercp/editsig.twig', [
+		$editsig = \MyBB\View\template('usercp/editsig.twig', [
 			'error' => $error,
 			'sig' => $sig,
 			'sigPreview' => $sigpreview,
@@ -2015,7 +2015,7 @@ if($mybb->input['action'] == "avatar")
 
 	$plugins->run_hooks('usercp_avatar_end');
 
-	output_page(\MyBB\template('usercp/avatar.twig', [
+	output_page(\MyBB\View\template('usercp/avatar.twig', [
 		'error' => $error,
 		'useravatar' => $useravatar,
 		'extranotes' => $extranotes
@@ -2638,7 +2638,7 @@ if($mybb->input['action'] == 'editlists')
 	{
 		if($mybb->input['manage'] == 'ignored')
 		{
-			echo \MyBB\template('usercp/editlists/ignore_list.twig', [
+			echo \MyBB\View\template('usercp/editlists/ignore_list.twig', [
 				'ignoreList' => $ignore_list
 			]);
 
@@ -2666,7 +2666,7 @@ if($mybb->input['action'] == 'editlists')
 					$sent_rows[] = $request;
 				}
 
-				echo \MyBB\template('usercp/editlists/sent_requests.twig', [
+				echo \MyBB\View\template('usercp/editlists/sent_requests.twig', [
 					'sentRequests' => $sent_rows,
 				]);
 
@@ -2674,7 +2674,7 @@ if($mybb->input['action'] == 'editlists')
 			}
 			else
 			{
-				echo \MyBB\template('usercp/editlists/buddy_list.twig', [
+				echo \MyBB\View\template('usercp/editlists/buddy_list.twig', [
 					'buddyList' => $buddy_list,
 				]);
 
@@ -2717,7 +2717,7 @@ if($mybb->input['action'] == 'editlists')
 
 	$plugins->run_hooks('usercp_editlists_end');
 
-	output_page(\MyBB\template('usercp/editlists.twig', [
+	output_page(\MyBB\View\template('usercp/editlists.twig', [
 		'buddyList' => $buddy_list,
 		'ignoreList' => $ignore_list,
 		'receivedRequests' => $received_rows,
@@ -2773,7 +2773,7 @@ if($mybb->input['action'] == "drafts")
 
 	$plugins->run_hooks('usercp_drafts_end');
 
-	output_page(\MyBB\template('usercp/drafts.twig', [
+	output_page(\MyBB\View\template('usercp/drafts.twig', [
 		'draftCount' => $draftCount,
 		'drafts' => $drafts,
 		'deleteDraftsEnabled' => $deleteDraftsEnabled,
@@ -2981,7 +2981,7 @@ if($mybb->input['action'] == "usergroups")
 		{
 			$joingroup = $mybb->get_input('joingroup', MyBB::INPUT_INT);
 
-			output_page(\MyBB\template('usercp/joingroup.twig', [
+			output_page(\MyBB\View\template('usercp/joingroup.twig', [
 				'usergroup' => $usergroup,
 				'joingroup' => $joingroup,
 			]));
@@ -3137,7 +3137,7 @@ if($mybb->input['action'] == "usergroups")
 
 	$plugins->run_hooks('usercp_usergroups_end');
 
-	output_page(\MyBB\template('usercp/usergroups.twig', [
+	output_page(\MyBB\View\template('usercp/usergroups.twig', [
 		'joinablegroups' => $joinablegroups,
 		'leadinggroups' => $leadinggroups,
 		'groupleader' => $groupleader,
@@ -3276,7 +3276,7 @@ if($mybb->input['action'] == "attachments")
 
 	$plugins->run_hooks('usercp_attachments_end');
 
-	output_page(\MyBB\template('usercp/attachments.twig', [
+	output_page(\MyBB\View\template('usercp/attachments.twig', [
 		'attachments' => $attachments,
 		'usage_note' => $usagenote,
 		'multipage' => $multipage,
@@ -3848,7 +3848,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks('usercp_end');
 
-	output_page(\MyBB\template('usercp/home.twig', [
+	output_page(\MyBB\View\template('usercp/home.twig', [
 		'useravatar' => $useravatar,
 		'username' => $username,
 		'groupscache' => $groupscache,

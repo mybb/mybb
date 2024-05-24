@@ -962,13 +962,13 @@ function build_postbit($post, $post_type=0)
 
 	if($post_type == 0 && $forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
 	{
-		$postbit = \MyBB\template('postbit/postbit_deleted_member.twig', [
+		$postbit = \MyBB\View\template('postbit/postbit_deleted_member.twig', [
 			'post' => $post,
 		]);
 	}
 	else
 	{
-		$postbit = \MyBB\template('postbit/postbit.twig', [
+		$postbit = \MyBB\View\template('postbit/postbit.twig', [
 			'post' => $post,
 			'attached' => $attached,
 			'icon' => $icon,
@@ -1033,7 +1033,7 @@ function get_post_attachments($id, &$post)
 				&& $attachment['thumbnail'] != ''
 				&& $mybb->settings['attachthumbnails'] == 'yes'
 			) {
-				$attachmentBit = \MyBB\template('postbit/postbit_attached_thumbnail.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attached_thumbnail.twig', [
 					'thumb' => $attachment,
 				]);
 			} elseif (
@@ -1043,11 +1043,11 @@ function get_post_attachments($id, &$post)
 					|| $mybb->settings['attachthumbnails'] == 'no'
 				)
 			) {
-				$attachmentBit = \MyBB\template('postbit/postbit_attached_image.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attached_image.twig', [
 					'image' => $attachment,
 				]);
 			} else {
-				$attachmentBit = \MyBB\template('postbit/postbit_attachment.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attachment.twig', [
 					'attachment' => $attachment,
 				]);
 			}

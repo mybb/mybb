@@ -225,7 +225,7 @@ $stats['newest_user'] = build_profile_link($stats['lastusername'], $stats['lastu
 
 $plugins->run_hooks("stats_end");
 
-output_page(\MyBB\template('stats/stats.twig', [
+output_page(\MyBB\View\template('stats/stats.twig', [
 	'stats' => $stats,
 	'most_replied_to_threads' => $most_replied_to_threads,
 	'most_viewed_threads' => $most_viewed_threads,

@@ -496,7 +496,7 @@ if($mybb->input['action'] == "results")
 
 	$plugins->run_hooks("private_results_end");
 
-	output_page(\MyBB\template('private/results.twig', [
+	output_page(\MyBB\View\template('private/results.twig', [
 		'messagelist' => $messagelist,
 		'multipage' => $multipage,
 		'folders' => $folders,
@@ -508,7 +508,7 @@ if($mybb->input['action'] == "advanced_search")
 {
 	$plugins->run_hooks("private_advanced_search");
 
-	output_page(\MyBB\template('private/advanced_search.twig', [
+	output_page(\MyBB\View\template('private/advanced_search.twig', [
 		'folders' => $folders,
 	]));
 }
@@ -949,7 +949,7 @@ if($mybb->input['action'] == "send")
 
 	$plugins->run_hooks("private_send_end");
 
-	output_page(\MyBB\template('private/send.twig', [
+	output_page(\MyBB\View\template('private/send.twig', [
 		'sendpm' => $sendpm,
 		'send_errors' => $send_errors,
 		'smilieinserter' => $smilieinserter,
@@ -1178,7 +1178,7 @@ if($mybb->input['action'] == "read")
 
 	$plugins->run_hooks("private_read_end");
 
-	output_page(\MyBB\template('private/read.twig', [
+	output_page(\MyBB\View\template('private/read.twig', [
 		'pm' => $pm,
 		'message' => $message,
 		'collapsedthead' => $collapsedthead,
@@ -1301,7 +1301,7 @@ if($mybb->input['action'] == "tracking")
 
 	$plugins->run_hooks("private_tracking_end");
 
-	output_page(\MyBB\template('private/tracking.twig', [
+	output_page(\MyBB\View\template('private/tracking.twig', [
 		'read_multipage' => $read_multipage,
 		'unread_multipage' => $unread_multipage,
 		'readmessages' => $readmessages,
@@ -1400,7 +1400,7 @@ if($mybb->input['action'] == "folders")
 
 	$plugins->run_hooks("private_folders_end");
 
-	output_page(\MyBB\template('private/folders.twig', [
+	output_page(\MyBB\View\template('private/folders.twig', [
 		'folders' => $folders,
 	]));
 }
@@ -1496,7 +1496,7 @@ if($mybb->input['action'] == "empty")
 
 	$plugins->run_hooks("private_empty_end");
 
-	output_page(\MyBB\template('private/empty.twig', [
+	output_page(\MyBB\View\template('private/empty.twig', [
 		'folders' => $folders,
 	]));
 }
@@ -1671,7 +1671,7 @@ if($mybb->input['action'] == "export")
 
 	$plugins->run_hooks("private_export_end");
 
-	output_page(\MyBB\template('private/export.twig', [
+	output_page(\MyBB\View\template('private/export.twig', [
 		'folders' => $folders,
 	]));
 }
@@ -1953,7 +1953,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	if($mybb->input['exporttype'] == "html")
 	{
-		output_page(\MyBB\template('private/export/html.twig', [
+		output_page(\MyBB\View\template('private/export/html.twig', [
 			'pmsdownload' => $pmsdownload,
 			'css' => $css,
 		]));
@@ -1961,7 +1961,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	elseif($mybb->input['exporttype'] == "csv")
 	{
 		echo "\xEF\xBB\xBF"; // UTF-8 BOM
-		output_page(\MyBB\template('private/export/csv.twig', [
+		output_page(\MyBB\View\template('private/export/csv.twig', [
 			'pmsdownload' => $pmsdownload,
 		]));
 		exit;
@@ -1969,7 +1969,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	else
 	{
 		echo "\xEF\xBB\xBF"; // UTF-8 BOM
-		output_page(\MyBB\template('private/export/txt.twig', [
+		output_page(\MyBB\View\template('private/export/txt.twig', [
 			'pmsdownload' => $pmsdownload,
 		]));
 		exit;
@@ -2349,7 +2349,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("private_end");
 
-	output_page(\MyBB\template('private/private.twig', [
+	output_page(\MyBB\View\template('private/private.twig', [
 		'private' => $private,
 		'messagelist' => $messagelist,
 		'multipage' => $multipage,

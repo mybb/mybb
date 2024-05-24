@@ -702,7 +702,7 @@ if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_mo
 			}
 
 			$headerMessage[] = [
-				'message' => \MyBB\template('misc/modqueue_link.twig', [
+				'message' => \MyBB\View\template('misc/modqueue_link.twig', [
 					'modqueue_type' => $modqueue_type,
 					'modqueue_message' => $modqueue_message,
 				]),
@@ -871,7 +871,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 
 $jsTemplates = array();
 foreach (array('modal', 'modal_button') as $template) {
-	$jsTemplates[$template] = \MyBB\template("modals/{$template}.twig");
+	$jsTemplates[$template] = \MyBB\View\template("modals/{$template}.twig");
 	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
 }
 
@@ -922,7 +922,7 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
 	$timezone = (float)$mybb->user['timezone'] + $mybb->user['dst'];
-	$mybb->settings['dst_detection'] = \MyBB\template('messages/dst_detection.twig', [
+	$mybb->settings['dst_detection'] = \MyBB\View\template('messages/dst_detection.twig', [
 		'timezone' => $timezone
 	]);
 }
@@ -1001,7 +1001,7 @@ if(
 	}
 	else
 	{
-		echo(\MyBB\template('modals/boardclosed.twig', [
+		echo(\MyBB\View\template('modals/boardclosed.twig', [
 			'title' => $title,
 			'message' => $message,
 		]));
@@ -1106,7 +1106,7 @@ if($mybb->usergroup['canview'] != 1)
 		}
 		else
 		{
-			echo(\MyBB\template('modals/no_permission.twig'));
+			echo(\MyBB\View\template('modals/no_permission.twig'));
 			exit;
 		}
 	}

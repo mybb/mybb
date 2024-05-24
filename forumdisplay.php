@@ -1173,7 +1173,7 @@ $plugins->run_hooks('forumdisplay_end');
 
 $foruminfo['name'] = strip_tags($foruminfo['name']);
 
-output_page(\MyBB\template('forumdisplay/forumdisplay.twig', [
+output_page(\MyBB\View\template('forumdisplay/forumdisplay.twig', [
 	'foruminfo' => $foruminfo,
 	'subforums' => $subforums,
 	'fpermissions' => $fpermissions,

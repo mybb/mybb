@@ -272,7 +272,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("sendthread_end");
 
-	output_page(\MyBB\template('sendthread/sendthread.twig', [
+	output_page(\MyBB\View\template('sendthread/sendthread.twig', [
 		'thread' => $thread,
 		'captcha' => $captcha,
 		'errors' => $errors,

@@ -121,7 +121,7 @@ function fetch_forum_announcements($pid = 0, $depth = 1)
 			}
 
 			$bgcolor = alt_trow();
-			$announcements_forum .= \MyBB\template('modcp/announcements/forum.twig', [
+			$announcements_forum .= \MyBB\View\template('modcp/announcements/forum.twig', [
 				'announcements' => $currentAnnouncements,
 				'depth' => $depth,
 				'forum' => $forum,

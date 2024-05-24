@@ -3,7 +3,7 @@
 use MyBB\Stopwatch\Stopwatch;
 
 use function MyBB\app;
-use function MyBB\template;
+use function MyBB\View\template;
 
 /**
  * MyBB 1.8

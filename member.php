@@ -671,7 +671,7 @@ if($mybb->input['action'] == "coppa_form")
 
 	$plugins->run_hooks("member_coppa_form");
 
-	output_page(\MyBB\template('member/coppa_form.twig'));
+	output_page(\MyBB\View\template('member/coppa_form.twig'));
 }
 
 if($mybb->input['action'] == "register")
@@ -763,7 +763,7 @@ if($mybb->input['action'] == "register")
 
 			$coppa_desc = $mybb->settings['coppa'] == 'deny' ? $lang->coppa_desc_for_deny : $lang->coppa_desc;
 
-			output_page(\MyBB\template('member/register_coppa.twig', [
+			output_page(\MyBB\View\template('member/register_coppa.twig', [
 				'days' => $days,
 				'months' => $months,
 				'year' => $birthday_year,
@@ -788,7 +788,7 @@ if($mybb->input['action'] == "register")
 
 		$plugins->run_hooks("member_register_agreement");
 
-		output_page(\MyBB\template('member/register_agreement.twig', [
+		output_page(\MyBB\View\template('member/register_agreement.twig', [
 			'coppa_agreement' => $coppa_agreement,
 		]));
 	}
@@ -1215,7 +1215,7 @@ if($mybb->input['action'] == "register")
 			lang.js_validator_bad_password_security = '{$lang->js_validator_bad_password_security}';
 		</script>\n";
 
-		output_page(\MyBB\template('member/register.twig', [
+		output_page(\MyBB\View\template('member/register.twig', [
 			'regerrors' => $regerrors,
 			'select' => $select,
 			'registration' => $registration,
@@ -1331,7 +1331,7 @@ if($mybb->input['action'] == "activate")
 
 		$activate['username'] = $user['username'];
 
-		output_page(\MyBB\template('member/activate.twig', [
+		output_page(\MyBB\View\template('member/activate.twig', [
 			'activate' => $activate,
 		]));
 	}
@@ -1361,7 +1361,7 @@ if($mybb->input['action'] == "resendactivation")
 
 	$plugins->run_hooks("member_resendactivation_end");
 
-	output_page(\MyBB\template('member/resendactivation.twig', [
+	output_page(\MyBB\View\template('member/resendactivation.twig', [
 		'email' => $email,
     ]));
 }
@@ -1542,7 +1542,7 @@ if($mybb->input['action'] == "lostpw")
 		$email = '';
 	}
 
-	output_page(\MyBB\template('member/lostpw.twig', [
+	output_page(\MyBB\View\template('member/lostpw.twig', [
 			'captcha' => $captcha,
 			'errors' => $errors,
 			'email' => $email,
@@ -1673,7 +1673,7 @@ if($mybb->input['action'] == "resetpassword")
 
 		$activate['username'] = $user['username'];
 
-		output_page(\MyBB\template('member/resetpassword.twig', [
+		output_page(\MyBB\View\template('member/resetpassword.twig', [
 			'activate' => $activate,
 		]));
 	}
@@ -1888,7 +1888,7 @@ if($mybb->input['action'] == "login")
 
 	$plugins->run_hooks("member_login_end");
 
-	output_page(\MyBB\template('member/login.twig', [
+	output_page(\MyBB\View\template('member/login.twig', [
 		'inline_errors' => $inline_errors,
 		'login' => $login,
 		'captcha' => $captcha,
@@ -1954,7 +1954,7 @@ if($mybb->input['action'] == "viewnotes")
 
 	$plugins->run_hooks('member_viewnotes');
 
-	output_page(\MyBB\template('member/viewnotes.twig', [
+	output_page(\MyBB\View\template('member/viewnotes.twig', [
 		'user' => $user,
 	]));
 	exit;
@@ -2397,7 +2397,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$uid = (int) $memprofile['uid'];
 		$referral_count = $memprofile['referrals'];
-		$memprofile['referrals_link'] = \MyBB\template('referrals/referrals_link.twig', [
+		$memprofile['referrals_link'] = \MyBB\View\template('referrals/referrals_link.twig', [
 			'uid' => $uid,
 			'referral_count' => $referral_count,
 		]);
@@ -2690,7 +2690,7 @@ if($mybb->input['action'] == "profile")
 
 	$plugins->run_hooks("member_profile_end");
 
-	output_page(\MyBB\template('member/profile.twig', [
+	output_page(\MyBB\View\template('member/profile.twig', [
 		'memprofile' => $memprofile,
 		'customfields' => $customfields,
 		'contactfields' => $contactfields,
@@ -3002,7 +3002,7 @@ if($mybb->input['action'] == "emailuser")
 
 	$plugins->run_hooks("member_emailuser_end");
 
-	output_page(\MyBB\template('member/emailuser.twig', [
+	output_page(\MyBB\View\template('member/emailuser.twig', [
 		'errors' => $errors,
 		'captcha' => $captcha,
 		'email' => $email,
@@ -3085,7 +3085,7 @@ if($mybb->input['action'] == 'referrals')
 
 	$plugins->run_hooks('member_referrals_end');
 
-	output_page(\MyBB\template('referrals/referrals.twig', [
+	output_page(\MyBB\View\template('referrals/referrals.twig', [
 		'referral_count' => $referral_count,
 		'referrals' => $referrals,
 		'multipage' => $multipage,

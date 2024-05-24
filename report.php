@@ -171,7 +171,7 @@ if(empty($error) &&
 
 		$plugins->run_hooks('report_do_report_end');
 
-		echo \MyBB\template('report/report_thanks.twig', [
+		echo \MyBB\View\template('report/report_thanks.twig', [
 			'report' => $report_info,
 		]);
 		echo sprintf("<script type='text/javascript'>$('%s').remove();</script>", $button);
@@ -233,7 +233,7 @@ if(empty($error) &&
 
 			$plugins->run_hooks('report_do_report_end');
 
-			echo \MyBB\template('report/report_thanks.twig', [
+			echo \MyBB\View\template('report/report_thanks.twig', [
 				'report' => $report_info,
 			]);
 			echo sprintf("<script type='text/javascript'>$('%s').remove();</script>", $button);
@@ -282,7 +282,7 @@ if($mybb->get_input('no_modal'))
 		$template = 'report/report_error_nomodal.twig';
 	}
 
-	echo \MyBB\template($template, [
+	echo \MyBB\View\template($template, [
 		'report' => $report_info,
 	]);
 	exit;
@@ -290,7 +290,7 @@ if($mybb->get_input('no_modal'))
 
 $plugins->run_hooks('report_end');
 
-output_page(\MyBB\template('report/report.twig', [
+output_page(\MyBB\View\template('report/report.twig', [
 	'report' => $report_info,
 ]));
 

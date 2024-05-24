@@ -393,7 +393,7 @@ $forums = $forum_list['forum_list'];
 
 $plugins->run_hooks('index_end');
 
-output_page(\MyBB\template('index/index.twig', [
+output_page(\MyBB\View\template('index/index.twig', [
 	'forums' => $forums,
 	'users' => $doneusers,
 	'bots' => $donebots,

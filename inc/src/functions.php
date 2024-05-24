@@ -3,7 +3,6 @@
 namespace MyBB;
 
 use Illuminate\Container\Container;
-use MyBB\Stopwatch\Stopwatch;
 use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 
@@ -24,32 +23,6 @@ function app(?string $className = null, array $parameters = [])
     }
 
     return Container::getInstance()->make($className, $parameters);
-}
-
-/**
- * Render a view using the Twig template system.
- *
- * @param string $name The name of the template to render.
- * @param array $context An array of variables to be accessible within the template.
- *
- * @return string The rendered HTML content of the template.
- *
- * @throws \Twig\Error\LoaderError
- * @throws \Twig\Error\RuntimeError
- * @throws \Twig\Error\SyntaxError
- */
-function template(string $name, array $context = [])
-{
-    $stopwatchPeriod = app(Stopwatch::class)->start($name, 'core.view.template');
-
-    /** @var Environment $twig */
-    $twig = app(Environment::class);
-
-    $result = $twig->render($name, $context);
-
-    $stopwatchPeriod->stop();
-
-    return $result;
 }
 
 /**

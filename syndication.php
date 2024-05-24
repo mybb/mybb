@@ -211,7 +211,7 @@ if(!empty($firstposts))
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$attachment['icon'] = get_attachment_icon($ext);
-				$attbit = \MyBB\template('postbit/postbit_attachment.twig', [
+				$attbit = \MyBB\View\template('postbit/postbit_attachment.twig', [
 					'attachment' => $attachment,
 				]);
 				if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)

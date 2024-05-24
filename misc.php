@@ -151,7 +151,7 @@ elseif($mybb->input['action'] == "rules")
 
 		$plugins->run_hooks("misc_rules_end");
 
-		output_page(\MyBB\template('misc/rules.twig', [
+		output_page(\MyBB\View\template('misc/rules.twig', [
 			'forum' => $forum,
 		]));
 	}
@@ -330,7 +330,7 @@ elseif($mybb->input['action'] == "helpresults")
 
 	$plugins->run_hooks("misc_helpresults_end");
 
-	output_page(\MyBB\template('misc/helpresults.twig', [
+	output_page(\MyBB\View\template('misc/helpresults.twig', [
 		'helpdoclist' => $helpdoclist,
 		'highlight' => $highlight,
 	]));
@@ -398,7 +398,7 @@ elseif($mybb->input['action'] == "help")
 
 			$plugins->run_hooks("misc_help_helpdoc_end");
 
-			output_page(\MyBB\template('misc/help_helpdoc.twig', [
+			output_page(\MyBB\View\template('misc/help_helpdoc.twig', [
 				'helpdoc' => $helpdoc,
 			]));
 		}
@@ -475,7 +475,7 @@ elseif($mybb->input['action'] == "help")
 
 		$plugins->run_hooks("misc_help_section_end");
 
-		output_page(\MyBB\template('misc/help.twig', [
+		output_page(\MyBB\View\template('misc/help.twig', [
 			'sections' => $sections,
 		]));
 	}
@@ -550,7 +550,7 @@ elseif($mybb->input['action'] == "buddypopup")
 
 	$plugins->run_hooks("misc_buddypopup_end");
 
-	output_page(\MyBB\template('misc/buddypopup.twig', [
+	output_page(\MyBB\View\template('misc/buddypopup.twig', [
 		'buddies' => $buddies,
 		'buddys' => $buddys,
 	]));
@@ -664,7 +664,7 @@ elseif($mybb->input['action'] == "whoposted")
 
 	if($modal)
 	{
-		output_page(\MyBB\template('misc/whoposted_modal.twig', [
+		output_page(\MyBB\View\template('misc/whoposted_modal.twig', [
 			'thread' => $thread,
 			'whoposted' => $whoposted,
 		]));
@@ -694,7 +694,7 @@ elseif($mybb->input['action'] == "whoposted")
 		add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
 		add_breadcrumb($lang->who_posted);
 
-		output_page(\MyBB\template('misc/whoposted.twig', [
+		output_page(\MyBB\View\template('misc/whoposted.twig', [
 			'thread' => $thread,
 			'whoposted' => $whoposted,
 		]));
@@ -727,7 +727,7 @@ elseif($mybb->input['action'] == "smilies")
 			}
 		}
 
-		output_page(\MyBB\template('misc/smilies_modal.twig', [
+		output_page(\MyBB\View\template('misc/smilies_modal.twig', [
 			'smilies' => $smilies,
 		]));
 	}
@@ -747,7 +747,7 @@ elseif($mybb->input['action'] == "smilies")
 			}
 		}
 
-		output_page(\MyBB\template('misc/smilies.twig', [
+		output_page(\MyBB\View\template('misc/smilies.twig', [
 			'smilies' => $smilies,
 		]));
 	}
@@ -830,7 +830,7 @@ elseif($mybb->input['action'] == "syndication")
 
 	$plugins->run_hooks("misc_syndication_end");
 
-	output_page(\MyBB\template('misc/syndication.twig', [
+	output_page(\MyBB\View\template('misc/syndication.twig', [
 		'syndication' => $syndication,
 		'forums' => $forums,
 	]));
