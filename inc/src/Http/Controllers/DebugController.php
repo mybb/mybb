@@ -9,6 +9,8 @@ use MyBB;
 use MyBB\Stopwatch\Stopwatch;
 use MyLanguage;
 
+use Twig\Profiler\Dumper\TextDumper;
+use function MyBB\app;
 use function MyBB\Maintenance\template;
 
 class DebugController
@@ -96,6 +98,15 @@ class DebugController
             ];
         }
 
+        // Twig profile
+        if (app()->has('twig.profile')) {
+            $twigProfile = (new TextDumper())->dump(
+                app()->get('twig.profile')
+            );
+        } else {
+            $twigProfile = null;
+        }
+
         // definition lists
         $data['timing'] = [
             'Page Generation Time' => format_time_duration($eventDuration['main']),
@@ -115,8 +126,12 @@ class DebugController
             'Memory Usage' => $memoryUsage,
             'Server Load' => get_server_load(),
         ];
-        $data['status'] = [
+        $data['application'] = [
             'MyBB Version' => $this->mybb->version,
+            'View Optimization Level' => app(MyBB\View\Optimization::class)->name,
+            'MyBB Root' => MYBB_ROOT,
+        ];
+        $data['server'] = [
             'PHP Version' => PHP_VERSION,
             'Database Extension' => $this->mybb->config['database']['type'],
             'GZip Encoding' => $this->mybb->settings['gzipoutput'] != 0 ? "Enabled" : "Disabled",
@@ -126,11 +141,13 @@ class DebugController
             ,
             'Xdebug' => function_exists('xdebug_info') ? implode(', ', xdebug_info('mode')) : '-',
             'Memory Limit' => @ini_get("memory_limit"),
-            'MyBB Root' => MYBB_ROOT,
         ];
 
         // cache
         $data['cache'] = $this->mybb->cache->calllist;
+        $data['cacheThemeletBuild'] = $this->stopwatch->getEvents('core.hydrable.build');
+        $data['cacheThemeletRead'] = $this->stopwatch->getEvents('core.hydrable.read');
+        $data['cacheThemeletWrite'] = $this->stopwatch->getEvents('core.hydrable.write');
 
         // database
         $data['dbConnections'] = $this->db->connections;
@@ -144,8 +161,12 @@ class DebugController
         $data['dbTemplates'] = array_keys($templates->cache);
         $data['dbTemplatesUncached'] = $templates->uncached_templates;
 
+        $data['viewHierarchicalResolution'] = $this->stopwatch->getEvents('core.view.hierarchy.resolution');
+
         $data['twigTemplateEvents'] = $this->stopwatch->getEvents('core.view.template');
+        $data['twigProfile'] = $twigProfile;
         $data['assetPublishEvents'] = $this->stopwatch->getEvents('core.view.asset.publish');
+
 
         return $data;
     }

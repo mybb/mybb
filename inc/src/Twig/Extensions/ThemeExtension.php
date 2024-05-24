@@ -4,6 +4,11 @@ namespace MyBB\Twig\Extensions;
 
 use DB_Base;
 use MyBB;
+use MyBB\View\Locator\Locator;
+use MyBB\View\Locator\StaticLocator;
+use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\ResourceType;
+use MyBB\View\Runtime\Runtime;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
@@ -14,40 +19,27 @@ use Twig\TwigFunction;
 class ThemeExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
-     * @var \MyBB $mybb
-     */
-    private $mybb;
-
-    /**
-     * @var \DB_Base $db
-     */
-    private $db;
-
-    /**
      * @var string $altRowState
      */
     private string $altRowState;
 
     /**
      * Create a new instance of the ThemeExtension.
-     *
-     * @param \MyBB $mybb
-     * @param \DB_Base $db
      */
-    public function __construct(MyBB $mybb, DB_Base $db)
-    {
-        $this->mybb = $mybb;
-        $this->db = $db;
-
-        $this->altRowState = null;
-    }
+    public function __construct(
+        private readonly MyBB $mybb,
+        private readonly DB_Base $db,
+        private readonly Runtime $view
+    )
+    {}
 
     public function getFunctions()
     {
         return [
+            new TwigFunction('asset', [$this, 'getAsset']),
             new TwigFunction('asset_url', [$this, 'getAssetUrl']),
             new TwigFunction('alt_trow', [$this, 'altTrow']),
-            new TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
+            new TwigFunction('attached_assets', [$this, 'getAttachedAssets']),
         ];
     }
 
@@ -65,17 +57,71 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
+     * Output an Asset HTML tag, or delegate appending it to the DOM to the application.
+     *
+     * @param string $locator The path to the Asset.
+     * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
+     *
+     * @note Uses `$locator` parameter name to simplify Twig function usage
+     */
+    public function getAsset(
+        string $locator,
+        bool $static = false,
+        array $attributes = [],
+    ): void
+    {
+        if ($static) {
+            $locatorObject = StaticLocator::fromString($locator);
+        } else {
+            $locatorObject = Locator::fromString(
+                $locator,
+                [
+                    'type' => ThemeletLocator::COMPONENT_SET,
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                [
+                    // may differ from evoking template's namespace
+                    'namespace' => $this->view->getMainNamespace(),
+                ],
+            );
+        }
+
+        $this->view->attachAsset($locatorObject, $attributes);
+    }
+
+    /**
      * Get the path to an asset using the CDN URL if configured.
      *
-     * @param string $path The path to the file.
+     * @param string $locator The path to the file.
+     * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
      * @param bool $useCdn Whether to use the configured CDN options.
      *
      * @return string The complete URL to the asset.
+     *
+     * @note Uses `$locator` parameter name to simplify Twig function usage
      */
-    public function getAssetUrl(string $path, bool $useCdn = true): string
+    public function getAssetUrl(string $locator, bool $static = false, bool $useCdn = true): string
     {
+        if ($static) {
+            $locatorObject = StaticLocator::fromString($locator);
+        } else {
+            $locatorObject = Locator::fromString(
+                $locator,
+                [
+                    'type' => ThemeletLocator::COMPONENT_SET,
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                [
+                    // may differ from evoking template's namespace
+                    'namespace' => $this->view->getMainNamespace(),
+                ],
+            );
+        }
+
+        $asset = $this->view->themelet->getPublishedAsset($locatorObject);
+
         // TODO: This could be smart and add cache busting query parameters to the path automatically...
-        return $this->mybb->get_asset_url($path, $useCdn);
+        return $this->view->getAssetUrl($asset, $useCdn);
     }
 
     /**
@@ -98,11 +144,19 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
-     * Get a list of all the stylesheets applicable for the current page.
+     * Get assets attached to the current page.
+     */
+    public function getAttachedAssets(string $type): array
+    {
+        return $this->view->getAttachedAssets(ResourceType::from($type));
+    }
+
+    /**
+     * Get a list of stylesheets applicable for the current page in the MyBB <= 1.8 format.
      *
      * @return \Generator A generator object that yields each stylesheet, as a full URL.
      */
-    public function getStylesheets() : \Generator
+    private function getLegacyStyles(): \Generator
     {
         // TODO: Optimise this function - it looks like it can be improved at a glance
         $theme = $GLOBALS['theme'];

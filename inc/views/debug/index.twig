@@ -24,6 +24,8 @@
                         {{ components.definitionList(data) }}
                     {% elseif type == 'list' %}
                         {{ components.list(data) }}
+                    {% elseif type == 'text' %}
+                        {{ components.text(data) }}
                     {% elseif type == 'proportionGraph' %}
                         {{ components.proportionGraph(data) }}
                     {% elseif type == 'stopwatchGroupEvents' %}
@@ -49,7 +51,11 @@
             </section>
 
             <section>
-                {{ _self.visualize(data.status, 'definitionList', 'Status') }}
+                {{ _self.visualize(data.application, 'definitionList', 'MyBB Status') }}
+            </section>
+
+            <section>
+                {{ _self.visualize(data.server, 'definitionList', 'Server Status') }}
             </section>
 
             <section>
@@ -59,6 +65,9 @@
             <section>
                 <h2>Cache</h2>
                 {{ _self.visualize(data.cache, 'cacheCalls', 'Cache Calls (<code>' ~ mybb.config.cache_store ~ '</code>)') }}
+                {{ _self.visualize(data.cacheThemeletBuild, 'stopwatchGroupEvents', 'Themelet Cache Build') }}
+                {{ _self.visualize(data.cacheThemeletRead, 'stopwatchGroupEvents', 'Themelet Cache Read') }}
+                {{ _self.visualize(data.cacheThemeletWrite, 'stopwatchGroupEvents', 'Themelet Cache Write') }}
             </section>
 
             <section>
@@ -79,8 +88,10 @@
                 <h2>View</h2>
                 {{ _self.visualize(data.dbTemplates, 'list', 'DB Templates Used (Loaded for this Page)') }}
                 {{ _self.visualize(data.dbTemplatesUncached, 'list', 'DB Templates Requiring Additional Calls (Not Cached at Startup)') }}
+                {{ _self.visualize(data.viewHierarchicalResolution, 'stopwatchGroupEvents', 'Hierarchical Resolution') }}
                 {{ _self.visualize(data.twigTemplateEvents, 'stopwatchGroupEvents', 'Twig Templates') }}
-                {{ _self.visualize(data.assetPublishEvents, 'stopwatchGroupEvents','Asset Publishing') }}
+                {{ _self.visualize(data.twigProfile, 'text', 'Twig Profile') }}
+                {{ _self.visualize(data.assetPublishEvents, 'stopwatchGroupEvents', 'Asset Publishing') }}
             </section>
         </article>
     </body>

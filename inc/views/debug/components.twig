@@ -34,6 +34,14 @@
     </ul>
 {% endmacro %}
 
+{% macro text(data) %}
+    <ul>
+        <li>
+            <pre><code>{{ data }}</code></pre>
+        </li>
+    </ul>
+{% endmacro %}
+
 {% macro proportionGraph(data) %}
     {% set total = data|reduce((carry, value) => carry + value, 0) %}
 

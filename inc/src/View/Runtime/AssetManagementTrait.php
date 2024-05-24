@@ -1,0 +1,168 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyBB\View\Runtime;
+
+use MyBB\View\Asset\Asset;
+use MyBB\View\Locator\StaticLocator;
+use MyBB\View\Locator\Locator;
+use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\ResourceType;
+
+trait AssetManagementTrait
+{
+    /**
+     * @var ResourceType[]
+     */
+    public const ATTACHABLE_TYPES = [
+        ResourceType::STYLE,
+        ResourceType::SCRIPT,
+    ];
+
+    /**
+     * @var array{
+     *   script: string,
+     *   action: string,
+     * }
+     */
+    private array $context;
+
+    /**
+     * Assets by type and Locator string.
+     *
+     * @var array<value-of<ResourceType>, array<string, Asset>
+     */
+    private array $attachedAssets;
+
+    /**
+     * @param array{
+     *   script: string,
+     *   actions?: string[],
+     * } $conditions
+     * @param array{
+     *   script: string,
+     *   action: string,
+     * } $context
+     * @return bool
+     */
+    public static function attachConditionsSatisfied(array $conditions, array $context): bool
+    {
+        foreach ($conditions as $condition) {
+            if (
+                isset($condition['script']) &&
+                (
+                    $condition['script'] === 'global' ||
+                    $condition['script'] === $context['script']
+                ) &&
+                (
+                    !isset($condition['actions']) ||
+                    in_array('global', $condition['actions']) ||
+                    in_array($context['action'], $condition['actions'])
+                )
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function setContext(array $context): void
+    {
+        $this->context = $context;
+    }
+
+    public function getAttachedAssets(ResourceType $type): array
+    {
+        if (!isset($this->attachedAssets)) {
+            $this->populateAttachedAssetsFromThemelet();
+        }
+
+        return $this->attachedAssets[$type->value] ?? [];
+    }
+
+    public function populateAttachedAssetsFromThemelet(): void
+    {
+        foreach ($this->themelet->getCompositeAssetProperties() as $locatorString => $properties) {
+            if ($this->assetApplicableThroughProperties($properties)) {
+                $this->attachAsset(Locator::fromString($locatorString));
+            }
+        }
+    }
+
+    /**
+     * @param string[] $dependentAncestors
+     */
+    public function attachAsset(Locator $locator, array $properties = [], array $dependentAncestors = []): void
+    {
+        $locatorString = $locator->getString([
+            'type' => ThemeletLocator::COMPONENT_SET,
+            'namespace' => ThemeletLocator::COMPONENT_SET,
+        ]);
+
+        $type = match (get_class($locator)) {
+            StaticLocator::class => ResourceType::fromFilename($locator->getPath()),
+            ThemeletLocator::class => $locator->getType(),
+        };
+
+
+        if ($type === null) {
+            throw new \Exception('Unknown Asset type (`' . $locatorString . '`)');
+        }
+
+        if (!in_array($type, static::ATTACHABLE_TYPES)) {
+            throw new \Exception('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+        }
+
+        if (in_array($locatorString, $dependentAncestors)) {
+            throw new \Exception('Circular dependency declared for Asset `' . $locatorString . '`');
+        }
+
+
+        if (isset($this->attachedAssets[$type->value][$locatorString])) {
+            $asset = $this->attachedAssets[$type->value][$locatorString];
+        } else {
+            $dependentAncestors[] = $locatorString;
+
+            $dependencies = $this->getAssetImmediateDependencies($locator);
+
+            foreach ($dependencies as $dependency) {
+                $this->attachAsset($dependency, dependentAncestors: $dependentAncestors);
+            }
+
+
+            $asset = $this->themelet->getPublishedAsset($locator);
+
+            $asset->setCompositeProperties(
+                $this->themelet->getCompositeAssetProperties($locator)['attributes'] ?? [],
+            );
+
+            $this->attachedAssets[$type->value][$locatorString] = $asset;
+        }
+
+        $asset->setCompositeProperties($properties);
+    }
+
+    public function assetApplicableThroughProperties(array $properties = null): bool
+    {
+        return (
+            isset($properties['attached_to']) &&
+            static::attachConditionsSatisfied($properties['attached_to'], $this->context)
+        );
+    }
+
+    /**
+     * Returns an Asset's dependencies that should be attached before it.
+     *
+     * @return Locator[]
+     */
+    private function getAssetImmediateDependencies(Locator $locator): array
+    {
+        return array_map(
+            fn (string $identifier) =>
+                Locator::fromDependencyIdentifier($identifier, $locator),
+            $this->themelet->getCompositeAssetProperties($locator)['depends_on'] ?? [],
+        );
+    }
+}
