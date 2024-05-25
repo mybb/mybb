@@ -44,7 +44,7 @@ if($mybb->input['action'] == 'prune')
 		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
-		if($mybb->input['uid'])
+		if($mybb->get_input('uid') !== '')
 		{
 			$where .= " AND uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 		}
