@@ -1,0 +1,20 @@
+<div class="alert {{ type ? 'alert--' ~ type }}"{{ (retry and operationName) ? ' data-retry-operation="' ~ operationName ~ '"' }}>
+    <div class="alert__heading">
+        <i class="alert__icon fas"></i>
+        <p class="alert__title">{{ title }}</p>
+        <div class="alert__controls">
+            {% if retry %}
+                <button title="{{ lang.retry }}"><i class="fas fa-redo"></i></button>
+            {% endif %}
+        </div>
+    </div>
+    <p class="alert__message">{{ message|raw }}</p>
+
+    {% if list %}
+        <ul>
+            {% for element in list %}
+                <li>{{ element|striptags('<code>')|raw }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

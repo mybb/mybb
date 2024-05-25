@@ -1,0 +1,65 @@
+/**
+ * MyBB/forum logo
+ */
+ .logo {
+    $module: &;
+    display: block;
+    text-decoration: none;
+
+    // Logo icon
+    &__icon {
+
+        > svg {
+            display: inline-block;
+            width: 50px;
+            height: 40px;
+            vertical-align: middle;
+
+            * {
+                transition: fill $transition-speed ease;
+            }
+        }
+    }
+
+    // Logo text
+    &__text {
+        font-family: $alt-font-stack;
+        font-style: italic;
+        color: $invert-font-color;
+        text-indent: 5px;
+    }
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    // Light color variant (on dark background)
+    &--light {
+
+        #{$module}__icon > svg * {
+            fill: $invert-font-color;
+        }
+
+        &:hover {
+
+            #{$module}__icon > svg * {
+                fill: $alt-font-color-3;
+            }
+        }
+    }
+
+    // Primary color variant
+    &--primary {
+
+        #{$module}__icon > svg * {
+            fill: $primary-color;
+        }
+
+        &:hover {
+
+            #{$module}__icon > svg * {
+                fill: $secondary-color;
+            }
+        }
+    }
+}

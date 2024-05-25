@@ -1,0 +1,181 @@
+.user-bar {
+    min-height: 50px;
+    clear: both;
+    background: $background-2;
+
+    &__links {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    &__item {
+        position: relative;
+        float: $left;
+        margin: 0;
+
+        &--active-user {
+            border-right: 1px solid transparent;
+            border-left: 1px solid transparent;
+        }
+    }
+
+    &__link {
+
+        &,
+        &:link,
+        &:visited {
+            display: inline-block;
+            padding: 12px 12px;
+            color: $alt-font-color-1;
+            border-radius: 4px;
+        }
+
+        &:hover {
+            color: $link-hover;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
+
+    &__icon {
+        margin-#{$right}: 4px;
+        margin-bottom: -2px;
+        font-size: 1.2em;
+    }
+
+    &__text {
+        display: none;
+
+        @include bp-large {
+            display: inline-block;
+        }
+
+        &--username {
+
+            @include bp-small {
+                display: inline-block;
+            }
+        }
+    }
+
+    &__caret {
+        display: inline;
+        font-size: 14px;
+
+        &--up {
+            display: none;
+        }
+    }
+
+    &__unread-count {
+        padding: side-values(1px 5px 2px 5px);
+        margin: side-values(0 0 0 3px);
+        font-size: 0.7em;
+        font-weight: normal;
+        color: $invert-font-color;
+        text-decoration: none;
+        vertical-align: middle;
+        background: $unread-count;
+        border-radius: 2px;
+    }
+
+    &__checkbox {
+        display: none;
+    }
+
+    &__dropdown {
+        position: absolute;
+        top: 50px;
+        #{$left}: -1px;
+        display: none;
+        width: 250px;
+        padding: side-values(6px 12px 6px 12px);
+        font-size: 0.9em;
+        background: $background-1;
+        border: 1px solid $border-1;
+        border-top: none;
+        border-radius: corner-values(0 0 4px 4px);
+
+        .avatar-profile-link {
+            float: $right;
+            margin: side-values(6px 0 0 10px);
+        }
+    }
+
+    &__username {
+        padding: 8px 4px;
+        margin: 0;
+        overflow: hidden;
+        font-weight: bold;
+        font-size: 1.1em;
+        border-bottom: 1px solid $border-1;
+
+        @include bp-small {
+            display: none;
+        }
+    }
+}
+
+.wrapper--user-bar {
+    padding: 0;
+}
+
+#show-user-dropdown:checked ~ .user-bar__item--active-user {
+    background: $background-1;
+    border-left: 1px solid $border-1;
+    border-right: 1px solid $border-1;
+
+    .user-bar__dropdown {
+        display: block;
+        z-index: 100;
+    }
+
+    .user-bar__caret {
+
+        &--up {
+            display: inline;
+        }
+
+        &--down {
+            display: none;
+        }
+    }
+}
+
+.account-links {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    list-style: none;
+
+    &__item {
+        display: block;
+        float: none;
+        padding: 0;
+        margin: 0;
+        border-bottom: 1px solid $border-1;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    &__link {
+        display: block;
+        float: none;
+        padding: 4px;
+        margin: 0;
+        text-align: $left;
+        background: transparent;
+        border-#{$left}: 0;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    &__icon {
+        margin-#{$right}: 4px;
+    }
+}

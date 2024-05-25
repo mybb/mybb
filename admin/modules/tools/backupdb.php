@@ -100,8 +100,9 @@ if($mybb->input['action'] == "delete")
 	}
 
 	$file = basename($mybb->input['file']);
+    $ext = get_extension($file);
 
-	if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
+    if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file) || filetype(MYBB_ADMIN_DIR.'backups/'.$file) != 'file' || ($ext != 'gz' && $ext != 'sql'))
 	{
 		flash_message($lang->error_backup_doesnt_exist, 'error');
 		admin_redirect("index.php?module=tools-backupdb");

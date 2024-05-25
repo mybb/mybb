@@ -1,0 +1,44 @@
+<form method="post" data-step="{{ stepName }}">
+    {% if stepPlans[stepName].parameterNames is not empty %}
+    <fieldset>
+        {% for parameterName in stepPlans[stepName].parameterNames %}
+            {% set parameter = parameterPlans[parameterName] %}
+
+            {% include 'maintenance/process/form_parameter.twig' %}
+        {% endfor %}
+    </fieldset>
+    {% endif %}
+
+    <div class="controls">
+        <button data-step-submit {{ noscriptRedirectLocation and not explicitStepRequest ? 'disabled' }}>
+            {% if loop.last %}
+                <span data-text>{{ lang.step_final_finish }}</span> <i class="icon fas fa-check"></i>
+            {% else %}
+                <span data-text>{{ lang.step_finish }}</span> <i class="icon fas fa-chevron-right"></i>
+            {% endif %}
+        </button>
+    </div>
+
+
+    <!-- state data for no-JS navigation -->
+
+    <input type="hidden" name="process" value="{{ processName }}">
+    <input type="hidden" name="step" value="{{ stepName }}">
+    <input type="hidden" name="language" value="{{ lang.language }}">
+
+    {% for value in step.operationNames|filter(name => operationPlans[name]['completed'] is same as(true)) %}
+        <input type="hidden" name="succeededStepOperations[]" value="{{ value }}">
+    {% endfor %}
+
+    {% for name, value in operationSubset %}
+        <input type="hidden" name="operations[{{ name }}]" value="{{ value }}">
+    {% endfor %}
+
+    {% for name, value in stateVariables %}
+        <input type="hidden" name="stateVariables[{{ name }}]" value="{{ value }}">
+    {% endfor %}
+
+    {% for name, value in nonDefaultFlagValues %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+    {% endfor %}
+</form>

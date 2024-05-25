@@ -118,7 +118,7 @@ if($mybb->input['action'] == "editgroup")
 	$group = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$group['gid'])
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_gid2, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "deletegroup")
 	$group = $db->fetch_array($query);
 
 	// Does the setting group not exist?
-	if(!$group['gid'])
+	if(!$group)
 	{
 		flash_message($lang->error_invalid_gid2, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -454,7 +454,7 @@ if($mybb->input['action'] == "edit")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(!$setting['sid'])
+	if(!$setting)
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings");
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "delete")
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
-	if(empty($setting['sid']))
+	if(!$setting)
 	{
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
@@ -1208,6 +1208,19 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// reject dangerous/unsupported file paths
+		$field = 'errorloglocation';
+
+		if(isset($mybb->input['upsetting'][$field]) && is_string($mybb->input['upsetting'][$field]))
+		{
+			if(
+				strpos($mybb->input['upsetting'][$field], '://') !== false ||
+				substr($mybb->input['upsetting'][$field], -4) === '.php'
+			)
+			{
+				unset($mybb->input['upsetting'][$field]);
+			}
+		}
 
 		if(is_array($mybb->input['upsetting']))
 		{
@@ -1704,6 +1717,7 @@ if($mybb->input['action'] == "change")
 					$multivalue = explode(',', $setting['value']);
 				}
 
+				$option_list = array();
 				for($i = 0; $i < $typecount; $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
@@ -1758,7 +1772,6 @@ if($mybb->input['action'] == "change")
 						$setting_code .= $form->generate_hidden_field("isvisible_{$setting['name']}", 1);
 					}
 				}
-				$option_list = array();
 			}
 
 			// Do we have a custom language variable for this title or description?
@@ -1978,7 +1991,6 @@ function print_setting_peekers()
 	global $plugins;
 
 	$peekers = array(
-		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
 		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
 		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',

@@ -1,0 +1,141 @@
+.user-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    @include bp-medium {
+        flex-direction: row;
+    }
+
+    &--has-title {
+        padding-top: 15px;
+    }
+
+    &--has-footer {
+        margin-bottom: 0;
+    }
+
+    &__user {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 14px;
+        margin: side-values(0 0 18px 0);
+        border: 1px solid $border-1;
+        border-radius: 4px;
+
+        @include bp-medium {
+            width: 49%;
+        }
+    }
+
+    &--single-column {
+
+        .user-list__user {
+            width: 100%;
+        }
+    }
+
+    .avatar-profile-link {
+        float: $left;
+        margin: side-values(0 16px 0 0);
+    }
+
+    &__checkbox {
+        position: absolute;
+        top: 8px;
+        right: 14px;
+    }
+
+    &__username {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    &__user-info {
+        margin-#{$left}: 6px;
+        font-size: 0.8em;
+        font-weight: normal;
+        color: $alt-font-color-2;
+    }
+
+    &__shortcut {
+        float: $right;
+    }
+
+    &__user-title {
+        margin: 0;
+        font-size: 0.9em;
+        font-weight: normal;
+    }
+
+    &__data {
+        padding: 0;
+        margin: 0;
+        font-size: 0.8em;
+        color: $alt-font-color-2;
+
+        a {
+            color: $alt-font-color-1;
+        }
+    }
+
+    &__buttons {
+        margin-top: 5px;
+    }
+
+    .team-badge {
+        position: relative;
+        float: right;
+        margin: side-values(-48px 0 0 0);
+    }
+
+    .sort-results {
+        margin: side-values(0 -12px 0 -12px);
+    }
+
+    &--compact {
+
+        .user-list__user {
+            padding: 8px;
+
+            .avatar-profile-link {
+                margin-#{$right}: 12px;
+            }
+        }
+
+        .user-list__username {
+            font-size: 1em;
+        }
+
+        .alert--no-results {
+            padding: 10px 0;
+            font-size: 1em;
+        }
+    }
+}
+
+.list--user {
+    font-size: 0.8em;
+}
+
+.user-alphabet {
+
+    &__letter {
+        padding: 5px;
+        margin-#{$right}: 5px;
+    }
+}
+
+.team-badge {
+    display: inline;
+    padding: 3px 8px;
+    font-size: 0.7em;
+    line-height: 1.6;
+    color: $alt-font-color-1;
+    border: 1px solid $border-1;
+    border-radius: 4px;
+}

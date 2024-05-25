@@ -53,7 +53,7 @@ if($mybb->input['action'] == "results")
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
-	if(!$search['sid'])
+	if(!$search)
 	{
 		error($lang->error_invalidsearch);
 	}
@@ -97,7 +97,7 @@ if($mybb->input['action'] == "results")
 			break;
 		case "lastpost":
 		default:
-			if($search['resulttype'] == "threads")
+			if(isset($search['resulttype']) && $search['resulttype'] == "threads")
 			{
 				$sortfield = "t.lastpost";
 				$sortby = "lastpost";
@@ -145,7 +145,7 @@ if($mybb->input['action'] == "results")
 
 	// Work out if we have terms to highlight
 	$highlight = "";
-	if($search['keywords'])
+	if(!empty($search['keywords']))
 	{
 		if($mybb->seo_support == true)
 		{
@@ -236,7 +236,7 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Show search results as 'threads'
-	if($search['resulttype'] == "threads")
+	if(isset($search['resulttype']) && $search['resulttype'] == "threads")
 	{
 		$results['threadcount'] = 0;
 
@@ -440,7 +440,7 @@ if($mybb->input['action'] == "results")
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 			{
-				if($thread['lastread'])
+				if(isset($thread['lastread']))
 				{
 					$last_read = $thread['lastread'];
 				}
@@ -664,7 +664,7 @@ if($mybb->input['action'] == "results")
 		$results['sid'] = $sid;
 		$plugins->run_hooks("search_results_end");
 
-		output_page(\MyBB\template('search/results_threads.twig', [
+		output_page(\MyBB\View\template('search/results_threads.twig', [
 			'multipage' => $multipage,
 			'results' => $results,
 			'threads' => $threads,
@@ -672,7 +672,7 @@ if($mybb->input['action'] == "results")
 	}
 	else // Displaying results as posts
 	{
-		if(!$search['posts'])
+		if(empty($search['posts']))
 		{
 			error($lang->error_nosearchresults);
 		}
@@ -913,6 +913,7 @@ if($mybb->input['action'] == "results")
 				$post['folder'] .= "new";
 				$post['folder_label'] .= $lang->icon_new;
 				$post['unread'] = true;
+				$thread['newpostlink'] = get_thread_link($post['tid'], 0, "newpost");
 			}
 			else
 			{
@@ -1040,7 +1041,7 @@ if($mybb->input['action'] == "results")
 		$results['sid'] = $sid;
 		$plugins->run_hooks("search_results_end");
 
-		output_page(\MyBB\template('search/results_posts.twig', [
+		output_page(\MyBB\View\template('search/results_posts.twig', [
 			'multipage' => $multipage,
 			'results' => $results,
 			'posts' => $posts,
@@ -1685,7 +1686,7 @@ else
 
 	$plugins->run_hooks("search_end");
 
-	output_page(\MyBB\template('search/search.twig', [
+	output_page(\MyBB\View\template('search/search.twig', [
 		'search' => $search,
 		'forums' => $forums,
 		'prefixes' => $prefixes,

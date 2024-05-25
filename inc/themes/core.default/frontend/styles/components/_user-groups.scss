@@ -1,0 +1,27 @@
+.user-group {
+
+    &--guests {}
+
+    &--registered {}
+
+    &--super-moderators {
+        font-weight: bold;
+        color: #2ecc71;
+    }
+
+    &--administrators {
+        font-weight: bold;
+        color: #ff7500;
+    }
+
+    &--awaiting-activation {}
+
+    &--moderators {
+        font-weight: bold;
+        color: #3498db;
+    }
+
+    &--banned {
+        text-decoration: line-through;
+    }
+}

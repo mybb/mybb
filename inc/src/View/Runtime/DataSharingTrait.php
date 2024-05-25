@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyBB\View\Runtime;
+
+use Twig\Environment;
+
+trait DataSharingTrait
+{
+    /**
+     * @var array<string, scalar>
+     */
+    private array $sharedData = [];
+
+    private Environment $twig;
+
+    /**
+     * @param array<string, scalar> $data
+     */
+    public function setSharedData(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            $this->sharedData[$key] = $value;
+
+            $this->twig->addGlobal($key, $value);
+        }
+    }
+
+    public function getSharedData(string $key): null|int|float|string|bool
+    {
+        return $this->sharedData[$key] ?? null;
+    }
+
+    public function setTwig(Environment $twig): void
+    {
+        $this->twig = $twig;
+    }
+}

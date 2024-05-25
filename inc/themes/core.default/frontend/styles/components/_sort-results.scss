@@ -1,0 +1,41 @@
+// this needs cleaned up / generalized (not always used for sorting results)
+
+.sort-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 20px;
+    clear: both;
+    background-color: $background-2;
+    border-radius: $radius;
+
+    @extend .inline-form;
+
+    &__title {
+        display: inline-block;
+        padding: 0;
+        margin: side-values(0 10px 0 0);
+        font-size: 0.9em;
+        font-weight: normal;
+        color: $alt-font-color-1;
+    }
+
+    &__text {
+        margin: 0 8px;
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+}
+
+.select-all {
+    text-align: $right;
+}
+
+.results {
+
+    .row:last-child {
+        border-bottom: none;
+    }
+}

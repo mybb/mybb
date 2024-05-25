@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+
+    <title>{{ page_title }}</title>
+
+    <link rel="stylesheet" href="{{ relative_asset_path }}/jscripts/maintenance/main.css" />
+
+    {% block head %}{% endblock %}
+</head>
+<body class="maintenance {{ minimal ? ' maintenance--minimal' }} {{ maintenance_type ? ' maintenance--' ~ maintenance_type }}">
+    <div class="container">
+        {% if not minimal %}
+            <header>
+                <div class="logotype">{% include 'logotype.svg' %}</div>
+                <p class="title">{{ header_title }}</p>
+            </header>
+
+            <div class="interface-options">
+                {% block interfaceOptions %}{% endblock %}
+            </div>
+        {% endif %}
+
+        <div class="page">
+            {% block body %}{% endblock %}
+        </div>
+
+        <footer>
+            <div class="powered-by powered-by--{{ minimal ? 'logo' : 'text' }}">
+            {% if minimal %}
+                <a href="https://mybb.com" title="Forum software by MyBB" target="_blank" rel="noopener">{% include 'logo.svg' %}</a>
+            {% else %}
+               <p><span class="powered-by-phrase">Forum software by</span> <a href="https://mybb.com" target="_blank" rel="noopener">MyBB</a></p>
+            {% endif %}
+            </div>
+        </footer>
+    </div>
+    {% block beforeBodyEnd %}{% endblock %}
+</body>
+</html>

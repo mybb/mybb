@@ -1,0 +1,39 @@
+.collapse {
+    position: relative;
+
+    .collapse__toggle {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .collapse__icon {
+        padding: 7px 5px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        opacity: 0.8;
+
+        &:hover,
+        &:active {
+            opacity: 1;
+        }
+    }
+
+    &--collapsed {
+
+        .collapse__icon--collapse {
+            display: none;
+        }
+
+        .collapse__content {
+            display: none;
+        }
+    }
+
+    &--not-collapsed {
+
+        .collapse__icon--expand {
+            display: none;
+        }
+    }
+}

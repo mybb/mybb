@@ -18,15 +18,11 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
-
 function upgrade21_dbchanges()
 {
 	global $cache, $db, $output, $mybb;
 
-	$output->print_header("Updating Database");
-
-	echo "<p>Performing necessary upgrade queries...</p>";
+	// Updating Database
 
 	$db->delete_query("settings", "name = 'standardheaders'");
 
@@ -97,8 +93,5 @@ function upgrade21_dbchanges()
 
 		$db->update_query("usergroups", array("canusesig" => 1), "gid = '{$group['gid']}'");
 	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("21_done");
 }
 

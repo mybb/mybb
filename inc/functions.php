@@ -16,24 +16,31 @@
 function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
-	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	global $debug, $templatecache, $templatelist, $parsetime;
+
+	$stopwatch = \MyBB\app(\MyBB\Stopwatch\Stopwatch::class);
+
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
-	$totaltime = format_time_duration($maintimer->stop());
+
+	$mainDuration = $stopwatch->stop('main');
+
+	$totaltime = format_time_duration($mainDuration);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
+
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
-			$phptime = $maintimer->totaltime - $db->query_time;
+			$phptime = $mainDuration - $db->query_time;
 			$query_time = $db->query_time;
 
-			if($maintimer->totaltime > 0)
+			if($mainDuration > 0)
 			{
-				$percentphp = number_format((($phptime / $maintimer->totaltime) * 100), 2);
-				$percentsql = number_format((($query_time / $maintimer->totaltime) * 100), 2);
+				$percentphp = number_format((($phptime / $mainDuration) * 100), 2);
+				$percentsql = number_format((($query_time / $mainDuration) * 100), 2);
 			}
 			else
 			{
@@ -65,7 +72,7 @@ function output_page($contents)
 			$debug_weight = $lang->sprintf($lang->debug_weight, $percentphp, $percentsql, $database_server);
 			$sql_queries = $lang->sprintf($lang->debug_sql_queries, $db->query_count);
 
-			$debugstuff = \MyBB\template('misc/debugsummary.twig', [
+			$debugstuff = \MyBB\View\template('misc/debugsummary.twig', [
 				'debug_weight' => $debug_weight,
 				'sql_queries' => $sql_queries,
 				'serverload' => $serverload,
@@ -174,6 +181,7 @@ function run_shutdown()
 			// Load DB interface
 			require_once MYBB_ROOT."inc/db_base.php";
 			require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
+			require_once MYBB_ROOT . 'inc/DbException.php';
 
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
@@ -187,14 +195,13 @@ function run_shutdown()
 				case "pgsql_pdo":
 					$db = new PostgresPdoDbDriver();
 					break;
-				case "mysqli":
-					$db = new DB_MySQLi;
-					break;
 				case "mysql_pdo":
 					$db = new MysqlPdoDbDriver();
 					break;
+				case "mysqli":
+				case "mysql":
 				default:
-					$db = new DB_MySQL;
+					$db = new DB_MySQLi;
 			}
 
 			$db->connect($config['database']);
@@ -561,7 +568,10 @@ function &get_my_mailhandler($use_buitlin = false)
 			}
 		}
 
-		$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+		}
 
 		return $my_mailhandler_builtin;
 	}
@@ -571,7 +581,10 @@ function &get_my_mailhandler($use_buitlin = false)
 	{
 		require_once MYBB_ROOT . "inc/class_mailhandler.php";
 
-		$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+		}
 
 		// If no plugin has ever created the mail handler, resort to use the built-in one.
 		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
@@ -637,12 +650,18 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 		'continue_process' => &$continue_process,
 	);
 
-	$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
+	}
 
 	// Build the mail message.
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
 
-	$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+	}
 
 	// Check if the hooked plugins still suggest to send the mail.
 	if($continue_process)
@@ -650,7 +669,10 @@ function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = 
 		$is_mail_sent = $mail->send();
 	}
 
-	$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+	}
 
 	return $is_mail_sent;
 }
@@ -881,7 +903,7 @@ function error($error_message = "", $title = "", $error_page = "")
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 
-	output_page(\MyBB\template('error/error.twig', [
+	output_page(\MyBB\View\template('error/error.twig', [
 		'title' => $title,
 		'error_message' => $error_message,
 		'error_page' => $error_page,
@@ -929,7 +951,7 @@ function inline_error($errors, $title = "", $json_data = array())
 		'list' => $errors
 	];
 
-	$errors = \MyBB\template('error/inline.twig', [
+	$errors = \MyBB\View\template('error/inline.twig', [
 		'errors' => $data
 	]);
 
@@ -991,9 +1013,9 @@ function error_no_permission()
 		}
 	}
 
-	$error_message = \MyBB\template('error/no_permission_message.twig');
+	$error_message = \MyBB\View\template('error/no_permission_message.twig');
 
-	$error_page = \MyBB\template('error/no_permission.twig', [
+	$error_page = \MyBB\View\template('error/no_permission.twig', [
 		'username' => $username,
 		'redirect_url' => $redirect_url
 	]);
@@ -1056,7 +1078,7 @@ function redirect($url, $message = "", $title = "", $force_redirect = false)
 	{
 		$url = str_replace("&amp;", "&", $url);
 
-		output_page(\MyBB\template('misc/redirect.twig', [
+		output_page(\MyBB\View\template('misc/redirect.twig', [
 			'url' => $url,
 			'title' => $title,
 			'message' => $message
@@ -1198,7 +1220,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb = false)
 		$multipage['jump_url'] = fetch_page_url($url, 1);
 	}
 
-	return \MyBB\template('partials/multipage.twig', [
+	return \MyBB\View\template('partials/multipage.twig', [
 		'multipage' => $multipage,
 		'page' => $page,
 		'breadcrumb' => $breadcrumb,
@@ -1620,49 +1642,41 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
 
-	$groups = explode(",", $gid);
-
-	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
-	{
-		return $groupperms;
-	}
+    if(isset($gid))
+    {
+        $groups = explode(",", $gid);
+    }
+    else
+    {
+        $groups = array();
+    }
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
 	$only_reply_own_threads = 1;
 
-	foreach($groups as $gid)
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
-		if(!empty($groupscache[$gid]))
+		$current_permissions = $groupperms;
+	}
+	else
+	{
+		foreach($groups as $gid)
 		{
-			$level_permissions = array();
-
-			// If our permissions arn't inherited we need to figure them out
-			if(empty($fpermcache[$fid][$gid]))
-			{
-				$parents = explode(',', $forum_cache[$fid]['parentlist']);
-				rsort($parents);
-				if(!empty($parents))
-				{
-					foreach($parents as $parent_id)
-					{
-						if(!empty($fpermcache[$parent_id][$gid]))
-						{
-							$level_permissions = $fpermcache[$parent_id][$gid];
-							break;
-						}
-					}
-				}
-			}
-			else
+			// If this forum has custom or inherited permissions for the currently looped group.
+			if(!empty($fpermcache[$fid][$gid]))
 			{
 				$level_permissions = $fpermcache[$fid][$gid];
 			}
-
-			// If we STILL don't have forum permissions we use the usergroup itself
-			if(empty($level_permissions))
+			// Or, use the group permission instead, if available. Some forum permissions not existing here will be added back later.
+			else if(!empty($groupscache[$gid]))
 			{
 				$level_permissions = $groupscache[$gid];
+			}
+			// No permission is available for the currently looped group, probably we have bad data here.
+			else
+			{
+				continue;
 			}
 
 			foreach($level_permissions as $permission => $access)
@@ -1683,24 +1697,25 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				$only_reply_own_threads = 0;
 			}
 		}
+
+		if(count($current_permissions) == 0)
+		{
+			$current_permissions = $groupperms;
+		}
 	}
 
 	// Figure out if we can view more than our own threads
-	if($only_view_own_threads == 0)
+	if($only_view_own_threads == 0 || !isset($current_permissions["canonlyviewownthreads"]))
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
 	}
 
 	// Figure out if we can reply more than our own threads
-	if($only_reply_own_threads == 0)
+	if($only_reply_own_threads == 0 || !isset($current_permissions["canonlyreplyownthreads"]))
 	{
 		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
-	if(count($current_permissions) == 0)
-	{
-		$current_permissions = $groupperms;
-	}
 	return $current_permissions;
 }
 
@@ -1839,7 +1854,7 @@ function check_forum_password($fid, $pid = 0, $return = false)
 		else
 		{
 			$currentUrl = $_SERVER['REQUEST_URI'];
-			output_page(\MyBB\template('forumdisplay/password.twig', [
+			output_page(\MyBB\View\template('forumdisplay/password.twig', [
 				'pwnote' => $pwnote,
 				'currentUrl' => $currentUrl
 			]));
@@ -2543,6 +2558,25 @@ function my_unserialize($str, $unlimited = true)
 }
 
 /**
+ * Unserializes data using PHP's `unserialize()`, and its safety options if possible.
+ * This function should only be used for values from trusted sources.
+ *
+ * @param string $str
+ * @return mixed
+ */
+function native_unserialize($str)
+{
+	if(version_compare(PHP_VERSION, '7.0.0', '>='))
+	{
+		return unserialize($str, array('allowed_classes' => false));
+	}
+	else
+	{
+		return unserialize($str);
+	}
+}
+
+/**
  * Credits go to https://github.com/piwik
  * Safe serialize() replacement
  * - output a strict subset of PHP's native serialized representation
@@ -2637,6 +2671,12 @@ function get_server_load()
 		{
 			// sys_getloadavg() will return an array with [0] being load within the last minute.
 			$serverload = sys_getloadavg();
+
+			if(!is_array($serverload))
+			{
+				return $lang->unknown;
+			}
+
 			$serverload[0] = round($serverload[0], 4);
 		}
 		elseif(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
@@ -3165,32 +3205,35 @@ function update_user_counters($uid, $changes = array())
 	// Fetch above counters for this user
 	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
 	$user = $db->fetch_array($query);
-
-	foreach($counters as $counter)
+	
+	if($user)
 	{
-		if(array_key_exists($counter, $changes))
+		foreach($counters as $counter)
 		{
-			if(substr($changes[$counter], 0, 2) == "+-")
+			if(array_key_exists($counter, $changes))
 			{
-				$changes[$counter] = substr($changes[$counter], 1);
-			}
-			// Adding or subtracting from previous value?
-			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
-			{
-				if((int)$changes[$counter] != 0)
+				if(substr($changes[$counter], 0, 2) == "+-")
 				{
-					$update_query[$counter] = $user[$counter] + $changes[$counter];
+					$changes[$counter] = substr($changes[$counter], 1);
 				}
-			}
-			else
-			{
-				$update_query[$counter] = $changes[$counter];
-			}
+				// Adding or subtracting from previous value?
+				if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+				{
+					if((int)$changes[$counter] != 0)
+					{
+						$update_query[$counter] = $user[$counter] + $changes[$counter];
+					}
+				}
+				else
+				{
+					$update_query[$counter] = $changes[$counter];
+				}
 
-			// Less than 0? That's bad
-			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
-			{
-				$update_query[$counter] = 0;
+				// Less than 0? That's bad
+				if(isset($update_query[$counter]) && $update_query[$counter] < 0)
+				{
+					$update_query[$counter] = 0;
+				}
 			}
 		}
 	}
@@ -3293,7 +3336,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 				if($forum['fid'] != "0" && ($perms['canview'] != 0 || $mybb->settings['hideprivateforums'] == 0) && $forum['linkto'] == '' && ($forum['showinjump'] != 0 || $showall == true))
 				{
 
-					$forumjumpbits .= \MyBB\template('misc/forumjump_bit.twig', [
+					$forumjumpbits .= \MyBB\View\template('misc/forumjump_bit.twig', [
 						'forum' => $forum,
 						'selitem' => $selitem,
 						'depth' => $depth
@@ -3323,7 +3366,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 			}
 		}
 
-		$forumjump = \MyBB\template('misc/forumjump.twig', [
+		$forumjump = \MyBB\View\template('misc/forumjump.twig', [
 			'showextras' => $showextras,
 			'forumjumpbits' => $forumjumpbits,
 			'forum_link' => $forum_link,
@@ -3756,7 +3799,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 				$toolbar['code'] = "code,php,";
 			}
 
-			$codeinsert = \MyBB\template('misc/codebuttons.twig', [
+			$codeinsert = \MyBB\View\template('misc/codebuttons.twig', [
 				'toolbar' => $toolbar,
 				'emoticons' => $emoticons,
 				'editor_language' => $editor_language,
@@ -3810,7 +3853,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if(!empty($subscription) && $subscription['tid'])
+		if($subscription)
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -3884,7 +3927,7 @@ function build_clickable_smilies()
 				}
 			}
 
-			$clickablesmilies = \MyBB\template('smilieinsert/main.twig', [
+			$clickablesmilies = \MyBB\View\template('smilieinsert/main.twig', [
 				'smilies' => $smilies,
 				'smiliecount' => $smiliecount
 			]);
@@ -4078,7 +4121,7 @@ function build_forum_prefix_select($fid, $selected_pid = 0)
 
 	$prefixes = array_merge($default, $prefixes);
 
-	return \MyBB\template('forumdisplay/threadlist_prefixes.twig', [
+	return \MyBB\View\template('forumdisplay/threadlist_prefixes.twig', [
 		'prefixes' => $prefixes,
 		'selected' => (int)$selected_pid
 	]);
@@ -4245,7 +4288,7 @@ function log_moderator_action($data, $action = "")
  */
 function get_reputation($reputation, $uid = 0)
 {
-	return \MyBB\template('postbit/reputation.twig', [
+	return \MyBB\View\template('postbit/reputation.twig', [
 		'uid' => (int)$uid,
 		'reputation' => $reputation
 	]);
@@ -4259,7 +4302,7 @@ function get_reputation($reputation, $uid = 0)
  */
 function get_colored_warning_level($level)
 {
-	return \MyBB\template('postbit/warninglevel.twig', [
+	return \MyBB\View\template('postbit/warninglevel.twig', [
 		'level' => $level
 	]);
 }
@@ -4487,7 +4530,7 @@ function get_attachment_icon($ext)
 		$name = $lang->unknown;
 	}
 
-	return \MyBB\template('misc/attachment_icon.twig', [
+	return \MyBB\View\template('misc/attachment_icon.twig', [
 		'ext' => $ext,
 		'icon' => $icon,
 		'name' => $name
@@ -4619,145 +4662,7 @@ function reset_breadcrumb()
  */
 function debug_page()
 {
-	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang, $cache;
-
-	$totaltime = format_time_duration($maintimer->totaltime);
-	$phptime = $maintimer->totaltime - $db->query_time;
-	$query_time = $db->query_time;
-	$globaltime = format_time_duration($globaltime);
-
-	$percentphp = number_format((($phptime / $maintimer->totaltime) * 100), 2);
-	$percentsql = number_format((($query_time / $maintimer->totaltime) * 100), 2);
-
-	$phptime = format_time_duration($maintimer->totaltime - $db->query_time);
-	$query_time = format_time_duration($db->query_time);
-
-	$call_time = format_time_duration($cache->call_time);
-
-	$phpversion = PHP_VERSION;
-
-	$serverload = get_server_load();
-
-	if($mybb->settings['gzipoutput'] != 0)
-	{
-		$gzipen = "Enabled";
-	}
-	else
-	{
-		$gzipen = "Disabled";
-	}
-
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
-	echo "<head>";
-	echo "<meta name=\"robots\" content=\"noindex\" />";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
-	echo "<title>MyBB Debug Information</title>";
-	echo "</head>";
-	echo "<body>";
-	echo "<h1>MyBB Debug Information</h1>\n";
-	echo "<h2>Page Generation</h2>\n";
-	echo "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#cccccc\" colspan=\"4\"><b><span style=\"size:2;\">Page Generation Statistics</span></b></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Page Generation Time:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$totaltime</span></td>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">No. DB Queries:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$db->query_count</span></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">PHP Processing Time:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$phptime ($percentphp%)</span></td>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">DB Processing Time:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$query_time ($percentsql%)</span></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Extensions Used:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$mybb->config['database']['type']}, xml</span></td>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Global.php Processing Time:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$globaltime</span></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">PHP Version:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$phpversion</span></td>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Server Load:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$serverload</span></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">GZip Encoding Status:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$gzipen</span></td>\n";
-	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">No. Templates Used:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">".count($templates->cache)." (".(int)count(explode(",", $templatelist))." Cached / ".(int)count($templates->uncached_templates)." Manually Loaded)</span></td>\n";
-	echo "</tr>\n";
-
-	$memory_usage = get_memory_usage();
-	if(!$memory_usage)
-	{
-		$memory_usage = $lang->unknown;
-	}
-	else
-	{
-		$memory_usage = get_friendly_size($memory_usage)." ({$memory_usage} bytes)";
-	}
-	$memory_limit = @ini_get("memory_limit");
-	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Memory Usage:</span></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$memory_usage}</span></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Memory Limit:</span></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$memory_limit}</span></td>\n";
-	echo "</tr>\n";
-
-	echo "</table>\n";
-
-	echo "<h2>Database Connections (".count($db->connections)." Total) </h2>\n";
-	echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
-	echo "<tr>\n";
-	echo "<td style=\"background: #fff;\">".implode("<br />", $db->connections)."</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "<br />\n";
-
-	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
-	echo $db->explain;
-
-	if($cache->call_count > 0)
-	{
-		echo "<h2>Cache Calls (".$cache->call_count." Total, ".$call_time.") </h2>\n";
-		echo $cache->cache_debug;
-	}
-
-	echo "<h2>Template Statistics</h2>\n";
-
-	if(count($templates->cache) > 0)
-	{
-		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
-		echo "<tr>\n";
-		echo "<td style=\"background-color: #ccc;\"><strong>Templates Used (Loaded for this Page) - ".count($templates->cache)." Total</strong></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td style=\"background: #fff;\">".implode(", ", array_keys($templates->cache))."</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		echo "<br />\n";
-	}
-
-	if(count($templates->uncached_templates) > 0)
-	{
-		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
-		echo "<tr>\n";
-		echo "<td style=\"background-color: #ccc;\"><strong>Templates Requiring Additional Calls (Not Cached at Startup) - ".count($templates->uncached_templates)." Total</strong></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td style=\"background: #fff;\">".implode(", ", $templates->uncached_templates)."</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		echo "<br />\n";
-	}
-	echo "</body>";
-	echo "</html>";
-	exit;
+	\MyBB\app()->call('MyBB\Http\Controllers\DebugController@index');
 }
 
 /**
@@ -5298,7 +5203,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if($tid == 1 && ($num_themes > 1 || $count_override == true))
 	{
-		return \MyBB\template('misc/themeselect.twig', [
+		return \MyBB\View\template('misc/themeselect.twig', [
 			'footer' => $footer,
 			'selected' => $selected,
 			'options' => $themeselect_options,
@@ -5384,7 +5289,14 @@ function my_number_format($number)
 	}
 	else
 	{
-		$parts = explode('.', $number);
+        if(isset($number))
+        {
+            $parts = explode('.', $number);
+        }
+        else
+        {
+            $parts = array();
+        }
 
 		if(isset($parts[1]))
 		{
@@ -5763,7 +5675,7 @@ function my_strlen($string)
 
 	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
-	if(strtolower($lang->settings['charset']) == "utf-8")
+	if(isset($lang->settings['charset']) && strtolower($lang->settings['charset']) == "utf-8")
 	{
 		// Get rid of any excess RTL and LTR override for they are the workings of the devil
 		$string = str_replace(dec_to_utf8(8238), "", $string);
@@ -6674,13 +6586,13 @@ function build_highlight_array($terms)
 		"~"
 	);
 	$terms = str_replace($bad_characters, '', $terms);
+	$words = array();
 
 	// Check if this is a "series of words" - should be treated as an EXACT match
 	if(my_strpos($terms, "\"") !== false)
 	{
 		$inquote = false;
 		$terms = explode("\"", $terms);
-		$words = array();
 		foreach($terms as $phrase)
 		{
 			$phrase = htmlspecialchars_uni($phrase);
@@ -6728,14 +6640,11 @@ function build_highlight_array($terms)
 		}
 	}
 
-	if(!is_array($words))
-	{
-		return false;
-	}
-
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
 	usort($words, 'build_highlight_array_sort');
+
+	$highlight_cache = array();
 
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)
@@ -7172,6 +7081,11 @@ function fetch_remote_file($url, $post_data = array(), $max_redirects = 20)
 			$curlopt[10203] = array(
 				$url_components['host'].':'.$url_components['port'].':'.$destination_address
 			);
+		}
+
+		if(defined('CURLOPT_DISALLOW_USERNAME_IN_URL'))
+		{
+			$curlopt[CURLOPT_DISALLOW_USERNAME_IN_URL] = true;
 		}
 
 		if(!empty($post_body))
@@ -8025,102 +7939,6 @@ function get_execution_time()
 }
 
 /**
- * Processes a checksum list on MyBB files and returns a result set
- *
- * @param string $path The base path
- * @param int $count The count of files
- * @return array The bad files
- */
-function verify_files($path = MYBB_ROOT, $count = 0)
-{
-	global $mybb, $checksums, $bad_verify_files;
-
-	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "htaccess-nginx.txt", "logo.gif", "logo.png");
-	$ignore_ext = array("attach");
-
-	if(substr($path, -1, 1) == "/")
-	{
-		$path = substr($path, 0, -1);
-	}
-
-	if(!is_array($bad_verify_files))
-	{
-		$bad_verify_files = array();
-	}
-
-	// Make sure that we're in a directory and it's not a symbolic link
-	if(@is_dir($path) && !@is_link($path))
-	{
-		if($dh = @opendir($path))
-		{
-			// Loop through all the files/directories in this directory
-			while(($file = @readdir($dh)) !== false)
-			{
-				if(in_array($file, $ignore) || in_array(get_extension($file), $ignore_ext))
-				{
-					continue;
-				}
-
-				// Recurse through the directory tree
-				if(is_dir($path."/".$file))
-				{
-					verify_files($path."/".$file, ($count + 1));
-					continue;
-				}
-
-				// We only need the last part of the path (from the MyBB directory to the file. i.e. inc/functions.php)
-				$file_path = ".".str_replace(substr(MYBB_ROOT, 0, -1), "", $path)."/".$file;
-
-				// Does this file even exist in our official list? Perhaps it's a plugin
-				if(array_key_exists($file_path, $checksums))
-				{
-					$filename = $path."/".$file;
-					$handle = fopen($filename, "rb");
-					$hashingContext = hash_init('sha512');
-					while(!feof($handle))
-					{
-						hash_update($hashingContext, fread($handle, 8192));
-					}
-					fclose($handle);
-
-					$checksum = hash_final($hashingContext);
-
-					// Does it match any of our hashes (unix/windows new lines taken into consideration with the hashes)
-					if(!in_array($checksum, $checksums[$file_path]))
-					{
-						$bad_verify_files[] = array("status" => "changed", "path" => $file_path);
-					}
-				}
-				unset($checksums[$file_path]);
-			}
-			@closedir($dh);
-		}
-	}
-
-	if($count == 0)
-	{
-		if(!empty($checksums))
-		{
-			foreach($checksums as $file_path => $hashes)
-			{
-				if(in_array(basename($file_path), $ignore))
-				{
-					continue;
-				}
-				$bad_verify_files[] = array("status" => "missing", "path" => $file_path);
-			}
-		}
-	}
-
-	// uh oh
-	if($count == 0)
-	{
-		return $bad_verify_files;
-	}
-}
-
-/**
  * Returns a signed value equal to an integer
  *
  * @param int $int The integer
@@ -8690,7 +8508,7 @@ function send_pm($pm, $fromid = 0, $admin_override = false)
 		}
 	}
 
-	if(!$pm['subject'] || !$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(empty($pm['subject']) || empty($pm['message']) || empty($pm['touid']) || (empty($pm['receivepms']) && !$admin_override))
 	{
 		return false;
 	}
@@ -8715,6 +8533,15 @@ function send_pm($pm, $fromid = 0, $admin_override = false)
 
 	$recipients_bcc = array();
 
+	// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($pm['sender']['uid']) && $pm['sender']['uid'] === -1 && $fromid === -1)
+	{
+		$sender = array(
+			"uid" => 0,
+			"username" => ''
+		);
+	}
+
 	// Determine user ID
 	if((int)$fromid == 0)
 	{
@@ -8736,6 +8563,12 @@ function send_pm($pm, $fromid = 0, $admin_override = false)
 		"do" => '',
 		"pmid" => ''
 	);
+
+	// (continued) Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($sender))
+	{
+		$pm['sender'] = $sender;
+	}
 
 	if(isset($session))
 	{
@@ -9123,4 +8956,66 @@ function mk_path_abs($path, $base = MYBB_ROOT)
 	}
 
 	return $path;
+}
+
+/**
+ * Generates a backtrace if the server supports it.
+ *
+ * @return string The generated backtrace
+ */
+function generate_backtrace($html=true, $strip=1, $trace=null)
+{
+	$backtrace = '';
+
+	if($trace === null && function_exists("debug_backtrace"))
+	{
+		$trace = debug_backtrace(1<<1 /* DEBUG_BACKTRACE_IGNORE_ARGS */);
+
+		// Strip off calls from trace
+		$trace = array_slice($trace, $strip);
+	}
+
+	if($trace)
+	{
+		if($html)
+		{
+			$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
+			$backtrace .= "<thead><tr>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
+			$backtrace .= "</tr></thead>\n<tbody>\n";
+		}
+
+		$i = 0;
+
+		foreach($trace as $call)
+		{
+			if(empty($call['file'])) $call['file'] = "[PHP]";
+			if(empty($call['line'])) $call['line'] = " ";
+			if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
+			$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
+
+			if($html)
+			{
+				$backtrace .= "<tr>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
+				$backtrace .= "</tr>\n";
+			}
+			else
+			{
+				$backtrace .= "#{$i}  {$call['function']}() called at [{$call['file']}:{$call['line']}]\n";
+			}
+
+			$i++;
+		}
+
+		if($html)
+		{
+			$backtrace .= "</tbody></table>\n";
+		}
+	}
+	return $backtrace;
 }

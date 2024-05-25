@@ -9,7 +9,7 @@
  */
 
 #[AllowDynamicProperties]
-class MyLanguage
+class MyLanguage implements JsonSerializable
 {
 
 	/**
@@ -50,6 +50,13 @@ class MyLanguage
 	 * @var array
 	 */
 	public $settings;
+
+	/**
+	 * The loaded language strings.
+	 *
+	 * @var string[]
+	 */
+	private array $phrases = [];
 
 	/**
 	 * Set the path for the language folder.
@@ -157,11 +164,11 @@ class MyLanguage
 
 		if(file_exists($lfile))
 		{
-			require_once $lfile;
+			require $lfile;
 		}
 		elseif(file_exists($ffile))
 		{
-			require_once $ffile;
+			require $ffile;
 		}
 		else
 		{
@@ -171,18 +178,9 @@ class MyLanguage
 			}
 		}
 
-		// We must unite and protect our language variables!
-		$lang_keys_ignore = array('language', 'fallback', 'fallbackLanguage', 'path', 'settings');
-
 		if(isset($l) && is_array($l))
 		{
-			foreach($l as $key => $val)
-			{
-				if((empty($this->$key) || $this->$key != $val) && !in_array($key, $lang_keys_ignore))
-				{
-					$this->$key = $val;
-				}
-			}
+			$this->phrases = array_merge($this->phrases, $l);
 		}
 	}
 
@@ -251,5 +249,30 @@ class MyLanguage
 	function parse_replace($matches)
 	{
 		return $this->{$matches[1]};
+	}
+
+	public function jsonSerialize(): array
+	{
+		return array_merge($this->phrases, get_object_vars($this));
+	}
+
+	public function __set(string $name, string $value): void
+	{
+		$this->phrases[$name] = $value;
+	}
+
+	public function __get(string $name): string
+	{
+		return $this->phrases[$name];
+	}
+
+	public function __isset(string $name): bool
+	{
+		return isset($this->phrases[$name]);
+	}
+
+	public function __unset(string $name): void
+	{
+		unset($this->phrases[$name]);
 	}
 }

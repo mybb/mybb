@@ -434,6 +434,13 @@ class Moderation
 				$query2 = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query2))
 				{
+					if(!isset($user_counters[$counter['uid']]))
+					{
+						$user_counters[$counter['uid']] = array(
+							'num_posts' => 0,
+							'num_threads' => 0
+						);
+					}
 					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 				}
 			}
@@ -595,6 +602,13 @@ class Moderation
 					$query2 = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query2))
 					{
+						if(!isset($user_counters[$counter['uid']]))
+						{
+							$user_counters[$counter['uid']] = array(
+								'num_posts' => 0,
+								'num_threads' => 0
+							);
+						}
 						$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 					}
 				}
@@ -1582,6 +1596,9 @@ class Moderation
 			update_first_post($thread['tid']);
 		}
 
+		// Attach moved posts to the first post
+		$db->update_query("posts", array('replyto' => $new_firstpost['pid']), "tid='{$tid}' AND replyto = 0 AND pid != '{$new_firstpost['pid']}'");
+
 		// Update thread count if thread has a new firstpost and is visible
 		if($thread['uid'] != $new_firstpost['uid'] && $thread['visible'] == 1 && $forum_cache[$thread['fid']]['usethreadcounts'] == 1)
 		{
@@ -2117,6 +2134,9 @@ class Moderation
 				++$forum_counters[$moveto]['deletedposts'];
 			}
 		}
+
+		// Attach moved posts to the first post
+		$db->update_query("posts", array('replyto' => $post_info['pid']), "tid='{$newtid}' AND replyto = 0 AND pid != '{$post_info['pid']}'");
 
 		if($destination_tid == 0 && $newthread['visible'] == 1)
 		{
@@ -3566,9 +3586,12 @@ class Moderation
 				$query2 = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query2))
 				{
-					if(!isset($user_counters[$counter['uid']]['num_posts']))
+					if(!isset($user_counters[$counter['uid']]))
 					{
-						$user_counters[$counter['uid']]['num_posts'] = 0;
+						$user_counters[$counter['uid']] = array(
+							'num_posts' => 0,
+							'num_threads' => 0
+						);
 					}
 					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 				}
@@ -3731,9 +3754,12 @@ class Moderation
 					$query2 = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$thread['tid']}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query2))
 					{
-						if(!isset($user_counters[$counter['uid']]['num_posts']))
+						if(!isset($user_counters[$counter['uid']]))
 						{
-							$user_counters[$counter['uid']]['num_posts'] = 0;
+							$user_counters[$counter['uid']] = array(
+								'num_posts' => 0,
+								'num_threads' => 0
+							);
 						}
 						$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 					}

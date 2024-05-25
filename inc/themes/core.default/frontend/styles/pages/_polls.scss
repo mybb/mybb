@@ -1,0 +1,137 @@
+.add-poll {
+
+    .poll-option {
+        padding-#{$right}: 20px;
+    }
+
+    .remove-option {
+        float: #{$right};
+        margin: side-values(3px -20px 0 0);
+        color: $danger-color;
+    }
+}
+
+.poll {
+    margin-bottom: 20px;
+
+    &__question {
+
+    }
+
+    &__tag {
+        display: inline-block;
+        float: $right;
+        padding: 0 6px;
+        margin-#{$right}: -4px;
+        font-size: 0.6em;
+        font-weight: normal;
+        text-transform: uppercase;
+        border: 1px solid $background-default;
+        border-radius: $radius;
+    }
+
+    &__options {
+        padding: 0;
+    }
+
+    &__row {
+        padding: 10px 12px;
+        border-bottom: 1px solid $border-3;
+
+        &--cast-vote {
+            padding: 0;
+
+            .poll__input {
+                float: $left;
+                margin: side-values(6px 0 0 -26px);
+            }
+
+            label {
+                display: block;
+                padding: side-values(10px 12px 12px 40px);
+                cursor: pointer;
+            }
+        }
+
+        &--information {
+            font-size: 0.9em;
+            color: $alt-font-color-1;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__your-vote {
+        margin-#{$left}: 5px;
+        color: $primary-color;
+    }
+
+    &__option {
+        float: $left;
+        margin-bottom: 8px;
+    }
+
+    &__votes {
+        position: relative;
+        box-sizing: border-box;
+        height: 24px;
+        margin: 8px 0;
+        clear: both;
+        background: $background-1;
+        border-radius: 4px;
+    }
+
+    &__bar {
+        position: absolute;
+        top: 0;
+        #{$left}: 0;
+        bottom: 0;
+        z-index: 1;
+        box-sizing: border-box;
+        background: $major-heading-background;
+        border-radius: 3px;
+    }
+
+    &__count {
+        float: $right;
+        font-size: 0.9em;
+    }
+
+    &__vote {
+        padding: 6px 12px;
+        background: $background-2;
+        border-radius: $radius;
+        @include clearfix();
+    }
+
+    &__total {
+        float: $right;
+        margin: side-values(10px 0 10px 8px);
+    }
+
+    &__end-date {
+        padding: 5px 16px 0 16px;
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+
+        i {
+            margin-right: 5px;
+            color: $alt-font-color-2;
+        }
+    }
+
+    &__closed {
+        display: inline-block;
+        padding: 5px 11px;
+        margin: 5px;
+        color: $invert-font-color;
+        background: $danger-color;
+        border-radius: 4px;
+
+        i {
+            margin-right: 2px;
+        }
+    }
+}

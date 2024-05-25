@@ -46,13 +46,6 @@ class datacache
 	public $call_time = 0;
 
 	/**
-	 * Explanation of a cache call.
-	 *
-	 * @var string
-	 */
-	public $cache_debug;
-
-	/**
 	 * @var array
 	 */
 	public $moderators;
@@ -134,7 +127,8 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache");
 			while($data = $db->fetch_array($query))
 			{
-				$this->cache[$data['title']] = unserialize($data['cache']);
+				// use native_unserialize() over my_unserialize() for performance reasons
+				$this->cache[$data['title']] = native_unserialize($data['cache']);
 			}
 		}
 	}
@@ -179,7 +173,7 @@ class datacache
 				{
 					$hit = false;
 				}
-				$this->debug_call('read:'.$name, $call_time, $hit);
+				$this->debug_call('read', $name, $call_time, $hit);
 			}
 
 			// No data returned - cache gone bad?
@@ -188,20 +182,10 @@ class datacache
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-				$data = my_unserialize($cache_data['cache']);
 
-				// Update cache for handler
-				get_execution_time();
-
-				$hit = $this->handler->put($name, $data);
-
-				$call_time = get_execution_time();
-				$this->call_time += $call_time;
-				$this->call_count++;
-
-				if($mybb->debug_mode)
+				if($cache_data)
 				{
-					$this->debug_call('set:'.$name, $call_time, $hit);
+					$this->debug_call('set', $name, $call_time, $hit);
 				}
 			}
 		}
@@ -217,7 +201,8 @@ class datacache
 			}
 			else
 			{
-				$data = unserialize($cache_data['cache']);
+				// use native_unserialize() over my_unserialize() for performance reasons
+				$data = native_unserialize($cache_data['cache']);
 			}
 		}
 
@@ -268,7 +253,7 @@ class datacache
 
 			if($mybb->debug_mode)
 			{
-				$this->debug_call('update:'.$name, $call_time, $hit);
+				$this->debug_call('update', $name, $call_time, $hit);
 			}
 		}
 	}
@@ -302,7 +287,7 @@ class datacache
 
 			if($mybb->debug_mode)
 			{
-				$this->debug_call('delete:'.$name, $call_time, $hit);
+				$this->debug_call('delete', $name, $call_time, $hit);
 			}
 		}
 
@@ -363,7 +348,7 @@ class datacache
 
 					if($mybb->debug_mode)
 					{
-						$this->debug_call('delete:'.$name, $call_time, $hit);
+						$this->debug_call('delete', $name, $call_time, $hit);
 					}
 				}
 			}
@@ -376,47 +361,22 @@ class datacache
 	/**
 	 * Debug a cache call to a non-database cache handler
 	 *
-	 * @param string $string The cache key
+	 * @param string $method The operation type
+	 * @param string $key The cache key
 	 * @param string $qtime The time it took to perform the call.
 	 * @param boolean $hit Hit or miss status
 	 */
-	function debug_call($string, $qtime, $hit)
+	function debug_call($method, $key, $qtime, $hit)
 	{
-		global $mybb, $plugins;
+		global $plugins;
 
-		$debug_extra = '';
-		if($plugins->current_hook)
-		{
-			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->calllist[$this->call_count]['plugin_hook'] = $plugins->current_hook;
 		}
 
-		if($hit)
-		{
-			$hit_status = 'HIT';
-		}
-		else
-		{
-			$hit_status = 'MISS';
-		}
-
-		$cache_data = explode(':', $string);
-		$cache_method = $cache_data[0];
-		$cache_key = $cache_data[1];
-
-		$this->cache_debug = "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">
-<tr>
-	<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#{$this->call_count} - ".ucfirst($cache_method)." Call</strong></div></td>
-</tr>
-<tr style=\"background-color: #fefefe;\">
-	<td><span style=\"font-family: Courier; font-size: 14px;\">({$mybb->config['cache_store']}) [{$hit_status}] ".htmlspecialchars_uni($cache_key)."</span></td>
-</tr>
-<tr>
-	<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
-</tr>
-</table>
-<br />\n";
-
-		$this->calllist[$this->call_count]['key'] = $string;
+		$this->calllist[$this->call_count]['method'] = $method;
+		$this->calllist[$this->call_count]['key'] = $key;
+		$this->calllist[$this->call_count]['hit'] = $hit;
 		$this->calllist[$this->call_count]['time'] = $qtime;
 	}
 
@@ -1311,7 +1271,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='mostonline'");
-		$this->update("mostonline", unserialize($db->fetch_field($query, "cache")));
+		$this->update("mostonline", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_plugins()
@@ -1319,7 +1279,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='plugins'");
-		$this->update("plugins", unserialize($db->fetch_field($query, "cache")));
+		$this->update("plugins", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_last_backup()
@@ -1327,7 +1287,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='last_backup'");
-		$this->update("last_backup", unserialize($db->fetch_field($query, "cache")));
+		$this->update("last_backup", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_internal_settings()
@@ -1335,7 +1295,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='internal_settings'");
-		$this->update("internal_settings", unserialize($db->fetch_field($query, "cache")));
+		$this->update("internal_settings", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_version_history()
@@ -1343,7 +1303,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='version_history'");
-		$this->update("version_history", unserialize($db->fetch_field($query, "cache")));
+		$this->update("version_history", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_modnotes()
@@ -1351,7 +1311,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='modnotes'");
-		$this->update("modnotes", unserialize($db->fetch_field($query, "cache")));
+		$this->update("modnotes", my_unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_adminnotes()
@@ -1359,6 +1319,6 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
-		$this->update("adminnotes", unserialize($db->fetch_field($query, "cache")));
+		$this->update("adminnotes", my_unserialize($db->fetch_field($query, "cache")));
 	}
 }

@@ -1,0 +1,106 @@
+/**
+ * Global page footer
+ */
+.footer {
+
+    // Language and theme quick-selectors
+    &__selectors {
+        margin-top: 20px;
+    }
+
+    // Admin debug info
+    &__debug {
+        margin-top: 20px;
+        font-size: 0.75em;
+        line-height: 1.4;
+        color: $alt-font-color-1;
+    }
+
+    // Footer links
+    &__navigation {
+        padding: 10px 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        clear: both;
+        background: $background-2;
+    }
+
+    // MyBB Powered By wrapper
+    &__copyright {
+        text-align: center;
+    }
+}
+
+/**
+ * MyBB Powered By statement
+ */
+.powered-by {
+    padding: 0 0 10px 0;
+    margin: 0;
+    clear: both;
+    font-size: 0.8em;
+    color: $alt-font-color-2;
+
+    &__link:link,
+    &__link:visited {
+        color: $alt-font-color-1;
+    }
+}
+
+/**
+ * Page wrapper (footer)
+ */
+.wrapper--footer {
+    position: relative;
+}
+
+/**
+ * Footer link menu
+ */
+.footer-menu {
+    font-size: 0.9em;
+
+    // List of links (<ul>)
+    &__links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        @include bp-large {
+            justify-content: space-between;
+        }
+    }
+
+    // Link item (<li>)
+    &__item {
+        padding: 5px 15px;
+    }
+
+    // Link (<a>)
+    &__link {
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-1;
+        }
+
+        &:hover {
+            color: $link-hover;
+            text-decoration: none;
+        }
+    }
+
+    // Icon accompanying link (contained within <a>)
+    &__icon {
+        margin-#{$right}: 4px;
+    }
+
+    // Link text (contained within <a>)
+    &__text {
+        // unused
+    }
+}

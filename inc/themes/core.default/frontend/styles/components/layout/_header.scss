@@ -1,0 +1,187 @@
+/**
+ * Global page header
+ */
+.header {
+    background: $dark-background-1;
+
+    @include bp-medium {
+        display: flex;
+        flex-direction: row;
+        height: $header-height;
+    }
+
+    // Page title
+    &__title {
+        height: 100%;
+        margin: 0;
+
+        @include bp-medium {
+            float: $left;
+        }
+
+        // Logo wrapper
+        // For styling of logo , see _logo.scss
+        .logo {
+            display: flex;
+            align-items: center;
+            height: $header-height;
+            margin-#{$right}: 50px;
+
+            @include bp-medium {
+                height: 100%;
+            }
+        }
+    }
+
+    // Menu and close menu buttons on small screens
+    .menu-button,
+    .menu-close-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: block;
+        padding: 26px 8px;
+        cursor: pointer;
+
+        // Button icon
+        &__icon {
+            color: $invert-font-color;
+            font-size: 24px;
+        }
+
+        // Hide if hidden
+        &--hide {
+            display: none;
+        }
+
+        @include bp-medium {
+            display: none;
+        }
+    }
+
+    // Hidden checkbox for show/hide of menu on small screens
+    &__checkbox {
+        display: none;
+    }
+}
+
+/**
+ * Page wrapper (header)
+ */
+.wrapper--header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @include bp-medium {
+        flex-direction: row;
+    }
+}
+
+/**
+ * Main navigation menu
+ */
+.main-menu {
+    flex-grow: 1;
+    height: 100%;
+
+    @include bp-medium-max {
+        display: none;
+    }
+
+    // List of links (<ul>)
+    &__links {
+        display: flex;
+        justify-content: flex-end;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        @include bp-medium-max {
+            flex-wrap: wrap;
+            margin: 0 -6%;
+            background: $dark-background-2;
+            border-bottom: 1px solid $dark-border-3;
+        }
+    }
+
+    // Link item (<li>)
+    &__item {
+        $module: &;
+        flex-shrink: 0;
+
+        @include bp-medium-max {
+            box-sizing: border-box;
+            width: 100%;
+            text-align: left;
+            border-top: 1px solid $dark-border-3;
+        }
+
+        // Active menu item
+        &--active {
+            color: $invert-font-color;
+            background: $primary-color;
+
+            .main-menu__link {
+
+                &:hover {
+                    background: $primary-color;
+                }
+            }
+        }
+    }
+
+    // Link (<a>)
+    &__link {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 0 20px;
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: 300;
+        transition: background $transition-speed ease;
+
+        @include bp-medium-max {
+            justify-content: flex-start;
+            padding: 8px 20px;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        &:link,
+        &:visited {
+            color: $invert-font-color;
+            text-decoration: none;
+        }
+
+        &:hover {
+            background: rgba($dark-background-3, 0.6);
+        }
+    }
+
+    // Link icon (contained within <a>)
+    &__icon {
+        margin-#{$right}: 8px;
+        color: $alt-font-color-2;
+    }
+
+    // Link text (contained within <a>)
+    &__text {
+        // unused
+    }
+}
+
+/**
+ * Show menu links if mobile menu button has been clicked
+ */
+#show-mobile-menu:checked ~ .main-menu {
+
+    @include bp-medium-max {
+        display: block;
+    }
+}

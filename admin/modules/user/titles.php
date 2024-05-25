@@ -117,7 +117,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
-	if(!$usertitle['utid'])
+	if(!$usertitle)
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
-	if(!$usertitle['utid'])
+	if(!$usertitle)
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");

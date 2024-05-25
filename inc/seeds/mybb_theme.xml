@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1832">
+<theme name="MyBB Master Style" version="1838">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -3863,13 +3863,14 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		</td>
 	</tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
-		<form action="moderation.php" method="post">
+		<template name="forumdisplay_inlinemoderation" version="1838"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1838"></script>
+		<form id="inlinemoderation_options" action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
 <span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
-<select name="action">
+<select name="action" id="inlinemoderation_options_selector">
+	<option value="" style="display: none;" selected="selected">{$lang->select_a_tool}</option>
 	<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 	{$standardthreadtools}
 	{$customthreadtools}
@@ -3883,6 +3884,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	var all_text = "{$threadcount}";
 	var inlineType = "forum";
 	var inlineId = {$fid};
+	lang.select_tool = "{$lang->inline_no_tool_selected}";
+	lang.selected_nil = "{$lang->inline_no_post_selected}";
 // -->
 </script>
 <br />]]></template>
@@ -4046,7 +4049,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1827"><![CDATA[<div class="float_left">
+
+		<template name="forumdisplay_threadlist" version="1838"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -4106,8 +4110,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	{$searchforum}
 	{$forumjump}
 </div>
-<br class="clear" />
-{$inline_edit_js}]]></template>
+<br class="clear" />]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
 		<template name="forumdisplay_threadlist_prefixes" version="1801"><![CDATA[<select name="prefix">
 <option value="-2"{$default_selected['any']}>{$lang->prefix_any}</option>
@@ -6156,8 +6159,8 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_smilies_no_smilies" version="1808"><![CDATA[<tr>
 <td class="{$class}">{$lang->no_smilies}</td>
 </tr>]]></template>
-		<template name="misc_smilies_popup" version="1800"><![CDATA[<div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
+		<template name="misc_smilies_popup" version="1834"><![CDATA[<div class="modal">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->smilies_listing}</strong></td>
@@ -7343,7 +7346,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_results_information" version="1813"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a> | <a href="http://www.stopforumspam.com/ipcheck/{$ipaddress}" target="_blank" rel="noopener">{$lang->search_ip_sfs}</a>)</div>]]></template>
+		<template name="modcp_ipsearch_results_information" version="1834"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a> | <a href="https://www.stopforumspam.com/ipcheck/{$ipaddress}" target="_blank" rel="noopener">{$lang->search_ip_sfs}</a>)</div>]]></template>
 		<template name="modcp_lastattachment" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']}<br />{$lang->by} {$attachment['profilelink']}</span>]]></template>
@@ -11275,7 +11278,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="search_results_posts_forumlink" version="1808"><![CDATA[<a href="{$post['forumlink_link']}">{$post['forumlink_name']}</a>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
+		<template name="search_results_posts_inlinemoderation" version="1838"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1838"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11369,7 +11372,7 @@ if(use_xmlhttprequest == "1")
 		</html>]]></template>
 		<template name="search_results_threads_forumlink" version="1808"><![CDATA[<a href="{$thread['forumlink_link']}">{$thread['forumlink_name']}</a>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
+		<template name="search_results_threads_inlinemoderation" version="1838"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1838"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -11487,7 +11490,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1827"><![CDATA[<html>
+		<template name="showthread" version="1838"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11496,6 +11499,8 @@ if(use_xmlhttprequest == "1")
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 	var quickrestore_confirm = "{$lang->quickrestore_confirm}";
 	var allowEditReason = "{$mybb->settings['alloweditreason']}";
+	var thread_deleted = "{$thread_deleted}";
+	var visible_replies = "{$thread['replies']}";
 	lang.save_changes = "{$lang->save_changes}";
 	lang.cancel_edit = "{$lang->cancel_edit}";
 	lang.quick_edit_update_error = "{$lang->quick_edit_update_error}";
@@ -11514,7 +11519,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1827"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1838"></script>
 </head>
 <body>
 	{$header}
@@ -11595,13 +11600,14 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
+		<template name="showthread_inlinemoderation" version="1838"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1838"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action" id="inlinemoderation_options_selector">
+	<option value="" style="display: none;" selected="selected">{$lang->select_a_tool}</option>
 {$standardposttools}
 {$customposttools}
 </select>
@@ -11614,10 +11620,8 @@ if(use_xmlhttprequest == "1")
 	var all_text = "{$threadcount}";
 	var inlineType = "thread";
 	var inlineId = {$tid};
-
-	$("#inlinemoderation_options_selector").on('change', function() {
-		$("#inlinemoderation_options").trigger('submit');
-	})
+	lang.select_tool = "{$lang->inline_no_tool_selected}";
+	lang.selected_nil = "{$lang->inline_no_post_selected}";
 // -->
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_approve" version="1800"><![CDATA[<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
@@ -11637,7 +11641,7 @@ if(use_xmlhttprequest == "1")
 	{$inlinemodapprove}
 </optgroup>]]></template>
 		<template name="showthread_inlinemoderation_softdelete" version="1800"><![CDATA[<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1838"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
@@ -11645,20 +11649,14 @@ if(use_xmlhttprequest == "1")
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span>
 	<select name="action" id="moderator_options_selector">
+		<option value="" style="display: none;" selected="selected">{$lang->select_a_tool}</option>
 		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		{$standardthreadtools}
 		{$customthreadtools}
 	</select>
 	{$gobutton}
 </form>
-<br />
-<script type="text/javascript">
-<!--
-	$("#moderator_options_selector").on('change', function() {
-		$("#moderator_options").trigger('submit');
-	})
-//-->
-</script>]]></template>
+<br />]]></template>
 		<template name="showthread_moderationoptions_approve" version="1818"><![CDATA[<option class="option_mirage" value="approvethread">{$lang->approve_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="showthread_moderationoptions_custom_tool" version="1818"><![CDATA[<option class="option_mirage" value="{$tool['tid']}">{$tool['name']}</option>]]></template>
@@ -11683,7 +11681,7 @@ if(use_xmlhttprequest == "1")
 {$approveunapprovethread}
 </optgroup>]]></template>
 		<template name="showthread_moderationoptions_stickunstick" version="1818"><![CDATA[<option class="option_mirage" value="stick">{$lang->stick_unstick_thread}</option>]]></template>
-		<template name="showthread_moderationoptions_threadnotes" version="1800"><![CDATA[<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>]]></template>
+		<template name="showthread_moderationoptions_threadnotes" version="1838"><![CDATA[<option value="threadnotes">{$lang->thread_notes}</option>]]></template>
 		<template name="showthread_moderationoptions_unapprove" version="1818"><![CDATA[<option class="option_mirage" value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
@@ -14159,9 +14157,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1832"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1837"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1832"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1832"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1837"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1832"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},

@@ -14,7 +14,7 @@ cache/*
 uploads/*
 
 # MyBB Misc
-install/lock
+install/lock*
 error.log
 .htaccess
 !admin/backups/.htaccess
@@ -29,6 +29,7 @@ error.log
 .history
 .idea
 .editorconfig
+.phpunit.cache
 
 # Generic OS stuff
 .DS_Store
@@ -49,3 +50,4 @@ Thumbs.db
 *.orig
 
 inc/vendor
+inc/checksums

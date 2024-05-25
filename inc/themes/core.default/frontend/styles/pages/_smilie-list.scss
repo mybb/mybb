@@ -1,0 +1,32 @@
+.smilie-list {
+
+    &__legend {
+
+        .smilie-list__name {
+            margin-#{$left}: 64px;
+        }
+    }
+
+    &__item {
+        .smilie-list__smilie {
+            flex: 0 0 50px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .smilie-list__name {
+            flex: 1 0 auto;
+            margin-#{$left}: 14px;
+        }
+
+        .smilie-list__replace {
+            flex: 1 0 auto;
+            text-align: $right;
+
+            &--no-name {
+                margin-#{$left}: 14px;
+                text-align: $left;
+            }
+        }
+    }
+}

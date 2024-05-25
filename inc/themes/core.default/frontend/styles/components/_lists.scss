@@ -1,0 +1,43 @@
+.list {
+
+    &--stats {
+        display: table-cell;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9em;
+        line-height: 1.8em;
+        list-style: none;
+
+        .list__field {
+            margin-#{$right}: 6px;
+            color: $alt-font-color-2;
+
+            &:after {
+                content: ":";
+            }
+        }
+    }
+
+    &--divided {
+        display: block;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        .list__item {
+            padding: 6px 0;
+            border-bottom: 1px solid $border-3;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+
+    &--rows {
+
+        .list__item {
+            padding: 8px 12px;
+        }
+    }
+}

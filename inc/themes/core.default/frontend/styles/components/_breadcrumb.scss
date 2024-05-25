@@ -1,0 +1,27 @@
+.breadcrumb {
+    display: block;
+    padding: 0;
+    margin-bottom: 5px;
+    font-size: 0.8em;
+    color: $alt-font-color-3;
+
+    &__link {
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-1;
+            text-decoration: none;
+        }
+
+        &:hover {
+
+            .breadcrumb__text {
+                color: $link-hover;
+            }
+        }
+    }
+
+    &__separator {
+        margin: side-values(0 8px 0 8px);
+    }
+}

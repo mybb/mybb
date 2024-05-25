@@ -2,7 +2,7 @@
 {# <span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span> #}
 <div class="row row--thread thread">
     <div class="thread__column thread__column--primary">
-        <h3 class="thread__title {$new_class}">
+        <h3 class="thread__title {{ new_class }}">
             {% if thread.threadprefix %}
                 <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
             {% endif %}
@@ -19,7 +19,7 @@
         <p class="thread__notification">{{ lang.notification_method }} {{ thread.notification_type }}</p>
     </div>
     <div class="thread__column thread__column--replies">
-        <p class="thread__replies" title="{$lang->replies}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
+        <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
             <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
             <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
         </p>

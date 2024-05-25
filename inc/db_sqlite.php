@@ -261,39 +261,22 @@ class DB_SQLite implements DB_Base
 	 */
 	function explain_query($string, $qtime)
 	{
+		global $plugins;
+
+		if (isset($plugins) && $plugins->current_hook) {
+			$this->querylist[$this->query_count]['plugin_hook'] = $plugins->current_hook;
+		}
+
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
-		}
-		else
-		{
-			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-				"<tr>\n".
-				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
-				"</tr>\n".
-				"<tr style=\"background-color: #fefefe;\">\n".
-				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
-				"</tr>\n".
-				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
-				"</tr>\n".
-				"</table>\n".
-				"<br />\n";
+			$query = $this->query("EXPLAIN {$string}");
+
+			$this->querylist[$this->query_count]['plan'] = $query->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;
 		$this->querylist[$this->query_count]['time'] = $qtime;
+		$this->querylist[$this->query_count]['trace'] = generate_backtrace(false, 2);
 	}
 
 	/**
@@ -447,7 +430,7 @@ class DB_SQLite implements DB_Base
 	}
 
 	/**
-	 * Output a database error.
+	 * Trigger a database error.
 	 *
 	 * @param string $string The string to present as an error.
 	 * @param PDOStatement $query
@@ -473,27 +456,11 @@ class DB_SQLite implements DB_Base
 				$error = $this->error_string($query);
 			}
 
-			if(class_exists("errorHandler"))
-			{
-				global $error_handler;
-
-				if(!is_object($error_handler))
-				{
-					require_once MYBB_ROOT."inc/class_error.php";
-					$error_handler = new errorHandler();
-				}
-
-				$error = array(
-					"error_no" => $error_no,
-					"error" => $error,
-					"query" => $string
-				);
-				$error_handler->error(MYBB_SQL, $error);
-			}
-			else
-			{
-				trigger_error("<strong>[SQL] [{$error_no}] {$error}</strong><br />{$string}", E_USER_ERROR);
-			}
+			throw new DbException(
+				$string,
+				$error_no,
+				$query,
+			);
 		}
 	}
 
@@ -730,12 +697,12 @@ class DB_SQLite implements DB_Base
 	{
 		global $mybb;
 
-		if(!is_array($array))
+		if(!is_array($array) || empty($array))
 		{
 			return;
 		}
 		// Field names
-		$fields = array_keys($array[0]);
+		$fields = array_keys($array[array_key_first($array)]);
 		$fields = implode(",", $fields);
 
 		$insert_rows = array();
@@ -1319,7 +1286,7 @@ class DB_SQLite implements DB_Base
 						case 'change':
 							if(sizeof($defparts) <= 3)
 							{
-								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', E_USER_WARNING);
+								$this->error('near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', $fullquery, E_USER_WARNING);
 								return false;
 							}
 
@@ -1327,7 +1294,7 @@ class DB_SQLite implements DB_Base
 							{
 								if($newcols[$defparts[1]] != $defparts[1])
 								{
-									$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+									$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery);
 									return false;
 								}
 
@@ -1351,14 +1318,14 @@ class DB_SQLite implements DB_Base
 							}
 							else
 							{
-								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
+								$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery, E_USER_WARNING);
 								return false;
 							}
 							break;
 						case 'drop':
 							if(sizeof($defparts) < 2)
 							{
-								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
+								$this->error('near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error', $fullquery);
 								return false;
 							}
 
@@ -1379,12 +1346,12 @@ class DB_SQLite implements DB_Base
 							}
 							else
 							{
-								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+								$this->error('unknown column "'.$defparts[1].'" in "'.$table.'"', $fullquery);
 								return false;
 							}
 							break;
 						default:
-							$this->error($fullquery, 'near "'.$prevword.'": syntax error');
+							$this->error('near "'.$prevword.'": syntax error', $fullquery);
 							return false;
 					}
 

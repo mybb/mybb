@@ -3,16 +3,24 @@
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
-			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below. Administrators will still be able to view the forums.]]></description>
+			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a <a href="../index.php?boardclosed_preview=1" target="_blank" rel="noopener">message</a> with the reason you specify below. Administrators will still be able to view the forums.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="boardclosed_title">
+			<title>Board Closed Title</title>
+			<description><![CDATA[If your forum is closed, you can set a page title here that your visitors will be able to see when they visit your forums. You can leave this empty to use the language files.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[Temporarily Unavailable]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="boardclosed_reason">
 			<title>Board Closed Reason</title>
 			<description><![CDATA[If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums. You can leave this empty to use the language files.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[These forums are currently closed for maintenance. Please check back later.]]></settingvalue>
 			<isdefault>1</isdefault>

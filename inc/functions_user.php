@@ -62,7 +62,7 @@ function validate_password_from_username($username, $password)
 
 	$user = get_user_by_username($username, $options);
 
-	if(!$user['uid'])
+	if(!$user)
 	{
 		return false;
 	}
@@ -88,12 +88,6 @@ function validate_password_from_uid($uid, $password, $user = array())
 	if(!$user['password'])
 	{
 		$user = get_user($uid);
-	}
-	if(!$user['salt'])
-	{
-		// Generate a salt for this user and assume the password stored in db is a plain md5 password
-		$password_fields = create_password($user['password'], false, $user);
-		$db->update_query("users", $password_fields, "uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])
@@ -365,7 +359,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
-	if(empty($subscription) || !$subscription['tid'])
+	if(!$subscription)
 	{
 		$insert_array = array(
 			'uid' => (int)$uid,
@@ -439,7 +433,7 @@ function add_subscribed_forum($fid, $uid=0)
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(empty($fsubscription) || !$fsubscription['fid'])
+	if(!$fsubscription)
 	{
 		$insert_array = array(
 			'fid' => $fid,

@@ -1,0 +1,58 @@
+@mixin avatar-size($size) {
+    width: #{$size}px;
+    height: #{$size}px;
+
+    .avatar__image {
+        width: #{$size}px;
+        height: #{$size}px;
+    }
+
+    $icon-size: $size/2;
+
+    .avatar__icon {
+        font-size: #{$icon-size}px;
+    }
+}
+
+.avatar-profile-link {
+    display: inline-block;
+}
+
+.avatar {
+    border-radius: $radius;
+
+    &--smallest {
+        @include avatar-size(40);
+    }
+
+    &--small {
+        @include avatar-size(50);
+    }
+
+    &--medium {
+        @include avatar-size(80);
+    }
+
+    &--large {
+        @include avatar-size(100);
+    }
+
+    &--largest {
+        @include avatar-size(160);
+    }
+
+    &--default {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $background-3;
+    }
+
+    &__icon {
+        color: $alt-font-color-3;
+    }
+
+    &__image {
+        border-radius: $radius;
+    }
+}

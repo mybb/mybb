@@ -1,0 +1,245 @@
+.block {
+    margin-bottom: 30px;
+
+    &__content {
+        padding: 10px 0;
+    }
+
+    &--container {
+        padding: 16px;
+        border: 1px solid $border-1;
+        border-radius: $radius;
+
+        .sort-results {
+            border-width: 0;
+            border-top-width: 2px;
+        }
+    }
+
+    &--sidebar {
+        padding: 12px 15px;
+        border: 1px solid $border-1;
+        border-radius: $radius;
+
+        &.block--form {
+            padding: side-values(12px 0 0 0);
+
+            .title--sidebar {
+                margin: 0 15px;
+            }
+
+            .section--form {
+                padding: 15px;
+            }
+        }
+    }
+
+    &--modal {
+        margin-bottom: 0;
+
+        .block__content {
+            padding: 8px 12px;
+
+            &--text {
+                padding: 16px 12px;
+            }
+        }
+    }
+
+    &__body {
+        padding: 12px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &__footer-link {
+        @extend .container;
+        padding: 8px;
+        text-align: center;
+
+        a:link,
+        a:hover,
+        a:active {
+            text-decoration: none;
+        }
+
+        .icon {
+            margin-#{$right}: 4px;
+        }
+    }
+}
+
+.section {
+    @include clearfix();
+    padding: 16px 12px;
+    border-bottom: 1px solid $border-1;
+
+    @include bp-medium {
+        padding: 20px 12px;
+    }
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &__container {
+
+        @include bp-medium {
+            float: $left;
+            box-sizing: border-box;
+            width: 74%;
+            padding: side-values(0 0 0 20px);
+            margin: side-values(0 0 0 3%);
+            border-#{$left}: 1px dotted $border-2;
+        }
+    }
+
+    &--inline {
+        padding: side-values(5px 0 5px 16px);
+        margin-top: 10px;
+        border-bottom: 0;
+        border-left: 2px solid $border-1;
+    }
+}
+
+.container {
+    @include container;
+
+    &--simple-columns {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        @include bp-small {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+}
+
+.page-controls {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    &--top {
+        margin-top: -10px;
+
+        .pagination {
+            margin-bottom: 0;
+        }
+    }
+
+    &--bottom {
+        margin-top: -5px;
+        margin-bottom: 20px;
+    }
+
+    @include bp-medium {
+        flex-direction: row;
+
+        .page-buttons {
+            order: 2;
+            margin-#{$left}: auto;
+            margin-#{$right}: -5px;
+        }
+    }
+}
+
+.board-statistics {
+    border: 1px solid $border-1;
+    border-radius: $radius;
+
+    &__section {
+        padding: side-values(20px 12px 20px 50px);
+        border-bottom: 1px solid $border-1;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__title {
+        padding: side-values(0 0 4px 0);
+        margin: 0;
+        font-family: $alt-font-stack;
+        font-weight: normal;
+        border-bottom: 1px solid $border-3;
+    }
+
+    &__icon {
+        float: $left;
+        margin-top: 4px;
+        margin-#{$left}: -36px;
+        color: $alt-font-color-2;
+    }
+
+    &__body {
+        margin-top: 10px;
+        margin-bottom: 0;
+        font-size: 0.9em;
+
+        &--active-note {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            color: $alt-font-color-1;
+            border-bottom: 1px solid $border-3;
+
+            &:last-child {
+                padding-bottom: 0;
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+@include bp-large {
+
+    .simple-columns {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        &__item {
+            width: 48%;
+        }
+    }
+}
+
+
+.page-tools {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    @include bp-large {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &__item {
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+
+        @extend .inline-form;
+
+        &:first-child {
+            margin-bottom: 15px;
+
+            @include bp-large {
+                margin-bottom: 0;
+            }
+        }
+
+        @include bp-large {
+            width: auto;
+        }
+    }
+}

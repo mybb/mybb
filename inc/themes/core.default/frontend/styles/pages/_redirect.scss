@@ -1,0 +1,23 @@
+.redirect {
+    min-width: 300px;
+    margin: side-values(100px auto 0 auto);
+
+    &__title {
+        margin: 0;
+        font-family: $alt-font-stack;
+        font-size: 1.4em;
+        font-weight: bold;
+    }
+
+    &__message {
+        padding: 15px;
+        margin: 10px 0;
+        background: $background-1;
+        border-radius: $radius;
+    }
+
+    &__link {
+        font-size: 0.9em;
+        text-align: center;
+    }
+}

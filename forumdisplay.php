@@ -161,6 +161,7 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
+$forumjump = '';
 if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
@@ -248,7 +249,7 @@ if($mybb->settings['browsingthisforum'] != 0)
         if(empty($usersBrowsing[$user['uid']]) || $usersBrowsing[$user['uid']]['time'] < $user['time'])
 		{
 			++$usersBrowsingCounter['members'];
-			if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
+			if($user['invisible'] == 1)
 			{
 				++$usersBrowsingCounter['invisible'];
 			}
@@ -1172,7 +1173,7 @@ $plugins->run_hooks('forumdisplay_end');
 
 $foruminfo['name'] = strip_tags($foruminfo['name']);
 
-output_page(\MyBB\template('forumdisplay/forumdisplay.twig', [
+output_page(\MyBB\View\template('forumdisplay/forumdisplay.twig', [
 	'foruminfo' => $foruminfo,
 	'subforums' => $subforums,
 	'fpermissions' => $fpermissions,

@@ -72,7 +72,7 @@ class session
 			{
 				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
 				$session = $db->fetch_array($query);
-				if(!empty($session) && $session['sid'])
+				if($session)
 				{
 					$this->sid = $session['sid'];
 				}
@@ -146,7 +146,7 @@ class session
 		$mybb->user = $db->fetch_array($query);
 
 		// Check the password if we're not using a session
-		if(empty($loginkey) || $loginkey !== $mybb->user['loginkey'] || !$mybb->user['uid'])
+		if(!$mybb->user || empty($loginkey) || $loginkey !== $mybb->user['loginkey'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;
@@ -357,6 +357,8 @@ class session
 		$mybb->user['moderateposts'] = 0;
 		$mybb->user['showquickreply'] = 1;
 		$mybb->user['signature'] = '';
+		$mybb->user['sourceeditor'] = 0;
+		$mybb->user['subscriptionmethod'] = 0;
 		$mybb->user['suspendposting'] = 0;
 
 		// Has this user visited before? Lastvisit need updating?
@@ -371,7 +373,7 @@ class session
 			{
 				$mybb->user['lastactive'] = (int)$mybb->cookies['mybb']['lastactive'];
 			}
-			if($time - $mybb->cookies['mybb']['lastactive'] > 900)
+			if($time - (int)$mybb->cookies['mybb']['lastactive'] > 900)
 			{
 				my_setcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];
@@ -572,17 +574,14 @@ class session
 	 */
 	function get_special_locations()
 	{
-		global $mybb;
+		global $mybb, $db;
 		$array = array('1' => '', '2' => '');
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0 && $mybb->get_input('fid', MyBB::INPUT_INT) < 4294967296)
 		{
 			$array[1] = $mybb->get_input('fid', MyBB::INPUT_INT);
-			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
-			global $db;
-
 			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0 && $mybb->get_input('tid', MyBB::INPUT_INT) < 4294967296)
 			{
 				$array[2] = $mybb->get_input('tid', MyBB::INPUT_INT);
@@ -596,11 +595,17 @@ class session
 				);
 				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 				$post = $db->fetch_array($query);
-				$array[2] = $post['tid'];
+				if($post)
+				{
+					$array[2] = $post['tid'];
+				}
 			}
 
 			$thread = get_thread($array[2]);
-			$array[1] = $thread['fid'];
+			if($thread)
+			{
+				$array[1] = $thread['fid'];
+			}
 		}
 		return $array;
 	}

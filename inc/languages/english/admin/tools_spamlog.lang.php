@@ -20,6 +20,7 @@ $l['note_logs_locked'] = 'For security reasons, logs less than 24 hours old cann
 $l['all_usernames'] = 'All usernames';
 $l['all_emails'] = ' All Email Addresses';
 $l['date_range'] = "Date range:";
+$l['older_than'] = "Older than ";
 $l['days'] = "days";
 $l['filter_spam_logs'] = 'Filter Spam Logs';
 $l['asc'] = "Ascending";

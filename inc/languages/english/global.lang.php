@@ -392,7 +392,7 @@ $l['rel_hours_plural'] = "hours";
 $l['permanent'] = "Permanent";
 $l['save_draft'] = "Save as Draft";
 $l['go'] = "Go";
-$l['bbclosed_warning'] = "Your board status is currently set to closed.";
+$l['bbclosed_warning'] = "Your board status is currently set to <a href=\"{1}\">closed</a>.";
 $l['banned_warning'] = "Your forum account is currently banned.";
 $l['banned_warning2'] = "Ban Reason";
 $l['banned_warning3'] = "Ban will be lifted";
@@ -445,7 +445,6 @@ $l['standard_mod_tools'] = "Standard Tools";
 $l['custom_mod_tools'] = "Custom Tools";
 
 $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
-$l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
 $l['error_cannot_upload_php_post'] = "Can not upload file - Too large for php post_max_size directive. Please press the back button.";
 $l['error_empty_post_input'] = "There has been an error due to your post data being empty. This could be due to a browser page refresh or direct access to this page. We recommend you press the browser back button and begin again.";
@@ -453,6 +452,9 @@ $l['error_database_repair'] = "MyBB is automatically repairing a crashed table."
 
 $l['unknown_user_trigger'] = "An unknown error has been triggered.";
 $l['warnings'] = "The following warnings occurred:";
+
+$l['boardclosed'] = 'Temporarily Unavailable';
+$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later.';
 
 $l['ajax_loading'] = "Loading. <br />Please Wait&hellip;";
 $l['saving_changes'] = "Saving changes&hellip;";
@@ -617,7 +619,5 @@ $l['sfs_error_or'] = 'or';
 
 $l['expcol_collapse'] = '[-]';
 $l['expcol_expand'] = '[+]';
-
-$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
 
 $l['use_default'] = "Use Default";

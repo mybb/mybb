@@ -121,6 +121,6 @@ if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 
 $plugins->run_hooks('announcements_end');
 
-output_page(\MyBB\template('announcements/announcements.twig', [
+output_page(\MyBB\View\template('announcements/announcements.twig', [
 	'announcement' => $announcement,
 ]));

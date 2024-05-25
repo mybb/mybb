@@ -10,7 +10,7 @@ insert_final_newline = true
 charset = utf-8
 trim_trailing_whitespace = true
 
-[*.{js,css,sass,scss}]
+[*.{js,css,sass,scss,json}]
 indent_style = tab
 indent_size = 2
 

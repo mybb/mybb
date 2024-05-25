@@ -30,6 +30,12 @@ $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 $pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 $modal = $mybb->get_input('modal', MyBB::INPUT_INT);
 
+if($mybb->user['uid'] == 0)
+{
+	error_no_permission();
+}
+
+
 if($pid)
 {
 	$post = get_post($pid);
@@ -117,7 +123,7 @@ if(in_array($mybb->input['action'], $log_multithreads_actions))
 	unset($tids);
 }
 
-$loginbox = \MyBB\template('misc/changeuserbox.twig');
+$loginbox = \MyBB\View\template('misc/changeuserbox.twig');
 
 $allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
 
@@ -691,7 +697,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
-		output_page(\MyBB\template('moderation/delayedmoderation.twig', [
+		output_page(\MyBB\View\template('moderation/delayedmoderation.twig', [
 			'loginbox' => $loginbox,
 			'display_errors' => $display_errors,
 			'customtools' => $customtools,
@@ -813,7 +819,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletethread");
 
-		output_page(\MyBB\template('moderation/deletethread.twig', [
+		output_page(\MyBB\View\template('moderation/deletethread.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 		]));
@@ -870,7 +876,7 @@ switch($mybb->input['action'])
 			error($lang->error_invalidpoll, $lang->error);
 		}
 
-		output_page(\MyBB\template('moderation/deletepoll.twig', [
+		output_page(\MyBB\View\template('moderation/deletepoll.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 		]));
@@ -1031,9 +1037,9 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
-		output_page(\MyBB\template('moderation/move.twig', [
+		output_page(\MyBB\View\template('moderation/move.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'forumselect' => $forumselect,
@@ -1124,7 +1130,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks('moderation_viewthreadnotes');
 
-		output_page(\MyBB\template('moderation/viewthreadnotes.twig', [
+		output_page(\MyBB\View\template('moderation/viewthreadnotes.twig', [
 			'thread' => $thread,
 		]));
 		break;
@@ -1304,7 +1310,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_threadnotes");
 
-		output_page(\MyBB\template('moderation/threadnotes.twig', [
+		output_page(\MyBB\View\template('moderation/threadnotes.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'modactions' => $modactions,
@@ -1354,14 +1360,14 @@ switch($mybb->input['action'])
 
 		if($modal)
 		{
-			output_page(\MyBB\template('moderation/getip_modal.twig', [
+			output_page(\MyBB\View\template('moderation/getip_modal.twig', [
 				'post' => $post,
 			]));
 			exit;
 		}
 		else
 		{
-			output_page(\MyBB\template('moderation/getip.twig', [
+			output_page(\MyBB\View\template('moderation/getip.twig', [
 				'post' => $post,
 			]));
 			break;
@@ -1398,14 +1404,14 @@ switch($mybb->input['action'])
 
 		if($modal)
 		{
-			output_page(\MyBB\template('moderation/getpmip_modal.twig', [
+			output_page(\MyBB\View\template('moderation/getpmip_modal.twig', [
 				'pm' => $pm,
 			]));
 			exit;
 		}
 		else
 		{
-			output_page(\MyBB\template('moderation/getpmip.twig', [
+			output_page(\MyBB\View\template('moderation/getpmip.twig', [
 				'pm' => $pm,
 			]));
 			break;
@@ -1427,7 +1433,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_merge");
 
-		output_page(\MyBB\template('moderation/merge.twig', [
+		output_page(\MyBB\View\template('moderation/merge.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 		]));
@@ -1591,7 +1597,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_split");
 
-		output_page(\MyBB\template('moderation/split.twig', [
+		output_page(\MyBB\View\template('moderation/split.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'forumselect' => $forumselect,
@@ -1735,7 +1741,7 @@ switch($mybb->input['action'])
 
 		$return_url = $mybb->get_input('url');
 
-		output_page(\MyBB\template('moderation/inline_deletethreads.twig', [
+		output_page(\MyBB\View\template('moderation/inline_deletethreads.twig', [
 			'loginbox' => $loginbox,
 			'forum' => $forum,
 			'inlineids' => $inlineids,
@@ -2155,7 +2161,7 @@ switch($mybb->input['action'])
 		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
 		$return_url = $mybb->get_input('url');
 
-		output_page(\MyBB\template('moderation/inline_movethreads.twig', [
+		output_page(\MyBB\View\template('moderation/inline_movethreads.twig', [
 			'loginbox' => $loginbox,
 			'forum' => $forum,
 			'forumselect' => $forumselect,
@@ -2247,7 +2253,7 @@ switch($mybb->input['action'])
 
 		$return_url = $mybb->get_input('url');
 
-		output_page(\MyBB\template('moderation/inline_deleteposts.twig', [
+		output_page(\MyBB\View\template('moderation/inline_deleteposts.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'inlineids' => $inlineids,
@@ -2356,9 +2362,13 @@ switch($mybb->input['action'])
 			}
 		}
 
-		if(empty($posts))
+		if(count($posts) < 2)
 		{
-			error($lang->error_inline_nopostsselected, $lang->error);
+			if(empty($posts))
+			{
+				error($lang->error_inline_nopostsselected, $lang->error);
+			}			
+			error($lang->error_nomergeposts, $lang->error);
 		}
 
 		if(!is_moderator_by_pids($posts, "canmanagethreads"))
@@ -2408,7 +2418,7 @@ switch($mybb->input['action'])
 
 		$return_url = $mybb->get_input('url');
 
-		output_page(\MyBB\template('moderation/inline_mergeposts.twig', [
+		output_page(\MyBB\View\template('moderation/inline_mergeposts.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'postlist' => $postlist,
@@ -2424,7 +2434,7 @@ switch($mybb->input['action'])
 		verify_post_check($mybb->get_input('my_post_key'));
 
 		$mergepost = $mybb->get_input('mergepost', MyBB::INPUT_ARRAY);
-		if(count($mergepost) <= 1)
+		if(count($mergepost) < 2)
 		{
 			error($lang->error_nomergeposts, $lang->error);
 		}
@@ -2531,7 +2541,7 @@ switch($mybb->input['action'])
 
 		$return_url = $mybb->get_input('url');
 
-		output_page(\MyBB\template('moderation/inline_splitposts.twig', [
+		output_page(\MyBB\View\template('moderation/inline_splitposts.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'forumselect' => $forumselect,
@@ -2725,7 +2735,7 @@ switch($mybb->input['action'])
 			clearinline($tid, 'thread');
 		}
 
-		output_page(\MyBB\template('moderation/inline_moveposts.twig', [
+		output_page(\MyBB\View\template('moderation/inline_moveposts.twig', [
 			'loginbox' => $loginbox,
 			'thread' => $thread,
 			'inlineids' => $inlineids,
@@ -2752,12 +2762,12 @@ switch($mybb->input['action'])
 			preg_match("#thread-([0-9]+)?#i", $mybb->input['threadurl'], $threadmatch);
 			preg_match("#post-([0-9]+)?#i", $mybb->input['threadurl'], $postmatch);
 
-			if($threadmatch[1])
+			if(!empty($threadmatch[1]))
 			{
 				$parameters['tid'] = $threadmatch[1];
 			}
 
-			if($postmatch[1])
+			if(!empty($postmatch[1]))
 			{
 				$parameters['pid'] = $postmatch[1];
 			}
@@ -3076,7 +3086,7 @@ switch($mybb->input['action'])
 
 		$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 		$user = get_user($uid);
-		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
+		if(!$user || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
 			error($lang->purgespammer_invalid_user);
 		}
@@ -3191,7 +3201,7 @@ switch($mybb->input['action'])
 				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
 			}
 
-			output_page(\MyBB\template('moderation/purgespammer.twig', [
+			output_page(\MyBB\View\template('moderation/purgespammer.twig', [
 				'user' => $user,
 			]));
 		}
@@ -3235,7 +3245,7 @@ switch($mybb->input['action'])
 
 				$plugins->run_hooks('moderation_confirmation');
 
-				output_page(\MyBB\template('moderation/confirmation.twig', [
+				output_page(\MyBB\View\template('moderation/confirmation.twig', [
 					'loginbox' => $loginbox,
 					'user' => $user,
 					'confirm' => $confirm,

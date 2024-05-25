@@ -121,7 +121,7 @@ function fetch_forum_announcements($pid = 0, $depth = 1)
 			}
 
 			$bgcolor = alt_trow();
-			$announcements_forum .= \MyBB\template('modcp/announcements/forum.twig', [
+			$announcements_forum .= \MyBB\View\template('modcp/announcements/forum.twig', [
 				'announcements' => $currentAnnouncements,
 				'depth' => $depth,
 				'forum' => $forum,
@@ -260,6 +260,14 @@ function send_report($report, $report_type = 'post')
 			"toid" => $pm_recipients,
 			"ipaddress" => $mybb->session->packedip
 		);
+
+		$pm['options'] = array(
+			"signature" => 0,
+			"disablesmilies" => 0,
+			"savecopy" => 0,
+			"readreceipt" => 0
+		);
+		$pm['saveasdraft'] = 0;
 
 		$pmhandler->admin_override = true;
 		$pmhandler->set_data($pm);

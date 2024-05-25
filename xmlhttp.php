@@ -89,7 +89,7 @@ if($loadstyle != "def='1'")
 	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
 	$theme = $db->fetch_array($query);
 
-	if(isset($theme['tid']) && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
 		if(isset($mybb->cookies['mybbtheme']))
 		{
@@ -205,14 +205,16 @@ $plugins->run_hooks("xmlhttp");
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($mybb->input['action'], $closed_bypass))
 {
 	// Show error
-	if(!$mybb->settings['boardclosed_reason'])
+	if($mybb->settings['boardclosed_reason'])
 	{
-		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+		$message = $mybb->settings['boardclosed_reason'];
+	}
+	else
+	{
+		$message = $lang->boardclosed_reason;
 	}
 
-	$lang->error_boardclosed .= "<br /><em>{$mybb->settings['boardclosed_reason']}</em>";
-
-	xmlhttp_error($lang->error_boardclosed);
+	xmlhttp_error($message);
 }
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
@@ -644,7 +646,7 @@ else if($mybb->input['action'] == "edit_post")
 		header("Content-type: application/json; charset={$charset}");
 
 		$editedmsg_response = null;
-		if($editedmsg)
+		if(!empty($editedmsg))
 		{
 			$editedmsg_response = str_replace(array("\r", "\n"), "", $editedmsg);
 		}
@@ -989,7 +991,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	$plugins->run_hooks("xmlhttp_username_availability");
 
-	if(!empty($user['uid']))
+	if($user)
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
 		echo json_encode($lang->username_taken);
@@ -1067,7 +1069,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 
 		$plugins->run_hooks("xmlhttp_get_buddyselect_end");
 
-		echo \MyBB\template('xmlhttp/buddyselect.twig', [
+		echo \MyBB\View\template('xmlhttp/buddyselect.twig', [
 			'buddies' => $buddies
 		]);
 	}
@@ -1106,7 +1108,7 @@ else if($mybb->input['action'] == 'get_referrals')
 
 	// Send our headers and output.
 	header("Content-type: text/plain; charset={$charset}");
-	echo \MyBB\template('referrals/referrals_popup.twig', [
+	echo \MyBB\View\template('referrals/referrals_popup.twig', [
 		'referral_count' => $referral_count,
 		'referrals' => $referrals,
 	]);

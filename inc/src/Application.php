@@ -150,6 +150,8 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
         $this->registerDeferredProvider(Hashing\ServiceProvider::class);
 
         $this->registerDeferredProvider(Plugins\ServiceProvider::class);
+
+        $this->registerDeferredProvider(View\ServiceProvider::class);
     }
 
     /**
@@ -549,6 +551,16 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
+     * Determine if the application is running with debug mode enabled.
+     *
+     * @return bool
+     */
+    public function hasDebugModeEnabled()
+    {
+        return false;
+    }
+
+    /**
      * Get an instance of the maintenance mode manager implementation.
      *
      * @return \Illuminate\Contracts\Foundation\MaintenanceMode
@@ -749,6 +761,28 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
 	{
         return '';
 	}
+
+    /**
+     * Get the path to the language files.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    public function langPath($path = '')
+    {
+        return '';
+    }
+
+    /**
+     * Get the path to the public directory.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    public function publicPath($path = '')
+    {
+        return '';
+    }
 
     /**
      * Get the path to the resources directory.

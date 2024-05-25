@@ -1,0 +1,245 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyBB\Cargo\Decorator;
+
+use BadMethodCallException;
+use Illuminate\Support\Arr;
+use MyBB\Cargo\EntityInterface;
+use MyBB\Cargo\FileRepositoryInterface;
+use MyBB\Cargo\Repository;
+use MyBB\Cargo\RepositoryInterface;
+use MyBB\Utilities\Hydrable\Hydrable;
+
+abstract class HierarchicalRepository extends RepositoryDecorator implements RepositoryInterface
+{
+    protected const NON_INHERITABLE_PROPERTIES = [
+        Repository::ANCESTOR_DECLARATIONS_KEY,
+    ];
+
+    public Hydrable $resolvedProperties;
+    public Hydrable $resolvedRepositories;
+
+    public function __construct()
+    {
+        $this->resolvedProperties = new Hydrable([
+            Repository::SCOPE_SHARED => [],
+            Repository::SCOPE_ENTITY => [],
+        ]);
+        $this->resolvedRepositories = new Hydrable([]);
+    }
+
+    public function getSharedProperties(): array
+    {
+        return $this->resolvedProperties->getNested([
+            Repository::SCOPE_SHARED,
+        ]);
+    }
+
+    public function getSharedProperty(string $key): mixed
+    {
+        return $this->resolvedProperties->getNested([
+            Repository::SCOPE_SHARED,
+            $key,
+        ]);
+    }
+
+    public function setSharedProperty(string $key, mixed $value): void
+    {
+        $this->getDecorated()->setSharedProperty($key, $value);
+
+        $this->resolvedProperties->build();
+    }
+
+    public function getEntityProperties(?string $key = null): array
+    {
+        if ($key === null) {
+            return $this->resolvedProperties->getNested([
+                Repository::SCOPE_ENTITY,
+            ]);
+        } else {
+            return $this->resolvedProperties->getNested([
+                Repository::SCOPE_ENTITY,
+                $key,
+            ]) ?? [];
+        }
+    }
+
+    public function setEntityProperties(string $key, array $data): void
+    {
+        $this->getDecorated()->setEntityProperties($key, $data);
+
+        $this->resolvedProperties->build();
+    }
+
+    public function getAll(...$args): array
+    {
+        if (!($this->getDecorated() instanceof FileRepositoryInterface)) {
+            throw new BadMethodCallException('`' . __FUNCTION__ . '()` can only be used on decorated Repositories implementing `' . FileRepositoryInterface::class . '`');
+        }
+
+        $results = [];
+        $disinherited = [];
+
+        foreach ($this->getAncestors() as $repository) {
+            $entities = $repository->getAll(...$args);
+
+            foreach ($entities as $key => $entity) {
+                if (!in_array($key, $disinherited)) {
+                    $results[$key] ??= $this->get($key); // use own decorated method
+                }
+            }
+
+            $disinherited = array_merge(
+                $disinherited,
+                $repository->getEntitiesDeclaredDisinherited(),
+            );
+        }
+
+        return $results;
+    }
+
+    public function getResolved(string $key): ?EntityInterface
+    {
+        return $this->getResolvedRepository($key)?->get($key);
+    }
+
+    /**
+     * Returns the entity's effective Repository using cache.
+     */
+    public function getResolvedRepository(string $key): ?RepositoryInterface
+    {
+        $repository = $this->resolvedRepositories->getNested([
+            $key,
+        ]);
+
+        if ($repository !== null) {
+            return $repository;
+        }
+
+        return $this->resolveRepository($key);
+    }
+
+    /**
+     * Returns the entity's effective Repository, and caches the result.
+     */
+    public function resolveRepository(string $key): ?RepositoryInterface
+    {
+        $repository = $this->queryRepository($key);
+
+        if ($repository !== null) {
+            $this->resolvedRepositories->setNested([
+                $key,
+            ], $repository);
+        }
+
+        return $repository;
+    }
+
+    /**
+     * Returns the entity's effective Repository.
+     */
+    public function queryRepository(string $key): ?RepositoryInterface
+    {
+        return $this->getOwnRepository()->has($key)
+            ? $this->getOwnRepository()
+            : $this->getClosestEntityAncestorRepository($key)
+        ;
+    }
+
+    public function getClosestEntityAncestorRepository(string $key): ?RepositoryInterface
+    {
+        return $this->getEntityAncestorRepositories($key)?->current();
+    }
+
+    /**
+     * @return iterable<RepositoryInterface>
+     */
+    public function getEntityAncestorRepositories(string $key): iterable
+    {
+        foreach ($this->getAncestors() as $repository) {
+            if (
+                $repository !== $this->getOwnRepository() &&
+                $repository->has($key)
+            ) {
+                yield $repository;
+            } elseif (
+                !$repository->entityDeclaredInherited($key)
+            ) {
+                break;
+            }
+        }
+    }
+
+    protected function buildResolvedProperties(&$stamp = []): array
+    {
+        $results = [
+            Repository::SCOPE_SHARED => [],
+            Repository::SCOPE_ENTITY => [],
+        ];
+
+        $disinherited = [];
+
+        foreach ($this->getAncestors() as $repository) {
+            $results[Repository::SCOPE_SHARED] = $this->getMergedProperties(
+                $repository->getSharedProperties(),
+                $results[Repository::SCOPE_SHARED],
+            );
+
+            foreach ($repository->getEntityProperties() as $identifier => $entityProperties) {
+                if (!in_array($identifier, $disinherited)) {
+                    $results[Repository::SCOPE_ENTITY][$identifier] = $this->getMergedProperties(
+                        $entityProperties,
+                        $results[Repository::SCOPE_SHARED][$identifier] ?? [],
+                    );
+
+                    if (!$repository->entityDeclaredInherited($identifier)) {
+                        $disinherited[] = $identifier;
+                    }
+                }
+            }
+
+            $stamp[$repository->getHierarchicalIdentifier()] = $repository->getStamp();
+
+            if (!$repository->declaredInherited()) {
+                break;
+            }
+        }
+
+        return $results;
+    }
+
+    protected function buildResolvedRepositories(&$stamp = []): array
+    {
+        $results = [];
+
+        foreach ($this->getAll() as $key => $entity) {
+            $repository = $this->queryRepository($key);
+
+            $results[$key] = $repository;
+
+            $stamp[$repository->getHierarchicalIdentifier()] = $repository->getStamp();
+        }
+
+        return $results;
+    }
+
+    protected function getMergedProperties(array $old, array $new): array
+    {
+        return $this->getDecorated()::getMergedProperties([
+            Arr::except(
+                $new,
+                self::NON_INHERITABLE_PROPERTIES,
+            ),
+            $old,
+        ]);
+    }
+
+    /**
+     * @return static[]
+     */
+    abstract protected function getAncestors(): array;
+
+    abstract protected function getOwnRepository(): RepositoryInterface;
+}

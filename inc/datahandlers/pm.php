@@ -129,6 +129,16 @@ class PMDataHandler extends DataHandler
 			return true;
 		}
 
+		if($pm['fromid'] <= 0)
+		{
+			$pm['sender'] = array(
+				"uid" => 0,
+				"username" => ''
+			);
+
+			return true;
+		}
+
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
 
@@ -284,12 +294,15 @@ class PMDataHandler extends DataHandler
 			return false;
 		}
 
-		$sender_permissions = user_permissions($pm['fromid']);
-
-		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+		if($pm['fromid'] > 0)
 		{
-			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
+			$sender_permissions = user_permissions($pm['fromid']);
+
+			// Are we trying to send this message to more users than the permissions allow?
+			if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+			{
+				$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
+			}
 		}
 
 		// Now we're done with that we loop through each recipient
@@ -302,7 +315,7 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if($this->admin_override != true && $sender_permissions['canoverridepm'] != 1)
+			if($this->admin_override != true && empty($sender_permissions['canoverridepm']))
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
@@ -324,7 +337,7 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && empty($sender_permissions['cancp']) && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
@@ -404,7 +417,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] > 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -583,7 +596,7 @@ class PMDataHandler extends DataHandler
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
-		if(!empty($draftcheck['pmid']))
+		if($draftcheck)
 		{
 			if($draftcheck['deletetime'])
 			{

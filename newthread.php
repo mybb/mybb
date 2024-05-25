@@ -30,10 +30,10 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$newthread['isdraft'] = true;
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline, pid', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
-	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
+	if(!$thread || !$post || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
 	{
 		error($lang->invalidthread);
 	}
@@ -107,13 +107,13 @@ if($forum['allowpicons'] != 0)
 // If we have a currently logged in user then fetch the change user box.
 if($mybb->user['uid'] != 0)
 {
-	$loginbox = \MyBB\template('misc/changeuserbox.twig');
+	$loginbox = \MyBB\View\template('misc/changeuserbox.twig');
 }
 
 // Otherwise we have a guest, determine the "username" and get the login box.
 else
 {
-	$loginbox = \MyBB\template('misc/loginbox.twig');
+	$loginbox = \MyBB\View\template('misc/loginbox.twig');
 }
 
 // If we're not performing a new thread insert and not editing a draft then we're posting a new thread.
@@ -171,7 +171,7 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				'showmodapproval' => false,
 				'showinsert' => ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 			];
-			$ret['template'] = \MyBB\template('misc/attachments_attachment.twig', [
+			$ret['template'] = \MyBB\View\template('misc/attachments_attachment.twig', [
 				'attachment' => $attachment,
 			]);
 
@@ -692,6 +692,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$posticons = get_post_icons();
 		}
 
+		$newthread['numpolloptions'] = 2;
+
 		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$newthread['subscriptionmethod'][$subscription_method] = true;
 	}
@@ -1062,7 +1064,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		if(!$parser)
+		if(empty($parser))
 		{
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new postParser;
@@ -1108,7 +1110,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
-	$post_javascript = \MyBB\template('misc/post_javascript.twig', [
+	$post_javascript = \MyBB\View\template('misc/post_javascript.twig', [
 		'php_max_upload_size' => $php_max_upload_size,
 		'php_max_file_uploads' => $php_max_file_uploads,
 	]);
@@ -1138,7 +1140,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$newthread['emptyiconcheck'] = true;
 	}
 
-	output_page(\MyBB\template('newthread/newthread.twig', [
+	output_page(\MyBB\View\template('newthread/newthread.twig', [
 		'newthread' => $newthread,
 		'thread_errors' => $thread_errors,
 		'loginbox' => $loginbox,

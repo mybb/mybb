@@ -19,6 +19,8 @@ $shutdown_queries = $shutdown_functions = array();
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
 
+$stopwatch->start('core.global');
+
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
 
@@ -250,7 +252,7 @@ if($loadstyle != "def='1'")
 	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
 	$theme = $db->fetch_array($query);
 
-	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
 	{
 		if($load_from_user == 1)
 		{
@@ -296,7 +298,7 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
 	$theme = $db->fetch_array($query);
 }
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
+$theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
@@ -464,6 +466,23 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
+// TODO determine package name from DB/cache; `core.default` already registered by default
+$packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
+
+\MyBB\app()->instance(
+	\MyBB\Extensions\Theme::class,
+	\MyBB\Extensions\Theme::get($packageName),
+);
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {
@@ -499,7 +518,10 @@ $plugins->run_hooks('global_intermediate');
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
 	$headerMessages[] = [
-		'message' => $lang->bbclosed_warning
+		'message' => $lang->sprintf(
+			$lang->bbclosed_warning,
+			'index.php?boardclosed_preview=1',
+		)
 	];
 }
 
@@ -680,7 +702,7 @@ if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_mo
 			}
 
 			$headerMessage[] = [
-				'message' => \MyBB\template('misc/modqueue_link.twig', [
+				'message' => \MyBB\View\template('misc/modqueue_link.twig', [
 					'modqueue_type' => $modqueue_type,
 					'modqueue_message' => $modqueue_message,
 				]),
@@ -849,7 +871,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 
 $jsTemplates = array();
 foreach (array('modal', 'modal_button') as $template) {
-	$jsTemplates[$template] = \MyBB\template("modals/{$template}.twig");
+	$jsTemplates[$template] = \MyBB\View\template("modals/{$template}.twig");
 	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
 }
 
@@ -900,7 +922,7 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
 	$timezone = (float)$mybb->user['timezone'] + $mybb->user['dst'];
-	$mybb->settings['dst_detection'] = \MyBB\template('messages/dst_detection.twig', [
+	$mybb->settings['dst_detection'] = \MyBB\View\template('messages/dst_detection.twig', [
 		'timezone' => $timezone
 	]);
 }
@@ -919,6 +941,7 @@ if(is_banned_ip($session->ipaddress, true))
 	error($lang->error_banned);
 }
 
+// Board Closed
 $closed_bypass = array(
 	'member.php' => array(
 		'login',
@@ -929,32 +952,59 @@ $closed_bypass = array(
 	'contact.php',
 );
 
-// If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
 if(
-	$mybb->settings['boardclosed'] == 1 &&
-	$mybb->usergroup['canviewboardclosed'] != 1 &&
-	!in_array($current_page, $closed_bypass) &&
-	!(
-		isset($closed_bypass[$current_page]) &&
-		in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+	(
+		($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1) ||
+		($mybb->get_input('boardclosed_preview') == '1' && $mybb->usergroup['cancp'] == 1)
+	) &&
+	(
+		!in_array($current_page, $closed_bypass) &&
+		(
+			!is_array($closed_bypass[$current_page]) ||
+			!in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+		)
 	)
 )
 {
+	$lang->load('global');
+
 	// Show error
-	if(!$mybb->settings['boardclosed_reason'])
-	{
-		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
-	}
-
-	$lang->error_boardclosed .= \MyBB\template('messages/boardclosed_reason.twig');
-
-	if(!$mybb->get_input('modal'))
-	{
-		error($lang->error_boardclosed);
+	if($mybb->settings['boardclosed_title']) {
+		$title = $mybb->settings['boardclosed_title'];
 	}
 	else
 	{
-		echo(\MyBB\template('modals/boardclosed.twig'));
+		$title = $lang->boardclosed;
+	}
+
+	if($mybb->settings['boardclosed_reason']) {
+		$message = $mybb->settings['boardclosed_reason'];
+	}
+	else
+	{
+		$message = $lang->boardclosed_reason;
+	}
+
+	http_response_code(503);
+
+	if(!$mybb->get_input('modal'))
+	{
+		require_once MYBB_ROOT.'inc/src/Maintenance/functions_http.php';
+
+		output_page(
+			\MyBB\Maintenance\template('maintenance/closed.twig', [
+				'page_title' => $title,
+				'title' => $title,
+				'message' => $message,
+			])
+		);
+	}
+	else
+	{
+		echo(\MyBB\View\template('modals/boardclosed.twig', [
+			'title' => $title,
+			'message' => $message,
+		]));
 	}
 	exit;
 }
@@ -1015,7 +1065,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 
-	if(!empty($referrer) && $referrer['uid'])
+	if($referrer)
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
 	}
@@ -1056,7 +1106,7 @@ if($mybb->usergroup['canview'] != 1)
 		}
 		else
 		{
-			echo(\MyBB\template('modals/no_permission.twig'));
+			echo(\MyBB\View\template('modals/no_permission.twig'));
 			exit;
 		}
 	}
@@ -1098,4 +1148,4 @@ if ($colcookie) {
 // Run hooks for end of global.php
 $plugins->run_hooks('global_end');
 
-$globaltime = $maintimer->getTime();
+$stopwatch->stop('core.global');

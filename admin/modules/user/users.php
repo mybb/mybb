@@ -219,7 +219,7 @@ if($mybb->input['action'] == "activate_user")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'] || $user['usergroup'] != 5)
+	if(!$user || $user['usergroup'] != 5)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -443,7 +443,7 @@ if($mybb->input['action'] == "edit")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -637,7 +637,7 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			// Are we setting a new avatar from a URL?
-			else if($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
+			else if(!empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				if(!$mybb->settings['allowremoteavatars'])
 				{
@@ -962,7 +962,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1832"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1832"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1837"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1832"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -1576,7 +1576,10 @@ EOF;
 
 	if($errors)
 	{
-		$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
+		if(isset($mybb->input['avatar_url']))
+		{
+			$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
+		}
 	}
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -1791,7 +1794,7 @@ if($mybb->input['action'] == "delete")
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if(!$user)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -1865,7 +1868,7 @@ if($mybb->input['action'] == "referrers")
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 	$admin_view = $db->fetch_array($query);
 
-	if($mybb->input['type'])
+	if(!empty($mybb->input['type']))
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
@@ -3055,7 +3058,7 @@ if($mybb->input['action'] == "inline_edit")
 			$page->output_footer();
 			break;
 		case 'multiusergroup':
-			if($mybb->input['processed'] == 1)
+			if($mybb->get_input('processed', \MyBB::INPUT_INT) === 1)
 			{
 				// Determine additional usergroups
 				if(is_array($mybb->input['additionalgroups']))
@@ -3155,12 +3158,12 @@ if($mybb->input['action'] == "inline_edit")
 				$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 			}
 
-			if(!is_array($mybb->input['additionalgroups']))
+			if(!$mybb->get_input('additionalgroups', \MyBB::INPUT_ARRAY))
 			{
-				$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
+				$mybb->input['additionalgroups'] = explode(',', $mybb->get_input('additionalgroups'));
 			}
 
-			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
 			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 
@@ -3936,7 +3939,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1821"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1838"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />

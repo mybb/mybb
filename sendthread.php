@@ -53,7 +53,7 @@ $forum = get_forum($thread['fid']);
 $forumpermissions = forum_permissions($forum['fid']);
 
 // Invalid forum?
-if(!$forum['fid'] || $forum['type'] != "f")
+if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
@@ -272,7 +272,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("sendthread_end");
 
-	output_page(\MyBB\template('sendthread/sendthread.twig', [
+	output_page(\MyBB\View\template('sendthread/sendthread.twig', [
 		'thread' => $thread,
 		'captcha' => $captcha,
 		'errors' => $errors,

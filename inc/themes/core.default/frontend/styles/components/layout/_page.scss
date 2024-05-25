@@ -1,0 +1,125 @@
+html, button, input, select, textarea {
+    color: $font-color;
+    word-wrap: break-word;
+}
+
+::selection {
+    color: $invert-font-color;
+    background: $secondary-color;
+    text-shadow: none;
+}
+
+body {
+    margin: 0;
+    font: 16px/26px $font-stack;
+    background: $background-default;
+}
+
+input, select, textarea, button {
+    font: 16px $font-stack;
+}
+
+a:link,
+a:visited {
+    color: $link-default;
+    text-decoration: none;
+}
+
+a:hover,
+a:active {
+    color: $link-hover;
+    text-decoration: underline;
+}
+
+a:focus,
+button:focus {
+    outline: 0;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    padding: 0;
+    margin: 1em 0;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+img {
+    vertical-align: middle;
+}
+
+fieldset {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.wrapper {
+    @include clearfix();
+    width: 90%;
+    margin: 0 5%;
+
+    @include bp-large {
+        max-width: 1250px;
+        margin: 0 auto;
+    }
+}
+
+.main {
+    padding: side-values(20px 0 10px 0);
+
+    @include bp-medium {
+
+        .page-content {
+
+            &--sidebar {
+                float: $left;
+                width: 62%;
+            }
+
+            &--centered {
+                float: none;
+                width: 60%;
+                margin: auto auto;
+            }
+
+            &--menu {
+                float: $left;
+                width: 75%;
+            }
+        }
+
+        .page-sidebar {
+            float: $right;
+            width: 35%;
+            margin-top: 0;
+        }
+    }
+
+    .page-header {
+        padding-bottom: 0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid $border-3;
+
+        .page-description {
+            margin: side-values(0 0 10px 0);
+            font-size: 0.9em;
+            color: $alt-font-color-1;
+        }
+    }
+
+    .page-footer {
+        clear: both;
+        border-top: 2px solid $border-3;
+    }
+
+    .page-sidebar {
+        padding-bottom: 10px;
+        font-size: 0.9em;
+    }
+}

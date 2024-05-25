@@ -182,7 +182,7 @@ while($user = $db->fetch_array($query))
 		$group = $user['usergroup'];
 	}
 
-	if($usergroups[$group] && $group != 6)
+	if(isset($usergroups[$group]) && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
 	}
@@ -267,6 +267,6 @@ if(empty($usergrouplist))
 
 $plugins->run_hooks("showteam_end");
 
-output_page(\MyBB\template('showteam/showteam.twig', [
+output_page(\MyBB\View\template('showteam/showteam.twig', [
 	'usergrouplist' => $usergrouplist,
 ]));

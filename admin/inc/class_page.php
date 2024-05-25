@@ -1,4 +1,7 @@
 <?php
+
+use MyBB\Stopwatch\Stopwatch;
+
 /**
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
@@ -77,6 +80,11 @@ class DefaultPage
 	function output_header($title="")
 	{
 		global $mybb, $admin_session, $lang, $plugins;
+
+		if($mybb->debug_mode)
+		{
+			debug_page();
+		}
 
 		$args = array(
 			'this' => &$this,
@@ -203,7 +211,9 @@ lang.saved = \"{$lang->saved}\";
 	 */
 	function output_footer($quit=true)
 	{
-		global $mybb, $maintimer, $db, $lang, $plugins;
+		global $mybb, $db, $lang, $plugins;
+
+		$stopwatch = \MyBB\app(Stopwatch::class);
 
 		$args = array(
 			'this' => &$this,
@@ -214,7 +224,7 @@ lang.saved = \"{$lang->saved}\";
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
-		$totaltime = format_time_duration($maintimer->stop());
+		$totaltime = format_time_duration($stopwatch->stop('main'));
 		$querycount = $db->query_count;
 
 		if(my_strpos(getenv("REQUEST_URI"), "?"))
@@ -232,10 +242,6 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
 		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
-		if($mybb->debug_mode)
-		{
-			echo $db->explain;
-		}
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";

@@ -26,15 +26,16 @@
         {% endif %}
     {% endset %}
     {% if standardTools|trim or customTools %}
-        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
-        <form action="moderation.php" method="post">
+        {{ asset('jscripts/inline_moderation.js', static=true) }}
+        <form id="inlinemoderation_options" action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
             <input type="hidden" name="modtype" value="inlinethread" />
             <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                <select name="action">
+                <select name="action" id="inlinemoderation_options_selector">
+                    <option value="" style="display: none;" selected="selected">{{ lang.select_a_tool }}</option>
                     <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
                     {% if modpermissions.canusecustomtools and hasModTools and customTools %}
                         <optgroup label="{{ lang.custom_mod_tools }}">
@@ -65,6 +66,8 @@
             var all_text = "{{ threadcount }}";
             var inlineType = "forum";
             var inlineId = {{ foruminfo.fid }};
+            lang.select_tool = "{{ lang.inline_no_tool_selected }}";
+            lang.selected_nil = "{{ lang.inline_no_post_selected }}";
         // -->
         </script>
     {% endif %}

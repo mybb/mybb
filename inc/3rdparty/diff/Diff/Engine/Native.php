@@ -33,6 +33,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+#[AllowDynamicProperties]
 class Horde_Text_Diff_Engine_Native
 {
     public function diff($from_lines, $to_lines)

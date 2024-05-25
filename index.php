@@ -102,7 +102,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 				++$membercount;
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
+				if($user['invisible'] == 1)
 				{
 					++$anoncount;
 				}
@@ -393,7 +393,7 @@ $forums = $forum_list['forum_list'];
 
 $plugins->run_hooks('index_end');
 
-output_page(\MyBB\template('index/index.twig', [
+output_page(\MyBB\View\template('index/index.twig', [
 	'forums' => $forums,
 	'users' => $doneusers,
 	'bots' => $donebots,

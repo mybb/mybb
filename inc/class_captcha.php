@@ -177,7 +177,7 @@ class captcha
 		);
 
 		$db->insert_query("captcha", $insert_array);
-		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [
+		$this->html = \MyBB\View\template('misc/captcha/'.$this->captcha_template.'.twig', [
 			'randomstr' => $randomstr,
 			'imagehash' => $imagehash
 		]);
@@ -187,7 +187,7 @@ class captcha
 	{
 		global $mybb;
 
-		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [
+		$this->html = \MyBB\View\template('misc/captcha/'.$this->captcha_template.'.twig', [
 			'server' => $this->server,
 			'type' => $this->type
 		]);
@@ -198,7 +198,7 @@ class captcha
 		global $lang, $mybb, $templates, $theme;
 
 		// This will build a hCaptcha
-		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [
+		$this->html = \MyBB\View\template('misc/captcha/'.$this->captcha_template.'.twig', [
 			'server' => $this->server,
 			'type' => $this->type
 		]);
@@ -229,7 +229,7 @@ class captcha
 			return '';
 		}
 
-		$this->html = \MyBB\template('misc/captcha/hidden.twig', [
+		$this->html = \MyBB\View\template('misc/captcha/hidden.twig', [
 			'fields' => $fields
 		]);
 	}

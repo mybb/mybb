@@ -211,6 +211,7 @@ if(!$mybb->get_input('action'))
 if($mybb->input['action'] == "newpost")
 {
 	// First, figure out what time the thread or forum were last read
+	$lastread = $cutoff = 0;
 	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 
@@ -276,7 +277,7 @@ if($mybb->input['action'] == "newpost")
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}' {$visibleonly}", $options);
 	$newpost = $db->fetch_array($query);
 
-	if($newpost['pid'] && $lastread)
+	if($newpost && $lastread)
 	{
 		$highlight = '';
 		if($mybb->get_input('highlight'))
@@ -340,7 +341,7 @@ if($mybb->input['action'] == "nextnewest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
-	if(!$nextthread['tid'])
+	if(!$nextthread)
 	{
 		error($lang->error_nonextnewest);
 	}
@@ -370,7 +371,7 @@ if($mybb->input['action'] == "nextoldest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
-	if(!$nextthread['tid'])
+	if(!$nextthread)
 	{
 		error($lang->error_nonextoldest);
 	}
@@ -623,6 +624,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
+	$forumjump = '';
 	if($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
@@ -775,16 +777,16 @@ if($mybb->input['action'] == "thread")
 		");
 		$showpost = $db->fetch_array($query);
 
+		// Is there actually a pid to display?
+		if(!$showpost)
+		{
+			error($lang->error_invalidpost);
+		}
+
 		// Choose what pid to display.
 		if(!$mybb->input['pid'])
 		{
 			$mybb->input['pid'] = $showpost['pid'];
-		}
-
-		// Is there actually a pid to display?
-		if(!$showpost['pid'])
-		{
-			error($lang->error_invalidpost);
 		}
 
 		$attachcache = array();
@@ -1291,6 +1293,30 @@ if($mybb->input['action'] == "thread")
 			$thread['showstandardtools'] = true;
 		}
 
+		if($modpermissions['canopenclosethreads'])
+		{
+			if($thread['closed'])
+			{
+				$lang->open_close_thread = $lang->open_thread;
+			}
+			else
+			{
+				$lang->open_close_thread = $lang->close_thread;
+			}
+		}
+
+		if($modpermissions['canstickunstickthreads'])
+		{
+			if($thread['sticky'])
+			{
+				$lang->stick_unstick_thread = $lang->unstick_thread;
+			}
+			else
+			{
+				$lang->stick_unstick_thread = $lang->stick_thread;
+			}
+		}
+
 		// Only show mod menu if there's any options to show
 		if($thread['showstandardtools'] || $thread['showcustomthreadtools'])
 		{
@@ -1321,6 +1347,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Get users viewing this thread
+	$usersbrowsing='';
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -1357,7 +1384,7 @@ if($mybb->input['action'] == "thread")
 				$doneusers[$user['uid']] = $user['time'];
 
 				$user['invisiblemark'] = '';
-				if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
+				if($user['invisible'] == 1)
 				{
 					$user['invisiblemark'] = "*";
 					++$thread['inviscount'];
@@ -1392,7 +1419,7 @@ if($mybb->input['action'] == "thread")
 
 	$thread['pid'] = $pid;
 
-	output_page(\MyBB\template('showthread/showthread.twig', [
+	output_page(\MyBB\View\template('showthread/showthread.twig', [
 		'thread' => $thread,
 		'forum' => $forum,
 		'poll' => $poll,

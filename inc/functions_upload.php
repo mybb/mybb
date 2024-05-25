@@ -283,7 +283,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$thumbnail = generate_thumbnail($avatarpath."/".$filename, $avatarpath, $filename, $maxheight, $maxwidth);
-				if(!$thumbnail['filename'])
+				if(empty($thumbnail['filename']))
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
@@ -467,7 +467,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND ".$uploaded_query);
 	$prevattach = $db->fetch_array($query);
-	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == false)
+	if($prevattach && $update_attachment == false)
 	{
 		if(!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
 		{
@@ -644,7 +644,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 	$attacharray = $plugins->run_hooks("upload_attachment_do_insert", $attacharray);
 
-	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == true)
+	if($prevattach && $update_attachment == true)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");

@@ -69,6 +69,12 @@ $pid = $attachment['pid'];
 if($pid || $attachment['uid'] != $mybb->user['uid'])
 {
 	$post = get_post($pid);
+
+	if(!$post)
+	{
+		error($lang->error_invalidthread);
+	}
+
 	// Check permissions if the post is not a draft
 	if($post['visible'] != -2)
 	{
@@ -86,7 +92,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 		// Permissions
 		$forumpermissions = forum_permissions($fid);
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && empty($mybb->input['thumbnail'])))
 		{
 			error_no_permission();
 		}

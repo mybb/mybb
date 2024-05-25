@@ -21,7 +21,7 @@ Visit the [MyBB Community Forums](https://community.mybb.com) and join the [MyBB
 View [SECURITY.md](https://github.com/mybb/mybb/blob/feature/.github/SECURITY.md) for information on secure usage, incident recovery, and vulnerability reporting. To learn more about security research at MyBB, go to [**mybb.com/security**](https://mybb.com/get-involved/security/).
 
 ## Get Involved
-View [CONTRIBUTING.md](https://github.com/mybb/mybb/blob/feature/.github/CONTRIBUTING.md) for information on submitting changes, workflow, and best practices for working with the code repository. To learn more about contributing to the MyBB Project, go to [**mybb.com/get-involved**](https://mybb.com/get-involved/).
+View [CONTRIBUTING.md](https://github.com/mybb/mybb/blob/feature/.github/CONTRIBUTING.md) for information on running MyBB locally, submitting changes, workflow, and best practices for working with the code repository. To learn more about contributing to the MyBB Project, go to [**mybb.com/get-involved**](https://mybb.com/get-involved/).
 
 ## Credits
 ### [Contributors](https://github.com/mybb/mybb/graphs/contributors)

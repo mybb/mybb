@@ -1,0 +1,45 @@
+.profile {
+
+    &__header {
+        @include clearfix();
+        position: relative;
+        margin-bottom: 20px;
+
+        .avatar {
+            float: $left;
+            width: 100px;
+            height: 100px;
+            margin-#{$right}: 16px;
+            margin-bottom: 16px;
+        }
+    }
+
+    .page-controls {
+        margin-top: -10px;
+
+        @include bp-medium-max {
+            margin-#{$left}: -5px;
+            margin-#{$right}: -5px;
+        }
+    }
+
+    &__username,
+    &__usertitle {
+        margin: 5px 0;
+    }
+}
+
+.profile-field {
+    font-size: 0.9em;
+
+    &__name {
+        padding: 0;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    &__value {
+        padding: 0;
+        margin: 0;
+    }
+}

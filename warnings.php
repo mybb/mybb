@@ -48,7 +48,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 
-	if(!$user['uid'])
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}
@@ -112,6 +112,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
 			{
 				$sender_uid = -1;
+				// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+				$pm['sender']['uid'] = -1;
 			}
 
 			// Some kind of friendly error notification
@@ -226,10 +228,11 @@ if($mybb->input['action'] == "warn")
             WHERE w.pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'
             ORDER BY w.expired ASC, w.dateline DESC
         ");
-		$first = true;
+		$last_expired = -1;
+
 		while($warning = $db->fetch_array($query))
 		{
-			if($warning['expired'] != $last_expired || $first)
+			if($warning['expired'] != $last_expired)
 			{
 				if($warning['expired'] == 0)
 				{
@@ -241,7 +244,6 @@ if($mybb->input['action'] == "warn")
 				}
 			}
 			$last_expired = $warning['expired'];
-			$first = false;
 
 			$warning['username'] = htmlspecialchars_uni($warning['username']);
 			$warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
@@ -470,7 +472,7 @@ if($mybb->input['action'] == "warn")
 
 	$plugins->run_hooks("warnings_warn_end");
 
-	output_page(\MyBB\template('warnings/warn.twig', [
+	output_page(\MyBB\View\template('warnings/warn.twig', [
 		'warnings' => $warnings,
 		'post' => $post,
 		'warn_errors' => $warn_errors,
@@ -561,9 +563,9 @@ if($mybb->input['action'] == "view")
 	}
 
 	$user = get_user((int)$warning['uid']);
-	if(!$user)
+	if(empty($user))
 	{
-		$user['username'] = $lang->guest;
+		$user = array('uid' => 0, 'username' => $lang->guest);
 	}
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
@@ -576,7 +578,7 @@ if($mybb->input['action'] == "view")
 	$plugins->run_hooks("warnings_view_start");
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	if($user['uid'])
+	if(!empty($user['uid']))
 	{
 		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
@@ -660,7 +662,7 @@ if($mybb->input['action'] == "view")
 
 	$plugins->run_hooks("warnings_view_end");
 
-	output_page(\MyBB\template('warnings/view.twig', [
+	output_page(\MyBB\View\template('warnings/view.twig', [
 		'user' => $user,
 		'revoked_user' => $revoked_user,
 		'warning' => $warning,
@@ -677,7 +679,7 @@ if(!$mybb->input['action'])
 	}
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
-	if(!$user['uid'])
+	if(!$user)
 	{
 		error($lang->error_invalid_user);
 	}
@@ -824,7 +826,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("warnings_end");
 
-	output_page(\MyBB\template('warnings/warnings.twig', [
+	output_page(\MyBB\View\template('warnings/warnings.twig', [
 		'user' => $user,
 		'warning_level' => $warning_level,
 		'warnings' => $warnings

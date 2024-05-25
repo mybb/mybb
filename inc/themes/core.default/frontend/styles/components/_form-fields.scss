@@ -1,0 +1,467 @@
+.field {
+
+    &__name {
+        padding: 0;
+        margin: side-values(0 0 5px 0);
+        font-size: 1em;
+    }
+
+    &__description {
+        margin: side-values(-4px 0 4px 0);
+        font-size: 0.8em;
+        line-height: 1.4;
+        color: $alt-font-color-1;
+
+        &--below {
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+    }
+
+    &__value {
+        margin: 0;
+        font-size: 0.9em;
+    }
+
+    &__block {
+        margin-top: 5px;
+    }
+
+    label {
+        cursor: pointer;
+    }
+}
+
+.option-field {
+    padding: side-values(0 0 0 30px);
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    &:last-child,
+    &--single {
+        margin-bottom: 0;
+    }
+
+    &__input,
+    input[type="radio"],
+    input[type="checkbox"] {
+        float: $left;
+        margin: side-values(4px 0 0 -26px);
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 1em;
+
+        &--inline {
+            display: inline-block;
+        }
+
+        &--light {
+            font-weight: normal;
+        }
+    }
+
+    &__description {
+        @extend .field__description;
+        margin-top: 1px;
+
+        &--inline {
+            display: inline-block;
+            margin-#{$left}: 3px;
+        }
+    }
+
+    &__field {
+        margin-top: 5px;
+    }
+
+    label {
+        cursor: pointer;
+    }
+
+    &--compact {
+        padding: side-values(0 0 0 30px);
+        margin: 8px 0;
+        font-size: 0.9em;
+
+        .option-field__input,
+        input[type="checkbox"],
+        input[type="radio"] {
+            float: $left;
+            margin: side-values(4px 0 0 -26px);
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.textbox {
+    box-sizing: border-box;
+    padding: 5px 6px;
+    width: 100%;
+    font-size: 16px;
+    background-color: $background-default;
+    border: 1px solid $border-2;
+    border-radius: 4px;
+    outline: 0;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+
+    &--short {
+        width: 60px;
+        font: 12px $font-stack;
+    }
+
+    &--small {
+        width: 60px;
+        margin-#{$right}: 6px;
+    }
+
+    &--medium {
+        width: 100px;
+        margin-#{$right}: 6px;
+    }
+
+    &--large {
+        width: 250px;
+        margin-#{$right}: 6px;
+    }
+
+    &--subject {
+        font-size: 1.4em;
+    }
+
+    &--inline {
+        margin-#{$left}: 6px;
+        margin-#{$right}: 6px;
+    }
+
+    &--no-margin {
+        margin: 0;
+    }
+}
+
+select {
+
+    &[multiple="multiple"] {
+        width: 100%;
+        height: 200px;
+        border: 1px solid $border-2;
+        border-radius: $radius;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.select-field {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    margin: side-value(0 6px 0 0);
+    overflow: hidden;
+    background-color: $background-default;
+    border: 1px solid $border-2;
+    border-radius: $radius;
+
+    select {
+        position: relative;
+        z-index: 100;
+        max-width: 100%;
+        padding: side-values(5px 30px 5px 8px);
+        background-color: transparent;
+        background-image: none;
+        border: none;
+        box-shadow: none;
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__icon {
+        position: absolute;
+        top: 9px;
+        #{$right}: 8px;
+        z-index: 1;
+        color: $alt-font-color-2;
+        font-size: 14px;
+    }
+
+    &--subject {
+        padding: 4px 0;
+        margin-bottom: 10px;
+
+        .select-field__icon {
+            top: 13px;
+        }
+
+        @include bp-small {
+            margin-bottom: 0;
+        }
+    }
+
+    &--short {
+        padding: 0;
+
+        .select-field__icon {
+            top: 6px;
+        }
+
+        select {
+            font-size: 12px;
+        }
+    }
+
+    &--inline {
+        margin-#{$left}: 6px;
+    }
+}
+
+// registration error/success colors
+input {
+
+    &.error {
+        border-color: $danger-color;
+    }
+
+    &.valid {
+        border-color: $success-color;
+    }
+}
+
+// registration form error message
+label.error {
+	color: $danger-color;
+	font-size: 0.8em;
+	padding: 3px 0 0 0;
+	display: block;
+}
+
+textarea {
+    background-color: $background-default;
+    border: 1px solid $border-2;
+    padding: 6px;
+    width: 100%;
+    // font-size: 0.9em;
+    font-size: 16px;
+    outline: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.file-wrapper {
+    background: $background-1;
+    padding: 12px;
+    border-radius: $radius;
+    margin-bottom: 5px;
+}
+
+.confirm-field {
+
+    @include bp-medium {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    &__field {
+        margin-bottom: 8px;
+
+        @include bp-medium {
+            width: 49%;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.segmented-control {
+    border: 1px solid $border-2;
+    font-size: 0.8em;
+    display: inline-block;
+    border-radius: 4px;
+    vertical-align: top;
+
+    &--block:before {
+        content: "\A";
+    }
+
+    &__option {
+        display: inline-block;
+        float: $left;
+    }
+
+    &__button {
+        display: block;
+        padding: 7px 8px;
+        margin: 0;
+        border-#{$left}: 1px solid $border-2;
+        border-#{$right}: 1px solid transparent;
+        position: relative;
+        z-index: 10;
+        cursor: pointer;
+    }
+
+    &__icon {
+        color: $alt-font-color-2;
+        margin-#{$right}: 4px;
+    }
+
+    &__input {
+        position: absolute;
+        visibility: hidden;
+
+        &:checked + .segmented-control__button {
+            background: $button-default;
+            color: $invert-font-color;
+            margin: -1px;
+            padding: 7px 9px;
+            border: 1px solid $button-default;
+            z-index: 15;
+
+            .segmented-control__icon {
+                color: $invert-font-color;
+            }
+        }
+    }
+
+    :first-child .segmented-control__button {
+        border-#{$left}: 1px solid transparent;
+        border-radius: corner-values($radius 0 0 $radius);
+    }
+
+    :last-child .segmented-control__button {
+        border-radius: corner-values(0 $radius $radius 0);
+    }
+
+    &--buttons {
+        border: none;
+        margin-bottom: -4px;
+
+        .segmented-control__button {
+            background: $background-1;
+        }
+
+        .segmented-control__button,
+        .segmented-control__input:checked + .segmented-control__button,
+        :first-child .segmented-control__button,
+        :last-child .segmented-control__button
+        {
+            border: none;
+            border-radius: $radius;
+            padding: 7px 8px;
+            margin: side-values(0 4px 4px 0);
+        }
+    }
+
+    &--alt {
+
+        .segmented-control__input:checked + .segmented-control__button {
+            background-color: $background-4;
+            border-color: $background-4;
+            color: $font-color;
+        }
+    }
+}
+
+.select-control {
+    font-size: 0.8em;
+
+    &__option {
+        display: block;
+        margin: side-values(0 0 5px 0);
+        padding: 0;
+    }
+
+    &__button {
+        display: block;
+        padding: 3px 8px;
+        margin: side-values(5px 10px 0 0);
+        background: $background-1;
+        cursor: pointer;
+        border-radius: 4px;
+
+        &.icon:before {
+            @include black-transparency(0.4);
+        }
+    }
+
+    &__input {
+        position: absolute;
+        visibility: hidden;
+
+        &:checked + .select-control__button {
+            background: $background-4;
+
+            &.icon:before {
+                @include black-transparency(0.6);
+            }
+        }
+    }
+}
+
+.date-field {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: $background-1;
+    padding: side-values(12px 12px 4px 12px);
+    border-radius: $radius;
+
+    &__item {
+        margin-bottom: 8px;
+        margin-#{$right}: 8px;
+    }
+
+    &__name {
+        display: block;
+        font-weight: normal;
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+        margin: side-values(0 0 3px 0);
+        padding: 0;
+    }
+
+    .select-field {
+        margin-#{$right}: 0;
+    }
+}
+
+.inline-text-field {
+    display: flex;
+    flex-direction: column;
+
+    @include bp-medium {
+        flex-direction: row;
+    }
+
+    &__field {
+        margin-bottom: 10px;
+        flex-grow: 1;
+        width: auto;
+
+        @include bp-medium {
+            margin-bottom: 0;
+            margin-#{$right}: 5px;
+        }
+    }
+
+    &__button {
+        flex-shrink: 0;
+        margin: 0;
+    }
+}
+
+.user-select-field {
+    width: 100%;
+}

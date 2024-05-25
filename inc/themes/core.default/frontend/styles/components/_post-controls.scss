@@ -1,0 +1,83 @@
+.post-control {
+    display: inline-block;
+    padding: 0 7px;
+    font-size: 0.8em;
+    color: $alt-font-color-2;
+    background-color: transparent;
+    border: none;
+
+    &__icon {
+        margin-#{$right}: 6px;
+    }
+
+    &:link,
+    &:visited {
+        color: $alt-font-color-2;
+    }
+
+    &:hover {
+        color: $link-hover;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    // TODO: Convert to BEM syntax
+    &.postbit_multiquote_on {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        margin-top: -1px;
+        margin-bottom: -1px;
+        color: $link-hover;
+        background: $background-default;
+        border-radius: $radius;
+    }
+}
+
+.post-controls {
+    flex-grow: 1;
+
+    &--secondary {
+        text-align: $right;
+    }
+}
+
+.post-options {
+    position: relative;
+
+    &__control {
+
+        .post-control__icon {
+            margin-#{$right}: 0;
+        }
+    }
+
+    &__checkbox {
+        display: none;
+    }
+
+    &__list {
+        display: none;
+    }
+
+    .post-options__checkbox:checked ~ .post-options__list {
+        position: absolute;
+        top: 30px;
+        right: 0px;
+        z-index: 10;
+        display: block;
+        background: $background-1;
+        border: 1px solid $border-1;
+        border-radius: $radius;
+
+        .post-control {
+            display: block;
+            padding-#{$right}: 20px;
+            text-align: $left;
+            border-bottom: 1px solid $border-1;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}

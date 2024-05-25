@@ -381,13 +381,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$captcha->invalidate_captcha();
 		}
 
-		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
+		if($mybb->settings['regtype'] != "randompass" && empty($mybb->cookies['coppauser']))
 		{
 			// Log them in
 			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
 		}
 
-		if(isset($mybb->cookies['coppauser']))
+		if(!empty($mybb->cookies['coppauser']))
 		{
 			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 			my_unsetcookie("coppauser");
@@ -671,7 +671,7 @@ if($mybb->input['action'] == "coppa_form")
 
 	$plugins->run_hooks("member_coppa_form");
 
-	output_page(\MyBB\template('member/coppa_form.twig'));
+	output_page(\MyBB\View\template('member/coppa_form.twig'));
 }
 
 if($mybb->input['action'] == "register")
@@ -721,6 +721,8 @@ if($mybb->input['action'] == "register")
 		$birthday_year = '';
 	}
 
+	$under_thirteen = false;
+	
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
@@ -746,7 +748,10 @@ if($mybb->input['action'] == "register")
 				my_setcookie("coppauser", 1, -0);
 				$under_thirteen = true;
 			}
-
+			else
+			{
+				my_setcookie("coppauser", 0, -0);
+			}
 			$mybb->request_method = "";
 		}
 		else
@@ -758,7 +763,7 @@ if($mybb->input['action'] == "register")
 
 			$coppa_desc = $mybb->settings['coppa'] == 'deny' ? $lang->coppa_desc_for_deny : $lang->coppa_desc;
 
-			output_page(\MyBB\template('member/register_coppa.twig', [
+			output_page(\MyBB\View\template('member/register_coppa.twig', [
 				'days' => $days,
 				'months' => $months,
 				'year' => $birthday_year,
@@ -772,7 +777,7 @@ if($mybb->input['action'] == "register")
 	{
 		$coppa_agreement = false;
 		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
+		if($mybb->settings['coppa'] != "disabled" && (!empty($mybb->cookies['coppauser']) || $under_thirteen))
 		{
 			$coppa_agreement = true;
 			if($mybb->settings['coppa'] == "deny")
@@ -783,7 +788,7 @@ if($mybb->input['action'] == "register")
 
 		$plugins->run_hooks("member_register_agreement");
 
-		output_page(\MyBB\template('member/register_agreement.twig', [
+		output_page(\MyBB\View\template('member/register_agreement.twig', [
 			'coppa_agreement' => $coppa_agreement,
 		]));
 	}
@@ -827,7 +832,7 @@ if($mybb->input['action'] == "register")
 			else if(!empty($select['referrername']))
 			{
 				$ref = get_user_by_username($select['referrername']);
-				if(!$ref['uid'])
+				if(!$ref)
 				{
 					$errors[] = $lang->error_badreferrer;
 				}
@@ -1210,7 +1215,7 @@ if($mybb->input['action'] == "register")
 			lang.js_validator_bad_password_security = '{$lang->js_validator_bad_password_security}';
 		</script>\n";
 
-		output_page(\MyBB\template('member/register.twig', [
+		output_page(\MyBB\View\template('member/register.twig', [
 			'regerrors' => $regerrors,
 			'select' => $select,
 			'registration' => $registration,
@@ -1264,7 +1269,7 @@ if($mybb->input['action'] == "activate")
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
-		if(!$activation['uid'])
+		if(!$activation)
 		{
 			error($lang->error_alreadyactivated);
 		}
@@ -1326,7 +1331,7 @@ if($mybb->input['action'] == "activate")
 
 		$activate['username'] = $user['username'];
 
-		output_page(\MyBB\template('member/activate.twig', [
+		output_page(\MyBB\View\template('member/activate.twig', [
 			'activate' => $activate,
 		]));
 	}
@@ -1349,14 +1354,14 @@ if($mybb->input['action'] == "resendactivation")
 	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
-	if($activation['validated'] == 1)
+	if($activation && $activation['validated'] == 1)
 	{
 		error($lang->error_activated_by_admin);
 	}
 
 	$plugins->run_hooks("member_resendactivation_end");
 
-	output_page(\MyBB\template('member/resendactivation.twig', [
+	output_page(\MyBB\View\template('member/resendactivation.twig', [
 		'email' => $email,
     ]));
 }
@@ -1539,7 +1544,7 @@ if($mybb->input['action'] == "lostpw")
 		$email = '';
 	}
 
-	output_page(\MyBB\template('member/lostpw.twig', [
+	output_page(\MyBB\View\template('member/lostpw.twig', [
 			'captcha' => $captcha,
 			'errors' => $errors,
 			'email' => $email,
@@ -1606,7 +1611,7 @@ if($mybb->input['action'] == "resetpassword")
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('update');
 
-		while(!$userhandler->verify_password())
+		do
 		{
 			$password = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
 
@@ -1619,14 +1624,14 @@ if($mybb->input['action'] == "resetpassword")
 
 			$userhandler->set_validated(true);
 			$userhandler->errors = array();
-		}
+		} while(!$userhandler->verify_password());
 
 		$userhandler->update_user();
 
 		$logindetails = array(
-			'salt' => $userhandler->data['salt'],
-			'password' => $userhandler->data['saltedpw'],
-			'loginkey' => $userhandler->data['loginkey'],
+			'salt'		=> $userhandler->data['salt'],
+			'password'	=> $userhandler->data['password'],
+			'loginkey'	=> $userhandler->data['loginkey'],
 		);
 
 		$email = $user['email'];
@@ -1672,7 +1677,7 @@ if($mybb->input['action'] == "resetpassword")
 
 		$activate['username'] = $user['username'];
 
-		output_page(\MyBB\template('member/resetpassword.twig', [
+		output_page(\MyBB\View\template('member/resetpassword.twig', [
 			'activate' => $activate,
 		]));
 	}
@@ -1887,7 +1892,7 @@ if($mybb->input['action'] == "login")
 
 	$plugins->run_hooks("member_login_end");
 
-	output_page(\MyBB\template('member/login.twig', [
+	output_page(\MyBB\View\template('member/login.twig', [
 		'inline_errors' => $inline_errors,
 		'login' => $login,
 		'captcha' => $captcha,
@@ -1953,7 +1958,7 @@ if($mybb->input['action'] == "viewnotes")
 
 	$plugins->run_hooks('member_viewnotes');
 
-	output_page(\MyBB\template('member/viewnotes.twig', [
+	output_page(\MyBB\View\template('member/viewnotes.twig', [
 		'user' => $user,
 	]));
 	exit;
@@ -2396,7 +2401,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$uid = (int) $memprofile['uid'];
 		$referral_count = $memprofile['referrals'];
-		$memprofile['referrals_link'] = \MyBB\template('referrals/referrals_link.twig', [
+		$memprofile['referrals_link'] = \MyBB\View\template('referrals/referrals_link.twig', [
 			'uid' => $uid,
 			'referral_count' => $referral_count,
 		]);
@@ -2689,7 +2694,7 @@ if($mybb->input['action'] == "profile")
 
 	$plugins->run_hooks("member_profile_end");
 
-	output_page(\MyBB\template('member/profile.twig', [
+	output_page(\MyBB\View\template('member/profile.twig', [
 		'memprofile' => $memprofile,
 		'customfields' => $customfields,
 		'contactfields' => $contactfields,
@@ -2749,7 +2754,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$last_email = $db->fetch_array($query);
 
 		// Users last email was within the flood time, show the error
-		if($last_email['mid'])
+		if(isset($last_email['mid']))
 		{
 			$remaining_time = ($mybb->usergroup['emailfloodtime'] * 60) - (TIME_NOW - $last_email['dateline']);
 
@@ -2922,7 +2927,7 @@ if($mybb->input['action'] == "emailuser")
 		$last_email = $db->fetch_array($query);
 
 		// Users last email was within the flood time, show the error
-		if($last_email['mid'])
+		if(isset($last_email['mid']))
 		{
 			$remaining_time = ($mybb->usergroup['emailfloodtime'] * 60) - (TIME_NOW - $last_email['dateline']);
 
@@ -3001,7 +3006,7 @@ if($mybb->input['action'] == "emailuser")
 
 	$plugins->run_hooks("member_emailuser_end");
 
-	output_page(\MyBB\template('member/emailuser.twig', [
+	output_page(\MyBB\View\template('member/emailuser.twig', [
 		'errors' => $errors,
 		'captcha' => $captcha,
 		'email' => $email,
@@ -3084,7 +3089,7 @@ if($mybb->input['action'] == 'referrals')
 
 	$plugins->run_hooks('member_referrals_end');
 
-	output_page(\MyBB\template('referrals/referrals.twig', [
+	output_page(\MyBB\View\template('referrals/referrals.twig', [
 		'referral_count' => $referral_count,
 		'referrals' => $referrals,
 		'multipage' => $multipage,

@@ -1,0 +1,6 @@
+{
+    "containerEnv": {
+        "containerWorkspaceFolder": "${containerWorkspaceFolder}"
+    },
+    "postStartCommand": "bash .devcontainer/mybb-install.sh && php -S 0.0.0.0:8080"
+}

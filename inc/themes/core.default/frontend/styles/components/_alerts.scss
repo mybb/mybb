@@ -1,0 +1,107 @@
+.alert {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: side-values(10px 12px);
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    background-color: $background-1;
+    border-radius: 4px;
+
+    &__message {
+        flex-grow: 1;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__icon {
+        margin-top: 5px;
+        margin-#{$right}: 12px;
+        color: $alt-font-color-1;
+    }
+
+    &__dismiss {
+        float: $right;
+        font-size: 16px;
+
+        &__link {
+
+            &:link,
+            &:visited {
+                color: $danger-color;
+            }
+
+            &:hover {
+                color: $alt-font-color-1;
+            }
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__description {
+        margin: 0;
+    }
+
+    &__list {
+        margin: 10px 0;
+    }
+
+    &--danger {
+        color: $invert-font-color;
+        background-color: $danger-color;
+
+        :link,
+        :visited,
+        .alert__icon {
+            color: $invert-font-color;
+        }
+    }
+
+    &--pending {
+        color: $status-pending-font-color;
+        background-color: $status-pending;
+
+        :link,
+        :visited,
+        .alert__icon {
+            color: $status-pending-font-color;
+        }
+    }
+
+    &--success {
+        color: $invert-font-color;
+        background-color: $success-color;
+
+        :link,
+        :visited,
+        .alert__icon {
+            color: $invert-font-color;
+        }
+    }
+
+    &--no-results {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        padding: 30px;
+        margin: 0;
+        font-size: 1.2em;
+        color: $alt-font-color-1;
+        text-align: center;
+        background: none;
+
+        &.alert--no-results-container {
+            background: $background-1;
+        }
+    }
+
+    &--aligned-block {
+        text-align: $left;
+    }
+}

@@ -8,6 +8,7 @@
 $l['nav_search'] = "Search";
 $l['nav_results'] = "Results";
 
+$l['pages'] = "Pages:";
 $l['pages_last'] = "last";
 $l['search'] = "Search";
 $l['search_keyword'] = "Search by Keyword";

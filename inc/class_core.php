@@ -278,13 +278,16 @@ class MyBB {
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
 
-		if($_SERVER['REQUEST_METHOD'] == "POST")
+		if(isset($_SERVER['REQUEST_METHOD']))
 		{
-			$this->request_method = "post";
-		}
-		else if($_SERVER['REQUEST_METHOD'] == "GET")
-		{
-			$this->request_method = "get";
+			if($_SERVER['REQUEST_METHOD'] == "POST")
+			{
+				$this->request_method = "post";
+			}
+			else if($_SERVER['REQUEST_METHOD'] == "GET")
+			{
+				$this->request_method = "get";
+			}
 		}
 
 		// If we've got register globals on, then kill them too
@@ -601,6 +604,10 @@ class MyBB {
 			case "redis_load_error":
 				$message = "Your server does not have redis support enabled.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
+			case "dependencies_not_installed":
+				$message = "The autoload file does not exist.\n\nIf you intend to get MyBB ready from source code, run <code>composer install</code> first. Otherwise, download a production-ready package from the Project's website.";
+				$error_code = MYBB_DEPENDENCIES_NOT_INSTALLED;
 				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";

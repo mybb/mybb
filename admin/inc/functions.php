@@ -667,20 +667,21 @@ function is_mobile($useragent)
 function check_template($template)
 {
 	// Check to see if our database password is in the template
-	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template)) 
+	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template) !== 0)
 	{
 		return true;
 	}
 
 	// System calls via backtick
-	if(preg_match('#\$\s*\{#', $template))
+	if(preg_match('#\$\s*\{#', $template) !== 0)
 	{
 		return true;
 	}
 
 	// Any other malicious acts?
 	// Courtesy of ZiNgA BuRgA
-	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
+	$allowed = preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template);
+	if($allowed === null || preg_match("~\\{\\$.+?\\}~s", $allowed) !== 0)
 	{
 		return true;
 	}

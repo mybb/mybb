@@ -68,7 +68,7 @@ class WarningsHandler extends DataHandler
 
 		$user = get_user($warning['uid']);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$this->set_error('error_invalid_user');
 			return false;
@@ -100,7 +100,7 @@ class WarningsHandler extends DataHandler
 
 		$post = get_post($warning['pid']);
 
-		if(!$post['pid'])
+		if(!$post)
 		{
 			$this->set_error('error_invalid_post');
 			return false;
@@ -684,7 +684,7 @@ class WarningsHandler extends DataHandler
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
 			"tid" => (int)$warning['type'],
-			"pid" => (int)$warning['pid'],
+			"pid" => isset($warning['pid']) ? (int)$warning['pid'] : 0,
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,

@@ -58,7 +58,7 @@
     </section>
 {# hCaptcha invisible #}
 {% elseif type == 7 %}
-    <script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+    <script src="{{ server }}?onload=captchaOnloadCallback&render=explicit" async defer></script>
     <script type="text/javascript">
 
         var captchaTarget = '';

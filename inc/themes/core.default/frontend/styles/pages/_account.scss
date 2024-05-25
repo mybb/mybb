@@ -1,0 +1,226 @@
+.account {
+
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .section-menu__item--messenger-compose,
+    .section-menu__item--messenger-folder,
+    .section-menu__item--messenger-tracking,
+    .section-menu__item--messenger-edit-folders {
+        display: none;
+    }
+
+    // these probably won't be necessary with twig -- just add --active class directly
+    &--dashboard .section-menu__item--dashboard,
+    &--profile .section-menu__item--profile,
+    &--preferences .section-menu__item--preferences,
+    &--groups .section-menu__item--groups,
+    &--buddy-ignore .section-menu__item--buddy-ignore,
+    &--attachments .section-menu__item--attachments,
+    &--drafts .section-menu__item--drafts,
+    &--subscriptions .section-menu__item--subscriptions {
+        @extend .section-menu__item--active;
+    }
+}
+
+.change-avatar {
+
+    .avatar-container {
+        float: $right;
+        margin: side-values(0 0 20px 20px);
+        @include avatar(100);
+    }
+
+    .change-avatar__description {
+        padding: side-values(0 0 0 5px);
+        margin: side-values(0 0 10px 0);
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+}
+
+.account-dashboard {
+    padding: side-values(20px 20px 20px 140px);
+    @include clearfix();
+
+    .avatar-profile-link {
+        display: block;
+        float: $left;
+        margin: side-values(0 0 0 -120px);
+        @include avatar(100);
+    }
+}
+
+.buddy-ignore-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    @include bp-small {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    &__user {
+        box-sizing: border-box;
+        padding: 10px 8px;
+        border-bottom: 1px solid $border-1;
+
+        @include bp-small {
+            width: 50%;
+            border: none;
+        }
+
+        @include bp-large {
+            width: 33%;
+        }
+
+        &:last-child {
+            border: none;
+        }
+    }
+
+    &__delete-link {
+        float: $right;
+
+        @include bp-small {
+            float: none;
+            margin-#{$left}: 8px;
+        }
+
+        &:link,
+        &:visited {
+            color: $alt-font-color-1;
+        }
+
+        &:hover {
+            color: $danger-color;
+        }
+    }
+
+    &__delete-icon {
+
+    }
+
+    &__username {
+
+    }
+
+    &__user-status {
+
+    }
+}
+
+.buddy-request {
+
+    &__username {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__date {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+}
+
+.attachment {
+
+    &__icon {
+
+        @include bp-small-max {
+            position: absolute;
+            top: 14px;
+            right: 36px;
+            float: $right;
+        }
+    }
+
+    &__file,
+    &__post {
+
+        @include bp-medium {
+            width: 45%;
+        }
+    }
+
+    &__file-name {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__size-downloads,
+    &__date {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+
+    &__post {
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+}
+
+.draft {
+
+    &__subject {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__location,
+    &__date {
+        margin: 0;
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+
+        a:link,
+        a:visited {
+            color: $alt-font-color-1;
+        }
+    }
+}
+
+.user-group {
+
+    &__name {
+        display: inline-block;
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__display-group {
+        margin-#{$left}: 6px;
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+
+    &__user-title,
+    &__description,
+    &__leaders {
+        margin: side-values(3px 0 0 0);
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+
+    &__message {
+        margin: side-values(3px 0 0 0);
+        font-size: 0.9em;
+        color: $alt-font-color-2;
+    }
+}
+
+.join-request {
+
+    &__username {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__reason {
+        margin: 0;
+        font-size: 0.9em;
+        color: $alt-font-color-1;
+    }
+}

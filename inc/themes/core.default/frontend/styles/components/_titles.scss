@@ -1,0 +1,127 @@
+.title {
+    padding: 0;
+    margin: 0;
+    font-family: $alt-font-stack;
+    font-size: 1.4em;
+    font-weight: bold;
+
+    &--page {
+        margin-bottom: 10px;
+        font-size: 2.2em;
+        font-weight: normal;
+        line-height: 1.3;
+    }
+
+    &--block {
+        border-bottom: 1px solid $border-1;
+    }
+
+    &--sidebar,
+    &--minor {
+        padding-top: 4px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid $border-1;
+    }
+
+    &--major,
+    &--modal {
+        padding: 8px 12px;
+        margin-bottom: 0;
+        font-size: 1.2em;
+        color: $invert-font-color;
+        background: $major-heading-background;
+        border: 0;
+        border-radius: $radius;
+
+        a:link,
+        a:visited,
+        a:hover {
+            color: $invert-font-color;
+        }
+    }
+
+    &--form {
+        margin-bottom: 12px;
+    }
+
+    &--modal {
+        padding: 12px;
+        font-size: 1.4em;
+        border-bottom: 2px solid $major-heading-border;
+        border-radius: corner-values($radius $radius 0 0);
+    }
+
+    &--success {
+        background-color: $success-color;
+        border-color: $success-color-border;
+    }
+
+    &--danger {
+        background-color: $danger-color;
+        border-color: $danger-color-border;
+    }
+
+    &--nested {
+        font-family: $font-stack;
+        font-size: 1em;
+        font-weight: normal;
+
+        .title__name {
+            padding: 0;
+            margin: 0;
+            font-family: $alt-font-stack;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .title__description {
+            padding: 0;
+            margin: 0;
+            font-size: 0.8em;
+        }
+    }
+
+    &--section {
+        padding: 8px 12px;
+        margin: side-values(0 0 12px 0);
+        font-family: $alt-font-stack;
+        font-size: 1.1em;
+        background: $background-3;
+        border-radius: $radius;
+
+        @include bp-medium {
+            float: $left;
+            width: 20%;
+            padding: 0;
+            margin: 0;
+            text-align: $right;
+            background: none;
+            border: 0;
+        }
+    }
+
+    &--separation {
+        margin-bottom: 15px;
+    }
+
+    &--row {
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    &--container {
+        padding-bottom: 5px;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        border-bottom: 1px solid $border-1;
+    }
+
+    &--legend {
+        margin-bottom: 10px;
+        font-size: 1em;
+        font-weight: normal;
+        color: $alt-font-color-1;
+    }
+}

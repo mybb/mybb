@@ -18,14 +18,11 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
-
 function upgrade26_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
+	// Updating Database
 
 	$db->update_query("helpdocs", array('usetranslation' => 1));
 	$db->update_query("helpsections", array('usetranslation' => 1));
@@ -49,7 +46,4 @@ function upgrade26_dbchanges()
 
 	// Column will be dropped in MyBB 1.8
 	$db->update_query('posts', "posthash=''");
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("26_done");
 }

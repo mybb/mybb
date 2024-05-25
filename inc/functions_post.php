@@ -377,7 +377,7 @@ function build_postbit($post, $post_type=0)
 			(!isset($post['visible']) || $post['visible'] == 1) &&
 			(!isset($thread['visible']) || $thread['visible'] == 1))
 		{
-			if(!$post['pid'])
+			if(empty($post['pid']))
 			{
 				$post['pid'] = 0;
 			}
@@ -962,13 +962,13 @@ function build_postbit($post, $post_type=0)
 
 	if($post_type == 0 && $forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
 	{
-		$postbit = \MyBB\template('postbit/postbit_deleted_member.twig', [
+		$postbit = \MyBB\View\template('postbit/postbit_deleted_member.twig', [
 			'post' => $post,
 		]);
 	}
 	else
 	{
-		$postbit = \MyBB\template('postbit/postbit.twig', [
+		$postbit = \MyBB\View\template('postbit/postbit.twig', [
 			'post' => $post,
 			'attached' => $attached,
 			'icon' => $icon,
@@ -1020,7 +1020,7 @@ function get_post_attachments($id, &$post)
 		$attachment['icon'] = get_attachment_icon($ext);
 		$attachment['downloads'] = my_number_format($attachment['downloads']);
 
-		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $attachment['dateline']);
+		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $post['dateline']);
 
 		// Support for [attachment=id] code
 		if(stripos($post['message'], "[attachment={$attachment['aid']}]") !== false)
@@ -1033,7 +1033,7 @@ function get_post_attachments($id, &$post)
 				&& $attachment['thumbnail'] != ''
 				&& $mybb->settings['attachthumbnails'] == 'yes'
 			) {
-				$attachmentBit = \MyBB\template('postbit/postbit_attached_thumbnail.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attached_thumbnail.twig', [
 					'thumb' => $attachment,
 				]);
 			} elseif (
@@ -1043,11 +1043,11 @@ function get_post_attachments($id, &$post)
 					|| $mybb->settings['attachthumbnails'] == 'no'
 				)
 			) {
-				$attachmentBit = \MyBB\template('postbit/postbit_attached_image.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attached_image.twig', [
 					'image' => $attachment,
 				]);
 			} else {
-				$attachmentBit = \MyBB\template('postbit/postbit_attachment.twig', [
+				$attachmentBit = \MyBB\View\template('postbit/postbit_attachment.twig', [
 					'attachment' => $attachment,
 				]);
 			}

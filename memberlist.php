@@ -46,7 +46,7 @@ if($mybb->get_input('action') == "search")
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
-	output_page(\MyBB\template('memberlist/search.twig'));
+	output_page(\MyBB\View\template('memberlist/search.twig'));
 }
 else
 {
@@ -274,6 +274,8 @@ else
 
 	$memberlist['orderarrow'][$mybb->input['sort']] = true;
 
+	$referral_header = '';
+
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -333,6 +335,8 @@ else
 			$usergroup = array_merge($usergroup, $display_group);
 		}
 
+		$referral_bit = '';
+
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
@@ -340,7 +344,7 @@ else
 			if($referral_count > 0)
 			{
 				$uid = (int) $user['uid'];
- 				$user['referrals'] = \MyBB\template('referrals/referrals_link.twig', [
+ 				$user['referrals'] = \MyBB\View\template('referrals/referrals_link.twig', [
 					'uid' => $uid,
  					'referral_count' => $referral_count,
  				]);
@@ -444,7 +448,7 @@ else
 
 	$plugins->run_hooks("memberlist_end");
 
-	output_page(\MyBB\template('memberlist/memberlist.twig', [
+	output_page(\MyBB\View\template('memberlist/memberlist.twig', [
 		'memberlist' => $memberlist,
 		'multipage' => $multipage,
 		'users' => $users,

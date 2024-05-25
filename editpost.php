@@ -216,7 +216,7 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 				'showmodapproval' => is_moderator($fid, "canapproveunapproveattachs"),
 				'showinsert' => ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 			];
-			$ret['template'] = \MyBB\template('misc/attachments_attachment.twig', [
+			$ret['template'] = \MyBB\View\template('misc/attachments_attachment.twig', [
 				'attachment' => $attachment,
 			]);
 
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					$redirect = get_thread_link($tid);
 				}
 
-				if($mybb->input['ajax'] == 1)
+				if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
@@ -605,10 +605,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$posticons = get_post_icons();
 	}
 
-	$loginbox = \MyBB\template('misc/changeuserbox.twig');
+	$loginbox = \MyBB\View\template('misc/changeuserbox.twig');
 
 	$editpost['showdelete'] = false;
-	if($post['visible'] != -1 && (($thread['firstpost'] == $pid && (is_moderator($fid, "candeletethreads") || $forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid'])) || ($thread['firstpost'] != $pid && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))))
+	if(isset($post['visible']) && $post['visible'] != -1 && (($thread['firstpost'] == $pid && (is_moderator($fid, "candeletethreads") || $forumpermissions['candeletethreads'] == 1 && $mybb->user['uid'] == $post['uid'])) || ($thread['firstpost'] != $pid && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))))
 	{
 		$editpost['showdelete'] = true;
 	}
@@ -935,7 +935,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
-	$post_javascript = \MyBB\template('misc/post_javascript.twig', [
+	$post_javascript = \MyBB\View\template('misc/post_javascript.twig', [
 		'php_max_upload_size' => $php_max_upload_size,
 		'php_max_file_uploads' => $php_max_file_uploads,
 	]);
@@ -964,7 +964,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$editpost['emptyiconcheck'] = true;
 	}
 
-	output_page(\MyBB\template('editpost/editpost.twig', [
+	output_page(\MyBB\View\template('editpost/editpost.twig', [
 		'editpost' => $editpost,
 		'post_errors' => $post_errors,
 		'loginbox' => $loginbox,

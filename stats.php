@@ -163,7 +163,7 @@ $forum = $db->fetch_array($query);
 // Not 100% sure, but this conditional is not necessary.
 // We check at start whether is any thread, if not, we throw an error.
 // So at this point, we always have at least one forum to show.
-if(!empty($forum['fid']))
+if($forum)
 {
 	$top_forum = [
 		'name' => htmlspecialchars_uni(strip_tags($forum['name'])),
@@ -225,7 +225,7 @@ $stats['newest_user'] = build_profile_link($stats['lastusername'], $stats['lastu
 
 $plugins->run_hooks("stats_end");
 
-output_page(\MyBB\template('stats/stats.twig', [
+output_page(\MyBB\View\template('stats/stats.twig', [
 	'stats' => $stats,
 	'most_replied_to_threads' => $most_replied_to_threads,
 	'most_viewed_threads' => $most_viewed_threads,

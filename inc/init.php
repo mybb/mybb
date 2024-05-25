@@ -44,6 +44,15 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
+require_once MYBB_ROOT.'inc/src/Stopwatch/Stopwatch.php';
+require_once MYBB_ROOT.'inc/src/Stopwatch/Event.php';
+require_once MYBB_ROOT.'inc/src/Stopwatch/Period.php';
+
+$stopwatch = new \MyBB\Stopwatch\Stopwatch();
+
+$stopwatch->start('main');
+$stopwatch->start('core.init');
+
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
@@ -56,9 +65,6 @@ if(!function_exists('json_encode') || !function_exists('json_decode'))
 }
 
 require_once MYBB_ROOT."inc/functions.php";
-
-require_once MYBB_ROOT."inc/class_timers.php";
-$maintimer = new timer();
 
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
@@ -115,6 +121,10 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 	$mybb->settings = $settings;
 }
 
+$error_handler->errortypemedium = $mybb->settings['errortypemedium'] ?? '';
+$error_handler->errorlogmedium = $mybb->settings['errorlogmedium'] ?? '';
+$error_handler->errorloglocation = $mybb->settings['errorloglocation'] ?? '';
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -124,6 +134,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
 require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
+require_once MYBB_ROOT . 'inc/DbException.php';
 
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 
@@ -138,14 +149,13 @@ switch($config['database']['type'])
 	case "pgsql_pdo":
 		$db = new PostgresPdoDbDriver();
 		break;
-	case "mysqli":
-		$db = new DB_MySQLi;
-		break;
 	case "mysql_pdo":
 		$db = new MysqlPdoDbDriver();
 		break;
+	case "mysqli":
+	case "mysql":
 	default:
-		$db = new DB_MySQL;
+		$db = new DB_MySQLi;
 }
 
 // Check if our DB engine is loaded
@@ -227,7 +237,13 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 	}
 }
 
+$stopwatch->start('core.init.bootstrap');
+
 require_once __DIR__.'/src/bootstrap.php';
+
+$stopwatch->stop('core.init.bootstrap');
+
+MyBB\app()->instance(\MyBB\Stopwatch\Stopwatch::class, $stopwatch);
 
 use Illuminate\Support\Arr;
 
@@ -242,6 +258,8 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }
+
+$stopwatch->stop('core.init');
 
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))

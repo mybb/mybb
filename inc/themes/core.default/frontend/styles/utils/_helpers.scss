@@ -1,0 +1,24 @@
+.hidden {
+    @include hidden;
+}
+
+.visually-hidden {
+    @include visually-hidden;
+}
+
+.commas {
+
+    > * {
+
+        &:after {
+            content: ",";
+        }
+
+        &:last-child {
+
+            &:after {
+                content: "";
+            }
+        }
+    }
+}

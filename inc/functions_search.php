@@ -359,6 +359,7 @@ function clean_keywords_ft($keywords)
 	// Brace depth
 	$depth = 0;
 	$phrase_operator = '+';
+	$inquote = false;
 	foreach($keywords as $phrase)
 	{
 		$phrase = trim($phrase);
@@ -1242,7 +1243,7 @@ function perform_search_mysql($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
@@ -1530,7 +1531,7 @@ function perform_search_mysql_ft($search)
 	}
 	$post_usersql = '';
 	$thread_usersql = '';
-	if($search['author'])
+	if(!empty($search['author']))
 	{
 		$userids = array();
 		$search['author'] = my_strtolower($search['author']);
@@ -1564,7 +1565,7 @@ function perform_search_mysql_ft($search)
 		}
 	}
 	$datecut = $thread_datecut = $post_datecut = '';
-	if($search['postdate'])
+	if(!empty($search['postdate']))
 	{
 		if($search['pddir'] == 0)
 		{
@@ -1582,7 +1583,7 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_replycut = '';
-	if($search['numreplies'] != '' && $search['findthreadst'])
+	if(!empty($search['numreplies']) && $search['findthreadst'])
 	{
 		if((int)$search['findthreadst'] == 1)
 		{
@@ -1596,7 +1597,7 @@ function perform_search_mysql_ft($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
@@ -1651,7 +1652,7 @@ function perform_search_mysql_ft($search)
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1713,7 +1714,7 @@ function perform_search_mysql_ft($search)
 
 	// Searching a specific thread?
 	$tidsql = '';
-	if($search['tid'])
+	if(!empty($search['tid']))
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
@@ -1731,7 +1732,7 @@ function perform_search_mysql_ft($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(!$search['tid'])
+		if(empty($search['tid']))
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
