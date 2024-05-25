@@ -3398,6 +3398,8 @@ if($mybb->input['action'] == "securitylog")
 		$multipage = multipage($postcount, $perpage, $page, "usercp.php?action=securitylog");
 	}
 
+    $multipage = $multipage ?? '';
+    
 	$securitylog = [];
 	$query = $db->query("
         SELECT *
