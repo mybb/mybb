@@ -91,6 +91,8 @@ function output_page($contents)
 
 	$contents = str_replace("<debugstuff>", "", $contents);
 
+	$contents = \MyBB\View\insertDeferredAttachedAssets($contents);
+
 	if($mybb->settings['gzipoutput'] == 1)
 	{
 		$contents = gzip_encode($contents, $mybb->settings['gziplevel']);

@@ -28,6 +28,8 @@ class CompositeThemelet extends ThemeletDecorator
      */
     private ?array $combinedAssetProperties;
 
+    private bool $assetPropertiesPopulated = false;
+
     public function applyNamespace(string $name): void
     {
         if (!in_array($name, $this->appliedNamespaces)) {
@@ -48,8 +50,10 @@ class CompositeThemelet extends ThemeletDecorator
     public function getCompositeAssetProperties(Locator $selector = null): array
     {
         if ($selector === null) {
-            if (!isset($this->combinedAssetProperties)) {
+            if (!$this->assetPropertiesPopulated) {
                 $this->populateAssetProperties();
+
+                $this->assetPropertiesPopulated = true;
             }
 
             return $this->combinedAssetProperties;

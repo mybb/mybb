@@ -35,6 +35,8 @@ trait AssetManagementTrait
      */
     private array $attachedAssets;
 
+    private bool $attachedAssetsPopulated = false;
+
     /**
      * @param array{
      *   script: string,
@@ -73,13 +75,32 @@ trait AssetManagementTrait
         $this->context = $context;
     }
 
-    public function getAttachedAssets(ResourceType $type): array
+    /**
+     * @param bool $inserting Get assets not yet inserted, and declare them as such.
+     */
+    public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
     {
-        if (!isset($this->attachedAssets)) {
+        if (!$this->attachedAssetsPopulated) {
             $this->populateAttachedAssetsFromThemelet();
+
+            $this->attachedAssetsPopulated = true;
         }
 
-        return $this->attachedAssets[$type->value] ?? [];
+        $assets = $this->attachedAssets[$type->value] ?? [];
+
+        if ($inserting) {
+            $assets = array_filter(
+                $assets,
+                fn (Asset $asset) => $asset->insertedToDom === false,
+            );
+
+            array_map(
+                fn (Asset $asset) => $asset->insertedToDom = true,
+                $assets,
+            );
+        }
+
+        return $assets;
     }
 
     public function populateAttachedAssetsFromThemelet(): void
@@ -94,14 +115,19 @@ trait AssetManagementTrait
     /**
      * @param string[] $dependentAncestors
      */
-    public function attachAsset(Locator $locator, array $properties = [], array $dependentAncestors = []): void
+    public function attachAsset(
+        Locator $locator,
+        array $properties = [],
+        ?ResourceType $type = null,
+        array $dependentAncestors = [],
+    ): void
     {
         $locatorString = $locator->getString([
             'type' => ThemeletLocator::COMPONENT_SET,
             'namespace' => ThemeletLocator::COMPONENT_SET,
         ]);
 
-        $type = match (get_class($locator)) {
+        $type ??= match (get_class($locator)) {
             StaticLocator::class => ResourceType::fromFilename($locator->getPath()),
             ThemeletLocator::class => $locator->getType(),
         };

@@ -10,12 +10,11 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    {% for asset in attached_assets('style') %}
-        {{ include('partials/style.twig', {asset: asset}) }}
-    {% endfor %}
-
-    {% for asset in attached_assets('script') %}
-        {{ include('partials/script.twig', {asset: asset}) }}
+    {% for type in ['style', 'script'] %}
+        {% for asset in attached_assets(type, inserting=true) %}
+            {{ include('partials/' ~ type ~ '.twig', {asset: asset}) }}
+        {% endfor %}
+        <!-- deferred_attached_assets.{{ type }} -->
     {% endfor %}
 
     {# TEMPORARY #}

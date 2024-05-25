@@ -18,6 +18,8 @@ abstract class Asset
 {
     use EntityTrait;
 
+    public bool $insertedToDom = false;
+
     /**
      * Properties to use during runtime.
      */

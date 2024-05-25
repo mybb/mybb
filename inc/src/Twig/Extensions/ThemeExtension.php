@@ -61,12 +61,14 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      *
      * @param string $locator The path to the Asset.
      * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
+     * @param ?string $type The Asset type identifier. Deduced from `$path` if not provided.
      *
      * @note Uses `$locator` parameter name to simplify Twig function usage
      */
     public function getAsset(
         string $locator,
         bool $static = false,
+        ?string $type = null,
         array $attributes = [],
     ): void
     {
@@ -86,7 +88,13 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
             );
         }
 
-        $this->view->attachAsset($locatorObject, $attributes);
+        $this->view->attachAsset(
+            locator: $locatorObject,
+            properties: [
+                'attributes' => $attributes,
+            ],
+            type: $type ? ResourceType::from($type) : null,
+        );
     }
 
     /**
@@ -145,10 +153,15 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * Get assets attached to the current page.
+     *
+     * @param bool $inserting Get assets not yet inserted, and declare them as such.
      */
-    public function getAttachedAssets(string $type): array
+    public function getAttachedAssets(string $type, bool $inserting = false): array
     {
-        return $this->view->getAttachedAssets(ResourceType::from($type));
+        return $this->view->getAttachedAssets(
+            ResourceType::from($type),
+            $inserting,
+        );
     }
 
     /**
