@@ -3423,7 +3423,7 @@ if($mybb->input['action'] == "securitylog")
 
 	$plugins->run_hooks('usercp_securitylog_end');
 
-	output_page(\MyBB\template('usercp/securitylog.twig', [
+	output_page(\MyBB\View\template('usercp/securitylog.twig', [
 		'multipage' => $multipage,
 		'securitylog' => $securitylog,
 	]));
