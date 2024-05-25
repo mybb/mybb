@@ -519,6 +519,20 @@ function get_admin_log_action($logitem)
 				$lang_string = 'admin_log_tools_spamlog_prune_user_email';
 			}
 			break;
+		case 'admin_log_tools_securitylog_prune': // Security Log Pruning
+			if($logitem['data'][1] && !$logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_securitylog_prune_user';
+			}
+			elseif($logitem['data'][2] && !$logitem['data'][1])
+			{
+				$lang_string = 'admin_log_tools_securitylog_prune_type';
+			}
+			elseif($logitem['data'][1] && $logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_securitylog_prune_user_type';
+			}
+			break;
 		// == USERS ==
 		case 'admin_log_user_admin_permissions_edit': // editing default/group/user admin permissions
 			if($logitem['data'][0] > 0)

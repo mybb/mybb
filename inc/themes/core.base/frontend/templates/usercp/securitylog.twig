@@ -1,0 +1,36 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ lang.security_log }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.security_log }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <section class="block">
+        <div class="results">
+            {% for security_log in securitylog %}
+                <div class="row row--simple-columns security-log">
+                    <div class="row__primary security__log">
+                        <div class="security__date">{{ security_log.date|raw }}</div>
+                    </div>
+                    <div class="row__secondary security__type">
+                        <div class="security__type-information">
+                            {{ security_log.information }}
+                        </div>
+                    </div>
+                    <div class="security__ip">
+                        {{ security_log.ipaddress }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert--no-results">{{ lang.no_security_logs }}</div>
+            {% endfor %}
+        </div>
+        </section>
+    {{ multipage|raw }}
+{% endblock %}

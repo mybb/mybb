@@ -1668,6 +1668,7 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('buddyrequests', "uid IN({$this->delete_uids}) OR touid IN({$this->delete_uids})");
 		$db->delete_query('posts', "uid IN({$this->delete_uids}) AND visible = -2");
 		$db->delete_query('threads', "uid IN({$this->delete_uids}) AND visible = -2");
+		$db->delete_query('securitylog', "uid IN({$this->delete_uids})");
 
 		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
 		$db->delete_query('reportedcontent', "type='reputation' AND id3 IN({$this->delete_uids}) OR type='reputation' AND id2 IN({$this->delete_uids})");

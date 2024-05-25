@@ -196,6 +196,8 @@ elseif($mybb->input['do'] == "login")
 
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
 
+		log_security_action('incorrect_pin', $login_user['uid']);
+
 		// Have we attempted too many times?
 		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{

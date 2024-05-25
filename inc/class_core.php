@@ -165,6 +165,7 @@ class MyBB {
 		'posts' => array('ipaddress' => true),
 		'privatemessages' => array('ipaddress' => true),
 		'searchlog' => array('ipaddress' => true),
+		'securitylog' => array('ipaddress' => true),
 		'sessions' => array('ip' => true),
 		'threadratings' => array('ipaddress' => true),
 		'users' => array('regip' => true, 'lastip' => true),
