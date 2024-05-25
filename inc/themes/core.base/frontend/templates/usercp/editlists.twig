@@ -3,7 +3,7 @@
 {% block head %}
     <title>{{ lang.edit_lists }} - {{ mybb.settings.bbname }}</title>
     {# TO DO: FIX JS #}
-    {# <script type="text/javascript" src="{{ asset_url('jscripts/usercp.js', static=true) }}" defer></script> #}
+    {{ asset('jscripts/usercp.js', static=true, attributes={defer}) }}
 {% endblock head %}
 
 {% block accountHeader %}
@@ -40,8 +40,8 @@
                         </div>
                     </div>
                     {# TO DO: fix autocomplete (breaks layout) #}
-                    {# <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css', static=true) }}">
-                    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js', static=true) }}"></script>
+                    {# {{ asset('jscripts/select2/select2.css', static=true) }}
+                    {{ asset('jscripts/select2/select2.min.js', static=true) }}
                     <script type="text/javascript">
                         <!--
                         if(use_xmlhttprequest == "1")
