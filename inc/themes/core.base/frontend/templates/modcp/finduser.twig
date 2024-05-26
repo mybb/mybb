@@ -28,13 +28,11 @@
                         <span class="list__field">{{ lang.lastvisit }}</span>
                         <span class="list__value">
                             {% if user.invisible == 1 and mybb.usergroup.canviewwolinvis != 1 and user.uid != mybb.user.uid %}
-                                {% if user.lastvisit %}
-                                    {{ lang.lastvisit_hidden }}
-                                {% else %}
-                                    {{ lang.lastvisit_never }}
-                                {% endif %}
-                            {% else %}
+                                {{ lang.lastvisit_hidden }}
+                            {% elseif user.lastvisit %}
                                 {{ user.lastvisit|my_date }}
+                            {% else %}
+                                {{ lang.lastvisit_never }}
                             {% endif %}
                         </span>
                     </li>
