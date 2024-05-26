@@ -233,16 +233,13 @@ foreach($usergroups as $usergroup)
 			$user['statuslang'] = $lang->offline;
 		}
 
-		if($user['lastactive'])
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
 		{
-			if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
-			{
-				$user['lastvisit'] = $lang->lastvisit_hidden;
-			}
-			else
-			{
-				$user['lastvisit'] = my_date('relative', $user['lastactive']);
-			}
+			$user['lastvisit'] = $lang->lastvisit_hidden;
+		}
+		else if($user['lastactive'])
+		{
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		}
 		else
 		{
