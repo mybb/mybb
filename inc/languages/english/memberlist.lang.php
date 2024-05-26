@@ -43,7 +43,6 @@ $l['username_exact'] = "exactly";
 $l['search_website'] = "Website URL";
 $l['search_skype'] = "Skype Address";
 $l['search_google'] = "Google Hangouts Address";
-$l['search_icq'] = "ICQ Number";
 $l['search_options'] = "Search Options";
 $l['per_page'] = "Results Per Page";
 $l['search'] = "Search";
