@@ -252,9 +252,9 @@ foreach($usergroups as $usergroup)
 			$status = "offline";
 		}
 
-		if ($user['lastactive'])
+		if($user['lastactive'])
 		{
-			if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+			if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
 			{
 				$user['lastvisit'] = $lang->lastvisit_hidden;
 			}
