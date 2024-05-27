@@ -51,7 +51,7 @@ class Runtime
     {
         return array_map(
             fn (string $codename) => Plugin::get($codename)->getThemelet(),
-            $mybb->cache->read('plugins')['active'] ?? [],
+            $mybb->cache?->read('plugins')['active'] ?? [],
         );
     }
 }
