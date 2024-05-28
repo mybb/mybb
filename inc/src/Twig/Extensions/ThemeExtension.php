@@ -62,6 +62,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      * @param string $locator The path to the Asset.
      * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
      * @param ?string $type The Asset type identifier. Deduced from `$path` if not provided.
+     * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
      *
      * @note Uses `$locator` parameter name to simplify Twig function usage
      */
@@ -70,7 +71,8 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         bool $static = false,
         ?string $type = null,
         array $attributes = [],
-    ): void
+        bool $local = false,
+    ): ?string
     {
         if ($static) {
             $locatorObject = StaticLocator::fromString($locator);
@@ -88,13 +90,28 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
             );
         }
 
-        $this->view->attachAsset(
-            locator: $locatorObject,
-            properties: [
-                'attributes' => $attributes,
-            ],
-            type: $type ? ResourceType::from($type) : null,
-        );
+        if ($local) {
+            $asset = $this->view->themelet->getPublishedAsset($locatorObject);
+
+            $asset->setCompositeProperties(
+                $this->view->themelet->getCompositeAssetProperties($locatorObject)['attributes'] ?? [],
+            );
+            $asset->setCompositeProperties($attributes);
+
+            $asset->insertedToDom = true;
+
+            return $asset->getHtml();
+        } else {
+            $this->view->attachAsset(
+                locator: $locatorObject,
+                properties: [
+                    'attributes' => $attributes,
+                ],
+                type: $type ? ResourceType::from($type) : null,
+            );
+
+            return null;
+        }
     }
 
     /**
