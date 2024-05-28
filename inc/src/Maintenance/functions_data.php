@@ -624,6 +624,10 @@ function createInitialContent(array $config, DB_Base $db, bool $development_mode
         $GLOBALS['groupscache'] = $cache->read("usergroups");
     }
 
+    // prevent PostDataHandler::verify_image_count() & postParser from using templates
+    $originalSettings['maxpostimages'] = $mybb->settings['maxpostimages'];
+    $mybb->settings['maxpostimages'] = 0;
+
 
     require_once MYBB_ROOT . 'inc/datahandler.php';
     require_once MYBB_ROOT . 'inc/datahandlers/post.php';
@@ -691,6 +695,8 @@ function createInitialContent(array $config, DB_Base $db, bool $development_mode
             }
         }
     }
+
+    $mybb->settings['maxpostimages'] = $originalSettings['maxpostimages'];
 }
 
 function createAcpUserSession(DB_Base $db, array $user, array $data): string
