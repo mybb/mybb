@@ -129,7 +129,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         $asset = $this->view->themelet->getPublishedAsset($locatorObject);
 
         // TODO: This could be smart and add cache busting query parameters to the path automatically...
-        return $this->view->getAssetUrl($asset, $useCdn);
+        return $asset->getUrl($useCdn);
     }
 
     /**
