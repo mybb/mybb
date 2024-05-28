@@ -94,9 +94,11 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
             $asset = $this->view->themelet->getPublishedAsset($locatorObject);
 
             $asset->setCompositeProperties(
-                $this->view->themelet->getCompositeAssetProperties($locatorObject)['attributes'] ?? [],
+                $this->view->themelet->getCompositeAssetProperties($locatorObject)
             );
-            $asset->setCompositeProperties($attributes);
+            $asset->setCompositeProperties([
+                'attributes' => $attributes,
+            ]);
 
             $asset->insertedToDom = true;
 

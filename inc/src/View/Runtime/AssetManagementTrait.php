@@ -190,7 +190,7 @@ trait AssetManagementTrait
             );
 
             $asset->setCompositeProperties(
-                $this->themelet->getCompositeAssetProperties($locator)['attributes'] ?? [],
+                $this->themelet->getCompositeAssetProperties($locator),
             );
 
             $this->attachedAssets[$type->value][$locatorString] = $asset;
