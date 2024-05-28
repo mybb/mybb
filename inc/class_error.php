@@ -475,6 +475,7 @@ class errorHandler {
 
 		$show_details = (
 			PHP_SAPI === 'cli' ||
+			$mybb->dev_mode ||
 			$this->force_display_errors ||
 			in_array($this->errortypemedium, array('both', 'error')) ||
 			defined("IN_INSTALL") ||
