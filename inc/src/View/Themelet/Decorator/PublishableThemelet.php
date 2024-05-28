@@ -12,6 +12,7 @@ use MyBB\View\Asset\ThemeletAsset;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
+use MyBB\View\ResourceType;
 use function MyBB\View\directive;
 
 /**
@@ -58,14 +59,31 @@ class PublishableThemelet extends ThemeletDecorator
     /**
      * @override scope
      */
-    public function getAsset(Locator $locator, ?string $declarationNamespace = null): Asset
+    public function getAsset(
+        Locator $locator,
+        ?string $declarationNamespace = null,
+        ?ResourceType $type = null,
+    ): Asset
     {
-        return Asset::fromLocator($locator, $this, $declarationNamespace);
+        return Asset::fromLocator(
+            locator: $locator,
+            themelet: $this,
+            declarationNamespace: $declarationNamespace,
+            type: $type,
+        );
     }
 
-    public function getPublishedAsset(Locator $locator): Asset
+    public function getPublishedAsset(
+        Locator $locator,
+        ?string $declarationNamespace = null,
+        ?ResourceType $type = null,
+    ): Asset
     {
-        $asset = $this->getAsset($locator);
+        $asset = $this->getAsset(
+            locator: $locator,
+            declarationNamespace: $declarationNamespace,
+            type: $type,
+        );
 
         if ($asset instanceof ThemeletAsset) {
             $this->publishThemeletAsset($asset);

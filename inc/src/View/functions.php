@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use MyBB\Stopwatch\Stopwatch;
-use MyBB\View\Asset\Asset;
 use MyBB\View\Runtime\Runtime;
 use Twig\Environment;
 
@@ -52,35 +51,4 @@ function template(string $name, array $context = [])
     $stopwatchPeriod->stop();
 
     return $result;
-}
-
-/**
- * Replaces placeholders with asset tags yet to be inserted into DOM.
- * Used for assets declared after the placeholder's template was rendered.
- */
-function insertDeferredAttachedAssets(string $contents): string
-{
-    foreach (Runtime::ATTACHABLE_TYPES as $type) {
-        $assets = app(Runtime::class)->getAttachedAssets($type, inserting: true);
-
-        $tags = array_map(
-            fn (Asset $asset) => template(
-                'partials/' . $type->value . '.twig',
-                [
-                    'asset' => $asset,
-                ],
-            ),
-            $assets,
-        );
-
-        $html = implode($tags);
-
-        $contents = str_replace(
-            '<!-- deferred_attached_assets.' . $type->value . ' -->',
-            $html,
-            $contents,
-        );
-    }
-
-    return $contents;
 }

@@ -25,9 +25,18 @@ trait AssetsTrait
             new AssetRepository($this, $namespace);
     }
 
-    public function getAsset(Locator $locator, ?string $declarationNamespace = null): Asset
+    public function getAsset(
+        Locator $locator,
+        ?string $declarationNamespace = null,
+        ?ResourceType $type = null,
+    ): Asset
     {
-        return Asset::fromLocator($locator, $this, $declarationNamespace);
+        return Asset::fromLocator(
+            locator: $locator,
+            themelet: $this,
+            declarationNamespace: $declarationNamespace,
+            type: $type,
+        );
     }
 
     public function getAssetPropertiesOfType(string $namespace, ResourceType $type): array

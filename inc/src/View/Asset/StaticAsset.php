@@ -6,6 +6,7 @@ namespace MyBB\View\Asset;
 
 use LogicException;
 use MyBB\View\Locator\StaticLocator;
+use MyBB\View\ResourceType;
 use MyBB\View\Themelet\ThemeletInterface;
 
 /**
@@ -17,7 +18,15 @@ class StaticAsset extends Asset
         readonly protected StaticLocator $locator,
         readonly protected ?ThemeletInterface $themelet = null,
         readonly protected ?string $declarationNamespace = null,
+        protected ?ResourceType $type = null,
     ) {}
+
+    public function getType(): ?ResourceType
+    {
+        return $this->type ??= ResourceType::fromFilename(
+            $this->locator->getPath()
+        );
+    }
 
     public function getAbsolutePath(): string
     {

@@ -76,6 +76,32 @@ trait AssetManagementTrait
     }
 
     /**
+     * Replaces placeholders with asset tags yet to be inserted into DOM.
+     * Used for assets declared after the placeholder's template was rendered.
+     */
+    public function insertDeferredAttachedAssets(string $contents): string
+    {
+        foreach (self::ATTACHABLE_TYPES as $type) {
+            $assets = $this->getAttachedAssets($type, inserting: true);
+
+            $elements = array_map(
+                fn (Asset $asset) => $asset->getHtml(),
+                $assets,
+            );
+
+            $elementsHtml = implode($elements);
+
+            $contents = str_replace(
+                '<!-- deferred_attached_assets.' . $type->value . ' -->',
+                $elementsHtml,
+                $contents,
+            );
+        }
+
+        return $contents;
+    }
+
+    /**
      * @param bool $inserting Get assets not yet inserted, and declare them as such.
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
@@ -120,7 +146,7 @@ trait AssetManagementTrait
         array $properties = [],
         ?ResourceType $type = null,
         array $dependentAncestors = [],
-    ): void
+    ): Asset
     {
         $locatorString = $locator->getString([
             'type' => ThemeletLocator::COMPONENT_SET,
@@ -158,7 +184,10 @@ trait AssetManagementTrait
             }
 
 
-            $asset = $this->themelet->getPublishedAsset($locator);
+            $asset = $this->themelet->getPublishedAsset(
+                locator: $locator,
+                type: $type,
+            );
 
             $asset->setCompositeProperties(
                 $this->themelet->getCompositeAssetProperties($locator)['attributes'] ?? [],
@@ -168,6 +197,8 @@ trait AssetManagementTrait
         }
 
         $asset->setCompositeProperties($properties);
+
+        return $asset;
     }
 
     public function assetApplicableThroughProperties(array $properties = null): bool
