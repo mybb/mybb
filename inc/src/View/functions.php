@@ -138,6 +138,8 @@ function assetUrl(
  * Passes data to Resources.
  *
  * @param array<string, scalar> $data
+ *
+ * @api
  */
 function set(array $data): void
 {
@@ -160,6 +162,8 @@ function directive(string $name): mixed
  * @throws \Twig\Error\LoaderError
  * @throws \Twig\Error\RuntimeError
  * @throws \Twig\Error\SyntaxError
+ *
+ * @api
  */
 function template(string $name, array $context = [])
 {

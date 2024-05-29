@@ -64,7 +64,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      * @param ?string $type The Asset type identifier. Deduced from `$path` if not provided.
      * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
      *
-     * @note Uses `$locator` parameter name to simplify Twig function usage
+     * @api
      */
     public function getAsset(
         string $locator,
@@ -86,7 +86,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return string The complete URL to the asset.
      *
-     * @note Uses `$locator` parameter name to simplify Twig function usage
+     * @api
      */
     public function getAssetUrl(string $locator, bool $static = false, bool $useCdn = true): string
     {
@@ -116,6 +116,8 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      * Get assets attached to the current page.
      *
      * @param bool $inserting Get assets not yet inserted, and declare them as such.
+     *
+     * @api
      */
     public function getAttachedAssets(string $type, bool $inserting = false): array
     {
