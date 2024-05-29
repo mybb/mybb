@@ -1884,9 +1884,10 @@ class PostDataHandler extends DataHandler
 
 		// Decide on the visibility of this post.
 		$ismod = is_moderator($post['fid'], "", $uid);
-
+		$editor_ismod = is_moderator($post['fid'], "", $mybb->user['uid']);
+		
 		// Keep visibility for unapproved and deleted posts
-		if($existing_post['visible'] == 0)
+		if($existing_post['visible'] == 0 && !$editor_ismod)
 		{
 			$visible = 0;
 		}
@@ -1894,7 +1895,7 @@ class PostDataHandler extends DataHandler
 		{
 			$visible = -1;
 		}
-		elseif($forumpermissions['mod_edit_posts'] == 1 && !$ismod)
+		elseif($forumpermissions['mod_edit_posts'] == 1 && !$ismod && !$editor_ismod)
 		{
 			$visible = 0;
 			require_once MYBB_ROOT."inc/class_moderation.php";
