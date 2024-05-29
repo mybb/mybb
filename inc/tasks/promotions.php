@@ -167,7 +167,7 @@ function task_promotions($task)
 			$plugins->run_hooks('task_promotions', $args);
 		}
 
-		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
+		$query2 = $db->simple_select("users", "uid,usergroup,additionalgroups,displaygroup,{$usergroup_select}", $sql_where);
 
 		$uids = array();
 		while($user = $db->fetch_array($query2))
@@ -203,7 +203,15 @@ function task_promotions($task)
 			}
 
 			$uids[] = $user['uid'];
+			if((int)$user['displaygroup'] === (int)$user['usergroup'] || in_array((int)$user['displaygroup'], array_map('intval', explode(',', $user['additionalgroups']))))
+			{
+				if(!isset($updateDisplayGroups))
+				{
+					$updateDisplayGroups = [];
+				}
 
+				$updateDisplayGroups[(int)$user['uid']] = (int)$user['uid'];
+			}
 
 			if($usergroup_select == "additionalgroups")
 			{
@@ -212,7 +220,12 @@ function task_promotions($task)
 					// Did the user already have the additional usergroup?
 					array_pop($log_inserts);
 					array_pop($uids);
-				}
+				} elseif(isset($updateDisplayGroups[(int)$user['uid']]))
+				{
+					$db->update_query('users', array('displaygroup' => 0), "uid='{$user['uid']}'");
+
+					unset($updateDisplayGroups[(int)$user['uid']]);
+                }
 			}
 
 			if((count($uids) % 20) == 0)
@@ -220,6 +233,15 @@ function task_promotions($task)
 				if($usergroup_select == "usergroup")
 				{
 					$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+
+					if(!empty($updateDisplayGroups))
+                    {
+						$userIDs = implode(',', $updateDisplayGroups);
+
+						$db->update_query('users', array('displaygroup' => 0), "uid IN ({$userIDs})");
+
+						$updateDisplayGroups = [];
+					}
 				}
 
 				if(!empty($log_inserts))
@@ -237,6 +259,15 @@ function task_promotions($task)
 			if($usergroup_select == "usergroup")
 			{
 				$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+
+				if(!empty($updateDisplayGroups))
+				{
+					$userIDs = implode(',', $updateDisplayGroups);
+
+					$db->update_query('users', array('displaygroup' => 0), "uid IN ({$userIDs})");
+
+					$updateDisplayGroups = [];
+				}
 			}
 
 			if(!empty($log_inserts))
