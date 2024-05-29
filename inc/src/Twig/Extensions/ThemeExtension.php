@@ -4,14 +4,14 @@ namespace MyBB\Twig\Extensions;
 
 use DB_Base;
 use MyBB;
-use MyBB\View\Locator\Locator;
-use MyBB\View\Locator\StaticLocator;
-use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
 use MyBB\View\Runtime\Runtime;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
+
+use function MyBB\View\asset;
+use function MyBB\View\assetUrl;
 
 /**
  * A Twig extension class to provide functionality related to themes and assets.
@@ -74,46 +74,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
         bool $local = false,
     ): ?string
     {
-        if ($static) {
-            $locatorObject = StaticLocator::fromString($locator);
-        } else {
-            $locatorObject = Locator::fromString(
-                $locator,
-                [
-                    'type' => ThemeletLocator::COMPONENT_SET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
-                ],
-                [
-                    // may differ from evoking template's namespace
-                    'namespace' => $this->view->getMainNamespace(),
-                ],
-            );
-        }
-
-        if ($local) {
-            $asset = $this->view->themelet->getPublishedAsset($locatorObject);
-
-            $asset->setCompositeProperties(
-                $this->view->themelet->getCompositeAssetProperties($locatorObject)
-            );
-            $asset->setCompositeProperties([
-                'attributes' => $attributes,
-            ]);
-
-            $asset->insertedToDom = true;
-
-            return $asset->getHtml();
-        } else {
-            $this->view->attachAsset(
-                locator: $locatorObject,
-                properties: [
-                    'attributes' => $attributes,
-                ],
-                type: $type ? ResourceType::from($type) : null,
-            );
-
-            return null;
-        }
+        return asset(...func_get_args());
     }
 
     /**
@@ -129,26 +90,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getAssetUrl(string $locator, bool $static = false, bool $useCdn = true): string
     {
-        if ($static) {
-            $locatorObject = StaticLocator::fromString($locator);
-        } else {
-            $locatorObject = Locator::fromString(
-                $locator,
-                [
-                    'type' => ThemeletLocator::COMPONENT_SET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
-                ],
-                [
-                    // may differ from evoking template's namespace
-                    'namespace' => $this->view->getMainNamespace(),
-                ],
-            );
-        }
-
-        $asset = $this->view->themelet->getPublishedAsset($locatorObject);
-
-        // TODO: This could be smart and add cache busting query parameters to the path automatically...
-        return $asset->getUrl($useCdn);
+        return assetUrl(...func_get_args());
     }
 
     /**
