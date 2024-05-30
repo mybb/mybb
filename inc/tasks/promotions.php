@@ -207,7 +207,7 @@ function task_promotions($task)
 			{
 				if(!isset($updateDisplayGroups))
 				{
-					$updateDisplayGroups = [];
+					$updateDisplayGroups = array();
 				}
 
 				$updateDisplayGroups[(int)$user['uid']] = (int)$user['uid'];
@@ -220,7 +220,8 @@ function task_promotions($task)
 					// Did the user already have the additional usergroup?
 					array_pop($log_inserts);
 					array_pop($uids);
-				} elseif(isset($updateDisplayGroups[(int)$user['uid']]))
+				} 
+				elseif(isset($updateDisplayGroups[(int)$user['uid']]))
 				{
 					$db->update_query('users', array('displaygroup' => 0), "uid='{$user['uid']}'");
 
@@ -240,7 +241,7 @@ function task_promotions($task)
 
 						$db->update_query('users', array('displaygroup' => 0), "uid IN ({$userIDs})");
 
-						$updateDisplayGroups = [];
+						$updateDisplayGroups = array();
 					}
 				}
 
@@ -266,7 +267,7 @@ function task_promotions($task)
 
 					$db->update_query('users', array('displaygroup' => 0), "uid IN ({$userIDs})");
 
-					$updateDisplayGroups = [];
+					$updateDisplayGroups = array();
 				}
 			}
 
