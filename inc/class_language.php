@@ -263,7 +263,7 @@ class MyLanguage implements JsonSerializable
 
 	public function __get(string $name): string
 	{
-		return $this->phrases[$name];
+		return $this->phrases[$name] ?? '';
 	}
 
 	public function __isset(string $name): bool
