@@ -906,7 +906,7 @@ function error($error_message = "", $title = "", $error_page = "")
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 
-	output_page(\MyBB\View\template('error/error.twig', [
+	output_page(\MyBB\View\template('@frontend/error/error.twig', [
 		'title' => $title,
 		'error_message' => $error_message,
 		'error_page' => $error_page,
@@ -954,7 +954,7 @@ function inline_error($errors, $title = "", $json_data = array())
 		'list' => $errors
 	];
 
-	$errors = \MyBB\View\template('error/inline.twig', [
+	$errors = \MyBB\View\template('@frontend/error/inline.twig', [
 		'errors' => $data
 	]);
 
@@ -3802,7 +3802,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 				$toolbar['code'] = "code,php,";
 			}
 
-			$codeinsert = \MyBB\View\template('misc/codebuttons.twig', [
+			$codeinsert = \MyBB\View\template('@frontend/misc/codebuttons.twig', [
 				'toolbar' => $toolbar,
 				'emoticons' => $emoticons,
 				'editor_language' => $editor_language,
@@ -4291,7 +4291,7 @@ function log_moderator_action($data, $action = "")
  */
 function get_reputation($reputation, $uid = 0)
 {
-	return \MyBB\View\template('postbit/reputation.twig', [
+	return \MyBB\View\template('@frontend/postbit/reputation.twig', [
 		'uid' => (int)$uid,
 		'reputation' => $reputation
 	]);
@@ -4305,7 +4305,7 @@ function get_reputation($reputation, $uid = 0)
  */
 function get_colored_warning_level($level)
 {
-	return \MyBB\View\template('postbit/warninglevel.twig', [
+	return \MyBB\View\template('@frontend/postbit/warninglevel.twig', [
 		'level' => $level
 	]);
 }
@@ -4533,7 +4533,7 @@ function get_attachment_icon($ext)
 		$name = $lang->unknown;
 	}
 
-	return \MyBB\View\template('misc/attachment_icon.twig', [
+	return \MyBB\View\template('@frontend/misc/attachment_icon.twig', [
 		'ext' => $ext,
 		'icon' => $icon,
 		'name' => $name
@@ -5206,7 +5206,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if($tid == 1 && ($num_themes > 1 || $count_override == true))
 	{
-		return \MyBB\View\template('misc/themeselect.twig', [
+		return \MyBB\View\template('@frontend/misc/themeselect.twig', [
 			'footer' => $footer,
 			'selected' => $selected,
 			'options' => $themeselect_options,

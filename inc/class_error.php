@@ -320,7 +320,7 @@ class errorHandler {
 			$lang->warnings = "The following warnings occurred:";
 		}
 
-		return \MyBB\View\template('misc/php_warnings.twig', [
+		return \MyBB\View\template('@frontend/misc/php_warnings.twig', [
 			'warnings' => $this->warnings
 		]);
 	}
