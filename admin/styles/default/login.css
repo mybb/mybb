@@ -3,21 +3,23 @@
  * Login CSS
  */
 
+@import url('https://fonts.googleapis.com/css?family=Asap:400,600,600i|Open+Sans:400,700&display=swap');
+
 body {
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
-	font-size: 12px;
-	background: #fff;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	background: #393D3F;
 	color: #000000;
 	margin: 0;
 }
 
 a {
-	color: #0072BC;
+	color: #007fd0;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #0072BC;
+	color: #ff7500;
 	text-decoration: underline;
 }
 
@@ -26,153 +28,137 @@ a:hover {
 }
 
 #container {
-	width: 410px;
-	margin: 100px auto;
+	width: 430px;
+	margin: 50px auto 0px auto;
 }
 
 #logo h1 {
-	height: 82px;
-	background: transparent url(images/login_logo.png) bottom left no-repeat;
-	margin: 10px;
-	padding: 0;
+	height: 60px;
+	background: transparent url(images/logotype-white.png) 10px / contain no-repeat;
+	box-sizing: border-box;
+	margin: 20px 0;
+}
+
+#logo h1 .mybb {
+	font-family: 'Asap', sans-serif;
+	font-style: italic;
+	font-weight: 600;
+	text-indent: 5px;
+	color: #fff;
+	font-size: 32px;
+	margin: 0 0 0 55px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 #header h1 a {
-	float: left;
-	height: 82px;
-	width: 410px;
+	display: block;
+	height: 75px;
+	width: 430px;
+}
+
+#header h1 a:hover {
+	text-decoration: none;
 }
 
 #content {
-	border: 1px solid #ccc;
 	background: #fff;
-	padding: 1px;
 	border-radius: 6px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
+	box-shadow: #333 0 0 5px;
 }
 
-p, form {
-	padding: 0 10px 10px 10px;
-}
-
-form {
-	padding-bottom: 0;
+h2 {
+	background: #007fd0;
+	color:#fff;
+	margin: 0;
+	padding: 16px 12px;
+	font-size: 1.4em;
+	border-radius: 5px 5px 0 0;
+	font-family: 'Asap';
 }
 
 p {
-	margin-bottom: 0;
+	padding: 0 18px;
 }
 
 form p {
 	padding: 0 0 10px 0;
 }
 
-h2 {
-	background: #02426c url(images/thead.png) repeat-x top left;
-	border-bottom: 1px solid #263c30;
-	color:#fff;
-	margin: 0;
-	padding: 8px;
-	font-size: 14px;
-	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-radius: 5px 5px 0 0;
-}
-
-input.text_input {
-	border: 1px solid #aaa;
-	width: 255px;
-	padding: 4px;
-	font-size: 13px;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	outline: 0;
-}
-
-input.text_input:focus {
-	border: 1px solid #777;
+.form_container {
+	padding: 0 12px;
 }
 
 #message {
 	margin: 10px 10px 0 10px;
 	padding: 10px;
-	font-weight: bold;
 	background: #efefef;
-	border: 1px solid #ccc;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 }
 
 #message.error {
-	border: 1px solid #FC6;
-	background: #FFC;
+	background: #fbe3e4;
 	color: #C00;
 }
 
 #message.success {
-	border: #080 1px solid;
-	background-color: #E8FCDC;
-	color: #080;
+	background-color: #68c000;
+	color: #fff;
 }
 
 form .label {
-	margin-bottom: 3px;
-	width: 112px;
-	clear: left;
-	float: left;
-	padding: 15px 0 0 8px;
+	padding: 12px 6px 0 6px;
 	border-top: 1px solid #ddd;
 }
 
 form label {
 	font-weight: bold;
+	cursor: pointer;
 }
 
 .form_container .field {
-	float: left;
-	padding: 8px 0;
-	border-top: 1px solid #ddd;
+	padding: 8px 6px;
+}
+
+input.text_input {
+	border: 1px solid #ccc;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 5px 6px;
+	font-size: 16px;
+	font-family: 'Open Sans', sans-serif;
+	border-radius: 5px;
+	outline: 0;
 }
 
 p.submit {
-	clear: both;
 	background: #efefef;
-	border-top: 1px solid #ddd;
-	padding: 8px 10px;
-	margin: 8px -10px 0;
-	text-align: right;
+	padding: 8px 18px 8px 18px;
+	margin: 8px 0;
 	border-radius: 0 0 5px 5px;
-	-moz-border-radius: 0 0 5px 5px;
-	-webkit-border-radius: 0 0 5px 5px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 p.submit input {
-	border: 1px solid #999;
-	padding: 4px 7px;
-	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
-	color: #444;
-	font-weight: bold;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
-	margin-right: 3px;
+	border: 1px solid #007fd0;
+	padding: 6px 12px;
+	background: #007fd0;
+	color: #fff;
+	font-family: 'Open Sans', sans-serif;
 	font-size: 1.1em;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 }
 
 p.submit input:hover {
-	border: 1px solid #666;
+	background: #ff7500;
+	border-color: #ff7500;
 	cursor: pointer;
 }
 
 .forgot_password {
-	float: left;
-	padding-top: 8px;
-	font-size: 11px;
+	font-size: 0.85em;
 }
 
 .forgot_password a {
@@ -185,7 +171,6 @@ p.submit input:hover {
 	background-color: #ffc;
 	color: #900;
 	font-style: normal;
-	font-weight: bold;
 	padding-left: 10px;
 	display: block;
 }

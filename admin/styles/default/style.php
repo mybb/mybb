@@ -50,12 +50,12 @@ class Page extends DefaultPage
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
 				if(!empty($this->_breadcrumb_trail[$key+2]))
 				{
-					$trail .= " &raquo; ";
+					$trail .= " &rsaquo; ";
 				}
 			}
 			else
 			{
-				$trail .= " &raquo; <span class=\"active\">".$crumb['name']."</span>";
+				$trail .= " &rsaquo; <span class=\"active\">".$crumb['name']."</span>";
 			}
 		}
 		return $trail;
