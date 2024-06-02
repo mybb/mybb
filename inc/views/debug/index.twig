@@ -75,7 +75,7 @@
 
                 <h2>Database</h2>
                 {{ _self.visualize(data.dbConnections, 'list', 'Connections') }}
-                {{ _self.visualize(data.dbQueries, 'databaseQueries', 'Queries (' ~ data.dbQueries|length ~ ' &mdash; ' ~ data.queryTime ~ ')') }}
+                {{ _self.visualize(data.dbQueries, 'databaseQueries', 'Queries (' ~ data.dbQueries|length ~ ' &mdash; ' ~ time ~ ')') }}
             </section>
 
             <section>
