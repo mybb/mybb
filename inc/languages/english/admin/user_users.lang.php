@@ -355,6 +355,7 @@ $l['thread_count_is'] = "Thread count is";
 $l['reg_ip_matches'] = "Registration IP address matches";
 $l['wildcard'] = "To search for ranges of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['posted_with_ip'] = "Has posted with the IP address";
+$l['contact_fields_match'] = "Where contact fields match&hellip;";
 $l['custom_profile_fields_match'] = "Where custom profile fields match&hellip;";
 $l['is_not_blank'] = " is not empty";
 $l['or'] = "or";
