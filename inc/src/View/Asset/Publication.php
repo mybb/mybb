@@ -174,7 +174,7 @@ class Publication
         $result = false;
 
         if (
-            flock($fh, LOCK_EX|LOCK_NB, $wasLocked) ||
+            flock($fh, LOCK_EX | LOCK_NB, $wasLocked) ||
             flock($fh, LOCK_EX)
         ) {
             if (

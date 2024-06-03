@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions used for data seeding, synchronization, and migration.
  */
@@ -452,7 +453,7 @@ function writeAcpPin(string $pin): void
 {
     $pin = addslashes($pin);
 
-    $file = @fopen(MYBB_ROOT."inc/config.php", "a");
+    $file = @fopen(MYBB_ROOT . "inc/config.php", "a");
 
     @fwrite($file, <<<PHP
     /**
@@ -750,7 +751,7 @@ function syncTasks(): void
                     'title' => $entry['title'],
                     'description' => $entry['description'],
                 ],
-                "file='".  $entry['file'] . "'",
+                "file='" .  $entry['file'] . "'",
             );
         } else {
             $db->insert_query("tasks", $entry);

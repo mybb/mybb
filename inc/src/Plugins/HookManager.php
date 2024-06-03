@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MyBB\Plugins;
 
@@ -60,8 +60,10 @@ class HookManager
         $methodRepresentation = $this->getStringRepresentationForCallable($function);
 
         // Check to see if we already have this hook running at this priority
-        if (!empty($this->hooks[$hook][$priority][$methodRepresentation]) &&
-            is_array($this->hooks[$hook][$priority][$methodRepresentation])) {
+        if (
+            !empty($this->hooks[$hook][$priority][$methodRepresentation]) &&
+            is_array($this->hooks[$hook][$priority][$methodRepresentation])
+        ) {
             return false;
         }
 

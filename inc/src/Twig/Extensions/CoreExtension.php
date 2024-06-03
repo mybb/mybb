@@ -142,8 +142,10 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         }
 
         if (!$offset && $offset != '0') {
-            if (isset($this->mybb->user['uid']) && $this->mybb->user['uid'] != 0 &&
-                isset($this->mybb->user['timezone'])) {
+            if (
+                isset($this->mybb->user['uid']) && $this->mybb->user['uid'] != 0 &&
+                isset($this->mybb->user['timezone'])
+            ) {
                 $offset = $this->mybb->user['timezone'];
                 $dstCorrection = (bool)$this->mybb->user['dst'];
             } elseif (defined("IN_ADMINCP")) {
@@ -189,8 +191,10 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         /** @var ?\DateTime $dateToday */
         /** @var ?\DateTime $dateYesterday */
         $dateToday = $dateYesterday = null;
-        if ($useRelativeFormatting &&
-            ($format == $this->mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal')) {
+        if (
+            $useRelativeFormatting &&
+            ($format == $this->mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal')
+        ) {
             $currentDateTime = new \DateTime('now', $timezone);
 
             $dateToday = \DateTime::createFromFormat('!Y-m-d', $currentDateTime->format('Y-m-d'), $timezone);
@@ -457,7 +461,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
 
         if ($to > $numPages) {
             $to = $numPages;
-            $from = $numPages - $this->mybb->settings['maxmultipagelinks']+1;
+            $from = $numPages - $this->mybb->settings['maxmultipagelinks'] + 1;
             if ($from <= 0) {
                 $from = 1;
             }
@@ -500,9 +504,11 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             $multiPage['next_page_url'] = fetch_page_url($url, $next);
         }
 
-        if ($breadcrumb == false &&
+        if (
+            $breadcrumb == false &&
             $numPages > ($this->mybb->settings['maxmultipagelinks'] + 1) &&
-            $this->mybb->settings['jumptopagemultipage'] == 1) {
+            $this->mybb->settings['jumptopagemultipage'] == 1
+        ) {
             // When the 2nd parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the
             // URL as it's unnecessary
             $multiPage['jump_url'] = fetch_page_url($url, 1);

@@ -39,8 +39,8 @@ abstract class Extension
 
     private FileStamp $manifestStamp;
 
-    readonly private string $packageName;
-    readonly private string $version;
+    private readonly string $packageName;
+    private readonly string $version;
 
     public static function codenameValid(string $value): bool
     {
@@ -106,7 +106,8 @@ abstract class Extension
                 $this->manifestStamp = FileStamp::fromFile($path, $content);
 
                 $values = json_decode(
-                    $content, flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
+                    $content,
+                    flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
                 );
 
                 $this->validateManifestValues($values);

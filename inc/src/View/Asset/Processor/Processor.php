@@ -9,7 +9,7 @@ use MyBB\View\Asset\ThemeletAsset;
 
 abstract class Processor
 {
-    readonly protected string $inputContent;
+    protected readonly string $inputContent;
 
     public function __construct(
         protected Publication $publication,

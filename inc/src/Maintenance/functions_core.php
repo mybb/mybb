@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions with high overlap with the application code under normal conditions.
  */
@@ -218,8 +219,7 @@ function getCorrectedSettings(array $settings): array
     $settings['bbname'] = strip_tags($settings['bbname']);
 
     // Fix for people who for some specify a trailing slash on the board URL
-    if(str_ends_with($settings['bburl'], "/"))
-    {
+    if (str_ends_with($settings['bburl'], "/")) {
         $settings['bburl'] = my_substr($settings['bburl'], 0, -1);
     }
 

@@ -24,7 +24,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     /**
      * The version of MyBB this application class relates to.
      */
-    const VERSION = '1.9.0-alpha.1';
+    public const VERSION = '1.9.0-alpha.1';
 
     /**
      * The base path for the MyBB installation.
@@ -165,11 +165,11 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
         $this->hasBeenBootstrapped = true;
 
         foreach ($bootstrappers as $bootstrapper) {
-            $this['events']->fire('bootstrapping: '.$bootstrapper, [$this]);
+            $this['events']->fire('bootstrapping: ' . $bootstrapper, [$this]);
 
             $this->make($bootstrapper)->bootstrap($this);
 
-            $this['events']->fire('bootstrapped: '.$bootstrapper, [$this]);
+            $this['events']->fire('bootstrapped: ' . $bootstrapper, [$this]);
         }
     }
 
@@ -182,7 +182,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      */
     public function beforeBootstrapping(string $bootstrapper, \Closure $callback)
     {
-        $this['events']->listen('bootstrapping: '.$bootstrapper, $callback);
+        $this['events']->listen('bootstrapping: ' . $bootstrapper, $callback);
     }
 
     /**
@@ -194,7 +194,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      */
     public function afterBootstrapping(string $bootstrapper, \Closure $callback)
     {
-        $this['events']->listen('bootstrapped: '.$bootstrapper, $callback);
+        $this['events']->listen('bootstrapped: ' . $bootstrapper, $callback);
     }
 
     /**
@@ -736,9 +736,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @return string
      */
     public function bootstrapPath($path = '')
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Get the path to the application configuration files.
@@ -747,9 +747,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @return string
      */
     public function configPath($path = '')
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Get the path to the database directory.
@@ -758,9 +758,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @return string
      */
     public function databasePath($path = '')
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Get the path to the language files.
@@ -791,9 +791,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @return string
      */
     public function resourcePath($path = '')
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Get the path to the storage directory.
@@ -811,9 +811,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @return string
      */
     public function getLocale()
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Set the current application locale.
@@ -833,9 +833,9 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @throws \RuntimeException
      */
     public function getNamespace()
-	{
+    {
         return '';
-	}
+    }
 
     /**
      * Get the path to the cached services.php file.

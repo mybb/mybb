@@ -57,7 +57,7 @@ class LangExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return string The resolved translation string.
      */
-    public function trans(string $languageVariable, ...$params) : string
+    public function trans(string $languageVariable, ...$params): string
     {
         return $this->lang->sprintf($this->lang->$languageVariable, ...$params);
     }

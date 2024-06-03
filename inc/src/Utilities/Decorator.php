@@ -169,7 +169,6 @@ abstract class Decorator
                     $baseDecorator->addDecorator($decorator);
                 }
             }
-
         }
 
         return $baseDecorator;

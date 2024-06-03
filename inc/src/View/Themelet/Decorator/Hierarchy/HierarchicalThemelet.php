@@ -193,10 +193,12 @@ class HierarchicalThemelet extends ThemeletDecorator
         }
 
         foreach ($extensions as $packageName => $extension) {
-            if (!$extension->manifestStampValid(
-                $stamp[$packageName],
-                $this->inheritanceHydrableValidationType,
-            )) {
+            if (
+                !$extension->manifestStampValid(
+                    $stamp[$packageName],
+                    $this->inheritanceHydrableValidationType,
+                )
+            ) {
                 return false;
             }
         }

@@ -22,9 +22,9 @@ trait HierarchicalNamespacesTrait
      */
     public function getNamespaces(): array
     {
-       return array_keys(
-           $this->getThemeletsByNamespace()
-       );
+        return array_keys(
+            $this->getThemeletsByNamespace()
+        );
     }
 
     /**

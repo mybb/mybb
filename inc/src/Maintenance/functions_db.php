@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions used for testing and establishing database connections.
  */
@@ -194,8 +195,8 @@ function getDatabaseSuggestionCredentialSets(): array
 
         if (
             $config !== null &&
-            isset($config['database']['type'])
-            && array_key_exists($config['database']['type'], getAvailableDatabaseDriversData())
+            isset($config['database']['type']) &&
+            array_key_exists($config['database']['type'], getAvailableDatabaseDriversData())
         ) {
             array_unshift($credentialSets, array_filter([
                 'engine' => getAvailableDatabaseDriversData()[$config['database']['type']]['engine'],

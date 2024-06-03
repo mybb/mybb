@@ -101,7 +101,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      * @return string `trow1` or `trow2` depending on the previous call.
      * @deprecated Use CSS pseudo-classes instead.
      */
-    public function altTrow(bool $reset = false) : string
+    public function altTrow(bool $reset = false): string
     {
         if (is_null($this->altRowState) || $this->altRowState === 'trow2' || $reset) {
             $this->altRowState = 'trow1';

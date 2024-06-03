@@ -13,6 +13,7 @@ use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
+
 use function MyBB\View\directive;
 
 /**

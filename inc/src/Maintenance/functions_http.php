@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions used with processing HTTP requests, responses, and HTML rendering.
  */

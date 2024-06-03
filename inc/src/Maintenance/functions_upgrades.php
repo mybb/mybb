@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions used for interpretation of `inc/upgrades/` scripts and numbers.
  */

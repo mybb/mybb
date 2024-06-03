@@ -62,7 +62,7 @@ function asset(
     }
 
     if ($local) {
-       $asset = $view->themelet->getPublishedAsset(
+        $asset = $view->themelet->getPublishedAsset(
             locator: $locatorObject,
             type: $typeObject,
         );

@@ -210,7 +210,6 @@ class ProcessController
                     }
                 }
             }
-
         }
 
         // interface-specific alerts

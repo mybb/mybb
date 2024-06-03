@@ -232,5 +232,4 @@ trait HierarchicalExtensionTrait
 
         return $dependants;
     }
-
 }

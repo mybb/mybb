@@ -8,8 +8,8 @@ use DB_Base;
 use MyBB;
 use MyBB\Stopwatch\Stopwatch;
 use MyLanguage;
-
 use Twig\Profiler\Dumper\TextDumper;
+
 use function MyBB\app;
 use function MyBB\Maintenance\template;
 
@@ -63,7 +63,7 @@ class DebugController
         if (!$memoryUsage) {
             $memoryUsage = $this->lang->unknown;
         } else {
-            $memoryUsage = get_friendly_size($memoryUsage)." ({$memoryUsage} bytes)";
+            $memoryUsage = get_friendly_size($memoryUsage) . " ({$memoryUsage} bytes)";
         }
 
         // opcache
@@ -122,7 +122,7 @@ class DebugController
         $data['resources'] = [
             'No. Included Files' => count(get_included_files()),
             'No. DB Queries' => $this->db->query_count,
-            'No. DB Templates Used' => count($templates->cache)." (".count(explode(",", $templatelist ?? ''))." Cached / ".count($templates->uncached_templates)." Manually Loaded)",
+            'No. DB Templates Used' => count($templates->cache) . " (" . count(explode(",", $templatelist ?? '')) . " Cached / " . count($templates->uncached_templates) . " Manually Loaded)",
             'Memory Usage' => $memoryUsage,
             'Server Load' => get_server_load(),
         ];
