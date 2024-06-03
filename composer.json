@@ -62,6 +62,7 @@
         "sort-packages": true
     },
     "scripts": {
+        "phpcs": "inc/vendor/bin/phpcs",
         "phpstan-0": "phpstan analyse src/ -c phpstan.neon --level=0 --no-progress -vvv",
         "phpstan-1": "phpstan analyse src/ -c phpstan.neon --level=1 --no-progress -vvv",
         "phpstan-2": "phpstan analyse src/ -c phpstan.neon --level=2 --no-progress -vvv",
