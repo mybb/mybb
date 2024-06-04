@@ -84,7 +84,6 @@ class errorHandler {
 	 * @var array
 	 */
 	public $mybb_error_types = array(
-		MYBB_SQL,
 		MYBB_TEMPLATE,
 		MYBB_GENERAL,
 		MYBB_NOT_INSTALLED,
@@ -180,6 +179,7 @@ class errorHandler {
 					'error' => $exception->getMessage(),
 					'query' => $exception->getQuery(),
 				),
+				trace: $exception->getTrace(),
 			);
 		}
 		else
@@ -520,9 +520,12 @@ class errorHandler {
 						$data['Code'] = $code;
 					}
 				}
+			}
 
+			if(!in_array($type, $this->mybb_error_types))
+			{
 				$backtrace = $this->generate_backtrace(html: PHP_SAPI !== 'cli', trace: $trace);
-				if($backtrace && !in_array($type, $this->mybb_error_types))
+				if($backtrace)
 				{
 					$data['Backtrace'] = $backtrace;
 				}
