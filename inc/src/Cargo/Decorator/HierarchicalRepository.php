@@ -172,6 +172,8 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         }
     }
 
+    abstract public function getOwnRepository(): RepositoryInterface;
+
     protected function buildResolvedProperties(&$stamp = []): array
     {
         $results = [
@@ -240,6 +242,4 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      * @return static[]
      */
     abstract protected function getAncestors(): array;
-
-    abstract protected function getOwnRepository(): RepositoryInterface;
 }

@@ -152,6 +152,13 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         }
     }
 
+    public function getOwnRepository(): RepositoryInterface
+    {
+        return $this->getRepository(
+            $this->themelet->getOwnThemelet()
+        );
+    }
+
     /**
      * @param FileStamp::TYPE_* $type
      */
@@ -217,13 +224,6 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         $stopwatchPeriod->stop();
 
         return $results;
-    }
-
-    protected function getOwnRepository(): RepositoryInterface
-    {
-        return $this->getRepository(
-            $this->themelet->getOwnThemelet()
-        );
     }
 
     /**
