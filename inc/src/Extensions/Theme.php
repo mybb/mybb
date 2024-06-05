@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions;
 
+use Exception;
 use FilesystemIterator;
 use MyBB\View\NamespaceType;
 use SplFileInfo;
@@ -48,7 +49,7 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
 
             foreach ($directoryNames as $packageName) {
                 if (!ThemeType::tryFromPackageName($packageName)) {
-                    throw new \Exception('Invalid Extension package name `' . $packageName . '`');
+                    throw new Exception('Invalid Extension package name `' . $packageName . '`');
                 }
 
                 $extensions[$packageName] = self::get($packageName);
@@ -64,7 +65,7 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
 
         $this->type =
             ThemeType::tryFromPackageName($packageName)
-            ?? throw new \Exception('Invalid Extension package name `' . $packageName . '`')
+            ?? throw new Exception('Invalid Extension package name `' . $packageName . '`')
         ;
 
         $this->manifestFields['type'] = [

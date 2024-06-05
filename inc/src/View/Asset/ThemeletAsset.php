@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Asset;
 
+use Exception;
 use InvalidArgumentException;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -46,7 +47,13 @@ class ThemeletAsset extends Asset
      */
     public function getPublicPath(): string
     {
-        return $this->themelet->getPublishingPath() . '/' . $this->locator->getNamespace() . '/' . $this->locator->getSubPath();
+        return
+            $this->themelet->getPublishingPath() .
+            '/' .
+            $this->locator->getNamespace() .
+            '/' .
+            $this->locator->getSubPath()
+        ;
     }
 
     public function getUrl(bool $useCdn = true): string
@@ -117,7 +124,7 @@ class ThemeletAsset extends Asset
             !str_starts_with($path, realpath(self::ABSOLUTE_BASE_PATH) . '/') ||
             str_ends_with($path, '.php')
         ) {
-            throw new \Exception('Illegal write path `' . $path . '`');
+            throw new Exception('Illegal write path `' . $path . '`');
         }
 
         if (!is_dir(dirname($path))) {
@@ -137,7 +144,7 @@ class ThemeletAsset extends Asset
             !str_starts_with($path, realpath(self::ABSOLUTE_BASE_PATH) . '/') ||
             str_ends_with($path, '.php')
         ) {
-            throw new \Exception('Illegal write path `' . $path . '`');
+            throw new Exception('Illegal write path `' . $path . '`');
         }
 
         return unlink($path);

@@ -116,6 +116,8 @@ abstract class Asset
         );
     }
 
+    abstract public function getPublicPath(): string;
+
     abstract public function getType(): ?ResourceType;
 
     abstract protected function getEntityNamespace(): string;

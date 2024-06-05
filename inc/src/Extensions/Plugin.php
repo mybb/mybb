@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions;
 
+use Exception;
 use MyBB\View\NamespaceType;
 
 class Plugin extends Extension implements ViewExtensionInterface
@@ -25,7 +26,7 @@ class Plugin extends Extension implements ViewExtensionInterface
         parent::__construct($packageName, $version);
 
         if (!self::codenameValid($packageName)) {
-            throw new \Exception('Invalid Extension package name `' . $packageName . '`');
+            throw new Exception('Invalid Extension package name `' . $packageName . '`');
         }
 
         $this->manifestFields['type'] = [

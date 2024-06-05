@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Locator;
 
+use Exception;
 use MyBB\View\ResourceType;
 
 /**
@@ -203,10 +204,10 @@ class ThemeletLocator extends Locator
                     $directives[$component] === self::COMPONENT_SET ||
                     ($directives[$component] === self::COMPONENT_CONTEXT && !isset($context[$component]))
                 ) {
-                    throw new \Exception('Missing ' . $component . ' in Locator');
+                    throw new Exception('Missing ' . $component . ' in Locator');
                 }
             } elseif ($directives[$component] === self::COMPONENT_UNSET) {
-                throw new \Exception($component . ' not allowed in Locator');
+                throw new Exception($component . ' not allowed in Locator');
             }
         }
     }
@@ -242,7 +243,7 @@ class ThemeletLocator extends Locator
                 } elseif ($context[$component] !== null) {
                     $components[$component] = $context[$component];
                 } else {
-                    throw new \Exception('Missing ' . $component . ' for Locator');
+                    throw new Exception('Missing ' . $component . ' for Locator');
                 }
             }
         }
@@ -252,7 +253,7 @@ class ThemeletLocator extends Locator
         if ($this->filename !== null) {
             $components['filename'] = $this->filename;
         } else {
-            throw new \Exception('Missing filename for Locator');
+            throw new Exception('Missing filename for Locator');
         }
 
         return self::composeString($components);

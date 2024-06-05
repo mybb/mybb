@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Runtime;
 
+use Exception;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
@@ -160,15 +161,15 @@ trait AssetManagementTrait
 
 
         if ($type === null) {
-            throw new \Exception('Unknown Asset type (`' . $locatorString . '`)');
+            throw new Exception('Unknown Asset type (`' . $locatorString . '`)');
         }
 
         if (!in_array($type, static::ATTACHABLE_TYPES)) {
-            throw new \Exception('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+            throw new Exception('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
         }
 
         if (in_array($locatorString, $dependentAncestors)) {
-            throw new \Exception('Circular dependency declared for Asset `' . $locatorString . '`');
+            throw new Exception('Circular dependency declared for Asset `' . $locatorString . '`');
         }
 
 

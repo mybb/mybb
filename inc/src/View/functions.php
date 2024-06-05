@@ -165,7 +165,7 @@ function directive(string $name): mixed
  *
  * @api
  */
-function template(string $name, array $context = [])
+function template(string $name, array $context = []): string
 {
     $stopwatchPeriod = app(Stopwatch::class)->start($name, 'core.view.template');
 

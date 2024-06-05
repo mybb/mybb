@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\Stopwatch;
 
+use LogicException;
+
 /**
  * Manages Stopwatch Events.
  */
@@ -34,7 +36,7 @@ class Stopwatch
         $event = $this->getEvent($name, $group);
 
         if ($event === null) {
-            throw new \LogicException('Attempting to stop non-existent event');
+            throw new LogicException('Attempting to stop non-existent event');
         }
 
         return $event->stopFirstRunningPeriod($time);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View;
 
+use Exception;
 use LogicException;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
@@ -22,7 +23,7 @@ readonly class HierarchicalResource extends Resource
         parent::__construct($themelet, $locator);
 
         if (!HierarchicalThemelet::decorates($themelet)) {
-            throw new \Exception('`' . __CLASS__ . '` must be associated with a Hierarchical Themelet');
+            throw new Exception('`' . __CLASS__ . '` must be associated with a Hierarchical Themelet');
         }
     }
 

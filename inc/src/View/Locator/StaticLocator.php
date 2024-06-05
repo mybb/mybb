@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\View\Locator;
 
+use Exception;
+
 /**
  * A reference to an Asset with a static path (outside any Themelet structure).
  */
@@ -56,7 +58,7 @@ class StaticLocator extends Locator
 
             return $string;
         } else {
-            throw new \Exception('Missing path for Locator');
+            throw new Exception('Missing path for Locator');
         }
     }
 
@@ -117,7 +119,7 @@ class StaticLocator extends Locator
         if ($this->path !== null) {
             $information['path'] = $this->path;
         } else {
-            throw new \Exception('Missing path for Locator');
+            throw new Exception('Missing path for Locator');
         }
 
         return self::composeString($information);

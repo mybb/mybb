@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\Stopwatch;
 
+use LogicException;
+
 /**
  * Stores time and memory usage measurements.
  */
@@ -36,7 +38,7 @@ class Event
             }
         }
 
-        throw new \LogicException('Attempting to stop event with no running periods');
+        throw new LogicException('Attempting to stop event with no running periods');
     }
 
     /**
