@@ -175,7 +175,7 @@ class UpgradeModel extends Model
                     'callback' => function () use (
                         $upgradeScriptNumber,
                     ): array {
-                        \MyBB\Maintenance\addUpgradeNumberToVersionHistory($upgradeScriptNumber);
+                        \MyBB\Maintenance\addUpgradeNumberToVersionHistory((string)$upgradeScriptNumber);
 
                         return [];
                     },
@@ -214,7 +214,7 @@ class UpgradeModel extends Model
 
                             // bump version history for each migration script after last function has run
                             if ($i === $migrationFunctionNamesCount) {
-                                \MyBB\Maintenance\addUpgradeNumberToVersionHistory($upgradeScriptNumber);
+                                \MyBB\Maintenance\addUpgradeNumberToVersionHistory((string)$upgradeScriptNumber);
                             }
 
                             return $result;
@@ -301,7 +301,7 @@ class UpgradeModel extends Model
         ];
 
         $applicableUpgradeScriptNumbers = \MyBB\Maintenance\getApplicableUpgradeScriptNumbers(
-            (int)$process->getParameterValue('upgrade_start')
+            $process->getParameterValue('upgrade_start')
         );
 
         foreach ($applicableUpgradeScriptNumbers as $number) {
@@ -344,7 +344,7 @@ class UpgradeModel extends Model
 
         $directives = \MyBB\Maintenance\getResolvedUpgradeDirectives(
             \MyBB\Maintenance\loadUpgradeScriptsData(),
-            (int)$process->getStateVariable('upgrade_start'),
+            $process->getStateVariable('upgrade_start'),
         );
 
         \MyBB\Maintenance\syncSettings($directives['revert_all_settings'] == 1);

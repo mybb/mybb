@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace MyBB\Maintenance;
 
-function getLatestInstalledUpgradeNumber(): ?int
+function getLatestInstalledUpgradeNumber(): ?string
 {
     $cache = getCache();
 
@@ -22,27 +22,54 @@ function getLatestInstalledUpgradeNumber(): ?int
         if (empty($version_history)) {
             $number = 16;
         } else {
-            $number = (int)end($version_history);
+            $number = end($version_history);
+        }
+
+        if (is_int($number)) {
+            $number = (string)$number;
         }
 
         return $number;
     }
 }
 
-function getNextUpgradeScriptNumber(): ?int
+function getNextUpgradeScriptNumber(): ?string
 {
-    $labeledUpgradeScripts = getLabeledUpgradeScripts();
+    $upgradeScripts = getUpgradeScripts();
     $latestInstalledUpgradeNumber = getLatestInstalledUpgradeNumber();
 
-    if (array_key_exists($latestInstalledUpgradeNumber + 1, $labeledUpgradeScripts)) {
-        return $latestInstalledUpgradeNumber + 1;
+    if ($latestInstalledUpgradeNumber === null) {
+        return (string)array_key_first($upgradeScripts);
     } else {
+        $upgradeNumbers = array_keys($upgradeScripts);
+
+        // Check for standard migrations and old branch patches (1 < 1p1 < 1p2 < 2)
+        $parts = explode('p', $latestInstalledUpgradeNumber);
+
+        $candidates = [
+            (string)((int)$parts[0] + 1),
+        ];
+
+        if (isset($parts[1])) {
+            $candidates[] = $parts[0] . 'p' . ((int)$parts[1] + 1);
+        } else {
+            $candidates[] = $parts[0] . 'p1';
+        }
+
+        foreach ($candidates as $candidate) {
+            if (in_array($candidate, $upgradeNumbers)) {
+                return $candidate;
+            }
+        }
+
         return null;
     }
 }
 
 /**
  * @return array<int, string>
+ *
+ * @note Digit-only string keys are cast to int by PHP.
  */
 function getUpgradeScripts(): array
 {
@@ -56,8 +83,8 @@ function getUpgradeScripts(): array
         $dh = opendir($directoryPath);
 
         while (($file = readdir($dh)) !== false) {
-            if (preg_match('#upgrade([0-9]+).php$#i', $file, $match)) {
-                $entries[(int)$match[1]] = $file;
+            if (preg_match('#upgrade(\d+(p\d+)*).php$#i', $file, $match)) {
+                $entries[$match[1]] = $file;
             }
         }
 
@@ -106,11 +133,15 @@ function loadUpgradeScriptsData(): array
     return $upgradeScriptsData;
 }
 
-function addUpgradeNumberToVersionHistory(int $number): void
+function addUpgradeNumberToVersionHistory(string $number): void
 {
     $cache = getCache();
 
     $version_history = $cache->read('version_history');
+
+    if (ctype_digit($number)) {
+        $number = (int)$number;
+    }
 
     $version_history[$number] = $number;
 
@@ -120,7 +151,7 @@ function addUpgradeNumberToVersionHistory(int $number): void
 /**
  * Returns the resulting directives from data of upgrade scripts.
  */
-function getResolvedUpgradeDirectives(array $upgradeScriptsData, int $startUpgradeScriptNumber): array
+function getResolvedUpgradeDirectives(array $upgradeScriptsData, string $startUpgradeScriptNumber): array
 {
     $directives = [
         'parameters' => [],
@@ -134,7 +165,11 @@ function getResolvedUpgradeDirectives(array $upgradeScriptsData, int $startUpgra
 
     $scriptsDirectives = array_filter(
         array_column($upgradeScriptsData, 'directives'),
-        fn ($upgradeScriptNumber) => $upgradeScriptNumber >= $startUpgradeScriptNumber,
+        fn ($upgradeScriptNumber) => version_compare(
+            (string)$upgradeScriptNumber,
+            $startUpgradeScriptNumber,
+            '>=',
+        ),
         ARRAY_FILTER_USE_KEY,
     );
 
@@ -152,7 +187,7 @@ function getResolvedUpgradeDirectives(array $upgradeScriptsData, int $startUpgra
 }
 
 /**
- * @return array<int, string>
+ * @return array<string, string>
  */
 function getLabeledUpgradeScripts(): array
 {
@@ -180,12 +215,12 @@ function getLabeledUpgradeScripts(): array
 }
 
 /**
- * @return int[]
+ * @return string[]
  */
-function getApplicableUpgradeScriptNumbers(int $startingNumber = 0): array
+function getApplicableUpgradeScriptNumbers(string $startingNumber = '0'): array
 {
     return array_filter(
         array_keys(getUpgradeScripts()),
-        fn($number) => $number >= $startingNumber,
+        fn($number) => version_compare((string)$number, $startingNumber, '>='),
     );
 }

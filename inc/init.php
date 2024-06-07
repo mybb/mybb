@@ -231,9 +231,37 @@ $version = $cache->read("version");
 if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] < $mybb->version_code)
 {
 	$version_history = $cache->read("version_history");
-	if(empty($version_history) || file_exists(MYBB_ROOT."inc/upgrades/upgrade".(int)(end($version_history)+1).".php"))
+	if(empty($version_history))
 	{
 		$mybb->trigger_generic_error("board_not_upgraded");
+	}
+	else
+	{
+		$latest_installed = end($version_history);
+
+		// Check for standard migrations and old branch patches (1 < 1p1 < 1p2 < 2)
+		$parts = explode('p', $latest_installed);
+
+		$candidates = array(
+			(string)((int)$parts[0] + 1),
+		);
+
+		if(isset($parts[1]))
+		{
+			$candidates[] = $parts[0].'p'.((int)$parts[1] + 1);
+		}
+		else
+		{
+			$candidates[] = $parts[0].'p1';
+		}
+
+		foreach($candidates as $candidate)
+		{
+			if(file_exists(MYBB_ROOT."inc/upgrades/upgrade".$candidate.".php"))
+			{
+				$mybb->trigger_generic_error("board_not_upgraded");
+			}
+		}
 	}
 }
 
