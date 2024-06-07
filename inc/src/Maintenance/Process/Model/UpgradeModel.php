@@ -161,12 +161,10 @@ class UpgradeModel extends Model
         $migrationOperations = [];
 
         foreach (\MyBB\Maintenance\loadUpgradeScriptsData() as $upgradeScriptNumber => $upgradeScript) {
-            $i = 0;
             $migrationFunctionNamesCount = count($upgradeScript['migrationFunctions'] ?? []);
 
-            foreach ($upgradeScript['migrationFunctions'] ?? [] as $migrationFunctionName) {
-                $migrationOperations[$migrationFunctionName] = [
-                    'parameters' => $upgradeScript['directives']['parameters'] ?? [],
+            if ($migrationFunctionNamesCount === 0) {
+                $migrationOperations['upgrade' . $upgradeScriptNumber] = [
                     'conditions' => [
                         [
                             'type' => 'stateVariable',
@@ -174,35 +172,57 @@ class UpgradeModel extends Model
                             'in' => ['1'],
                         ],
                     ],
-                    'callback' => function (Runtime $process) use (
-                        $migrationFunctionName,
-                        $migrationFunctionNamesCount,
+                    'callback' => function () use (
                         $upgradeScriptNumber,
-                        $i,
                     ): array {
-                        if (function_exists('set_time_limit')) {
-                            @set_time_limit(0);
-                        }
+                        \MyBB\Maintenance\addUpgradeNumberToVersionHistory($upgradeScriptNumber);
 
-                        try {
-                            $result = $migrationFunctionName($process) ?? [];
-                        } catch (\Exception $e) {
-                            $result['error'] = [
-                                'raw' => $e->getMessage(),
-                                'retry' => true,
-                            ];
-                        }
-
-                        // bump version history for each migration script after last function has run
-                        if ($i === $migrationFunctionNamesCount) {
-                            \MyBB\Maintenance\addUpgradeNumberToVersionHistory($upgradeScriptNumber);
-                        }
-
-                        return $result;
+                        return [];
                     },
                 ];
+            } else {
+                $i = 0;
 
-                $i++;
+                foreach ($upgradeScript['migrationFunctions'] ?? [] as $migrationFunctionName) {
+                    $migrationOperations[$migrationFunctionName] = [
+                        'parameters' => $upgradeScript['directives']['parameters'] ?? [],
+                        'conditions' => [
+                            [
+                                'type' => 'stateVariable',
+                                'name' => 'upgrade' . $upgradeScriptNumber,
+                                'in' => ['1'],
+                            ],
+                        ],
+                        'callback' => function (Runtime $process) use (
+                            $migrationFunctionName,
+                            $migrationFunctionNamesCount,
+                            $upgradeScriptNumber,
+                            $i,
+                        ): array {
+                            if (function_exists('set_time_limit')) {
+                                @set_time_limit(0);
+                            }
+
+                            try {
+                                $result = $migrationFunctionName($process) ?? [];
+                            } catch (\Exception $e) {
+                                $result['error'] = [
+                                    'raw' => $e->getMessage(),
+                                    'retry' => true,
+                                ];
+                            }
+
+                            // bump version history for each migration script after last function has run
+                            if ($i === $migrationFunctionNamesCount) {
+                                \MyBB\Maintenance\addUpgradeNumberToVersionHistory($upgradeScriptNumber);
+                            }
+
+                            return $result;
+                        },
+                    ];
+
+                    $i++;
+                }
             }
         }
 
