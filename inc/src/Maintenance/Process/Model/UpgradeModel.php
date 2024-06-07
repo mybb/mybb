@@ -274,6 +274,7 @@ class UpgradeModel extends Model
         }
 
         if (
+            $process->getStateVariable('upgrade_start') === null &&
             \MyBB\Maintenance\getNextUpgradeScriptNumber() === null &&
             $process->getFlagValue('force') !== true &&
             $process->getFlagValue('development_mode') !== true
