@@ -272,6 +272,17 @@ class ProcessController
             $this->useDefaults = true;
         }
 
+        // state variables
+        $stateVariables = array_filter(
+            (array)$request->get('stateVariables', []),
+        );
+
+        foreach ($stateVariables as $name => $value) {
+            if (is_scalar($value)) {
+                $this->processRuntime->setStateVariable($name, $value);
+            }
+        }
+
         // precondition
         $preconditionResult = $this->processRuntime->getPreconditionResult();
 
@@ -289,16 +300,5 @@ class ProcessController
 
         // parameters
         $this->processRuntime->setParameterValues($request->all());
-
-        // state variables
-        $stateVariables = array_filter(
-            (array)$request->get('stateVariables', []),
-        );
-
-        foreach ($stateVariables as $name => $value) {
-            if (is_scalar($value)) {
-                $this->processRuntime->setStateVariable($name, $value);
-            }
-        }
     }
 }
