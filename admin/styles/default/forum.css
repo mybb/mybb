@@ -8,7 +8,8 @@
 	width: 270px;
 	float: right;
 	text-align: center;
-	border: 1px solid #ccc;
+	border: 1px solid #ddd;
+	border-radius: 5px;
 	background: #fff;
 	padding: 6px;
 	font-weight: bold;
@@ -30,8 +31,8 @@
 
 .modqueue_mass {
 	list-style: none;
-	margin: 0;
-	width: 150px;
+	margin: 0 0 15px 0;
+	width: 180px;
 	padding: 0;
 }
 
@@ -42,13 +43,13 @@
 
 .modqueue_mass li a {
 	display: block;
-	padding: 4px;
-	border: 1px solid transparent;
+	padding: 4px 8px;
+	border-radius: 5px;
 }
 
 .modqueue_mass li a:hover {
-	background: #efefef;
-	border: 1px solid #ccc;
+	background: #ff7500;
+	color: #fff;
 	text-decoration: none;
 }
 
