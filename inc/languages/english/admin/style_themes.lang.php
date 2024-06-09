@@ -47,10 +47,8 @@ $l['include_custom_only_desc'] = "If you wish to include items (css and styleshe
 $l['include_templates'] = "Include templates in the export as well?";
 $l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
 
-$l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
-$l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
-$l['edit_stylesheet_advanced_mode'] = "Edit Stylesheet: Advanced Mode";
-$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the CSS stylesheet is shown in the text area below.";
+$l['edit_stylesheet'] = "Edit Stylesheet";
+$l['edit_stylesheet_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the CSS stylesheet is shown in the text area below.";
 
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
@@ -108,16 +106,6 @@ $l['inner_border'] = "Inner Table Border Width";
 $l['inner_border_desc'] = "The amount of padding between each table cell, in pixels. This is HTML's <em>cellspacing</em> attribute of the <em>table</em> tag.";
 $l['save_theme_properties'] = "Save Theme Properties";
 $l['save_stylesheet_order'] = "Save Stylesheet Orders";
-
-$l['background'] = "Background";
-$l['extra_css_atribs'] = "Extra CSS Attributes";
-$l['color'] = "Color";
-$l['width'] = "Width";
-$l['text_decoration'] = "Text Decoration";
-$l['font_family'] = "Font Family";
-$l['font_size'] = "Font Size";
-$l['font_style'] = "Font Style";
-$l['font_weight'] = "Font Weight";
 
 $l['stylesheets'] = "Stylesheets";
 $l['inherited_from'] = "Inherited from";
@@ -192,7 +180,6 @@ $l['error_invalid_templateset'] = "The selected template set does not exist. Ple
 $l['error_invalid_color'] = "The defined color set \"{1}\" either has invalid character(s) or is not in the prescribed format. Only numbers, Unicode letters, and underscores are allowed in a color's name and its value, which must be separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
-$l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
 $l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
@@ -214,9 +201,6 @@ $l['success_stylesheet_order_updated'] = "The display orders for the stylesheets
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
 $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
-
-$l['theme_info_fetch_error'] = 'There was an error fetching the style info.';
-$l['theme_info_save_error'] = 'There was an error saving the style info.';
 
 $l['saving'] = 'Saving&hellip;';
 
