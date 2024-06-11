@@ -24,6 +24,21 @@ function build_postbit($post, $post_type=0)
 
 	$hascustomtitle = 0;
 
+	// These will be unset when a guest is previewing a post that they're posting *as* a guest.
+	// In that case, set them to empty values to avert PHP 8 warnings re unset variables ahead.
+	if(!isset($post['userusername']))
+	{
+		$post['userusername'] = '';
+	}
+	if(!isset($post['uid']))
+	{
+		$post['uid'] = 0;
+	}
+	if(!isset($post['usergroup']))
+	{
+		$post['usergroup'] = 0;
+	}
+
 	// Set default values for any fields not provided here
 	foreach(array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'warninglevel') as $post_field)
 	{
