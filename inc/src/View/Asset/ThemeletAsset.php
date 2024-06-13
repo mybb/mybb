@@ -123,7 +123,7 @@ class ThemeletAsset extends Asset
 
         if (
             !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            str_ends_with($path, '.php')
+            Path::hasExtension($path, 'php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');
         }
@@ -143,7 +143,7 @@ class ThemeletAsset extends Asset
 
         if (
             !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            str_ends_with($path, '.php')
+            Path::hasExtension($path, 'php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');
         }

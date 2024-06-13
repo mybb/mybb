@@ -56,7 +56,7 @@ readonly class Resource implements CargoEntityInterface
                 $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path
             ) ||
-            str_ends_with($path, '.php')
+            Path::hasExtension($path, 'php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');
         }
@@ -77,7 +77,7 @@ readonly class Resource implements CargoEntityInterface
                 $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path,
             ) ||
-            str_ends_with($path, '.php')
+            Path::hasExtension($path, 'php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');
         }
