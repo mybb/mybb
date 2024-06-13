@@ -32,6 +32,7 @@
         "laravel/helpers": "^1.7",
         "scssphp/scssphp": "^1.12",
         "symfony/console": "^7.0",
+        "symfony/filesystem": "^7.1",
         "twig/twig": "^3.10"
     },
     "require-dev": {

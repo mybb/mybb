@@ -11,6 +11,7 @@ use MyBB\View\Resource;
 use MyBB\View\Themelet\Themelet;
 use MyBB\View\Themelet\ThemeletInterface;
 use ScssPhp\ScssPhp\Compiler;
+use Symfony\Component\Filesystem\Path;
 
 class ScssProcessor extends Processor
 {
@@ -150,6 +151,8 @@ class ScssProcessor extends Processor
     private function addSourcesFromAbsolutePaths(array $paths): void
     {
         foreach ($paths as $path) {
+            $path = Path::normalize($path);
+
             if (array_key_exists($path, $this->importableResourceFiles)) {
                 $resource = $this->importableResourceFiles[$path];
 
@@ -159,13 +162,13 @@ class ScssProcessor extends Processor
             }
 
             foreach ($this->sourceThemelets as $themelet) {
-                if (!str_starts_with($path, $themelet->getAbsolutePath() . '/')) {
+                if (!Path::isBasePath($themelet->getAbsolutePath(), $path)) {
                     continue;
                 }
 
                 foreach ($themelet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
                     foreach ($namespacePaths as $namespacePath) {
-                        if (!str_starts_with($path, $namespacePath . '/')) {
+                        if (!Path::isBasePath($namespacePath, $path)) {
                             continue;
                         }
 
@@ -173,7 +176,7 @@ class ScssProcessor extends Processor
                             $themelet->getExistingResource(
                                 ThemeletLocator::fromNamespaceRelativeIdentifier(
                                     $namespace,
-                                    substr($path, strlen($namespacePath . '/'))
+                                    Path::makeRelative($path, $namespacePath)
                                 )
                             )
                         );

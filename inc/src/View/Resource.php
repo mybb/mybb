@@ -10,6 +10,7 @@ use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\ThemeletInterface;
+use Symfony\Component\Filesystem\Path;
 
 readonly class Resource implements CargoEntityInterface
 {
@@ -51,9 +52,9 @@ readonly class Resource implements CargoEntityInterface
         $path = realpath($this->getAbsolutePath());
 
         if (
-            !str_starts_with(
-                $path,
-                realpath($this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH) . '/'
+            !Path::isBasePath(
+                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
+                $path
             ) ||
             str_ends_with($path, '.php')
         ) {
@@ -72,9 +73,9 @@ readonly class Resource implements CargoEntityInterface
         $path = realpath($this->getAbsolutePath());
 
         if (
-            !str_starts_with(
+            !Path::isBasePath(
+                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path,
-                realpath($this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH) . '/'
             ) ||
             str_ends_with($path, '.php')
         ) {

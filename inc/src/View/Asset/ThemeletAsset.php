@@ -11,6 +11,7 @@ use MyBB\View\Resource;
 use MyBB\View\ResourceType;
 use MyBB\View\Themelet\Decorator\PublishableThemelet;
 use MyBB\View\Themelet\ThemeletInterface;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * An Asset created from a Themelet Resource.
@@ -121,7 +122,7 @@ class ThemeletAsset extends Asset
         $path = $this->getAbsolutePath();
 
         if (
-            !str_starts_with($path, realpath(self::ABSOLUTE_BASE_PATH) . '/') ||
+            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
             str_ends_with($path, '.php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');
@@ -141,7 +142,7 @@ class ThemeletAsset extends Asset
         $path = $this->getAbsolutePath();
 
         if (
-            !str_starts_with($path, realpath(self::ABSOLUTE_BASE_PATH) . '/') ||
+            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
             str_ends_with($path, '.php')
         ) {
             throw new Exception('Illegal write path `' . $path . '`');

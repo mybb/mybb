@@ -14,6 +14,7 @@ use MyBB\View\ResourceType;
 use MyBB\View\Themelet\ThemeletInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Metadata of items in a Themelet's namespace.
@@ -50,11 +51,7 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
                 );
 
                 foreach ($files as $file) {
-                    $path = $file->getRealpath();
-
-                    if (str_starts_with($path, $resourceTypeAbsolutePath . '/')) {
-                        $path = substr($path, strlen($resourceTypeAbsolutePath . '/'));
-                    }
+                    $path = Path::makeRelative($file->getRealpath(), $resourceTypeAbsolutePath);
 
                     $locator = ThemeletLocator::fromString(
                         $path,
