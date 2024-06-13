@@ -79,10 +79,12 @@ class ScssProcessor extends Processor
      */
     private function getResourceThemelets(array $resources): array
     {
-        return array_unique(
-            array_map(
-                fn (Resource $resource) => $resource->getThemelet()->getIdentifier(),
-                $resources,
+        return array_values(
+            array_unique(
+                array_map(
+                    fn (Resource $resource) => $resource->getThemelet()->getIdentifier(),
+                    $resources,
+                ),
             ),
         );
     }
