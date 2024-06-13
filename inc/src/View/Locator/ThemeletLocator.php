@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Locator;
 
 use Exception;
+use InvalidArgumentException;
 use MyBB\View\ResourceType;
 
 /**
@@ -126,6 +127,13 @@ class ThemeletLocator extends Locator
             'group' => null,
             'filename' => null,
         ];
+
+        if (
+            \DIRECTORY_SEPARATOR !== self::DIRECTORY_SEPARATOR &&
+            str_contains($string, '\\')
+        ) {
+            throw new InvalidArgumentException('Cannot use non-normalized backslash `\` in Locator: `' . $string . '`');
+        }
 
         $offset = 0;
 
