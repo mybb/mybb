@@ -32,7 +32,7 @@ readonly class HierarchicalResource extends Resource
         return $this->getResolved()?->exists() === true;
     }
 
-    public function setContent(string $content, bool $lock = true, bool $normalize = false): bool
+    public function setContent(string $content, $pointer = null, bool $normalize = false): bool
     {
         $ownRepository = $this->getRepository()->getOwnRepository();
 
@@ -42,7 +42,7 @@ readonly class HierarchicalResource extends Resource
             $ownResource = $ownRepository->create($this->getLocator());
         }
 
-        $result = $ownResource->write($content, $lock);
+        $result = $ownResource->write($content, $pointer);
 
         if ($normalize && $this->contentMatchesInherited()) {
             $ownResource->delete();

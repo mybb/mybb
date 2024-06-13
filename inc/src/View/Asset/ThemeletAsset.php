@@ -11,6 +11,7 @@ use MyBB\View\Resource;
 use MyBB\View\ResourceType;
 use MyBB\View\Themelet\Decorator\PublishableThemelet;
 use MyBB\View\Themelet\ThemeletInterface;
+use RuntimeException;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -117,7 +118,7 @@ class ThemeletAsset extends Asset
         );
     }
 
-    public function write(string $content, bool $lock = true): bool
+    public function write(string $content, $pointer = null): bool
     {
         $path = $this->getAbsolutePath();
 
@@ -132,7 +133,26 @@ class ThemeletAsset extends Asset
             mkdir(dirname($path), recursive: true);
         }
 
-        $result = file_put_contents($path, $content, $lock ? LOCK_EX : 0) !== false;
+        if ($pointer !== null) {
+            $fh = $pointer;
+        } else {
+            $fh = fopen($path, 'c');
+
+            if ($fh === false) {
+                throw new RuntimeException('Failed to open `' . $path . '`');
+            }
+
+            if (!flock($fh, LOCK_EX)) {
+                throw new RuntimeException('Failed to acquire exclusive lock for `' . $path . '`');
+            }
+        }
+
+        $result = fwrite($fh, $content) !== false;
+
+        if ($pointer === null) {
+            flock($fh, LOCK_UN);
+            fclose($fh);
+        }
 
         return $result;
     }

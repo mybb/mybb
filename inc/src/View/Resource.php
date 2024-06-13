@@ -10,6 +10,7 @@ use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\ThemeletInterface;
+use RuntimeException;
 use Symfony\Component\Filesystem\Path;
 
 readonly class Resource implements CargoEntityInterface
@@ -47,7 +48,7 @@ readonly class Resource implements CargoEntityInterface
         return file_get_contents($path);
     }
 
-    public function setContent(string $content, bool $lock = true): bool
+    public function setContent(string $content, $pointer = null): bool
     {
         $path = realpath($this->getAbsolutePath());
 
@@ -65,7 +66,28 @@ readonly class Resource implements CargoEntityInterface
             mkdir(dirname($path), recursive: true);
         }
 
-        return file_put_contents($path, $content, $lock ? LOCK_EX : 0) !== false;
+        if ($pointer !== null) {
+            $fh = $pointer;
+        } else {
+            $fh = fopen($path, 'c');
+
+            if ($fh === false) {
+                throw new RuntimeException('Failed to open `' . $path . '`');
+            }
+
+            if (!flock($fh, LOCK_EX)) {
+                throw new RuntimeException('Failed to acquire exclusive lock for `' . $path . '`');
+            }
+        }
+
+        $result = fwrite($fh, $content) !== false;
+
+        if ($pointer === null) {
+            flock($fh, LOCK_UN);
+            fclose($fh);
+        }
+
+        return $result;
     }
 
     public function delete(): void

@@ -191,7 +191,7 @@ class Publication
                         $this->getContent()
                     );
 
-                    $result = $this->asset->write($content, false);
+                    $result = $this->asset->write($content, $fh);
 
                     if ($result === true) {
                         $this->asset->getThemelet()->setAssetPublicationData($this->asset, [
