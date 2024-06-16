@@ -87,7 +87,7 @@ class HierarchicalThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns Themelets by target namespace in ascending priority.
+     * Returns Themelets by target namespace in descending priority.
      *
      * @return array<string, ThemeletInterface>
      */
@@ -118,7 +118,7 @@ class HierarchicalThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns source Themelets in ascending priority.
+     * Returns source Themelets in descending priority.
      *
      * @return array<string, ThemeletInterface>
      */
@@ -126,14 +126,14 @@ class HierarchicalThemelet extends ThemeletDecorator
     {
         if (!isset($this->themelets)) {
             $themelets = [
-                // the common inheritance base
-                ...$this->baseThemelets,
+                // the Themelet itself
+                $this->getOwnThemelet(),
 
                 // the Themelet's ancestors
                 ...$this->getAncestors(),
 
-                // the Themelet itself
-                $this->getOwnThemelet(),
+                // the common inheritance base
+                ...$this->baseThemelets,
             ];
 
             $this->themelets = [];
@@ -164,7 +164,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
         $extensions = [
             $this->getExtension(),
-            ...array_reverse($this->getExtension()->getAncestors()),
+            ...$this->getExtension()->getAncestors(),
         ];
 
         foreach ($extensions as $extension) {

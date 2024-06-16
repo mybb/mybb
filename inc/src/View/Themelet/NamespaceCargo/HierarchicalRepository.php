@@ -248,11 +248,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     {
         $results = [];
 
-        $themeletsByPriority = array_reverse(
-            $this->themelet->getThemeletsByNamespace($this->namespace)
-        );
+        $themelets = $this->themelet->getThemeletsByNamespace($this->namespace);
 
-        foreach ($themeletsByPriority as $themelet) {
+        foreach ($themelets as $themelet) {
             $results[$themelet->getIdentifier()] = $this->getRepository($themelet);
         }
 

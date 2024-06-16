@@ -35,7 +35,8 @@ trait ResourcesTrait
     }
 
     /**
-     * Returns absolute paths at which Resources of specified type may be found, by namespace.
+     * Returns absolute paths at which Resources of specified type may be found,
+     * by namespace, in descending priority.
      *
      * @return array<string, string[]>
      */

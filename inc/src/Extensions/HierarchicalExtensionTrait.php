@@ -81,7 +81,7 @@ trait HierarchicalExtensionTrait
     }
 
     /**
-     * Returns ancestors in descending priority order.
+     * Returns ancestors from closest to furthest.
      *
      * @return array<string, HierarchicalExtensionInterface>
      */

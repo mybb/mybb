@@ -28,7 +28,7 @@ trait HierarchicalNamespacesTrait
     }
 
     /**
-     * Returns absolute paths at which Resource namespaces may be found, in ascending priority.
+     * Returns absolute paths at which Resource namespaces may be found, in descending priority.
      *
      * @return array<string, string[]>
      * @override
