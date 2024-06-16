@@ -38,7 +38,7 @@ enum Optimization: int
 
         return match ($name) {
             'twig.autoReload' => $level <= self::WATCH->value,
-            'hierarchy.cache' => $level > self::NONE->value,
+            'hierarchy.cache' => $level > self::WATCH->value,
             'hierarchy.cacheValidation' => $level < self::PERFORMANCE->value,
             'hierarchy.cacheValidationType' => FileStamp::TYPE_MODIFICATION_TIME,
             'publication.publishMode' => match (true) {
