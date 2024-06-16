@@ -158,6 +158,6 @@ class templates
 			}
 		}
 		$res = $template_xml->xpath("//template[@name='{$title}']");
-		return $res[0] ?? false;
+		return !empty($res[0]) ? $res[0] : false;
 	}
 }
