@@ -21,10 +21,17 @@ class ScssProcessor extends Processor
     protected array $sourceThemelets = [];
 
     /**
-     * A mapping of absolute paths to importable Resources.
+     * Use a temporary directory with resolved Resource files.
      *
      * As ScssPhp prioritizes relative paths over provided import paths/functions,
      * the files may be copied - according to inheritance - into a single location first.
+     */
+    private bool $useResolvedDirectory = false;
+
+    /**
+     * A mapping of absolute paths to importable Resources.
+     *
+     * @see $useResolvedDirectory
      *
      * @var array<string, Resource>
      */
@@ -37,6 +44,8 @@ class ScssProcessor extends Processor
         $originThemelets = $this->getResourceThemelets($importableResources);
 
         if (count($originThemelets) > 1) {
+            $this->useResolvedDirectory = true;
+
             $this->prepareImportableResourceFiles($importableResources);
 
             $sourcePath = $this->getImportableResourceAbsolutePath(
@@ -83,7 +92,10 @@ class ScssProcessor extends Processor
         return array_values(
             array_unique(
                 array_map(
-                    fn (Resource $resource) => $resource->getThemelet()->getIdentifier(),
+                    fn (Resource $resource) => $resource
+                        ->getResolved()
+                        ->getThemelet()
+                        ->getIdentifier(),
                     $resources,
                 ),
             ),
@@ -110,7 +122,11 @@ class ScssProcessor extends Processor
                         $this->sourceThemelets[] = $resource->getThemelet();
                     }
 
-                    return $resource->getAbsolutePath();
+                    if ($this->useResolvedDirectory) {
+                        return $this->getImportableResourceAbsolutePath($resource);
+                    } else {
+                        return $resource->getAbsolutePath();
+                    }
                 }
             }
         } catch (Exception) {

@@ -114,9 +114,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
     public function getThemelet(string $identifier): ?ThemeletInterface
     {
-        return $this->getThemelets()[$identifier]
-            ?? (new ($this->getExtension()::class)($identifier))
-            ?? null;
+        return $this->getExtension()::get($identifier)->getThemelet();
     }
 
     /**
@@ -166,12 +164,12 @@ class HierarchicalThemelet extends ThemeletDecorator
 
         $extensions = [
             $this->getExtension(),
-            ...$this->getExtension()->getAncestors(),
+            ...array_reverse($this->getExtension()->getAncestors()),
         ];
 
         foreach ($extensions as $extension) {
             if ($extension !== $this->getExtension()) {
-                $results = $extension->getThemelet();
+                $results[$extension->getPackageName()] = $extension->getThemelet();
             }
 
             $stamp[$extension->getPackageName()] = $extension->getManifestStamp();

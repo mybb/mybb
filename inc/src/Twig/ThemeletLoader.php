@@ -43,7 +43,7 @@ class ThemeletLoader extends FilesystemLoader
             $this->mainNamespace,
         );
 
-        $path = $this->themelet->getResource($locator)?->getAbsolutePath();
+        $path = $this->themelet->getExistingResource($locator)?->getAbsolutePath();
 
         if ($path !== null) {
             $this->cache[$name] = $path;

@@ -98,8 +98,8 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     public function queryRepository(string|ThemeletLocator $key): ?RepositoryInterface
     {
         if ($key instanceof ThemeletLocator) {
-            $key = $key->getNamespaceRelativeIdentifier();
             $locator = $key;
+            $key = $key->getNamespaceRelativeIdentifier();
         } else {
             $locator = ThemeletLocator::fromNamespaceRelativeIdentifier(
                 $this->namespace,
@@ -140,7 +140,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
-        foreach ($this->getAncestors() as $repository) {
+        foreach ($this->getRepositories() as $repository) {
             if (
                 $repository !== $this->getOwnRepository() &&
                 $repository->has($key)
@@ -164,16 +164,16 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
      */
     public function stampValid(array $stamp, string $type = FileStamp::TYPE_MODIFICATION_TIME): bool
     {
-        $ancestors = $this->getAncestors();
+        $repositories = $this->getRepositories();
 
-        if (array_keys($ancestors) !== array_keys($stamp)) {
+        if (array_keys($repositories) !== array_keys($stamp)) {
             return false;
         }
 
-        foreach ($ancestors as $identifier => $repository) {
-            $stamp = new FileStamp($stamp[$identifier]);
+        foreach ($repositories as $identifier => $repository) {
+            $repositoryStamp = new FileStamp($stamp[$identifier]);
 
-            if (!$repository->stampValid($stamp)) {
+            if (!$repository->stampValid($repositoryStamp)) {
                 return false;
             }
         }
@@ -185,7 +185,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     {
         $stamps = [];
 
-        foreach ($this->getAncestors() as $name => $repository) {
+        foreach ($this->getRepositories() as $name => $repository) {
             $stamps[$name] = $repository->getStamp();
         }
 
@@ -227,9 +227,24 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     }
 
     /**
+     * Returns ancestor Repositories from closest to furthest.
+     *
      * @return RepositoryInterface[]
      */
     protected function getAncestors(): array
+    {
+        return array_filter(
+            $this->getRepositories(),
+            fn ($repository) => $repository !== $this->getOwnRepository(),
+        );
+    }
+
+    /**
+     * Returns source Repositories in descending priority.
+     *
+     * @return RepositoryInterface[]
+     */
+    protected function getRepositories(): array
     {
         $results = [];
 

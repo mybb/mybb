@@ -166,7 +166,7 @@ abstract class Extension
     /**
      * @param FileStamp::TYPE_* $type
      */
-    public function manifestStampValid(array $stamp, string $type): bool
+    public function manifestStampValid(?array $stamp, string $type): bool
     {
         return (new FileStamp($stamp))->isValid(
             $this->getManifestFilePath(),

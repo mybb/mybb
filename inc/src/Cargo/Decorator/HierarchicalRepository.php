@@ -82,7 +82,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         $results = [];
         $disinherited = [];
 
-        foreach ($this->getAncestors() as $repository) {
+        foreach ($this->getRepositories() as $repository) {
             $entities = $repository->getAll(...$args);
 
             foreach ($entities as $key => $entity) {
@@ -128,7 +128,11 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
     {
         $repository = $this->queryRepository($key);
 
-        if ($repository !== null) {
+        if ($repository === null) {
+            $this->resolvedRepositories->deleteNested([
+                $key,
+            ]);
+        } else {
             $this->resolvedRepositories->setNested([
                 $key,
             ], $repository);
@@ -158,7 +162,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function getEntityAncestorRepositories(string $key): iterable
     {
-        foreach ($this->getAncestors() as $repository) {
+        foreach ($this->getRepositories() as $repository) {
             if (
                 $repository !== $this->getOwnRepository() &&
                 $repository->has($key)
@@ -183,7 +187,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
 
         $disinherited = [];
 
-        foreach ($this->getAncestors() as $repository) {
+        foreach ($this->getRepositories() as $repository) {
             $results[Repository::SCOPE_SHARED] = $this->getMergedProperties(
                 $repository->getSharedProperties(),
                 $results[Repository::SCOPE_SHARED],
@@ -220,9 +224,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
             $repository = $this->queryRepository($key);
 
             $results[$key] = $repository;
-
-            $stamp[$repository->getHierarchicalIdentifier()] = $repository->getStamp();
         }
+
+        $stamp = $this->getStamp();
 
         return $results;
     }

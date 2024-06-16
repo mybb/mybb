@@ -77,8 +77,8 @@ readonly class FileStamp
      */
     public function isValid(string $path, string $type = self::TYPE_CHECKSUM): bool
     {
-        if ($this->stamp === null && !file_exists($path)) {
-            return true;
+        if ($this->stamp === null) {
+            return !file_exists($path);
         }
 
         if (!array_key_exists($type, $this->stamp)) {

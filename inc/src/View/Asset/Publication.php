@@ -63,14 +63,18 @@ class Publication
         }
 
         foreach ($sourceResources as $sourceResource) {
-            $resource = $asset->getThemelet()->getExistingResource(
+            $resource = $asset->getThemelet()->getResource(
                 $asset->getLocator()->getSibling($sourceResource['subPath'])
             );
 
             if (
-                $resource->getThemelet()->getIdentifier() !== $sourceResource['themelet'] ||
-                $resource->getModificationTime() > $publishedFileTime
+                !$resource->exists() ||
+                $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
             ) {
+                $resource->resolve();
+
+                return true;
+            } elseif ($resource->getModificationTime() > $publishedFileTime) {
                 return true;
             }
         }
@@ -109,7 +113,7 @@ class Publication
     public static function getSourceSignature(Resource $resource): array
     {
         return [
-            'themelet' => $resource->getThemelet()->getIdentifier(),
+            'themelet' => $resource->getResolved()->getThemelet()->getIdentifier(),
             'subPath' => $resource->getLocator()->getSubPath(),
         ];
     }
