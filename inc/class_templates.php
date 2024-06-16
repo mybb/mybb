@@ -122,7 +122,7 @@ class templates
 		}
 		return $template;
 	}
-	
+
 	/**
 	 * Prepare a template for rendering to a variable.
 	 *
@@ -158,6 +158,6 @@ class templates
 			}
 		}
 		$res = $template_xml->xpath("//template[@name='{$title}']");
-		return $res[0];
+		return $res[0] ?? false;
 	}
 }
