@@ -69,7 +69,7 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
         ;
 
         $this->manifestFields['type'] = [
-            'required' => true,
+            'required' => false,
             'type' => 'string',
             'value' => 'mybb-theme',
         ];

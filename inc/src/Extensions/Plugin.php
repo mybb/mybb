@@ -30,7 +30,7 @@ class Plugin extends Extension implements ViewExtensionInterface
         }
 
         $this->manifestFields['type'] = [
-            'required' => true,
+            'required' => false,
             'type' => 'string',
             'value' => 'mybb-plugin',
         ];
