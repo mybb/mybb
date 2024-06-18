@@ -20,8 +20,6 @@ $error_handler = new errorHandler(
 );
 
 // global
-require_once MYBB_ROOT . 'inc/src/bootstrap.php';
-
 require_once MYBB_ROOT . 'inc/functions.php';
 
 require_once MYBB_ROOT . 'inc/class_core.php';
@@ -41,6 +39,8 @@ require_once MYBB_ROOT . 'inc/src/Maintenance/functions_upgrades.php';
 
 // core
 $mybb = new MyBB();
+
+require_once MYBB_ROOT . 'inc/src/bootstrap.php';
 
 // language
 $lang = new MyLanguage();
