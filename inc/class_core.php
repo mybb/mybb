@@ -574,7 +574,7 @@ class MyBB {
 				$error_code = MYBB_NOT_UPGRADED;
 				break;
 			case "sql_load_error":
-				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
+				$message = "MyBB was unable to load the SQL extension.";
 				$error_code = MYBB_SQL_LOAD_ERROR;
 				break;
 			case "apc_load_error":
@@ -606,11 +606,11 @@ class MyBB {
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			case "dependencies_not_installed":
-				$message = "The autoload file does not exist.\n\nIf you intend to get MyBB ready from source code, run <code>composer install</code> first. Otherwise, download a production-ready package from the Project's website.";
+				$message = "The autoload file does not exist.\n\nIf you intend to get MyBB ready from source code, run `composer install` first. Otherwise, download a production-ready package from the Project's website.";
 				$error_code = MYBB_DEPENDENCIES_NOT_INSTALLED;
 				break;
 			default:
-				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
+				$message = "MyBB has experienced an internal error.";
 				$error_code = MYBB_GENERAL;
 		}
 		$error_handler->trigger($message, $error_code);
