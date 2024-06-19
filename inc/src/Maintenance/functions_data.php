@@ -947,7 +947,7 @@ function getSuggestedBoardUrl(): ?string
     if (PHP_SAPI === 'cli') {
         $url = getSettingValue('bburl');
     } elseif (!empty($_SERVER['HTTP_HOST'])) {
-        $url = $_SERVER['REQUEST_SCHEME'] ?? 'http';
+        $url = httpRequestOverSecureTransport() ? 'https' : 'http';
         $url .= '://' . $_SERVER['HTTP_HOST'];
 
         if (!empty($_SERVER['SERVER_PORT']) && !in_array($_SERVER['SERVER_PORT'], [80, 443])) {
