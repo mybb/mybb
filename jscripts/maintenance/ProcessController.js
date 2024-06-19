@@ -246,9 +246,11 @@ class ProcessController extends EventTarget {
 
 				for (const parameter of step.parameters) {
 					for (const condition of parameter['conditions'].filter(e => e.type === 'parameterValue')) {
+						const referencedParameter = this.#parameters.get(condition['name']);
+
 						conditionalParameters.set(
-							this.#parameters.get(condition['name']),
-							(conditionalParameters.get(condition['name']) ?? new Set()).add(parameter)
+							referencedParameter,
+							(conditionalParameters.get(referencedParameter) ?? new Set()).add(parameter)
 						);
 					}
 
