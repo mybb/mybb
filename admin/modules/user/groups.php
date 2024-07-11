@@ -99,6 +99,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+$errors = array();
+
 $page->add_breadcrumb_item($lang->user_groups, "index.php?module=user-groups");
 
 if($mybb->input['action'] == "add" || !$mybb->input['action'])
@@ -341,7 +343,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	}
 
 	// No errors, insert
-	if(!$errors)
+	if(empty($errors))
 	{
 		$new_leader = array(
 			"gid" => $group['gid'],
@@ -466,7 +468,7 @@ if($mybb->input['action'] == "leaders")
 
 	$form = new Form("index.php?module=user-groups&amp;action=add_leader&amp;gid={$group['gid']}", "post");
 
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
@@ -483,9 +485,9 @@ if($mybb->input['action'] == "leaders")
 
 	$form_container = new FormContainer($lang->add_group_leader.' '.htmlspecialchars_uni($group['title']));
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
-	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
-	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
+	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->get_input('canmanagemembers', MyBB::INPUT_INT)));
+	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->get_input('canmanagerequests', MyBB::INPUT_INT)));
+	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->get_input('caninvitemembers', MyBB::INPUT_INT)));
 	$form_container->output_row($lang->make_user_member, $lang->make_user_member_desc, $form->generate_yes_no_radio('makeleadermember', $mybb->input['makeleadermember']));
 	$form_container->end();
 
@@ -625,7 +627,7 @@ if($mybb->input['action'] == "edit_leader")
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	}
 
-	if(!$errors)
+	if(empty($errors))
 	{
 		$mybb->input = array_merge($mybb->input, $leader);
 	}
@@ -650,9 +652,9 @@ if($mybb->input['action'] == "edit_leader")
 	$form_container = new FormContainer($lang->edit_group_leader);
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
 
-	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
-	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
+	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->get_input('canmanagemembers', MyBB::INPUT_INT)));
+	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->get_input('canmanagerequests', MyBB::INPUT_INT)));
+	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->get_input('caninvitemembers', MyBB::INPUT_INT)));
 	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 
 	$form_container->end();
@@ -678,7 +680,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
 
-		if(!$errors)
+		if(empty($errors))
 		{
 			if($mybb->get_input('stars') < 1)
 			{
@@ -762,7 +764,7 @@ if($mybb->input['action'] == "add")
 	$page->output_nav_tabs($sub_tabs, 'add_group');
 	$form = new Form("index.php?module=user-groups&amp;action=add", "post");
 
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
@@ -834,7 +836,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_cannot_have_both_types;
 		}
 
-		if(!$errors)
+		if(empty($errors))
 		{
 			if($mybb->get_input('joinable') == 1)
 			{
@@ -1001,7 +1003,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_nav_tabs($sub_tabs, 'edit_group');
 
 	// If we have any error messages, show them
-	if($errors)
+	if(!empty($errors))
 	{
 		$page->output_inline_error($errors);
 	}
@@ -1069,12 +1071,12 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
-	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->input['showmemberlist']));
+	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->get_input('showmemberlist', MyBB::INPUT_INT)));
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
-		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->input['showforumteam']));
+		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->get_input('showforumteam', MyBB::INPUT_INT)));
 	}
-	$general_options[] =	$form->generate_check_box("isbannedgroup", 1, $lang->is_banned_group, array("checked" => $mybb->input['isbannedgroup']));
+	$general_options[] =	$form->generate_check_box("isbannedgroup", 1, $lang->is_banned_group, array("checked" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT)));
 
 	$form_container->output_row($lang->general_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $general_options)."</div>");
 
@@ -1082,17 +1084,17 @@ if($mybb->input['action'] == "edit")
 	{
 		$public_options = array(
 			$form->generate_check_box("joinable", 1, $lang->user_joinable, array("checked" => $mybb->input['joinable'])),
-			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->input['moderate'])),
+			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->get_input('moderate', MyBB::INPUT_INT))),
 			$form->generate_check_box("invite", 1, $lang->invite_only, array("checked" => $mybb->input['invite'])),
-			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->input['candisplaygroup'])),
+			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->get_input('candisplaygroup', MyBB::INPUT_INT))),
 			);
 		$form_container->output_row($lang->publicly_joinable_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
 	}
 
 	$admin_options = array(
-		$form->generate_check_box("issupermod", 1, $lang->is_super_mod, array("checked" => $mybb->input['issupermod'])),
-		$form->generate_check_box("canmodcp", 1, $lang->can_access_mod_cp, array("checked" => $mybb->input['canmodcp'])),
-		$form->generate_check_box("cancp", 1, $lang->can_access_admin_cp, array("checked" => $mybb->input['cancp']))
+		$form->generate_check_box("issupermod", 1, $lang->is_super_mod, array("checked" => $mybb->get_input('issupermod', MyBB::INPUT_INT))),
+		$form->generate_check_box("canmodcp", 1, $lang->can_access_mod_cp, array("checked" => $mybb->get_input('canmodcp', MyBB::INPUT_INT))),
+		$form->generate_check_box("cancp", 1, $lang->can_access_admin_cp, array("checked" => $mybb->get_input('cancp', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->moderation_administration_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $admin_options)."</div>");
 
@@ -1106,40 +1108,40 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->forums_posts);
 
 	$viewing_options = array(
-		$form->generate_check_box("canview", 1, $lang->can_view_board, array("checked" => $mybb->input['canview'])),
-		$form->generate_check_box("canviewthreads", 1, $lang->can_view_threads, array("checked" => $mybb->input['canviewthreads'])),
-		$form->generate_check_box("cansearch", 1, $lang->can_search_forums, array("checked" => $mybb->input['cansearch'])),
-		$form->generate_check_box("canviewprofiles", 1, $lang->can_view_profiles, array("checked" => $mybb->input['canviewprofiles'])),
-		$form->generate_check_box("candlattachments", 1, $lang->can_download_attachments, array("checked" => $mybb->input['candlattachments'])),
-		$form->generate_check_box("canviewboardclosed", 1, $lang->can_view_board_closed, array("checked" => $mybb->input['canviewboardclosed']))
+		$form->generate_check_box("canview", 1, $lang->can_view_board, array("checked" => $mybb->get_input('canview', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewthreads", 1, $lang->can_view_threads, array("checked" => $mybb->get_input('canviewthreads', MyBB::INPUT_INT))),
+		$form->generate_check_box("cansearch", 1, $lang->can_search_forums, array("checked" => $mybb->get_input('cansearch', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewprofiles", 1, $lang->can_view_profiles, array("checked" => $mybb->get_input('canviewprofiles', MyBB::INPUT_INT))),
+		$form->generate_check_box("candlattachments", 1, $lang->can_download_attachments, array("checked" => $mybb->get_input('candlattachments', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewboardclosed", 1, $lang->can_view_board_closed, array("checked" => $mybb->get_input('canviewboardclosed', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->viewing_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $viewing_options)."</div>");
 
 	$posting_options = array(
-		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
-		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
-		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
+		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->get_input('canpostthreads', MyBB::INPUT_INT))),
+		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->get_input('canpostreplys', MyBB::INPUT_INT))),
+		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->get_input('canratethreads', MyBB::INPUT_INT))),
 		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_numeric_field('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 
 	$moderator_options = array(
-		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->input['modposts'])),
-		$form->generate_check_box("modthreads", 1, $lang->mod_new_threads, array("checked" => $mybb->input['modthreads'])),
-		$form->generate_check_box("modattachments", 1, $lang->mod_new_attachments, array("checked" => $mybb->input['modattachments'])),
-		$form->generate_check_box("mod_edit_posts", 1, $lang->mod_after_edit, array("checked" => $mybb->input['mod_edit_posts']))
+		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->get_input('modposts', MyBB::INPUT_INT))),
+		$form->generate_check_box("modthreads", 1, $lang->mod_new_threads, array("checked" => $mybb->get_input('modthreads', MyBB::INPUT_INT))),
+		$form->generate_check_box("modattachments", 1, $lang->mod_new_attachments, array("checked" => $mybb->get_input('modattachments', MyBB::INPUT_INT))),
+		$form->generate_check_box("mod_edit_posts", 1, $lang->mod_after_edit, array("checked" => $mybb->get_input('mod_edit_posts', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->moderation_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $moderator_options)."</div>");
 
 	$poll_options = array(
-		$form->generate_check_box("canpostpolls", 1, $lang->can_post_polls, array("checked" => $mybb->input['canpostpolls'])),
-		$form->generate_check_box("canvotepolls", 1, $lang->can_vote_polls, array("checked" => $mybb->input['canvotepolls'])),
-		$form->generate_check_box("canundovotes", 1, $lang->can_undo_votes, array("checked" => $mybb->input['canundovotes']))
+		$form->generate_check_box("canpostpolls", 1, $lang->can_post_polls, array("checked" => $mybb->get_input('canpostpolls', MyBB::INPUT_INT))),
+		$form->generate_check_box("canvotepolls", 1, $lang->can_vote_polls, array("checked" => $mybb->get_input('canvotepolls', MyBB::INPUT_INT))),
+		$form->generate_check_box("canundovotes", 1, $lang->can_undo_votes, array("checked" => $mybb->get_input('canundovotes', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->poll_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $poll_options)."</div>");
 
 	$attachment_options = array(
-		$form->generate_check_box("canpostattachments", 1, $lang->can_post_attachments, array("checked" => $mybb->input['canpostattachments'])),
+		$form->generate_check_box("canpostattachments", 1, $lang->can_post_attachments, array("checked" => $mybb->get_input('canpostattachments', MyBB::INPUT_INT))),
 		"{$lang->attach_quota}<br /><small class=\"input\">{$lang->attach_quota_desc}</small><br />".$form->generate_numeric_field('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50', 'min' => 0)). "KB"
 	);
 	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");
@@ -1148,11 +1150,11 @@ if($mybb->input['action'] == "edit")
 	if($usergroup['gid'] != 1)
 	{
 		$editing_options = array(
-			$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),
-			$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
-			$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
-			$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
-			$form->generate_check_box("canviewdeletionnotice", 1, $lang->can_view_deletion_notices, array("checked" => $mybb->input['canviewdeletionnotice'])),
+			$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->get_input('caneditposts', MyBB::INPUT_INT))),
+			$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->get_input('candeleteposts', MyBB::INPUT_INT))),
+			$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->get_input('candeletethreads', MyBB::INPUT_INT))),
+			$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->get_input('caneditattachments', MyBB::INPUT_INT))),
+			$form->generate_check_box("canviewdeletionnotice", 1, $lang->can_view_deletion_notices, array("checked" => $mybb->get_input('canviewdeletionnotice', MyBB::INPUT_INT))),
 			"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50', 'min' => 0))
 		);
 		$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
@@ -1168,23 +1170,23 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->users_permissions);
 
 	$account_options = array(
-		$form->generate_check_box("canbereported", 1, $lang->can_be_reported, array("checked" => $mybb->input['canbereported'])),
-		$form->generate_check_box("canbeinvisible", 1, $lang->can_be_invisible, array("checked" => $mybb->input['canbeinvisible'])),
-		$form->generate_check_box("canusercp", 1, $lang->can_access_usercp, array("checked" => $mybb->input['canusercp'])),
-		$form->generate_check_box("canchangename", 1, $lang->can_change_username, array("checked" => $mybb->input['canchangename'])),
-		$form->generate_check_box("cancustomtitle", 1, $lang->can_use_usertitles, array("checked" => $mybb->input['cancustomtitle'])),
-		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars'])),
-		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
-		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
-		$form->generate_check_box("canchangewebsite", 1, $lang->can_change_website, array("checked" => $mybb->input['canchangewebsite'])),
-		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_numeric_field('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50', 'min' => 0))
+		$form->generate_check_box("canbereported", 1, $lang->can_be_reported, array("checked" => $mybb->get_input('canbereported', MyBB::INPUT_INT))),
+		$form->generate_check_box("canbeinvisible", 1, $lang->can_be_invisible, array("checked" => $mybb->get_input('canbeinvisible', MyBB::INPUT_INT))),
+		$form->generate_check_box("canusercp", 1, $lang->can_access_usercp, array("checked" => $mybb->get_input('canusercp', MyBB::INPUT_INT))),
+		$form->generate_check_box("canchangename", 1, $lang->can_change_username, array("checked" => $mybb->get_input('canchangename', MyBB::INPUT_INT))),
+		$form->generate_check_box("cancustomtitle", 1, $lang->can_use_usertitles, array("checked" => $mybb->get_input('cancustomtitle', MyBB::INPUT_INT))),
+		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->get_input('canuploadavatars', MyBB::INPUT_INT))),
+		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->get_input('canusesig', MyBB::INPUT_INT))),
+		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->get_input('signofollow', MyBB::INPUT_INT))),
+		$form->generate_check_box("canchangewebsite", 1, $lang->can_change_website, array("checked" => $mybb->get_input('canchangewebsite', MyBB::INPUT_INT))),
+		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_numeric_field('canusesigxposts', $mybb->get_input('canusesigxposts', MyBB::INPUT_INT), array('id' => 'canusesigxposts', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");
 
 	$reputation_options = array(
-		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->input['usereputationsystem'])),
-		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->input['cangivereputations'])),
-		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
+		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->get_input('usereputationsystem', MyBB::INPUT_INT))),
+		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->get_input('cangivereputations', MyBB::INPUT_INT))),
+		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->get_input('candeletereputations', MyBB::INPUT_INT))),
 		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_peruser}<br /><small class=\"input\">{$lang->max_reputations_peruser_desc}</small><br />".$form->generate_numeric_field('maxreputationsperuser', $mybb->input['maxreputationsperuser'], array('id' => 'maxreputationsperuser', 'class' => 'field50', 'min' => 0)),
@@ -1193,18 +1195,18 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->reputation_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
 
 	$warning_options = array(
-		$form->generate_check_box("canwarnusers", 1, $lang->can_send_warnings, array("checked" => $mybb->input['canwarnusers'])),
-		$form->generate_check_box("canreceivewarnings", 1, $lang->can_receive_warnings, array("checked" => $mybb->input['canreceivewarnings'])),
+		$form->generate_check_box("canwarnusers", 1, $lang->can_send_warnings, array("checked" => $mybb->get_input('canwarnusers', MyBB::INPUT_INT))),
+		$form->generate_check_box("canreceivewarnings", 1, $lang->can_receive_warnings, array("checked" => $mybb->get_input('canreceivewarnings', MyBB::INPUT_INT))),
 		"{$lang->warnings_per_day}<br />".$form->generate_numeric_field('maxwarningsday', $mybb->input['maxwarningsday'], array('id' => 'maxwarningsday', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->warning_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $warning_options)."</div>");
 
 	$pm_options = array(
-		$form->generate_check_box("canusepms", 1, $lang->can_use_pms, array("checked" => $mybb->input['canusepms'])),
-		$form->generate_check_box("cansendpms", 1, $lang->can_send_pms, array("checked" => $mybb->input['cansendpms'])),
-		$form->generate_check_box("canoverridepm", 1, $lang->can_override_pms, array("checked" => $mybb->input['canoverridepm'])),
-		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->input['cantrackpms'])),
-		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->input['candenypmreceipts'])),
+		$form->generate_check_box("canusepms", 1, $lang->can_use_pms, array("checked" => $mybb->get_input('canusepms', MyBB::INPUT_INT))),
+		$form->generate_check_box("cansendpms", 1, $lang->can_send_pms, array("checked" => $mybb->get_input('cansendpms', MyBB::INPUT_INT))),
+		$form->generate_check_box("canoverridepm", 1, $lang->can_override_pms, array("checked" => $mybb->get_input('canoverridepm', MyBB::INPUT_INT))),
+		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->get_input('cantrackpms', MyBB::INPUT_INT))),
+		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->get_input('candenypmreceipts', MyBB::INPUT_INT))),
 		"{$lang->message_quota}<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_numeric_field('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_recipients}<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_numeric_field('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50', 'min' => 0))
 	);
@@ -1220,25 +1222,25 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->misc);
 
 	$calendar_options = array(
-		$form->generate_check_box("canviewcalendar", 1, $lang->can_view_calendar, array("checked" => $mybb->input['canviewcalendar'])),
-		$form->generate_check_box("canaddevents", 1, $lang->can_post_events, array("checked" => $mybb->input['canaddevents'])),
-		$form->generate_check_box("canbypasseventmod", 1, $lang->can_bypass_event_moderation, array("checked" => $mybb->input['canbypasseventmod'])),
-		$form->generate_check_box("canmoderateevents", 1, $lang->can_moderate_events, array("checked" => $mybb->input['canmoderateevents']))
+		$form->generate_check_box("canviewcalendar", 1, $lang->can_view_calendar, array("checked" => $mybb->get_input('canviewcalendar', MyBB::INPUT_INT))),
+		$form->generate_check_box("canaddevents", 1, $lang->can_post_events, array("checked" => $mybb->get_input('canaddevents', MyBB::INPUT_INT))),
+		$form->generate_check_box("canbypasseventmod", 1, $lang->can_bypass_event_moderation, array("checked" => $mybb->get_input('canbypasseventmod', MyBB::INPUT_INT))),
+		$form->generate_check_box("canmoderateevents", 1, $lang->can_moderate_events, array("checked" => $mybb->get_input('canmoderateevents', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->calendar, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $calendar_options)."</div>");
 
 	$wol_options = array(
-		$form->generate_check_box("canviewonline", 1, $lang->can_view_whos_online, array("checked" => $mybb->input['canviewonline'])),
-		$form->generate_check_box("canviewwolinvis", 1, $lang->can_view_invisible, array("checked" => $mybb->input['canviewwolinvis'])),
-		$form->generate_check_box("canviewonlineips", 1, $lang->can_view_ips, array("checked" => $mybb->input['canviewonlineips']))
+		$form->generate_check_box("canviewonline", 1, $lang->can_view_whos_online, array("checked" => $mybb->get_input('canviewonline', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewwolinvis", 1, $lang->can_view_invisible, array("checked" => $mybb->get_input('canviewwolinvis', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewonlineips", 1, $lang->can_view_ips, array("checked" => $mybb->get_input('canviewonlineips', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->whos_online, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $wol_options)."</div>");
 
 	$misc_options = array(
-		$form->generate_check_box("canviewmemberlist", 1, $lang->can_view_member_list, array("checked" => $mybb->input['canviewmemberlist'])),
-		$form->generate_check_box("showinbirthdaylist", 1, $lang->show_in_birthday_list, array("checked" => $mybb->input['showinbirthdaylist'])),
-		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->input['cansendemail'])),
-		$form->generate_check_box("cansendemailoverride", 1, $lang->can_email_users_override, array("checked" => $mybb->input['cansendemailoverride'])),
+		$form->generate_check_box("canviewmemberlist", 1, $lang->can_view_member_list, array("checked" => $mybb->get_input('canviewmemberlist', MyBB::INPUT_INT))),
+		$form->generate_check_box("showinbirthdaylist", 1, $lang->show_in_birthday_list, array("checked" => $mybb->get_input('showinbirthdaylist', MyBB::INPUT_INT))),
+		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->get_input('cansendemail', MyBB::INPUT_INT))),
+		$form->generate_check_box("cansendemailoverride", 1, $lang->can_email_users_override, array("checked" => $mybb->get_input('cansendemailoverride', MyBB::INPUT_INT))),
 		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_numeric_field('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50', 'min' => 0)),
 		"{$lang->email_flood_time}<br /><small class=\"input\">{$lang->email_flood_time_desc}</small><br />".$form->generate_numeric_field('emailfloodtime', $mybb->input['emailfloodtime'], array('id' => 'emailfloodtime', 'class' => 'field50', 'min' => 0))
 	);
@@ -1254,18 +1256,18 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->mod_cp);
 
 	$forum_post_options = array(
-		$form->generate_check_box("canmanageannounce", 1, $lang->can_manage_announce, array("checked" => $mybb->input['canmanageannounce'])),
-		$form->generate_check_box("canmanagemodqueue", 1, $lang->can_manage_mod_queue, array("checked" => $mybb->input['canmanagemodqueue'])),
-		$form->generate_check_box("canmanagereportedcontent", 1, $lang->can_manage_reported_content, array("checked" => $mybb->input['canmanagereportedcontent'])),
-		$form->generate_check_box("canviewmodlogs", 1, $lang->can_view_mod_logs, array("checked" => $mybb->input['canviewmodlogs']))
+		$form->generate_check_box("canmanageannounce", 1, $lang->can_manage_announce, array("checked" => $mybb->get_input('canmanageannounce', MyBB::INPUT_INT))),
+		$form->generate_check_box("canmanagemodqueue", 1, $lang->can_manage_mod_queue, array("checked" => $mybb->get_input('canmanagemodqueue', MyBB::INPUT_INT))),
+		$form->generate_check_box("canmanagereportedcontent", 1, $lang->can_manage_reported_content, array("checked" => $mybb->get_input('canmanagereportedcontent', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewmodlogs", 1, $lang->can_view_mod_logs, array("checked" => $mybb->get_input('canviewmodlogs', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->forum_post_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $forum_post_options)."</div>");
 
 	$user_options = array(
-		$form->generate_check_box("caneditprofiles", 1, $lang->can_edit_profiles, array("checked" => $mybb->input['caneditprofiles'])),
-		$form->generate_check_box("canbanusers", 1, $lang->can_ban_users, array("checked" => $mybb->input['canbanusers'])),
-		$form->generate_check_box("canviewwarnlogs", 1, $lang->can_view_warnlogs, array("checked" => $mybb->input['canviewwarnlogs'])),
-		$form->generate_check_box("canuseipsearch", 1, $lang->can_use_ipsearch, array("checked" => $mybb->input['canuseipsearch']))
+		$form->generate_check_box("caneditprofiles", 1, $lang->can_edit_profiles, array("checked" => $mybb->get_input('caneditprofiles', MyBB::INPUT_INT))),
+		$form->generate_check_box("canbanusers", 1, $lang->can_ban_users, array("checked" => $mybb->get_input('canbanusers', MyBB::INPUT_INT))),
+		$form->generate_check_box("canviewwarnlogs", 1, $lang->can_view_warnlogs, array("checked" => $mybb->get_input('canviewwarnlogs', MyBB::INPUT_INT))),
+		$form->generate_check_box("canuseipsearch", 1, $lang->can_use_ipsearch, array("checked" => $mybb->get_input('canuseipsearch', MyBB::INPUT_INT)))
 	);
 	$form_container->output_row($lang->user_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $user_options)."</div>");
 
