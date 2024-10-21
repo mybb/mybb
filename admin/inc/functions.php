@@ -528,6 +528,7 @@ function fetch_iconv_encoding($mysql_encoding)
     switch($mysql_encoding[0])
     {
         case "utf8":
+        case "utf8mb3":
             return "utf-8";
 			break;
         case "latin1":
