@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Unit\Utilities;
+namespace MyBB\Tests\Unit\Utilities;
 
 use MyBB\Utilities\Decorator;
 use PHPUnit\Framework\Attributes\DataProvider;

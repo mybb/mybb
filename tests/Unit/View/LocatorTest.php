@@ -1,10 +1,11 @@
 <?php
 
-namespace MyBB\View;
+namespace MyBB\Tests\Unit\View;
 
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\ResourceType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
