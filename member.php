@@ -2754,12 +2754,8 @@ if($mybb->input['action'] == "profile")
 
 		if($mybb->usergroup['caneditprofiles'] == 1 && modcp_can_manage_user($memprofile['uid']))
 		{
-			if(modcp_can_manage_user($memprofile['uid']))
-			{
-				eval("\$editprofile = \"".$templates->get("member_profile_modoptions_editprofile")."\";");
-				eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
-		
-			}
+			eval("\$editprofile = \"".$templates->get("member_profile_modoptions_editprofile")."\";");
+			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
 		}
 
 		if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1 && modcp_can_manage_user($memprofile['uid']))
@@ -2768,10 +2764,7 @@ if($mybb->input['action'] == "profile")
 		}
 		elseif(modcp_can_manage_user($memprofile['uid']) && $mybb->usergroup['canbanusers'] == 1)
 		{
-			if(modcp_can_manage_user($memprofile['uid']) && $mybb->usergroup['canbanusers'] == 1)
-			{
-				eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
-			}
+			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
 		}
 
 		$purgespammer = '';
