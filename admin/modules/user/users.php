@@ -2807,7 +2807,7 @@ if($mybb->input['action'] == "inline_edit")
 			}
 			else
 			{
-				if($mybb->input['processed'] == 1)
+				if(isset($mybb->input['processed']))
 				{
 					// Set up user handler.
 					require_once MYBB_ROOT.'inc/datahandlers/user.php';
