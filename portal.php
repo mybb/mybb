@@ -441,7 +441,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	}
 }
 
-$announcements = '';
+$announcements = $multipage = '';
 if(!empty($mybb->settings['portal_announcementsfid']))
 {
 	// Get latest news announcements
@@ -711,6 +711,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 						}
 						else
 						{
+							$tcount = 0;
 							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 							{ // We have a thumbnail to show
 								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
