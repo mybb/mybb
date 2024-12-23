@@ -704,7 +704,7 @@ if($has_announcements == true)
 
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']])
+		if($announcement['startdate'] > $mybb->user['lastvisit'] && !isset($cookie[$announcement['aid']]))
 		{
 			$thread['newclass'] = 'subject_new';
 			$thread['folder']['value'] = 'newfolder';
