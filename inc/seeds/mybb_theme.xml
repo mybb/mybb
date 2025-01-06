@@ -1669,6 +1669,7 @@ a.button.report_user_button span {
 	height: 30px;
 	text-indent: -9999px;
 	background: url(images/close.png) no-repeat 0 0;
+	z-index: 2;
 }
 
 .modal-spinner {
