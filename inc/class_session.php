@@ -65,7 +65,14 @@ class session
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
 		{
-			$sid = $db->escape_string($mybb->cookies['sid']);
+			$cookies = explode('; ', $_SERVER['HTTP_COOKIE']);
+			$mycookie = [];
+			foreach($cookies as $cookie)
+			{
+				$kv = explode('=', $cookie);
+				$mycookie[$kv[0]] = $kv[1];
+			}
+			$sid = $db->escape_string($mycookie['sid']);
 
 			// Load the session if not using a bot sid
 			if(substr($sid, 3, 1) !== '=')
