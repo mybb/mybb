@@ -144,7 +144,11 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 $errors = array();
 
 // Handle attachments if we've got any.
-if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
+if($mybb->settings['enableattachments'] == 1 && 
+	($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || 
+	((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) || 
+	($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) || 
+	isset($mybb->input['savedraft'])) && isset($_FILES['attachments']))))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
