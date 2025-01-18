@@ -76,12 +76,15 @@ function fetchAction(action, parameters = null) {
  * Triggers prefetching through DOM, having no available API
  *
  * @param {string} url
+ * @param {function} callback
  */
-function prefetch(url) {
+function prefetch(url, callback) {
 	const $link = document.createElement('link');
 
 	$link.setAttribute('rel', 'prefetch');
 	$link.setAttribute('href', url);
+	$link.onload = callback;
+	$link.onerror = callback;
 
 	document.head.appendChild($link);
 }
@@ -333,10 +336,25 @@ function removeFieldNote($field, soft) {
 	}
 }
 
-function addFlashText(text) {
-	const $e = `<div class="flash">${text}</div>`;
+/**
+ * @param {?string} text
+ */
+function setInterstitial(text) {
+	$('body #interstitial')?.remove();
 
-	$('body').insertAdjacentHTML('beforeend', $e);
+	let content;
+
+	if (typeof text === 'string') {
+		content = `<p>${text}</p>`;
+	} else {
+		content = `<div class="logo"></div>`;
+	}
+
+	const $interstitial = `<div class="interstitial">${content}</div>`;
+
+	$('body').insertAdjacentHTML('beforeend', $interstitial);
+
+	return $('body .interstitial');
 }
 
 function cycleElementText($e, strings, intervalMs) {

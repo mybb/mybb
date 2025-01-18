@@ -36,29 +36,41 @@ processController.addEventListener('finish', () => {
 		const time = (performance.getEntriesByName('process')[0]).duration;
 		const timeFormatted = (time / 1000).toFixed(2);
 
-		addFlashText(`${timeFormatted} s`);
+		setInterstitial(`${timeFormatted} s`);
 	}
 
 	const finishUrl = documentData('finishUrl');
 
 	if (finishUrl !== null) {
-		const $e = $('body');
-
-		$('html').style.cursor = 'progress';
+		let preRedirectTasks;
 
 		if (showExecutionTime === true) {
-			window.location = finishUrl;
+			preRedirectTasks = [];
 		} else {
-			prefetch(finishUrl);
+			const preloadTimeoutMs = 4000; // multiple of interstitial animation duration
 
-			$e.addEventListener('animationend', e => {
-				if (e.animationName === 'body-fade-out') {
-					window.location = finishUrl;
-				}
-			});
+			const $interstitial = setInterstitial();
+
+			preRedirectTasks = [
+				new Promise(resolve => {
+					$interstitial.addEventListener('animationend', e => {
+						if (e.animationName === 'interstitial-fade-in') {
+							resolve();
+						}
+					});
+				}),
+				Promise.race([
+					new Promise(resolve => prefetch(finishUrl, resolve)),
+
+					 // fallback for unsupported prefetch events
+					new Promise(resolve => setTimeout(resolve, preloadTimeoutMs)),
+				]),
+			];
 		}
 
-		$e.classList.add('fade-out');
+		Promise.all(preRedirectTasks).then(() => {
+			window.location = finishUrl;
+		});
 	}
 });
 

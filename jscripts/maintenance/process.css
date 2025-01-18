@@ -19,10 +19,8 @@
 	--form-input-border-color: #aaa;
 	--form-input-focus-border-color: #444;
 
-	--fade-out-bg-color: #FFF;
-
-	--flash-bg-color: rgba(0, 0, 0, 0.9);
-	--flash-text-color: #FFF;
+	--interstitial-bg-color: #FFF;
+	--interstitial-text-color: #595959;
 }
 
 nav { --bg-color: #393D3F; --scrollbar-bg-color: rgba(255,255,255,0.05); --scrollbar-thumb-bg-color: rgba(255,255,255,0.4); }
@@ -47,9 +45,9 @@ nav .step[data-displayed] .operation--completed { --border-color: rgba(0,0,0,0.2
 .note--success { --bg-color: #36c7630d; --symbol-color: #36c763; }
 .note--warning { --bg-color: #FF5F140D; --symbol-color: #FF5F14; }
 
-
-body.fade-out { animation: body-fade-out 1s forwards; }
-body.fade-out .container { animation: container-fade-out 1s forwards; }
+.interstitial { display: flex; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(45deg, var(--interstitial-bg-color) 50%, transparent 75%) no-repeat; background-size: 200% 200%; background-position: 200% -50%; justify-content: center; align-items: center; cursor: progress; animation: interstitial-fade-in 1s forwards; }
+.interstitial p { font-size: 10vw; font-weight: 300; color: var(--interstitial-text-color); }
+.interstitial .logo { height: 200px; width: 200px; mask: url(logo.svg) no-repeat; mask-size: contain; background: linear-gradient(45deg, transparent 30%, #eee 50%, transparent 80%) no-repeat; background-size: 400% 400%; animation: interstitial-logo 2s linear infinite; }
 
 .interface-options { float: right; margin-top: -62px; margin-right: 6px; color: #767676; }
 .interface-options .icon { font-size: 1.4em; vertical-align: middle; }
@@ -151,8 +149,6 @@ body:not([javascript-active]) button[data-action] { display: none; }
 .password-score[data-score="3"] div { width: 75%; background-color: #c2e70d; }
 .password-score[data-score="4"] div { width: 100%; background-color: #55e70d; }
 
-.flash { display: flex; position: fixed; top: 0; bottom: 0; left: 0; right: 0; justify-content: center; align-items: center; font-size: 10vw; color: var(--flash-text-color); animation: flash 0.1s forwards; }
-
 @keyframes task-active {
 	0% {
 		transform: rotate(0deg);
@@ -161,25 +157,26 @@ body:not([javascript-active]) button[data-action] { display: none; }
 		transform: rotate(360deg);
 	}
 }
-@keyframes body-fade-out {
-	to {
-		background: var(--fade-out-bg-color);
-	}
-}
-@keyframes container-fade-out {
-	from {
-		opacity: 1;
-	}
-	to {
+@keyframes interstitial-fade-in {
+	0% {
 		opacity: 0;
 	}
-}
-@keyframes flash {
-	from {
-		background: transparent;
+	10% {
+		opacity: 1;
 	}
-	to {
-		background: var(--flash-bg-color);
+	90% {
+		background-position: 0 100%;
+	}
+	100% {
+		background-color: var(--interstitial-bg-color);
+	}
+}
+@keyframes interstitial-logo {
+	0% {
+		background-position: 100% 0%;
+	}
+	100% {
+		background-position: 0% 100%;
 	}
 }
 
