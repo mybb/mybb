@@ -796,6 +796,20 @@ class errorHandler {
 
 			foreach($trace as $call)
 			{
+				if($i === 1000)
+				{
+					if($html)
+					{
+						$backtrace .= '<li>&hellip;</li>';
+					}
+					else
+					{
+						$backtrace .= '…';
+					}
+
+					break;
+				}
+
 				if(empty($call['file'])) $call['file'] = "[PHP]";
 				if(empty($call['line'])) $call['line'] = " ";
 				if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
