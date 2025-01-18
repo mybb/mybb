@@ -74,6 +74,12 @@ processController.addEventListener('finish', () => {
 	}
 });
 
+window.addEventListener('pageshow', (event) => {
+	if (event.persisted) {
+		window.location.reload();
+	}
+});
+
 $$('button[data-step-submit]').forEach($e => $e.disabled = false);
 
 processController.start();
