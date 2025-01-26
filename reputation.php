@@ -68,7 +68,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	if($mybb->usergroup['cangivereputations'] != 1)
 	{
 		$message = $lang->add_no_permission;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	if($user_permissions['usereputationsystem'] != 1)
 	{
 		$message = $lang->add_disabled;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -100,7 +100,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	if($uid == $mybb->user['uid'])
 	{
 		$message = $lang->add_yours;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 
 		if($message)
 		{
-			if($mybb->input['nomodal'])
+			if(!empty($mybb->input['nomodal']))
 			{
 				eval('$error = "'.$templates->get("reputation_add_error_nomodal", 1, 0).'";');
 			}
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', MyBB::INPUT_INT) == 0)
 	{
 		$message = $lang->sprintf($lang->add_no_comment, $mybb->settings['minreplength']);
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($reputation > $mybb->usergroup['reputationpower'])
 	{
 		$message = $lang->add_invalidpower;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($mybb->get_input('reputation', MyBB::INPUT_INT) < 0 && $mybb->settings['negrep'] != 1)
 	{
 		$message = $lang->add_negative_disabled;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -346,7 +346,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($mybb->get_input('reputation', MyBB::INPUT_INT) == 0 && $mybb->settings['neurep'] != 1)
 	{
 		$message = $lang->add_neutral_disabled;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -362,7 +362,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($mybb->get_input('reputation', MyBB::INPUT_INT) > 0 && $mybb->settings['posrep'] != 1)
 	{
 		$message = $lang->add_positive_disabled;
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -378,7 +378,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if(my_strlen($mybb->input['comments']) > $mybb->settings['maxreplength'])
 	{
 		$message = $lang->sprintf($lang->add_toolong, $mybb->settings['maxreplength']);
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "add")
 		$message = $lang->add_all_rep_disabled;
 
 		$plugins->run_hooks("reputation_add_end_error");
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
 		}
