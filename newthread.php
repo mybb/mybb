@@ -1092,7 +1092,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 
-	$pollbox='';
+	$pollbox = '';
 
 	if($forumpermissions['canpostpolls'] != 0)
 	{
