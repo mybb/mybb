@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 
 	if(!empty($message))
 	{
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			output_page(\MyBB\View\template('reputation/add_error_nomodal.twig', [
 				'message' => $message,
@@ -226,7 +226,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 
 		if(!empty($message))
 		{
-			if($mybb->input['nomodal'])
+			if(!empty($mybb->input['nomodal']))
 			{
 				output_page(\MyBB\View\template('reputation/add_error_nomodal.twig', [
 					'message' => $message,
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 
 	if(!empty($message))
 	{
-		if($mybb->input['nomodal'])
+		if(!empty($mybb->input['nomodal']))
 		{
 			output_page(\MyBB\View\template('reputation/add_error_nomodal.twig', [
 				'message' => $message,
@@ -431,7 +431,7 @@ if($mybb->input['action'] == "add")
 
 		if(!empty($message))
 		{
-			if($mybb->input['nomodal'])
+			if(!empty($mybb->input['nomodal']))
 			{
 				output_page(\MyBB\View\template('reputation/add_error_nomodal.twig', [
 					'message' => $message,
