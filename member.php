@@ -3178,7 +3178,7 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
-	if(!$user['$uid'])
+	if(!isset($user['uid']))
 	{
 		error($lang->referrals_invalid_user);
 	}
@@ -3228,6 +3228,7 @@ if($mybb->input['action'] == 'referrals')
 
 		$multipage = multipage($referral_count, $perpage, $page, "member.php?action=referrals&amp;uid={$uid}");
 
+		$referral_rows = '';
 		foreach(get_user_referrals($uid, $start, $perpage) as $referral)
 		{
 			// Format user name link
