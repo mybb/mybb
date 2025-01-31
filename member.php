@@ -3024,7 +3024,7 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
-	if(!$user['uid'])
+	if(!isset($user['uid']))
 	{
 		error($lang->referrals_invalid_user);
 	}
