@@ -59,11 +59,6 @@ $error_handler = new errorHandler();
 // Show errors triggered during initialization
 $error_handler->force_display_errors = true;
 
-if(!function_exists('json_encode') || !function_exists('json_decode'))
-{
-	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
-}
-
 require_once MYBB_ROOT."inc/functions.php";
 
 require_once MYBB_ROOT."inc/class_core.php";
