@@ -598,11 +598,11 @@ final class DecoratorTest extends TestCase
         $result = $decorator::getInstancesDecorating($decorated);
 
         static::assertIsArray($result);
-        static::assertContainsOnly('object', $result);
+        static::assertContainsOnlyObject($result);
 
         $classes = array_map('get_class', $result);
 
-        static::assertEquals($expectedClassInstances, $classes);
+        static::assertSame($expectedClassInstances, $classes);
     }
 
     /**
@@ -613,7 +613,7 @@ final class DecoratorTest extends TestCase
     {
         $result = $decorator::decorates($decorated);
 
-        static::assertEquals($expected, $result);
+        static::assertSame($expected, $result);
     }
 
     /**
@@ -637,7 +637,7 @@ final class DecoratorTest extends TestCase
         $result = $decorated->$method();
 
         if ($expected !== null) {
-            static::assertEquals($expected, $result);
+            static::assertSame($expected, $result);
         }
     }
 
@@ -655,7 +655,7 @@ final class DecoratorTest extends TestCase
         $result = $decorated->$method();
 
         if ($expected !== null) {
-            static::assertEquals($expected, $result);
+            static::assertSame($expected, $result);
         }
     }
 
