@@ -11,7 +11,7 @@ namespace MyBB\Maintenance;
 use MyBB;
 
 #region lock file
-function lockFileExists(string $type = null): bool
+function lockFileExists(?string $type = null): bool
 {
     $filename = 'lock';
 
@@ -25,7 +25,7 @@ function lockFileExists(string $type = null): bool
 /**
  * @throws \Exception
  */
-function createLockFile(string $type = null): void
+function createLockFile(?string $type = null): void
 {
     $filename = 'lock';
 

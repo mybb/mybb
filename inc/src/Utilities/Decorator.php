@@ -254,7 +254,7 @@ abstract class Decorator
      * @note The type and bindings may also have been saved externally in `self::decorate()`.
      * @see self::decorate()
      */
-    public function __construct(object $object = null, ?self $baseDecorator = null)
+    public function __construct(?object $object = null, ?self $baseDecorator = null)
     {
         $this->type ??= static::getType();
 

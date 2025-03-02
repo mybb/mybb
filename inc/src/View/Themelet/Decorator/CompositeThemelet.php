@@ -47,7 +47,7 @@ class CompositeThemelet extends ThemeletDecorator
     /**
      * Returns Asset properties defined in all applied namespaces.
      */
-    public function getCompositeAssetProperties(Locator $selector = null): array
+    public function getCompositeAssetProperties(?Locator $selector = null): array
     {
         if ($selector === null) {
             if (!$this->assetPropertiesPopulated) {

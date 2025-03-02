@@ -628,7 +628,7 @@ final class DecoratorTest extends TestCase
     }
 
     #[DataProvider('decoratedCallCases')]
-    public function testDecoratedCall(object $decorated, string $method, string $expected = null, string $exception = null)
+    public function testDecoratedCall(object $decorated, string $method, ?string $expected = null, ?string $exception = null)
     {
         if ($exception !== null) {
             $this->expectException($exception);
@@ -642,7 +642,7 @@ final class DecoratorTest extends TestCase
     }
 
     #[DataProvider('optionsCases')]
-    public function testOptions(object $decorated, string $method, string $expected = null, string $exception = null)
+    public function testOptions(object $decorated, string $method, ?string $expected = null, ?string $exception = null)
     {
         if ($exception !== null) {
             $this->expectException($exception);

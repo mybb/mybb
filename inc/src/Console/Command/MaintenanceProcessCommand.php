@@ -55,7 +55,7 @@ abstract class MaintenanceProcessCommand extends Command
     protected OutputInterface $output;
     protected SymfonyStyle $io;
 
-    public function __construct(string $name = null)
+    public function __construct(?string $name = null)
     {
         $this->lang = \MyBB\app(\MyLanguage::class);
 

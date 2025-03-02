@@ -5,7 +5,7 @@ class DbException extends Exception
     protected ?string $query = null;
     protected $code = null;
 
-    public function __construct(string $message = '', mixed $code = '', string $query = null, ?Throwable $previous = null)
+    public function __construct(string $message = '', mixed $code = '', ?string $query = null, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
 

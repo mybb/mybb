@@ -202,7 +202,7 @@ trait AssetManagementTrait
         return $asset;
     }
 
-    public function assetApplicableThroughProperties(array $properties = null): bool
+    public function assetApplicableThroughProperties(?array $properties = null): bool
     {
         return (
             isset($properties['attached_to']) &&
