@@ -13,7 +13,7 @@ abstract class Arrays
     {
         $target = &$array;
 
-        while ($key = array_shift($path)) {
+        foreach ($path as $key) {
             if (is_array($target) && array_key_exists($key, $target)) {
                 $target = &$target[$key];
             } else {
