@@ -62,7 +62,7 @@ abstract class Arrays
 
             foreach ($path as $pathKey) {
                 if (
-                    !isset($targetArray[$pathKey]) ||
+                    !array_key_exists($pathKey, $targetArray) ||
                     !is_array($targetArray[$pathKey])
                 ) {
                     return false;
