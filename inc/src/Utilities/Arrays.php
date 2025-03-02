@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\Utilities;
 
+use InvalidArgumentException;
+
 abstract class Arrays
 {
     /**
@@ -29,6 +31,10 @@ abstract class Arrays
      */
     public static function setNested(array &$array, array $path, mixed $value): void
     {
+        if ($path === [] && !is_array($value)) {
+            throw new InvalidArgumentException('Cannot use ' . __METHOD__ . ' to change top-level type');
+        }
+
         $target = &$array;
 
         foreach ($path as $key) {
