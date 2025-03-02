@@ -39,8 +39,8 @@ class ThemeletLocator extends Locator
      *   namespace?: self::COMPONENT_*,
      * } $directives
      * @param array{
-     *   type?: ResourceType,
-     *   namespace?: string,
+     *   type?: ?ResourceType,
+     *   namespace?: ?string,
      * } $context
      */
     public static function fromString(string $string, array $directives = [], array $context = []): static
