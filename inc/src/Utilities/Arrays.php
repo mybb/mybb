@@ -71,9 +71,13 @@ abstract class Arrays
                 $targetArray = &$targetArray[$pathKey];
             }
 
-            unset($targetArray[$targetKey]);
+            if (array_key_exists($targetKey, $targetArray)) {
+                unset($targetArray[$targetKey]);
 
-            return true;
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
