@@ -2,7 +2,7 @@
 
 namespace MyBB\Tests\Unit;
 
-use MyBB\Tests\Unit\Traits\LegacyCoreAwareTest;
+use MyBB\Tests\Traits\LegacyCoreAwareTest;
 
 class ParserTest extends TestCase
 {

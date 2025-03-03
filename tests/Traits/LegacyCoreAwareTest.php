@@ -1,8 +1,6 @@
 <?php
 
-namespace MyBB\Tests\Unit\Traits;
-
-use Mockery\Mock;
+namespace MyBB\Tests\Traits;
 
 /**
  * This trait can be used by any unit tests that is testing a legacy MyBB component.
@@ -17,14 +15,14 @@ trait LegacyCoreAwareTest
     {
         // This is nasty, but the parser has a lot of hidden dependencies upon globals such as `$mybb` and `$plugins`...
         // In the future we should move the parser into the `\MyBB\` namespace and inject these dependencies.
-        defined('MYBB_ROOT') or define('MYBB_ROOT', __DIR__ . '/../../../');
+        defined('MYBB_ROOT') or define('MYBB_ROOT', __DIR__ . '/../../');
 
-        require_once __DIR__ . '/../../../inc/class_core.php';
-        require_once __DIR__ . '/../../../inc/class_plugins.php';
-        require_once __DIR__ . '/../../../inc/class_language.php';
-        require_once __DIR__ . '/../../../inc/class_parser.php';
-        require_once __DIR__ . '/../../../inc/class_datacache.php';
-        require_once __DIR__ . '/../../../inc/cachehandlers/interface.php';
+        require_once MYBB_ROOT . 'inc/class_core.php';
+        require_once MYBB_ROOT . 'inc/class_plugins.php';
+        require_once MYBB_ROOT . 'inc/class_language.php';
+        require_once MYBB_ROOT . 'inc/class_parser.php';
+        require_once MYBB_ROOT . 'inc/class_datacache.php';
+        require_once MYBB_ROOT . 'inc/cachehandlers/interface.php';
 
         // The core MyBB class expects to be accessed by a browser
         $_SERVER['REQUEST_METHOD'] = 'get';
@@ -47,7 +45,7 @@ trait LegacyCoreAwareTest
             'charset' => 'utf-8',
         ];
 
-        $GLOBALS['lang']->set_path(__DIR__ . '/../../../inc/languages');
+        $GLOBALS['lang']->set_path(MYBB_ROOT . 'inc/languages');
 
         $GLOBALS['lang']->load('global');
 
@@ -61,6 +59,6 @@ trait LegacyCoreAwareTest
         $dbMock = \Mockery::mock(\DB_Base::class);
         $GLOBALS['db'] = $dbMock;
 
-        require_once __DIR__ . '/../../../inc/functions.php';
+        require_once MYBB_ROOT . 'inc/functions.php';
     }
 }
