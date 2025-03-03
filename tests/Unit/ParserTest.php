@@ -350,25 +350,15 @@ test<br />
         foreach ($images as $imageUrl => $imageName) {
             $tests = [
                 "[img]{$imageUrl}[/img]" =>
-                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">" .
-                    "<a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" " .
-                    "class=\"mycode_url\">{$imageUrl}</a></a>]",
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a>]",
                 "[img=50x50]{$imageUrl}[/img]" =>
-                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">" .
-                    "<a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" " .
-                    "class=\"mycode_url\">{$imageUrl}</a></a>]",
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a>]",
                 "[img align=left]{$imageUrl}[/img]" =>
-                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">" .
-                    "<a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" " .
-                    "class=\"mycode_url\">{$imageUrl}</a></a>]",
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a>]",
                 "[img align=right]{$imageUrl}[/img]" =>
-                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">" .
-                    "<a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" " .
-                    "class=\"mycode_url\">{$imageUrl}</a></a>]",
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a>]",
                 "[img=50x50 align=left]{$imageUrl}[/img]" =>
-                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">" .
-                    "<a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" " .
-                    "class=\"mycode_url\">{$imageUrl}</a></a>]",
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a>]",
             ];
 
             foreach ($tests as $input => $expected) {
