@@ -1,0 +1,26 @@
+name: PHPUnit Tests
+
+on: [push, pull_request]
+
+jobs:
+    phpunit:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v2
+
+          - name: Setup PHP
+            uses: shivammathur/setup-php@v2
+            with:
+                php-version: '8.4'
+                tools: composer:v2
+
+          - name: Setup problem matchers for PHP
+            run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          - name: Setup problem matchers for PHPUnit
+            run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+          - name: Install dependencies
+            run: composer install --prefer-dist --no-progress --no-suggest
+
+          - run: inc/vendor/bin/phpunit --display-warnings --display-notices --display-deprecations
