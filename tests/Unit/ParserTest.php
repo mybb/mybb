@@ -23,6 +23,7 @@ class ParserTest extends TestCase
         parent::setUp();
 
         $GLOBALS['mybb']->settings = array_merge($GLOBALS['mybb']->settings, [
+            'allowautourl' => '1',
             'allowcodemycode' => 1,
             'allowbasicmycode' => 1,
             'allowsymbolmycode' => 1,
