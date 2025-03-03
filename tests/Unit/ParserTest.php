@@ -16,39 +16,6 @@ class ParserTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         static::setupMybb();
-
-        /** @var \Mockery\MockInterface $templatesMock */
-        $templatesMock = $GLOBALS['templates'];
-
-        $templatesMock->shouldReceive('get')
-            ->withArgs(['mycode_size_int', 1, 0])
-            ->andReturn(
-                str_replace(
-                    "\\'",
-                    "'",
-                    addslashes('<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>')
-                )
-            );
-
-        $templatesMock->shouldReceive('get')
-            ->withArgs(['mycode_url', 1, 0])
-            ->andReturn(
-                str_replace(
-                    "\\'",
-                    "'",
-                    addslashes('<a href="{$url}" target="_blank"{$rel} class="mycode_url">{$name}</a>')
-                )
-            );
-
-        $templatesMock->shouldReceive('get')
-            ->withArgs(['mycode_img', 1, 0])
-            ->andReturn(
-                str_replace(
-                    "\\'",
-                    "'",
-                    addslashes('<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />')
-                )
-            );
     }
 
     protected function setUp(): void
