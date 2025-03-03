@@ -302,43 +302,42 @@ test<br />
         }
     }
 
-//    public function testSimpleImgMyCodesWithImagesAllowed()
-//    {
-//        // TODO: we need to mock Twig and register it in the container due to the way the parser works...
-//
-//        $images = [
-//            'https://example.com/some_image.jpg' => 'some_image.jpg',
-//            'http://example.com/some_image.png' => 'some_image.png',
-//        ];
-//
-//        foreach ($images as $imageUrl => $imageName) {
-//            $tests = [
-//                "[img]{$imageUrl}[/img]" =>
-//                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
-//                "[img=50x50]{$imageUrl}[/img]" =>
-//                    "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\"" .
-//                    " alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
-//                "[img align=left]{$imageUrl}[/img]" =>
-//                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" " .
-//                    "class=\"mycode_img\" /><br class=\"clear\" />",
-//                "[img align=right]{$imageUrl}[/img]" =>
-//                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: right;\" " .
-//                    "class=\"mycode_img\" /><br class=\"clear\" />",
-//                "[img=50x50 align=left]{$imageUrl}[/img]" =>
-//                    "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" " .
-//                    "style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
-//            ];
-//
-//            foreach ($tests as $input => $expected) {
-//                $actual = $this->parser->parse_message($input, [
-//                    'allow_mycode' => true,
-//                    'allow_imgcode' => true,
-//                ]);
-//
-//                $this->assertEquals($expected, $actual);
-//            }
-//        }
-//    }
+    public function testSimpleImgMyCodesWithImagesAllowed()
+    {
+        $images = [
+            'https://example.com/some_image.jpg' => 'some_image.jpg',
+            'http://example.com/some_image.png' => 'some_image.png',
+        ];
+
+        foreach ($images as $imageUrl => $imageName) {
+            $tests = [
+                "[img]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" loading=\"lazy\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />\n",
+                "[img=50x50]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" loading=\"lazy\" width=\"50\" height=\"50\"" .
+                    " alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />\n",
+                "[img align=left]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" loading=\"lazy\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" " .
+                    "class=\"mycode_img\" />\n<br class=\"clear\" />",
+                "[img align=right]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" loading=\"lazy\" alt=\"[Image: {$imageName}]\" style=\"float: right;\" " .
+                    "class=\"mycode_img\" />\n<br class=\"clear\" />",
+                "[img=50x50 align=left]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" loading=\"lazy\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" " .
+                    "style=\"float: left;\" class=\"mycode_img\" />\n<br class=\"clear\" />",
+            ];
+
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                    'allow_imgcode' => true,
+                    'nl2br' => false,
+                ]);
+
+                $this->assertEquals($expected, $actual);
+            }
+        }
+    }
 
     public function testSimpleImgMyCodesWithImagesNotAllowed()
     {
