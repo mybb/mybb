@@ -58,7 +58,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return [
                 'debug' => $mybb->dev_mode,
                 'auto_reload' => \MyBB\View\directive('twig.autoReload'),
-                'cache' => __DIR__ . '/../../../cache/views',
+                'cache' => getenv('testing')
+                    ? false
+                    : __DIR__ . '/../../../cache/views',
             ];
         });
 

@@ -12,4 +12,7 @@
       <directory>./tests/Unit</directory>
     </testsuite>
   </testsuites>
+  <php>
+    <env name="testing" value="1"/>
+  </php>
 </phpunit>
