@@ -149,7 +149,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
      * <b>Traversable</b>
      * @since 5.0.0
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->breadcrumbs);
     }
@@ -169,7 +169,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->breadcrumbs[$offset]);
     }
@@ -186,7 +186,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return isset($this->breadcrumbs[$offset]) ? $this->breadcrumbs[$offset] : null;
     }
@@ -206,7 +206,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (is_null($offset)) {
             $this->breadcrumbs[] = $value;
@@ -227,7 +227,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->breadcrumbs[$offset]);
     }
