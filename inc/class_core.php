@@ -281,10 +281,6 @@ class MyBB {
 		{
 			$this->request_method = "post";
 		}
-		else if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "GET")
-		{
-			$this->request_method = "get";
-		}
 		else
 		{
 			$this->request_method = "";
