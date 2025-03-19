@@ -3647,6 +3647,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 {
 	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
+	$codeinsert  = '';
+
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(

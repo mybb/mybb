@@ -277,11 +277,11 @@ class MyBB {
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
 
-		if($_SERVER['REQUEST_METHOD'] == "POST")
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST")
 		{
 			$this->request_method = "post";
 		}
-		else if($_SERVER['REQUEST_METHOD'] == "GET")
+		else
 		{
 			$this->request_method = "get";
 		}

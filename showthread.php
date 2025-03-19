@@ -387,6 +387,7 @@ $pid = $mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 $forum_stats = $cache->read("forumsdisplay");
 
 $breadcrumb_multipage = array();
+$threadcount = 0;
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?

@@ -798,7 +798,7 @@ if($has_announcements == true)
 	$bgcolor = alt_trow(true); // Reset the trow colors
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']])
+		if($announcement['startdate'] > $mybb->user['lastvisit'] && !isset($cookie[$announcement['aid']]))
 		{
 			$new_class = ' class="subject_new"';
 			$folder = "newfolder";
