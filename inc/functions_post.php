@@ -278,7 +278,8 @@ function build_postbit($post, $post_type=0)
 		$usergroup['image'] = str_replace('{theme}', $theme['imgdir'], $usergroup['image']);
 		$post['groupimage'] = true;
 	}
-
+	
+	$post['profilelink_plain'] = $post['username_formatted'] = '';
 	$post['isguest'] = true;
 	if($post['userusername'])
 	{
