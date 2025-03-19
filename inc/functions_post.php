@@ -271,6 +271,8 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
+	$post['profilelink_plain'] = $post['username_formatted'] = '';
+
 	if($post['userusername'])
 	{
 		// This post was made by a registered user
