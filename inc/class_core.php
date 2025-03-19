@@ -283,7 +283,7 @@ class MyBB {
 		}
 		else
 		{
-			$this->request_method = "";
+			$this->request_method = "get";
 		}
 
 		// If we've got register globals on, then kill them too
