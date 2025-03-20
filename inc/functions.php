@@ -2569,14 +2569,7 @@ function my_unserialize($str, $unlimited = true)
  */
 function native_unserialize($str)
 {
-	if(version_compare(PHP_VERSION, '7.0.0', '>='))
-	{
-		return unserialize($str, array('allowed_classes' => false));
-	}
-	else
-	{
-		return unserialize($str);
-	}
+	return unserialize($str, array('allowed_classes' => false));
 }
 
 /**
@@ -7071,14 +7064,14 @@ function fetch_remote_file($url, $post_data = array(), $max_redirects = 20)
 		$curl_version_info = curl_version();
 		$curl_version = $curl_version_info['version'];
 
-		if(version_compare(PHP_VERSION, '7.0.7', '>=') && version_compare($curl_version, '7.49', '>='))
+		if(version_compare($curl_version, '7.49', '>='))
 		{
 			// CURLOPT_CONNECT_TO
 			$curlopt[10243] = array(
 				$url_components['host'].':'.$url_components['port'].':'.$destination_address
 			);
 		}
-		elseif(version_compare(PHP_VERSION, '5.5', '>=') && version_compare($curl_version, '7.21.3', '>='))
+		elseif(version_compare($curl_version, '7.21.3', '>='))
 		{
 			// CURLOPT_RESOLVE
 			$curlopt[10203] = array(
@@ -7968,15 +7961,12 @@ function secure_binary_seed_rng($bytes)
 {
 	$output = null;
 
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	try
 	{
-		try
-		{
-			$output = random_bytes($bytes);
-		}
-		catch(Exception $e)
-		{
-		}
+		$output = random_bytes($bytes);
+	}
+	catch(Exception $e)
+	{
 	}
 
 	if(strlen($output) < $bytes)
@@ -8017,14 +8007,10 @@ function secure_binary_seed_rng($bytes)
 	{
 		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			// PHP <5.3.4 had a bug which makes that function unusable on Windows
-			if((DIRECTORY_SEPARATOR == '/') || version_compare(PHP_VERSION, '5.3.4', '>='))
+			$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
+			if($crypto_strong == false)
 			{
-				$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
-				if($crypto_strong == false)
-				{
-					$output = null;
-				}
+				$output = null;
 			}
 		}
 	}
@@ -8126,20 +8112,17 @@ function my_rand($min = 0, $max = PHP_INT_MAX)
 		$max = PHP_INT_MAX;
 	}
 
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	try
 	{
-		try
-		{
-			$result = random_int($min, $max);
-		}
-		catch(Exception $e)
-		{
-		}
+		$result = random_int($min, $max);
+	}
+	catch(Exception $e)
+	{
+	}
 
-		if(isset($result))
-		{
-			return $result;
-		}
+	if(isset($result))
+	{
+		return $result;
 	}
 
 	$seed = secure_seed_rng();
@@ -8844,29 +8827,7 @@ if(!function_exists('array_column'))
  */
 function my_hash_equals($known_string, $user_string)
 {
-	if(version_compare(PHP_VERSION, '5.6.0', '>='))
-	{
-		return hash_equals($known_string, $user_string);
-	}
-	else
-	{
-		$known_string_length = my_strlen($known_string);
-		$user_string_length = my_strlen($user_string);
-
-		if($user_string_length != $known_string_length)
-		{
-			return false;
-		}
-
-		$result = 0;
-
-		for($i = 0; $i < $known_string_length; $i++)
-		{
-			$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
-		}
-
-		return $result === 0;
-	}
+	return hash_equals($known_string, $user_string);
 }
 
 /**
@@ -8924,18 +8885,9 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
  */
 function create_xml_parser($data)
 {
-	if(version_compare(PHP_VERSION, '8.0', '>='))
-	{
-		require_once MYBB_ROOT."inc/class_xmlparser.php";
+	require_once MYBB_ROOT."inc/class_xmlparser.php";
 
-		return new MyBBXMLParser($data);
-	}
-	else
-	{
-		require_once MYBB_ROOT."inc/class_xml.php";
-
-		return new XMLParser($data);
-	}
+	return new MyBBXMLParser($data);
 }
 
 /**

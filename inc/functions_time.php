@@ -82,8 +82,6 @@ These should be posted to the ADOdb forums at
 */
 define('ADODB_DATE_VERSION', 0.33);
 
-$ADODB_DATETIME_CLASS = (PHP_VERSION >= 5.2);
-
 /*
 	This code was originally for windows. But apparently this problem happens
 	also with Linux, RH 7.3 and later!
@@ -208,13 +206,12 @@ function adodb_get_gmt_diff_ts($ts)
 */
 function adodb_get_gmt_diff($y,$m,$d)
 {
-static $TZ,$tzo;
-global $ADODB_DATETIME_CLASS;
+	static $TZ,$tzo;
 
 	if (!defined('ADODB_TEST_DATES')) $y = false;
 	else if ($y < 1970 || $y >= 2038) $y = false;
 
-	if ($ADODB_DATETIME_CLASS && $y !== false) {
+	if ($y !== false) {
 		$dt = new DateTime();
 		$dt->setISODate($y,$m,$d);
 		if (empty($tzo)) {
@@ -449,14 +446,16 @@ global $_month_table_normal,$_month_table_leaf;
 	);
 }
 
-function adodb_tz_offset($gmt,$isphp5)
+function adodb_tz_offset(
+	$gmt,
+	#[Deprecated]
+	$isphp5
+)
 {
 	$zhrs = abs($gmt)/3600;
 	$hrs = floor($zhrs);
-	if ($isphp5)
-		return sprintf('%s%02d%02d',($gmt<=0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60);
-	else
-		return sprintf('%s%02d%02d',($gmt<0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60);
+
+	return sprintf('%s%02d%02d',($gmt<=0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60);
 }
 
 function adodb_gmdate($fmt,$d=false)
@@ -487,8 +486,7 @@ function adodb_date2($fmt, $d=false, $is_gmt=false)
 */
 function adodb_date($fmt,$d=false,$is_gmt=false)
 {
-static $daylight;
-global $ADODB_DATETIME_CLASS;
+	static $daylight;
 
 	if ($d === false) return ($is_gmt)? @gmdate($fmt): @date($fmt);
 	if (!defined('ADODB_TEST_DATES')) {
@@ -515,8 +513,6 @@ global $ADODB_DATETIME_CLASS;
 	$max = strlen($fmt);
 	$dates = '';
 
-	$isphp5 = PHP_VERSION >= 5;
-
 	/*
 		at this point, we have the following integer vars to manipulate:
 		$year, $month, $day, $hour, $min, $secs
@@ -524,12 +520,9 @@ global $ADODB_DATETIME_CLASS;
 	for ($i=0; $i < $max; $i++) {
 		switch($fmt[$i]) {
 		case 'T':
-			if ($ADODB_DATETIME_CLASS) {
-				$dt = new DateTime();
-				$dt->SetDate($year,$month,$day);
-				$dates .= $dt->Format('T');
-			} else
-				$dates .= date('T');
+			$dt = new DateTime();
+			$dt->SetDate($year,$month,$day);
+			$dates .= $dt->Format('T');
 			break;
 		// YEAR
 		case 'L': $dates .= $arr['leap'] ? '1' : '0'; break;
@@ -548,7 +541,7 @@ global $ADODB_DATETIME_CLASS;
 
 			$gmt = adodb_get_gmt_diff($year,$month,$day);
 
-			$dates .= ' '.adodb_tz_offset($gmt,$isphp5);
+			$dates .= ' '.adodb_tz_offset($gmt);
 			break;
 
 		case 'Y': $dates .= $year; break;
@@ -581,7 +574,7 @@ global $ADODB_DATETIME_CLASS;
 		case 'O':
 			$gmt = ($is_gmt) ? 0 : adodb_get_gmt_diff($year,$month,$day);
 
-			$dates .= adodb_tz_offset($gmt,$isphp5);
+			$dates .= adodb_tz_offset($gmt);
 			break;
 
 		case 'H':
