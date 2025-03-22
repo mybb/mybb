@@ -61,7 +61,6 @@ class errorHandler {
 		E_USER_WARNING					=> 'User Warning',
 		E_USER_NOTICE					=> 'User Notice',
 		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
-		E_STRICT						=> 'Runtime Notice',
 		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
 		MYBB_SQL 						=> 'MyBB SQL Error',
 		MYBB_TEMPLATE					=> 'MyBB Template Error',
@@ -100,7 +99,6 @@ class errorHandler {
 		E_DEPRECATED,
 		E_NOTICE,
 		E_USER_NOTICE,
-		E_STRICT
 	);
 
 	/**
@@ -130,6 +128,12 @@ class errorHandler {
 	 */
 	function __construct()
 	{
+		if(version_compare(PHP_VERSION, '7.0', '<'))
+		{
+			$this->error_types[E_STRICT] = 'Runtime Notice';
+			$this->ignore_types[] = E_STRICT;
+		}
+
 		// Lets set the error handler in here so we can just do $handler = new errorHandler() and be all set up.
 		$error_types = E_ALL;
 		foreach($this->ignore_types as $bit)
