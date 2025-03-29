@@ -105,7 +105,7 @@ class MyBB {
 	 *
 	 * @var boolean
 	 */
-	public $dev_mode = true;
+	public $dev_mode = false;
 
 	/**
 	 * Variables that need to be clean.
