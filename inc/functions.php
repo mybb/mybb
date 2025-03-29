@@ -3401,20 +3401,20 @@ function random_str($length = 8, $complex = false)
 	if($complex == true)
 	{
 		// At least one number
-		$str[] = $set[my_rand(0, 9)];
+		$str[] = $set[random_int(0, 9)];
 
 		// At least one big letter
-		$str[] = $set[my_rand(10, 35)];
+		$str[] = $set[random_int(10, 35)];
 
 		// At least one small letter
-		$str[] = $set[my_rand(36, 61)];
+		$str[] = $set[random_int(36, 61)];
 
 		$length -= 3;
 	}
 
 	for($i = 0; $i < $length; ++$i)
 	{
-		$str[] = $set[my_rand(0, 61)];
+		$str[] = $set[random_int(0, 61)];
 	}
 
 	// Make sure they're in random order and convert them to a string
