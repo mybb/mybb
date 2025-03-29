@@ -460,8 +460,7 @@ function getIgnoredFileVerificationFailures(): array
         'missing' => [
             'files' => [
                 './htaccess.txt',
-                './htaccess-nginx.txt',
-                './inc/plugins/hello.php',
+                './htaccess-nginx.txt'
             ],
             'directories' => [],
         ],
