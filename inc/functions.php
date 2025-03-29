@@ -1759,7 +1759,7 @@ function forum_password_validated($forum, $ignore_empty=false, $check_parents=fa
 
 	return ($ignore_empty && $forum['password'] === '') || (
 		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
-		my_hash_equals(
+		hash_equals(
 			md5($mybb->user['uid'].$forum['password']),
 			$mybb->cookies['forumpass'][$forum['fid']]
 		)
@@ -1815,7 +1815,7 @@ function check_forum_password($fid, $pid = 0, $return = false)
 	{
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
+			if(hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
