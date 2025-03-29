@@ -7953,155 +7953,12 @@ function signed($int)
 }
 
 /**
- * Returns a securely generated seed
- *
- * @return string A secure binary seed
- */
-function secure_binary_seed_rng($bytes)
-{
-	$output = null;
-
-	try
-	{
-		$output = random_bytes($bytes);
-	}
-	catch(Exception $e)
-	{
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
-		{
-			$output = @fread($handle, $bytes);
-			@fclose($handle);
-		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('mcrypt_create_iv'))
-		{
-			if(DIRECTORY_SEPARATOR == '/')
-			{
-				$source = MCRYPT_DEV_URANDOM;
-			}
-			else
-			{
-				$source = MCRYPT_RAND;
-			}
-
-			$output = @mcrypt_create_iv($bytes, $source);
-		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('openssl_random_pseudo_bytes'))
-		{
-			$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
-			if($crypto_strong == false)
-			{
-				$output = null;
-			}
-		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(class_exists('COM'))
-		{
-			try
-			{
-				$CAPI_Util = new COM('CAPICOM.Utilities.1');
-				if(is_callable(array($CAPI_Util, 'GetRandom')))
-				{
-					$output = $CAPI_Util->GetRandom($bytes, 0);
-				}
-			}
-			catch(Exception $e)
-			{
-			}
-		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		// Close to what PHP basically uses internally to seed, but not quite.
-		$unique_state = microtime().@getmypid();
-
-		$rounds = ceil($bytes / 16);
-
-		for($i = 0; $i < $rounds; $i++)
-		{
-			$unique_state = md5(microtime().$unique_state);
-			$output .= md5($unique_state);
-		}
-
-		$output = substr($output, 0, ($bytes * 2));
-
-		$output = pack('H*', $output);
-
-		return $output;
-	}
-	else
-	{
-		return $output;
-	}
-}
-
-/**
- * Returns a securely generated seed integer
- *
- * @return int An integer equivalent of a secure hexadecimal seed
- */
-function secure_seed_rng()
-{
-	$bytes = PHP_INT_SIZE;
-
-	do
-	{
-
-		$output = secure_binary_seed_rng($bytes);
-
-		// convert binary data to a decimal number
-		if($bytes == 4)
-		{
-			$elements = unpack('i', $output);
-			$output = abs($elements[1]);
-		}
-		else
-		{
-			$elements = unpack('N2', $output);
-			$output = abs($elements[1] << 32 | $elements[2]);
-		}
-
-	} while($output > PHP_INT_MAX);
-
-	return $output;
-}
-
-/**
  * Generates a cryptographically secure random number.
  *
  * @param int $min Optional lowest value to be returned (default: 0)
  * @param int $max Optional highest value to be returned (default: PHP_INT_MAX)
+ *
+ * @deprecated Use random_int() instead.
  */
 function my_rand($min = 0, $max = PHP_INT_MAX)
 {
@@ -8112,23 +7969,7 @@ function my_rand($min = 0, $max = PHP_INT_MAX)
 		$max = PHP_INT_MAX;
 	}
 
-	try
-	{
-		$result = random_int($min, $max);
-	}
-	catch(Exception $e)
-	{
-	}
-
-	if(isset($result))
-	{
-		return $result;
-	}
-
-	$seed = secure_seed_rng();
-
-	$distance = $max - $min;
-	return $min + floor($distance * ($seed / PHP_INT_MAX));
+	return random_int($min, $max);
 }
 
 /**
