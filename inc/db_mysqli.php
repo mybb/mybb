@@ -210,7 +210,7 @@ class DB_MySQLi implements DB_Base
 			{
 				$connect_function = "mysqli_connect";
 				$persist = "";
-				if(!empty($single_connection['pconnect']) && version_compare(PHP_VERSION, '5.3.0', '>='))
+				if(!empty($single_connection['pconnect']))
 				{
 					$persist = 'p:';
 				}
