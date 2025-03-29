@@ -66,13 +66,6 @@ class MyBB {
 	public $settings = array();
 
 	/**
-	 * Whether or not magic quotes are enabled.
-	 *
-	 * @var int
-	 */
-	public $magicquotes = 0;
-
-	/**
 	 * Whether or not MyBB supports SEO URLs
 	 *
 	 * @var boolean
