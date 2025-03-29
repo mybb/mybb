@@ -8819,6 +8819,8 @@ if(!function_exists('array_column'))
  * @param string $known_string The first string to be compared.
  * @param string $user_string The second, user-supplied string to be compared.
  * @return bool Result of the comparison.
+ *
+ * @deprecated Use hash_equals() instead.
  */
 function my_hash_equals($known_string, $user_string)
 {
