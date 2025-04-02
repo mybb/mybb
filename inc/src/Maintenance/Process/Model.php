@@ -133,7 +133,7 @@ class Model
     /** @var PreconditionModel|null */
     private $precondition = null;
 
-     /** @var array<string,StepModel> */
+    /** @var array<string,StepModel> */
     private array $steps = [];
 
     /** @var array<string,OperationModel> */

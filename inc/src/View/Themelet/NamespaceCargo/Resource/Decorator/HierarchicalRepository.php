@@ -38,7 +38,7 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
         }
     }
 
-     /**
+    /**
      * @override scope
      */
     public function get(string|ThemeletLocator $key): Resource

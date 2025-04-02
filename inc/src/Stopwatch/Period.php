@@ -59,7 +59,7 @@ class Period
     }
 
     /**
-     * Returns the maximum memory usage.
+     * Returns the maximum memory usage in bytes.
      */
     public function getPeakMemory(): int
     {

@@ -12,7 +12,7 @@ class ProcessController extends EventTarget {
 	 * @property {number} inputFeedbackStartTime
 	 * @property {boolean} [initial]
 	 * @property {Set<Parameter>} parameters
-	 * @property {Set<string,Operation>} operations
+	 * @property {Set<Operation>} operations
 	 * @property {Set<Operation>} submitBlockingOperations
 	 * @property {Set<Operation>} finishBlockingOperations
 	 */
@@ -76,7 +76,7 @@ class ProcessController extends EventTarget {
 	/** @type Set<string> */
 	#pendingDeferredDefaultParameterNames = new Set();
 
-	/** @type Map<string,Operation> */
+	/** @type {Map<string,Operation>} */
 	#operations = new Map();
 
 	/** @type {Set<Operation>} */
@@ -88,7 +88,7 @@ class ProcessController extends EventTarget {
 	/** @type {boolean} */
 	#operationQueueRunning = false;
 
-	/** @type Map<string,Parameter> */
+	/** @type {Map<string,Parameter>} */
 	#parameters = new Map();
 
 	/** @type {Map<string,string>} */
