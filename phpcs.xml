@@ -3,6 +3,7 @@
     <description>Configuration for MyBB</description>
 
     <file>inc/src</file>
+    <file>tests</file>
 
     <exclude-pattern>tests/report/</exclude-pattern>
 
