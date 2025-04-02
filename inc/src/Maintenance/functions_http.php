@@ -95,7 +95,7 @@ function httpRedirect(string $location): never
 function httpSendStandardHeaders(): void
 {
     $headers = [
-        'Content-Security-Policy' => "default-src 'none'; base-uri 'self'; frame-ancestors 'none'; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self'; prefetch-src 'self'",
+        'Content-Security-Policy' => "default-src 'none'; base-uri 'self'; frame-ancestors 'none'; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self'",
         'Cross-Origin-Opener-Policy' => 'same-origin',
         'Cross-Origin-Resource-Policy' => 'same-origin',
         'Referrer-Policy' => 'same-origin',
