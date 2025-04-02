@@ -77,6 +77,8 @@ class DebugController
             ? implode(', ', $modeEnvironmentVariables)
             : 'Production';
 
+        $fileReadTime = $this->getFileReadTimeSeconds(MYBB_ROOT . 'global.php');
+
         // opcache
         $opcacheQueryable = function_exists('opcache_get_status') && opcache_get_status() !== false;
 
@@ -136,6 +138,7 @@ class DebugController
             'No. DB Templates Used' => count($templates->cache) . " (" . count(explode(",", $templatelist ?? '')) . " Cached / " . count($templates->uncached_templates) . " Manually Loaded)",
             'Memory Usage' => $memoryUsage,
             'Server Load' => get_server_load(),
+            'File Read Time' => $fileReadTime ? format_time_duration($fileReadTime) : '-',
         ];
         $data['application'] = [
             'MyBB Version' => $this->mybb->version,
@@ -181,5 +184,25 @@ class DebugController
 
 
         return $data;
+    }
+
+    private function getFileReadTimeSeconds(string $path): ?float
+    {
+        $stopwatch = new Stopwatch();
+
+        $period = $stopwatch->start('read');
+
+        $handle = fopen($path, 'rb');
+
+        if (!$handle) {
+            return null;
+        }
+
+        fread($handle, 4096);
+        fclose($handle);
+
+        $period->stop();
+
+        return $period->getDuration();
     }
 }
