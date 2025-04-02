@@ -66,6 +66,17 @@ class DebugController
             $memoryUsage = get_friendly_size($memoryUsage) . " ({$memoryUsage} bytes)";
         }
 
+        $modeEnvironmentVariables = array_keys(
+            array_filter([
+                'MYBB_DEV_MODE' => getenv('MYBB_DEV_MODE') || $this->mybb->dev_mode,
+                'testing' => getenv('testing'),
+            ])
+        );
+
+        $mode = $modeEnvironmentVariables
+            ? implode(', ', $modeEnvironmentVariables)
+            : 'Production';
+
         // opcache
         $opcacheQueryable = function_exists('opcache_get_status') && opcache_get_status() !== false;
 
@@ -128,8 +139,9 @@ class DebugController
         ];
         $data['application'] = [
             'MyBB Version' => $this->mybb->version,
-            'View Optimization Level' => app(MyBB\View\Optimization::class)->name,
             'MyBB Root' => MYBB_ROOT,
+            'View Optimization Level' => app(MyBB\View\Optimization::class)->name,
+            'Mode' => $mode,
         ];
         $data['server'] = [
             'PHP Version' => PHP_VERSION,
