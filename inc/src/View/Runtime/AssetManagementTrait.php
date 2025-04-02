@@ -155,7 +155,7 @@ trait AssetManagementTrait
         ]);
 
         $type ??= match (get_class($locator)) {
-            StaticLocator::class => ResourceType::fromFilename($locator->getPath()),
+            StaticLocator::class => ResourceType::tryFromFilename($locator->getPath()),
             ThemeletLocator::class => $locator->getType(),
         };
 

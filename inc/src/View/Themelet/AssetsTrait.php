@@ -43,7 +43,7 @@ trait AssetsTrait
     {
         return array_filter(
             $this->getAssetProperties($namespace),
-            fn ($identifier) => ResourceType::fromFilename($identifier) === $type,
+            fn ($identifier) => ResourceType::tryFromFilename($identifier) === $type,
             ARRAY_FILTER_USE_KEY,
         );
     }

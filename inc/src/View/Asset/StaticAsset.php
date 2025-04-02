@@ -23,7 +23,7 @@ class StaticAsset extends Asset
 
     public function getType(): ?ResourceType
     {
-        return $this->type ??= ResourceType::fromFilename(
+        return $this->type ??= ResourceType::tryFromFilename(
             $this->locator->getPath()
         );
     }

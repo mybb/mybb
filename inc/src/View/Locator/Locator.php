@@ -58,7 +58,7 @@ abstract class Locator
                     'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
                 ],
                 [
-                    'type' => ResourceType::fromFilename($identifier),
+                    'type' => ResourceType::tryFromFilename($identifier),
                     'namespace' => $locator->getNamespace(),
                 ],
             );

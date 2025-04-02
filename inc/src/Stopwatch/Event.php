@@ -57,7 +57,7 @@ class Event
     /**
      * Returns the maximum memory usage in bytes.
      */
-    public function getPeakMemory(): float
+    public function getPeakMemory(): int
     {
         return max(
             array_map(

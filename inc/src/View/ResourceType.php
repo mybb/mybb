@@ -11,7 +11,7 @@ enum ResourceType: string
     case STYLE = 'style';
     case TEMPLATE = 'template';
 
-    public static function fromFilename(string $filename): ?self
+    public static function tryFromFilename(string $filename): ?self
     {
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
