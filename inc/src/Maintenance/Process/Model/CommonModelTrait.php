@@ -88,7 +88,7 @@ trait CommonModelTrait
                     'warning' => [
                         'message' => $lang->sprintf(
                             $lang->lock_file_not_writable,
-                            'install/lock' . ($type === null ?: '_' . $type),
+                            'install/lock' . ($type === null ? '' : '_' . $type),
                         ),
                     ],
                     'retry' => true,
