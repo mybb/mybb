@@ -5,6 +5,7 @@
     <file>inc/src</file>
     <file>tests</file>
 
+    <exclude-pattern>tests/bootstrap.php</exclude-pattern>
     <exclude-pattern>tests/report/</exclude-pattern>
 
     <rule ref="PSR12">
