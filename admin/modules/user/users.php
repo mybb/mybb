@@ -819,6 +819,8 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 
+			$errors = array();
+
 			if(!empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
 			{
 				$errors[] = $lang->suspendmoderate_error;
