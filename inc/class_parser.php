@@ -1710,7 +1710,7 @@ class postParser
 					(?::[0-9]+)?													# optional port number
 					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*|[?#][^\"\s<\[&]*)?	# optional path, query or fragment (excluding unencoded characters)
 				)
-				(?<![.,?!])															# exclude trailing punctuation
+				(?<![.,;:`'\"?!])													# exclude trailing punctuation
 				(?![^<>]*?>)														# not followed by unopened > (within HTML tags)
 			~iusx",
 			array($this, 'mycode_auto_url_callback'),
