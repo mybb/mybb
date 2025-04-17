@@ -1695,25 +1695,25 @@ class postParser
 		// Don't create links within existing links (handled up-front in the callback function).
 		$message = preg_replace_callback(
 			"~
-				<a\\s[^>]*>.*?</a>|													# match and return existing links
-				(?<=^|[\s\(\)\[\>])													# character preceding the link
+				<a\\s[^>]*>.*?</a>|									# match and return existing links
+				(?<=^|[\s\(\)\[\>])									# character preceding the link
 				(?P<prefix>
-					(?:http|https|ftp|news|irc|ircs|irc6)://|						# scheme, or
-					(?:www|ftp)\.													# common subdomain
+					(?:http|https|ftp|news|irc|ircs|irc6)://|		# scheme, or
+					(?:www|ftp)\.									# common subdomain
 				)
 				(?P<link>
 					(?:
-						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|						# IPv6 address with optional zone
-						(?:(?:\d{1,3}\.){3}\d{1,3})|								# IPv4 address
-						(?:[^\/\"\s<\[\]\.]+\.)*[\w-]+								# domain name
+						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|		# IPv6 address with optional zone
+						(?:(?:\d{1,3}\.){3}\d{1,3})|				# IPv4 address
+						(?:[^\/\"\s<\[\]\.]+\.)*[\w-]+				# domain name
 					)
-					(?::[0-9]+)?													# optional port number
-					(?:/[^\"\s<\[&?#]*)?  											# optional path
-					(?:\?(?:[^\"\s<\[?#]|&(?:amp|lt|gt);)*)?						# optional query
-					(?:\#(?:[^\"\s<\[]|&(?:amp|lt|gt);)*)?							# optional fragment									
+					(?::[0-9]+)?									# optional port number
+					(?:/[^\"\s<\[\]&?#]*)?							# optional path
+					(?:\?(?:[^\"\s<\[\]?#]|\[\]|&(?:amp|lt|gt);)*)?	# optional query
+					(?:\#(?:[^\"\s<\[\]]|&(?:	|lt|gt);)*)?		# optional fragment
 				)
-				(?<![.,;:`'\"?!])													# exclude trailing punctuation
-				(?![^<>]*?>)														# not followed by unopened > (within HTML tags)
+				(?<![.,;:`'\"?!])									# exclude trailing punctuation
+				(?![^<>]*?>)										# not followed by unopened > (within HTML tags)
 			~iusx",
 			array($this, 'mycode_auto_url_callback'),
 			$message
