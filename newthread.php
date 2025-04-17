@@ -106,6 +106,8 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 	}
 }
 
+$posticons = '';
+
 // Does this forum allow post icons? If so, fetch the post icons.
 if($forum['allowpicons'] != 0)
 {
