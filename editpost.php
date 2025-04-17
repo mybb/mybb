@@ -600,6 +600,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$icon = $post['icon'];
 	}
 
+	$posticons = '';
 	if($forum['allowpicons'] != 0)
 	{
 		$posticons = get_post_icons();
