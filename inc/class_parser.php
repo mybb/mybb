@@ -1708,7 +1708,9 @@ class postParser
 						(?:[^\/\"\s<\[\]\.]+\.)*[\w-]+								# domain name
 					)
 					(?::[0-9]+)?													# optional port number
-					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*|[?#][^\"\s<\[&]*)?	# optional path, query or fragment (excluding unencoded characters)
+					(?:/[^\"\s<\[&?#]*)?  											# optional path
+					(?:\?(?:[^\"\s<\[?#]|&(?:amp|lt|gt);)*)?						# optional query
+					(?:\#(?:[^\"\s<\[]|&(?:amp|lt|gt);)*)?							# optional fragment									
 				)
 				(?<![.,;:`'\"?!])													# exclude trailing punctuation
 				(?![^<>]*?>)														# not followed by unopened > (within HTML tags)
