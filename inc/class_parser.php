@@ -1710,7 +1710,7 @@ class postParser
 					(?::[0-9]+)?									# optional port number
 					(?:/[^\"\s<\[\]&?#]*)?							# optional path
 					(?:\?(?:[^\"\s<\[\]?#]|\[\]|&(?:amp|lt|gt);)*)?	# optional query
-					(?:\#(?:[^\"\s<\[\]]|&(?:	|lt|gt);)*)?		# optional fragment
+					(?:\#(?:[^\"\s<\[\]]|&(?:amp|lt|gt);)*)?		# optional fragment
 				)
 				(?<![.,;:`'\"?!])									# exclude trailing punctuation
 				(?![^<>]*?>)										# not followed by unopened > (within HTML tags)
