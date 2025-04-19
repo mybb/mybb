@@ -122,6 +122,11 @@ class session
 		{
 			my_setcookie("sid", $this->sid, -1, true);
 		}
+
+		if(isset($plugins))
+		{
+			$plugins->run_hooks('post_session_load', $this);
+		}
 	}
 
 	/**
