@@ -2,7 +2,10 @@
 
 namespace MyBB\Tests\Unit;
 
+use Generator;
 use MyBB\Tests\Traits\LegacyCoreAwareTest;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 
 class ParserTest extends TestCase
 {
@@ -370,5 +373,174 @@ test<br />
                 $this->assertEquals($expected, $actual);
             }
         }
+    }
+
+
+    /**
+     * Generic combinations of URL components.
+     *
+     * @return Generator<string[]>
+     *
+     * @note Test concrete cases in specialized methods for performance.
+     */
+    public static function validUrlCases(): Generator
+    {
+        $urlComponents = [
+            'prefix' => [
+                // scheme
+                'http://',
+
+                // common subdomain
+                'www.',
+            ],
+            'host' => [
+                // IPv6
+                '[::]',
+                '[::1]',
+                '[2001:db8::ff%eth0]',
+
+                // IPv4
+                '192.0.2.0',
+
+                // domain name
+                'example.co.uk',
+                'localhost',
+
+                // punycode domain name
+                'xn--kgbechtv',
+                'xn--d1acpjx3f.xn--p1ai',
+            ],
+            'port' => [
+                '',
+                ':8080',
+            ],
+            'path' => [
+                '',
+                '/',
+                '/.well-known/index.php',
+            ],
+            'query' => [
+                '',
+                '?key&',
+                '?array[]=1&array[]=2',
+            ],
+            'fragment' => [
+                '',
+                '#fragment',
+                '#:~:text=a-,b,c,-d',
+            ],
+        ];
+
+        foreach ($urlComponents['prefix'] as $prefix) {
+            foreach ($urlComponents['host'] as $host) {
+                if (
+                    $prefix === 'www.' &&
+                    ($host[0] === '[' || is_numeric($host[0]))
+                ) {
+                    continue;
+                }
+
+                foreach ($urlComponents['port'] as $port) {
+                    foreach ($urlComponents['path'] as $path) {
+                        foreach ($urlComponents['query'] as $query) {
+                            foreach ($urlComponents['fragment'] as $fragment) {
+                                yield [$prefix . $host . $port . $path . $query . $fragment];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[DataProvider('validUrlCases')]
+    public function testAutoUrlConsumesAllCharacters(string $message): void
+    {
+        $actual = $this->parser->parse_message($message, [
+            'allow_mycode' => true,
+            'allowautourl' => true,
+        ]);
+
+        $this->assertMatchesRegularExpression(
+            '/^<a href="[^"]+"[ \w="]*>[^"]+<\/a>$/',
+            $actual,
+            'No expected HTML found for link: ' . $message,
+        );
+    }
+
+
+    #[TestWith([ 'visit ', 'http://example.com', ' for more' ])]
+    #[TestWith([ "\t", 'http://example.com', "\t" ])]
+    #[TestWith([ "\n", 'http://example.com', "\n" ])]
+
+    #[TestWith([ '', 'http://example.com', '.' ])]
+    #[TestWith([ '', 'http://example.com', ',' ])]
+    #[TestWith([ '', 'http://example.com', ':' ])]
+    #[TestWith([ '', 'http://example.com', '?' ])]
+    #[TestWith([ '', 'http://example.com', '!' ])]
+    #[TestWith([ '', 'http://example.com', ['&' => '&amp;'] ])]
+    #[TestWith([ '', 'http://example.com', ['<' => '&lt;'] ])]
+    #[TestWith([ '', 'http://example.com', '&', true ])]
+
+    #[TestWith([ "(", 'http://example.com', ')' ])]
+    #[TestWith([ '[', 'http://example.com', ']' ])]
+
+    #[TestWith([ '', 'http://en.wikipedia.org/wiki/PHP_(disambiguation)', '' ])]
+    #[TestWith([ '(', 'http://en.wikipedia.org/wiki/PHP_(disambiguation)', ')' ])]
+    #[TestWith([ '(e.g. ', 'http://en.wikipedia.org/wiki/PHP_(disambiguation)', '?)' ])]
+
+
+    #[TestWith([ ['[list][*]' => '<ul class="mycode_list"><li>'], 'http://example.com', ['[/list]' => "</li>\n</ul>\n"] ])]
+    public function testAutoUrlWithSurroundingCharacters(
+        string|array $prefix,
+        string $url,
+        string|array $suffix,
+        bool $allowHtml = false,
+    ): void
+    {
+        $inputPrefix = is_array($prefix) ? array_key_first($prefix) : $prefix;
+        $inputSuffix = is_array($suffix) ? array_key_first($suffix) : $suffix;
+
+        $message = $inputPrefix . $url . $inputSuffix;
+
+        $actual = $this->parser->parse_message($message, [
+            'allow_mycode' => true,
+            'allow_html' => $allowHtml,
+            'allowautourl' => true,
+            'nl2br' => false,
+        ]);
+
+
+        $outputPrefix = is_array($prefix) ? current($prefix) : $prefix;
+        $outputSuffix = is_array($suffix) ? current($suffix) : $suffix;
+
+        $this->assertMatchesRegularExpression(
+            '/^' .
+            preg_quote($outputPrefix, '/') .
+            '<a href="[^"]+"[ \w="]*>[^"]+<\/a>' .
+            preg_quote($outputSuffix, '/') .
+            '$/',
+            $actual,
+            'No expected HTML found for link: ' . $message,
+        );
+    }
+
+    #[TestWith([ '"http://example.com"' ])]
+    #[TestWith([ ' "http://example.com" ' ])]
+    #[TestWith([ '"www.example.com"' ])]
+    #[TestWith([ 'contact@example.com' ])]
+
+    #[TestWith([ 'http://example.com >', true ])]
+    #[TestWith([ '"http://example.com"', true ])]
+    #[TestWith([ ' "http://example.com" ', true ])]
+    public function testAutoUrlIgnoresString(string $message, bool $allowHtml = false): void
+    {
+        $actual = $this->parser->parse_message($message, [
+            'allow_mycode' => true,
+            'allow_html' => $allowHtml,
+            'allowautourl' => true,
+        ]);
+
+        $this->assertSame($message, $actual);
     }
 }
