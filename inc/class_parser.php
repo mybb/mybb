@@ -1685,10 +1685,19 @@ class postParser
 					(?:www|ftp)\.								# common subdomain
 				)
 				(?P<link>
-					(?:[^\/\"\s\<\[\.]+\.)*[\w]+				# host
-					(?::[0-9]+)?								# port
-					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*)?	# path, query, fragment; exclude unencoded characters
-					[\w\/\)]
+					(?:
+						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|	# IPv6 address with optional zone
+						(?:(?:\d{1,3}\.){3}\d{1,3})|			# IPv4 address
+						(?:[^\/\"\s<\[\]\.]+\.)*[\w-]+			# domain name
+					)
+					(?::[0-9]+)?								# optional port number
+					(?:/[^\"\s<\[\]&?#]*)?						# optional path
+					(?:\?(?:[^\"\s<\[\]?#]|\[\])*)?				# optional query
+					(?:\#(?:[^\"\s<\[\]])*)?					# optional fragment
+				)
+				(?:
+					(?<=&amp;)|(?<=&lt;)|(?<=&gt;)|				# allow trailing entities
+					(?<![.,:`'\"?!])(?<!&)						# exclude other trailing punctuation
 				)
 				(?![^<>]*?>)									# not followed by unopened > (within HTML tags)
 			~iusx",
