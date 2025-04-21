@@ -54,7 +54,11 @@ readonly class FileStamp
 
                 break;
             case self::TYPE_MODIFICATION_TIME:
-                $value = filemtime($path);
+                if (is_readable($path)) {
+                    $value = filemtime($path);
+                } else {
+                    $value = null;
+                }
 
                 break;
             default:
