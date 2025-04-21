@@ -1806,6 +1806,12 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-users");
 	}
 
+	if($mybb->user['uid'] == $user['uid'])
+	{
+		flash_message($lang->error_cannot_delete_self, 'error');
+		admin_redirect("index.php?module=user-users");
+	}
+
 	// User clicked no
 	if($mybb->get_input('no'))
 	{
