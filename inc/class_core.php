@@ -268,14 +268,6 @@ class MyBB {
 			}
 		}
 
-		// If we've got register globals on, then kill them too
-		if(@ini_get("register_globals") == 1)
-		{
-			$this->unset_globals($_POST);
-			$this->unset_globals($_GET);
-			$this->unset_globals($_FILES);
-			$this->unset_globals($_COOKIE);
-		}
 		$this->clean_input();
 
 		$safe_mode_status = @ini_get("safe_mode");
