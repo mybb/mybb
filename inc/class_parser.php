@@ -1688,12 +1688,12 @@ class postParser
 					(?:
 						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|	# IPv6 address with optional zone
 						(?:\d{1,3}\.){3}\d{1,3}|				# IPv4 address
-						(?:[^\/\"\s<\[\].]+\.)*[\w-]+			# domain name
+						(?:[^\/\"\s<>\[\].]+\.)*[\w-]+			# domain name
 					)
 					(?::[0-9]+)?								# optional port number
-					(?:/[^\"\s<\[\]&?#]*)?						# optional path
-					(?:\?(?:[^\"\s<\[\]?#]|\[\])*)?				# optional query
-					(?:\#[^\"\s<\[\]]*)?						# optional fragment
+					(?:/[^\"\s<>\[\]&?#]*)?						# optional path
+					(?:\?(?:[^\"\s<>\[\]?#]|\[\])*)?			# optional query
+					(?:\#[^\"\s<>\[\]]*)?						# optional fragment
 				)
 				(?:
 					(?<=&amp;)|(?<=&lt;)|(?<=&gt;)|				# allow trailing entities
