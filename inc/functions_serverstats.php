@@ -98,7 +98,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 
 	// Allow url fopen php.ini setting
 	$info['allow_url_fopen'] = 0;
-	if(ini_get('safe_mode') == 0 && ini_get('allow_url_fopen'))
+	if(ini_get('allow_url_fopen'))
 	{
 		$info['allow_url_fopen'] = 1;
 	}
@@ -150,7 +150,6 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		'php_ini' => array(
 			'post_max_size' => 'post_max_size',
 			'upload_max_filesize' => 'upload_max_filesize',
-			'safe_mode' => 'safe_mode',
 		),
 	);
 

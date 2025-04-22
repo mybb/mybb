@@ -75,15 +75,7 @@ class PhpMail extends MailHandler
 			$_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], $pos + strlen($dir) - 1);
 		}
 
-		// If safe mode is on, don't send the additional parameters as we're not allowed to
-		if($mybb->safemode)
-		{
-			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
-		}
-		else
-		{
-			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
-		}
+		$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		$function_used = 'mail()';
 
 		if(defined('IN_ADMINCP') && $pos !== false)
