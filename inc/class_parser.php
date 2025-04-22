@@ -1674,8 +1674,16 @@ class postParser
 	 */
 	function mycode_auto_url($message)
 	{
-		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
-		// Don't create links within existing links (handled up-front in the callback function).
+		/*
+		 * Don't create links:
+		 * - within existing links (any <a> HTML tag must be returned as-is)
+		 * - within HTML tags (must not be followed by a > character without a matching < after the link)
+		 *
+		 * Don't include:
+		 * - common punctuation characters around the link
+		 * - braces that likely constitute punctuation around the particular link (handled in the callback function)
+		 * - partial HTML entities (https://github.com/mybb/mybb/issues/4303)
+		 */
 		$message = preg_replace_callback(
 			"~
 				<a\\s[^>]*>.*?</a>|								# match and return existing links
