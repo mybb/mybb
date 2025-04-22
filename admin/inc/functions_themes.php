@@ -384,14 +384,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		return false;
 	}
 
-	// If we're in safe mode save to the main theme folder by default
-	if($mybb->safemode)
-	{
-		$theme_directory = "cache/themes";
-		$filename = $tid."_".$filename;
-	}
 	// Does our theme directory exist? Try and create it.
-	elseif(!is_dir(MYBB_ROOT . $theme_directory))
+	if(!is_dir(MYBB_ROOT . $theme_directory))
 	{
 		if(!@mkdir(MYBB_ROOT . $theme_directory))
 		{

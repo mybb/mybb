@@ -2682,11 +2682,6 @@ function get_server_load()
 		}
 		if(!is_numeric($serverload[0]))
 		{
-			if($mybb->safemode)
-			{
-				return $lang->unknown;
-			}
-
 			// Suhosin likes to throw a warning if exec is disabled then die - weird
 			if($func_blacklist = @ini_get('suhosin.executor.func.blacklist'))
 			{
