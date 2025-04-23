@@ -216,15 +216,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 
 	// We need a unique ID for the host so hash it to keep it private and send it over
 	$id = $_SERVER['HTTP_HOST'].time();
-
-	if(function_exists('sha1'))
-	{
-		$info['clientid'] = sha1($id);
-	}
-	else
-	{
-		$info['clientid'] = md5($id);
-	}
+	$info['clientid'] = sha1($id);
 
 	$string = "";
 	$amp = "";
@@ -294,4 +286,3 @@ function parse_php_info()
 	}
 	return $modules;
 }
-
