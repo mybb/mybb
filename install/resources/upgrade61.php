@@ -27,8 +27,8 @@ function upgrade61_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 	
-	$db->modify_column("posts", "username", "varchar(120) NOT NULL default ''");
-	$db->modify_column("threads", "username", "varchar(120) NOT NULL default ''");
+	$db->modify_column("posts", "username", "varchar(120)", "set", "''");
+	$db->modify_column("threads", "username", "varchar(120)", "set", "''");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("61_done");
