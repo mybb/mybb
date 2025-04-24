@@ -29,7 +29,7 @@ abstract class Repository implements RepositoryInterface
     /**
      * Identifier of the metadata file and the entities array.
      */
-    public const NAME = self::NAME;
+    public const NAME = null;
 
     protected FileStamp $propertiesStamp;
 
