@@ -6,11 +6,10 @@ namespace MyBB\View\Themelet\Decorator\Hierarchy;
 
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\Hydrable\Hydrable;
+use MyBB\View\Optimization;
 use MyBB\View\Themelet\Decorator\ThemeletDecorator;
 use MyBB\View\Themelet\Themelet;
 use MyBB\View\Themelet\ThemeletInterface;
-
-use function MyBB\View\directive;
 
 /**
  * Adds awareness of parent and base extensions to a Themelet.
@@ -40,11 +39,13 @@ class HierarchicalThemelet extends ThemeletDecorator
      */
     private array $themeletsByNamespace;
 
-    public function __construct()
+    public function __construct(
+        Optimization $optimization,
+    )
     {
         $hydrables = $this->getHydrableRepository();
 
-        $storeMode = directive('hierarchy.cache')
+        $storeMode = $optimization->getDirective('hierarchy.cache')
             ? Hydrable::MODE_DEFERRED
             : Hydrable::MODE_PASSIVE
         ;
@@ -65,7 +66,7 @@ class HierarchicalThemelet extends ThemeletDecorator
                 ),
                 writeMode: $storeMode,
                 readMode: $storeMode,
-                validateStampMode: directive('hierarchy.cacheValidation')
+                validateStampMode: $optimization->getDirective('hierarchy.cacheValidation')
                     ? Hydrable::MODE_IMMEDIATE
                     : Hydrable::MODE_PASSIVE
             ),

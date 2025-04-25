@@ -10,19 +10,21 @@ use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\Hydrable\Hydrable;
 use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Optimization;
 
 use function MyBB\app;
-use function MyBB\View\directive;
 
 class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepository
 {
-    public function __construct()
+    public function __construct(
+        Optimization $optimization,
+    )
     {
-        $cacheMode = directive('hierarchy.cache')
+        $cacheMode = $optimization->getDirective('hierarchy.cache')
             ? Hydrable::MODE_DEFERRED
             : Hydrable::MODE_PASSIVE
         ;
-        $validateMode = directive('hierarchy.cacheValidation')
+        $validateMode = $optimization->getDirective('hierarchy.cacheValidation')
             ? Hydrable::MODE_IMMEDIATE
             : Hydrable::MODE_PASSIVE
         ;

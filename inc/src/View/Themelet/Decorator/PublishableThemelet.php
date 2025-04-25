@@ -11,10 +11,9 @@ use MyBB\View\Asset\Publication;
 use MyBB\View\Asset\ThemeletAsset;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
-
-use function MyBB\View\directive;
 
 /**
  * Adds asset generation features to a Themelet.
@@ -43,7 +42,9 @@ class PublishableThemelet extends ThemeletDecorator
 
     private Hydrable $publicationHydrable;
 
-    public function __construct()
+    public function __construct(
+        Optimization $optimization,
+    )
     {
         $hydrables = $this->getHydrableRepository();
 
@@ -54,7 +55,7 @@ class PublishableThemelet extends ThemeletDecorator
             ),
         );
 
-        $this->publishMode = directive('publication.publishMode');
+        $this->publishMode = $optimization->getDirective('publication.publishMode');
     }
 
     /**

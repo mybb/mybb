@@ -10,8 +10,6 @@ use MyBB\Utilities\FileStamp;
 use RuntimeException;
 use UnexpectedValueException;
 
-use function MyBB\View\directive;
-
 /**
  * Manages entities and related metadata in a common, human-readable format.
  */
@@ -42,6 +40,8 @@ abstract class Repository implements RepositoryInterface
     ];
 
     protected bool $propertiesLoaded = false;
+
+    protected string $inheritanceHydrableValidationType = FileStamp::TYPE_CHECKSUM;
 
     /**
      * Returns the resulting set of properties assigned the same entity key.
@@ -163,7 +163,7 @@ abstract class Repository implements RepositoryInterface
     {
         return $stamp->isValid(
             $this->getPropertiesFilePath(),
-            directive('hierarchy.cacheValidationType'),
+            $this->inheritanceHydrableValidationType,
         );
     }
 

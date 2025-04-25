@@ -9,6 +9,7 @@ use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
 use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
+use MyBB\View\Optimization;
 use MyBB\View\Runtime\Runtime;
 use MyLanguage;
 use pluginSystem;
@@ -57,7 +58,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
             return [
                 'debug' => $mybb->dev_mode,
-                'auto_reload' => \MyBB\View\directive('twig.autoReload'),
+                'auto_reload' => $container->get(Optimization::class)->getDirective('twig.autoReload'),
                 'cache' => getenv('testing')
                     ? false
                     : __DIR__ . '/../../../cache/views',
