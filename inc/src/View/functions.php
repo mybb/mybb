@@ -146,11 +146,6 @@ function set(array $data): void
     app(Runtime::class)->setSharedData($data);
 }
 
-function directive(string $name): mixed
-{
-    return app(Optimization::class)->getDirective($name);
-}
-
 /**
  * Render a view using the Twig template system.
  *
