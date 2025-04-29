@@ -950,7 +950,11 @@ function getSuggestedBoardUrl(): ?string
         $url = httpRequestOverSecureTransport() ? 'https' : 'http';
         $url .= '://' . $_SERVER['HTTP_HOST'];
 
-        if (!empty($_SERVER['SERVER_PORT']) && !in_array($_SERVER['SERVER_PORT'], [80, 443])) {
+        if (
+            !empty($_SERVER['SERVER_PORT']) &&
+            !in_array($_SERVER['SERVER_PORT'], [80, 443]) &&
+            !str_contains($_SERVER['HTTP_HOST'], ':')
+        ) {
             $url .= ':' . (int)$_SERVER['SERVER_PORT'];
         }
 
