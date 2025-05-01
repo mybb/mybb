@@ -21,7 +21,7 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
     /**
      * @var string $altRowState
      */
-    private string $altRowState;
+    private ?string $altRowState = null;
 
     /**
      * Create a new instance of the ThemeExtension.
