@@ -11,6 +11,7 @@ class Period
 {
     private float $startTime;
     private float $endTime;
+    private float $correction = 0;
 
     private int $peakMemory;
 
@@ -33,6 +34,29 @@ class Period
         return $this->getDuration();
     }
 
+    /**
+     * Add to total duration.
+     */
+    public function add(float|self $duration): void
+    {
+        $this->correction += $duration instanceof self
+            ? $duration->getDuration()
+            : $duration;
+    }
+
+    /**
+     * Subtracts from total duration.
+     */
+    public function subtract(float|self $duration): void
+    {
+        $this->correction -= $duration instanceof self
+            ? $duration->getDuration()
+            : $duration;
+    }
+
+    /**
+     * Whether the Period was stopped.
+     */
     public function stopped(): bool
     {
         return isset($this->endTime);
@@ -55,7 +79,10 @@ class Period
      */
     public function getDuration(): float
     {
-        return ($this->endTime ?? microtime(true)) - $this->startTime;
+        return
+            ($this->endTime ?? microtime(true))
+            - $this->startTime
+            + $this->correction;
     }
 
     /**
