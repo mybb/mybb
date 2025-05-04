@@ -8,7 +8,7 @@ use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\FileStamp;
-use MyBB\Utilities\Hydrable\Hydrable;
+use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Optimization;
 
@@ -21,54 +21,63 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     )
     {
         $cacheMode = $optimization->getDirective('hierarchy.cache')
-            ? Hydrable::MODE_DEFERRED
-            : Hydrable::MODE_PASSIVE
+            ? ManagedValue::MODE_DEFERRED
+            : ManagedValue::MODE_PASSIVE
         ;
         $validateMode = $optimization->getDirective('hierarchy.cacheValidation')
-            ? Hydrable::MODE_IMMEDIATE
-            : Hydrable::MODE_PASSIVE
+            ? ManagedValue::MODE_IMMEDIATE
+            : ManagedValue::MODE_PASSIVE
         ;
 
-        $hydrables = $this->themelet->getHydrableRepository();
+        $managedValueRepository = $this->themelet->getManagedValueRepository();
 
-        $this->resolvedProperties = $hydrables->add(
-            new Hydrable(
-                [
-                    Repository::SCOPE_SHARED => [],
-                    Repository::SCOPE_ENTITY => [],
-                ],
-                key: 'hierarchy.properties.' . $this->getDecorated()::NAME,
-                path: [$this->namespace],
-                build: $this->buildResolvedProperties(...),
-                validateStamp: $this->stampValid(...),
-                writeMode: $cacheMode,
-                readMode: $cacheMode,
-                validateStampMode: $validateMode,
-            ),
-        );
-        $this->resolvedRepositories = $hydrables->add(
-            new Hydrable(
-                [],
-                key: 'hierarchy.resolution.' . $this->getDecorated()::NAME,
-                path: [$this->namespace],
-                build: $this->buildResolvedRepositories(...),
-                validateStamp: $this->stampValid(...),
-                write: fn (array $data) => array_map(
+        $this->resolvedProperties = $managedValueRepository->create([
+            'hierarchy.properties.' . $this->getDecorated()::NAME,
+            $this->namespace,
+        ])
+            ->withDefault([
+                Repository::SCOPE_SHARED => [],
+                Repository::SCOPE_ENTITY => [],
+            ])
+            ->withBuild(
+                $this->buildResolvedProperties(...),
+            )
+            ->withSave(mode: $cacheMode)
+            ->withLoad(mode: $cacheMode)
+            ->withStampValidation(
+                $this->stampValid(...),
+                mode: $validateMode,
+            );
+
+        $this->resolvedRepositories = $managedValueRepository->create([
+            'hierarchy.resolution.' . $this->getDecorated()::NAME,
+            $this->namespace,
+        ])
+            ->withDefault([])
+            ->withBuild(
+                $this->buildResolvedRepositories(...),
+                $cacheMode,
+            )
+            ->withSave(
+                fn (array $data) => array_map(
                     fn (Repository $repository) => $repository->getHierarchicalIdentifier(),
                     $data,
                 ),
-                read: fn (array $data) => array_map(
+                $cacheMode,
+            )
+            ->withLoad(
+                fn (array $data) => array_map(
                     fn (string $identifier) => $this->getRepository(
                         $this->themelet->getThemelet($identifier)
                     ),
                     $data,
                 ),
-                buildMode: $cacheMode,
-                writeMode: $cacheMode,
-                readMode: $cacheMode,
-                validateStampMode: $validateMode,
-            ),
-        );
+                $cacheMode,
+            )
+            ->withStampValidation(
+                $this->stampValid(...),
+                $validateMode,
+            );
     }
 
     public function getResolvedRepository(string|ThemeletLocator $key): ?RepositoryInterface

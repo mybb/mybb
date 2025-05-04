@@ -65,9 +65,10 @@
             <section>
                 <h2>Cache</h2>
                 {{ _self.visualize(data.cache, 'cacheCalls', 'Cache Calls (<code>' ~ mybb.config.cache_store ~ '</code>)') }}
-                {{ _self.visualize(data.cacheThemeletBuild, 'stopwatchGroupEvents', 'Themelet Cache Build') }}
-                {{ _self.visualize(data.cacheThemeletRead, 'stopwatchGroupEvents', 'Themelet Cache Read') }}
-                {{ _self.visualize(data.cacheThemeletWrite, 'stopwatchGroupEvents', 'Themelet Cache Write') }}
+                {{ _self.visualize(data.managedValueBuild, 'stopwatchGroupEvents', 'ManagedValue Build') }}
+                {{ _self.visualize(data.managedValueSave, 'stopwatchGroupEvents', 'ManagedValue Save') }}
+                {{ _self.visualize(data.managedValueLoad, 'stopwatchGroupEvents', 'ManagedValue Load') }}
+                {{ _self.visualize(data.managedValueStampValidation, 'stopwatchGroupEvents', 'ManagedValue Validation') }}
             </section>
 
             <section>

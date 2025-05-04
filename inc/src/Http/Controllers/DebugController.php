@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\Http\Controllers;
 
 use DB_Base;
+use Illuminate\Support\Str;
 use MyBB;
 use MyBB\Stopwatch\Stopwatch;
 use MyLanguage;
@@ -21,6 +22,17 @@ class DebugController
         private MyLanguage $lang,
         private Stopwatch $stopwatch,
     ) {}
+
+    private static function removeKeyPrefix(array $array, string $prefix): array
+    {
+        return array_combine(
+            array_map(
+                fn ($key) => Str::replaceStart($prefix, '', $key),
+                array_keys($array),
+            ),
+            $array,
+        );
+    }
 
     public function index(): never
     {
@@ -160,9 +172,10 @@ class DebugController
 
         // cache
         $data['cache'] = $this->mybb->cache->calllist;
-        $data['cacheThemeletBuild'] = $this->stopwatch->getEvents('core.hydrable.build');
-        $data['cacheThemeletRead'] = $this->stopwatch->getEvents('core.hydrable.read');
-        $data['cacheThemeletWrite'] = $this->stopwatch->getEvents('core.hydrable.write');
+        $data['managedValueBuild'] = $this->getManagedValueEvents('managedValue.build');
+        $data['managedValueSave'] = $this->getManagedValueEvents('managedValue.save');
+        $data['managedValueLoad'] = $this->getManagedValueEvents('managedValue.load');
+        $data['managedValueStampValidation'] = $this->getManagedValueEvents('managedValue.stampValidation');
 
         // database
         $data['dbConnections'] = $this->db->connections;
@@ -184,6 +197,14 @@ class DebugController
 
 
         return $data;
+    }
+
+    private function getManagedValueEvents(string $name): array
+    {
+        return self::removeKeyPrefix(
+            $this->stopwatch->getEvents($name),
+            MYBB_ROOT . 'cache/',
+        );
     }
 
     private function getFileReadTimeSeconds(string $path): ?float

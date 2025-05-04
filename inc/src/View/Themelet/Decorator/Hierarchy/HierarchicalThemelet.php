@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Themelet\Decorator\Hierarchy;
 
 use MyBB\Utilities\FileStamp;
-use MyBB\Utilities\Hydrable\Hydrable;
+use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Optimization;
 use MyBB\View\Themelet\Decorator\ThemeletDecorator;
 use MyBB\View\Themelet\Themelet;
@@ -20,9 +20,9 @@ class HierarchicalThemelet extends ThemeletDecorator
     use HierarchicalNamespacesTrait;
     use HierarchicalResourcesTrait;
 
-    public string $inheritanceHydrableValidationType = FileStamp::TYPE_MODIFICATION_TIME;
+    public string $inheritanceManagedValueValidationType = FileStamp::TYPE_MODIFICATION_TIME;
 
-    private Hydrable $ancestorsHydrable;
+    private ManagedValue $ancestors;
 
     /**
      * @var ThemeletInterface[]
@@ -43,34 +43,38 @@ class HierarchicalThemelet extends ThemeletDecorator
         Optimization $optimization,
     )
     {
-        $hydrables = $this->getHydrableRepository();
+        $managedValueRepository = $this->getManagedValueRepository();
 
         $storeMode = $optimization->getDirective('hierarchy.cache')
-            ? Hydrable::MODE_DEFERRED
-            : Hydrable::MODE_PASSIVE
+            ? ManagedValue::MODE_DEFERRED
+            : ManagedValue::MODE_PASSIVE
         ;
 
-        $this->ancestorsHydrable = $hydrables->add(
-            new Hydrable(
+        $this->ancestors = $managedValueRepository->create('hierarchy.ancestors')
+            ->withDefault(
                 /**
                  * @type array<string, ThemeletInterface>
                  */
                 [],
-                key: 'hierarchy.ancestors',
-                build: $this->buildAncestors(...),
-                validateStamp: $this->ancestorsStampValid(...),
-                write: array_keys(...),
-                read: fn (array $value) => array_map(
+            )
+            ->withBuild($this->buildAncestors(...))
+            ->withSave(
+                array_keys(...),
+                $storeMode,
+            )
+            ->withLoad(
+                fn (array $value) => array_map(
                     $this->getThemelet(...),
                     $value,
                 ),
-                writeMode: $storeMode,
-                readMode: $storeMode,
-                validateStampMode: $optimization->getDirective('hierarchy.cacheValidation')
-                    ? Hydrable::MODE_IMMEDIATE
-                    : Hydrable::MODE_PASSIVE
-            ),
-        );
+                $storeMode,
+            )
+            ->withStampValidation(
+                $this->ancestorsStampValid(...),
+                $optimization->getDirective('hierarchy.cacheValidation')
+                    ? ManagedValue::MODE_IMMEDIATE
+                    : ManagedValue::MODE_PASSIVE,
+            );
     }
 
     /**
@@ -152,7 +156,7 @@ class HierarchicalThemelet extends ThemeletDecorator
      */
     private function getAncestors(): array
     {
-        return $this->ancestorsHydrable->get();
+        return $this->ancestors->get();
     }
 
     /**
@@ -195,7 +199,7 @@ class HierarchicalThemelet extends ThemeletDecorator
             if (
                 !$extension->manifestStampValid(
                     $stamp[$packageName],
-                    $this->inheritanceHydrableValidationType,
+                    $this->inheritanceManagedValueValidationType,
                 )
             ) {
                 return false;

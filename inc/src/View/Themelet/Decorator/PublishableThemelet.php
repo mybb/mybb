@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Themelet\Decorator;
 
 use Exception;
-use MyBB\Utilities\Hydrable\Hydrable;
+use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Asset\Publication;
 use MyBB\View\Asset\ThemeletAsset;
@@ -40,20 +40,32 @@ class PublishableThemelet extends ThemeletDecorator
      */
     public int $publishMode;
 
-    private Hydrable $publicationHydrable;
+    /**
+     * Publication data, indexed by namespace, and Asset's Themelet Locator.
+     *
+     * @var array<string, ManagedValue<array<string, array{
+     *   sources: array{
+     *     themelet: string,
+     *     subPath: string,
+     *   }
+     * }>>>
+     */
+    private array $assetPublicationData = [];
 
     public function __construct(
         Optimization $optimization,
     )
     {
-        $hydrables = $this->getHydrableRepository();
+        $managedValueRepository = $this->getManagedValueRepository();
 
-        $this->publicationHydrable = $hydrables->add(
-            new Hydrable(
-                [],
+        foreach ($this->getNamespaces() as $namespace) {
+            $this->assetPublicationData[$namespace] = $managedValueRepository->create([
                 'publication',
-            ),
-        );
+                $namespace,
+            ])
+                ->withDefault([])
+            ;
+        }
 
         $this->publishMode = $optimization->getDirective('publication.publishMode');
     }
@@ -236,16 +248,25 @@ class PublishableThemelet extends ThemeletDecorator
 
     public function getAssetPublicationData(?ThemeletAsset $asset = null): ?array
     {
-        $items = $this->publicationHydrable->get();
-
-        return $asset
-            ? $items[$asset->getLocator()->getString()] ?? null
-            : $items
-        ;
+        if ($asset === null) {
+            return array_merge(
+                ...array_map(
+                    fn (ManagedValue $publicationData) => $publicationData->get(),
+                    $this->assetPublicationData,
+                )
+            );
+        } else {
+            return $this->assetPublicationData[$asset->getNamespace()]?->getNested(
+                [$asset->getLocator()->getString()],
+            );
+        }
     }
 
     public function setAssetPublicationData(ThemeletAsset $asset, array $data): void
     {
-        $this->publicationHydrable->setNested([$asset->getLocator()->getString()], $data);
+        $this->assetPublicationData[$asset->getNamespace()]->setNested(
+            [$asset->getLocator()->getString()],
+            $data,
+        );
     }
 }

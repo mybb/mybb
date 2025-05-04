@@ -10,7 +10,7 @@ use MyBB\Cargo\EntityInterface;
 use MyBB\Cargo\FileRepositoryInterface;
 use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\Utilities\Hydrable\Hydrable;
+use MyBB\Utilities\ManagedValue\ManagedValue;
 
 abstract class HierarchicalRepository extends RepositoryDecorator implements RepositoryInterface
 {
@@ -18,16 +18,18 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         Repository::ANCESTOR_DECLARATIONS_KEY,
     ];
 
-    public Hydrable $resolvedProperties;
-    public Hydrable $resolvedRepositories;
+    public ManagedValue $resolvedProperties;
+    public ManagedValue $resolvedRepositories;
 
     public function __construct()
     {
-        $this->resolvedProperties = new Hydrable([
-            Repository::SCOPE_SHARED => [],
-            Repository::SCOPE_ENTITY => [],
-        ]);
-        $this->resolvedRepositories = new Hydrable([]);
+        $this->resolvedProperties = (new ManagedValue())
+            ->withDefault([
+                Repository::SCOPE_SHARED => [],
+                Repository::SCOPE_ENTITY => [],
+            ]);
+        $this->resolvedRepositories = (new ManagedValue())
+            ->withDefault([]);
     }
 
     public function getSharedProperties(): array

@@ -41,7 +41,7 @@ abstract class Repository implements RepositoryInterface
 
     protected bool $propertiesLoaded = false;
 
-    protected string $inheritanceHydrableValidationType = FileStamp::TYPE_CHECKSUM;
+    protected string $inheritanceManagedValueValidationType = FileStamp::TYPE_CHECKSUM;
 
     /**
      * Returns the resulting set of properties assigned the same entity key.
@@ -163,7 +163,7 @@ abstract class Repository implements RepositoryInterface
     {
         return $stamp->isValid(
             $this->getPropertiesFilePath(),
-            $this->inheritanceHydrableValidationType,
+            $this->inheritanceManagedValueValidationType,
         );
     }
 

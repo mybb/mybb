@@ -19,7 +19,7 @@ abstract class Repository extends \MyBB\Cargo\Repository
         public readonly ?ThemeletInterface $themelet,
         public readonly ?string $namespace,
     ) {
-        $this->inheritanceHydrableValidationType =
+        $this->inheritanceManagedValueValidationType =
             app(Optimization::class)->getDirective('hierarchy.cacheValidationType');
     }
 

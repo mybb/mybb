@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace MyBB\View\Themelet;
 
 use MyBB\Extensions\ViewExtensionInterface;
-use MyBB\Utilities\Hydrable\FilesystemStore;
-use MyBB\Utilities\Hydrable\Repository;
+use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
+
+use function MyBB\app;
 
 /**
  * A UI package containing Resources and metadata.
@@ -22,7 +23,7 @@ class Themelet implements ThemeletInterface
     private ?ViewExtensionInterface $extension = null;
 
     private string $absolutePath;
-    private readonly Repository $hydrableRepository;
+    private readonly ManagedValueRepository $managedValueRepository;
 
     public static function fromExtension(?ViewExtensionInterface $extension = null): self
     {
@@ -44,15 +45,15 @@ class Themelet implements ThemeletInterface
         return $this->absolutePath;
     }
 
-    public function getHydrableRepository(): Repository
+    public function getManagedValueRepository(): ManagedValueRepository
     {
-        if (!isset($this->hydrableRepository)) {
-            $store = new FilesystemStore(self::CACHE_BASE_PATH . $this->getIdentifier());
-
-            $this->hydrableRepository = new Repository($store);
+        if (!isset($this->managedValueRepository)) {
+            $this->managedValueRepository = app(ManagedValueRepository::class, [
+                'path' => ['themelets', $this->getIdentifier()],
+            ]);
         }
 
-        return $this->hydrableRepository;
+        return $this->managedValueRepository;
     }
 
     private function __construct(?ViewExtensionInterface $extension = null)

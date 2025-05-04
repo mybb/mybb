@@ -36,7 +36,7 @@ trait HierarchicalAssetsTrait
 
     private function buildAssetProperties(): void
     {
-        $this->getHydrableRepository()->delete('hierarchy.assets');
+        $this->getManagedValueRepository()->get('hierarchy.properties.assets')->clear();
 
         foreach ($this->getNamespaces() as $namespace) {
             $repository = $this->getAssetRepository($namespace);

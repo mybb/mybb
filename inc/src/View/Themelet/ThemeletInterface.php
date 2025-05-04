@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Themelet;
 
 use MyBB\Extensions\ViewExtensionInterface;
-use MyBB\Utilities\Hydrable\Repository as HydrableRepository;
+use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
@@ -19,7 +19,7 @@ use MyBB\View\Themelet\NamespaceCargo\Repository;
  * @method ViewExtensionInterface|null getExtension()
  * @method string getIdentifier()
  * @method string getAbsolutePath()
- * @method HydrableRepository getHydrableRepository()
+ * @method ManagedValueRepository getManagedValueRepository()
  *
  * // AssetsTrait
  * @method Repository getAssetRepository(string $namespace)
