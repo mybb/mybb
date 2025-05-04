@@ -2543,21 +2543,7 @@ function _safe_unserialize($str, $unlimited = true)
  */
 function my_unserialize($str, $unlimited = true)
 {
-	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
-	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
-	{
-		$mbIntEnc = mb_internal_encoding();
-		mb_internal_encoding('ASCII');
-	}
-
-	$out = _safe_unserialize($str, $unlimited);
-
-	if(isset($mbIntEnc))
-	{
-		mb_internal_encoding($mbIntEnc);
-	}
-
-	return $out;
+	return _safe_unserialize($str, $unlimited);
 }
 
 /**
@@ -2633,20 +2619,7 @@ function _safe_serialize($value)
  */
 function my_serialize($value)
 {
-	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
-	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
-	{
-		$mbIntEnc = mb_internal_encoding();
-		mb_internal_encoding('ASCII');
-	}
-
-	$out = _safe_serialize($value);
-	if(isset($mbIntEnc))
-	{
-		mb_internal_encoding($mbIntEnc);
-	}
-
-	return $out;
+	return _safe_serialize($value);
 }
 
 /**
@@ -3196,7 +3169,7 @@ function update_user_counters($uid, $changes = array())
 	// Fetch above counters for this user
 	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
 	$user = $db->fetch_array($query);
-	
+
 	if($user)
 	{
 		foreach($counters as $counter)
