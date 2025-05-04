@@ -23,6 +23,9 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   data text NOT NULL default ''
 );";
 
+$tables[] = "CREATE INDEX mybb_adminlog_module_action ON mybb_adminlog (module, action);";
+$tables[] = "CREATE INDEX mybb_adminlog_uid ON mybb_adminlog (uid);";
+
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
@@ -35,7 +38,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   loginlockoutexpiry int NOT NULL default '0',
   authsecret varchar(16) NOT NULL default '',
   recovery_codes varchar(177) NOT NULL default '',
-  UNIQUE (uid)
+  PRIMARY KEY (uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_adminsessions (
@@ -80,6 +83,8 @@ $tables[] = "CREATE TABLE mybb_announcements (
   PRIMARY KEY (aid)
 );";
 
+$tables[] = "CREATE INDEX mybb_announcements_fid ON mybb_announcements (fid);";
+
 $tables[] = "CREATE TABLE mybb_attachments (
   aid serial,
   pid int NOT NULL default '0',
@@ -95,6 +100,9 @@ $tables[] = "CREATE TABLE mybb_attachments (
   thumbnail varchar(120) NOT NULL default '',
   PRIMARY KEY (aid)
 );";
+
+$tables[] = "CREATE INDEX mybb_attachments_pid_visible ON mybb_attachments (pid, visible);";
+$tables[] = "CREATE INDEX mybb_attachments_uid ON mybb_attachments (uid);";
 
 $tables[] = "CREATE TABLE mybb_attachtypes (
   atid serial,
@@ -139,6 +147,8 @@ $tables[] = "CREATE TABLE mybb_banfilters (
   PRIMARY KEY (fid)
 );";
 
+$tables[] = "CREATE INDEX mybb_banfilters_type ON mybb_banfilters (type);";
+
 $tables[] = "CREATE TABLE mybb_banned (
   uid int NOT NULL default '0',
   gid int NOT NULL default '0',
@@ -152,6 +162,9 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default ''
 );";
 
+$tables[] = "CREATE INDEX mybb_banned_uid ON mybb_banned (uid);";
+$tables[] = "CREATE INDEX mybb_banned_dateline ON mybb_banned (dateline);";
+
 $tables[] = "CREATE TABLE mybb_buddyrequests (
  id serial,
  uid int NOT NULL default '0',
@@ -159,6 +172,9 @@ $tables[] = "CREATE TABLE mybb_buddyrequests (
  date int NOT NULL default '0',
  PRIMARY KEY (id)
 );";
+
+$tables[] = "CREATE INDEX mybb_buddyrequests_uid ON mybb_buddyrequests (uid);";
+$tables[] = "CREATE INDEX mybb_buddyrequests_touid ON mybb_buddyrequests (touid);";
 
 $tables[] = "CREATE TABLE mybb_calendars (
   cid serial,
@@ -191,6 +207,9 @@ $tables[] = "CREATE TABLE mybb_captcha (
   dateline int NOT NULL default '0',
   used smallint NOT NULL default '0'
 );";
+
+$tables[] = "CREATE INDEX mybb_captcha_imagehash ON mybb_captcha (imagehash);";
+$tables[] = "CREATE INDEX mybb_captcha_dateline ON mybb_captcha (dateline);";
 
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
@@ -228,6 +247,10 @@ $tables[] = "CREATE TABLE mybb_events (
   PRIMARY KEY  (eid)
 );";
 
+$tables[] = "CREATE INDEX mybb_events_cid ON mybb_events (cid);";
+$tables[] = "CREATE INDEX mybb_events_daterange ON mybb_events (starttime, endtime);";
+$tables[] = "CREATE INDEX mybb_events_private ON mybb_events (private);";
+
 $tables[] = "CREATE TABLE mybb_forumpermissions (
   pid serial,
   fid int NOT NULL default '0',
@@ -255,6 +278,8 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   cansearch smallint NOT NULL default '0',
   PRIMARY KEY (pid)
 );";
+
+$tables[] = "CREATE INDEX mybb_forumpermissions_fid_gid ON mybb_forumpermissions (fid, gid);";
 
 $tables[] = "CREATE TABLE mybb_forums (
   fid serial,
@@ -308,12 +333,16 @@ $tables[] = "CREATE TABLE mybb_forumsread (
   UNIQUE (fid, uid)
 );";
 
+$tables[] = "CREATE INDEX mybb_forumsread_dateline ON mybb_forumsread (dateline);";
+
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
   fsid serial,
   fid smallint NOT NULL default '0',
   uid int NOT NULL default '0',
   PRIMARY KEY (fsid)
 );";
+
+$tables[] = "CREATE INDEX mybb_forumsubscriptions_uid ON mybb_forumsubscriptions (uid);";
 
 $tables[] = "CREATE TABLE mybb_groupleaders (
   lid serial,
@@ -431,6 +460,10 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   ipaddress bytea NOT NULL default ''
 );";
 
+$tables[] = "CREATE INDEX mybb_moderatorlog_uid ON mybb_moderatorlog (uid);";
+$tables[] = "CREATE INDEX mybb_moderatorlog_fid ON mybb_moderatorlog (fid);";
+$tables[] = "CREATE INDEX mybb_moderatorlog_tid ON mybb_moderatorlog (tid);";
+
 $tables[] = "CREATE TABLE mybb_moderators (
   mid serial,
   fid smallint NOT NULL default '0',
@@ -461,6 +494,8 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canviewmodlog smallint NOT NULL default '0',
   PRIMARY KEY (mid)
 );";
+
+$tables[] = "CREATE INDEX mybb_moderators_id_fid ON mybb_moderators (id, fid);";
 
 $tables[] = "CREATE TABLE mybb_modtools (
 	tid serial,
@@ -502,6 +537,8 @@ $tables[] = "CREATE TABLE mybb_polls (
   PRIMARY KEY (pid)
 );";
 
+$tables[] = "CREATE INDEX mybb_polls_tid ON mybb_polls (tid);";
+
 $tables[] = "CREATE TABLE mybb_pollvotes (
   vid serial,
   pid int NOT NULL default '0',
@@ -511,6 +548,8 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
   ipaddress bytea NOT NULL default '',
   PRIMARY KEY (vid)
 );";
+
+$tables[] = "CREATE INDEX mybb_pollvotes_pid_uid ON mybb_pollvotes (pid, uid);";
 
 $tables[] = "CREATE TABLE mybb_posts (
   pid serial,
@@ -533,6 +572,12 @@ $tables[] = "CREATE TABLE mybb_posts (
   PRIMARY KEY (pid)
 );";
 
+$tables[] = "CREATE INDEX mybb_posts_tid_uid ON mybb_posts (tid, uid);";
+$tables[] = "CREATE INDEX mybb_posts_visible ON mybb_posts (visible);";
+$tables[] = "CREATE INDEX mybb_posts_dateline ON mybb_posts (dateline);";
+$tables[] = "CREATE INDEX mybb_posts_ipaddress ON mybb_posts (ipaddress);";
+$tables[] = "CREATE INDEX mybb_posts_tid_dateline ON mybb_posts (tid, dateline);";
+
 $tables[] = "CREATE TABLE mybb_privatemessages (
   pmid serial,
   uid int NOT NULL default '0',
@@ -554,6 +599,9 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   ipaddress bytea NOT NULL default '',
   PRIMARY KEY (pmid)
 );";
+
+$tables[] = "CREATE INDEX mybb_privatemessages_uid_folder ON mybb_privatemessages (uid, folder);";
+$tables[] = "CREATE INDEX mybb_privatemessages_toid ON mybb_privatemessages (toid);";
 
 $tables[] = "CREATE TABLE mybb_profilefields (
   fid serial,
@@ -632,7 +680,7 @@ $tables[] = "CREATE TABLE mybb_questionsessions (
   sid varchar(32) NOT NULL default '',
   qid int NOT NULL default '0',
   dateline int NOT NULL default '0',
-  UNIQUE (sid)
+  PRIMARY KEY (sid)
 );";
 
 $tables[] = "CREATE TABLE mybb_reportedcontent (
@@ -651,6 +699,9 @@ $tables[] = "CREATE TABLE mybb_reportedcontent (
   lastreport int NOT NULL default '0',
   PRIMARY KEY (rid)
 );";
+
+$tables[] = "CREATE INDEX mybb_reportedcontent_reportstatus ON mybb_reportedcontent (reportstatus);";
+$tables[] = "CREATE INDEX mybb_reportedcontent_lastreport ON mybb_reportedcontent (lastreport);";
 
 $tables[] = "CREATE TABLE mybb_reportreasons (
   rid serial,
@@ -672,6 +723,8 @@ $tables[] = "CREATE TABLE mybb_reputation (
   PRIMARY KEY(rid)
 );";
 
+$tables[] = "CREATE INDEX mybb_reputation_uid ON mybb_reputation (uid);";
+
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int NOT NULL default '0',
@@ -682,7 +735,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   resulttype varchar(10) NOT NULL default '',
   querycache text NOT NULL default '',
   keywords text NOT NULL default '',
-  UNIQUE (sid)
+  PRIMARY KEY (sid)
 );";
 
 $tables[] = "CREATE TABLE mybb_sessions (
@@ -696,8 +749,14 @@ $tables[] = "CREATE TABLE mybb_sessions (
   nopermission smallint NOT NULL default '0',
   location1 int NOT NULL default '0',
   location2 int NOT NULL default '0',
-  UNIQUE (sid)
+  PRIMARY KEY (sid)
 );";
+
+$tables[] = "CREATE INDEX mybb_sessions_location ON mybb_sessions (location1, location2);";
+$tables[] = "CREATE INDEX mybb_sessions_time ON mybb_sessions (time);";
+$tables[] = "CREATE INDEX mybb_sessions_uid ON mybb_sessions (uid);";
+$tables[] = "CREATE INDEX mybb_sessions_ip ON mybb_sessions (ip);";
+
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
   gid serial,
@@ -721,6 +780,8 @@ $tables[] = "CREATE TABLE mybb_settings (
   isdefault smallint NOT NULL default '0',
   PRIMARY KEY (sid)
 );";
+
+$tables[] = "CREATE INDEX mybb_settings_gid ON mybb_settings (gid);";
 
 $tables[] = "CREATE TABLE mybb_smilies (
   sid serial,
@@ -758,7 +819,7 @@ $tables[] = "CREATE TABLE mybb_stats (
 	numusers numeric(10,0) NOT NULL default '0',
 	numthreads numeric(10,0) NOT NULL default '0',
 	numposts numeric(10,0) NOT NULL default '0',
-	UNIQUE (dateline)
+	PRIMARY KEY (dateline)
 );";
 
 $tables[] = "CREATE TABLE mybb_tasks (
@@ -806,6 +867,8 @@ $tables[] = "CREATE TABLE mybb_templates (
   PRIMARY KEY (tid)
 );";
 
+$tables[] = "CREATE INDEX mybb_templates_sid_title ON mybb_templates (sid, title);";
+
 $tables[] = "CREATE TABLE mybb_templatesets (
   sid serial,
   title varchar(120) NOT NULL default '',
@@ -834,6 +897,8 @@ $tables[] = "CREATE TABLE mybb_themestylesheets(
 	PRIMARY KEY(sid)
 );";
 
+$tables[] = "CREATE INDEX mybb_themestylesheets_tid ON mybb_themestylesheets (tid);";
+
 $tables[] = "CREATE TABLE mybb_threadprefixes (
 	pid serial,
 	prefix varchar(120) NOT NULL default '',
@@ -852,9 +917,13 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   PRIMARY KEY (rid)
 );";
 
+$tables[] = "CREATE INDEX mybb_threadratings_tid ON mybb_threadratings (tid);";
+
 $tables[] = "CREATE TABLE mybb_threadviews (
 	tid int NOT NULL default '0'
 );";
+
+$tables[] = "CREATE INDEX mybb_threadviews_tid ON mybb_threadviews (tid);";
 
 $tables[] = "CREATE TABLE mybb_threads (
   tid serial,
@@ -885,12 +954,20 @@ $tables[] = "CREATE TABLE mybb_threads (
   PRIMARY KEY (tid)
 );";
 
+$tables[] = "CREATE INDEX mybb_threads_fid ON mybb_threads (fid, visible, sticky);";
+$tables[] = "CREATE INDEX mybb_threads_dateline ON mybb_threads (dateline);";
+$tables[] = "CREATE INDEX mybb_threads_lastpost ON mybb_threads (lastpost, fid);";
+$tables[] = "CREATE INDEX mybb_threads_firstpost ON mybb_threads (firstpost);";
+$tables[] = "CREATE INDEX mybb_threads_uid ON mybb_threads (uid);";
+
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
   dateline int NOT NULL default '0',
   UNIQUE (tid, uid)
 );";
+
+$tables[] = "CREATE INDEX mybb_threadsread_dateline ON mybb_threadsread (dateline);";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   sid serial,
@@ -900,6 +977,8 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   dateline int NOT NULL default '0',
   PRIMARY KEY (sid)
 );";
+
+$tables[] = "CREATE INDEX mybb_threadsubscriptions_tid_notification ON mybb_threadsubscriptions (tid, notification);";
 
 $tables[] = "CREATE TABLE mybb_userfields (
   ufid int NOT NULL default '0',
@@ -1088,8 +1167,13 @@ $tables[] = "CREATE TABLE mybb_users (
   loginlockoutexpiry int NOT NULL default '0',
   usernotes text NOT NULL default '',
   sourceeditor smallint NOT NULL default '0',
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  UNIQUE (username)
 );";
+
+$tables[] = "CREATE INDEX mybb_users_usergroup ON mybb_users (usergroup);";
+$tables[] = "CREATE INDEX mybb_users_regip ON mybb_users (regip);";
+$tables[] = "CREATE INDEX mybb_users_lastip ON mybb_users (lastip);";
 
 $tables[] = "CREATE TABLE mybb_usertitles (
   utid serial,
@@ -1133,3 +1217,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	PRIMARY KEY(wid)
 );";
 
+$tables[] = "CREATE INDEX mybb_warnings_uid ON mybb_warnings (uid);";
