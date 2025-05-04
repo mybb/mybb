@@ -2014,7 +2014,6 @@ class postParser
 		$stopwatchPeriod = app(Stopwatch::class)->start(group: 'core.parser.validate');
 
 		libxml_use_internal_errors(true);
-		@libxml_disable_entity_loader(true);
 
 		simplexml_load_string('<root>'.$output.'</root>', 'SimpleXMLElement', 524288 /* LIBXML_PARSEHUGE */);
 
