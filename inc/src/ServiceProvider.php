@@ -4,6 +4,8 @@ namespace MyBB;
 
 use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\BreadcrumbManager;
+use MyBB\Utilities\ManagedValue\FilesystemNestedStore;
+use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
 use Psr\Container\ContainerInterface;
 
 /** @property \MyBB\Application $app */
@@ -41,5 +43,21 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->singleton(Stopwatch::class);
+
+        $this->app->bind(
+            ManagedValueRepository::class,
+            function (ContainerInterface $container, array $params) {
+                $path = [
+                    MYBB_ROOT . 'cache',
+                    ...$params['path'],
+                ];
+
+                return new ManagedValueRepository(
+                    new FilesystemNestedStore($path),
+                    $path,
+                    $this->app->make(Stopwatch::class),
+                );
+            },
+        );
     }
 }
