@@ -644,7 +644,14 @@ class datacache
 	 */
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
-		$usergroups = array_keys($this->read("usergroups", true));
+		$usergroups = $this->read("usergroups", true);
+
+		if($usergroups === false) 
+		{
+			$usergroups = array(); 
+		}
+		
+		$usergroups = array_keys($usergroups); 
 		if(!empty($this->forum_permissions_forum_cache[$pid]))
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)
