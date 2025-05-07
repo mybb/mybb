@@ -1395,16 +1395,16 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="showeditedby">
-			<title>Show 'edited by' Messages</title>
-			<description><![CDATA[Once a post is edited by a regular user, do you want to show the edited by message?]]></description>
+			<title>Show 'edited by' note on posts by regular users</title>
+			<description><![CDATA[Display an 'edited by' note when a post authored by a regular user is edited.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="showeditedbyadmin">
-			<title>Show 'edited by' Message for Administrators and Moderators</title>
-			<description><![CDATA[Do you want to show edited by messages for posts created by administrators and moderators?]]></description>
+			<title>Show 'edited by' note on posts by administrators and moderators</title>
+			<description><![CDATA[Display an 'edited by' note when a post authored by an administrator or moderator is edited.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
