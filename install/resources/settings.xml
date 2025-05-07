@@ -1404,7 +1404,7 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="showeditedbyadmin">
-			<title> Show 'edited by' note on posts by administrators and moderators</title>
+			<title>Show 'edited by' note on posts by administrators and moderators</title>
 			<description><![CDATA[Display an 'edited by' note when a post authored by an administrator or moderator is edited.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
