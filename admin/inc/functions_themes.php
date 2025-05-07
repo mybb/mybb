@@ -1517,7 +1517,7 @@ function upgrade_css_120_to_140($css)
 		md5('blockquote cite span') => array("class_name" => 'blockquote cite span', "values" => "float: right;\n\tfont-weight: normal;"),
 		md5('.codeblock') => array("class_name" => '.codeblock', "values" => "background: #fff;\n\tborder: 1px solid #ccc;\n\tpadding: 4px;"),
 		md5('.codeblock .title') => array("class_name" => '.codeblock .title', "values" => "border-bottom: 1px solid #ccc;\n\tfont-weight: bold;\n\tmargin: 4px 0;"),
-		md5('.codeblock code') => array("class_name" => '.codeblock code', "values" => "overflow: auto;\n\theight: auto;\n\tmax-height: 200px;\n\tdisplay: block;\n\tfont-family: Monaco, Consolas, Courier, monospace;\n\tfont-size: 13px;"),
+		md5('.codeblock code') => array("class_name" => '.codeblock code', "values" => "overflow: auto;\n\theight: auto;\n\tmax-height: 200px;\n\tdisplay: block;\n\tfont-family: Monaco, Consolas, Courier, monospace;\n\tfont-size: 13px;\n\twhite-space: pre;\n\ttab-size: 4;"),
 		md5('.subject_new') => array("class_name" => '.subject_new', "values" => "font-weight: bold;"),
 		md5('.highlight') => array("class_name" => '.highlight', "values" => "background: #FFFFCC;\n\tpadding: 3px;"),
 		md5('.pm_alert') => array("class_name" => '.pm_alert', "values" => "background: #FFF6BF;\n\tborder: 1px solid #FFD324;\n\ttext-align: center;\n\tpadding: 5px 20px;\n\tfont-size: 11px;"),
