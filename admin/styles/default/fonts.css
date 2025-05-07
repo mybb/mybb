@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Asap';
+    src: url('../../../jscripts/fonts/Asap/Asap-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Asap';
+    src: url('../../../jscripts/fonts/Asap/Asap-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../../../jscripts/fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 400 700;
+    font-style: normal;
+}

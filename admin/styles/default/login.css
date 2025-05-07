@@ -3,7 +3,7 @@
  * Login CSS
  */
 
-@import url('https://fonts.googleapis.com/css?family=Asap:400,600,600i|Open+Sans:400,700&display=swap');
+@import url('fonts.css');
 
 body {
 	font-family: 'Open Sans', sans-serif;
