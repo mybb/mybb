@@ -2322,7 +2322,7 @@ if(!$mybb->input['action'])
 			{
 				foreach($mybb->input['disporder'] as $update_fid => $order)
 				{
-					if(is_numeric($order) && (int)$order >= 0) 
+					if(is_numeric($order) && (int)$order >= 0)
 					{
 						$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
 					}
