@@ -1407,7 +1407,7 @@ if(!$mybb->input['action'])
 		{
 			foreach($mybb->input['disporder'] as $gid => $order)
 			{
-				if(is_numeric($order) && (int)$order >= 0) 
+				if(is_numeric($order) && (int)$order >= 0)
 				{
 					$db->update_query("usergroups", array('disporder' => (int)$order), "gid='".(int)$gid."'");
 				}
