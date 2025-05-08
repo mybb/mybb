@@ -294,7 +294,10 @@ if(!$mybb->input['action'])
 		{
 			foreach($mybb->input['disporder'] as $rid => $order)
 			{
-				$db->update_query("reportreasons", array('disporder' => (int)$order), "rid='".(int)$rid."'");
+				if(is_numeric($order) && (int)$order >= 0)
+				{
+					$db->update_query("reportreasons", array('disporder' => (int)$order), "rid='".(int)$rid."'");
+				}
 			}
 
 			$plugins->run_hooks("admin_config_report_reasons_start_commit");
@@ -356,7 +359,7 @@ if(!$mybb->input['action'])
 		$form_container->output_cell(htmlspecialchars_uni($reasons['title']));
 		$form_container->output_cell(htmlspecialchars_uni($reasons['appliesto']));
 		$form_container->output_cell("<div>{$icon}</div>", array("class" => "align_center"));
-		$form_container->output_cell("<input type=\"text\" name=\"disporder[{$reasons['rid']}]\" value=\"{$reasons['disporder']}\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
+		$form_container->output_cell("<input type=\"number\" name=\"disporder[{$reasons['rid']}]\" value=\"{$reasons['disporder']}\" min=\"0\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
 		$popup = new PopupMenu("reasons_{$reasons['rid']}", $lang->options);
 		$popup->add_item($lang->edit_reason, "index.php?module=config-report_reasons&amp;action=edit&amp;rid={$reasons['rid']}");
 		$popup->add_item($lang->delete_reason, "index.php?module=config-report_reasons&amp;action=delete&amp;rid={$reasons['rid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_reason_deletion}')");
