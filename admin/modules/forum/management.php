@@ -2322,7 +2322,10 @@ if(!$mybb->input['action'])
 			{
 				foreach($mybb->input['disporder'] as $update_fid => $order)
 				{
-					$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
+					if(is_numeric($order) && (int)$order >= 0) 
+					{
+						$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
+					}
 				}
 
 				$plugins->run_hooks("admin_forum_management_start_disporder_commit");
@@ -3032,4 +3035,3 @@ function retrieve_single_permissions_row($gid, $fid)
 	$form_container->construct_row();
 	return $form_container->output_row_cells(0, true);
 }
-
