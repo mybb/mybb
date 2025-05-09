@@ -13,18 +13,26 @@ enum ResourceType: string
 
     public static function tryFromFilename(string $filename): ?self
     {
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $language = ResourceLanguage::tryFromFilename($filename);
 
-        return self::tryFromFilenameExtension($extension);
+        if ($language === null) {
+            return null;
+        } else {
+            return self::tryFromLanguage($language);
+        }
     }
 
-    public static function tryFromFilenameExtension(string $extension): ?self
+    public static function tryFromLanguage(ResourceLanguage $language): ?self
     {
-        return match ($extension) {
-            'js' => self::SCRIPT,
-            'css', 'scss' => self::STYLE,
-            'twig' => self::TEMPLATE,
-            default => null,
+        return match ($language) {
+            ResourceLanguage::JAVASCRIPT
+                => self::SCRIPT,
+            ResourceLanguage::CSS,
+            ResourceLanguage::SASS,
+            ResourceLanguage::SCSS
+                => self::STYLE,
+            ResourceLanguage::TWIG
+                => self::TEMPLATE,
         };
     }
 

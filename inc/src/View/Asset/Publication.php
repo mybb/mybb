@@ -10,6 +10,7 @@ use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
+use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
 use MyBB\View\Themelet\ThemeletInterface;
 
@@ -133,10 +134,10 @@ class Publication
      */
     private static function getBaseProcessor(ThemeletAsset $asset): ?string
     {
-        $sourceExtension = pathinfo($asset->getResource()->getFilename(), PATHINFO_EXTENSION);
-
-        return match ($sourceExtension) {
-            'sass', 'scss' => ScssProcessor::class,
+        return match ($asset->getResource()->getLanguage()) {
+            ResourceLanguage::SASS,
+            ResourceLanguage::SCSS
+                => ScssProcessor::class,
             default => null,
         };
     }

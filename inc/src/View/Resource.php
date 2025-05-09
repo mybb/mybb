@@ -166,6 +166,13 @@ readonly class Resource implements CargoEntityInterface
         return $this->locator->getSubPath();
     }
 
+    public function getLanguage(): ?ResourceLanguage
+    {
+        return ResourceLanguage::tryFromFilename(
+            $this->getFilename()
+        );
+    }
+
     public function getRepository(): RepositoryInterface
     {
         return $this->getThemelet()->getResourceRepository(
