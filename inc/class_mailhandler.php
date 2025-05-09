@@ -113,25 +113,26 @@ class MailHandler
 	public $code = 0;
 
 	/**
-	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
-	 * 
-	 * @return string
-	 */
-	function get_from_email()
+	 * Returns the appropriate email address based on the type.
+	 *
+	 * @param string $type The type of email address to return. 
+	 * @return string The selected email address.
+	 */	
+	function get_email($type='from')
 	{
 		global $mybb;
-		
-		if(trim($mybb->settings['returnemail']))
+	
+		if($type === 'reply-to') 
 		{
-			$email = $mybb->settings['returnemail'];
+			if(isset($mybb->settings['returnemail']) && trim($mybb->settings['returnemail'])) 
+			{
+				return $mybb->settings['returnemail'];
+			}
 		}
-		else
-		{
-			$email = $mybb->settings['adminemail'];
-		}
-		
-		return $email;
-	}
+	
+		// Fallback or 'from' case
+		return $mybb->settings['adminemail'];
+	}	
 
 	/**
 	 * Builds the whole mail.
@@ -161,7 +162,7 @@ class MailHandler
 		}
 		else
 		{
-			$this->from = $this->get_from_email();
+			$this->from = $this->get_email('from');
 			$this->from_named = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
 			$this->from_named .= " <".$this->from.">";
 		}
@@ -172,7 +173,7 @@ class MailHandler
 		}
 		else
 		{
-			$this->return_email = $this->get_from_email();
+			$this->return_email = $this->get_email('reply-to');
 		}
 
 		$this->set_to($to);
