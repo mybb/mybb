@@ -119,12 +119,12 @@
 		"./jscripts/bbcodes_sceditor.js": {
 			"depends_on": [
 				"./jscripts/jquery.js",
-				"./jscripts/jquery.sceditor.bbcode.min.js"
+				"./jscripts/sceditor/jquery.sceditor.bbcode.min.js"
 			]
 		},
 		"./jscripts/sceditor/plugins/undo.js": {
 			"depends_on": [
-				"./jscripts/jquery.sceditor.bbcode.min.js"
+				"./jscripts/sceditor/jquery.sceditor.bbcode.min.js"
 			]
 		},
 		"./jscripts/post.js": {
