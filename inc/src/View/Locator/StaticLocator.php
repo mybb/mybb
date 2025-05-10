@@ -128,7 +128,7 @@ class StaticLocator extends Locator
     public function getNamespaceRelativeIdentifier(): string
     {
         // no transformations needed for Static Locators
-        return $this->getPath();
+        return $this->getString();
     }
 
     public function isCurrentDirectoryRelative(): bool
