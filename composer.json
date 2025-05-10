@@ -57,6 +57,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
+        "autoloader-suffix": "MyBB",
         "vendor-dir": "inc/vendor",
         "bin-dir": "inc/vendor/bin",
         "optimize-autoloader": true,
