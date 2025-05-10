@@ -448,8 +448,6 @@ global $_month_table_normal,$_month_table_leaf;
 
 function adodb_tz_offset(
 	$gmt,
-	#[Deprecated]
-	$isphp5
 )
 {
 	$zhrs = abs($gmt)/3600;
