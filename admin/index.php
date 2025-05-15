@@ -541,6 +541,7 @@ if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
 	if($mybb->get_input('do') == 'login')
 	{
 		$login_message = $lang->error_mybb_not_admin_account;
+		log_security_action('failed_login_admincp', $uid);
 	}
 }
 
@@ -834,4 +835,3 @@ $lang->load("{$run_module}_{$page->active_action}", false, true);
 $plugins->run_hooks("admin_load");
 
 require $modules_dir."/".$run_module."/".$action_file;
-
