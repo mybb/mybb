@@ -4153,11 +4153,11 @@ function log_security_action($type, $uid = 0)
 {
 	global $mybb, $db;
 
-	// If no user id is specified, assume it is the current user
+	// If no user id is specified, try using the current user's ID
 	$uid = (int)$uid;
-	if($uid == 0)
+	if($uid == 0 && isset($mybb->user['uid']))
 	{
-		$uid = $mybb->user['uid'];
+		$uid = (int)$mybb->user['uid'];
 	}
 
 	$sql_array = array(
