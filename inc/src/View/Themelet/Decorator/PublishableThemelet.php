@@ -160,7 +160,10 @@ class PublishableThemelet extends ThemeletDecorator
         return array_merge(
             $explicitlyPublishableAssets,
             $this->getImplicitlyPublishableAssets(
-                array_diff_key($sourceResources, $claimedResources)
+                array_diff_key(
+                    $sourceResources ?? $this->getPublishableResources(),
+                    $claimedResources,
+                )
             ),
         );
     }
