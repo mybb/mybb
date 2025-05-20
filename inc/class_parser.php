@@ -1115,8 +1115,10 @@ class postParser
 		$code = @highlight_string($str, true);
 
 		// Do the actual replacing.
+		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code);
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
 		$code = str_replace('$', '&#36;', $code);
@@ -1124,7 +1126,7 @@ class postParser
 
 		if($added_open_tag)
 		{
-			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
+			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />|\n)#", "<code><span style=\"color: #$1\">", $code);
 		}
 
 		if($added_end_tag)
