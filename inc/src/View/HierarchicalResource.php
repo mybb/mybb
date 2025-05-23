@@ -6,6 +6,7 @@ namespace MyBB\View;
 
 use Exception;
 use LogicException;
+use MyBB\Cargo\HierarchicalEntityTrait;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
 use MyBB\View\Themelet\NamespaceCargo\Repository;
@@ -18,6 +19,8 @@ use MyBB\View\Themelet\ThemeletInterface;
  */
 readonly class HierarchicalResource extends Resource
 {
+    use HierarchicalEntityTrait;
+
     public function __construct(ThemeletInterface $themelet, ThemeletLocator $locator)
     {
         parent::__construct($themelet, $locator);
@@ -27,6 +30,11 @@ readonly class HierarchicalResource extends Resource
         }
     }
 
+    public function getProperties(): array
+    {
+        throw new LogicException('`' . __FUNCTION__ . '()` cannot be called on `' . __CLASS__ . '`');
+    }
+
     public function exists(): bool
     {
         return $this->getResolved()?->exists() === true;
@@ -34,17 +42,11 @@ readonly class HierarchicalResource extends Resource
 
     public function setContent(string $content, $pointer = null, bool $normalize = false): bool
     {
-        $ownRepository = $this->getRepository()->getOwnRepository();
+        $ownResource = $this->getOwn();
 
-        if ($ownRepository->has($this->getLocator())) {
-            $ownResource = $ownRepository->getExisting($this->getLocator());
-        } else {
-            $ownResource = $ownRepository->create($this->getLocator());
-        }
+        $result = $ownResource->setContent($content, $pointer);
 
-        $result = $ownResource->write($content, $pointer);
-
-        if ($normalize && $this->contentMatchesInherited()) {
+        if ($normalize && $this->hasAncestors() && $this->contentMatchesInherited()) {
             $ownResource->delete();
         }
 
@@ -61,7 +63,7 @@ readonly class HierarchicalResource extends Resource
 
         $resource->delete();
 
-        if ($this->getInherited()) {
+        if ($this->hasAncestors()) {
             $resource->setProperties([
                 Repository::ANCESTOR_DECLARATIONS_KEY => false,
             ]);
@@ -75,9 +77,7 @@ readonly class HierarchicalResource extends Resource
      */
     public function revert(): void
     {
-        $ownRepository = $this->getRepository()->getOwnRepository();
-
-        $resource = $ownRepository->get($this->getLocator());
+        $resource = $this->getOwn();
 
         if (!$resource->declaredInherited()) {
             $resource->setProperties([
@@ -85,7 +85,7 @@ readonly class HierarchicalResource extends Resource
             ]);
         }
 
-        if ($this->getInherited()) {
+        if ($this->hasAncestors()) {
             $resource->delete();
         }
 
@@ -97,56 +97,14 @@ readonly class HierarchicalResource extends Resource
         return $this->getResolved()->getAbsolutePath();
     }
 
-    public function getResolved(): ?Resource
-    {
-        return $this->getRepository()->getResolved($this->getLocator());
-    }
-
-    public function declaredInherited(): bool
-    {
-        throw new LogicException('`' . __FUNCTION__ . '()` cannot be called on `' . __CLASS__ . '`');
-    }
-
-    public function deleteFirstPartyProperties(): void
-    {
-        throw new LogicException('`' . __FUNCTION__ . '()` cannot be called on `' . __CLASS__ . '`');
-    }
-
-    public function getProperties(): array
-    {
-        throw new LogicException('`' . __FUNCTION__ . '()` cannot be called on `' . __CLASS__ . '`');
-    }
-
-    public function setProperties(array $properties): void
-    {
-        throw new LogicException('`' . __FUNCTION__ . '()` cannot be called on `' . __CLASS__ . '`');
-    }
-
     public function contentMatchesInherited(): bool
     {
-        $closestInheritedResource = $this->getInherited();
+        $closestInheritedResource = $this->getClosestAncestor();
 
         if (!$closestInheritedResource) {
             return false;
         }
 
         return $this->getContent() === $closestInheritedResource->getContent();
-    }
-
-    /**
-     * Returns the closest ancestor from which the Resource may be inherited.
-     */
-    public function getInherited(): ?Resource
-    {
-        $repository = $this->getRepository()->getClosestEntityAncestorRepository($this->locator);
-
-        return $repository?->get($this->locator);
-    }
-
-    public function resolve(): void
-    {
-        $this->getRepository()->resolveRepository(
-            $this->getLocator()
-        );
     }
 }
