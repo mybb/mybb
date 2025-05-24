@@ -661,10 +661,18 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="showgroupslegend">
+			<title>Show groups legend?</title>
+			<description><![CDATA[Display the list of user groups next to the members list.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>			
+		</setting>		
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -672,7 +680,7 @@ min=0]]></optionscode>
 		<setting name="showforumviewing">
 			<title>Show x viewing forum</title>
 			<description><![CDATA[Displays the currently active users viewing each forum.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
