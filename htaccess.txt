@@ -65,3 +65,7 @@ Options -MultiViews +FollowSymlinks -Indexes
 	Order Deny,Allow
 	Deny from all
 </Files>
+
+<Location /inc/>
+    Require all denied
+</Location>
