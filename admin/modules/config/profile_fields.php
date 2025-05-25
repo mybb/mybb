@@ -200,7 +200,7 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->get_input('fieldtype'), array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->input('contact')));
+	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->get_input('contact')));
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->get_input('regex'), array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->get_input('maxlength'), array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->get_input('length'), array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
