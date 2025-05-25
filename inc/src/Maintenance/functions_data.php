@@ -240,7 +240,7 @@ function populateDatabase(array $config, DB_Base $db): void
     }
 
     // Update the sequences for PgSQL
-    if ($config['database']['type'] == "pgsql") {
+    if (in_array($config['database']['type'], ['pgsql', 'pgsql_pdo'], true)) {
         $sequences = [
             [
                 'table' => 'attachtypes',
@@ -367,7 +367,7 @@ function insertUsergroups(array $config, DB_Base $db, ?int &$admin_gid = null): 
     $db->insert_query_multiple('usergroups', $entries);
 
     // Restart usergroup sequence with correct # of groups
-    if ($config['database']['type'] == 'pgsql') {
+    if (in_array($config['database']['type'], ['pgsql', 'pgsql_pdo'], true)) {
         $db->query("
             SELECT setval(
                 '{$config['database']['table_prefix']}usergroups_gid_seq',
