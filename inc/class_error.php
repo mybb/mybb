@@ -63,7 +63,6 @@ class errorHandler {
 		E_USER_WARNING					=> 'User Warning',
 		E_USER_NOTICE					=> 'User Notice',
 		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
-		E_STRICT						=> 'Runtime Notice',
 		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
 		MYBB_SQL 						=> 'MyBB SQL Error',
 		MYBB_TEMPLATE					=> 'MyBB Template Error',
@@ -104,7 +103,6 @@ class errorHandler {
 		E_DEPRECATED,
 		E_NOTICE,
 		E_USER_NOTICE,
-		E_STRICT
 	);
 
 	/**
