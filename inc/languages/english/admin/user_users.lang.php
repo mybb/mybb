@@ -157,6 +157,7 @@ $l['new_password'] = "New Password";
 $l['new_password_desc'] = "Only required if changing";
 $l['confirm_new_password'] = "Confirm New Password";
 
+$l['contact_info'] = "Contact Information";
 $l['optional_profile_info'] = "Optional Profile Information";
 $l['custom_user_title'] = "Custom User Title";
 $l['custom_user_title_desc'] = "If empty, the group user title will be used";
