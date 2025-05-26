@@ -5,6 +5,7 @@ namespace MyBB;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\MaintenanceMode;
 use Illuminate\Events\EventServiceProvider;
+use Illuminate\Filesystem\FilesystemServiceProvider;
 use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
@@ -144,6 +145,8 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
         $this->register(new Config\ServiceProvider($this));
 
         $this->register(new CoreServiceProvider($this));
+
+        $this->registerDeferredProvider(FilesystemServiceProvider::class);
 
         $this->registerDeferredProvider(Twig\ServiceProvider::class);
 

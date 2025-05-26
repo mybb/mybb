@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MyBB\View\Asset\Processor;
 
 use Exception;
-use Illuminate\Filesystem\Filesystem;
 use MyBB\View\HierarchicalResource;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -216,9 +215,7 @@ class ScssProcessor extends Processor
      */
     private function prepareImportableResourceFiles(array $resources): void
     {
-        $filesystem = new Filesystem();
-
-        $filesystem->deleteDirectory(
+        $this->publication->filesystem->deleteDirectory(
             $this->getImportableResourceDirectory(),
             preserve: true,
         );
@@ -232,15 +229,9 @@ class ScssProcessor extends Processor
                 !file_exists($cachePath) ||
                 filemtime($resource->getAbsolutePath()) !== filemtime($cachePath)
             ) {
-                mkdir(
-                    dirname($cachePath),
-                    recursive: true,
-                );
+                $this->publication->filesystem->ensureDirectoryExists($cachePath);
 
-                copy(
-                    $resource->getAbsolutePath(),
-                    $cachePath,
-                );
+                $this->publication->filesystem->copy($resource->getAbsolutePath(), $cachePath);
             }
         }
     }

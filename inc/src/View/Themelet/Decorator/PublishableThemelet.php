@@ -15,6 +15,8 @@ use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
 
+use function MyBB\app;
+
 /**
  * Adds asset generation features to a Themelet.
  */
@@ -123,7 +125,9 @@ class PublishableThemelet extends ThemeletDecorator
     public function publishThemeletAsset(ThemeletAsset $asset, bool $force = false): void
     {
         if ($force || $this->publishMode !== self::PUBLISH_NEVER) {
-            $publication = new Publication($asset);
+            $publication = app()->make(Publication::class, [
+                'asset' => $asset,
+            ]);
 
             $publication->publish($force || $this->publishMode === self::PUBLISH_ALWAYS);
 

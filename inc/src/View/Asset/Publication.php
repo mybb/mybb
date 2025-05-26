@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Asset;
 
+use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 use MyBB\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
@@ -15,8 +16,6 @@ use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
 use MyBB\View\Themelet\ThemeletInterface;
 
-use function MyBB\app;
-
 /**
  * Prepares Theme Assets for web usage.
  */
@@ -27,13 +26,6 @@ class Publication
         ResourceType::STYLE,
         ResourceType::SCRIPT,
     ];
-
-    private readonly ThemeletAsset $asset;
-
-    /**
-     * @var Processor[]
-     */
-    private array $processors;
 
     /**
      * Resources declared as contributing to the converted Asset.
@@ -154,11 +146,13 @@ class Publication
      * @param ThemeletAsset $asset
      * @param Processor[] $processors
      */
-    public function __construct(ThemeletAsset $asset, array $processors = [])
+    public function __construct(
+        private readonly ThemeletAsset $asset,
+        public readonly Filesystem $filesystem,
+        private array $processors = [],
+        public readonly ?Stopwatch $stopwatch = null,
+    )
     {
-        $this->asset = $asset;
-        $this->processors = $processors;
-
         $baseProcessor = self::getBaseProcessor($asset);
 
         if ($baseProcessor) {
@@ -194,7 +188,7 @@ class Publication
                 !$wasLocked ||
                 ($force || static::needsUpdate($this->asset))
             ) {
-                $stopwatchPeriod = app(Stopwatch::class)->start(
+                $stopwatchPeriod = $this->stopwatch?->start(
                     $this->asset->getLocator()->getString(),
                     'core.view.asset.publish',
                 );
@@ -212,7 +206,7 @@ class Publication
                         ]);
                     }
                 } finally {
-                    $stopwatchPeriod->stop();
+                    $stopwatchPeriod?->stop();
                 }
             }
 
