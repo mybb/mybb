@@ -36,6 +36,11 @@ class ThemeletAsset extends Asset
         }
     }
 
+    public function getLocator(): ThemeletLocator
+    {
+        return $this->locator;
+    }
+
     /**
      * Return a server path to the generated static file.
      */

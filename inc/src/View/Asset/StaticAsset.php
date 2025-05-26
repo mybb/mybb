@@ -21,6 +21,11 @@ class StaticAsset extends Asset
         protected ?ResourceType $type = null,
     ) {}
 
+    public function getLocator(): StaticLocator
+    {
+        return $this->locator;
+    }
+
     public function getType(): ?ResourceType
     {
         return $this->type ??= ResourceType::tryFromFilename(
