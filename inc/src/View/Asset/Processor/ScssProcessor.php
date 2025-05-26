@@ -6,6 +6,7 @@ namespace MyBB\View\Asset\Processor;
 
 use Exception;
 use Illuminate\Filesystem\Filesystem;
+use MyBB\View\HierarchicalResource;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
 use MyBB\View\Themelet\Themelet;
@@ -92,10 +93,14 @@ class ScssProcessor extends Processor
         return array_values(
             array_unique(
                 array_map(
-                    fn (Resource $resource) => $resource
-                        ->getResolved()
-                        ->getThemelet()
-                        ->getIdentifier(),
+                    fn (Resource $resource) =>
+                        (
+                            $resource instanceof HierarchicalResource
+                                ? $resource->getResolved()
+                                : $resource
+                        )
+                            ->getThemelet()
+                            ->getIdentifier(),
                     $resources,
                 ),
             ),

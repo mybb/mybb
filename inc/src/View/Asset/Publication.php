@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use MyBB\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
+use MyBB\View\HierarchicalResource;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceLanguage;
@@ -114,7 +115,14 @@ class Publication
     public static function getSourceSignature(Resource $resource): array
     {
         return [
-            'themelet' => $resource->getResolved()->getThemelet()->getIdentifier(),
+            'themelet' =>
+                (
+                    $resource instanceof HierarchicalResource
+                        ? $resource->getResolved()
+                        : $resource
+                )
+                ->getThemelet()
+                ->getIdentifier(),
             'subPath' => $resource->getLocator()->getSubPath(),
         ];
     }
