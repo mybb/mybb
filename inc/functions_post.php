@@ -727,7 +727,6 @@ function build_postbit($post, $post_type=0)
 
 	$post['iplogged'] = '';
 	$show_ips = $mybb->settings['logip'];
-	$post['ip'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if($post_type == 2)
@@ -740,6 +739,7 @@ function build_postbit($post, $post_type=0)
 	{
 		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
+			$post['ip'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 			$post['iphide'] = $post['ipshow'] = false;
 
 			if($show_ips == 'show')
