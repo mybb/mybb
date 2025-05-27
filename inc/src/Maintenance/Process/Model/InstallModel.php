@@ -308,6 +308,7 @@ class InstallModel extends Model
                     'db_user',
                     'db_password',
                     'db_name',
+                    'db_path',
                 ],
                 'callback' => $this->databaseDeferredDefaultParameterValues(...),
             ],
@@ -815,6 +816,7 @@ class InstallModel extends Model
                     'db_user',
                     'db_password',
                     'db_name',
+                    'db_path',
                 ] as $parameterName
             ) {
                 if (
