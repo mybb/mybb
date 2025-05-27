@@ -54,6 +54,9 @@ function httpRequestOverSecureTransport(): bool
         isset($_SERVER['HTTPS']) &&
         in_array(strtolower($_SERVER['HTTPS']), ['1', 'on'], true)
     ) || (
+        isset($_SERVER['HTTP_X_FORWARDED_PORT']) &&
+        $_SERVER['HTTP_X_FORWARDED_PORT'] === '443'
+    ) || (
         isset($_SERVER['SERVER_PORT']) &&
         $_SERVER['SERVER_PORT'] === '443'
     );
