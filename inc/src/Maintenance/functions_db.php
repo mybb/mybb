@@ -130,6 +130,27 @@ function getDatabaseEngineDriverData(string $engine): ?array
 
 function getDatabaseSuggestionCredentialSets(): array
 {
+    $credentialSets = [];
+
+    // existing configuration
+    $config = getConfigurationFileData();
+
+    if (
+        $config !== null &&
+        isset($config['database']['type']) &&
+        array_key_exists($config['database']['type'], getAvailableDatabaseDriversData())
+    ) {
+        $credentialSets[] = array_filter([
+            'engine' => getAvailableDatabaseDriversData()[$config['database']['type']]['engine'],
+            'host' => $config['database']['hostname'] ?? null,
+            'user' => $config['database']['username'] ?? null,
+            'password' => $config['database']['password'] ?? null,
+            'name' => $config['database']['database'] ?? null,
+            'path' => $config['database']['database'] ?? null, // SQLite
+        ]);
+    }
+
+    // common credentials
     $engines = [];
 
     foreach (getAvailableDatabaseDriversData() as $data) {
@@ -139,43 +160,57 @@ function getDatabaseSuggestionCredentialSets(): array
     }
 
     if ($engines !== []) {
-        // general credentials
-        $credentialSets = [
-            // server
+        // generic host names
+        $sets = [
             ['host' => 'localhost'],
             ['host' => 'db'],
             ['host' => 'database'],
+        ];
+
+        // engines to try for each generic host name
+        foreach ($sets as $set) {
+            if (isset($set['host']) && !isset($set['engine'])) {
+                foreach ($engines as $engine) {
+                    $credentialSets[] = array_merge(
+                        $set,
+                        [
+                            'engine' => $engine,
+                        ],
+                    );
+                }
+            }
+        }
+
+        // engine-specific host names
+        $sets = [
             ['engine' => 'mysql', 'host' => 'mysql'],
             ['engine' => 'pgsql', 'host' => 'postgresql'],
             ['engine' => 'pgsql', 'host' => 'postgres'],
             ['engine' => 'pgsql', 'host' => 'pgsql'],
-
-            // authentication
-            ['user' => 'mybb', 'password' => 'mybb'],
-            ['user' => 'user', 'password' => 'user'],
-
-            // database
-            ['name' => 'db'],
-            ['name' => 'database'],
-            ['name' => 'mybb'],
-            ['name' => 'forum'],
-            ['name' => 'user'],
         ];
 
-        // engines to try for each generic host name
-        foreach ($credentialSets as $credentialSet) {
-            if (isset($credentialSet['host']) && !isset($credentialSet['engine'])) {
-                $credentialSetProduct = [];
-
-                foreach ($engines as $engine) {
-                    $credentialSetProduct[] = array_merge($credentialSet, [
-                        'engine' => $engine,
-                    ]);
-                }
-
-                array_splice($credentialSets, array_search($credentialSet, $credentialSets), 1, $credentialSetProduct);
+        foreach ($sets as $set) {
+            if (in_array($set['engine'], $engines)) {
+                $credentialSets[] = $set;
             }
         }
+
+        // generic credentials
+        $credentialSets = array_merge(
+            $credentialSets,
+            [
+                // authentication
+                ['user' => 'mybb', 'password' => 'mybb'],
+                ['user' => 'user', 'password' => 'user'],
+
+                // database
+                ['name' => 'db'],
+                ['name' => 'database'],
+                ['name' => 'mybb'],
+                ['name' => 'forum'],
+                ['name' => 'user'],
+            ],
+        );
 
         // location-dependent
         $values = [
@@ -189,29 +224,9 @@ function getDatabaseSuggestionCredentialSets(): array
                 $credentialSets[] = ['name' => $value];
             }
         }
-
-        // existing configuration
-        $config = getConfigurationFileData();
-
-        if (
-            $config !== null &&
-            isset($config['database']['type']) &&
-            array_key_exists($config['database']['type'], getAvailableDatabaseDriversData())
-        ) {
-            array_unshift($credentialSets, array_filter([
-                'engine' => getAvailableDatabaseDriversData()[$config['database']['type']]['engine'],
-                'host' => $config['database']['hostname'] ?? null,
-                'user' => $config['database']['username'] ?? null,
-                'password' => $config['database']['password'] ?? null,
-                'name' => $config['database']['database'] ?? null,
-                'path' => $config['database']['database'] ?? null, // SQLite
-            ]));
-        }
-
-        return $credentialSets;
-    } else {
-        return [];
     }
+
+    return array_unique($credentialSets, SORT_REGULAR);
 }
 
 /**
