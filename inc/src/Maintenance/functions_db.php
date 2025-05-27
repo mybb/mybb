@@ -204,6 +204,7 @@ function getDatabaseSuggestionCredentialSets(): array
                 'user' => $config['database']['username'] ?? null,
                 'password' => $config['database']['password'] ?? null,
                 'name' => $config['database']['database'] ?? null,
+                'path' => $config['database']['database'] ?? null, // SQLite
             ]));
         }
 
