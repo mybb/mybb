@@ -660,9 +660,9 @@ class ProcessController extends EventTarget {
 							setFieldNote($field, lang[langStringName], 'signal');
 						}
 					}
-
-					this.#pendingDeferredDefaultParameterNames.delete(parameterName);
 				}
+
+				parameterNames.forEach(name => this.#pendingDeferredDefaultParameterNames.delete(name));
 
 				this.dispatchEvent(new Event('pendingDeferredDefaultParameterValuesChange'));
 
