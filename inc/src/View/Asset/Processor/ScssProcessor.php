@@ -227,7 +227,9 @@ class ScssProcessor extends Processor
                 !file_exists($cachePath) ||
                 filemtime($resource->getAbsolutePath()) !== filemtime($cachePath)
             ) {
-                $this->publication->filesystem->ensureDirectoryExists($cachePath);
+                $this->publication->filesystem->ensureDirectoryExists(
+                    dirname($cachePath)
+                );
 
                 $this->publication->filesystem->copy($resource->getAbsolutePath(), $cachePath);
             }
