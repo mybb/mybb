@@ -147,7 +147,7 @@ class ScssProcessor extends Processor
 
         $pathsWithExtension = [];
 
-        if (preg_match('/.s[ac]ss$/', $path)) {
+        if (preg_match('/\.s[ac]ss$/', $path)) {
             $pathsWithExtension[] = $path;
         } else {
             foreach (['sass', 'scss', 'css'] as $extension) {
