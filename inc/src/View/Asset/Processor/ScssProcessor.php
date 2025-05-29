@@ -76,9 +76,7 @@ class ScssProcessor extends Processor
 
     private function getImportableResources(): array
     {
-        static $resources;
-
-        return $resources ??= $this->asset->getThemelet()->getResources(
+        return $this->asset->getThemelet()->getResources(
             [$this->asset->getResource()->getNamespace()],
             [$this->asset->getResource()->getType()],
         );
@@ -247,9 +245,7 @@ class ScssProcessor extends Processor
 
     private function getImportableResourceDirectory(): string
     {
-        static $path;
-
-        return $path ??=
+        return
             Themelet::CACHE_BASE_PATH .
             $this->asset->getThemelet()->getIdentifier() .
             '/resolvedResources'
