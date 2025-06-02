@@ -12,6 +12,7 @@ use MyBB\View\Themelet\Themelet;
 use MyBB\View\Themelet\ThemeletInterface;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 class ScssProcessor extends Processor
 {
@@ -171,41 +172,51 @@ class ScssProcessor extends Processor
         foreach ($paths as $path) {
             $path = Path::normalize($path);
 
-            if (array_key_exists($path, $this->importableResourceFiles)) {
-                $resource = $this->importableResourceFiles[$path];
+            $resource =
+                $this->importableResourceFiles[$path]
+                ?? $this->getResourceFromAbsolutePath($path)
+            ;
 
+            if ($resource) {
                 $this->publication->addSource($resource);
 
                 continue;
             }
 
-            foreach ($this->sourceThemelets as $themelet) {
-                if (!Path::isBasePath($themelet->getAbsolutePath(), $path)) {
-                    continue;
-                }
+            throw new UnexpectedValueException('Unexpected Resource `' . $path . '` used for SCSS import');
+        }
+    }
 
-                foreach ($themelet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
-                    foreach ($namespacePaths as $namespacePath) {
-                        if (!Path::isBasePath($namespacePath, $path)) {
-                            continue;
-                        }
+    private function getResourceFromAbsolutePath(string $path): ?Resource
+    {
+        foreach ($this->sourceThemelets as $themelet) {
+            if (!Path::isBasePath($themelet->getAbsolutePath(), $path)) {
+                continue;
+            }
 
-                        $this->publication->addSource(
-                            $themelet->getExistingResource(
-                                ThemeletLocator::fromNamespaceRelativeIdentifier(
-                                    $namespace,
-                                    Path::makeRelative($path, $namespacePath)
-                                )
-                            )
-                        );
+            foreach ($themelet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
+                foreach ($namespacePaths as $namespacePath) {
+                    if (!Path::isBasePath($namespacePath, $path)) {
+                        continue;
+                    }
 
-                        continue 4;
+                    $locator = ThemeletLocator::fromNamespaceRelativeIdentifier(
+                        $namespace,
+                        Path::makeRelative($path, $namespacePath)
+                    );
+
+                    $resource = $themelet->getResource($locator);
+
+                    if ($resource === null) {
+                        continue 3; // continue search in other Themelets
+                    } else {
+                        return $resource;
                     }
                 }
             }
-
-            throw new Exception('Unexpected Resource `' . $path . '` used for SCSS import');
         }
+
+        return null;
     }
 
     /**
