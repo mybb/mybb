@@ -14,25 +14,32 @@ use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\Filesystem\Path;
 use UnexpectedValueException;
 
+/**
+ * Converts Sass/SCSS to CSS.
+ */
 class ScssProcessor extends Processor
 {
     /**
+     * A cache of used, non-resolved Themelets.
+     *
+     * @see self::getResourceFromAbsolutePath()
+     *
      * @var ThemeletInterface[]
      */
     protected array $sourceThemelets = [];
 
     /**
-     * Use a temporary directory with resolved Resource files.
+     * Whether to use a temporary directory with resolved Resource files.
      *
      * As ScssPhp prioritizes relative paths over provided import paths/functions,
-     * the files may be copied - according to inheritance - into a single location first.
+     * the files are copied - according to inheritance - into a single location first when necessary.
      */
     private bool $useResolvedDirectory = false;
 
     /**
      * A mapping of absolute paths to importable Resources.
      *
-     * @see $useResolvedDirectory
+     * @see self::$useResolvedDirectory
      *
      * @var array<string, Resource>
      */
@@ -42,9 +49,9 @@ class ScssProcessor extends Processor
     {
         $importableResources = $this->getImportableResources();
 
-        $originThemelets = $this->getResourceThemelets($importableResources);
+        $resolvedThemeletIdentifiers = $this->getResolvedThemeletIdentifiers($importableResources);
 
-        if (count($originThemelets) > 1) {
+        if (count($resolvedThemeletIdentifiers) > 1) {
             $this->useResolvedDirectory = true;
 
             $this->prepareImportableResourceFiles($importableResources);
@@ -75,18 +82,27 @@ class ScssProcessor extends Processor
         return $compiled->getCss();
     }
 
+    /**
+     * Returns Resources that can be included as sources using source code declarations.
+     *
+     * @return array<string, Resource>
+     */
     private function getImportableResources(): array
     {
         return $this->asset->getThemelet()->getResources(
-            [$this->asset->getResource()->getNamespace()],
-            [$this->asset->getResource()->getType()],
+            namespaces: [$this->asset->getResource()->getNamespace()],
+            resourceTypes: [$this->asset->getResource()->getType()],
         );
     }
 
     /**
+     * Returns identifiers of Themelets to which at least one given Resource resolves to.
+     *
      * @param Resource[] $resources
+     *
+     * @return string[]
      */
-    private function getResourceThemelets(array $resources): array
+    private function getResolvedThemeletIdentifiers(array $resources): array
     {
         return array_values(
             array_unique(
@@ -106,6 +122,8 @@ class ScssProcessor extends Processor
     }
 
     /**
+     * Returns the absolute path to a Resource referenced in a source code declaration.
+     *
      * @see https://scssphp.github.io/scssphp/docs/extending/importers.html
      */
     private function getImportAbsolutePath(string $path): ?string
@@ -139,7 +157,10 @@ class ScssProcessor extends Processor
     }
 
     /**
-     * @see Compiler::resolveImportPath
+     * Returns the paths to check when importing files using source code declarations.
+     *
+     * @see Compiler::resolveImportPath()
+     *
      * @return string[]
      */
     private function getImportCandidatePaths(string $path): array
@@ -165,7 +186,11 @@ class ScssProcessor extends Processor
     }
 
     /**
+     * Registers Resources as contributing to the resulting Asset using the Resources' absolute paths.
+     *
      * @param string[] $paths
+     *
+     * @throws UnexpectedValueException If no matching Resource can be found for a given path.
      */
     private function addSourcesFromAbsolutePaths(array $paths): void
     {
@@ -187,6 +212,9 @@ class ScssProcessor extends Processor
         }
     }
 
+    /**
+     * Returns the Resource found at the given absolute path.
+     */
     private function getResourceFromAbsolutePath(string $path): ?Resource
     {
         foreach ($this->sourceThemelets as $themelet) {
@@ -220,7 +248,11 @@ class ScssProcessor extends Processor
     }
 
     /**
+     * Copies the given Resources to a single directory.
+     *
      * @param Resource[] $resources
+     *
+     * @see self::$useResolvedDirectory
      */
     private function prepareImportableResourceFiles(array $resources): void
     {
@@ -247,6 +279,11 @@ class ScssProcessor extends Processor
         }
     }
 
+    /**
+     * Returns the file path to the given Resource in the resolved Resources directory.
+     *
+     * @see self::$useResolvedDirectory
+     */
     private function getImportableResourceAbsolutePath(Resource $resource): string
     {
         return
@@ -256,6 +293,11 @@ class ScssProcessor extends Processor
         ;
     }
 
+    /**
+     * Returns the path to the resolved Resources directory.
+     *
+     * @see self::$useResolvedDirectory
+     */
     private function getImportableResourceDirectory(): string
     {
         return
