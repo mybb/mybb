@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace MyBB\Maintenance;
 
+use UnexpectedValueException;
+
 function getLatestInstalledUpgradeNumber(): ?string
 {
     $cache = getCache();
@@ -84,6 +86,10 @@ function getUpgradeScripts(): array
 
         while (($file = readdir($dh)) !== false) {
             if (preg_match('#upgrade(\d+(p\d+)*).php$#i', $file, $match)) {
+                if (!ctype_alnum($match[1])) {
+                    throw new UnexpectedValueException();
+                }
+
                 $entries[$match[1]] = $file;
             }
         }
@@ -115,6 +121,10 @@ function loadUpgradeScriptsData(): array
             $upgrade_detail = [];
 
             $definedFunctionsBefore = get_defined_functions()['user'];
+
+            if (!ctype_alnum((string)$upgradeScriptNumber)) {
+                throw new UnexpectedValueException();
+            }
 
             require $directoryPath . '/' . 'upgrade' . $upgradeScriptNumber . '.php';
 
