@@ -85,7 +85,7 @@ function getUpgradeScripts(): array
         $dh = opendir($directoryPath);
 
         while (($file = readdir($dh)) !== false) {
-            if (preg_match('#upgrade(\d+(p\d+)*).php$#i', $file, $match)) {
+            if (preg_match('#upgrade(\d+(p\d+)?).php$#i', $file, $match)) {
                 if (!ctype_alnum($match[1])) {
                     throw new UnexpectedValueException();
                 }
