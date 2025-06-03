@@ -27,4 +27,7 @@ function upgrade60_dbchanges()
 		$db->drop_column('users', 'icq');
 	}
 	$db->delete_query("settings", "name='allowicqfield'");
+
+	$db->modify_column("posts", "username", "varchar(120)", "set", "''");
+	$db->modify_column("threads", "username", "varchar(120)", "set", "''");
 }
