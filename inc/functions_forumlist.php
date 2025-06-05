@@ -309,10 +309,6 @@ SQL;
 					$forum['last_post']['profile_link'] = build_profile_link($forum['last_post']['lastposter'], $forum['last_post']['lastposteruid']);
 					$forum['last_post']['link'] = get_thread_link($forum['last_post']['lastposttid'], 0, "lastpost");
 					$forum['last_post']['subject'] = $forum['last_post']['full_subject'] = $parser->parse_badwords($forum['last_post']['lastpostsubject']);
-					if(my_strlen($forum['last_post']['subject']) > 25)
-					{
-						$forum['last_post']['subject'] = my_substr($forum['last_post']['subject'], 0, 25)."...";
-					}
 
 					// Last poster avatar
 					$forum['last_post']['last_poster_avatar_url'] = $forum['avatar'];

@@ -117,6 +117,9 @@
         margin: 0;
         font-size: 0.9em;
         font-weight: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     &__date,

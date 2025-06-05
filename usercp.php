@@ -1273,11 +1273,6 @@ if($mybb->input['action'] == 'forumsubscriptions')
 			}
 
 			$lastpost_subject = $forum['lastpostsubject'];
-			if(my_strlen($lastpost_subject) > 25)
-			{
-				$lastpost_subject = my_substr($lastpost_subject, 0, 25)."...";
-			}
-
 			$forum['last_post'] = [
 				'link' => get_thread_link($forum['lastposttid'], 0, 'lastpost'),
 				'full_subject' => $forum['lastpostsubject'],

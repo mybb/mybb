@@ -3996,10 +3996,6 @@ if(!$mybb->input['action'])
 				$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 				$post['link'] = get_post_link($post['pid'], $post['tid']);
 				$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
-				if(my_strlen($post['subject']) > 25)
-				{
-					$post['subject'] = my_substr($post['subject'], 0, 25)."...";
-				}
 				$post['subject'] = htmlspecialchars_uni($post['subject']);
 				$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
 				$unapproved_posts = my_number_format($unapproved_posts);
@@ -4020,10 +4016,6 @@ if(!$mybb->input['action'])
 				$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 				$thread['link'] = get_thread_link($thread['tid']);
 				$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
-				if(my_strlen($thread['subject']) > 25)
-				{
-					$post['subject'] = my_substr($thread['subject'], 0, 25)."...";
-				}
 				$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 				$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
 				$unapproved_threads = my_number_format($unapproved_threads);

@@ -20,6 +20,9 @@
     &__latest {
         font-size: 0.9em;
         color: $alt-font-color-2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         @include bp-medium {
             width: 45%;
@@ -192,6 +195,9 @@
         font-size: 1em;
         font-weight: normal;
         color: $alt-font-color-1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     &__author,
