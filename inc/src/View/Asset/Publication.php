@@ -71,6 +71,7 @@ class Publication
                     (
                         !$resource->exists() ||
                         (
+                            $resource instanceof HierarchicalResource &&
                             $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
                         )
                     )
