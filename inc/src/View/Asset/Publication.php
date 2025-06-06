@@ -11,6 +11,7 @@ use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\HierarchicalResource;
 use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
@@ -40,9 +41,9 @@ class Publication
     /**
      * @note May result in false negative for source files modified successively within 1 second.
      */
-    public static function needsUpdate(ThemeletAsset $asset): bool
+    public function needsUpdate(): bool
     {
-        $path = $asset->getAbsolutePath();
+        $path = $this->asset->getAbsolutePath();
 
         $publishedFileTime = filemtime($path);
 
@@ -50,26 +51,39 @@ class Publication
             return true;
         }
 
-        $sourceResources = self::getPublishedAssetResources($asset);
+        if (
+            $this->optimization->getDirective('publication.resolutionValidation') ||
+            $this->optimization->getDirective('publication.sourceValidation')
+        ) {
+            $sourceResources = self::getPublishedAssetResources($this->asset);
 
-        if ($sourceResources === null) {
-            return true;
-        }
-
-        foreach ($sourceResources as $sourceResource) {
-            $resource = $asset->getThemelet()->getResource(
-                $asset->getLocator()->getSibling($sourceResource['subPath'])
-            );
-
-            if (
-                !$resource->exists() ||
-                $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
-            ) {
-                $resource->resolve();
-
+            if ($sourceResources === null) {
                 return true;
-            } elseif ($resource->getModificationTime() > $publishedFileTime) {
-                return true;
+            }
+
+            foreach ($sourceResources as $sourceResource) {
+                $resource = $this->asset->getThemelet()->getResource(
+                    $this->asset->getLocator()->getSibling($sourceResource['subPath'])
+                );
+
+                if (
+                    $this->optimization->getDirective('publication.resolutionValidation') &&
+                    (
+                        !$resource->exists() ||
+                        (
+                            $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
+                        )
+                    )
+                ) {
+                    $resource->resolve();
+
+                    return true;
+                } elseif (
+                    $this->optimization->getDirective('publication.sourceValidation') &&
+                    $resource->getModificationTime() > $publishedFileTime
+                ) {
+                    return true;
+                }
             }
         }
 
@@ -149,6 +163,7 @@ class Publication
     public function __construct(
         private readonly ThemeletAsset $asset,
         public readonly Filesystem $filesystem,
+        public readonly Optimization $optimization,
         private array $processors = [],
         public readonly ?Stopwatch $stopwatch = null,
     )
@@ -162,7 +177,7 @@ class Publication
 
     public function publish(bool $force = false): bool
     {
-        if (!$force && !static::needsUpdate($this->asset)) {
+        if (!$force && !$this->needsUpdate()) {
             return false;
         }
 
@@ -186,7 +201,7 @@ class Publication
         ) {
             if (
                 !$wasLocked ||
-                ($force || static::needsUpdate($this->asset))
+                ($force || $this->needsUpdate())
             ) {
                 $stopwatchPeriod = $this->stopwatch?->start(
                     $this->asset->getLocator()->getString(),
