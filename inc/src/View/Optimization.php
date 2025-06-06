@@ -37,10 +37,10 @@ enum Optimization: int
         $level = $this->value;
 
         return match ($name) {
-            'twig.autoReload' => $level <= self::WATCH->value,
             'hierarchy.cache' => $level > self::WATCH->value,
             'hierarchy.cacheValidation' => $level < self::PERFORMANCE->value,
             'hierarchy.cacheValidationType' => FileStamp::TYPE_MODIFICATION_TIME,
+
             'publication.publishMode' => match (true) {
                 $level <= self::NONE->value => PublishableThemelet::PUBLISH_ALWAYS,
                 $level >= self::PERFORMANCE->value => PublishableThemelet::PUBLISH_NEVER,
@@ -50,6 +50,8 @@ enum Optimization: int
             'publication.resolutionValidation' => $level <= self::BALANCED->value,
             'publication.sourceValidation' => $level <= self::WATCH->value,
             'publication.runtimeCache' => true,
+
+            'twig.autoReload' => $level <= self::WATCH->value,
         };
     }
 }
