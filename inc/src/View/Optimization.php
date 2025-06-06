@@ -46,6 +46,10 @@ enum Optimization: int
                 $level >= self::PERFORMANCE->value => PublishableThemelet::PUBLISH_NEVER,
                 default => PublishableThemelet::PUBLISH_AUTO,
             },
+            'publication.all' => $level <= self::WATCH->value,
+            'publication.resolutionValidation' => $level <= self::BALANCED->value,
+            'publication.sourceValidation' => $level <= self::WATCH->value,
+            'publication.runtimeCache' => true,
         };
     }
 }
