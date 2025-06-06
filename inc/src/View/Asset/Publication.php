@@ -106,13 +106,15 @@ class Publication
     {
         $assets = [];
 
-        foreach ($themelet->getAssetPublicationData() as $assetLocatorString => $assetData) {
-            $assetSourceSignatures = $assetData['sources'] ?? [];
+        foreach ($themelet->getAssetPublicationData() as $namespaceAssetData) {
+            foreach ($namespaceAssetData as $assetLocatorString => $assetData) {
+                $assetSourceSignatures = $assetData['sources'] ?? [];
 
-            if (in_array(self::getSourceSignature($resource), $assetSourceSignatures)) {
-                $assetLocator = ThemeletLocator::fromString($assetLocatorString);
+                if (in_array(self::getSourceSignature($resource), $assetSourceSignatures)) {
+                    $assetLocator = ThemeletLocator::fromString($assetLocatorString);
 
-                $assets[$assetLocatorString] = new ThemeletAsset($assetLocator, $themelet);
+                    $assets[$assetLocatorString] = new ThemeletAsset($assetLocator, $themelet);
+                }
             }
         }
 
