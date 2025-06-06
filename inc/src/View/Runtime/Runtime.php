@@ -12,6 +12,7 @@ use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
 use MyBB\View\Themelet\Decorator\PublishableThemelet;
 use MyBB\View\Themelet\Decorator\ThemeletDecorator;
 use MyBB\View\Themelet\ThemeletInterface;
+use SplObjectStorage;
 
 /**
  * Environment information and operations related to interface handling.
@@ -42,6 +43,10 @@ class Runtime
         $this->themelet->setBaseThemelets(
             $this->getPluginThemelets($mybb)
         );
+
+
+        /* @see AssetManagementTrait */
+        $this->assetProperties = new SplObjectStorage();
     }
 
     /**

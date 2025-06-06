@@ -54,8 +54,15 @@ class PublishableThemelet extends ThemeletDecorator
      */
     private array $assetPublicationData = [];
 
+    /**
+     * Asset objects on which `Publication::publish()` was already called.
+     *
+     * @var array<string, ThemeletAsset>
+     */
+    private array $publishedAssets = [];
+
     public function __construct(
-        Optimization $optimization,
+        private readonly Optimization $optimization,
     )
     {
         $managedValueRepository = $this->getManagedValueRepository();
@@ -95,17 +102,26 @@ class PublishableThemelet extends ThemeletDecorator
         ?ResourceType $type = null,
     ): Asset
     {
-        $asset = $this->getAsset(
-            locator: $locator,
-            declarationNamespace: $declarationNamespace,
-            type: $type,
-        );
+        if ($locator instanceof ThemeletLocator) {
+            $locatorString = $locator->getString();
 
-        if ($asset instanceof ThemeletAsset) {
-            $this->publishThemeletAsset($asset);
+            if (
+                $this->optimization->getDirective('publication.runtimeCache') === false ||
+                !array_key_exists($locatorString, $this->publishedAssets)
+            ) {
+                $asset = new ThemeletAsset($locator, $this);
+
+                $this->publishThemeletAsset($asset);
+            }
+
+            return $this->publishedAssets[$locatorString];
+        } else {
+            return $this->getAsset(
+                locator: $locator,
+                declarationNamespace: $declarationNamespace,
+                type: $type,
+            );
         }
-
-        return $asset;
     }
 
     public function publishAssets(bool $force = false): void
@@ -132,6 +148,8 @@ class PublishableThemelet extends ThemeletDecorator
             $publication->publish($force || $this->publishMode === self::PUBLISH_ALWAYS);
 
             copy_file_to_cdn($asset->getAbsolutePath());
+
+            $this->publishedAssets[$asset->getLocator()->getString()] = $asset;
         }
     }
 
