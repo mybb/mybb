@@ -7,6 +7,7 @@ namespace MyBB\View\Runtime;
 use MyBB;
 use MyBB\Extensions\Plugin;
 use MyBB\Extensions\Theme;
+use MyBB\View\Optimization;
 use MyBB\View\Themelet\Decorator\CompositeThemelet;
 use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
 use MyBB\View\Themelet\Decorator\PublishableThemelet;
@@ -23,14 +24,14 @@ class Runtime
     use DataSharingTrait;
     use NamespacesTrait;
 
-    public Theme $theme;
-
     public ThemeletInterface $themelet;
 
-    public function __construct(MyBB $mybb, Theme $theme)
+    public function __construct(
+        private readonly MyBB $mybb,
+        private readonly Theme $theme,
+        private readonly Optimization $optimization,
+    )
     {
-        $this->theme = $theme;
-
         $this->themelet = ThemeletDecorator::decorate(
             $this->theme->getThemelet(),
             [
@@ -47,6 +48,11 @@ class Runtime
 
         /* @see AssetManagementTrait */
         $this->assetProperties = new SplObjectStorage();
+
+
+        if ($this->optimization->getDirective('publication.all')) {
+            $this->themelet->publishAssets();
+        }
     }
 
     /**
