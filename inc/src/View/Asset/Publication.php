@@ -39,56 +39,21 @@ class Publication
     private array $sources = [];
 
     /**
-     * @note May result in false negative for source files modified successively within 1 second.
+     * @param Processor[] $processors
      */
-    public function needsUpdate(): bool
+    public function __construct(
+        private readonly ThemeletAsset $asset,
+        public readonly Filesystem $filesystem,
+        public readonly Optimization $optimization,
+        private array $processors = [],
+        public readonly ?Stopwatch $stopwatch = null,
+    )
     {
-        $path = $this->asset->getAbsolutePath();
+        $baseProcessor = self::getBaseProcessor($asset);
 
-        $publishedFileTime = filemtime($path);
-
-        if ($publishedFileTime === false) {
-            return true;
+        if ($baseProcessor) {
+            array_unshift($this->processors, $baseProcessor);
         }
-
-        if (
-            $this->optimization->getDirective('publication.resolutionValidation') ||
-            $this->optimization->getDirective('publication.sourceValidation')
-        ) {
-            $sourceResources = self::getPublishedAssetResources($this->asset);
-
-            if ($sourceResources === null) {
-                return true;
-            }
-
-            foreach ($sourceResources as $sourceResource) {
-                $resource = $this->asset->getThemelet()->getResource(
-                    $this->asset->getLocator()->getSibling($sourceResource['subPath'])
-                );
-
-                if (
-                    $this->optimization->getDirective('publication.resolutionValidation') &&
-                    (
-                        !$resource->exists() ||
-                        (
-                            $resource instanceof HierarchicalResource &&
-                            $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
-                        )
-                    )
-                ) {
-                    $resource->resolve();
-
-                    return true;
-                } elseif (
-                    $this->optimization->getDirective('publication.sourceValidation') &&
-                    $resource->getModificationTime() > $publishedFileTime
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -160,22 +125,56 @@ class Publication
     }
 
     /**
-     * @param ThemeletAsset $asset
-     * @param Processor[] $processors
+     * @note May result in false negative for source files modified successively within 1 second.
      */
-    public function __construct(
-        private readonly ThemeletAsset $asset,
-        public readonly Filesystem $filesystem,
-        public readonly Optimization $optimization,
-        private array $processors = [],
-        public readonly ?Stopwatch $stopwatch = null,
-    )
+    public function needsUpdate(): bool
     {
-        $baseProcessor = self::getBaseProcessor($asset);
+        $path = $this->asset->getAbsolutePath();
 
-        if ($baseProcessor) {
-            array_unshift($this->processors, $baseProcessor);
+        $publishedFileTime = filemtime($path);
+
+        if ($publishedFileTime === false) {
+            return true;
         }
+
+        if (
+            $this->optimization->getDirective('publication.resolutionValidation') ||
+            $this->optimization->getDirective('publication.sourceValidation')
+        ) {
+            $sourceResources = self::getPublishedAssetResources($this->asset);
+
+            if ($sourceResources === null) {
+                return true;
+            }
+
+            foreach ($sourceResources as $sourceResource) {
+                $resource = $this->asset->getThemelet()->getResource(
+                    $this->asset->getLocator()->getSibling($sourceResource['subPath'])
+                );
+
+                if (
+                    $this->optimization->getDirective('publication.resolutionValidation') &&
+                    (
+                        !$resource->exists() ||
+                        (
+                            $resource instanceof HierarchicalResource &&
+                            $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
+                        )
+                    )
+                ) {
+                    $resource->resolve();
+
+                    return true;
+                } elseif (
+                    $this->optimization->getDirective('publication.sourceValidation') &&
+                    $resource->getModificationTime() > $publishedFileTime
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function publish(bool $force = false): bool
