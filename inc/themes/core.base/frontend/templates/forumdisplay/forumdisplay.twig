@@ -21,8 +21,6 @@
 {% endblock jscripts %}
 
 {% block body %}
-    {% set displayRating = (mybb.settings.allowthreadratings and foruminfo.allowtratings and fpermissions.canviewthreads) ? true : false %}
-
     <div class="page-content">
         <header class="page-header">
             <h1 class="title title--page">{{ foruminfo.name }}</h1>
@@ -133,29 +131,6 @@
                         </span>
                     {% endif %}
             	</div>
-
-                {% if displayRating %}
-                    {#<td class="tcat" align="center" width="80">
-                        <span class="smalltext">
-                            <strong>
-                                <a href="{{ sorting.url }}&amp;sortby=rating&amp;order=desc">{{ lang.rating }}</a>
-                                {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
-                            </strong>
-                        </span>
-                        {{ asset('jscripts/rating.js', static=true, attributes={defer}) }}
-                        <script type="text/javascript">
-                        <!--
-                            lang.stars = [];
-                            lang.stars[1] = "{{ lang.one_star }}";
-                            lang.stars[2] = "{{ lang.two_stars }}";
-                            lang.stars[3] = "{{ lang.three_stars }}";
-                            lang.stars[4] = "{{ lang.four_stars }}";
-                            lang.stars[5] = "{{ lang.five_stars }}";
-                            lang.ratings_update_error = "{{ lang.ratings_update_error }}";
-                        // -->
-                        </script>
-                    </td> #}
-                {% endif %}
 
             {# Select all #}
             {% if modpermissions.ismod and threadcount > perpage %}
