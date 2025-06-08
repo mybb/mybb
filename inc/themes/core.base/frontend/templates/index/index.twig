@@ -32,7 +32,7 @@
                         {% if user.invisible == 1 and (mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid) %}*{% endif %}
                     {% endfor %}
                 </p>
-                {% if mybb.settings.showgroupslegend %}
+                {% if mybb.settings.showgroupslegend and groups %}
                 <hr>
                 <p class="board-statistics__body board-statistics__body--groups">
                 {% for group in groups %}
