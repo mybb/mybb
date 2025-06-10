@@ -174,7 +174,6 @@ $valid = array(
 	'forumdisplay.php',
 	'newthread.php',
 	'newreply.php',
-	'ratethread.php',
 	'editpost.php',
 	'polls.php',
 	'sendthread.php',
