@@ -13,7 +13,7 @@ class Plugin extends Extension implements ViewExtensionInterface
 
     public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/plugins/';
 
-    public const PACKAGE_RELATIVE_THEMELET_PATH = 'view';
+    public const PACKAGE_RELATIVE_THEMELET_PATH = '/view';
 
     public const NAMESPACE_TYPE_ACCESS = [
         NamespaceType::EXTENSION_OWN,
