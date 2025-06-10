@@ -70,6 +70,12 @@ class Runtime
             ],
         );
 
+        foreach ($pluginThemelets as $pluginThemelet) {
+            foreach ($pluginThemelet->getNamespaces() as $namespace) {
+                $themelet->applyNamespace($namespace);
+            }
+        }
+
 
         return $themelet;
     }
