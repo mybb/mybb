@@ -83,11 +83,11 @@ class Runtime
     /**
      * @return ThemeletInterface[]
      */
-    private function getPluginThemelets(MyBB $mybb): array
+    private function getPluginThemelets(): array
     {
         return array_map(
             fn (string $codename) => Plugin::get($codename)->getThemelet(),
-            $mybb->cache?->read('plugins')['active'] ?? [],
+            $this->mybb->cache?->read('plugins')['active'] ?? [],
         );
     }
 }
