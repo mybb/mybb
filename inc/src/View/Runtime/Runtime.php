@@ -24,7 +24,7 @@ class Runtime
     use DataSharingTrait;
     use NamespacesTrait;
 
-    public ThemeletInterface $themelet;
+    public readonly ThemeletInterface $themelet;
 
     public function __construct(
         private readonly MyBB $mybb,
@@ -32,27 +32,46 @@ class Runtime
         private readonly Optimization $optimization,
     )
     {
-        $this->themelet = ThemeletDecorator::decorate(
-            $this->theme->getThemelet(),
+        $this->themelet = $this->getDecoratedThemelet();
+
+        /* @see AssetManagementTrait */
+        $this->assetProperties = new SplObjectStorage();
+
+        if ($this->optimization->getDirective('publication.all')) {
+            $this->themelet->publishAssets();
+        }
+    }
+
+    private function getDecoratedThemelet(): ThemeletInterface
+    {
+        $themelet = $this->theme->getThemelet();
+
+        // HierarchicalThemelet
+
+        $themelet = ThemeletDecorator::decorate(
+            $themelet,
             [
                 HierarchicalThemelet::class,
+            ],
+        );
+
+        $pluginThemelets = $this->getPluginThemelets();
+
+        $themelet->setBaseThemelets($pluginThemelets);
+
+
+        // PublishableThemelet, CompositeThemelet
+
+        $themelet = ThemeletDecorator::decorate(
+            $themelet,
+            [
                 PublishableThemelet::class,
                 CompositeThemelet::class,
             ],
         );
 
-        $this->themelet->setBaseThemelets(
-            $this->getPluginThemelets($mybb)
-        );
 
-
-        /* @see AssetManagementTrait */
-        $this->assetProperties = new SplObjectStorage();
-
-
-        if ($this->optimization->getDirective('publication.all')) {
-            $this->themelet->publishAssets();
-        }
+        return $themelet;
     }
 
     /**
