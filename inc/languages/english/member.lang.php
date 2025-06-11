@@ -60,7 +60,6 @@ $l['tpd_percent_total'] = "{1} threads per day | {2} percent of total threads";
 $l['find_posts'] = "Find All Posts";
 $l['find_threads'] = "Find All Threads";
 $l['members_referred'] = "Members Referred";
-$l['rating'] = "Rating";
 $l['users_contact_details'] = "{1}'s Contact Details";
 $l['homepage'] = "Homepage";
 $l['pm'] = "Private Message";
