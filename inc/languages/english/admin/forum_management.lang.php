@@ -196,7 +196,6 @@ $l['sort_by_subject'] = "Thread subject";
 $l['sort_by_lastpost'] = "Last post time";
 $l['sort_by_starter'] = "Thread starter";
 $l['sort_by_started'] = "Thread creation time";
-$l['sort_by_rating'] = "Thread rating";
 $l['sort_by_replies'] = "Number of replies";
 $l['sort_by_views'] = "Number of views";
 
@@ -210,7 +209,6 @@ $l['allow_smilies'] = "Yes, allow smilies in posts";
 $l['allow_img_code'] = "Yes, allow [img] code in posts (requires MyCode to be turned on)";
 $l['allow_video_code'] = "Yes, allow [video] code in posts (requires MyCode to be turned on)";
 $l['allow_post_icons'] = "Yes, allow post icons to be chosen for posts";
-$l['allow_thread_ratings'] = "Yes, allow threads to be rated";
 $l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
 $l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
 $l['use_threadcounts'] = "Yes, threads in this forum should count towards user thread counts";
@@ -244,7 +242,7 @@ $l['error_invalid_source_forum'] = "Invalid source forum.";
 $l['error_invalid_destination_forum'] = "Invalid destination forum.";
 
 $l['group_viewing'] = "Viewing";
-$l['group_posting_rating'] = "Posting / Rating";
+$l['group_posting'] = "Posting";
 $l['group_editing'] = "Editing";
 $l['group_moderate'] = "Moderation";
 $l['group_polls'] = "Polls";
@@ -255,11 +253,10 @@ $l['viewing_field_canviewthreads'] = "Can view threads within forum?";
 $l['viewing_field_canonlyviewownthreads'] = "Can only view own threads?";
 $l['viewing_field_candlattachments'] = "Can download attachments?";
 
-$l['posting_rating_field_canpostthreads'] = "Can post threads?";
-$l['posting_rating_field_canpostreplys'] = "Can post replies?";
-$l['posting_rating_field_canonlyreplyownthreads'] = "Can only reply to own threads?";
-$l['posting_rating_field_canpostattachments'] = "Can post attachments?";
-$l['posting_rating_field_canratethreads'] = "Can rate threads?";
+$l['posting_field_canpostthreads'] = "Can post threads?";
+$l['posting_field_canpostreplys'] = "Can post replies?";
+$l['posting_field_canonlyreplyownthreads'] = "Can only reply to own threads?";
+$l['posting_field_canpostattachments'] = "Can post attachments?";
 
 $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";

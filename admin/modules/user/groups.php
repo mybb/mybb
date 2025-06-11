@@ -1125,7 +1125,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->get_input('canratethreads', MyBB::INPUT_INT))),
 		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_numeric_field('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50', 'min' => 0))
 	);
-	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
+	$form_container->output_row($lang->posting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 
 	$moderator_options = array(
 		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->get_input('modposts', MyBB::INPUT_INT))),

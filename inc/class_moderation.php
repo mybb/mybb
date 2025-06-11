@@ -290,7 +290,6 @@ class Moderation
 		$db->delete_query("polls", "tid='$tid'");
 		$db->delete_query("pollvotes", "pid='".$thread['poll']."'");
 		$db->delete_query("threadsread", "tid='$tid'");
-		$db->delete_query("threadratings", "tid='$tid'");
 
 		$updated_counters = array(
 			"posts" => "-{$num_approved_posts}",
@@ -1506,14 +1505,6 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 		);
-
-		// Update the thread ratings
-		$new_numrating = $thread['numratings'] + $mergethread['numratings'];
-		$new_threadrating = $thread['totalratings'] + $mergethread['totalratings'];
-
-		$threadarray["numratings"] = $new_numrating;
-		$threadarray["totalratings"] = $new_threadrating;
-		$db->update_query("threads", $threadarray, "tid = '{$tid}'");
 
 		// Check if we have a thread subscription already for our new thread
 		$subscriptions = array();

@@ -19,8 +19,6 @@ $l['recount_private_messages'] = "Recount Private Messages";
 $l['recount_private_messages_desc'] = "This will recount the private message count for each user.";
 $l['recount_referrals'] = "Recount Referrals";
 $l['recount_referrals_desc'] = "This will recount the referral count of each user.";
-$l['recount_thread_ratings'] = "Recount Thread Ratings";
-$l['recount_thread_ratings_desc'] = "This will recount the rating of each thread.";
 $l['rebuild_forum_counters'] = "Rebuild Forum Counters";
 $l['rebuild_forum_counters_desc'] = "When this is run, the post/thread counters and last post of each forum will be updated to reflect the correct values.";
 $l['rebuild_thread_counters'] = "Rebuild Thread Counters";
@@ -49,4 +47,3 @@ $l['success_rebuilt_thread_ratings'] = "The thread ratings have been recounted s
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
 $l['automatically_redirecting'] = "Automatically Redirecting&hellip;";
-

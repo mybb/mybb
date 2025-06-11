@@ -733,11 +733,11 @@ $(function() {
 			'canonlyviewownthreads' => 'viewing',
 			'candlattachments' => 'viewing',
 
-			'canpostthreads' => 'posting_rating',
-			'canpostreplys' => 'posting_rating',
-			'canonlyreplyownthreads' => 'posting_rating',
-			'canpostattachments' => 'posting_rating',
-			'canratethreads' => 'posting_rating',
+			'canpostthreads' => 'posting',
+			'canpostreplys' => 'posting',
+			'canonlyreplyownthreads' => 'posting',
+			'canpostattachments' => 'posting',
+			'canratethreads' => 'posting',
 
 			'caneditposts' => 'editing',
 			'candeleteposts' => 'editing',
@@ -882,7 +882,6 @@ if($mybb->input['action'] == "add")
 				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
 				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
 				"allowpicons" => $mybb->get_input('allowpicons', MyBB::INPUT_INT),
-				"allowtratings" => $mybb->get_input('allowtratings', MyBB::INPUT_INT),
 				"usepostcounts" => $mybb->get_input('usepostcounts', MyBB::INPUT_INT),
 				"usethreadcounts" => $mybb->get_input('usethreadcounts', MyBB::INPUT_INT),
 				"requireprefix" => $mybb->get_input('requireprefix', MyBB::INPUT_INT),
@@ -998,7 +997,6 @@ if($mybb->input['action'] == "add")
 	$forum_data['allowimgcode'] = 1;
 	$forum_data['allowvideocode'] = 1;
 	$forum_data['allowpicons'] = 1;
-	$forum_data['allowtratings'] = 1;
 	$forum_data['showinjump'] = 1;
 	$forum_data['usepostcounts'] = 1;
 	$forum_data['usethreadcounts'] = 1;
@@ -1111,7 +1109,6 @@ if($mybb->input['action'] == "add")
 		"lastpost" => $lang->sort_by_lastpost,
 		"starter" => $lang->sort_by_starter,
 		"started" => $lang->sort_by_started,
-		"rating" => $lang->sort_by_rating,
 		"replies" => $lang->sort_by_replies,
 		"views" => $lang->sort_by_views,
 	);
@@ -1137,7 +1134,6 @@ if($mybb->input['action'] == "add")
 		$form->generate_check_box('allowimgcode', 1, $lang->allow_img_code, array('checked' => $forum_data['allowimgcode'], 'id' => 'allowimgcode')),
 		$form->generate_check_box('allowvideocode', 1, $lang->allow_video_code, array('checked' => $forum_data['allowvideocode'], 'id' => 'allowvideocode')),
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
-		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
 		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
 		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts')),
@@ -1419,7 +1415,6 @@ if($mybb->input['action'] == "edit")
 				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
 				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
 				"allowpicons" => $mybb->get_input('allowpicons', MyBB::INPUT_INT),
-				"allowtratings" => $mybb->get_input('allowtratings', MyBB::INPUT_INT),
 				"usepostcounts" => $mybb->get_input('usepostcounts', MyBB::INPUT_INT),
 				"usethreadcounts" => $mybb->get_input('usethreadcounts', MyBB::INPUT_INT),
 				"requireprefix" => $mybb->get_input('requireprefix', MyBB::INPUT_INT),
@@ -1663,7 +1658,6 @@ if($mybb->input['action'] == "edit")
 		"lastpost" => $lang->sort_by_lastpost,
 		"starter" => $lang->sort_by_starter,
 		"started" => $lang->sort_by_started,
-		"rating" => $lang->sort_by_rating,
 		"replies" => $lang->sort_by_replies,
 		"views" => $lang->sort_by_views,
 	);
@@ -1689,7 +1683,6 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box('allowimgcode', 1, $lang->allow_img_code, array('checked' => $forum_data['allowimgcode'], 'id' => 'allowimgcode')),
 		$form->generate_check_box('allowvideocode', 1, $lang->allow_video_code, array('checked' => $forum_data['allowvideocode'], 'id' => 'allowvideocode')),
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
-		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
 		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
 		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts')),

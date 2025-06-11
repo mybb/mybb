@@ -685,39 +685,6 @@ if($mybb->input['action'] == "thread")
 		++$thread['views'];
 	}
 
-	// Work out the thread rating for this thread.
-	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
-	{
-		$rated = 0;
-		$lang->load("ratethread");
-		if($thread['numratings'] <= 0)
-		{
-			$thread['width'] = 0;
-			$thread['averagerating'] = 0;
-			$thread['numratings'] = 0;
-		}
-		else
-		{
-			$thread['averagerating'] = (float)round($thread['totalratings'] / $thread['numratings'], 2);
-			$thread['width'] = (int)round($thread['averagerating']) * 20;
-			$thread['numratings'] = (int)$thread['numratings'];
-		}
-
-		if($thread['numratings'])
-		{
-			// At least >someone< has rated this thread, was it me?
-			// Check if we have already voted on this thread - it won't show hover effect then.
-			$query = $db->simple_select("threadratings", "uid", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-			$rated = $db->fetch_field($query, 'uid');
-		}
-
-		$thread['not_rated'] = '';
-		if(!$rated)
-		{
-			$thread['not_rated'] = ' star_rating_notrated';
-		}
-	}
-
 	// Fetch the ignore list for the current user if they have one
 	$ignored_users = array();
 	if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")

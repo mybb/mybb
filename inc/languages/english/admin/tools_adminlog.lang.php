@@ -240,7 +240,6 @@ $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user r
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
 $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
 $l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
-$l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
 $l['admin_log_tools_spamlog_prune'] = "Pruned {4} spam logs older than {1} days";
 $l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} days with username {2}";
