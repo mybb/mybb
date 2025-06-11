@@ -2047,9 +2047,6 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
 
-			// Thread ratings
-			merge_thread_ratings($source_user['uid'], $destination_user['uid']);
-
 			// Banning
 			switch($db->type)
 			{
@@ -2961,7 +2958,6 @@ if($mybb->input['action'] == "inline_edit")
 							$db->delete_query("threadsubscriptions", "tid='$tid'");
 							$db->delete_query("polls", "tid='$tid'");
 							$db->delete_query("threadsread", "tid='$tid'");
-							$db->delete_query("threadratings", "tid='$tid'");
 						}
 					}
 
@@ -4451,6 +4447,7 @@ $("#username").select2({
  * @param int $source_uid
  * @param int $destination_uid
  */
+#[\Deprecated(message: "Thread rating feature is deprecated", since: "1.9.0")]
 function merge_thread_ratings($source_uid, $destination_uid)
 {
 	global $db;

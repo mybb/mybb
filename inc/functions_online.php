@@ -995,10 +995,6 @@ function build_friendly_wol_location($user_activity)
 		case "private":
 			$location_name = $lang->using_pmsystem;
 			break;
-		/* Ratethread functions */
-		case "ratethread":
-			$location_name = $lang->rating_thread;
-			break;
 		// report.php functions
 		case "report":
 			$location_name = $lang->reporting_post;

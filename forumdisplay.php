@@ -17,7 +17,7 @@ require_once MYBB_ROOT."inc/functions_forumlist.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
-$orderarrow = ['rating' => '', 'subject' => '', 'starter' => '', 'started' => '', 'replies' => '', 'views' => '', 'lastpost' => ''];
+$orderarrow = ['subject' => '', 'starter' => '', 'started' => '', 'replies' => '', 'views' => '', 'lastpost' => ''];
 
 // Load global language phrases
 $lang->load("forumdisplay");
@@ -357,8 +357,6 @@ else
 	$can_edit_titles = 0;
 }
 
-unset($rating);
-
 // Pick out some sorting options.
 // First, the date cut for the threads.
 $datecut = 9999;
@@ -473,11 +471,6 @@ switch($mybb->input['sortby'])
 		break;
 	case "starter":
 		$sortfield = "username";
-		break;
-	case "rating":
-		$t = "";
-		$sortfield = "averagerating";
-		$sortfield2 = ", t.totalratings DESC";
 		break;
 	case "started":
 		$sortfield = "dateline";
@@ -641,34 +634,8 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
-$ratingcol = $ratingsort = '';
-if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
-{
-	$lang->load("ratethread");
-
-	switch($db->type)
-	{
-		case "pgsql":
-			$ratingadd = "CASE WHEN t.numratings=0 THEN 0 ELSE t.totalratings/t.numratings::numeric END AS averagerating, ";
-			break;
-		default:
-			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
-	}
-
-	$lpbackground = "trow2";
-	$colspan = 7;
-}
-else
-{
-	if($sortfield == "averagerating")
-	{
-		$t = "t.";
-		$sortfield = "lastpost";
-	}
-	$ratingadd = '';
-	$lpbackground = "trow1";
-	$colspan = 6;
-}
+$lpbackground = "trow1";
+$colspan = 6;
 
 if($modpermissions['ismod'])
 {
@@ -760,7 +727,7 @@ if($fpermissions['canviewthreads'] != 0)
 
 	// Start Getting Threads
 	$query = $db->query("
-        SELECT t.*, {$ratingadd}t.username AS threadusername, u.username, u.avatar,
+        SELECT t.*, t.username AS threadusername, u.username, u.avatar,
           lastposter.avatar AS last_poster_avatar
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
@@ -770,16 +737,10 @@ if($fpermissions['canviewthreads'] != 0)
         LIMIT $start, $perpage
     ");
 
-	$ratings = false;
 	$moved_threads = [];
 	while($thread = $db->fetch_array($query))
 	{
 		$threadCache[$thread['tid']] = $thread;
-
-		if($thread['numratings'] > 0 && $ratings == false)
-		{
-			$ratings = true; // Looks for ratings in the forum
-		}
 
 		//todo thread icons need some work after introducing theme system. Currently missing $theme settings
 		//$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
@@ -811,19 +772,6 @@ if($fpermissions['canviewthreads'] != 0)
 	);
 
 	$plugins->run_hooks("forumdisplay_before_thread", $args);
-
-	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadCache) && $ratings == true)
-	{
-		// Check if we've rated threads on this page
-		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
-		$imp = implode(",", array_keys($threadCache));
-		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
-
-		while($rating = $db->fetch_array($query))
-		{
-			$threadCache[$rating['tid']]['rated'] = 1;
-		}
-	}
 }
 
 if(!empty($tids))
@@ -949,32 +897,6 @@ if(!empty($threadCache) && is_array($threadCache))
 		}
 
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
-
-		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0)
-		{
-			if($thread['moved'] != 0 || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1))
-			{
-				$thread['rating'] = 'moved';
-			}
-			else
-			{
-				$thread['numratings'] = (int)$thread['numratings'];
-				
-				if($thread['numratings'] == 0)
-				{
-					$thread['averagerating'] = 0;
-					$thread['width'] = 0;
-				}
-				else
-				{
-					$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-					$thread['width'] = (int)round($thread['averagerating']) * 20;
-				}
-
-				$thread['rating'] = 'normal';
-			}
-		}
-
 		$thread['pages'] = 0;
 		$thread['posts'] = $thread['replies'] + 1;
 		if($modpermissions["canviewdeleted"] || $modpermissions["canviewunapprove"])

@@ -317,6 +317,7 @@ function acp_recount_referrals()
 /**
  * Recount thread ratings
  */
+#[\Deprecated(message: "Thread rating feature is deprecated", since: "1.9.0")]
 function acp_recount_thread_ratings()
 {
 	global $db, $mybb, $lang;
@@ -598,24 +599,6 @@ if(!$mybb->input['action'])
 
 			acp_recount_referrals();
 		}
-		elseif(isset($mybb->input['do_recountthreadrating']))
-		{
-			$plugins->run_hooks("admin_tools_recount_recount_thread_ratings");
-
-			if($mybb->input['page'] == 1)
-			{
-				// Log admin action
-				log_admin_action("threadrating");
-			}
-
-			$per_page = $mybb->get_input('threadrating', MyBB::INPUT_INT);
-			if(!$per_page || $per_page <= 0)
-			{
-				$mybb->input['threadrating'] = 500;
-			}
-
-			acp_recount_thread_ratings();
-		}
 		elseif(isset($mybb->input['do_rebuildpollcounters']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_poll_counters");
@@ -720,11 +703,6 @@ if(!$mybb->input['action'])
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreferral")));
 	$form_container->construct_row();
 
-	$form_container->output_cell("<label>{$lang->recount_thread_ratings}</label><div class=\"description\">{$lang->recount_thread_ratings_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("threadrating", 500, array('style' => 'width: 150px;', 'min' => 0)));
-	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountthreadrating")));
-	$form_container->construct_row();
-
 	$plugins->run_hooks("admin_tools_recount_rebuild_output_list");
 
 	$form_container->end();
@@ -733,4 +711,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-
