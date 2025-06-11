@@ -50,10 +50,13 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getGlobals(): array
     {
-        return [
-            'theme' => $GLOBALS['theme'],
-            'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
-        ];
+        return array_merge(
+            [
+                'theme' => $GLOBALS['theme'],
+                'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
+            ],
+            $this->view->getSharedData(),
+        );
     }
 
     /**

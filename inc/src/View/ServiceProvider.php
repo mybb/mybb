@@ -7,6 +7,7 @@ namespace MyBB\View;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use MyBB\Extensions\Theme;
 use MyBB\View\Runtime\Runtime;
+use Twig\Environment;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider implements DeferrableProvider
 {
@@ -21,7 +22,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider implements Def
         $this->app->instance(Optimization::class, Optimization::WATCH);
 
         $this->app->afterResolving(
-            'twig',
+            Environment::class,
             fn ($twig) => $this->app->get(Runtime::class)->setTwig($twig),
         );
     }

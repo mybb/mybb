@@ -23,13 +23,20 @@ trait DataSharingTrait
         foreach ($data as $key => $value) {
             $this->sharedData[$key] = $value;
 
-            $this->twig->addGlobal($key, $value);
+            // update existing value (new globals cannot be set after Twig initialization)
+            if (isset($this->twig) && array_key_exists($key, $this->sharedData)) {
+                $this->twig->addGlobal($key, $value);
+            }
         }
     }
 
-    public function getSharedData(string $key): null|int|float|string|bool
+    public function getSharedData(?string $key = null): array|null|int|float|string|bool
     {
-        return $this->sharedData[$key] ?? null;
+        if ($key === null) {
+            return $this->sharedData;
+        } else {
+            return $this->sharedData[$key] ?? null;
+        }
     }
 
     public function setTwig(Environment $twig): void

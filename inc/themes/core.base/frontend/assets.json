@@ -59,11 +59,6 @@
 				"./jscripts/jquery.js"
 			]
 		},
-		"./jscripts/rating.js": {
-			"depends_on": [
-				"./jscripts/jquery.js"
-			]
-		},
 		"./jscripts/inline_moderation.js": {
 			"depends_on": [
 				"./jscripts/jquery.js"

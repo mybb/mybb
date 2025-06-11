@@ -983,6 +983,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canbereported smallint NOT NULL default '0',
   canbeinvisible smallint NOT NULL default '1',
   canchangewebsite smallint NOT NULL default '1',
+  showinlegend smallint NOT NULL default '0',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
   cangivereputations smallint NOT NULL default '0',

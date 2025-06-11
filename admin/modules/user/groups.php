@@ -926,6 +926,7 @@ if($mybb->input['action'] == "edit")
 				"canbereported" => $mybb->get_input('canbereported', MyBB::INPUT_INT),
 				"canbeinvisible" => $mybb->get_input('canbeinvisible', MyBB::INPUT_INT),
 				"canchangewebsite" => $mybb->get_input('canchangewebsite', MyBB::INPUT_INT),
+				"showinlegend" => $mybb->get_input('showinlegend', MyBB::INPUT_INT),
 				"showforumteam" => $mybb->get_input('showforumteam', MyBB::INPUT_INT),
 				"usereputationsystem" => $mybb->get_input('usereputationsystem', MyBB::INPUT_INT),
 				"cangivereputations" => $mybb->get_input('cangivereputations', MyBB::INPUT_INT),
@@ -1072,6 +1073,7 @@ if($mybb->input['action'] == "edit")
 
 	$general_options = array();
 	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->get_input('showmemberlist', MyBB::INPUT_INT)));
+	$general_options[] = $form->generate_check_box("showinlegend", 1, $lang->show_in_legend, array("checked" => $mybb->get_input('showinlegend', MyBB::INPUT_INT)));	
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
 		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->get_input('showforumteam', MyBB::INPUT_INT)));
@@ -1387,6 +1389,8 @@ if($mybb->input['action'] == "disporder" && $mybb->request_method == "post")
 			$db->update_query('usergroups', $sql_array, "gid = '{$gid}'");
 		}
 	}
+	
+	$cache->update_usergroups();
 
 	// Log admin action
 	log_admin_action();

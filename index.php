@@ -65,6 +65,32 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			}
 		}
 	}
+	
+	$groups = [];
+	if($mybb->settings['showgroupslegend'] != 0)
+	{
+		$groups_cache = $cache->read('usergroups');
+		if($groups_cache === false)
+		{
+			// If the groups cache is not available, rebuild it.
+			$cache->update_usergroups();
+			$groups_cache = $cache->read('usergroups');
+		}
+
+		foreach($groups_cache as $group)
+		{
+			if($group['showinlegend'])
+			{
+				$groups[] = array(
+					'disporder' => $group['disporder'],
+					'display' => format_name($group['title'], $group['gid']),
+				);
+			}
+		}
+		usort($groups, function($a, $b) {
+			return $a['disporder'] - $b['disporder'];
+		});
+	}
 
 	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
 	$guestcount = $db->fetch_field($query, "guestcount");
@@ -395,6 +421,7 @@ $plugins->run_hooks('index_end');
 
 output_page(\MyBB\View\template('index/index.twig', [
 	'forums' => $forums,
+	'groups' => $groups,
 	'users' => $doneusers,
 	'bots' => $donebots,
 	'birthdays' => $birthdays,

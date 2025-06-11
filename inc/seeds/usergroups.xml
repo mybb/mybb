@@ -61,6 +61,7 @@
 		<canbereported><![CDATA[0]]></canbereported>
 		<canbeinvisible><![CDATA[0]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
+		<showinlegend><![CDATA[0]]></showinlegend>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -154,6 +155,7 @@
 		<canbereported><![CDATA[1]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
+		<showinlegend><![CDATA[0]]></showinlegend>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -247,6 +249,7 @@
 		<canbereported><![CDATA[0]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
+		<showinlegend><![CDATA[1]]></showinlegend>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -340,6 +343,7 @@
 		<canbereported><![CDATA[0]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
+		<showinlegend><![CDATA[1]]></showinlegend>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -433,6 +437,7 @@
 		<canbereported><![CDATA[1]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
+		<showinlegend><![CDATA[0]]></showinlegend>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -526,6 +531,7 @@
 		<canbereported><![CDATA[0]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[1]]></canchangewebsite>
+		<showinlegend><![CDATA[1]]></showinlegend>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -619,6 +625,7 @@
 		<canbereported><![CDATA[0]]></canbereported>
 		<canbeinvisible><![CDATA[1]]></canbeinvisible>
 		<canchangewebsite><![CDATA[0]]></canchangewebsite>
+		<showinlegend><![CDATA[0]]></showinlegend>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>

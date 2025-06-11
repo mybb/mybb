@@ -3,6 +3,9 @@
     &__title {
         margin: 0;
         font-size: 1.1em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     &__forum,
