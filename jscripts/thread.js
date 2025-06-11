@@ -8,7 +8,7 @@ var Thread = {
 
 			if(thread_deleted == "1")
 			{
-				$("#quick_reply_form, .new_reply_button, .thread_tools, .inline_rating").hide();
+				$("#quick_reply_form, .new_reply_button, .thread_tools").hide();
 				$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
 			}
 
@@ -510,7 +510,7 @@ var Thread = {
 									$("#post_"+pid).addClass("unapproved_post deleted_post");
 									if(json.first == 1)
 									{
-										$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").hide();
+										$("#quick_reply_form, .thread_tools, .new_reply_button").hide();
 										$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
 										$("#moderator_options_selector option[value='softdeletethread']").val("restorethread").text(lang.restore_thread);
 										thread_deleted = "1";
@@ -589,7 +589,7 @@ var Thread = {
 								$("#post_"+pid).removeClass("unapproved_post deleted_post");
 								if(json.first == 1)
 								{
-									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
+									$("#quick_reply_form, .thread_tools, .new_reply_button").show();
 									$("#moderator_options_selector option.option_mirage").prop("disabled", false);
 									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
 									thread_deleted = "";
