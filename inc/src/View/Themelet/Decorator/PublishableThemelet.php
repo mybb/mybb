@@ -38,6 +38,8 @@ class PublishableThemelet extends ThemeletDecorator
     final public const PUBLISH_ALWAYS = 8;
 
     /**
+     * When to publish Asset files.
+     *
      * @var self::PUBLISH_*
      */
     public int $publishMode;
@@ -96,6 +98,9 @@ class PublishableThemelet extends ThemeletDecorator
         );
     }
 
+    /**
+     * Publishes and returns an Asset object with the Themelet's context.
+     */
     public function getPublishedAsset(
         Locator $locator,
         ?string $declarationNamespace = null,
@@ -124,6 +129,11 @@ class PublishableThemelet extends ThemeletDecorator
         }
     }
 
+    /**
+     * Publishes all Themelet Assets.
+     *
+     * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
+     */
     public function publishAssets(bool $force = false): void
     {
         foreach ($this->getPublishableThemeletAssets() as $asset) {
@@ -131,6 +141,11 @@ class PublishableThemelet extends ThemeletDecorator
         }
     }
 
+    /**
+     * Publishes Assets generated from, or previously published using, the given Resource.
+     *
+     * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
+     */
     public function publishAssetsFromResource(Resource $resource, bool $force = false): void
     {
         foreach ($this->getAssetsFromResource($resource) as $asset) {
@@ -138,6 +153,11 @@ class PublishableThemelet extends ThemeletDecorator
         }
     }
 
+    /**
+     * Publishes the given Themelet Asset.
+     *
+     * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
+     */
     public function publishThemeletAsset(ThemeletAsset $asset, bool $force = false): void
     {
         if ($force || $this->publishMode !== self::PUBLISH_NEVER) {
@@ -154,7 +174,7 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Return Assets publishable from, or published using, the provided Resource.
+     * Return Themelet Assets publishable from, or published using, the provided Resource.
      *
      * @return ThemeletAsset[]
      */
@@ -167,6 +187,8 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
+     * Returns Themelet Assets that can be published.
+     *
      * @param ?Resource[] $sourceResources
      * @return ThemeletAsset[]
      */
@@ -228,7 +250,7 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns Assets that can be published without being referenced in the properties file.
+     * Returns Assets that could be published without being referenced in the properties file.
      *
      * @param ?Resource[] $sourceResources
      * @return ThemeletAsset[]
@@ -260,6 +282,9 @@ class PublishableThemelet extends ThemeletDecorator
         return $this->getResources(resourceTypes: Publication::PUBLISHABLE_RESOURCE_TYPES);
     }
 
+    /**
+     * Returns the base path to published files, relative to the MyBB root directory.
+     */
     public function getPublishingPath(): string
     {
         $extension = $this->getExtension();
@@ -271,6 +296,9 @@ class PublishableThemelet extends ThemeletDecorator
         return ThemeletAsset::WEB_ROOT_RELATIVE_BASE_PATH . $extension->getPackageName();
     }
 
+    /**
+     * Returns metadata related to the most recent publication of the given Themelet Asset.
+     */
     public function getAssetPublicationData(?ThemeletAsset $asset = null): ?array
     {
         if ($asset === null) {
@@ -287,6 +315,9 @@ class PublishableThemelet extends ThemeletDecorator
         }
     }
 
+    /**
+     * Sets metadata related to the most recent publication of the given Themelet Asset.
+     */
     public function setAssetPublicationData(ThemeletAsset $asset, array $data): void
     {
         $this->assetPublicationData[$asset->getNamespace()]->setNested(

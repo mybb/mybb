@@ -18,10 +18,15 @@ use MyBB\View\ResourceType;
 use MyBB\View\Themelet\ThemeletInterface;
 
 /**
- * Prepares Theme Assets for web usage.
+ * Prepares an Asset for web usage.
+ *
+ * Applies the base and provided Processors to source content, and writes the Asset file.
  */
 class Publication
 {
+    /**
+     * Types of Resources that can be used as a source for Assets.
+     */
     public const PUBLISHABLE_RESOURCE_TYPES = [
         ResourceType::IMAGE,
         ResourceType::STYLE,
@@ -86,6 +91,9 @@ class Publication
         return $assets;
     }
 
+    /**
+     * Returns metadata identifying the given source's origin.
+     */
     public static function getSourceSignature(Resource $resource): array
     {
         return [
@@ -101,17 +109,25 @@ class Publication
         ];
     }
 
+    /**
+     * Whether the given Asset can be published as-is.
+     */
     public static function isPlain(ThemeletAsset $asset): bool
     {
         return self::getBaseProcessor($asset) === null;
     }
 
+    /**
+     * Whether the given Resource can be published or used as a source for Assets.
+     */
     public static function resourcePublishable(Resource $resource): bool
     {
         return in_array($resource->getType(), self::PUBLISHABLE_RESOURCE_TYPES);
     }
 
     /**
+     * Returns the Base Processor necessary to prepare the Asset for usage.
+     *
      * @return ?class-string<static>
      */
     private static function getBaseProcessor(ThemeletAsset $asset): ?string
@@ -125,6 +141,8 @@ class Publication
     }
 
     /**
+     * Whether the given Asset should be re-published.
+     *
      * @note May result in false negative for source files modified successively within 1 second.
      */
     public function needsUpdate(): bool
@@ -177,6 +195,11 @@ class Publication
         return false;
     }
 
+    /**
+     * Processes the Asset and writes to resulting content to the Asset file.
+     *
+     * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
+     */
     public function publish(bool $force = false): bool
     {
         if (!$force && !$this->needsUpdate()) {
@@ -235,6 +258,9 @@ class Publication
         return $result;
     }
 
+    /**
+     * Registers the given Resource as contributing to the resulting Asset.
+     */
     public function addSource(Resource $resource): void
     {
         if (!self::resourcePublishable($resource)) {
@@ -244,6 +270,9 @@ class Publication
         $this->sources[] = self::getSourceSignature($resource);
     }
 
+    /**
+     * Returns the initial content from the associated Resource.
+     */
     private function getContent(): string
     {
         $resource = $this->asset->getResource();
@@ -253,6 +282,9 @@ class Publication
         return $resource->getContent();
     }
 
+    /**
+     * Returns content processed by the configured Processors.
+     */
     private function getProcessedContent(string $content): string
     {
         foreach ($this->processors as $processor) {
