@@ -444,7 +444,7 @@ class CustomModeration extends Moderation
 				$query = $db->query("
 					SELECT u.uid, u.username, t.fid, t.subject, t.tid, t.firstpost, t.closed FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."users u ON t.uid=u.uid
-					WHERE tid IN ($tid_list) AND closed NOT LIKE 'moved|%'
+					WHERE tid IN ($tid_list) AND moved = '0'
 				");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 
