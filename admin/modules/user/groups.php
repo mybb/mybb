@@ -1379,7 +1379,7 @@ if($mybb->input['action'] == "disporder" && $mybb->request_method == "post")
 	{
 		$gid = (int)$gid;
 		$order = (int)$order;
-		if($gid != 0 && $order != 0)
+		if($gid != 0 && $order > 0)
 		{
 			$sql_array = array(
 				'disporder' => $order,
@@ -1407,7 +1407,10 @@ if(!$mybb->input['action'])
 		{
 			foreach($mybb->input['disporder'] as $gid => $order)
 			{
-				$db->update_query("usergroups", array('disporder' => (int)$order), "gid='".(int)$gid."'");
+				if(is_numeric($order) && (int)$order >= 0)
+				{
+					$db->update_query("usergroups", array('disporder' => (int)$order), "gid='".(int)$gid."'");
+				}
 			}
 
 			$plugins->run_hooks("admin_user_groups_start_commit");
@@ -1538,7 +1541,7 @@ if(!$mybb->input['action'])
 
 		if($usergroup['showforumteam'] == 1)
 		{
-			$form_container->output_cell($form->generate_numeric_field("disporder[{$usergroup['gid']}]", "{$usergroup['disporder']}", array('class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
+			$form_container->output_cell($form->generate_numeric_field("disporder[{$usergroup['gid']}]", "{$usergroup['disporder']}", array('min' => 0, 'class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
 		}
 		else
 		{

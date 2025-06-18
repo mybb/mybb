@@ -1199,23 +1199,21 @@ if($mybb->input['action'] == "add")
 	foreach($usergroups as $usergroup)
 	{
 		$perms = array();
-		if(!empty($mybb->input['default_permissions'][$usergroup['gid']]))
+
+		if(isset($existing_permissions) && is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 		{
-			if(isset($existing_permissions) && is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
-			{
-				$perms = $existing_permissions[$usergroup['gid']];
-				$default_checked = false;
-			}
-			elseif(is_array($cached_forum_perms) && isset($forum_data['fid']) && !empty($cached_forum_perms[$forum_data['fid']][$usergroup['gid']]))
-			{
-				$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
-				$default_checked = true;
-			}
-			else if(is_array($cached_forum_perms) && isset($forum_data['fid']) && !empty($cached_forum_perms[$forum_data['pid']][$usergroup['gid']]))
-			{
-				$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
-				$default_checked = true;
-			}
+			$perms = $existing_permissions[$usergroup['gid']];
+			$default_checked = false;
+		}
+		elseif(is_array($cached_forum_perms) && isset($forum_data['fid']) && !empty($cached_forum_perms[$forum_data['fid']][$usergroup['gid']]))
+		{
+			$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+			$default_checked = true;
+		}
+		else if(is_array($cached_forum_perms) && isset($forum_data['pid']) && !empty($cached_forum_perms[$forum_data['pid']][$usergroup['gid']]))
+		{
+			$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+			$default_checked = true;
 		}
 
 		if(!$perms)
@@ -2322,7 +2320,10 @@ if(!$mybb->input['action'])
 			{
 				foreach($mybb->input['disporder'] as $update_fid => $order)
 				{
-					$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
+					if(is_numeric($order) && (int)$order >= 0)
+					{
+						$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
+					}
 				}
 
 				$plugins->run_hooks("admin_forum_management_start_disporder_commit");
@@ -3032,4 +3033,3 @@ function retrieve_single_permissions_row($gid, $fid)
 	$form_container->construct_row();
 	return $form_container->output_row_cells(0, true);
 }
-

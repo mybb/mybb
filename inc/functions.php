@@ -1644,6 +1644,10 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 			$groupperms = $mybb->usergroup;
 		}
 	}
+	else 
+	{
+		$groupperms = usergroup_permissions($gid);
+	}	
 
 	if(!is_array($forum_cache))
 	{

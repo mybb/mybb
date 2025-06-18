@@ -422,8 +422,16 @@ else
 		$bits = explode("_", $mybb->input['action'], 2);
 		if(!empty($bits[1])) // We're still running a module
 		{
-			$from = $bits[0];
-			$runfunction = next_function($bits[0], $bits[1]);
+			if(ctype_alnum($bits[0]))
+			{
+				$from = $bits[0];
+			}
+			else
+			{
+				$from = 0;
+			}
+
+			$runfunction = next_function($from, $bits[1]);
 
 		}
 	}
@@ -759,6 +767,11 @@ function whatsnext()
 function next_function($from, $func="dbchanges")
 {
 	global $oldvers, $system_upgrade_detail, $currentscript, $cache;
+
+	if(!ctype_alnum($from))
+	{
+		$from = 0;
+	}
 
 	load_module("upgrade".$from.".php");
 	if(function_exists("upgrade".$from."_".$func))

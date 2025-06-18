@@ -426,10 +426,13 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 
 	foreach($mybb->input['disporder'] as $cid => $order)
 	{
-		$update_query = array(
-			"disporder" => (int)$order
-		);
-		$db->update_query("calendars", $update_query, "cid='".(int)$cid."'");
+		if(is_numeric($order) && (int)$order >= 0)
+		{
+			$update_query = array(
+				"disporder" => (int)$order
+			);
+			$db->update_query("calendars", $update_query, "cid='".(int)$cid."'");
+		}
 	}
 
 	$plugins->run_hooks("admin_config_calendars_update_order_commit");

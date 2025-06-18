@@ -422,7 +422,7 @@ EOF;
 		}
 		// Make query string nice and pretty so that user can go to his/her preferred destination
 		$query_string = '';
-		if($_SERVER['QUERY_STRING'])
+		if(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 		{
 			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
 			$query_string = preg_replace('#my_post_key=(.{32})#i', '', $query_string);

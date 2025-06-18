@@ -603,6 +603,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$plugins->run_hooks("editpost_action_start");
 
 	$preview = '';
+	$posticons = '';
 
 	if($forum['allowpicons'] != 0)
 	{
@@ -696,13 +697,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$lang->attach_usage = "";
 		}
 
-		$attach_update_options = '';
-
+		$attach_add_options = '';
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 		}
 
+		$attach_update_options = '';
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
 			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");

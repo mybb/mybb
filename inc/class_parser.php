@@ -1115,8 +1115,10 @@ class postParser
 		$code = @highlight_string($str, true);
 
 		// Do the actual replacing.
+		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code);
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
 		$code = str_replace('$', '&#36;', $code);
@@ -1124,7 +1126,7 @@ class postParser
 
 		if($added_open_tag)
 		{
-			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
+			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />|\n)#", "<code><span style=\"color: #$1\">", $code);
 		}
 
 		if($added_end_tag)
@@ -1691,8 +1693,16 @@ class postParser
 	*/
 	function mycode_auto_url($message)
 	{
-		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
-		// Don't create links within existing links (handled up-front in the callback function).
+		/*
+		 * Don't create links:
+		 * - within existing links (any <a> HTML tag must be returned as-is)
+		 * - within HTML tags (must not be followed by a > character without a matching < after the link)
+		 *
+		 * Don't include:
+		 * - common punctuation characters around the link
+		 * - braces that likely constitute punctuation around the particular link (handled in the callback function)
+		 * - partial HTML entities (https://github.com/mybb/mybb/issues/4303)
+		 */
 		$message = preg_replace_callback(
 			"~
 				<a\\s[^>]*>.*?</a>|								# match and return existing links
@@ -1702,10 +1712,19 @@ class postParser
 					(?:www|ftp)\.								# common subdomain
 				)
 				(?P<link>
-					(?:[^\/\"\s\<\[\.]+\.)*[\w]+				# host
-					(?::[0-9]+)?								# port
-					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*)?	# path, query, fragment; exclude unencoded characters
-					[\w\/\)]
+					(?:
+						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|	# IPv6 address with optional zone
+						(?:\d{1,3}\.){3}\d{1,3}|				# IPv4 address
+						(?:[^\"\s<>\[\]:/?&#.]+\.)*[\w-]+		# domain name
+					)
+					(?::[0-9]+)?								# optional port number
+					(?:/[^\"\s<>\[\]?&#]*)?						# optional path
+					(?:\?(?:[^\"\s<>\[\]?#]|\[\])*)?			# optional query
+					(?:\#[^\"\s<>\[\]]*)?						# optional fragment
+				)
+				(?:
+					(?<=&amp;)|(?<=&lt;)|(?<=&gt;)|				# allow trailing entities
+					(?<![.,:`'\"?!])(?<!&)						# exclude other trailing punctuation
 				)
 				(?![^<>]*?>)									# not followed by unopened > (within HTML tags)
 			~iusx",
