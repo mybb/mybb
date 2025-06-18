@@ -245,7 +245,22 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
     }
 
     /**
-     * @return static[]
+     * Returns ancestor Repositories from closest to furthest.
+     *
+     * @return RepositoryInterface[]
      */
-    abstract protected function getAncestors(): array;
+    protected function getAncestors(): array
+    {
+        return array_filter(
+            $this->getRepositories(),
+            fn ($repository) => $repository !== $this->getOwnRepository(),
+        );
+    }
+
+    /**
+     * Returns source Repositories in descending priority.
+     *
+     * @return RepositoryInterface[]
+     */
+    abstract protected function getRepositories(): array;
 }

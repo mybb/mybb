@@ -95,15 +95,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
-        $repository = $this->queryRepository($key);
-
-        if ($repository !== null) {
-            $this->resolvedRepositories->setNested([
-                $key,
-            ], $repository);
-        }
-
-        return $repository;
+        return parent::resolveRepository($key);
     }
 
     public function queryRepository(string|ThemeletLocator $key): ?RepositoryInterface
@@ -123,14 +115,11 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             'core.view.hierarchy.resolution',
         );
 
-        $repository = $this->getOwnRepository()->has($key)
-            ? $this->getOwnRepository()
-            : $this->getClosestEntityAncestorRepository($key)
-        ;
-
-        $stopwatchPeriod->stop();
-
-        return $repository;
+        try {
+            return parent::queryRepository($key);
+        } finally {
+            $stopwatchPeriod->stop();
+        }
     }
 
     public function getClosestEntityAncestorRepository(string|ThemeletLocator $key): ?RepositoryInterface
@@ -139,7 +128,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
-        return $this->getEntityAncestorRepositories($key)?->current();
+        return parent::getClosestEntityAncestorRepository($key);
     }
 
     /**
@@ -151,16 +140,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
-        foreach ($this->getRepositories() as $repository) {
-            if (
-                $repository !== $this->getOwnRepository() &&
-                $repository->has($key)
-            ) {
-                yield $repository;
-            } elseif (!$repository->entityDeclaredInherited($key)) {
-                break;
-            }
-        }
+        return parent::getEntityAncestorRepositories($key);
     }
 
     public function getOwnRepository(): RepositoryInterface
@@ -207,47 +187,6 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     {
         $this->resolvedProperties->build();
         $this->resolvedRepositories->build();
-    }
-
-    protected function buildResolvedProperties(&$stamp = []): array
-    {
-        $stopwatchPeriod = app(Stopwatch::class)->start(
-            '@' . $this->namespace . ' (' . $this->getDecorated()::NAME . ')',
-            'core.view.hierarchy.properties',
-        );
-
-        $results = parent::buildResolvedProperties($stamp);
-
-        $stopwatchPeriod->stop();
-
-        return $results;
-    }
-
-    protected function buildResolvedRepositories(&$stamp = []): array
-    {
-        $stopwatchPeriod = app(Stopwatch::class)->start(
-            '@' . $this->namespace . ' (' . $this->getDecorated()::NAME . ')',
-            'core.view.hierarchy.repositories',
-        );
-
-        $results = parent::buildResolvedRepositories($stamp);
-
-        $stopwatchPeriod->stop();
-
-        return $results;
-    }
-
-    /**
-     * Returns ancestor Repositories from closest to furthest.
-     *
-     * @return RepositoryInterface[]
-     */
-    protected function getAncestors(): array
-    {
-        return array_filter(
-            $this->getRepositories(),
-            fn ($repository) => $repository !== $this->getOwnRepository(),
-        );
     }
 
     /**
