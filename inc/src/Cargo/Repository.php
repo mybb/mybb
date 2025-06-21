@@ -29,8 +29,6 @@ abstract class Repository implements RepositoryInterface
      */
     public const NAME = null;
 
-    protected FileStamp $propertiesStamp;
-
     /**
      * @var array<self::SCOPE_*, array<string, mixed>>
      */
@@ -40,6 +38,8 @@ abstract class Repository implements RepositoryInterface
     ];
 
     protected bool $propertiesLoaded = false;
+
+    protected FileStamp $propertiesStamp;
 
     protected string $inheritanceManagedValueValidationType = FileStamp::TYPE_CHECKSUM;
 
@@ -52,6 +52,11 @@ abstract class Repository implements RepositoryInterface
     {
         return array_merge_recursive(...$properties);
     }
+
+    /**
+     * Returns the Repository's identifier unique in a potential inheritance hierarchy.
+     */
+    abstract public function getHierarchicalIdentifier(): string;
 
     /**
      * Returns properties declared at the top level.

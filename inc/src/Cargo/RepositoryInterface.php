@@ -7,6 +7,7 @@ namespace MyBB\Cargo;
 use MyBB\Utilities\FileStamp;
 
 /**
+ * @method string getHierarchicalIdentifier()
  * @method array getSharedProperties()
  * @method mixed getSharedProperty(string $key)
  * @method void setSharedProperty(string $key, mixed $value)

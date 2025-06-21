@@ -13,23 +13,6 @@ trait EntityTrait
      */
     private const FIRST_PARTY_PROPERTIES = [];
 
-    public function deleteFirstPartyProperties(): void
-    {
-        $this->setProperties(
-            Arr::except(
-                $this->getProperties(),
-                self::FIRST_PARTY_PROPERTIES,
-            ),
-        );
-    }
-
-    public function declaredInherited(): bool
-    {
-        return $this->getRepository()->entityDeclaredInherited(
-            $this->getRepositoryEntityKey()
-        );
-    }
-
     public function getProperties(): array
     {
         $repository = $this->getRepository();
@@ -62,6 +45,23 @@ trait EntityTrait
         $repository->setEntityProperties(
             $this->getRepositoryEntityKey(),
             $mergedProperties,
+        );
+    }
+
+    public function declaredInherited(): bool
+    {
+        return $this->getRepository()->entityDeclaredInherited(
+            $this->getRepositoryEntityKey()
+        );
+    }
+
+    public function deleteFirstPartyProperties(): void
+    {
+        $this->setProperties(
+            Arr::except(
+                $this->getProperties(),
+                self::FIRST_PARTY_PROPERTIES,
+            ),
         );
     }
 
