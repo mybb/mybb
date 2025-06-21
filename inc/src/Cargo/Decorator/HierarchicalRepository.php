@@ -6,6 +6,7 @@ namespace MyBB\Cargo\Decorator;
 
 use BadMethodCallException;
 use Illuminate\Support\Arr;
+use LogicException;
 use MyBB\Cargo\EntityInterface;
 use MyBB\Cargo\FileRepositoryInterface;
 use MyBB\Cargo\Repository;
@@ -105,6 +106,45 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
     public function getResolved(string $key): ?EntityInterface
     {
         return $this->getResolvedRepository($key)?->get($key);
+    }
+
+    /**
+     * Returns the closest entity in the inheritance chain, excluding own Repository.
+     */
+    public function getClosestEntityAncestor(string $key): ?EntityInterface
+    {
+        if (!$this->getOwnRepository()->has($key)) {
+            // avoid ambiguous usage when implied reference is missing
+            throw new LogicException('`' . __FUNCTION__ . '`() cannot be called without existing reference entity');
+        }
+
+        return $this->getClosestEntityAncestorRepository($key)?->get($key);
+    }
+
+    /**
+     * Whether the entity's effective Repository is an ancestor.
+     */
+    public function entityResolvesToAncestor(string $key): bool
+    {
+        $resolvedRepository = $this->getResolvedRepository($key);
+
+        return (
+            $resolvedRepository !== null &&
+            $resolvedRepository !== $this->getOwnRepository()
+        );
+    }
+
+    /**
+     * Whether the reference entity has ancestors.
+     */
+    public function entityHasAncestors(string $key): bool
+    {
+        if (!$this->getOwnRepository()->has($key)) {
+            // avoid ambiguous usage when implied reference is missing
+            throw new LogicException('`' . __FUNCTION__ . '`() cannot be called without existing reference entity');
+        }
+
+        return $this->getClosestEntityAncestorRepository($key) !== null;
     }
 
     /**
