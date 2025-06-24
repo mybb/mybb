@@ -82,7 +82,7 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * @override scope
+     * @override decorated scope
      */
     public function getAsset(
         Locator $locator,

@@ -13,7 +13,7 @@ use MyBB\View\Themelet\NamespaceCargo\Repository as NamespaceCargoRepository;
 
 trait HierarchicalAssetsTrait
 {
-    use AssetsTrait; // override scope for remaining methods
+    use AssetsTrait; // override decorated scope for remaining methods
 
     /**
      * Asset Repositories by namespace.

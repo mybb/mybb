@@ -9,7 +9,7 @@ use MyBB\View\NamespaceType;
 trait HierarchicalNamespacesTrait
 {
     /**
-     * @override
+     * @override decorated
      */
     public function hasNamespaceTypeAccess(NamespaceType $type): bool
     {
@@ -18,7 +18,7 @@ trait HierarchicalNamespacesTrait
 
     /**
      * @return string[]
-     * @override
+     * @override decorated
      */
     public function getNamespaces(): array
     {
@@ -31,7 +31,7 @@ trait HierarchicalNamespacesTrait
      * Returns absolute paths at which Resource namespaces may be found, in descending priority.
      *
      * @return array<string, string[]>
-     * @override
+     * @override decorated
      */
     public function getNamespaceAbsolutePaths(): array
     {
@@ -47,7 +47,7 @@ trait HierarchicalNamespacesTrait
     }
 
     /**
-     * @override
+     * @override decorated
      */
     public function getNamespaceAbsolutePath(string $namespace): string
     {
@@ -55,7 +55,7 @@ trait HierarchicalNamespacesTrait
     }
 
     /**
-     * @override
+     * @override decorated
      */
     public function getNamespaceDirectoryPath(string $namespace): string
     {
@@ -63,7 +63,7 @@ trait HierarchicalNamespacesTrait
     }
 
     /**
-     * @override
+     * @override decorated
      */
     public function getNamespaceFromDirectoryName(string $name): string
     {

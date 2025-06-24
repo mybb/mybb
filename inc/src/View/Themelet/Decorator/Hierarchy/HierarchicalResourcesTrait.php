@@ -14,7 +14,7 @@ use MyBB\View\Themelet\ResourcesTrait;
 
 trait HierarchicalResourcesTrait
 {
-    use ResourcesTrait; // override scope for remaining methods
+    use ResourcesTrait; // override decorated scope for remaining methods
 
     /**
      * Resource Repositories by namespace.
@@ -36,7 +36,7 @@ trait HierarchicalResourcesTrait
     }
 
     /**
-     * @override
+     * @override decorated
      */
     public function getResourceTypeAbsolutePath(string $namespace, ResourceType $type): string
     {

@@ -17,7 +17,7 @@ use MyBB\View\Resource;
 class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository implements FileRepositoryInterface
 {
     /**
-     * @override scope
+     * @override decorated scope
      */
     public function has(string|ThemeletLocator $key): bool
     {
@@ -25,7 +25,7 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
     }
 
     /**
-     * @override scope
+     * @override decorated scope
      */
     public function getExisting(string|ThemeletLocator $key): ?Resource
     {
@@ -39,7 +39,7 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
     }
 
     /**
-     * @override scope
+     * @override decorated scope
      */
     public function get(string|ThemeletLocator $key): Resource
     {
@@ -51,7 +51,7 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
     }
 
     /**
-     * @override
+     * @override decorated
      */
     public function create(string|ThemeletLocator $key): Resource
     {

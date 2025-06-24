@@ -143,6 +143,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         return parent::getEntityAncestorRepositories($key);
     }
 
+    /**
+     * @override decorated
+     */
     public function getOwnRepository(): RepositoryInterface
     {
         return $this->getRepository(
@@ -152,6 +155,8 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
 
     /**
      * @param FileStamp::TYPE_* $type
+     *
+     * @override decorated
      */
     public function stampValid(array $stamp, string $type = FileStamp::TYPE_MODIFICATION_TIME): bool
     {
@@ -172,6 +177,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         return true;
     }
 
+    /**
+     * @override decorated
+     */
     public function getStamp(): array
     {
         $stamps = [];

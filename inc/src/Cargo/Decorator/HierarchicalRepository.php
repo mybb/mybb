@@ -33,6 +33,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
             ->withDefault([]);
     }
 
+    /**
+     * @override decorated
+     */
     public function getSharedProperties(): array
     {
         return $this->resolvedProperties->getNested([
@@ -40,6 +43,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         ]);
     }
 
+    /**
+     * @override decorated
+     */
     public function getSharedProperty(string $key): mixed
     {
         return $this->resolvedProperties->getNested([
@@ -48,6 +54,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         ]);
     }
 
+    /**
+     * @override decorated
+     */
     public function setSharedProperty(string $key, mixed $value): void
     {
         $this->getDecorated()->setSharedProperty($key, $value);
@@ -55,6 +64,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         $this->resolvedProperties->build();
     }
 
+    /**
+     * @override decorated
+     */
     public function getEntityProperties(?string $key = null): array
     {
         if ($key === null) {
@@ -69,6 +81,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         }
     }
 
+    /**
+     * @override decorated
+     */
     public function setEntityProperties(string $key, array $data): void
     {
         $this->getDecorated()->setEntityProperties($key, $data);
@@ -76,6 +91,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         $this->resolvedProperties->build();
     }
 
+    /**
+     * @override decorated
+     */
     public function getAll(...$args): array
     {
         if (!($this->getDecorated() instanceof FileRepositoryInterface)) {
