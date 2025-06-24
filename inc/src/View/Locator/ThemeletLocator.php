@@ -256,9 +256,11 @@ class ThemeletLocator extends Locator
             }
         }
 
-        $components['group'] = $this->group;
+        if (!empty($this->group)) {
+            $components['group'] = $this->group;
+        }
 
-        if ($this->filename !== null) {
+        if (!empty($this->filename)) {
             $components['filename'] = $this->filename;
         } else {
             throw new Exception('Missing filename for Locator');
