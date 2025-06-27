@@ -161,6 +161,8 @@ abstract class Repository implements RepositoryInterface
 
     public function getStamp(): ?array
     {
+        $this->loadProperties();
+
         return $this->propertiesStamp->getStamp();
     }
 
