@@ -17,7 +17,7 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Path;
 
 /**
- * Metadata of items in a Themelet's namespace.
+ * Manages Resources and their declarations in a Themelet's namespace.
  */
 class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implements FileRepositoryInterface
 {

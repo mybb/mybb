@@ -12,7 +12,7 @@ use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
 
 /**
- * Metadata of items in a Themelet's namespace.
+ * An inheritance-aware Resource Repository.
  */
 class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository implements FileRepositoryInterface
 {

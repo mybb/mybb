@@ -159,6 +159,9 @@ abstract class Repository implements RepositoryInterface
         );
     }
 
+    /**
+     * Returns a stamp value used for cache validation.
+     */
     public function getStamp(): ?array
     {
         $this->loadProperties();
@@ -166,6 +169,9 @@ abstract class Repository implements RepositoryInterface
         return $this->propertiesStamp->getStamp();
     }
 
+    /**
+     * Whether the given stamp indicates the cache is up to date.
+     */
     public function stampValid(FileStamp $stamp): bool
     {
         return $stamp->isValid(

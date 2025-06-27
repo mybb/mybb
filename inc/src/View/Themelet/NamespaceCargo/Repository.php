@@ -11,7 +11,7 @@ use MyBB\View\Themelet\ThemeletInterface;
 use function MyBB\app;
 
 /**
- * Metadata of items in a Themelet's namespace.
+ * The base class for Repositories managing entities and related manifests in a Themelet's namespace.
  */
 abstract class Repository extends \MyBB\Cargo\Repository
 {

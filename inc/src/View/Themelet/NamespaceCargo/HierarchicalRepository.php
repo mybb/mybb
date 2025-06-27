@@ -14,6 +14,9 @@ use MyBB\View\Optimization;
 
 use function MyBB\app;
 
+/**
+ * The base class for inheritance-aware Namespace Cargo Repositories.
+ */
 class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepository
 {
     public function __construct(
@@ -144,6 +147,8 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     }
 
     /**
+     * Returns the concrete, non-inheritance-aware Repository associated with the concrete Themelet.
+     *
      * @override decorated
      */
     public function getOwnRepository(): RepositoryInterface
