@@ -3038,7 +3038,7 @@ class Moderation
 			{
 				$open[] = $thread['tid'];
 			}
-			elseif($thread['closed'] == 0)
+			elseif(empty($thread['closed']))
 			{
 				$close[] = $thread['tid'];
 			}
