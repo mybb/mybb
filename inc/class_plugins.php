@@ -123,7 +123,7 @@ class pluginSystem
 
 		++$hook_level;
 
-		static $current_hook_cache = [];
+		static $current_hook_cache = array();
 
 		$current_hook_cache[$hook_level] = $this->current_hook = $hook;
 
