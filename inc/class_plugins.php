@@ -169,6 +169,8 @@ class pluginSystem
 			}
 		}
 
+		unset($this->current_hook_objects[$this->current_hook_level]);
+
 		--$this->current_hook_level;
 
 		if($this->current_hook_level < 1)
@@ -177,7 +179,7 @@ class pluginSystem
 
 			$this->current_hook = '';
 
-			$this->current_hook_objects = [];
+			$this->current_hook_objects = array();
 		}
 		else
 		{
