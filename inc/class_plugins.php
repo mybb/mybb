@@ -118,8 +118,17 @@ class pluginSystem
 		{
 			return $arguments;
 		}
-		$this->current_hook = $hook;
+
+		static $hook_level = 0;
+
+		++$hook_level;
+
+		static $current_hook_cache = [];
+
+		$current_hook_cache[$hook_level] = $this->current_hook = $hook;
+
 		ksort($this->hooks[$hook]);
+
 		foreach($this->hooks[$hook] as $priority => $hooks)
 		{
 			if(is_array($hooks))
@@ -149,7 +158,17 @@ class pluginSystem
 				}
 			}
 		}
-		$this->current_hook = '';
+
+		--$hook_level;
+
+		if($hook_level === 0)
+		{
+			$this->current_hook = '';
+		}
+		else
+		{
+			$this->current_hook = $current_hook_cache[$hook_level];
+		}
 
 		return $arguments;
 	}
