@@ -884,10 +884,12 @@ function get_child_list($fid)
 /**
  * Produce a friendly error message page
  *
- * @param string $error The error message to be shown
+ * @param string $error_message The error message to be shown
  * @param string $title The title of the message shown in the title of the page and the error table
+ * @param string $error_page Optional additional error page
+ * @param int $status_code HTTP status code to send with the error page
  */
-function error($error_message = "", $title = "", $error_page = "")
+function error($error_message = "", $title = "", $error_page = "", $status_code = 200)
 {
 	global $db, $lang, $mybb, $plugins;
 
@@ -901,6 +903,8 @@ function error($error_message = "", $title = "", $error_page = "")
 		echo json_encode(array("errors" => array($error_message)));
 		exit;
 	}
+	
+	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
 	reset_breadcrumb();
