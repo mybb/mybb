@@ -134,7 +134,7 @@ function upgrade100_dbchanges()
     // Update moved threads
     $db->query("
         UPDATE ".TABLE_PREFIX."threads
-        SET closed = '2', moved = ".$moved_tid_substring."
+        SET closed = '0', moved = ".$moved_tid_substring."
         WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
     ");
 
