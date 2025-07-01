@@ -59,7 +59,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function setSharedProperty(string $key, mixed $value): void
     {
-        $this->getDecorated()->setSharedProperty($key, $value);
+        $this->getOwnRepository()->setSharedProperty($key, $value);
 
         $this->resolvedProperties->build();
     }
@@ -86,7 +86,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function setEntityProperties(string $key, array $data): void
     {
-        $this->getDecorated()->setEntityProperties($key, $data);
+        $this->getOwnRepository()->setEntityProperties($key, $data);
 
         $this->resolvedProperties->build();
     }
@@ -236,7 +236,10 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         }
     }
 
-    abstract public function getOwnRepository(): RepositoryInterface;
+    public function getOwnRepository(): RepositoryInterface
+    {
+        return $this->getDecorated();
+    }
 
     protected function buildResolvedProperties(&$stamp = []): array
     {
