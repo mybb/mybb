@@ -36,7 +36,7 @@ function upgrade100_dbchanges()
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
     $db->modify_column("users", "style", "varchar(30)", "set", "''");
 
-    // Add userfields columns 
+    // Add userfields columns
     foreach (["fid4", "fid5", "fid6"] as $fid) {
         if (!$db->field_exists($fid, "userfields")) {
             $db->add_column("userfields", $fid, "text NOT NULL");
@@ -72,6 +72,7 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
+            $moved_tid_substring = "SUBSTRING(closed FROM 7)::INTEGER";
             break;
 
         case 'sqlite':
@@ -98,6 +99,7 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
+            $moved_tid_substring = "SUBSTR(closed, 7)";
             break;
 
         default: // MySQL
@@ -125,8 +127,16 @@ function upgrade100_dbchanges()
                     KEY uid (uid)
                 ) ENGINE=MyISAM;");
             }
+            $moved_tid_substring = "CAST(SUBSTRING(closed, 7) AS SIGNED)";
             break;
     }
+
+    // Update moved threads
+    $db->query("
+        UPDATE ".TABLE_PREFIX."threads
+        SET closed = '2', moved = ".$moved_tid_substring."
+        WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
+    ");
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
