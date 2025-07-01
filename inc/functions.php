@@ -1027,7 +1027,7 @@ function error_no_permission()
 		'redirect_url' => $redirect_url
 	]);
 
-	error($error_message, $lang->error_nopermission, $error_page);
+	error($error_message, $lang->error_nopermission, $error_page, 403);
 }
 
 /**
