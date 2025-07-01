@@ -23,7 +23,7 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
 {
     public const NAME = 'resources';
 
-    public function getRepository(ThemeletInterface $themelet): RepositoryInterface
+    public function getRepositoryInThemelet(ThemeletInterface $themelet): RepositoryInterface
     {
         return $themelet->getResourceRepository($this->namespace);
     }

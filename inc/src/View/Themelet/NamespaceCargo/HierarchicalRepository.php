@@ -70,7 +70,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             )
             ->withLoad(
                 fn (array $data) => array_map(
-                    fn (string $identifier) => $this->getRepository(
+                    fn (string $identifier) => $this->getRepositoryInThemelet(
                         $this->themelet->getThemelet($identifier)
                     ),
                     $data,
@@ -153,7 +153,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
      */
     public function getOwnRepository(): RepositoryInterface
     {
-        return $this->getRepository(
+        return $this->getRepositoryInThemelet(
             $this->themelet->getOwnThemelet()
         );
     }
@@ -214,7 +214,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         $themelets = $this->themelet->getThemeletsByNamespace($this->namespace);
 
         foreach ($themelets as $themelet) {
-            $results[$themelet->getIdentifier()] = $this->getRepository($themelet);
+            $results[$themelet->getIdentifier()] = $this->getRepositoryInThemelet($themelet);
         }
 
         return $results;

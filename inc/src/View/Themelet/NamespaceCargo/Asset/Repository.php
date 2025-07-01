@@ -14,7 +14,7 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository
 {
     public const NAME = 'assets';
 
-    public function getRepository(ThemeletInterface $themelet): RepositoryInterface
+    public function getRepositoryInThemelet(ThemeletInterface $themelet): RepositoryInterface
     {
         return $themelet->getAssetRepository($this->namespace);
     }

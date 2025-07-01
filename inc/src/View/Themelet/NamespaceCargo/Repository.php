@@ -32,7 +32,7 @@ abstract class Repository extends \MyBB\Cargo\Repository
      * Returns a Repository with the same type and namespace
      * from the provided Themelet.
      */
-    abstract public function getRepository(ThemeletInterface $themelet): RepositoryInterface;
+    abstract public function getRepositoryInThemelet(ThemeletInterface $themelet): RepositoryInterface;
 
     protected function getPropertiesFilePath(): string
     {
