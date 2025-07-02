@@ -1120,7 +1120,7 @@ class Moderation
 					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => 0,
 					"replies" => 0,
-					"closed" => 2,
+					"closed" => 0,
 					"moved" => $tid,
 					"sticky" => $thread['sticky'],
 					"visible" => (int)$thread['visible'],
