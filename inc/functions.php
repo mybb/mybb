@@ -5296,8 +5296,6 @@ function convert_through_utf8($str, $to = true)
 {
 	global $lang;
 	static $charset;
-	static $use_mb;
-	static $use_iconv;
 
 	if(!isset($charset))
 	{
@@ -5309,52 +5307,18 @@ function convert_through_utf8($str, $to = true)
 		return $str;
 	}
 
-	if(!isset($use_iconv))
+	if($to)
 	{
-		$use_iconv = function_exists("iconv");
-	}
-
-	if(!isset($use_mb))
-	{
-		$use_mb = function_exists("mb_convert_encoding");
-	}
-
-	if($use_iconv || $use_mb)
-	{
-		if($to)
-		{
-			$from_charset = $lang->settings['charset'];
-			$to_charset = "UTF-8";
-		}
-		else
-		{
-			$from_charset = "UTF-8";
-			$to_charset = $lang->settings['charset'];
-		}
-		if($use_iconv)
-		{
-			return iconv($from_charset, $to_charset."//IGNORE", $str);
-		}
-		else
-		{
-			return @mb_convert_encoding($str, $to_charset, $from_charset);
-		}
-	}
-	elseif($charset == "iso-8859-1" && function_exists("utf8_encode"))
-	{
-		if($to)
-		{
-			return utf8_encode($str);
-		}
-		else
-		{
-			return utf8_decode($str);
-		}
+		$from_charset = $lang->settings['charset'];
+		$to_charset = "UTF-8";
 	}
 	else
 	{
-		return $str;
+		$from_charset = "UTF-8";
+		$to_charset = $lang->settings['charset'];
 	}
+
+	return mb_convert_encoding($str, $to_charset, $from_charset);
 }
 
 /**
