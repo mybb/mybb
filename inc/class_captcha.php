@@ -106,7 +106,7 @@ class captcha
 	{
 		global $mybb, $plugins;
 
-		$this->type = $mybb->settings['captchaimage'];
+		$this->type = (int) $mybb->settings['captchaimage'];
 
 		$args = array(
 			'this' => &$this,
@@ -219,15 +219,10 @@ class captcha
 
 	function build_cfturnstile()
 	{
-		global $lang, $mybb, $templates, $theme;
-
-		// This will build a hCaptcha
-		$server = $this->server;
-		$public_key = $mybb->settings['cfturnstilepublickey'];
-		$captcha_theme = $mybb->settings['cfturnstiletheme'];
-		$captcha_size = $mybb->settings['cfturnstilesize'];
-
-		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
+		$this->html = \MyBB\View\template('misc/captcha/'.$this->captcha_template.'.twig', [
+			'server' => $this->server,
+			'type' => $this->type
+		]);
 	}
 
 	/**
