@@ -38,7 +38,7 @@
     <div class="section__container">
         <div class="row row--form field">
             <p class="field__description">{{ lang.verification_note_hcaptcha }}</p>
-            <script type="text/javascript" src="{{ server }}"></script><div class="h-captcha" data-sitekey="{{ mybb.settings.hcaptchapublickey }}" data-theme="{{ mybb.settings.captcha_theme }}" data-size="{{ mybb.settings.captcha_size }}></div>
+            <script type="text/javascript" src="{{ server }}"></script><div class="h-captcha" data-sitekey="{{ mybb.settings.hcaptchapublickey }}" data-theme="{{ mybb.settings.captcha_theme }}" data-size="{{ mybb.settings.captcha_size }}"></div>
         </div>
     </div>
 </section>
@@ -62,6 +62,17 @@
 
      }
      </script>
+{# CFTurnstile #}
+{% elseif type == 9 %}
+    <section class="section section--form" id="captcha_trow">
+        <h2 class="title title--section">{{ lang.human_verification }}</h2>
+        <div class="section__container">
+            <div class="row row--form field">
+                <p class="field__description">{{ lang.verification_note_cfturnstile }}</p>
+                <script type="text/javascript" src="{{ server }}"></script><div class="h-captcha" data-sitekey="{{ mybb.settings.cfturnstilepublickey }}" data-theme="{{ mybb.settings.cfturnstiletheme }}" data-size="{{ mybb.settings.cfturnstilesize }}"></div>
+            </div>
+        </div>
+    </section>
 {# MyBB Captcha #}
 {% else %}
     <section class="section section--form">
