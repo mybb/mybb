@@ -1081,7 +1081,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 else if($mybb->input['action'] == 'get_referrals')
 {
 	$lang->load('member');
-	$uid = $mybb->get_input('uid', MYBB::INPUT_INT);
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 
 	if (!$uid) {
 		xmlhttp_error($lang->referrals_no_user_specified);
