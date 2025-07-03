@@ -19,7 +19,5 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
-
 /* Nothing to do from 1.2.3 to 1.2.7 */
 
