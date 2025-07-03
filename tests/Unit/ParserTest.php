@@ -286,7 +286,7 @@ test<br />
         ];
 
         foreach ($fonts as $font) {
-            if (strpos($font, ' ') !== false) {
+            if (str_contains($font, ' ')) {
                 $font = "'{$font}'";
             }
             $tests = [
