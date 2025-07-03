@@ -828,8 +828,6 @@ blockquote cite span.highlight {
 	display: block;
 	font-family: Monaco, Consolas, Courier, monospace;
 	font-size: 13px;
-	white-space: pre;
-	tab-size: 4;
 }
 
 .smilie {
