@@ -44,6 +44,7 @@ class captcha
 	 * 6 = hCaptcha
 	 * 7 = hCaptcha invisible
 	 * 8 = reCAPTCHA v3
+	 * 9 = CF Turnstile
 	 *
 	 * @var int
 	 */
@@ -60,6 +61,7 @@ class captcha
 	const HCAPTCHA = 6;
 	const HCAPTCHA_INVISIBLE = 7;
 	const RECAPTCHA_V3 = 8;
+	const CFTURNSTILE = 9;
 
 	/**
 	 * The template to display the CAPTCHA in
@@ -143,6 +145,17 @@ class captcha
 				$this->build_hcaptcha();
 			}
 		}
+		elseif($this->type == captcha::CFTURNSTILE && $mybb->settings['cfturnstilepublickey'] && $mybb->settings['cfturnstileprivatekey'])
+		{
+			// JS and backend server validation
+			$this->server = "//challenges.cloudflare.com/turnstile/v0/api.js";
+			$this->verify_server = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+			if($build == true)
+			{
+				$this->build_cfturnstile();
+			}
+		}
 		elseif($this->type == captcha::DEFAULT_CAPTCHA)
 		{
 			if(!function_exists("imagecreatefrompng"))
@@ -202,6 +215,19 @@ class captcha
 			'server' => $this->server,
 			'type' => $this->type
 		]);
+	}
+
+	function build_cfturnstile()
+	{
+		global $lang, $mybb, $templates, $theme;
+
+		// This will build a hCaptcha
+		$server = $this->server;
+		$public_key = $mybb->settings['cfturnstilepublickey'];
+		$captcha_theme = $mybb->settings['cfturnstiletheme'];
+		$captcha_size = $mybb->settings['cfturnstilesize'];
+
+		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 	}
 
 	/**
@@ -364,6 +390,37 @@ class captcha
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_hcaptcha);
+					}
+				}
+			}
+		}
+		elseif($this->type === self::CFTURNSTILE)
+		{
+			$response = $mybb->get_input('cf-turnstile-response');
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_cfturnstile);
+			}
+			else
+			{
+				// Contact CF-Turnstile and see if our CF-Turnstile request was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['cfturnstileprivatekey'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				if($response == false)
+				{
+					$this->set_error($lang->invalid_cfturnstile_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_cfturnstile);
 					}
 				}
 			}

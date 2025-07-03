@@ -1225,6 +1225,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_hcaptcha();
 			}
+			elseif($post_captcha->type == captcha::CFTURNSTILE)
+			{
+				$post_captcha->build_cfturnstile();
+			}
 		}
 		else if($correct && (in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3))))
 		{
@@ -1233,6 +1237,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else if($correct && (in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
+		}
+		else if($correct && ($post_captcha->type == captcha::CFTURNSTILE))
+		{
+			$post_captcha->build_cfturnstile();
 		}
 
 		if($post_captcha->html)
