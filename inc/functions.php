@@ -889,7 +889,7 @@ function get_child_list($fid)
  * @param string $error_page Optional additional error page
  * @param int $status_code HTTP status code to send with the error page
  */
-function error($error_message = "", $title = "", $error_page = "", $status_code = 200)
+function error(string $error_message = "", string $title = "", string $error_page = "", int $status_code = 200): never
 {
 	global $db, $lang, $mybb, $plugins;
 
