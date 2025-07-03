@@ -8766,3 +8766,25 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	}
 	return $backtrace;
 }
+
+/**
+ * Sets the maximum execution time to 0 (zero)
+ *
+ * @param int $seconds The maximum execution time, in seconds. If set to zero, no time limit is imposed.
+ * @return bool Returns true if the maximum execution time was set, false if it was not
+ */
+function my_set_time_limit(int $seconds = 0): bool
+{
+    if(!function_exists('set_time_limit')) {
+        return false;
+    }
+
+    if(str_contains(ini_get('disable_functions'), 'set_time_limit'))
+    {
+        return false;
+    }
+
+    set_time_limit($seconds);
+
+    return true;
+}

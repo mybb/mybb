@@ -199,9 +199,7 @@ class UpgradeModel extends Model
                             $upgradeScriptNumber,
                             $i,
                         ): array {
-                            if (function_exists('set_time_limit')) {
-                                @set_time_limit(0);
-                            }
+                            my_set_time_limit();
 
                             try {
                                 $result = $migrationFunctionName($process) ?? [];
