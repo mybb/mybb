@@ -421,10 +421,10 @@ Additionally, a moderator of a forum may have closed a thread meaning that users
             'document' => 'You can use MyCode, a simplified version of HTML, in your posts to create certain effects.
 <p><br />
 [b]This text is bold[/b]<br />
-&nbsp;&nbsp;&nbsp;<b>This text is bold</b>
+&nbsp;&nbsp;&nbsp;<strong>This text is bold</strong>
 <p>
 [i]This text is italicized[/i]<br />
-&nbsp;&nbsp;&nbsp;<i>This text is italicized</i>
+&nbsp;&nbsp;&nbsp;<em>This text is italicized</em>
 <p>
 [u]This text is underlined[/u]<br />
 &nbsp;&nbsp;&nbsp;<u>This text is underlined</u>
