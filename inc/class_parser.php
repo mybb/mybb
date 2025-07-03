@@ -1234,12 +1234,30 @@ class postParser
 	*/
 	function mycode_parse_font_callback($matches)
 	{
-		// Replace any occurrence(s) of double quotes in fonts with single quotes.
-		// A back-fix for double-quote-containing MyBB font tags in existing
-		// posts prior to the client-side aspect of this fix for the
-		// browser-independent SCEditor bug of issue #4182.
-		$fonts = str_replace('"', "'", $matches[2]);
-
+		preg_match_all("/
+			(?:                                 
+				\"(?:[^\"]*)\"|	# double-quoted font                    
+				'(?:[^']*)'|	# single-quoted font 
+				[^,]+			# unquoted font name (anything but comma)
+			)
+		/x", $matches[2], $matchedFonts);
+		
+		$cleanFonts = array();
+		
+		foreach ($matchedFonts[0] as $font)
+		{
+			// Remove leading/trailing quotes and spaces
+			$font = trim($font, "\"' ");
+	
+			// If font name contains a space or comma, wrap it in single quotes
+			if (strpos($font, ' ') !== false || strpos($font, ',') !== false) {
+				$font = "'{$font}'";
+			}
+	
+			$cleanFonts[] = $font;
+		}
+	
+		$fonts = implode(', ', $cleanFonts);
 		return "<span style=\"font-family: {$fonts};\" class=\"mycode_font\">{$matches[3]}</span>";
 	}
 
