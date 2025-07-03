@@ -601,7 +601,7 @@ if($mybb->input['action'] == "edit")
 			$endtime_checked[1] = 'checked="checked"';
 			$endtime_checked[2] = '';
 
-			$endday = $endmonth = $mybb->get_input('endtime_day', MyBB::INPUT_INT);
+			$endday = $mybb->get_input('endtime_day', MyBB::INPUT_INT);
 			$endtime = $mybb->input['endtime_time'];
 			$endmonth = $mybb->get_input('endtime_month', MyBB::INPUT_INT);
 			$endmonthsel[$endmonth] = 'selected';
