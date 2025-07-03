@@ -305,8 +305,7 @@ elseif(!$mybb->input['action'])
 	if(isset($_SERVER['SERVER_SOFTWARE'])) 
 	{
 		$table->construct_cell("<strong>{$lang->server_software}</strong>", array('width' => '25%'));
-		$table->construct_cell($_SERVER['SERVER_SOFTWARE'], array('width' => '25%'));
-		$table->construct_cell("", array('colspan' => 2,'width' => '50%'));
+		$table->construct_cell($_SERVER['SERVER_SOFTWARE'], array('colspan' => 3));
 		$table->construct_row();
 	}
 
