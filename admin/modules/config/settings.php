@@ -999,7 +999,9 @@ if($mybb->input['action'] == "change")
 			$mybb->input['upsetting']['recaptchapublickey'],
 			$mybb->input['upsetting']['recaptchascore'],
 			$mybb->input['upsetting']['hcaptchaprivatekey'],
-			$mybb->input['upsetting']['hcaptchapublickey']
+			$mybb->input['upsetting']['hcaptchapublickey'],
+			$mybb->input['upsetting']['cfturnstileprivatekey'],
+			$mybb->input['upsetting']['cfturnstilepublickey']
 		))
 		{
 			$captchaimage = $mybb->input['upsetting']['captchaimage'];
@@ -1008,6 +1010,8 @@ if($mybb->input['action'] == "change")
 			$recaptchascore = $mybb->input['upsetting']['recaptchascore'];
 			$hcaptchaprivatekey = $mybb->input['upsetting']['hcaptchaprivatekey'];
 			$hcaptchapublickey = $mybb->input['upsetting']['hcaptchapublickey'];
+			$cfturnstileprivatekey = $mybb->input['upsetting']['cfturnstileprivatekey'];
+			$cfturnstilepublickey = $mybb->input['upsetting']['cfturnstilepublickey'];
 
 			if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
 			{
@@ -1021,6 +1025,10 @@ if($mybb->input['action'] == "change")
 			{
 				$set_captcha_image = true;
 			}
+			else if($captchaimage == captcha::CFTURNSTILE && (!$cfturnstileprivatekey || !$cfturnstilepublickey))
+			{
+				$set_captcha_image = true;
+			}
 		}
 
 		//Checking settings for reCAPTCHA or hCaptcha and public/private key not set?
@@ -1030,6 +1038,8 @@ if($mybb->input['action'] == "change")
 		$recaptchascore = $mybb->settings['recaptchascore'];
 		$hcaptchaprivatekey = $mybb->settings['hcaptchaprivatekey'];
 		$hcaptchapublickey = $mybb->settings['hcaptchapublickey'];
+		$cfturnstileprivatekey = $mybb->settings['cfturnstileprivatekey'];
+		$cfturnstilepublickey = $mybb->settings['cfturnstilepublickey'];
 
 		if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
 		{
@@ -1040,6 +1050,10 @@ if($mybb->input['action'] == "change")
 			$set_captcha_image = true;
 		}
 		else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
+		{
+			$set_captcha_image = true;
+		}
+		else if($captchaimage == captcha::CFTURNSTILE && ( !$cfturnstileprivatekey || !$cfturnstilepublickey))
 		{
 			$set_captcha_image = true;
 		}
@@ -2014,6 +2028,10 @@ function print_setting_peekers()
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstilepublickey, #row_setting_cfturnstileprivatekey"), /(8|9)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstileprivatekey, #row_setting_cfturnstileprivatekey"), /(8|9)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstiletheme"), 9, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstilesize"), 9, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
