@@ -30,7 +30,7 @@ if(!$mybb->input['action'])
 			admin_redirect("index.php?module=tools-optimizedb");
 		}
 
-		@set_time_limit(0);
+		my_set_time_limit();
 
 		$db->set_table_prefix('');
 

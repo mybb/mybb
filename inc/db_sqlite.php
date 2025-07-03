@@ -777,7 +777,7 @@ class DB_SQLite implements DB_Base
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
 	 * @param boolean $no_quote An option to quote incoming values of the array.
-	 * @return PDOStatement The query data.
+	 * @return PDOStatement|false The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{

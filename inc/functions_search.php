@@ -229,7 +229,7 @@ function get_visible_where($table_alias = null)
  * Build a array list of the forums this user cannot search due to password protection
  *
  * @param array $fids the fids to check (leave blank to check all forums)
- * @return array return a array list of password protected forums the user cannot search
+ * @return array|false return a array list of password protected forums the user cannot search
  */
 function get_password_protected_forums($fids=array())
 {

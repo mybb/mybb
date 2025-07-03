@@ -1612,7 +1612,7 @@ function usergroup_displaygroup($gid)
  * @param int $fid The forum ID to build permissions for (0 builds for all forums)
  * @param int $uid The user to build the permissions for (0 will select the uid automatically)
  * @param int $gid The group of the user to build permissions for (0 will fetch it)
- * @return array Forum permissions for the specific forum or forums
+ * @return array|false Forum permissions for the specific forum or forums
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
@@ -1923,7 +1923,7 @@ function check_forum_password($fid, $pid=0, $return=false)
  * @param int $fid The forum ID
  * @param int $uid The user ID to fetch permissions for (0 assumes current logged in user)
  * @param string $parentslist The parent list for the forum (if blank, will be fetched)
- * @return array Array of moderator permissions for the specific forum
+ * @return array|false Array of moderator permissions for the specific forum
  */
 function get_moderator_permissions($fid, $uid=0, $parentslist="")
 {
@@ -4041,7 +4041,7 @@ function build_clickable_smilies()
  * Builds thread prefixes and returns a selected prefix (or all)
  *
  *  @param int $pid The prefix ID (0 to return all)
- *  @return array The thread prefix's values (or all thread prefixes)
+ *  @return array|false The thread prefix's values (or all thread prefixes)
  */
 function build_prefixes($pid=0)
 {
@@ -6026,7 +6026,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
  * Returns the age of a user with specified birthday.
  *
  * @param string $birthday The birthday of a user.
- * @return int The age of a user with that birthday.
+ * @return int|void The age of a user with that birthday.
  */
 function get_age($birthday)
 {
@@ -6668,7 +6668,7 @@ function get_user($uid)
  *
  * @param string $username The user username of the user.
  * @param array $options
- * @return array The users data
+ * @return array|bool The users data
  */
 function get_user_by_username($username, $options=array())
 {
@@ -7049,7 +7049,7 @@ function rebuild_settings()
  * Build a PREG compatible array of search highlight terms to replace in posts.
  *
  * @param string $terms Incoming terms to highlight
- * @return array PREG compatible array of terms
+ * @return array|false PREG compatible array of terms
  */
 function build_highlight_array($terms)
 {
@@ -7868,7 +7868,7 @@ function is_member($groups, $user = false)
  * @param string $delimeter The delimeter to split by
  * @param string $string The string to split
  * @param string $escape The escape character or string if we have one.
- * @return array Array of split string
+ * @return array|string Array of split string
  */
 function escaped_explode($delimeter, $string, $escape="")
 {
@@ -8395,7 +8395,7 @@ function fetch_ip_range($ipaddress)
 /**
  * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
  *
- * @return float The time taken
+ * @return float|void The time taken
  */
 function get_execution_time()
 {
@@ -9528,4 +9528,26 @@ function mk_path_abs($path, $base = MYBB_ROOT)
 	}
 
 	return $path;
+}
+
+/**
+ * Sets the maximum execution time to 0 (zero)
+ *
+ * @param int $seconds The maximum execution time, in seconds. If set to zero, no time limit is imposed.
+ * @return bool Returns true if the maximum execution time was set, false if it was not
+ */
+function my_set_time_limit($seconds = 0)
+{
+	if(!function_exists('set_time_limit')) {
+        return false;
+	}
+
+	if(strpos(ini_get('disable_functions'),'set_time_limit') !== false)
+	{
+		return false;
+	}
+
+	set_time_limit($seconds);
+
+	return true;
 }

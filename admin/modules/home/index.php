@@ -301,6 +301,13 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->attachments}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$approved_attachs}</strong> {$lang->attachments}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=attachments\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
 	$table->construct_row();
+	
+	if(isset($_SERVER['SERVER_SOFTWARE'])) 
+	{
+		$table->construct_cell("<strong>{$lang->server_software}</strong>", array('width' => '25%'));
+		$table->construct_cell($_SERVER['SERVER_SOFTWARE'], array('colspan' => 3));
+		$table->construct_row();
+	}
 
 	$table->output($lang->dashboard);
 

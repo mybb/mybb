@@ -23,6 +23,7 @@ $l['active_users'] = "Active Users";
 $l['registrations_today'] = "Registrations Today";
 $l['awaiting_activation'] = "Awaiting Activation";
 $l['server_load'] = "Server Load";
+$l['server_software'] = "Server Software";
 $l['attachments'] = "Attachments";
 $l['used'] = "Used";
 $l['reported_posts'] = "Reported Posts";

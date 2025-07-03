@@ -268,12 +268,26 @@ class postParser
 
 		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
 		{
-			$message = nl2br($message);
-			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
-		}
+			// Split the message into chunks, separating <code> blocks and plain text
+			$parts = preg_split("#(<code>.*?</code>)#is", $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
+			foreach($parts as &$part)
+			{
+				// Apply nl2br only to parts that are not code blocks
+				if (stripos($part, '<code>') !== 0) 
+				{
+					$part = nl2br($part);
+				}
+				
+				// Fix up new lines and block level elements
+				$part = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $part);
+				$part = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $part);				
+			}
+
+			// Reassemble the message
+			$message = implode('', $parts);
+		}
+		
 		if($this->clear_needed)
 		{
 			$message .= '<br class="clear" />';
@@ -1051,9 +1065,7 @@ class postParser
 		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
-		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
-		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
-
+		
 		eval("\$mycode_code = \"".$templates->get("mycode_code", 1, 0)."\";");
 		return $mycode_code;
 	}
@@ -1222,12 +1234,30 @@ class postParser
 	*/
 	function mycode_parse_font_callback($matches)
 	{
-		// Replace any occurrence(s) of double quotes in fonts with single quotes.
-		// A back-fix for double-quote-containing MyBB font tags in existing
-		// posts prior to the client-side aspect of this fix for the
-		// browser-independent SCEditor bug of issue #4182.
-		$fonts = str_replace('"', "'", $matches[2]);
-
+		preg_match_all("/
+			(?:                                 
+				\"(?:[^\"]*)\"|	# double-quoted font                    
+				'(?:[^']*)'|	# single-quoted font 
+				[^,]+			# unquoted font name (anything but comma)
+			)
+		/x", $matches[2], $matchedFonts);
+		
+		$cleanFonts = array();
+		
+		foreach ($matchedFonts[0] as $font)
+		{
+			// Remove leading/trailing quotes and spaces
+			$font = trim($font, "\"' ");
+	
+			// If font name contains a space or comma, wrap it in single quotes
+			if (strpos($font, ' ') !== false || strpos($font, ',') !== false) {
+				$font = "'{$font}'";
+			}
+	
+			$cleanFonts[] = $font;
+		}
+	
+		$fonts = implode(', ', $cleanFonts);
 		return "<span style=\"font-family: {$fonts};\" class=\"mycode_font\">{$matches[3]}</span>";
 	}
 

@@ -9,7 +9,6 @@
  */
 
 ignore_user_abort(true);
-@set_time_limit(0);
 
 define("IN_MYBB", 1);
 define("NO_ONLINE", 1);
@@ -17,6 +16,8 @@ define("IN_TASK", 1);
 define('THIS_SCRIPT', 'task.php');
 
 require_once dirname(__FILE__)."/inc/init.php";
+
+my_set_time_limit();
 
 // Load language
 $lang->set_language($mybb->settings['bblanguage']);

@@ -629,7 +629,7 @@ function build_postbit($post, $post_type=0)
 
 		// Quick Delete button
 		$can_delete_thread = $can_delete_post = 0;
-		if($mybb->user['uid'] == $post['uid'] && $thread['closed'] == 0)
+		if($mybb->user['uid'] == $post['uid'] && empty($thread['closed']))
 		{
 			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{

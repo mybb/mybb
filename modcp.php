@@ -1490,13 +1490,13 @@ if($mybb->input['action'] == "do_edit_announcement")
 
 	// Basic error checking
 	$mybb->input['title'] = $mybb->get_input('title');
-	if(!trim($mybb->input['title']))
+	if(!trim_blank_chrs($mybb->input['title']))
 	{
 		$errors[] = $lang->error_missing_title;
 	}
 
 	$mybb->input['message'] = $mybb->get_input('message');
-	if(!trim($mybb->input['message']))
+	if(!trim_blank_chrs($mybb->input['message']))
 	{
 		$errors[] = $lang->error_missing_message;
 	}

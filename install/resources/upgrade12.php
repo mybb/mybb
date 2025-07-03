@@ -19,8 +19,6 @@ $upgrade_detail = array(
 	"requires_deactivated_plugins" => 1,
 );
 
-@set_time_limit(0);
-
 // We need to globalize $db here because when this script is called
 // during load_module $db is not globalized in the function
 global $db;
