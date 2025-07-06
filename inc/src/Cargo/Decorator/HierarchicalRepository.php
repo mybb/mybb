@@ -260,7 +260,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
                 if (!in_array($identifier, $disinherited)) {
                     $results[Repository::SCOPE_ENTITY][$identifier] = $this->getMergedProperties(
                         $entityProperties,
-                        $results[Repository::SCOPE_SHARED][$identifier] ?? [],
+                        $results[Repository::SCOPE_ENTITY][$identifier] ?? [],
                     );
 
                     if (!$repository->entityDeclaredInherited($identifier)) {
