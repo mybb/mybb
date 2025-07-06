@@ -23,18 +23,11 @@ class pluginSystem
 	public $current_hook;
 
 	/**
-	 * The current hook level to support nested hooks
-	 *
-	 * @var int
-	 */
-	public $hook_nested_depth = 0;
-
-	/**
 	 * Stores a list of current nested hooks
 	 *
 	 * @var array
 	 */
-	public $nested_hook_objects = array();
+	public array $current_hook_stack = [];
 
 	/**
 	 * Load all plugins.
@@ -160,9 +153,9 @@ class pluginSystem
 			return $arguments;
 		}
 
-		++$this->hook_nested_depth;
+		$this->current_hook = $hook;
 
-		$this->nested_hook_objects[$this->hook_nested_depth] = $this->current_hook = $hook;
+		$this->current_hook_stack[] = $this->current_hook;
 
 		ksort($this->hooks[$hook]);
 
@@ -196,22 +189,9 @@ class pluginSystem
 			}
 		}
 
-		unset($this->nested_hook_objects[$this->hook_nested_depth]);
+		array_pop($this->current_hook_stack);
 
-		--$this->hook_nested_depth;
-
-		if($this->hook_nested_depth < 1)
-		{
-			$this->hook_nested_depth = 0;
-
-			$this->current_hook = '';
-
-			$this->nested_hook_objects = array();
-		}
-		else
-		{
-			$this->current_hook = $this->nested_hook_objects[$this->hook_nested_depth];
-		}
+		$this->current_hook = end($this->current_hook_stack);
 
 		return $arguments;
 	}
