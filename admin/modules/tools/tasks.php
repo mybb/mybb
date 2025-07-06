@@ -595,7 +595,10 @@ if($mybb->input['action'] == "run")
 	}
 
 	ignore_user_abort(true);
-	my_set_time_limit();
+
+	if (function_exists('set_time_limit')) {
+		set_time_limit(0);
+	}
 
 	$plugins->run_hooks("admin_tools_tasks_run");
 

@@ -13,7 +13,9 @@ function task_backupdb($task)
 	global $db, $config, $lang, $plugins;
 	static $contents;
 
-	my_set_time_limit();
+	if (function_exists('set_time_limit')) {
+		set_time_limit(0);
+	}
 
 	if(!defined('MYBB_ADMIN_DIR'))
 	{
