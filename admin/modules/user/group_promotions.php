@@ -680,7 +680,7 @@ if($mybb->input['action'] == "logs")
 
 		if($log['type'] == "secondary" || (!empty($log['oldusergroup']) && strstr(",", $log['oldusergroup'])))
 		{
-			$log['oldusergroup'] = "<i>".$lang->multiple_usergroups."</i>";
+			$log['oldusergroup'] = "<em>".$lang->multiple_usergroups."</em>";
 			$log['newusergroup'] = htmlspecialchars_uni($groupscache[$log['newusergroup']]['title']);
 		}
 		else

@@ -110,7 +110,7 @@ if($mybb->input['action'] == "browse")
 			$result['version']['value'] = htmlspecialchars_uni($result['version']['value']);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><em><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></em>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
 			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
@@ -318,7 +318,7 @@ if($mybb->input['action'] == "check")
 				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
 										{$lang->error_vcheck_vulnerable} {$names[$plugin['attributes'][$compare_by]]['name']}
 										</div>
-										<p>	<b>{$lang->error_vcheck_vulnerable_notes}</b> <br /><br /> {$plugin['vulnerable']['value']}</p>");
+										<p>	<strong>{$lang->error_vcheck_vulnerable_notes}</strong> <br /><br /> {$plugin['vulnerable']['value']}</p>");
 			}
 			else
 			{
@@ -328,7 +328,7 @@ if($mybb->input['action'] == "check")
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
 			if($is_vulnerable)
 			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><b>{$lang->deactivate}</b></a>", array("class" => "align_center", "width" => 150));
+				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><strong>{$lang->deactivate}</strong></a>", array("class" => "align_center", "width" => 150));
 			}
 			else
 			{
@@ -675,7 +675,7 @@ function build_plugin_list($plugin_list)
 			$uninstall_button = true;
 		}
 
-		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
+		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><em><small>{$lang->created_by} {$plugininfo['author']}</small></em>");
 
 		// Plugin is not installed at all
 		if($installed == false)

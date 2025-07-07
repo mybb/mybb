@@ -72,7 +72,7 @@ function upgrade15_usernameverify()
 
 	$output->print_header("Performing Queries");
 
-	echo "<p><span style=\"font-size: xx-large\">WARNING - PLEASE READ THE FOLLOWING:</span> The next step of this process will remove <strong>ALL</strong> commas (,) from the <i>usernames</i> of your forum whom contain them. The reason for this change is commas in usernames can make the private messages in MyBB return errors when sending to these users.</p>";
+	echo "<p><span style=\"font-size: xx-large\">WARNING - PLEASE READ THE FOLLOWING:</span> The next step of this process will remove <strong>ALL</strong> commas (,) from the <em>usernames</em> of your forum whom contain them. The reason for this change is commas in usernames can make the private messages in MyBB return errors when sending to these users.</p>";
 	flush();
 
 	$contents .= "Click next to continue with the upgrade process once you have read the warning.</p>";
