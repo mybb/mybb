@@ -248,23 +248,24 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
             Repository::SCOPE_ENTITY => [],
         ];
 
-        $disinherited = [];
+        $disinheritedEntities = [];
 
+        // iterate with descending priority
         foreach ($this->getRepositories() as $repository) {
             $results[Repository::SCOPE_SHARED] = $this->getMergedProperties(
                 $repository->getSharedProperties(),
                 $results[Repository::SCOPE_SHARED],
             );
 
-            foreach ($repository->getEntityProperties() as $identifier => $entityProperties) {
-                if (!in_array($identifier, $disinherited)) {
-                    $results[Repository::SCOPE_ENTITY][$identifier] = $this->getMergedProperties(
+            foreach ($repository->getEntityProperties() as $key => $entityProperties) {
+                if (!in_array($key, $disinheritedEntities)) {
+                    $results[Repository::SCOPE_ENTITY][$key] = $this->getMergedProperties(
                         $entityProperties,
-                        $results[Repository::SCOPE_SHARED][$identifier] ?? [],
+                        $results[Repository::SCOPE_ENTITY][$key] ?? [],
                     );
 
-                    if (!$repository->entityDeclaredInherited($identifier)) {
-                        $disinherited[] = $identifier;
+                    if (!$repository->entityDeclaredInherited($key)) {
+                        $disinheritedEntities[] = $key;
                     }
                 }
             }
