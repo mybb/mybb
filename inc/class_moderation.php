@@ -899,7 +899,7 @@ class Moderation
 				}
 
 				// Add attachment count to thread
-				if($visible == 1)
+				if(!empty($visible))
 				{
 					$thread_counters[$mastertid]['attachmentcount'] += $post['attachmentcount'];
 				}

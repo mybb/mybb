@@ -35,6 +35,8 @@ if($mybb->input['action'] == 'add_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_add_prefix');
 
+	$forum_checked = $group_checked = [];
+
 	if($mybb->request_method == 'post')
 	{
 		if(trim($mybb->input['prefix']) == '')

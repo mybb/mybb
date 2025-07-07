@@ -3560,6 +3560,8 @@ function build_users_view($view)
 			$view['conditions']['usergroup'] = array($view['conditions']['usergroup']);
 		}
 
+		$additional_sql = '';
+
 		foreach($view['conditions']['usergroup'] as $usergroup)
 		{
 			$usergroup = (int)$usergroup;
@@ -3568,8 +3570,6 @@ function build_users_view($view)
 			{
 				continue;
 			}
-
-			$additional_sql = '';
 
 			switch($db->type)
 			{

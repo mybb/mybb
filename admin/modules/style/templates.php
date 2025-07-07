@@ -646,7 +646,7 @@ if($mybb->input['action'] == "edit_template")
 	}
 	$template['title'] = htmlspecialchars_uni($template['title']);
 
-	if($admin_options['codepress'] != 0)
+	if(!empty($admin_options['codepress']))
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css?ver=1813" rel="stylesheet">
@@ -1194,7 +1194,7 @@ if($mybb->input['action'] == "search_replace")
 		}
 	}
 
-	if($admin_options['codepress'] != 0)
+	if(!empty($admin_options['codepress']))
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css?ver=1813" rel="stylesheet">
@@ -1313,6 +1313,8 @@ if($mybb->input['action'] == "find_updated")
 	$page->output_header($lang->find_updated);
 
 	$page->output_nav_tabs($sub_tabs, 'find_updated');
+
+	$templatesets = [];
 
 	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
 	while($templateset = $db->fetch_array($query))

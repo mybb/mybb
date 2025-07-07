@@ -719,6 +719,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	// If we're previewing a post then generate the preview.
 	$newthread['preview'] = false;
+
+	$postbit = '';
+
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
@@ -908,14 +911,14 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$newthread['showcloseoption'] = false;
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
+		if(is_moderator($fid, "canopenclosethreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showcloseoption'] = true;
 		}
 
 		$newthread['showstickoption'] = false;
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
+		if(is_moderator($fid, "canstickunstickthreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showstickoption'] = true;
@@ -923,6 +926,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$newthread['showattachments'] = false;
+
+	$attachments = [];
+
 	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
 	{
 		// Get a listing of the current attachments, if there are any
@@ -938,7 +944,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$attachwhere = "posthash='".$db->escape_string($newthread['posthash'])."'";
 		}
 
-		$attachments = [];
 		$query = $db->simple_select("attachments", "*", $attachwhere);
 		while($attachment = $db->fetch_array($query))
 		{

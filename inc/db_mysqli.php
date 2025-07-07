@@ -187,6 +187,8 @@ class DB_MySQLi implements DB_Base
 			$this->db_encoding = $config['encoding'];
 		}
 
+		$connections = [];
+
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
@@ -221,6 +223,9 @@ class DB_MySQLi implements DB_Base
 
 				// Specified a custom port for this connection?
 				$port = 0;
+
+				$hostname = '';
+
 				if(strstr($single_connection['hostname'],':'))
 				{
 					list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
@@ -291,6 +296,9 @@ class DB_MySQLi implements DB_Base
 		$this->database = $database;
 
 		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
+
+		$slave_success = null;
+
 		if($this->write_link)
 		{
 			$slave_success = @mysqli_select_db($this->write_link, $database) or $this->error("[WRITE] Unable to select slave database", $this->write_link);

@@ -770,7 +770,7 @@ EOF;
 
 		if(!empty($sub_menu))
 		{
-			$this->_build_submenu($sub_menu_title, $sub_menu);
+			$this->_build_submenu($sub_menu_title ?? '', $sub_menu);
 		}
 		return $build_menu;
 	}
@@ -928,6 +928,9 @@ EOF;
 		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
+
+		$dropdownsmilies = $moresmilies = $hiddensmilies = "";
+
 		if($smilies)
 		{
 			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
@@ -948,7 +951,7 @@ EOF;
 
 			if(!$smiliecache)
 			{
-				if(!is_array($smilie_cache))
+				if(!isset($smilie_cache) || is_array($smilie_cache))
 				{
 					$smilie_cache = $cache->read("smilies");
 				}
@@ -965,7 +968,6 @@ EOF;
 			{
 				reset($smiliecache);
 
-				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
 				foreach($smiliecache as $smilie)

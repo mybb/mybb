@@ -719,6 +719,9 @@ if($mybb->input['action'] == "thread")
 	// Threaded or linear display?
 	$thread['showthreaded'] = false;
 	$threadedbits = [];
+
+	$multipage = '';
+
 	if($mybb->get_input('mode') == 'threaded')
 	{
 		$thread['showthreaded'] = true;
@@ -1108,7 +1111,17 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Decide whether or not to show quick reply.
+
+	$captcha = '';
+
+	$collapsedthead ??= [];
+
+	$collapsedimg ??= [];
+
 	$thread['showquickreply'] = false;
+
+	$collapsed ??= '';
+
 	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || empty($forumpermissions['canonlyreplyownthreads'])))
 	{
 		$thread['showquickreply'] = true;
@@ -1116,7 +1129,6 @@ if($mybb->input['action'] == "thread")
 		$thread['last_pid'] = $db->fetch_field($query, "pid");
 
 		// Show captcha image for guests if enabled
-		$captcha = '';
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -1316,6 +1328,9 @@ if($mybb->input['action'] == "thread")
 
 	// Get users viewing this thread
 	$usersbrowsing='';
+
+	$onlinemembers = [];
+
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -1324,7 +1339,6 @@ if($mybb->input['action'] == "thread")
 		$thread['membercount'] = 0;
 		$thread['inviscount'] = 0;
 		$thread['onlinemembers'] = 0;
-		$onlinemembers = [];
 		$doneusers = array();
 
 		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");

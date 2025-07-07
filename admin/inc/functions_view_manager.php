@@ -205,6 +205,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 //]]>
 </script>\n";
 
+		$field_options = [];
+
 		foreach($fields as $key => $field)
 		{
 			$field_options[$key] = $field['title'];
@@ -374,6 +376,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$field_select = "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
+
+		$active = [];
+
 		if(is_array($mybb->input['fields']))
 		{
 			foreach($mybb->input['fields'] as $field)
@@ -399,7 +404,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			}
 		}
 		$field_select .= "</div></ul>\n";
-		$field_select .= $form->generate_hidden_field("fields_js", @implode(",", @array_keys($active)), array('id' => 'fields_js'));
+		$field_select .= $form->generate_hidden_field("fields_js", implode(",", array_keys($active)), array('id' => 'fields_js'));
 		$field_select = str_replace("'", "\\'", $field_select);
 		$field_select = str_replace("\n", "", $field_select);
 
@@ -407,6 +412,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 //<![CDATA[
 document.write('".str_replace("/", "\/", $field_select)."');
 //]]></script>\n";
+
+		$field_options = [];
 
 		foreach($fields as $key => $field)
 		{
@@ -481,7 +488,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$type_where = "type='".$db->escape_string($mybb->input['type'])."'";
 		}
 
-		$query = $db->simple_select("adminviews", "*", $type_where);
+		$query = $db->simple_select("adminviews", "*", $type_where ?? '');
 		while($admin_view = $db->fetch_array($query))
 		{
 			$fields = my_unserialize($admin_view['fields']);
@@ -504,6 +511,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			foreach($conditions as $name => $condition)
 			{
 				if(!$conditions) continue;
+
+				$is_serialized = '';
+
 				if(is_array($condition))
 				{
 					$condition = my_serialize($condition);
@@ -555,7 +565,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		");
 		while($view = $db->fetch_array($query))
 		{
-			$created = "";
+			$created = $default_class = "";
+
 			if($view['uid'] == 0)
 			{
 				$view_type = "default";

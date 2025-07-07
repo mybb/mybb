@@ -2677,7 +2677,7 @@ if($mybb->input['action'] == 'editlists')
 					'sentRequests' => $sent_rows,
 				]);
 
-				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
+				echo "<script type=\"text/javascript\">{$message_js}</script>";
 			}
 			else
 			{

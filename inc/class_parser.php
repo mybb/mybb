@@ -253,7 +253,7 @@ class postParser
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
-					$message = preg_replace("#\<mybb-code>\n?#", $code, $message, 1);
+					$message = preg_replace("#\<mybb-code>\n?#", $code ?? '', $message, 1);
 				}
 			}
 		}
@@ -1642,7 +1642,7 @@ class postParser
 		return template('@parser/mycodes/video.twig', [
 			'id' => $this->encode_url($id),
 			'type' => $video,
-			'local' => $local
+			'local' => $local ?? ''
 		]);
 	}
 

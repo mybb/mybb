@@ -961,6 +961,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	// Preview a post that was written.
 	$newreply['preview'] = false;
+
+	$postbit = '';
+
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
@@ -1487,7 +1490,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		'attachments' => $attachments,
 		'posts' => $posts,
 		'captcha' => $captcha,
-		'prefixselect' => $prefixselect,
 		'posticons' => $posticons,
         'post_javascript' => $post_javascript,
 	]));

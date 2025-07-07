@@ -255,6 +255,8 @@ if($mybb->input['action'] == "edit")
 
 	echo $form->generate_hidden_field("uid", $uid);
 
+	$permission_modules = [];
+
 	// Fetch all of the modules we have
 	$modules_dir = MYBB_ADMIN_DIR."modules";
 	$dir = opendir($modules_dir);
@@ -275,6 +277,8 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	closedir($dir);
+
+	$module_tabs = [];
 
 	ksort($modules);
 	foreach($modules as $disp_order => $mod)

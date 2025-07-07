@@ -219,6 +219,8 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
+	$endtime_checked = [];
+
 	if($mybb->input['endtime_type'] == "1")
 	{
 		$endtime_checked[1] = "checked=\"checked\"";

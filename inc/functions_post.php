@@ -815,14 +815,14 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
-	if($mybb->user['showimages'] != 1 &&
+	if(empty($mybb->user['showimages']) &&
 		$mybb->settings['guestimages'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 &&
+	if(empty($mybb->user['showvideos']) &&
 		$mybb->settings['guestvideos'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{

@@ -151,7 +151,11 @@ class FilesystemNestedStore implements NestedStoreInterface
     {
         $path = $this->getFilePath($key);
 
-        mkdir(dirname($path), recursive: true);
+		$pathName = dirname($path);
+
+		if(!file_exists($path)) {
+			mkdir($pathName, recursive: true);
+		}
 
         $encoded = json_encode($this->cache[$key], JSON_PRETTY_PRINT);
 

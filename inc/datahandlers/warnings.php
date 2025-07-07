@@ -423,6 +423,8 @@ class WarningsHandler extends DataHandler
 								$warning['title'] = $this->warning_type['title'];
 							}
 
+							$bantime = '';
+
 							// Never lift the ban?
 							if($action['length'] <= 0)
 							{
@@ -604,7 +606,7 @@ class WarningsHandler extends DataHandler
 							}
 
 							// if the thing isn't in force, don't bother with trying to update anything
-							if(!$user[$current_inforce_field])
+							if(!isset($current_inforce_field) || !$user[$current_inforce_field])
 							{
 								continue;
 							}

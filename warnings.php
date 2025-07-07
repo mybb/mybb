@@ -517,8 +517,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 
 	if(!trim($mybb->get_input('reason')))
 	{
-		$warn_errors[] = $lang->no_revoke_reason;
-		$warn_errors = inline_error($warn_errors);
+		$warn_errors = inline_error([$lang->no_revoke_reason]);
 		$mybb->input['action'] = "view";
 	}
 	else

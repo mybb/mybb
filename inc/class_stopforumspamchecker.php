@@ -193,6 +193,8 @@ class StopForumSpamChecker
 	{
 		global $mybb, $lang;
 
+		$settingsenabled = [];
+
 		foreach($sfsSettingsEnabled as $setting)
 		{
 			if($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
@@ -214,7 +216,7 @@ class StopForumSpamChecker
 			}
 		}
 
-		if(sizeof($settingsenabled) > 1)
+		if($settingsenabled)
 		{
 			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
 			unset($settingsenabled[sizeof($settingsenabled)-1]);

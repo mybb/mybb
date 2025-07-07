@@ -301,7 +301,7 @@ $theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties'])
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
-$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
+$theme['stylesheets'] = my_unserialize($theme['stylesheets'] ?? []) ?? [];
 $stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
 if(!empty($theme['color']))
 {
@@ -401,7 +401,7 @@ if(!empty($css_php_script_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if(isset($theme['imgdir']) && my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -424,7 +424,7 @@ if(my_validate_url($theme['imgdir']))
 }
 else
 {
-	$img_directory = $theme['imgdir'];
+	$img_directory = $theme['imgdir'] ?? '';
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
@@ -460,7 +460,7 @@ else
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
-if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
+if(isset($theme['logo']) && !preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
 	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
@@ -907,7 +907,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 // Are we showing the quick theme selection box?
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'] ?? '', 0, '', false, true);
 
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{

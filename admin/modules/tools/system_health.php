@@ -83,6 +83,9 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	}
 
 	$count = 0;
+
+	$done_set = $done_output = [];
+
 	foreach($t_cache as $sid => $templates)
 	{
 		if(!$done_set[$sid])
@@ -377,6 +380,8 @@ if($mybb->input['action'] == "utf8_conversion")
 			$old_table_prefix = $db->table_prefix;
 			$db->set_table_prefix('');
 
+			$mybb_tables = [];
+
 			$tables = $db->list_tables($mybb->config['database']['database']);
 			foreach($tables as $key => $tablename)
 			{
@@ -456,7 +461,10 @@ if($mybb->input['action'] == "utf8_conversion")
 
 		if($mybb->input['do'] == "all")
 		{
+			$mybb_tables = [];
+
 			$tables = $db->list_tables($mybb->config['database']['database']);
+
 			foreach($tables as $key => $tablename)
 			{
 				if(substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
@@ -475,7 +483,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				}
 			}
 
-			if(is_array($mybb_tables))
+			if(!empty($mybb_tables))
 			{
 				asort($mybb_tables);
 				reset($mybb_tables);

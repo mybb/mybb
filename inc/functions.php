@@ -3654,7 +3654,12 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 		else
 		{
 			// Smilies
-			$emoticons = [];
+			$emoticons = [
+				'hidden' => '',
+				'dropdown' => '',
+				'more' => '',
+			];
+
 			if($smilies)
 			{
 				if(!$smiliecache)
@@ -5147,7 +5152,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 		}
 	}
 
-	if(is_array($tcache[$tid]))
+	if(isset($tcache[$tid]) && is_array($tcache[$tid]))
 	{
 		foreach($tcache[$tid] as $theme)
 		{

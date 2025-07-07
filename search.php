@@ -1601,7 +1601,7 @@ else if($mybb->input['action'] == "thread")
 		$last_search = $db->fetch_array($query);
 
 		// We shouldn't show remaining time if time is 0 or under.
-		$remaining_time = $mybb->settings['searchfloodtime'] - (TIME_NOW - $last_search['dateline']);
+		$remaining_time = $mybb->settings['searchfloodtime'] - (TIME_NOW - ($last_search['dateline'] ?? 0));
 		// Users last search was within the flood time, show the error.
 		if(!empty($last_search['sid']) && $remaining_time > 0)
 		{

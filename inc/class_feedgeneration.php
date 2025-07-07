@@ -87,6 +87,8 @@ class FeedGenerator
 	{
 		global $lang;
 
+		$serial = 0;
+
 		// First, add the feed metadata.
 		switch($this->feed_format)
 		{
@@ -98,7 +100,6 @@ class FeedGenerator
 				$this->feed .= "\t\"feed_url\": ".json_encode($this->channel['link']."syndication.php").",\n";
 				$this->feed .= "\t\"description\": ".json_encode($this->channel['description']).",\n";
 				$this->feed .= "\t\"items\": [\n";
-				$serial = 0;
 				break;
 			// Ouput Atom 1.0 formatted feed.
 			case "atom1.0":

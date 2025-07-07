@@ -54,7 +54,7 @@ if($mybb->input['action'] == "delete_post_tool")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=config-mod_tools&amp;action=post_tools&amp;tid={$type['tid']}", $lang->confirm_post_tool_deletion);
+		$page->output_confirm_action("index.php?module=config-mod_tools&amp;action=post_tools&amp;tid={$tool['tid']}", $lang->confirm_post_tool_deletion);
 	}
 }
 
@@ -171,6 +171,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 		{
 			$errors[] = $lang->error_missing_description;
 		}
+
+		$forum_checked = $group_checked = [];
 
 		if($mybb->input['forum_type'] == 2)
 		{

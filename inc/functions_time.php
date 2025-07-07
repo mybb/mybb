@@ -269,6 +269,8 @@ global $_month_table_normal,$_month_table_leaf;
 	$d366 = $_day_power * 366;
 	$d365 = $_day_power * 365;
 
+	$month = 0;
+
 	if ($d < 0) {
 
 		if (empty($YRS)) $YRS = array(
@@ -350,6 +352,8 @@ global $_month_table_normal,$_month_table_leaf;
 
 		//echo ' yr=',$a,' ', $d,'.';
 
+		$lastd = 0;
+
 		for (; --$a >= 0;) {
 			$lastd = $d;
 
@@ -363,10 +367,13 @@ global $_month_table_normal,$_month_table_leaf;
 		}
 		/**/
 
-		$secsInYear = 86400 * ($leaf ? 366 : 365) + $lastd;
+		$secsInYear = 86400 * (!empty($leaf) ? 366 : 365) + $lastd;
 
 		$d = $lastd;
 		$mtab = ($leaf) ? $_month_table_leaf : $_month_table_normal;
+
+		$ndays = 0;
+
 		for ($a = 13 ; --$a > 0;) {
 			$lastd = $d;
 			$d += $mtab[$a] * $_day_power;

@@ -276,6 +276,8 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['lifted'] = '---';
 	}
 
+	$length_list = [];
+
 	foreach($ban_times as $time => $period)
 	{
 		if($time != '---')

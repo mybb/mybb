@@ -166,6 +166,8 @@ class datacache
 			$this->call_time += $call_time;
 			$this->call_count++;
 
+			$hit = null;
+
 			if($mybb->debug_mode)
 			{
 				$hit = true;

@@ -170,6 +170,8 @@ class DB_PgSQL implements DB_Base
 	 */
 	function connect($config)
 	{
+		$connections = [];
+
 		// Simple connection to one server
 		if(array_key_exists('hostname', $config))
 		{

@@ -78,7 +78,7 @@ class PhpMail extends MailHandler
 		$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		$function_used = 'mail()';
 
-		if(defined('IN_ADMINCP') && $pos !== false)
+		if(isset($temp_script_path))
 		{
 			$_SERVER['PHP_SELF'] = $temp_script_path;
 		}

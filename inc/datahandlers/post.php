@@ -719,7 +719,7 @@ class PostDataHandler extends DataHandler
 					$user = get_user($this->data['uid']);
 				}
 
-				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
+				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && (empty($thread) || $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -730,7 +730,7 @@ class PostDataHandler extends DataHandler
 				// Decide whether this prefix can be used in our forum
 				$forums = explode(",", $prefix_cache['forums']);
 
-				if(!in_array($this->data['fid'], $forums) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
+				if(!in_array($this->data['fid'], $forums) && (empty($thread) || $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -915,6 +915,9 @@ class PostDataHandler extends DataHandler
 
 		$closed = $thread['closed'];
 
+		// Fetch the forum this post is being made in
+		$forum = get_forum($post['fid']);
+
 		// This post is being saved as a draft.
 		if($post['savedraft'])
 		{
@@ -995,9 +998,6 @@ class PostDataHandler extends DataHandler
 					$db->update_query('threads', $modoptions_update, "tid='{$thread['tid']}'");
 				}
 			}
-
-			// Fetch the forum this post is being made in
-			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
 			$forumpermissions = forum_permissions($post['fid'], $post['uid']);
