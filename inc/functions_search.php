@@ -283,7 +283,7 @@ function clean_keywords($keywords)
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 	$keywords = str_replace('\\"', '"', $keywords);
 	// trim for blank characters
-	$keywords = trim_blank_chrs($keywords);
+	$keywords = trim($keywords);
 	// Search for "and" or "or" and remove if it's at the beginning
 	$keywords = preg_replace('/^((and|or)(\s|$))+/', '', $keywords);
 
