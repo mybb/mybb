@@ -18,7 +18,9 @@ class ThemeletLoader extends FilesystemLoader
     public function __construct(
         private readonly ThemeletInterface $themelet,
         private readonly ?string $mainNamespace = null,
-    ) {}
+    ) {
+        parent::__construct();
+    }
 
     /**
      * @return string|null
