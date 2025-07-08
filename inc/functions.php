@@ -884,23 +884,23 @@ function get_child_list($fid)
 /**
  * Produce a friendly error message page
  *
- * @param string $error_message The error message to be shown
+ * @param string $message The error message to be shown
  * @param string $title The title of the message shown in the title of the page and the error table
- * @param string $error_page Optional additional error page
+ * @param string $page Optional additional error page
  * @param int $status_code HTTP status code to send with the error page
  */
-function error(string $error_message = "", string $title = "", string $error_page = "", int $status_code = 200): never
+function error(string $message = "", string $title = "", string $page = "", int $status_code = 200): never
 {
 	global $db, $lang, $mybb, $plugins;
 
-	$error_message = $plugins->run_hooks("error", $error_message);
+	$message = $plugins->run_hooks("error", $message);
 
 	// AJAX error message?
 	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("errors" => array($error_message)));
+		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
 	
@@ -912,8 +912,8 @@ function error(string $error_message = "", string $title = "", string $error_pag
 
 	output_page(\MyBB\View\template('@frontend/error/error.twig', [
 		'title' => $title,
-		'error_message' => $error_message,
-		'error_page' => $error_page,
+		'message' => $message,
+		'page' => $page,
 	]));
 
 	exit;
