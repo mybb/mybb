@@ -648,6 +648,11 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 	{
 		// binary fields are treated as streams
 		/** @var resource $string */
+		if (!is_resource($string))
+		{
+			return '';
+		}
+	
 		return fgets($string);
 	}
 
