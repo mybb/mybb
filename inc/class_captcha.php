@@ -106,7 +106,7 @@ class captcha
 	{
 		global $mybb, $plugins;
 
-		$this->type = $mybb->settings['captchaimage'];
+		$this->type = (int)$mybb->settings['captchaimage'];
 
 		$args = array(
 			'this' => &$this,
@@ -451,6 +451,7 @@ class captcha
 				}
 			}
 		}
+
 		$plugins->run_hooks('captcha_validate_end', $this);
 
 		if(count($this->errors) > 0)
