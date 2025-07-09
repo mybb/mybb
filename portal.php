@@ -553,7 +553,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			}
 		}
 
-		$icon_cache = $cache->read("posticons");
+		$icon_cache = array();
+
+		if($mybb->settings['allowposticons'] == 1)
+		{
+			$icon_cache = (array)$cache->read("posticons");
+		}
 
 		$query = $db->query("
 			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
@@ -601,7 +606,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$announcement['username'] = $announcement['threadusername'];
 			}
 			$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
-			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
+			if($announcement['icon'] > 0 && !empty($icon_cache[$announcement['icon']]) && $forum[$announcement['fid']]['allowpicons'] != 0)
 			{
 				$icon = $icon_cache[$announcement['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);

@@ -833,10 +833,10 @@ else
 	$announcementlist = '';
 }
 
-$tids = $threadCache = array();
-if($mybb->settings['allowposticons'] == 1)
+$tids = $threadCache = $icon_cache = array();
+if($mybb->settings['allowposticons'] == 1 && $foruminfo['allowpicons'] != 0)
 {
-	$icon_cache = $cache->read("posticons");
+	$icon_cache = (array)$cache->read("posticons");
 }
 
 if($fpermissions['canviewthreads'] != 0)
@@ -864,7 +864,7 @@ if($fpermissions['canviewthreads'] != 0)
 			$ratings = true; // Looks for ratings in the forum
 		}
 
-		if($mybb->settings['allowposticons'] == 1)
+		if(!empty($icon_cache[$thread['icon']]['path']))
 		{
 			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 		}
@@ -1058,7 +1058,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
-		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+		if($thread['icon'] > 0 && !empty($icon_cache[$thread['icon']]))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);

@@ -1637,10 +1637,18 @@ if($mybb->input['action'] == "subscriptions")
 			}
 		}
 
-		$icon_cache = $cache->read("posticons");
+		$icon_cache = array();
+
+		if($mybb->settings['allowposticons'] == 1)
+		{
+			$icon_cache = (array)$cache->read("posticons");
+		}
+
 		$threadprefixes = build_prefixes();
 
 		$threads = '';
+
+		$forums_cache = cache_forums();
 
 		// Now we can build our subscription list
 		foreach($subscriptions as $thread)
@@ -1666,7 +1674,7 @@ if($mybb->input['action'] == "subscriptions")
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 			// Fetch the thread icon if we have one
-			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+			if($thread['icon'] > 0 && !empty($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 			{
 				$icon = $icon_cache[$thread['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
@@ -4330,8 +4338,16 @@ if(!$mybb->input['action'])
 					}
 				}
 
-				$icon_cache = $cache->read("posticons");
+				$icon_cache = array();
+
+				if($mybb->settings['allowposticons'] == 1)
+				{
+					$icon_cache = (array)$cache->read("posticons");
+				}
+
 				$threadprefixes = build_prefixes();
+
+				$forums_cache = cache_forums();
 
 				foreach($subscriptions as $thread)
 				{
@@ -4359,7 +4375,7 @@ if(!$mybb->input['action'])
 						}
 
 						// Icons
-						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
+						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 						{
 							$icon = $icon_cache[$thread['icon']];
 							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
@@ -4521,8 +4537,16 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		$icon_cache = $cache->read("posticons");
+		$icon_cache = array();
+
+		if($mybb->settings['allowposticons'] == 1)
+		{
+			$icon_cache = (array)$cache->read("posticons");
+		}
+
 		$threadprefixes = build_prefixes();
+
+		$forums_cache = cache_forums();
 
 		// Run the threads...
 		$latest_threads_threads = '';
@@ -4558,7 +4582,7 @@ if(!$mybb->input['action'])
 				$thread['threadlink'] = get_thread_link($thread['tid']);
 				$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
-				if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+				if($thread['icon'] > 0 && !empty($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 				{
 					$icon = $icon_cache[$thread['icon']];
 					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
