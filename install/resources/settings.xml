@@ -1493,7 +1493,7 @@ min=0]]></optionscode>
 	<setting name="showownunapproved">
 		<title>Access Own Unapproved Threads / Posts</title>
 		<description><![CDATA[Allow general users to access their own unapproved threads and posts.]]></description>
-		<disporder>24</disporder>
+		<disporder>25</disporder>
 		<optionscode><![CDATA[yesno]]></optionscode>
 		<settingvalue><![CDATA[0]]></settingvalue>
 		<isdefault>1</isdefault>
