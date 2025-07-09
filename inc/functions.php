@@ -886,10 +886,10 @@ function get_child_list($fid)
  *
  * @param string $message The error message to be shown
  * @param string $title The title of the message shown in the title of the page and the error table
- * @param string $page Optional additional error page
+ * @param string $extra_content Optional additional error page content
  * @param int $status_code HTTP status code to send with the error page
  */
-function error(string $message = "", string $title = "", string $page = "", int $status_code = 200): never
+function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 200): never
 {
 	global $db, $lang, $mybb, $plugins;
 
@@ -913,7 +913,7 @@ function error(string $message = "", string $title = "", string $page = "", int 
 	output_page(\MyBB\View\template('@frontend/error/error.twig', [
 		'title' => $title,
 		'message' => $message,
-		'page' => $page,
+		'extra_content' => $extra_content,
 	]));
 
 	exit;

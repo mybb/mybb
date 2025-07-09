@@ -13,6 +13,6 @@
             <p class="alert__description">{% if message %}{{ message|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</p>
         </div>
     </div>
-    {% if page %}{{ page|raw }}{% endif %}
+    {% if extra_content %}{{ extra_content|raw }}{% endif %}
 </div>
 {% endblock body %}
