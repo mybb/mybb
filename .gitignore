@@ -18,6 +18,7 @@ install/lock*
 error.log
 .htaccess
 !admin/backups/.htaccess
+!inc/.htaccess
 .htgroup
 .htpasswd
 
