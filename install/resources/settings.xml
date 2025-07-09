@@ -1490,6 +1490,14 @@ min=0]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
+	<setting name="showownunapproved">
+		<title>Access Own Unapproved Threads / Posts</title>
+		<description><![CDATA[Allow general users to access their own unapproved threads and posts.]]></description>
+		<disporder>24</disporder>
+		<optionscode><![CDATA[yesno]]></optionscode>
+		<settingvalue><![CDATA[0]]></settingvalue>
+		<isdefault>1</isdefault>
+	</setting>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
 			<title>Enable Attachment Functionality</title>
