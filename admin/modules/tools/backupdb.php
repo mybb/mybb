@@ -94,14 +94,15 @@ if($mybb->input['action'] == "dlbackup")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=tools-backupdb");
 	}
 
 	$file = basename($mybb->input['file']);
+    $ext = get_extension($file);
 
-	if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
+    if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file) || filetype(MYBB_ADMIN_DIR.'backups/'.$file) != 'file' || ($ext != 'gz' && $ext != 'sql'))
 	{
 		flash_message($lang->error_backup_doesnt_exist, 'error');
 		admin_redirect("index.php?module=tools-backupdb");
@@ -141,13 +142,20 @@ if($mybb->input['action'] == "backup")
 
 	if($mybb->request_method == "post")
 	{
-		if(!is_array($mybb->input['tables']))
+		if(empty($mybb->input['tables']) || !is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_tables_not_selected, 'error');
 			admin_redirect("index.php?module=tools-backupdb&action=backup");
 		}
 
-		@set_time_limit(0);
+		my_set_time_limit();
+
+		// create an array with table prefix appended for checks, as full table names are accepted
+		$binary_fields_prefixed = array();
+		foreach($mybb->binary_fields as $table => $fields)
+		{
+			$binary_fields_prefixed[TABLE_PREFIX.$table] = $fields;
+		}
 
 		if($mybb->input['method'] == 'disk')
 		{
@@ -219,7 +227,11 @@ if($mybb->input['action'] == "backup")
 			{
 				$structure = $db->show_create_table($table).";\n";
 				$contents .= $structure;
-				clear_overflow($fp, $contents);
+
+				if(isset($fp))
+				{
+					clear_overflow($fp, $contents);
+				}
 			}
 
 			if($mybb->input['contents'] != 'structure')
@@ -243,19 +255,40 @@ if($mybb->input['action'] == "backup")
 						{
 							$insert .= $comma."NULL";
 						}
-						else if($db->engine == 'mysqli')
-						{
-							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
-						}
 						else
 						{
-							$insert .= $comma."'".$db->escape_string($row[$field])."'";
+							if($db->engine == 'mysqli')
+							{
+								if(!empty($binary_fields_prefixed[$table][$field]))
+								{
+									$insert .= $comma."X'".mysqli_real_escape_string($db->read_link, bin2hex($row[$field]))."'";
+								}
+								else
+								{
+									$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
+								}
+							}
+							else
+							{
+								if(!empty($binary_fields_prefixed[$table][$field]))
+								{
+									$insert .= $comma.$db->escape_binary($db->unescape_binary($row[$field]));
+								}
+								else
+								{
+									$insert .= $comma."'".$db->escape_string($row[$field])."'";
+								}
+							}
 						}
 						$comma = ',';
 					}
 					$insert .= ");\n";
 					$contents .= $insert;
-					clear_overflow($fp, $contents);
+
+					if(isset($fp))
+					{
+						clear_overflow($fp, $contents);
+					}
 				}
 				$db->free_result($query);
 			}

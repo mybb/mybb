@@ -68,7 +68,7 @@ class WarningsHandler extends DataHandler
 
 		$user = get_user($warning['uid']);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$this->set_error('error_invalid_user');
 			return false;
@@ -100,7 +100,7 @@ class WarningsHandler extends DataHandler
 
 		$post = get_post($warning['pid']);
 
-		if(!$post['pid'])
+		if(!$post)
 		{
 			$this->set_error('error_invalid_post');
 			return false;
@@ -397,7 +397,7 @@ class WarningsHandler extends DataHandler
 			$query = $db->simple_select("warninglevels", "*", "percentage<={$this->new_warning_level}", array("order_by" => "percentage", "order_dir" => "desc"));
 			$new_level = $db->fetch_array($query);
 
-			if($new_level['lid'])
+			if(!empty($new_level) && $new_level['lid'])
 			{
 				$expiration = 0;
 				$action = my_unserialize($new_level['action']);
@@ -467,7 +467,7 @@ class WarningsHandler extends DataHandler
 								"uid" => $user['uid'],
 								"gid" => $action['usergroup'],
 								"oldgroup" => $user['usergroup'],
-								"oldadditionalgroups" => $user['additionalgroups'],
+								"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
 								"olddisplaygroup" => $user['displaygroup'],
 								"admin" => $mybb->user['uid'],
 								"dateline" => TIME_NOW,
@@ -481,7 +481,7 @@ class WarningsHandler extends DataHandler
 								$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 								// Override new ban details with old group info
 								$new_ban['oldgroup'] = $existing_ban['oldgroup'];
-								$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
+								$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
 								$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
 							}
 
@@ -684,7 +684,7 @@ class WarningsHandler extends DataHandler
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
 			"tid" => (int)$warning['type'],
-			"pid" => (int)$warning['pid'],
+			"pid" => isset($warning['pid']) ? (int)$warning['pid'] : 0,
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
@@ -707,7 +707,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Updates a warning in the database
 	*
-	* @return array Warning database details.
+	* @return array|false Warning database details.
 	*/
 	function update_warning()
 	{

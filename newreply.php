@@ -15,7 +15,7 @@ $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_
 $templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
 $templatelist .= ",postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,newreply_modoptions_close,newreply_modoptions_stick";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,post_attachments_viewlink,postbit_attachments_attachment,newreply_signature";
-$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_javascript,postbit_groupimage,postbit_attachments,newreply_postoptions";
+$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,post_captcha_cfturnstile,post_captcha_hcaptcha_invisible,post_captcha_hcaptcha,post_javascript,postbit_groupimage,postbit_attachments,newreply_postoptions";
 $templatelist .= ",postbit_rep_button,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link";
 $templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored";
@@ -24,6 +24,7 @@ $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_m
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -203,7 +204,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 
 $errors = array();
 $maximageserror = $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && !empty($_FILES['attachments']))))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -217,9 +218,31 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
-
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
+
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		if(isset($ret['success']))
+		{
+			$attachment = array('aid'=>'{1}', 'icon'=>'{2}', 'filename'=>'{3}', 'size'=>'{4}');
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+			}
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			$attach_mod_options = '';
+			eval("\$attemplate = \"".$templates->get("post_attachments_attachment")."\";");
+			$ret['template'] = $attemplate;
+
+			$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+			$usage = $db->fetch_array($query);
+			$ret['usage'] = get_friendly_size($usage['ausage']);
+		}
+		
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode($ret);
+		exit();
+	}
 
 	if(!empty($ret['errors']))
 	{
@@ -242,8 +265,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment($pid, $mybb->get_input('posthash'), $mybb->get_input('attachmentaid', MyBB::INPUT_INT));
+
 	if(!$mybb->get_input('submit'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
@@ -252,14 +275,16 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => true, "usage" => get_friendly_size($usage['ausage'])));
 		exit();
 	}
 }
 
-$reply_errors = '';
-$quoted_ids = array();
+$reply_errors = $quoted_ids = '';
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
@@ -273,6 +298,11 @@ if($mybb->usergroup['maxposts'] > 0)
 		$lang->error_maxposts = $lang->sprintf($lang->error_maxposts, $mybb->usergroup['maxposts']);
 		error($lang->error_maxposts);
 	}
+}
+
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
 }
 
 if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
@@ -349,8 +379,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	if(!$mybb->get_input('savedraft'))
 	{
 		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible > -1 AND p.dateline>".(TIME_NOW-600));
-		$duplicate_check = $db->fetch_field($query, "pid");
-		if($duplicate_check)
+		if($db->num_rows($query) > 0)
 		{
 			error($lang->error_post_already_submitted);
 		}
@@ -429,6 +458,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/functions_indicators.php";
 	mark_thread_read($tid, $fid);
 
+	$json_data = '';
+
 	// Check captcha image
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
@@ -488,7 +519,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
-		$closed = $postinfo['closed'];
+
+		if(isset($postinfo['closed']))
+		{
+			$closed = $postinfo['closed'];
+		}
+		else
+		{
+			$closed = '';
+		}
 
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
@@ -534,7 +573,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				$quoted_ids = explode("|", $mybb->get_input('quoted_ids'));
 				$multiquote = explode("|", $mybb->cookies['multiquote']);
-				if(is_array($multiquote) && is_array($quoted_ids))
+				if(!empty($multiquote) && !empty($quoted_ids))
 				{
 					foreach($multiquote as $key => $quoteid)
 					{
@@ -545,7 +584,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						}
 					}
 					// Still have an array - set the new cookie
-					if(is_array($multiquote))
+					if(!empty($multiquote))
 					{
 						$new_multiquote = implode(",", $multiquote);
 						my_setcookie("multiquote", $new_multiquote);
@@ -590,20 +629,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					}
 				}
 
-				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-				{
-					$mybb->settings['postsperpage'] = 20;
-				}
-
 				// Lets see if this post is on the same page as the one we're viewing or not
 				// if it isn't, redirect us
-				if($perpage > 0 && (($postcounter) % $perpage) == 0)
+				if($mybb->settings['postsperpage'] > 0)
 				{
-					$post_page = ($postcounter) / $mybb->settings['postsperpage'];
+					$post_page = ceil(($postcounter + 1) / $mybb->settings['postsperpage']);
 				}
 				else
 				{
-					$post_page = (int)($postcounter / $mybb->settings['postsperpage']) + 1;
+					$post_page = 1;
 				}
 
 				if($post_page > $mybb->get_input('from_page', MyBB::INPUT_INT))
@@ -726,6 +760,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
+			$quoted_ids = array();
 			$unviewable_forums = get_unviewable_forums();
 			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
@@ -824,16 +859,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
 			}
-			if(is_array($quoted_ids) && count($quoted_ids) > 0)
-			{
-				$quoted_ids = implode("|", $quoted_ids);
-			}
+			$quoted_ids = implode("|", $quoted_ids);
 		}
 	}
 
 	if(isset($mybb->input['quoted_ids']))
 	{
-		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids', MyBB::INPUT_INT));
+		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids'));
 	}
 
 	if(isset($mybb->input['previewpost']))
@@ -1115,8 +1147,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
-
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
+
+		$link_viewattachments = '';
 		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
@@ -1127,12 +1160,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$lang->attach_usage = "";
 		}
-		
+
+		$attach_add_options = '';
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 		}
 
+		$attach_update_options = '';
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
 			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
@@ -1145,8 +1180,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
+	else
+	{
+		$attachbox = '';
+	}
 
 	// If the user is logged in, provide a save draft button.
+	$savedraftbutton = '';
 	if($mybb->user['uid'])
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
@@ -1175,26 +1215,34 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			if($post_captcha->type == 1)
+			if($post_captcha->type == captcha::DEFAULT_CAPTCHA)
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(4, 5, 8)))
+			elseif(in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif(in_array($post_captcha->type, array(6, 7)))
+			elseif(in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
 			{
 				$post_captcha->build_hcaptcha();
 			}
+			elseif($post_captcha->type == captcha::CFTURNSTILE)
+			{
+				$post_captcha->build_cfturnstile();
+			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(4, 5, 8))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3))))
 		{
 			$post_captcha->build_recaptcha();
 		}
-		else if($correct && (in_array($post_captcha->type, array(6, 7))))
+		else if($correct && (in_array($post_captcha->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE))))
 		{
 			$post_captcha->build_hcaptcha();
+		}
+		else if($correct && ($post_captcha->type == captcha::CFTURNSTILE))
+		{
+			$post_captcha->build_cfturnstile();
 		}
 
 		if($post_captcha->html)
@@ -1204,13 +1252,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$reviewmore = '';
+	$threadreview = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
-
 		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
@@ -1222,11 +1266,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
 
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
-
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
@@ -1234,84 +1273,88 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
+		$pidin = array();
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline DESC, pid DESC", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];
 		}
 
-		$pidin = implode(",", $pidin);
-
-		// Fetch attachments
-		$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
-		while($attachment = $db->fetch_array($query))
+		if(!empty($pidin))
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			$pidin = implode(",", $pidin);
+
+			// Fetch attachments
+			$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
+			$query = $db->query("
+				SELECT p.*, u.username AS userusername
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+				WHERE pid IN ($pidin)
+				ORDER BY dateline DESC, pid DESC
+			");
+			$postsdone = 0;
+			$altbg = "trow1";
+			$reviewbits = '';
+			while($post = $db->fetch_array($query))
+			{
+				if($post['userusername'])
+				{
+					$post['username'] = $post['userusername'];
+				}
+				$reviewpostdate = my_date('relative', $post['dateline']);
+				$parser_options = array(
+					"allow_html" => $forum['allowhtml'],
+					"allow_mycode" => $forum['allowmycode'],
+					"allow_smilies" => $forum['allowsmilies'],
+					"allow_imgcode" => $forum['allowimgcode'],
+					"allow_videocode" => $forum['allowvideocode'],
+					"me_username" => $post['username'],
+					"filter_badwords" => 1
+				);
+				if($post['smilieoff'] == 1)
+				{
+					$parser_options['allow_smilies'] = 0;
+				}
+
+				if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+				{
+					$parser_options['allow_imgcode'] = 0;
+				}
+
+				if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+				{
+					$parser_options['allow_videocode'] = 0;
+				}
+
+				$post['username'] = htmlspecialchars_uni($post['username']);
+
+				if($post['visible'] != 1)
+				{
+					$altbg = "trow_shaded";
+				}
+
+				$plugins->run_hooks("newreply_threadreview_post");
+
+				$post['message'] = $parser->parse_message($post['message'], $parser_options);
+				get_post_attachments($post['pid'], $post);
+				$reviewmessage = $post['message'];
+				eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
+				if($altbg == "trow1")
+				{
+					$altbg = "trow2";
+				}
+				else
+				{
+					$altbg = "trow1";
+				}
+			}
+			eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 		}
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN ($pidin)
-			ORDER BY dateline DESC
-		");
-		$postsdone = 0;
-		$altbg = "trow1";
-		$reviewbits = '';
-		while($post = $db->fetch_array($query))
-		{
-			if($post['userusername'])
-			{
-				$post['username'] = $post['userusername'];
-			}
-			$reviewpostdate = my_date('relative', $post['dateline']);
-			$parser_options = array(
-				"allow_html" => $forum['allowhtml'],
-				"allow_mycode" => $forum['allowmycode'],
-				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode'],
-				"allow_videocode" => $forum['allowvideocode'],
-				"me_username" => $post['username'],
-				"filter_badwords" => 1
-			);
-			if($post['smilieoff'] == 1)
-			{
-				$parser_options['allow_smilies'] = 0;
-			}
-
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_imgcode'] = 0;
-			}
-
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_videocode'] = 0;
-			}
-
-			$post['username'] = htmlspecialchars_uni($post['username']);
-
-			if($post['visible'] != 1)
-			{
-				$altbg = "trow_shaded";
-			}
-
-			$plugins->run_hooks("newreply_threadreview_post");
-
-			$post['message'] = $parser->parse_message($post['message'], $parser_options);
-			get_post_attachments($post['pid'], $post);
-			$reviewmessage = $post['message'];
-			eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
-			if($altbg == "trow1")
-			{
-				$altbg = "trow2";
-			}
-			else
-			{
-				$altbg = "trow1";
-			}
-		}
-		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
 
 	// Hide signature option if no permission
@@ -1473,18 +1516,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
-	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
-	$php_post_max_size = return_bytes(ini_get('post_max_size'));
-
-	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
-	{
-		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
-	}
-	else
-	{
-		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
-	}
-
+	$php_max_upload_size = get_php_upload_limit();
 	$php_max_file_uploads = (int)ini_get('max_file_uploads');
 	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 

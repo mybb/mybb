@@ -257,6 +257,14 @@ function send_report($report, $report_type='post')
 			"ipaddress" => $mybb->session->packedip
 		);
 
+		$pm['options'] = array(
+			"signature" => 0,
+			"disablesmilies" => 0,
+			"savecopy" => 0,
+			"readreceipt" => 0
+		);
+		$pm['saveasdraft'] = 0;
+
 		$pmhandler->admin_override = true;
 		$pmhandler->set_data($pm);
 

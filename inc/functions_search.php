@@ -83,18 +83,13 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
  */
 function get_unsearchable_forums($pid=0, $first=1)
 {
-	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	global $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 
 	$pid = (int)$pid;
 
 	if(!is_array($forum_cache))
 	{
-		// Get Forums
-		$query = $db->simple_select("forums", "fid,parentlist,password,active", '', array('order_by' => 'pid, disporder'));
-		while($forum = $db->fetch_array($query))
-		{
-			$forum_cache[$forum['fid']] = $forum;
-		}
+		cache_forums();
 	}
 	if(!is_array($permissioncache))
 	{
@@ -234,7 +229,7 @@ function get_visible_where($table_alias = null)
  * Build a array list of the forums this user cannot search due to password protection
  *
  * @param array $fids the fids to check (leave blank to check all forums)
- * @return array return a array list of password protected forums the user cannot search
+ * @return array|false return a array list of password protected forums the user cannot search
  */
 function get_password_protected_forums($fids=array())
 {
@@ -279,7 +274,7 @@ function get_password_protected_forums($fids=array())
  */
 function clean_keywords($keywords)
 {
-	global $db;
+	global $db, $lang;
 
 	$keywords = my_strtolower($keywords);
 	$keywords = $db->escape_string_like($keywords);
@@ -287,17 +282,14 @@ function clean_keywords($keywords)
 	$keywords = str_replace("*", "%", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 	$keywords = str_replace('\\"', '"', $keywords);
-
-	// Search for "and" or "or" and remove if it's at the beginning
+	// trim for blank characters
 	$keywords = trim($keywords);
-	if(my_strpos($keywords, "or") === 0)
-	{
-		$keywords = substr_replace($keywords, "", 0, 2);
-	}
+	// Search for "and" or "or" and remove if it's at the beginning
+	$keywords = preg_replace('/^((and|or)(\s|$))+/', '', $keywords);
 
-	if(my_strpos($keywords, "and") === 0)
+	if(!$keywords)
 	{
-		$keywords = substr_replace($keywords, "", 0, 3);
+		error($lang->error_nosearchterms);
 	}
 
 	return $keywords;
@@ -353,6 +345,7 @@ function clean_keywords_ft($keywords)
 	// Brace depth
 	$depth = 0;
 	$phrase_operator = '+';
+	$inquote = false;
 	foreach($keywords as $phrase)
 	{
 		$phrase = trim($phrase);
@@ -1236,7 +1229,7 @@ function perform_search_mysql($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
@@ -1418,7 +1411,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} {$subject_lookin}
+			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND ({$unapproved_where_t}) {$subject_lookin}
 			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
@@ -1470,6 +1463,7 @@ function perform_search_mysql_ft($search)
 		$mybb->settings['minsearchword'] = 4;
 	}
 
+	$message_lookin = $subject_lookin = '';
 	if($keywords)
 	{
 		$keywords_exp = explode("\"", $keywords);
@@ -1523,7 +1517,7 @@ function perform_search_mysql_ft($search)
 	}
 	$post_usersql = '';
 	$thread_usersql = '';
-	if($search['author'])
+	if(!empty($search['author']))
 	{
 		$userids = array();
 		$search['author'] = my_strtolower($search['author']);
@@ -1556,8 +1550,8 @@ function perform_search_mysql_ft($search)
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = '';
-	if($search['postdate'])
+	$datecut = $thread_datecut = $post_datecut = '';
+	if(!empty($search['postdate']))
 	{
 		if($search['pddir'] == 0)
 		{
@@ -1575,7 +1569,7 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_replycut = '';
-	if($search['numreplies'] != '' && $search['findthreadst'])
+	if(!empty($search['numreplies']) && $search['findthreadst'])
 	{
 		if((int)$search['findthreadst'] == 1)
 		{
@@ -1589,7 +1583,7 @@ function perform_search_mysql_ft($search)
 
 	$thread_prefixcut = '';
 	$prefixlist = array();
-	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
+	if(!empty($search['threadprefix']) && $search['threadprefix'][0] != 'any')
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
@@ -1644,7 +1638,7 @@ function perform_search_mysql_ft($search)
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1705,7 +1699,8 @@ function perform_search_mysql_ft($search)
 	$unapproved_where_p = get_visible_where('p');
 
 	// Searching a specific thread?
-	if($search['tid'])
+	$tidsql = '';
+	if(!empty($search['tid']))
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
@@ -1723,7 +1718,7 @@ function perform_search_mysql_ft($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(!$search['tid'])
+		if(empty($search['tid']))
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
@@ -1767,7 +1762,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} {$subject_lookin}
+			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND ({$unapproved_where_t}) {$subject_lookin}
 			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))

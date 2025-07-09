@@ -34,6 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	$stats_page_separator = '';
 	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
@@ -41,6 +42,7 @@ if($mybb->settings['statsenabled'] != 0)
 	eval('$statspage = "'.$templates->get('index_statspage').'";');
 }
 
+$onlinecount = null;
 $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
@@ -74,7 +76,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		while($location = $db->fetch_array($query))
 		{
-			$forum_viewers[$location['location1']] += $location['guestcount'];
+			if(isset($forum_viewers[$location['location1']]))
+			{
+				$forum_viewers[$location['location1']] += $location['guestcount'];
+			}
+			else
+			{
+				$forum_viewers[$location['location1']] = $location['guestcount'];
+			}
 		}
 	}
 
@@ -133,7 +142,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			if($mybb->settings['wolorder'] == 'username')
 			{
@@ -151,7 +160,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		if($user['location1'])
 		{
-			++$forum_viewers[$user['location1']];
+			if(isset($forum_viewers[$user['location1']]))
+			{
+				++$forum_viewers[$user['location1']];
+			}
+			else
+			{
+				$forum_viewers[$user['location1']] = 1;
+			}
 		}
 	}
 
@@ -232,11 +248,18 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 
-	$hiddencount = $today_bdays = 0;
+	$hiddencount = 0;
+	$today_bdays = array();
 	if(isset($bdaycache[$bdaydate]))
 	{
-		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
-		$today_bdays = $bdaycache[$bdaydate]['users'];
+		if(isset($bdaycache[$bdaydate]['hiddencount']))
+		{
+			$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		}
+		if(isset($bdaycache[$bdaydate]['users']))
+		{
+			$today_bdays = $bdaycache[$bdaydate]['users'];
+		}
 	}
 
 	$comma = '';
@@ -277,7 +300,7 @@ if($mybb->settings['showbirthdays'] != 0)
 				}
 
 				// If this user's display group can't be seen in the birthday list, skip it
-				if($groupscache[$bdayuser['displaygroup']] && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
+				if(isset($groupscache[$bdayuser['displaygroup']]) && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
 				{
 					continue;
 				}
@@ -339,7 +362,7 @@ if($mybb->settings['showindexstats'] != 0)
 
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
-	if($onlinecount > $mostonline['numusers'])
+	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
@@ -365,8 +388,21 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-	
-	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
+
+	if(!isset($collapsedthead['boardstats']))
+	{
+		$collapsedthead['boardstats'] = '';
+	}
+	if(!isset($collapsedimg['boardstats']))
+	{
+		$collapsedimg['boardstats'] = '';
+	}
+	if(!isset($collapsed['boardstats_e']))
+	{
+		$collapsed['boardstats_e'] = '';
+	}
+
+	$expaltext = (in_array("boardstats", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 
@@ -378,7 +414,7 @@ if($mybb->user['uid'] == 0)
 	$forumsread = array();
 	if(isset($mybb->cookies['mybb']['forumread']))
 	{
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
 	}
 }
 else
@@ -414,7 +450,7 @@ if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
 }
 
 $excols = 'index';
-$permissioncache['-1'] = '1';
+$permissioncache = null;
 $bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.

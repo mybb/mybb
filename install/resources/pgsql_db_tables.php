@@ -104,6 +104,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
   maxsize int NOT NULL default '0',
   icon varchar(100) NOT NULL default '',
   enabled smallint NOT NULL default '1',
+  forcedownload smallint NOT NULL default '0',
   groups text NOT NULL default '-1',
   forums text NOT NULL default '-1',
   avatarfile smallint NOT NULL default '0',
@@ -303,7 +304,8 @@ $tables[] = "CREATE TABLE mybb_forums (
 $tables[] = "CREATE TABLE mybb_forumsread (
   fid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0'
+  dateline int NOT NULL default '0',
+  UNIQUE (fid, uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
@@ -518,7 +520,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   subject varchar(120) NOT NULL default '',
   icon smallint NOT NULL default '0',
   uid int NOT NULL default '0',
-  username varchar(80) NOT NULL default '',
+  username varchar(120) NOT NULL default '',
   dateline int NOT NULL default '0',
   message text NOT NULL default '',
   ipaddress  bytea NOT NULL default '',
@@ -862,7 +864,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   icon smallint NOT NULL default '0',
   poll int NOT NULL default '0',
   uid int NOT NULL default '0',
-  username varchar(80) NOT NULL default '',
+  username varchar(120) NOT NULL default '',
   dateline int NOT NULL default '0',
   firstpost int NOT NULL default '0',
   lastpost int NOT NULL default '0',
@@ -886,7 +888,8 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0'
+  dateline int NOT NULL default '0',
+  UNIQUE (tid, uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
@@ -905,16 +908,6 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid3 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
-$query = $db->write_query("SELECT column_name
-						  FROM information_schema.constraint_column_usage
-						  WHERE table_name = '".$config['tableprefix']."userfields'
-						  AND constraint_name = '".$config['tableprefix']."userfields_pkey'
-						  LIMIT 1");
-$main_field = $db->fetch_field($query, 'column_name');
-if(!empty($main_field))
-{
-	$tables[] = "DROP SEQUENCE mybb_userfields_ufid_seq;";
-}
 $tables[] = "CREATE SEQUENCE mybb_userfields_ufid_seq;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
@@ -976,6 +969,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canratemembers smallint NOT NULL default '0',
   canchangename smallint NOT NULL default '0',
   canbereported smallint NOT NULL default '0',
+  canbeinvisible smallint NOT NULL default '1',
   canchangewebsite smallint NOT NULL default '1',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
@@ -1032,7 +1026,6 @@ $tables[] = "CREATE TABLE mybb_users (
   lastvisit int NOT NULL default '0',
   lastpost int NOT NULL default '0',
   website varchar(200) NOT NULL default '',
-  icq varchar(10) NOT NULL default '',
   skype varchar(75) NOT NULL default '',
   google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
@@ -1139,5 +1132,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes text NOT NULL default '',
 	PRIMARY KEY(wid)
 );";
-
 

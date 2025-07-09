@@ -107,8 +107,8 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_reason);
-	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->applies_to." <em>*</em>", $lang->applies_to_desc, generate_content_select());
+	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->applies_to." <em>*</em>", '', generate_content_select());
 	$form_container->output_row($lang->requires_extra." <em>*</em>", $lang->requires_extra_desc, $form->generate_yes_no_radio('extra', $mybb->input['extra']));
 	$form_container->end();
 
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("reportreasons", "*", "rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
 	$reason = $db->fetch_array($query);
 
-	if(!$reason['rid'])
+	if(!$reason)
 	{
 		flash_message($lang->error_invalid_reason, 'error');
 		admin_redirect("index.php?module=config-report_reasons");
@@ -219,9 +219,9 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$form_container = new FormContainer($lang->add_new_reason);
+	$form_container = new FormContainer($lang->edit_reason);
 	$form_container->output_row($lang->reason_title." <em>*</em>", $lang->reason_title_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->applies_to." <em>*</em>", $lang->applies_to_desc, generate_content_select());
+	$form_container->output_row($lang->applies_to." <em>*</em>", '', generate_content_select());
 	$form_container->output_row($lang->requires_extra." <em>*</em>", $lang->requires_extra_desc, $form->generate_yes_no_radio('extra', $mybb->input['extra']));
 	$form_container->end();
 
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-report_reasons");
 	}
@@ -243,7 +243,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("reportreasons", "*", "rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
 	$reason = $db->fetch_array($query);
 
-	if(!$reason['rid'])
+	if(!$reason)
 	{
 		flash_message($lang->error_invalid_reason, 'error');
 		admin_redirect("index.php?module=config-report_reasons");
@@ -270,6 +270,8 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_config_report_reasons_delete_commit");
 
+		$cache->update_reportreasons();
+
 		// Log admin action
 		log_admin_action($reason['rid'], $reason['title']);
 
@@ -292,7 +294,10 @@ if(!$mybb->input['action'])
 		{
 			foreach($mybb->input['disporder'] as $rid => $order)
 			{
-				$db->update_query("reportreasons", array('disporder' => (int)$order), "rid='".(int)$rid."'");
+				if(is_numeric($order) && (int)$order >= 0)
+				{
+					$db->update_query("reportreasons", array('disporder' => (int)$order), "rid='".(int)$rid."'");
+				}
 			}
 
 			$plugins->run_hooks("admin_config_report_reasons_start_commit");
@@ -354,7 +359,7 @@ if(!$mybb->input['action'])
 		$form_container->output_cell(htmlspecialchars_uni($reasons['title']));
 		$form_container->output_cell(htmlspecialchars_uni($reasons['appliesto']));
 		$form_container->output_cell("<div>{$icon}</div>", array("class" => "align_center"));
-		$form_container->output_cell("<input type=\"text\" name=\"disporder[{$reasons['rid']}]\" value=\"{$reasons['disporder']}\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
+		$form_container->output_cell("<input type=\"number\" name=\"disporder[{$reasons['rid']}]\" value=\"{$reasons['disporder']}\" min=\"0\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
 		$popup = new PopupMenu("reasons_{$reasons['rid']}", $lang->options);
 		$popup->add_item($lang->edit_reason, "index.php?module=config-report_reasons&amp;action=edit&amp;rid={$reasons['rid']}");
 		$popup->add_item($lang->delete_reason, "index.php?module=config-report_reasons&amp;action=delete&amp;rid={$reasons['rid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_reason_deletion}')");
@@ -384,11 +389,11 @@ function generate_content_select()
 	global $mybb, $lang;
 
 	$checked = array('all' => '', 'custom' => '', 'none' => '');
-	if($mybb->input['appliesto'] == 'all')
+	if($mybb->get_input('appliesto') == 'all')
 	{
 		$checked['all'] = 'checked="checked"';
 	}
-	elseif($mybb->input['appliesto'] == '')
+	elseif($mybb->get_input('appliesto') == '')
 	{
 		$checked['none'] = 'checked="checked"';
 	}
@@ -427,7 +432,7 @@ function generate_content_choices()
 	foreach($content_types as $content)
 	{
 		$key = "report_content_{$content}";
-		$content_choices[] = $form->generate_check_box("appliesto_{$content}", 1, $lang->$key, array('id' => "appliesto_{$content}", 'checked' => $mybb->input["appliesto_{$content}"]));
+		$content_choices[] = $form->generate_check_box("appliesto_{$content}", 1, $lang->$key, array('id' => "appliesto_{$content}", 'checked' => $mybb->get_input("appliesto_{$content}")));
 	}
 
 	return $content_choices;

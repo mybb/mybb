@@ -62,7 +62,7 @@ function validate_password_from_username($username, $password)
 
 	$user = get_user_by_username($username, $options);
 
-	if(!$user['uid'])
+	if(!$user)
 	{
 		return false;
 	}
@@ -88,12 +88,6 @@ function validate_password_from_uid($uid, $password, $user = array())
 	if(!$user['password'])
 	{
 		$user = get_user($uid);
-	}
-	if(!$user['salt'])
-	{
-		// Generate a salt for this user and assume the password stored in db is a plain md5 password
-		$password_fields = create_password($user['password'], false, $user);
-		$db->update_query("users", $password_fields, "uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])
@@ -333,7 +327,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
-	if(!$subscription['tid'])
+	if(!$subscription)
 	{
 		$insert_array = array(
 			'uid' => (int)$uid,
@@ -407,7 +401,7 @@ function add_subscribed_forum($fid, $uid=0)
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(!$fsubscription['fid'])
+	if(!$fsubscription)
 	{
 		$insert_array = array(
 			'fid' => $fid,
@@ -489,7 +483,7 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
-	$expaltext = (in_array("usercppms", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercppms", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
 	$tracking = '';
@@ -577,7 +571,7 @@ function usercp_menu_profile()
 		$collapsed['usercpprofile_e'] = '';
 	}
 
-	$expaltext = (in_array("usercpprofile", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpprofile", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
@@ -589,7 +583,7 @@ function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
-	$draftstart = $draftend = '';
+	$draftstart = $draftend = $attachmentop = '';
 	$draftcount = $lang->ucp_nav_drafts;
 
 	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible = '-2' AND uid = '{$mybb->user['uid']}'");
@@ -616,7 +610,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
-	$expaltext = (in_array("usercpmisc", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("usercpmisc", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
@@ -763,7 +757,8 @@ function generate_question($old_qid=0)
 	{
 		$order_by = 'RAND()';
 	}
-	
+
+	$excl_old = '';
 	if($old_qid)
 	{
 		$excl_old = ' AND qid != '.(int)$old_qid;

@@ -19,8 +19,6 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
-
 function upgrade23_dbchanges()
 {
 	global $db, $output;

@@ -45,10 +45,6 @@ $mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_
 
 if(!isset($cp_language))
 {
-	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
-	{
-		$mybb->settings['cplanguage'] = "english";
-	}
 	$lang->set_language($mybb->settings['cplanguage'], "admin");
 }
 
@@ -112,7 +108,7 @@ if($mybb->input['action'] == "unlock")
 	{
 		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$error = $lang->error_invalid_username;
 		}
@@ -120,7 +116,7 @@ if($mybb->input['action'] == "unlock")
 	else if($mybb->input['uid'])
 	{
 		$user = get_user($mybb->input['uid']);
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$error = $lang->error_invalid_uid;
 		}
@@ -201,7 +197,7 @@ elseif($mybb->input['do'] == "login")
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
 
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
@@ -251,7 +247,7 @@ elseif($mybb->input['do'] == "login")
 		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
 
-	if($mybb->user['uid'])
+	if(!empty($mybb->user['uid']))
 	{
 		if(login_attempt_check_acp($mybb->user['uid']) == true)
 		{
@@ -287,6 +283,7 @@ elseif($mybb->input['do'] == "login")
 			"lastactive" => TIME_NOW,
 			"data" => my_serialize(array()),
 			"useragent" => $db->escape_string($useragent),
+			"authenticated" => 0,
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
@@ -299,7 +296,7 @@ elseif($mybb->input['do'] == "login")
 			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		}
 
-		my_setcookie("adminsid", $sid, '', true, "lax");
+		my_setcookie("adminsid", $sid, '', true, "strict");
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
 
@@ -332,7 +329,12 @@ elseif($mybb->input['do'] == "login")
 				{
 					$params = explode("=", $param);
 
-					$query_string .= '&'.htmlspecialchars_uni($params[0])."=".htmlspecialchars_uni($params[1]);
+					$query_string .= '&'.htmlspecialchars_uni($params[0]);
+
+					if(isset($params[1]))
+					{
+						$query_string .= "=".htmlspecialchars_uni($params[1]);
+					}
 				}
 			}
 
@@ -345,15 +347,15 @@ elseif($mybb->input['do'] == "login")
 
 		$plugins->run_hooks("admin_login_fail");
 
-		if($login_user['uid'] > 0)
+		$loginattempts = false;
+		if(!empty($login_user['uid']) && $login_user['uid'] > 0)
 		{
 			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
+			$loginattempts = login_attempt_check_acp($login_user['uid'], true);
 		}
 
-		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
-
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
@@ -407,7 +409,7 @@ else
 		$admin_session = $db->fetch_array($query);
 
 		// No matching admin session found - show message on login screen
-		if(!$admin_session['sid'])
+		if(empty($admin_session) || !$admin_session['sid'])
 		{
 			$login_message = $lang->error_invalid_admin_session;
 		}
@@ -500,7 +502,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 {
 	$plugins->run_hooks("admin_logout");
 
-	if(verify_post_check($mybb->input['my_post_key']))
+	if(verify_post_check($mybb->get_input('my_post_key')))
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 		my_unsetcookie('adminsid');
@@ -518,9 +520,13 @@ else
 }
 $mybb->usergroup = usergroup_permissions($mybbgroups);
 
-$is_super_admin = is_super_admin($mybb->user['uid']);
+$is_super_admin = false;
+if(isset($mybb->user['uid']))
+{
+	$is_super_admin = is_super_admin($mybb->user['uid']);
+}
 
-if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
+if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
@@ -530,6 +536,10 @@ if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
 	my_unsetcookie('adminsid');
+	if($mybb->get_input('do') == 'login')
+	{
+		$login_message = $lang->error_mybb_not_admin_account;
+	}
 }
 
 if(!empty($mybb->user['uid']))
@@ -540,7 +550,7 @@ if(!empty($mybb->user['uid']))
 	// Only update language / theme once fully authenticated
 	if(empty($admin_options['authsecret']) || $admin_session['authenticated'] == 1)
 	{
-		if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+		if(!empty($admin_options['cplanguage']))
 		{
 			$cp_language = $admin_options['cplanguage'];
 			$lang->set_language($cp_language, "admin");
@@ -661,7 +671,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		$loginattempts = login_attempt_check_acp($mybb->user['uid'], true);
 
 		// Have we attempted too many times?
-		if($loginattempts['loginattempts'] > 0)
+		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
 		{
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
@@ -809,7 +819,7 @@ if($mybb->request_method == "post")
 	if($post_verify == true)
 	{
 		// If the post key does not match we switch the action to GET and set a message to show the user
-		if(!verify_post_check($mybb->input['my_post_key'], true))
+		if(!verify_post_check($mybb->get_input('my_post_key'), true))
 		{
 			$mybb->request_method = "get";
 			$page->show_post_verify_error = true;

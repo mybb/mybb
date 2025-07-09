@@ -1189,7 +1189,7 @@ input.search_button {
 	opacity: 				.85;
 	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
 	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
-	zoom: 					1;
+	transform: 				scale(1);
 	width: 					235px;
 	padding: 				10px;
 	margin-top: 			5px;

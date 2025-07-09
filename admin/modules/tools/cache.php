@@ -54,7 +54,9 @@ if($mybb->input['action'] == 'view')
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	$cachecontents = unserialize($cacheitem['cache']);
+	// use native_unserialize() over my_unserialize() for performance reasons
+	$cachecontents = native_unserialize($cacheitem['cache']);
+
 	if(empty($cachecontents))
 	{
 		$cachecontents = $lang->error_empty_cache;
@@ -79,7 +81,7 @@ if($mybb->input['action'] == 'view')
 
 if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-cache");
@@ -162,7 +164,7 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 
 if($mybb->input['action'] == "rebuild_all")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-cache");
@@ -226,7 +228,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->size, array("class" => "align_center", "width" => 100));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
-	$query = $db->simple_select("datacache");
+	$query = $db->simple_select("datacache", "*", "", array("order_by" => "title"));
 	while($cacheitem = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong><a href=\"index.php?module=tools-cache&amp;action=view&amp;title=".urlencode($cacheitem['title'])."\">{$cacheitem['title']}</a></strong>");

@@ -19,8 +19,6 @@ $upgrade_detail = array(
 	"requires_deactivated_plugins" => 1,
 );
 
-@set_time_limit(0);
-
 // We need to globalize $db here because when this script is called
 // during load_module $db is not globalized in the function
 global $db;
@@ -557,7 +555,7 @@ function upgrade12_dbchanges2()
 
 	include_once MYBB_ROOT."inc/functions_task.php";
 	$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-	$parser = new XMLParser($tasks);
+	$parser = create_xml_parser($tasks);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -762,7 +760,7 @@ function upgrade12_dbchanges2()
 	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
 
 	$db->update_query("settings", array('optionscode' => $db->escape_string('php
-<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
+<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".(isset($lang->setting_searchtype_standard)?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".(isset($lang->setting_searchtype_fulltext)?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -914,7 +912,7 @@ function upgrade12_dbchanges4()
 	}
 
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
-	$parser = new XMLParser($adminoptions);
+	$parser = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -1239,7 +1237,7 @@ function upgrade12_dbchanges5()
 	) ENGINE=MyISAM{$collation};");
 
 	$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
-	$parser = new XMLParser($views);
+	$parser = create_xml_parser($views);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -1791,7 +1789,6 @@ function upgrade12_redothemes()
 	if(!$cachewritable)
 	{
 		$not_writable = true;
-		@fclose($cachewritable);
 	}
 	else
 	{
@@ -1822,7 +1819,6 @@ function upgrade12_redothemes()
 	if(!$themewritable)
 	{
 		$not_writable = true;
-		@fclose($themewritable);
 	}
 	else
 	{

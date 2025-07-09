@@ -56,90 +56,64 @@ $tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_
 $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
+$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
-
-	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
+		$moderated_forums[] = $forum['fid'];
+		$children = get_child_list($forum['fid']);
+		if(is_array($children))
+		{
+			$moderated_forums = array_merge($moderated_forums, $children);
+		}
+	}
+	$moderated_forums = array_unique($moderated_forums);
+
+	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
+	foreach($moderated_forums as $moderated_forum)
+	{
 		// For Announcements
-		if($forum['canmanageannouncements'] == 1)
+		if(is_moderator($moderated_forum, 'canmanageannouncements'))
 		{
 			++$numannouncements;
 		}
 
 		// For the Mod Queues
-		if($forum['canapproveunapprovethreads'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapprovethreads'))
 		{
-			$flist_queue_threads .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_threads .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_threads .= ",'{$moderated_forum}'";
 			++$nummodqueuethreads;
 		}
 
-		if($forum['canapproveunapproveposts'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveposts'))
 		{
-			$flist_queue_posts .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_posts .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_posts .= ",'{$moderated_forum}'";
 			++$nummodqueueposts;
 		}
 
-		if($forum['canapproveunapproveattachs'] == 1)
+		if(is_moderator($moderated_forum, 'canapproveunapproveattachs'))
 		{
-			$flist_queue_attach .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_queue_attach .= ",'".implode("','", $children)."'";
-			}
+			$flist_queue_attach .= ",'{$moderated_forum}'";
 			++$nummodqueueattach;
 		}
 
 		// For Reported posts
-		if($forum['canmanagereportedposts'] == 1)
+		if(is_moderator($moderated_forum, 'canmanagereportedposts'))
 		{
-			$flist_reports .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_reports .= ",'".implode("','", $children)."'";
-			}
+			$flist_reports .= ",'{$moderated_forum}'";
 			++$numreportedposts;
 		}
 
 		// For the Mod Log
-		if($forum['canviewmodlog'] == 1)
+		if(is_moderator($moderated_forum, 'canviewmodlog'))
 		{
-			$flist_modlog .= ",'{$forum['fid']}'";
-
-			$children = get_child_list($forum['fid']);
-			if(!empty($children))
-			{
-				$flist_modlog .= ",'".implode("','", $children)."'";
-			}
+			$flist_modlog .= ",'{$moderated_forum}'";
 			++$nummodlogs;
 		}
 
-		$flist .= ",'{$forum['fid']}'";
-
-		$children = get_child_list($forum['fid']);
-		if(!empty($children))
-		{
-			$flist .= ",'".implode("','", $children)."'";
-		}
-		$moderated_forums[] = $forum['fid'];
+		$flist .= ",'{$moderated_forum}'";
 	}
 	if($flist_queue_threads)
 	{
@@ -263,13 +237,13 @@ $plugins->run_hooks("modcp_nav");
 
 if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
 {
-	$expaltext = (in_array("modcpforums", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("modcpforums", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
 }
 
 if(!empty($nav_editprofile) || !empty($nav_banning) || !empty($nav_warninglogs) || !empty($nav_ipsearch))
 {
-	$expaltext = (in_array("modcpusers", $collapse)) ? "[+]" : "[-]";
+	$expaltext = (in_array("modcpusers", $collapse)) ? $lang->expcol_expand : $lang->expcol_collapse;
 	eval("\$modcp_nav_users = \"".$templates->get("modcp_nav_users")."\";");
 }
 
@@ -416,7 +390,9 @@ if($mybb->input['action'] == "reports")
 	$plugins->run_hooks("modcp_reports_start");
 
 	// Reports
-	$reports = '';
+	$reports = $selectall = '';
+	$inlinecount = 0;
+
 	$query = $db->query("
 		SELECT r.*, u.username, rr.title
 		FROM ".TABLE_PREFIX."reportedcontent r
@@ -532,7 +508,6 @@ if($mybb->input['action'] == "reports")
 
 		$plugins->run_hooks('modcp_reports_intermediate');
 
-		$inlinecount = 0;
 		// Now that we have all of the information needed, display the reports
 		foreach($reportcache as $report)
 		{
@@ -1515,13 +1490,13 @@ if($mybb->input['action'] == "do_edit_announcement")
 
 	// Basic error checking
 	$mybb->input['title'] = $mybb->get_input('title');
-	if(!trim($mybb->input['title']))
+	if(!trim_blank_chrs($mybb->input['title']))
 	{
 		$errors[] = $lang->error_missing_title;
 	}
 
 	$mybb->input['message'] = $mybb->get_input('message');
-	if(!trim($mybb->input['message']))
+	if(!trim_blank_chrs($mybb->input['message']))
 	{
 		$errors[] = $lang->error_missing_message;
 	}
@@ -1935,7 +1910,7 @@ if($mybb->input['action'] == "announcements")
 			foreach($global_announcements as $aid => $announcement)
 			{
 				$trow = alt_trow();
-				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+				if((isset($announcement['startdate']) && $announcement['startdate'] > TIME_NOW) || (isset($announcement['enddate']) && $announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
 					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 				}
@@ -2089,7 +2064,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
-			SELECT a.pid, a.aid
+			SELECT a.pid, a.aid, t.tid
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -2105,10 +2080,18 @@ if($mybb->input['action'] == "do_modqueue")
 			if($action == "approve")
 			{
 				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "+1"));
+				}
 			}
 			else if($action == "delete")
 			{
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
+				if(isset($attachment['tid']))
+            	{
+					update_thread_counters((int)$attachment['tid'], array("attachmentcount" => "-1"));
+				}
 			}
 		}
 
@@ -2305,7 +2288,7 @@ if($mybb->input['action'] == "modqueue")
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
-			ORDER BY p.dateline DESC
+			ORDER BY p.dateline DESC, p.pid DESC
 			LIMIT {$start}, {$perpage}
 		");
 		$posts = '';
@@ -2505,7 +2488,7 @@ if($mybb->input['action'] == "modqueue")
 if($mybb->input['action'] == "do_editprofile")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($mybb->usergroup['caneditprofiles'] == 0)
 	{
@@ -2586,7 +2569,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
-		"icq" => $mybb->get_input('icq'),
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
 		"signature" => $mybb->get_input('signature'),
@@ -2725,7 +2707,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 		// Those with javascript turned off will be able to select both - cheeky!
 		// Check to make sure we're not moderating AND suspending posting
-		if(isset($extra_user_updates) && $extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
+		if(isset($extra_user_updates) && !empty($extra_user_updates['moderateposts']) && !empty($extra_user_updates['suspendposting']))
 		{
 			$errors[] = $lang->suspendmoderate_error;
 		}
@@ -2795,11 +2777,6 @@ if($mybb->input['action'] == "editprofile")
 		$user['website'] = '';
 	}
 
-	if($user['icq'] != "0")
-	{
-		$user['icq'] = (int)$user['icq'];
-	}
-
 	if(!$errors)
 	{
 		$mybb->input = array_merge($user, $mybb->input);
@@ -2820,7 +2797,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
@@ -2839,7 +2816,7 @@ if($mybb->input['action'] == "editprofile")
 		{
 			if($title['posts'] <= $user['postnum'])
 			{
-				$defaulttitle = $title['title'];
+				$defaulttitle = htmlspecialchars_uni($title['title']);
 				break;
 			}
 		}
@@ -2873,6 +2850,8 @@ if($mybb->input['action'] == "editprofile")
 		$bdaymonthsel[$month] = '';
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
+
+    $awaysection = '';
 
 	if($mybb->settings['allowaway'] != 0)
 	{
@@ -2945,8 +2924,12 @@ if($mybb->input['action'] == "editprofile")
 	$plugins->run_hooks("modcp_editprofile_start");
 
 	// Fetch profile fields
+	$user_fields = array();
 	$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
-	$user_fields = $db->fetch_array($query);
+	if($db->num_rows($query) > 0)
+	{
+		$user_fields = $db->fetch_array($query);
+	}
 
 	$requiredfields = '';
 	$customfields = '';
@@ -2977,7 +2960,7 @@ if($mybb->input['action'] == "editprofile")
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
 			}
-			else
+			elseif(isset($user_fields[$field]))
 			{
 				$userfield = $user_fields[$field];
 			}
@@ -3284,7 +3267,6 @@ if($mybb->input['action'] == "editprofile")
 
 	$birthday_year = $mybb->input['birthday_year'];
 	$user_website = $mybb->input['website'];
-	$user_icq = $mybb->input['icq'];
 	$user_skype = $mybb->input['skype'];
 	$user_google = $mybb->input['google'];
 
@@ -3409,17 +3391,16 @@ if($mybb->input['action'] == "finduser")
 
 		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
 		{
-			$lastdate = $lang->lastvisit_never;
-
-			if($user['lastvisit'])
-			{
-				// We have had at least some active time, hide it instead
-				$lastdate = $lang->lastvisit_hidden;
-			}
+			// We have had at least some active time, hide it instead
+			$lastdate = $lang->lastvisit_hidden;
+		}
+		else if($user['lastvisit'])
+		{
+			$lastdate = my_date('relative', $user['lastvisit']);
 		}
 		else
 		{
-			$lastdate = my_date('relative', $user['lastvisit']);
+			$lastdate = $lang->lastvisit_never;
 		}
 
 		$usergroup = htmlspecialchars_uni($usergroups_cache[$user['usergroup']]['title']);
@@ -3675,6 +3656,7 @@ if($mybb->input['action'] == "ipsearch")
 
 	add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
 
+	$ipsearch_results = $ipaddressvalue = '';
 	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
 	if($mybb->input['ipaddress'])
 	{
@@ -3692,6 +3674,7 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching post IP addresses
 		if(isset($mybb->input['search_posts']))
 		{
+			$post_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
@@ -3786,6 +3769,7 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching user IP addresses
 		if(isset($mybb->input['search_users']))
 		{
+			$user_ip_sql = '';
 			if($ip_range)
 			{
 				if(!is_array($ip_range))
@@ -3927,7 +3911,7 @@ if($mybb->input['action'] == "ipsearch")
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
 				WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
-				ORDER BY p.dateline desc
+				ORDER BY p.dateline DESC, p.pid DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
 			while($ipaddress = $db->fetch_array($query))
@@ -3956,13 +3940,13 @@ if($mybb->input['action'] == "ipsearch")
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
-					if(!$ipaddress['username'])
+					if(empty($ipaddress['username']))
 					{
 						$ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					}
 					$ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
 					$trow = alt_trow();
-					if(!$ipaddress['subject'])
+					if(empty($ipaddress['subject']))
 					{
 						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 					}
@@ -4242,7 +4226,7 @@ if($mybb->input['action'] == "liftban")
 
 	$updated_group = array(
 		'usergroup' => $ban['oldgroup'],
-		'additionalgroups' => $ban['oldadditionalgroups'],
+		'additionalgroups' => $db->escape_string($ban['oldadditionalgroups']),
 		'displaygroup' => $ban['olddisplaygroup']
 	);
 	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
@@ -4267,6 +4251,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// Editing an existing ban
+	$existing_ban = false;
 	if($mybb->get_input('uid', MyBB::INPUT_INT))
 	{
 		// Get the users info from their uid
@@ -4278,8 +4263,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		");
 		$user = $db->fetch_array($query);
 
-		$existing_ban = false;
-		if($user['uid'])
+		if($user)
 		{
 			$existing_ban = true;
 		}
@@ -4303,7 +4287,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$user = get_user_by_username($mybb->input['username'], $options);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$errors[] = $lang->invalid_username;
 		}
@@ -4328,9 +4312,12 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 	// Check banned group
 	$usergroups_cache = $cache->read('usergroups');
-	$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	if(isset($usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)]))
+	{
+		$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
+	}
 
-	if(empty($usergroup['gid']) || empty($usergroup['isbannedgroup']))
+	if(!isset($usergroup) || empty($usergroup['isbannedgroup']))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}
@@ -4338,8 +4325,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	// If this is a new ban, we check the user isn't already part of a banned group
 	if(!$existing_ban && $user['uid'])
 	{
-		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-		if($db->fetch_field($query, "uid"))
+		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'", array('limit' => 1));
+		if($db->num_rows($query) > 0)
 		{
 			$errors[] = $lang->error_useralreadybanned;
 		}
@@ -4384,7 +4371,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'uid' => $user['uid'],
 				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'oldgroup' => (int)$user['usergroup'],
-				'oldadditionalgroups' => (string)$user['additionalgroups'],
+				'oldadditionalgroups' => $db->escape_string($user['additionalgroups']),
 				'olddisplaygroup' => (int)$user['displaygroup'],
 				'admin' => (int)$mybb->user['uid'],
 				'dateline' => TIME_NOW,
@@ -4466,7 +4453,7 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
-		if($banned['username'])
+		if(!empty($banned['username']))
 		{
 			$username = $banned['username'] = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
@@ -4478,7 +4465,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Permission to edit this ban?
-	if($banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if(!empty($banned) && $banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -4678,7 +4665,7 @@ if(!$mybb->input['action'])
 					FROM  ".TABLE_PREFIX."posts p
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-					ORDER BY p.dateline DESC
+					ORDER BY p.dateline DESC, p.pid DESC
 					LIMIT 1
 				");
 				$post = $db->fetch_array($query);
@@ -4798,11 +4785,11 @@ if(!$mybb->input['action'])
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
 				$data = my_unserialize($logitem['data']);
-				if($data['uid'])
+				if(isset($data['uid']))
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 				}
-				if($data['aid'])
+				if(isset($data['aid']))
 				{
 					$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 					$data['announcement'] = get_announcement_link($data['aid']);
@@ -4917,8 +4904,12 @@ if(!$mybb->input['action'])
 		eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
 	}
 
-	$modnotes = $cache->read("modnotes");
-	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
+	$modnotes = '';
+	$modnotes_cache = $cache->read("modnotes");
+	if($modnotes_cache !== false)
+	{
+		$modnotes = htmlspecialchars_uni($modnotes_cache['modmessage']);
+	}
 
 	$plugins->run_hooks("modcp_end");
 

@@ -113,7 +113,7 @@ if($endpart != "index.php")
 			WHERE a.aid='{$id}' AND startdate < '{$time}'  AND (enddate > '{$time}' OR enddate = 0)
 		");
 		$announcement = $db->fetch_array($query);
-		if(!$announcement['aid'])
+		if(!$announcement)
 		{
 			$action = "404";
 		}
@@ -122,7 +122,7 @@ if($endpart != "index.php")
 	{
 		$query = $db->simple_select("threads", "*", "tid='{$id}' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
-		if(!$thread['tid'])
+		if(!$thread)
 		{
 			$action = "404";
 		}
@@ -131,7 +131,7 @@ if($endpart != "index.php")
 	{
 		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!=0 AND password=''");
 		$forum = $db->fetch_array($query);
-		if(!$forum['fid'])
+		if(!$forum)
 		{
 			$action = "404";
 		}
@@ -209,18 +209,11 @@ if($mybb->settings['forcelogin'] == 1)
 	}
 }
 
-// Load Limiting - DIRECTORY_SEPARATOR checks if running windows
-if(DIRECTORY_SEPARATOR != '\\')
+// Load Limiting
+if($mybb->usergroup['cancp'] != 1 && $mybb->settings['load'] > 0 && ($load = get_server_load()) && $load != $lang->unknown && $load > $mybb->settings['load'])
 {
-	if($uptime = @exec('uptime'))
-	{
-		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
-		$load = $regs[1];
-		if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
-		{
-			archive_error($lang->error_loadlimit);
-		}
-	}
+	// User is not an administrator and the load limit is higher than the limit, show an error
+	archive_error($lang->error_loadlimit);
 }
 
 if($mybb->usergroup['canview'] == 0)

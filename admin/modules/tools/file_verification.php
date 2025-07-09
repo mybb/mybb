@@ -14,7 +14,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-@set_time_limit(0);
+my_set_time_limit();
 
 $page->add_breadcrumb_item($lang->file_verification, "index.php?module=tools-file_verification");
 
@@ -27,7 +27,7 @@ if(!$mybb->input['action'])
 	if($mybb->request_method == "post")
 	{
 		// User clicked no
-		if($mybb->input['no'])
+		if($mybb->get_input('no'))
 		{
 			admin_redirect("index.php?module=tools-system_health");
 		}

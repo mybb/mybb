@@ -61,7 +61,6 @@ class errorHandler {
 		E_USER_WARNING					=> 'User Warning',
 		E_USER_NOTICE					=> 'User Notice',
 		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
-		E_STRICT						=> 'Runtime Notice',
 		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
 		MYBB_SQL 						=> 'MyBB SQL Error',
 		MYBB_TEMPLATE					=> 'MyBB Template Error',
@@ -100,7 +99,6 @@ class errorHandler {
 		E_DEPRECATED,
 		E_NOTICE,
 		E_USER_NOTICE,
-		E_STRICT
 	);
 
 	/**
@@ -118,11 +116,24 @@ class errorHandler {
 	public $has_errors = false;
 
 	/**
+	 * Display errors regardless of related settings (useful during initialization stage)
+	 *
+	 * @var boolean
+	 */
+	public $force_display_errors = false;
+
+	/**
 	 * Initializes the error handler
 	 *
 	 */
 	function __construct()
 	{
+		if(version_compare(PHP_VERSION, '7.0', '<'))
+		{
+			$this->error_types[E_STRICT] = 'Runtime Notice';
+			$this->ignore_types[] = E_STRICT;
+		}
+
 		// Lets set the error handler in here so we can just do $handler = new errorHandler() and be all set up.
 		$error_types = E_ALL;
 		foreach($this->ignore_types as $bit)
@@ -130,24 +141,38 @@ class errorHandler {
 			$error_types = $error_types & ~$bit;
 		}
 		error_reporting($error_types);
-		set_error_handler(array(&$this, "error"), $error_types);
+		set_error_handler(array(&$this, "error_callback"), $error_types);
 	}
 
 	/**
-	 * Parses a error for processing.
+	 * Passes relevant arguments for error processing.
 	 *
 	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
 	 * @param string $message The error message
 	 * @param string $file The error file
 	 * @param integer $line The error line
+	 */
+	function error_callback($type, $message, $file=null, $line=0)
+	{
+		return $this->error($type, $message, $file, $line);
+	}
+
+	/**
+	 * Processes an error.
+	 *
+	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
+	 * @param string $message The error message
+	 * @param string $file The error file
+	 * @param integer $line The error line
+	 * @param boolean $allow_output Whether or not output is permitted
 	 * @return boolean True if parsing was a success, otherwise assume a error
 	 */
-	function error($type, $message, $file=null, $line=0)
+	function error($type, $message, $file=null, $line=0, $allow_output=true)
 	{
 		global $mybb;
 
-		// Error reporting turned off (either globally or by @ before erroring statement)
-		if(error_reporting() == 0)
+		// Error reporting turned off for this type
+		if((error_reporting() & $type) == 0)
 		{
 			return true;
 		}
@@ -157,15 +182,38 @@ class errorHandler {
 			return true;
 		}
 
-		$file = str_replace(MYBB_ROOT, "", $file);
+        if(isset($file))
+        {
+            $file = str_replace(MYBB_ROOT, "", $file);
+        }
+        else
+        {
+            $file = "";
+        }
 
-		$this->has_errors = true;
+		if($type == MYBB_SQL || strpos(strtolower($this->error_types[$type]), 'warning') === false)
+		{
+			$this->has_errors = true;
+		}
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
-			$mybb->settings['errortypemedium'] = "none";
+			$errortypemedium = $mybb->settings['errortypemedium'];
+		}
+		else
+		{
+			$errortypemedium = "none";
+		}
+
+		if(isset($mybb->settings['errorlogmedium']))
+		{
+			$errorlogmedium = $mybb->settings['errorlogmedium'];
+		}
+		else
+		{
+			$errorlogmedium = 'none';
 		}
 
 		if(defined("IN_TASK"))
@@ -184,50 +232,43 @@ class errorHandler {
 		}
 
 		// Saving error to log file.
-		if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
+		if($errorlogmedium == "log" || $errorlogmedium == "both")
 		{
 			$this->log_error($type, $message, $file, $line);
 		}
 
 		// Are we emailing the Admin a copy?
-		if($mybb->settings['errorlogmedium'] == "mail" || $mybb->settings['errorlogmedium'] == "both")
+		if($errorlogmedium == "mail" || $errorlogmedium == "both")
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
 
-		// SQL Error
-		if($type == MYBB_SQL)
+		if($allow_output === true)
 		{
-			$this->output_error($type, $message, $file, $line);
-		}
-		else
-		{
-			// Do we have a PHP error?
-			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
+			// SQL Error
+			if($type == MYBB_SQL)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
 			// PHP Error
-			else
+			elseif(strpos(strtolower($this->error_types[$type]), 'warning') === false)
 			{
-				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
+				$this->output_error($type, $message, $file, $line);
+			}
+			// PHP Warning
+			elseif(in_array($errortypemedium, array('warning', 'both')))
+			{
+				global $templates;
+
+				$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+				if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
+					$this->warnings .= $warning;
+					$this->warnings .= $this->generate_backtrace();
 				}
 				else
 				{
-					global $templates;
-
-					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
-					{
-						$this->warnings .= $warning;
-						$this->warnings .= $this->generate_backtrace();
-					}
-					else
-					{
-						echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
-					}
+					echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
 				}
 			}
 		}
@@ -298,7 +339,14 @@ class errorHandler {
 
 		if(!$message)
 		{
-			$message = $lang->unknown_user_trigger;
+			if(isset($lang->unknown_user_trigger))
+			{
+				$message = $lang->unknown_user_trigger;
+			}
+			else
+			{
+				$message .= 'An unknown error has been triggered.';
+			}
 		}
 
 		if(in_array($type, $this->mybb_error_types))
@@ -348,7 +396,11 @@ class errorHandler {
 		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
-		if(trim($mybb->settings['errorloglocation']) != "")
+		if(
+			isset($mybb->settings['errorloglocation']) &&
+			trim($mybb->settings['errorloglocation']) != "" &&
+			substr($mybb->settings['errorloglocation'], -4) !== '.php'
+		)
 		{
 			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
@@ -371,7 +423,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if(!$mybb->settings['adminemail'])
+		if(empty($mybb->settings['adminemail']))
 		{
 			return false;
 		}
@@ -412,16 +464,38 @@ class errorHandler {
 	{
 		global $mybb, $parser, $lang;
 
-		if(!$mybb->settings['bbname'])
+		if(isset($mybb->settings['bbname']))
 		{
-			$mybb->settings['bbname'] = "MyBB";
+			$bbname = $mybb->settings['bbname'];
 		}
-		
+		else
+		{
+			$bbname = "MyBB";
+		}
+
+		// For some reason in the installer this setting is set to "<"
+		$accepted_error_types = array('both', 'error', 'warning', 'none');
+		if(isset($mybb->settings['errortypemedium']) && in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		{
+			$errortypemedium = $mybb->settings['errortypemedium'];
+		}
+		else
+		{
+			$errortypemedium = "none";
+		}
+
+		$show_details = (
+			$this->force_display_errors ||
+			in_array($errortypemedium, array('both', 'error')) ||
+			defined("IN_INSTALL") ||
+			defined("IN_UPGRADE")
+		);
+
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($show_details)
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -438,7 +512,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($show_details)
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
@@ -534,9 +608,27 @@ class errorHandler {
 
 		$contact_site_owner = '';
 		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+		if(
+			!empty($mybb->settings['contactlink']) &&
+			(
+				!empty($mybb->settings['contact']) &&
+				!$is_in_contact &&
+				(
+					$mybb->settings['contactlink'] == "contact.php" &&
+					(
+						!isset($mybb->user['uid']) ||
+						($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0) ||
+						$mybb->user['uid'] > 0
+					)
+				) ||
+				$mybb->settings['contactlink'] != "contact.php"
+			)
+		)
 		{
-			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+			if(
+				!my_validate_url($mybb->settings['contactlink'], true, true) &&
+				my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:'
+			)
 			{
 				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}
@@ -546,13 +638,39 @@ class errorHandler {
 HTML;
 		}
 
-			$contact = <<<HTML
+		$additional_name = '';
+		$docs_link = 'https://docs.mybb.com';
+		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
+		$support_link = 'https://community.mybb.com/';
+
+		if(isset($lang->settings['docs_link']))
+		{
+			$docs_link = $lang->settings['docs_link'];
+		}
+
+		if(isset($lang->settings['common_issues_link']))
+		{
+			$common_issues_link = $lang->settings['common_issues_link'];
+		}
+
+		if(isset($lang->settings['support_link']))
+		{
+			$support_link = $lang->settings['support_link'];
+		}
+
+
+		if(isset($lang->settings['additional_name']))
+		{
+			$additional_name = $lang->settings['additional_name'];
+		}
+
+		$contact = <<<HTML
 <p>
 	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
 </p>
 
 <p>
-	<strong>If you are the site owner</strong>, please check the <a href="https://docs.mybb.com">MyBB Documentation</a> for help resolving <a href="https://docs.mybb.com/1.8/faq/">common issues</a>, or get technical help on the <a href="https://community.mybb.com/">MyBB Community Forums</a>.
+	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
 </p>
 HTML;
 
@@ -562,14 +680,23 @@ HTML;
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
-			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
+
+			$file_name = basename($_SERVER['SCRIPT_FILENAME']);
+			if(function_exists('htmlspecialchars_uni'))
+			{
+				$file_name = htmlspecialchars_uni($file_name);
+			}
+			else
+			{
+				$file_name = htmlspecialchars($file_name);
+			}
 
 			echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{$mybb->settings['bbname']} - Internal Error</title>
+	<title>{$bbname} - Internal Error</title>
 	<style type="text/css">
 		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
 		a:link { color: #026CB1; text-decoration: none;	}
@@ -626,6 +753,7 @@ EOF;
 	</div>
 EOF;
 		}
+
 		exit(1);
 	}
 

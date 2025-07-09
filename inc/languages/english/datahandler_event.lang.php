@@ -29,6 +29,6 @@ $l['eventdata_invalid_repeat_week_interval'] = "You have entered an invalid week
 $l['eventdata_invalid_repeat_weekly_days'] = "You did not select any weekdays for this event to occur on.";
 $l['eventdata_invalid_repeat_month_interval'] = "You have entered an invalid month repeat interval.";
 $l['eventdata_invalid_repeat_year_interval'] = "You have entered an invalid year repeat interval.";
-$l['eventdata_event_wont_occur'] = "Using the start and end times along with the event repetition settings, this event won't occur.";
+$l['eventdata_event_wont_occur'] = "Please adjust the start and end dates to ensure proper planning of the event.";
 
 $l['eventdata_no_permission_private_event'] = "You do not have permission to post private events.";

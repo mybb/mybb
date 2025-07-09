@@ -217,6 +217,7 @@ if($mybb->settings['portal_showsearch'] != 0)
 	eval("\$search = \"".$templates->get("portal_search")."\";");
 }
 
+$onlinecount = null;
 $whosonline = '';
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
@@ -289,7 +290,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				}
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
 		{
 			// The user is a search bot.
 			if($mybb->settings['wolorder'] == 'username')
@@ -343,7 +344,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 	// Most users online
 	$mostonline = $cache->read("mostonline");
-	if($onlinecount > $mostonline['numusers'])
+	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
@@ -440,7 +441,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	}
 }
 
-$announcements = '';
+$announcements = $multipage = '';
 if(!empty($mybb->settings['portal_announcementsfid']))
 {
 	// Get latest news announcements
@@ -655,12 +656,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$parser_options['allow_smilies'] = 0;
 			}
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_imgcode'] = 0;
 			}
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$parser_options['allow_videocode'] = 0;
 			}
@@ -689,6 +690,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 							$isimage = false;
 						}
 						$attachment['icon'] = get_attachment_icon($ext);
+						if(!$attachment['dateuploaded'])
+						{
+							$attachment['dateuploaded'] = $announcement['dateline'];
+						}
+						$attachdate = my_date('normal', $attachment['dateuploaded']);
 						// Support for [attachment=id] code
 						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
 						{
@@ -710,12 +716,13 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 						}
 						else
 						{
+							$tcount = 0;
 							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 							{ // We have a thumbnail to show
 								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 								if($tcount == 5)
 								{
-									$thumblist .= "<br />";
+									$post['thumblist'] .= "<br />";
 									$tcount = 0;
 								}
 								++$tcount;

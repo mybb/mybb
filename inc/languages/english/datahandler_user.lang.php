@@ -25,11 +25,11 @@ $l['userdata_email_already_in_use'] = "You have entered an email address that is
 
 $l['userdata_dob_required'] = "You did not select your date of birth. Please select your date of birth to continue - you can hide your birthday and age from other users, however.";
 $l['userdata_invalid_website'] = 'The website address you entered is invalid. Please enter a valid website address or leave the field empty.';
-$l['userdata_invalid_icq_number'] = 'The ICQ number you entered is invalid. Please enter a valid ICQ number or leave the field empty.';
 $l['userdata_invalid_birthday'] = 'The birthday you entered is invalid. Please enter a valid birthday or leave the field empty.';
 $l['userdata_invalid_birthday_coppa'] = 'To verify your age, please enter the year you were born. You may hide your Age and Date of Birth in your profile options.';
 $l['userdata_invalid_birthday_coppa2'] = 'You must be at least 13 years of age to be a member of this message board. Please contact an Administrator.';
 $l['userdata_invalid_birthday_privacy'] = 'Please choose a valid birthday privacy option.';
+$l['userdata_conflicted_birthday_privacy'] = 'You must specify your birth year if you choose to display age only as your birthday privacy.';
 $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Please enter an existing referrer or leave the field empty.';
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please select an existing language.';
 $l['userdata_invalid_style'] = 'The style you selected is invalid. Please select a valid style.';

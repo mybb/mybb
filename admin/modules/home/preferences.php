@@ -133,20 +133,20 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->acp_theme, $lang->select_acp_theme, $setting_code);
 	$form_container->output_row($lang->acp_language, $lang->select_acp_language, $language_code);
 	$form_container->output_row($lang->codemirror, $lang->use_codemirror_desc, $form->generate_on_off_radio('codepress', $admin_options['codepress']));
-	
+
 	// If 2FA is enabled we need to display a link to the recovery codes page
 	if(!empty($admin_options['authsecret']))
 	{
 		$lang->use_2fa_desc .= "<br />".$lang->recovery_codes_desc." ".$lang->recovery_codes_warning;
-	}	
+	}
 	$form_container->output_row($lang->my2fa, $lang->use_2fa_desc, $form->generate_on_off_radio('2fa', (int)!empty($admin_options['authsecret'])));
-	
+
 	if(!empty($admin_options['authsecret']))
 	{
-		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@".str_replace(" ", "", $mybb->settings['bbname']), $admin_options['authsecret']);
+		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@AdminCP", $admin_options['authsecret'], str_replace(" ", "", $mybb->settings['bbname']));
 		$form_container->output_row($lang->my2fa_qr . "<br /><img src=\"{$qr}\"");
-	}	
-				
+	}
+
 	$form_container->end();
 
 	$table = new Table;

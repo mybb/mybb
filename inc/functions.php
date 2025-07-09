@@ -176,6 +176,7 @@ function run_shutdown()
 		{
 			// Load DB interface
 			require_once MYBB_ROOT."inc/db_base.php";
+			require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
@@ -186,8 +187,14 @@ function run_shutdown()
 				case "pgsql":
 					$db = new DB_PgSQL;
 					break;
+				case "pgsql_pdo":
+					$db = new PostgresPdoDbDriver();
+					break;
 				case "mysqli":
 					$db = new DB_MySQLi;
+					break;
+				case "mysql_pdo":
+					$db = new MysqlPdoDbDriver();
 					break;
 				default:
 					$db = new DB_MySQL;
@@ -253,7 +260,7 @@ function send_mail_queue($count=10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
+	if($mailcache !== false && $mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->update_mailqueue(0, TIME_NOW);
@@ -332,7 +339,7 @@ function parse_page($contents)
  */
 function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
-	global $mybb, $lang, $mybbadmin, $plugins;
+	global $mybb, $lang, $plugins;
 
 	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
@@ -346,11 +353,6 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
-		}
-		elseif(defined("IN_ADMINCP"))
-		{
-			$offset = (float)$mybbadmin['timezone'];
-			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
@@ -550,6 +552,71 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 }
 
 /**
+ * Get a mail handler instance, a MyBB's built-in SMTP / PHP mail hander or one created by a plugin.
+ * @param bool $use_buitlin Whether to use MyBB's built-in mail handler.
+ *
+ * @return object A MyBB built-in mail handler or one created by plugin(s).
+ */
+function &get_my_mailhandler($use_buitlin = false)
+{
+	global $mybb, $plugins;
+	static $my_mailhandler;
+	static $my_mailhandler_builtin;
+
+	if($use_buitlin)
+	{
+		// If our built-in mail handler doesn't exist, create it.
+		if(!is_object($my_mailhandler_builtin))
+		{
+			require_once MYBB_ROOT . "inc/class_mailhandler.php";
+
+			// Using SMTP.
+			if(isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp')
+			{
+				require_once MYBB_ROOT . "inc/mailhandlers/smtp.php";
+				$my_mailhandler_builtin = new SmtpMail();
+			}
+			// Using PHP mail().
+			else
+			{
+				require_once MYBB_ROOT . "inc/mailhandlers/php.php";
+				$my_mailhandler_builtin = new PhpMail();
+				if(!empty($mybb->config['mail_parameters']))
+				{
+					$my_mailhandler_builtin->additional_parameters = $mybb->config['mail_parameters'];
+				}
+			}
+		}
+
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_builtin_after_init', $my_mailhandler_builtin);
+		}
+
+		return $my_mailhandler_builtin;
+	}
+
+	// If our mail handler doesn't exist, create it.
+	if(!is_object($my_mailhandler))
+	{
+		require_once MYBB_ROOT . "inc/class_mailhandler.php";
+
+		if(isset($plugins) && is_object($plugins))
+		{
+			$plugins->run_hooks('my_mailhandler_init', $my_mailhandler);
+		}
+
+		// If no plugin has ever created the mail handler, resort to use the built-in one.
+		if(!is_object($my_mailhandler) || !($my_mailhandler instanceof MailHandler))
+		{
+			$my_mailhandler = &get_my_mailhandler(true);
+		}
+	}
+
+	return $my_mailhandler;
+}
+
+/**
  * Sends an email using PHP's mail function, formatting it appropriately.
  *
  * @param string $to Address the email should be addressed to.
@@ -562,51 +629,72 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
  * @param string $format The format of the email to be sent (text or html). text is default
  * @param string $message_text The text message of the email if being sent in html format, for email clients that don't support html
  * @param string $return_email The email address to return to. Defaults to admin return email address.
- * @return bool
+ * @return bool True if the mail is sent, false otherwise.
  */
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
-	global $mybb;
-	static $mail;
+	global $mybb, $plugins;
 
-	// Does our object not exist? Create it
-	if(!is_object($mail))
+	// Get our mail handler.
+	$mail = &get_my_mailhandler();
+
+	// If MyBB's built-in SMTP mail handler is used, set the keep alive bit accordingly.
+	if($keep_alive == true && isset($mail->keep_alive) && isset($mybb->settings['mail_handler']) && $mybb->settings['mail_handler'] == 'smtp')
 	{
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
-
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
-	}
-
-	// Using SMTP based mail
-	if($mybb->settings['mail_handler'] == 'smtp')
-	{
-		if($keep_alive == true)
+		require_once MYBB_ROOT . "inc/class_mailhandler.php";
+		require_once MYBB_ROOT . "inc/mailhandlers/smtp.php";
+		if($mail instanceof MailHandler && $mail instanceof SmtpMail)
 		{
 			$mail->keep_alive = true;
 		}
 	}
 
-	// Using PHP based mail()
-	else
+	// Following variables will help sequential plugins to determine how to process plugin hooks.
+	// Mark this variable true if the hooked plugin has sent the mail, otherwise don't modify it.
+	$is_mail_sent = false;
+	// Mark this variable false if the hooked plugin doesn't suggest sequential plugins to continue processing.
+	$continue_process = true;
+
+	$my_mail_parameters = array(
+		'to' => &$to,
+		'subject' => &$subject,
+		'message' => &$message,
+		'from' => &$from,
+		'charset' => &$charset,
+		'headers' => &$headers,
+		'keep_alive' => &$keep_alive,
+		'format' => &$format,
+		'message_text' => &$message_text,
+		'return_email' => &$return_email,
+		'is_mail_sent' => &$is_mail_sent,
+		'continue_process' => &$continue_process,
+	);
+
+	if(isset($plugins) && is_object($plugins))
 	{
-		if($mybb->settings['mail_parameters'] != '')
-		{
-			$mail->additional_parameters = $mybb->settings['mail_parameters'];
-		}
+		$plugins->run_hooks('my_mail_pre_build_message', $my_mail_parameters);
 	}
 
-	// Build and send
+	// Build the mail message.
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
-	return $mail->send();
+
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_pre_send', $my_mail_parameters);
+	}
+
+	// Check if the hooked plugins still suggest to send the mail.
+	if($continue_process)
+	{
+		$is_mail_sent = $mail->send();
+	}
+
+	if(isset($plugins) && is_object($plugins))
+	{
+		$plugins->run_hooks('my_mail_post_send', $my_mail_parameters);
+	}
+
+	return $is_mail_sent;
 }
 
 /**
@@ -632,6 +720,11 @@ function generate_post_check($rotation_shift=0)
 	else
 	{
 		$seed .= $session->sid;
+	}
+
+	if(defined('IN_ADMINCP'))
+	{
+		$seed .= 'ADMINCP';
 	}
 
 	$seed .= $mybb->settings['internal']['encryption_key'];
@@ -689,11 +782,11 @@ function get_parent_list($fid)
 	global $forum_cache;
 	static $forumarraycache;
 
-	if($forumarraycache[$fid])
+	if(!empty($forumarraycache[$fid]))
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forum_cache[$fid])
+	elseif(!empty($forum_cache[$fid]))
 	{
 		return $forum_cache[$fid]['parentlist'];
 	}
@@ -785,18 +878,21 @@ function get_child_list($fid)
 			}
 		}
 	}
-	if(!is_array($forums_by_parent[$fid]))
+	if(isset($forums_by_parent[$fid]))
 	{
-		return $forums;
-	}
-
-	foreach($forums_by_parent[$fid] as $forum)
-	{
-		$forums[] = (int)$forum['fid'];
-		$children = get_child_list($forum['fid']);
-		if(is_array($children))
+		if(!is_array($forums_by_parent[$fid]))
 		{
-			$forums = array_merge($forums, $children);
+			return $forums;
+		}
+
+		foreach($forums_by_parent[$fid] as $forum)
+		{
+			$forums[] = (int)$forum['fid'];
+			$children = get_child_list($forum['fid']);
+			if(is_array($children))
+			{
+				$forums = array_merge($forums, $children);
+			}
 		}
 	}
 	return $forums;
@@ -1007,7 +1103,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 	}
 
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
-	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && (!$mybb->user['uid'] || $mybb->user['showredirect'] == 1)))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -1286,7 +1382,7 @@ function user_permissions($uid=null)
  */
 function usergroup_permissions($gid=0)
 {
-	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
+	global $cache, $groupscache, $grouppermignore, $groupzerogreater, $groupzerolesser, $groupxgreater, $grouppermbyswitch;
 
 	if(!is_array($groupscache))
 	{
@@ -1303,6 +1399,37 @@ function usergroup_permissions($gid=0)
 
 	$usergroup = array();
 	$usergroup['all_usergroups'] = $gid;
+
+	// Get those switch permissions from the first valid group.
+	$permswitches_usergroup = array();
+	$grouppermswitches = array();
+	foreach(array_values($grouppermbyswitch) as $permvalue)
+	{
+		if(is_array($permvalue))
+		{
+			foreach($permvalue as $perm)
+			{
+				$grouppermswitches[] = $perm;
+			}
+		}
+		else
+		{
+			$grouppermswitches[] = $permvalue;
+		}
+	}
+	$grouppermswitches = array_unique($grouppermswitches);
+	foreach($groups as $gid)
+	{
+		if(trim($gid) == "" || empty($groupscache[$gid]))
+		{
+			continue;
+		}
+		foreach($grouppermswitches as $perm)
+		{
+			$permswitches_usergroup[$perm] = $groupscache[$gid][$perm];
+		}
+		break;	// Only retieve the first available group's permissions as how following action does.
+	}
 
 	foreach($groups as $gid)
 	{
@@ -1324,10 +1451,116 @@ function usergroup_permissions($gid=0)
 					$permbit = "";
 				}
 
-				// 0 represents unlimited for numerical group permissions (i.e. private message limit) so take that into account.
-				if(in_array($perm, $groupzerogreater) && ($access == 0 || $permbit === 0))
+				// permission type: 0 not a numerical permission, otherwise a numerical permission.
+				// Positive value is for `greater is more` permission, negative for `lesser is more`.
+				$perm_is_numerical = 0;
+				$perm_numerical_lowerbound = 0;
+
+				// 0 represents unlimited for most numerical group permissions (i.e. private message limit) so take that into account.
+				if(in_array($perm, $groupzerogreater))
 				{
-					$usergroup[$perm] = 0;
+					// 1 means a `0 or greater` permission. Value 0 means unlimited.
+					$perm_is_numerical = 1;
+				}
+				// Less is more for some numerical group permissions (i.e. post count required for using signature) so take that into account, too.
+				else if(in_array($perm, $groupzerolesser))
+				{
+					// -1 means a `0 or lesser` permission. Value 0 means unlimited.
+					$perm_is_numerical = -1;
+				}
+				// Greater is more, but with a lower bound.
+				else if(array_key_exists($perm, $groupxgreater))
+				{
+					// 2 means a general `greater` permission. Value 0 just means 0.
+					$perm_is_numerical = 2;
+					$perm_numerical_lowerbound = $groupxgreater[$perm];
+				}
+
+				if($perm_is_numerical != 0)
+				{
+					$update_current_perm = true;
+
+					// Ensure it's an integer.
+					$access = (int)$access;
+					// Check if this permission should be activatived by another switch permission in current group.
+					if(array_key_exists($perm, $grouppermbyswitch))
+					{
+						if(!is_array($grouppermbyswitch[$perm]))
+						{
+							$grouppermbyswitch[$perm] = array($grouppermbyswitch[$perm]);
+						}
+
+						$update_current_perm = $group_current_perm_enabled = $group_perm_enabled = false;
+						foreach($grouppermbyswitch[$perm] as $permswitch)
+						{
+							if(!isset($groupscache[$gid][$permswitch]))
+							{
+								continue;
+							}
+							$permswitches_current = $groupscache[$gid][$permswitch];
+
+							// Determin if the permission is enabled by switches from current group.
+							if($permswitches_current == 1 || $permswitches_current == "yes") // Keep yes/no for compatibility?
+							{
+								$group_current_perm_enabled = true;
+							}
+							// Determin if the permission is enabled by switches from previously handled groups.
+							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							{
+								$group_perm_enabled = true;
+							}
+						}
+
+						// Set this permission if not set yet.
+						if(!isset($usergroup[$perm]))
+						{
+							$usergroup[$perm] = $access;
+						}
+
+						// If current group's setting enables the permission, we may need to update the user's permission.
+						if($group_current_perm_enabled)
+						{
+							// Only update this permission if both its switch and current group switch are on.
+							if($group_perm_enabled)
+							{
+								$update_current_perm = true;
+							}
+							// Override old useless value with value from current group.
+							else
+							{
+								$usergroup[$perm] = $access;
+							}
+						}
+					}
+
+					// No switch controls this permission, or permission needs an update.
+					if($update_current_perm)
+					{
+						switch($perm_is_numerical)
+						{
+							case 1:
+							case -1:
+								if($access == 0 || $permbit === 0)
+								{
+									$usergroup[$perm] = 0;
+									break;
+								}
+							default:
+								if($perm_is_numerical > 0 && $access > $permbit || $perm_is_numerical < 0 && $access < $permbit)
+								{
+									$usergroup[$perm] = $access;
+								}
+								break;
+						}
+					}
+
+					// Maybe oversubtle, database uses Unsigned on them, but enables usage of permission value with a lower bound.
+					if($usergroup[$perm] < $perm_numerical_lowerbound)
+					{
+						$usergroup[$perm] = $perm_numerical_lowerbound;
+					}
+
+					// Work is done for numerical permissions.
 					continue;
 				}
 
@@ -1336,6 +1569,11 @@ function usergroup_permissions($gid=0)
 					$usergroup[$perm] = $access;
 				}
 			}
+		}
+
+		foreach($permswitches_usergroup as $perm => $value)
+		{
+			$permswitches_usergroup[$perm] = $usergroup[$perm];
 		}
 	}
 
@@ -1374,7 +1612,7 @@ function usergroup_displaygroup($gid)
  * @param int $fid The forum ID to build permissions for (0 builds for all forums)
  * @param int $uid The user to build the permissions for (0 will select the uid automatically)
  * @param int $gid The group of the user to build permissions for (0 will fetch it)
- * @return array Forum permissions for the specific forum or forums
+ * @return array|false Forum permissions for the specific forum or forums
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
@@ -1406,6 +1644,10 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 			$groupperms = $mybb->usergroup;
 		}
 	}
+	else 
+	{
+		$groupperms = usergroup_permissions($gid);
+	}	
 
 	if(!is_array($forum_cache))
 	{
@@ -1456,45 +1698,41 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
 
-	$groups = explode(",", $gid);
-
-	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
-	{
-		return $groupperms;
-	}
+    if(isset($gid))
+    {
+        $groups = explode(",", $gid);
+    }
+    else
+    {
+        $groups = array();
+    }
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
 	$only_reply_own_threads = 1;
 
-	foreach($groups as $gid)
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
-		if(!empty($groupscache[$gid]))
+		$current_permissions = $groupperms;
+	}
+	else
+	{
+		foreach($groups as $gid)
 		{
-			$level_permissions = $fpermcache[$fid][$gid];
-
-			// If our permissions arn't inherited we need to figure them out
-			if(empty($fpermcache[$fid][$gid]))
+			// If this forum has custom or inherited permissions for the currently looped group.
+			if(!empty($fpermcache[$fid][$gid]))
 			{
-				$parents = explode(',', $forum_cache[$fid]['parentlist']);
-				rsort($parents);
-				if(!empty($parents))
-				{
-					foreach($parents as $parent_id)
-					{
-						if(!empty($fpermcache[$parent_id][$gid]))
-						{
-							$level_permissions = $fpermcache[$parent_id][$gid];
-							break;
-						}
-					}
-				}
+				$level_permissions = $fpermcache[$fid][$gid];
 			}
-
-			// If we STILL don't have forum permissions we use the usergroup itself
-			if(empty($level_permissions))
+			// Or, use the group permission instead, if available. Some forum permissions not existing here will be added back later.
+			else if(!empty($groupscache[$gid]))
 			{
 				$level_permissions = $groupscache[$gid];
+			}
+			// No permission is available for the currently looped group, probably we have bad data here.
+			else
+			{
+				continue;
 			}
 
 			foreach($level_permissions as $permission => $access)
@@ -1515,24 +1753,25 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				$only_reply_own_threads = 0;
 			}
 		}
+
+		if(count($current_permissions) == 0)
+		{
+			$current_permissions = $groupperms;
+		}
 	}
 
 	// Figure out if we can view more than our own threads
-	if($only_view_own_threads == 0)
+	if($only_view_own_threads == 0 || !isset($current_permissions["canonlyviewownthreads"]))
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
 	}
 
 	// Figure out if we can reply more than our own threads
-	if($only_reply_own_threads == 0)
+	if($only_reply_own_threads == 0 || !isset($current_permissions["canonlyreplyownthreads"]))
 	{
 		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
-	if(count($current_permissions) == 0)
-	{
-		$current_permissions = $groupperms;
-	}
 	return $current_permissions;
 }
 
@@ -1684,7 +1923,7 @@ function check_forum_password($fid, $pid=0, $return=false)
  * @param int $fid The forum ID
  * @param int $uid The user ID to fetch permissions for (0 assumes current logged in user)
  * @param string $parentslist The parent list for the forum (if blank, will be fetched)
- * @return array Array of moderator permissions for the specific forum
+ * @return array|false Array of moderator permissions for the specific forum
  */
 function get_moderator_permissions($fid, $uid=0, $parentslist="")
 {
@@ -1731,14 +1970,14 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(empty($forum) || !is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
 		}
 
 		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
+		if(!empty($forum['users'][$uid]))
 		{
 			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
@@ -1748,8 +1987,12 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 					continue;
 				}
 
+				if(!isset($perms[$action]))
+				{
+					$perms[$action] = $value;
+				}
 				// Figure out the user permissions
-				if($value == 0)
+				else if($value == 0)
 				{
 					// The user doesn't have permission to set this action
 					$perms[$action] = 0;
@@ -1763,7 +2006,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 
 		foreach($groups as $group)
 		{
-			if(!is_array($forum['usergroups'][$group]))
+			if(empty($forum['usergroups'][$group]) || !is_array($forum['usergroups'][$group]))
 			{
 				// There are no permissions set for this group
 				continue;
@@ -1777,7 +2020,14 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 					continue;
 				}
 
-				$perms[$action] = max($perm[$action], $perms[$action]);
+				if(!isset($perms[$action]))
+				{
+					$perms[$action] = $value;
+				}
+				else
+				{
+					$perms[$action] = max($perm[$action], $perms[$action]);
+				}
 			}
 		}
 	}
@@ -1797,7 +2047,7 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
  */
 function is_moderator($fid=0, $action="", $uid=0)
 {
-	global $mybb, $cache;
+	global $mybb, $cache, $plugins;
 
 	if($uid == 0)
 	{
@@ -1810,12 +2060,26 @@ function is_moderator($fid=0, $action="", $uid=0)
 	}
 
 	$user_perms = user_permissions($uid);
-	if($user_perms['issupermod'] == 1)
+
+	$hook_args = array(
+		'fid' => $fid,
+		'action' => $action,
+		'uid' => $uid,
+	);
+
+	$plugins->run_hooks("is_moderator", $hook_args);
+	
+	if(isset($hook_args['is_moderator']))
+	{
+		return (boolean) $hook_args['is_moderator'];
+	}
+
+	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
 	{
 		if($fid)
 		{
 			$forumpermissions = forum_permissions($fid);
-			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			if(!empty($forumpermissions['canview']) && !empty($forumpermissions['canviewthreads']) && empty($forumpermissions['canonlyviewownthreads']))
 			{
 				return true;
 			}
@@ -1876,7 +2140,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 /**
  * Get an array of fids that the forum moderator has access to.
  * Do not use for administraotrs or global moderators as they moderate any forum and the function will return false.
- * 
+ *
  * @param int $uid The user ID (0 assumes current user)
  * @return array|bool an array of the fids the user has moderator access to or bool if called incorrectly.
  */
@@ -2094,7 +2358,7 @@ function my_get_array_cookie($name, $id)
 		return false;
 	}
 
-	$cookie = my_unserialize($mybb->cookies['mybb'][$name]);
+	$cookie = my_unserialize($mybb->cookies['mybb'][$name], false);
 
 	if(is_array($cookie) && isset($cookie[$id]))
 	{
@@ -2118,10 +2382,9 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 {
 	global $mybb;
 
-	$cookie = $mybb->cookies['mybb'];
-	if(isset($cookie[$name]))
+	if(isset($mybb->cookies['mybb'][$name]))
 	{
-		$newcookie = my_unserialize($cookie[$name]);
+		$newcookie = my_unserialize($mybb->cookies['mybb'][$name], false);
 	}
 	else
 	{
@@ -2131,6 +2394,11 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	$newcookie[$id] = $value;
 	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
+
+	if(isset($mybb->cookies['mybb']) && !is_array($mybb->cookies['mybb']))
+	{
+		$mybb->cookies['mybb'] = array();
+	}
 
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
@@ -2150,12 +2418,13 @@ define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
  * - does not unserialize objects
  *
  * @param string $str
+ * @param bool $unlimited Whether to apply limits defined in MAX_SERIALIZED_* constants
  * @return mixed
  * @throw Exception if $str is malformed or contains unsupported types (e.g., resources, objects)
  */
-function _safe_unserialize($str)
+function _safe_unserialize($str, $unlimited = true)
 {
-	if(strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
+	if(!$unlimited && strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
 	{
 		// input exceeds MAX_SERIALIZED_INPUT_LENGTH
 		return false;
@@ -2209,7 +2478,11 @@ function _safe_unserialize($str)
 			$value = substr($matches[2], 0, (int)$matches[1]);
 			$str = substr($matches[2], (int)$matches[1] + 2);
 		}
-		else if($type == 'a' && preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) && $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		else if(
+			$type == 'a' &&
+			preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) &&
+			($unlimited || $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		)
 		{
 			$expectedLength = (int)$matches[1];
 			$str = $matches[2];
@@ -2225,7 +2498,7 @@ function _safe_unserialize($str)
 			case 3: // in array, expecting value or another array
 				if($type == 'a')
 				{
-					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
@@ -2270,7 +2543,7 @@ function _safe_unserialize($str)
 				}
 				if($type == 'i' || $type == 's')
 				{
-					if(count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
+					if(!$unlimited && count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
 					{
 						// array size exceeds MAX_SERIALIZED_ARRAY_LENGTH
 						return false;
@@ -2292,7 +2565,7 @@ function _safe_unserialize($str)
 			case 0: // expecting array or value
 				if($type == 'a')
 				{
-					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					if(!$unlimited && count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
 					{
 						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
 						return false;
@@ -2329,9 +2602,10 @@ function _safe_unserialize($str)
  * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
  *
  * @param string $str
+ * @param bool $unlimited
  * @return mixed
  */
-function my_unserialize($str)
+function my_unserialize($str, $unlimited = true)
 {
 	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
 	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
@@ -2340,7 +2614,7 @@ function my_unserialize($str)
 		mb_internal_encoding('ASCII');
 	}
 
-	$out = _safe_unserialize($str);
+	$out = _safe_unserialize($str, $unlimited);
 
 	if(isset($mbIntEnc))
 	{
@@ -2348,6 +2622,25 @@ function my_unserialize($str)
 	}
 
 	return $out;
+}
+
+/**
+ * Unserializes data using PHP's `unserialize()`, and its safety options if possible.
+ * This function should only be used for values from trusted sources.
+ *
+ * @param string $str
+ * @return mixed
+ */
+function native_unserialize($str)
+{
+	if(version_compare(PHP_VERSION, '7.0.0', '>='))
+	{
+		return unserialize($str, array('allowed_classes' => false));
+	}
+	else
+	{
+		return unserialize($str);
+	}
 }
 
 /**
@@ -2445,6 +2738,12 @@ function get_server_load()
 		{
 			// sys_getloadavg() will return an array with [0] being load within the last minute.
 			$serverload = sys_getloadavg();
+
+			if(!is_array($serverload))
+			{
+				return $lang->unknown;
+			}
+
 			$serverload[0] = round($serverload[0], 4);
 		}
 		else if(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
@@ -2799,15 +3098,28 @@ function update_forum_lastpost($fid)
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
-	$lastpost = $db->fetch_array($query);
 
-	$updated_forum = array(
-		"lastpost" => (int)$lastpost['lastpost'],
-		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => (int)$lastpost['lastposteruid'],
-		"lastposttid" => (int)$lastpost['tid'],
-		"lastpostsubject" => $db->escape_string($lastpost['subject'])
-	);
+	if($db->num_rows($query) > 0)
+	{
+		$lastpost = $db->fetch_array($query);
+
+		$updated_forum = array(
+			"lastpost" => (int)$lastpost['lastpost'],
+			"lastposter" => $db->escape_string($lastpost['lastposter']),
+			"lastposteruid" => (int)$lastpost['lastposteruid'],
+			"lastposttid" => (int)$lastpost['tid'],
+			"lastpostsubject" => $db->escape_string($lastpost['subject']),
+		);
+	}
+	else {
+		$updated_forum = array(
+			"lastpost" => 0,
+			"lastposter" => '',
+			"lastposteruid" => 0,
+			"lastposttid" => 0,
+			"lastpostsubject" => '',
+		);
+	}
 
 	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
@@ -2891,7 +3203,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
@@ -2903,7 +3215,7 @@ function update_thread_data($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -2960,32 +3272,35 @@ function update_user_counters($uid, $changes=array())
 	// Fetch above counters for this user
 	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
 	$user = $db->fetch_array($query);
-
-	foreach($counters as $counter)
+	
+	if($user)
 	{
-		if(array_key_exists($counter, $changes))
+		foreach($counters as $counter)
 		{
-			if(substr($changes[$counter], 0, 2) == "+-")
+			if(array_key_exists($counter, $changes))
 			{
-				$changes[$counter] = substr($changes[$counter], 1);
-			}
-			// Adding or subtracting from previous value?
-			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
-			{
-				if((int)$changes[$counter] != 0)
+				if(substr($changes[$counter], 0, 2) == "+-")
 				{
-					$update_query[$counter] = $user[$counter] + $changes[$counter];
+					$changes[$counter] = substr($changes[$counter], 1);
 				}
-			}
-			else
-			{
-				$update_query[$counter] = $changes[$counter];
-			}
+				// Adding or subtracting from previous value?
+				if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+				{
+					if((int)$changes[$counter] != 0)
+					{
+						$update_query[$counter] = $user[$counter] + $changes[$counter];
+					}
+				}
+				else
+				{
+					$update_query[$counter] = $changes[$counter];
+				}
 
-			// Less than 0? That's bad
-			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
-			{
-				$update_query[$counter] = 0;
+				// Less than 0? That's bad
+				if(isset($update_query[$counter]) && $update_query[$counter] < 0)
+				{
+					$update_query[$counter] = 0;
+				}
 			}
 		}
 	}
@@ -3336,6 +3651,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 {
 	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
+	$codeinsert  = '';
+
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(
@@ -3608,7 +3925,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
-		if($subscription['tid'])
+		if($subscription)
 		{
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
@@ -3664,7 +3981,7 @@ function build_clickable_smilies()
 				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
 			}
 
-			$smilies = '';
+			$smilies = $smilie_icons = '';
 			$counter = 0;
 			$i = 0;
 
@@ -3724,7 +4041,7 @@ function build_clickable_smilies()
  * Builds thread prefixes and returns a selected prefix (or all)
  *
  *  @param int $pid The prefix ID (0 to return all)
- *  @return array The thread prefix's values (or all thread prefixes)
+ *  @return array|false The thread prefix's values (or all thread prefixes)
  */
 function build_prefixes($pid=0)
 {
@@ -3913,7 +4230,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return '';
 	}
 
-	$default_selected = array();
+	$default_selected = array('all' => '', 'none' => '', 'any' => '');
 	$selected_pid = (int)$selected_pid;
 
 	if($selected_pid == 0)
@@ -3929,6 +4246,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$default_selected['any'] = ' selected="selected"';
 	}
 
+	$prefixselect_prefix = '';
 	foreach($prefixes as $prefix)
 	{
 		$selected = '';
@@ -4836,7 +5154,7 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4847,7 +5165,7 @@ function mark_reports($id, $type="post")
 		case "threads":
 			if(is_array($id))
 			{
-				$rids = implode($id, "','");
+				$rids = implode("','", $id);
 				$rids = "'0','$rids'";
 				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
@@ -4967,6 +5285,8 @@ function nice_time($stamp, $options=array())
 		), $options);
 	}
 
+	$nicetime = array();
+
 	if(!isset($options['years']) || $options['years'] !== false)
 	{
 		if($years == 1)
@@ -5051,7 +5371,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if(is_array($nicetime))
+	if(!empty($nicetime))
 	{
 		return implode(", ", $nicetime);
 	}
@@ -5103,28 +5423,19 @@ function join_usergroup($uid, $joingroup)
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
-	$usergroups = "";
-	$usergroups = $user['additionalgroups'].",".$joingroup;
-	$groupslist = "";
-	$groups = explode(",", $usergroups);
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
 
-	if(is_array($groups))
+	if(!in_array((int)$joingroup, $groups))
 	{
-		$comma = '';
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $gid != $user['usergroup'] && !isset($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+		$groups[] = (int)$joingroup;
+		$groups = array_diff($groups, array($user['usergroup']));
+		$groups = array_unique($groups);
 
-	// What's the point in updating if they're the same?
-	if($groupslist != $user['additionalgroups'])
-	{
+		$groupslist = implode(',', $groups);
+
 		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".(int)$uid."'");
 		return true;
 	}
@@ -5151,24 +5462,14 @@ function leave_usergroup($uid, $leavegroup)
 		return false;
 	}
 
-	$groupslist = $comma = '';
-	$usergroups = $user['additionalgroups'].",";
-	$donegroup = array();
+	$groups = array_map(
+		'intval',
+		explode(',', $user['additionalgroups'])
+	);
+	$groups = array_diff($groups, array($leavegroup));
+	$groups = array_unique($groups);
 
-	$groups = explode(",", $user['additionalgroups']);
-
-	if(is_array($groups))
-	{
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $leavegroup != $gid && empty($donegroup[$gid]))
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
-	}
+	$groupslist = implode(',', $groups);
 
 	$dispupdate = "";
 	if($leavegroup == $user['displaygroup'])
@@ -5189,12 +5490,14 @@ function leave_usergroup($uid, $leavegroup)
  * Get the current location taking in to account different web serves and systems
  *
  * @param boolean $fields True to return as "hidden" fields
- * @param array $ignore Array of fields to ignore if first argument is true
+ * @param array $ignore Array of fields to ignore for returning "hidden" fields or URL being accessed
  * @param boolean $quick True to skip all inputs and return only the file path part of the URL
- * @return string The current URL being accessed
+ * @return string|array The current URL being accessed or form data if $fields is true
  */
 function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
+	global $mybb;
+
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
@@ -5226,14 +5529,13 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 		return $location;
 	}
 
+	if(!is_array($ignore))
+	{
+		$ignore = array($ignore);
+	}
+
 	if($fields == true)
 	{
-		global $mybb;
-
-		if(!is_array($ignore))
-		{
-			$ignore = array($ignore);
-		}
 
 		$form_html = '';
 		if(!empty($mybb->input))
@@ -5253,39 +5555,46 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	}
 	else
 	{
+		$parameters = array();
+
 		if(isset($_SERVER['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
+			$current_query_string = $_SERVER['QUERY_STRING'];
 		}
 		else if(isset($_ENV['QUERY_STRING']))
 		{
-			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
+			$current_query_string = $_ENV['QUERY_STRING'];
+		} else
+		{
+			$current_query_string = '';
 		}
 
-		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
+		parse_str($current_query_string, $current_parameters);
+
+		foreach($current_parameters as $name => $value)
+		{
+			if(!in_array($name, $ignore))
+			{
+				$parameters[$name] = $value;
+			}
+		}
+
+		if($mybb->request_method === 'post')
 		{
 			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
 
 			foreach($post_array as $var)
 			{
-				if(isset($_POST[$var]))
+				if(isset($_POST[$var]) && !in_array($var, $ignore))
 				{
-					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
+					$parameters[$var] = $_POST[$var];
 				}
 			}
+		}
 
-			if(isset($addloc) && is_array($addloc))
-			{
-				if(strpos($location, "?") === false)
-				{
-					$location .= "?";
-				}
-				else
-				{
-					$location .= "&amp;";
-				}
-				$location .= implode("&amp;", $addloc);
-			}
+		if(!empty($parameters))
+		{
+			$location .= '?'.http_build_query($parameters, '', '&amp;');
 		}
 
 		return $location;
@@ -5313,11 +5622,6 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		$tid = 1;
 		$num_themes = 0;
 		$themeselect_option = '';
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
 	}
 
 	if(!is_array($tcache))
@@ -5451,7 +5755,14 @@ function my_number_format($number)
 	}
 	else
 	{
-		$parts = explode('.', $number);
+        if(isset($number))
+        {
+            $parts = explode('.', $number);
+        }
+        else
+        {
+            $parts = array();
+        }
 
 		if(isset($parts[1]))
 		{
@@ -5715,7 +6026,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
  * Returns the age of a user with specified birthday.
  *
  * @param string $birthday The birthday of a user.
- * @return int The age of a user with that birthday.
+ * @return int|void The age of a user with that birthday.
  */
 function get_age($birthday)
 {
@@ -5750,7 +6061,7 @@ function update_first_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		ORDER BY p.dateline ASC
+		ORDER BY p.dateline ASC, p.pid ASC
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -5784,10 +6095,15 @@ function update_last_post($tid)
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC, p.pid DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
+
+	if(!$lastpost)
+	{
+		return false;
+	}
 
 	if(empty($lastpost['username']))
 	{
@@ -5801,7 +6117,7 @@ function update_last_post($tid)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.tid='$tid'
-			ORDER BY p.dateline ASC
+			ORDER BY p.dateline ASC, p.pid ASC
 			LIMIT 1
 		");
 		$firstpost = $db->fetch_array($query);
@@ -5833,7 +6149,7 @@ function my_strlen($string)
 
 	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
-	if(strtolower($lang->settings['charset']) == "utf-8")
+	if(isset($lang->settings['charset']) && strtolower($lang->settings['charset']) == "utf-8")
 	{
 		// Get rid of any excess RTL and LTR override for they are the workings of the devil
 		$string = str_replace(dec_to_utf8(8238), "", $string);
@@ -6352,7 +6668,7 @@ function get_user($uid)
  *
  * @param string $username The user username of the user.
  * @param array $options
- * @return array The users data
+ * @return array|bool The users data
  */
 function get_user_by_username($username, $options=array())
 {
@@ -6580,7 +6896,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		}
 	}
 	// This user has a cookie lockout, show waiting time
-	elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
+	elseif(!empty($mybb->cookies['lockoutexpiry']) && $mybb->cookies['lockoutexpiry'] > $now)
 	{
 		if($fatal)
 		{
@@ -6595,7 +6911,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 		return false;
 	}
 
-	if($mybb->settings['failedlogincount'] > 0 && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
+	if($mybb->settings['failedlogincount'] > 0 && isset($attempts['loginattempts']) && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
 	{
 		// Set the expiry dateline if not set yet
 		if($attempts['loginlockoutexpiry'] == 0)
@@ -6651,6 +6967,11 @@ function login_attempt_check($uid = 0, $fatal = true)
 
 			return 0;
 		}
+	}
+
+	if(!isset($attempts['loginattempts']))
+	{
+		$attempts['loginattempts'] = 0;
 	}
 
 	// User can attempt another login
@@ -6728,7 +7049,7 @@ function rebuild_settings()
  * Build a PREG compatible array of search highlight terms to replace in posts.
  *
  * @param string $terms Incoming terms to highlight
- * @return array PREG compatible array of terms
+ * @return array|false PREG compatible array of terms
  */
 function build_highlight_array($terms)
 {
@@ -6753,13 +7074,13 @@ function build_highlight_array($terms)
 		"~"
 	);
 	$terms = str_replace($bad_characters, '', $terms);
+	$words = array();
 
 	// Check if this is a "series of words" - should be treated as an EXACT match
 	if(my_strpos($terms, "\"") !== false)
 	{
 		$inquote = false;
 		$terms = explode("\"", $terms);
-		$words = array();
 		foreach($terms as $phrase)
 		{
 			$phrase = htmlspecialchars_uni($phrase);
@@ -6807,14 +7128,11 @@ function build_highlight_array($terms)
 		}
 	}
 
-	if(!is_array($words))
-	{
-		return false;
-	}
-
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
 	usort($words, 'build_highlight_array_sort');
+
+	$highlight_cache = array();
 
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)
@@ -6830,8 +7148,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#(?!<.*?)(".preg_quote($word, "#").")(?![^<>]*?>)#ui";
-		$replacement = "<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$1</span>";
+		$find = "/(?<!&|&#)\b([[:alnum:]]*)(".preg_quote($word, "/").")(?![^<>]*?>)/ui";
+		$replacement = "$1<span class=\"highlight\" style=\"padding-left: 0px; padding-right: 0px;\">$2</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 
@@ -7091,6 +7409,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 	$timezones = get_supported_timezones();
 
 	$selected = str_replace("+", "", $selected);
+	$timezone_option = '';
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
@@ -7246,6 +7565,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			);
 		}
 
+		if(defined('CURLOPT_DISALLOW_USERNAME_IN_URL'))
+		{
+			$curlopt[CURLOPT_DISALLOW_USERNAME_IN_URL] = true;
+		}
+
 		if(!empty($post_body))
 		{
 			$curlopt[CURLOPT_POST] = 1;
@@ -7337,11 +7661,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
 		}
 
-		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
 			return false;
 		}
+		@stream_set_timeout($fp, 10);
 		$headers = array();
 		if(!empty($post_body))
 		{
@@ -7544,7 +7868,7 @@ function is_member($groups, $user = false)
  * @param string $delimeter The delimeter to split by
  * @param string $string The string to split
  * @param string $escape The escape character or string if we have one.
- * @return array Array of split string
+ * @return array|string Array of split string
  */
 function escaped_explode($delimeter, $string, $escape="")
 {
@@ -8071,7 +8395,7 @@ function fetch_ip_range($ipaddress)
 /**
  * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
  *
- * @return float The time taken
+ * @return float|void The time taken
  */
 function get_execution_time()
 {
@@ -8465,6 +8789,7 @@ function trim_blank_chrs($string, $charlist="")
 	);
 
 	// Start from the beginning and work our way in
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8480,6 +8805,7 @@ function trim_blank_chrs($string, $charlist="")
 
 	// Start from the end and work our way in
 	$string = strrev($string);
+	$i = 0;
 	do
 	{
 		// Check to see if we have matched a first character in our utf-8 array
@@ -8541,7 +8867,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 /**
  * Obtain the version of GD installed.
  *
- * @return float Version of GD
+ * @return float|null Version of GD
  */
 function gd_version()
 {
@@ -8551,9 +8877,10 @@ function gd_version()
 	{
 		return $gd_version;
 	}
+
 	if(!extension_loaded('gd'))
 	{
-		return;
+		return null;
 	}
 
 	if(function_exists("gd_info"))
@@ -8754,7 +9081,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		}
 	}
 
-	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(empty($pm['subject']) || empty($pm['message']) || empty($pm['touid']) || (empty($pm['receivepms']) && !$admin_override))
 	{
 		return false;
 	}
@@ -8779,6 +9106,15 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	$recipients_bcc = array();
 
+	// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($pm['sender']['uid']) && $pm['sender']['uid'] === -1 && $fromid === -1)
+	{
+		$sender = array(
+			"uid" => 0,
+			"username" => ''
+		);
+	}
+
 	// Determine user ID
 	if((int)$fromid == 0)
 	{
@@ -8800,6 +9136,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"do" => '',
 		"pmid" => ''
 	);
+
+	// (continued) Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+	if(isset($sender))
+	{
+		$pm['sender'] = $sender;
+	}
 
 	if(isset($session))
 	{
@@ -8903,7 +9245,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
 		}
 
-		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		if(!empty($mybb->settings['usecdn']) && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 
@@ -9141,4 +9483,71 @@ function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 	}
 
 	return $referrals;
+}
+
+/**
+ * Initialize the parser and store the XML data to be parsed.
+ *
+ * @param string $data
+ * @return MyBBXMLParser The constructed XML parser.
+ */
+function create_xml_parser($data)
+{
+	if(version_compare(PHP_VERSION, '8.0', '>='))
+	{
+		require_once MYBB_ROOT."inc/class_xmlparser.php";
+
+		return new MyBBXMLParser($data);
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_xml.php";
+
+		return new XMLParser($data);
+	}
+}
+
+/**
+ * Make a filesystem path absolute.
+ *
+ * Returns as-is paths which are already absolute.
+ *
+ * @param string $path The input path. Can be either absolute or relative.
+ * @param string $base The absolute base to which to append $path if $path is
+ *                     relative. Must end in DIRECTORY_SEPARATOR or a forward
+ *                     slash.
+ * @return string An absolute filesystem path corresponding to the input path.
+ */
+function mk_path_abs($path, $base = MYBB_ROOT)
+{
+	$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	$char1 = my_substr($path, 0, 1);
+	if($char1 != '/' && !($iswin && ($char1 == '\\' || preg_match('(^[a-zA-Z]:\\\\)', $path))))
+	{
+		$path = $base.$path;
+	}
+
+	return $path;
+}
+
+/**
+ * Sets the maximum execution time to 0 (zero)
+ *
+ * @param int $seconds The maximum execution time, in seconds. If set to zero, no time limit is imposed.
+ * @return bool Returns true if the maximum execution time was set, false if it was not
+ */
+function my_set_time_limit($seconds = 0)
+{
+	if(!function_exists('set_time_limit')) {
+        return false;
+	}
+
+	if(strpos(ini_get('disable_functions'),'set_time_limit') !== false)
+	{
+		return false;
+	}
+
+	set_time_limit($seconds);
+
+	return true;
 }

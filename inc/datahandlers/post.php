@@ -279,7 +279,24 @@ class PostDataHandler extends DataHandler
 
 			if($limit > 0 || $dblimit > 0)
 			{
-				$is_moderator = is_moderator($post['fid'], "", $post['uid']);
+				if(isset($post['fid']))
+				{
+					$fid = $post['fid'];
+				}
+				else
+				{
+					$fid = 0;
+				}
+				if(isset($post['uid']))
+				{
+					$uid = $post['uid'];
+				}
+				else
+				{
+					$uid = 0;
+				}
+
+				$is_moderator = is_moderator($fid, "", $uid);
 				// Consider minimum in user defined and database limit other than 0
 				if($limit > 0 && $dblimit > 0)
 				{
@@ -423,7 +440,12 @@ class PostDataHandler extends DataHandler
 		$thread = $db->fetch_array($query);
 
 		// Check to see if the same author has posted within the merge post time limit
-		if(((int)$mybb->settings['postmergemins'] != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > ((int)$mybb->settings['postmergemins']*60))
+		if(
+			!$thread || (
+				((int)$mybb->settings['postmergemins'] != 0 && trim($mybb->settings['postmergemins']) != "") &&
+				(TIME_NOW-$thread['lastpost']) > ((int)$mybb->settings['postmergemins']*60)
+			)
+		)
 		{
 			return true;
 		}
@@ -456,7 +478,7 @@ class PostDataHandler extends DataHandler
 			return false;
 		}
 
-		if($post['uid'])
+		if(!empty($post['uid']))
 		{
 			$user_check = "uid='".$post['uid']."'";
 		}
@@ -480,11 +502,20 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 
+		if(isset($post['uid']))
+		{
+			$uid = $post['uid'];
+		}
+		else
+		{
+			$uid = null;
+		}
+
 		// Get the permissions of the user who is making this post or thread
-		$permissions = user_permissions($post['uid']);
+		$permissions = user_permissions($uid);
 
 		// Fetch the forum this post is being made in
-		if(!$post['fid'])
+		if(empty($post['fid']))
 		{
 			$query = $db->simple_select('posts', 'fid', "pid = '{$post['pid']}'");
 			$post['fid'] = $db->fetch_field($query, 'fid');
@@ -506,7 +537,7 @@ class PostDataHandler extends DataHandler
 				"filter_badwords" => 1
 			);
 
-			if($post['options']['disablesmilies'] != 1)
+			if(empty($post['options']['disablesmilies']))
 			{
 				$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			}
@@ -541,8 +572,17 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 
+		if(isset($post['uid']))
+		{
+			$uid = $post['uid'];
+		}
+		else
+		{
+			$uid = null;
+		}
+
 		// Get the permissions of the user who is making this post or thread
-		$permissions = user_permissions($post['uid']);
+		$permissions = user_permissions($uid);
 
 		// Check if this post contains more videos than the forum allows
 		if((!isset($post['savedraft']) || $post['savedraft'] != 1) && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
@@ -591,8 +631,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit_start" => 0,
 				"limit" => 1,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
@@ -782,8 +821,7 @@ class PostDataHandler extends DataHandler
 			$options = array(
 				"limit" => 1,
 				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
+				"order_by" => "dateline, pid",
 			);
 			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
@@ -1004,52 +1042,62 @@ class PostDataHandler extends DataHandler
 			// Only combine if they are both invisible (mod queue'd forum) or both visible
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
-				$this->pid = $double_post['pid'];
+				$_message = $post['message'];
 
 				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
-				$update_query = array(
-					"message" => $db->escape_string($double_post['message'])
-				);
-				$update_query['edituid'] = (int)$post['uid'];
-				$update_query['edittime'] = TIME_NOW;
-				$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
-
-				if($draft_check)
+				
+				if ($this->validate_post())
 				{
-					$db->delete_query("posts", "pid='".$post['pid']."'");
-				}
-
-				if($post['posthash'])
-				{
-					// Assign any uploaded attachments with the specific posthash to the merged post.
-					$post['posthash'] = $db->escape_string($post['posthash']);
-
-					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-					$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-					if($attachmentcount > 0)
-					{
-						// Update forum count
-						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-					}
-
-					$attachmentassign = array(
-						"pid" => $double_post['pid'],
-						"posthash" => ''
+					$this->pid = $double_post['pid'];
+					
+					$update_query = array(
+						"message" => $db->escape_string($double_post['message'])
 					);
-					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					$update_query['edituid'] = (int)$post['uid'];
+					$update_query['edittime'] = TIME_NOW;
+					$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+					
+					if($draft_check)
+					{
+						$db->delete_query("posts", "pid='".$post['pid']."'");
+					}
+					
+					if($post['posthash'])
+					{
+						// Assign any uploaded attachments with the specific posthash to the merged post.
+						$post['posthash'] = $db->escape_string($post['posthash']);
+						
+						$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+						$attachmentcount = $db->fetch_field($query, "attachmentcount");
+						
+						if($attachmentcount > 0)
+						{
+							// Update forum count
+							update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+						}
+						
+						$attachmentassign = array(
+							"pid" => $double_post['pid'],
+							"posthash" => ''
+						);
+						$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+					}
+					
+					// Return the post's pid and whether or not it is visible.
+					$this->return_values = array(
+						"pid" => $double_post['pid'],
+						"visible" => $visible,
+						"merge" => true
+					);
+					
+					$plugins->run_hooks("datahandler_post_insert_merge", $this);
+					
+					return $this->return_values;
 				}
-
-				// Return the post's pid and whether or not it is visible.
-				$this->return_values = array(
-					"pid" => $double_post['pid'],
-					"visible" => $visible,
-					"merge" => true
-				);
-
-				$plugins->run_hooks("datahandler_post_insert_merge", $this);
-
-				return $this->return_values;
+				else
+				{
+					$post['message'] = $_message;
+				}
 			}
 		}
 
@@ -1162,7 +1210,7 @@ class PostDataHandler extends DataHandler
 
 			while($subscribedmember = $db->fetch_array($query))
 			{
-				if($done_users[$subscribedmember['uid']])
+				if(isset($done_users[$subscribedmember['uid']]))
 				{
 					continue;
 				}
@@ -1177,7 +1225,7 @@ class PostDataHandler extends DataHandler
 				    continue;
 				}
 
-				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
+				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthreads'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
 				{
 					// User isn't a moderator or the author of the thread...
 					continue;
@@ -1267,6 +1315,8 @@ class PostDataHandler extends DataHandler
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
 					);
+					// Workaround for eliminating PHP warnings in PHP 8. Ref: https://github.com/mybb/mybb/issues/4630#issuecomment-1369144163
+					$pm['sender']['uid'] = -1;
 					send_pm($pm, -1, true);
 				}
 			}
@@ -1424,7 +1474,8 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Fetch the forum this thread is being made in
-		$forum = get_forum($thread['fid']);
+		$query = $db->simple_select("forums", "*", "fid='{$thread['fid']}'");
+		$forum = $db->fetch_array($query);
 
 		// This thread is being saved as a draft.
 		if($thread['savedraft'])
@@ -1637,11 +1688,6 @@ class PostDataHandler extends DataHandler
 					}
 				}
 
-				if(!isset($forum['lastpost']))
-				{
-					$forum['lastpost'] = 0;
-				}
-
 				$done_users = array();
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
@@ -1668,7 +1714,7 @@ class PostDataHandler extends DataHandler
 				");
 				while($subscribedmember = $db->fetch_array($query))
 				{
-					if($done_users[$subscribedmember['uid']])
+					if(!empty($done_users[$subscribedmember['uid']]))
 					{
 						continue;
 					}
@@ -1757,7 +1803,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
-		if($thread['posthash'])
+		if(!empty($thread['posthash']))
 		{
 			$thread['posthash'] = $db->escape_string($thread['posthash']);
 			$attachmentassign = array(
@@ -1824,14 +1870,24 @@ class PostDataHandler extends DataHandler
 		$post['tid'] = $existing_post['tid'];
 		$post['fid'] = $existing_post['fid'];
 
+		if(isset($post['uid']))
+		{
+			$uid = $post['uid'];
+		}
+		else
+		{
+			$uid = 0;
+		}
+
 		$forum = get_forum($post['fid']);
-		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
+		$forumpermissions = forum_permissions($post['fid'], $uid);
 
 		// Decide on the visibility of this post.
-		$ismod = is_moderator($post['fid'], "", $post['uid']);
-
+		$ismod = is_moderator($post['fid'], "", $uid);
+		$editor_ismod = is_moderator($post['fid'], "", $mybb->user['uid']);
+		
 		// Keep visibility for unapproved and deleted posts
-		if($existing_post['visible'] == 0)
+		if($existing_post['visible'] == 0 && !$editor_ismod)
 		{
 			$visible = 0;
 		}
@@ -1839,7 +1895,7 @@ class PostDataHandler extends DataHandler
 		{
 			$visible = -1;
 		}
-		elseif($forumpermissions['mod_edit_posts'] == 1 && !$ismod)
+		elseif($forumpermissions['mod_edit_posts'] == 1 && !$ismod && !$editor_ismod)
 		{
 			$visible = 0;
 			require_once MYBB_ROOT."inc/class_moderation.php";
@@ -1910,7 +1966,7 @@ class PostDataHandler extends DataHandler
 		{
 			$this->post_update_data['editreason'] = $db->escape_string(trim($post['editreason']));
 		}
-		elseif($post['editreason'] == '')
+		elseif(empty($post['editreason']))
 		{
 			$this->post_update_data['editreason'] = '';
 		}
@@ -1944,7 +2000,7 @@ class PostDataHandler extends DataHandler
 		$db->update_query("posts", $this->post_update_data, "pid='".(int)$post['pid']."'");
 
 		// Automatic subscription to the thread
-		if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
+		if($post && !empty($post['options']['subscriptionmethod']) && $uid > 0)
 		{
 			switch($post['options']['subscriptionmethod'])
 			{
@@ -1962,7 +2018,7 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			$db->delete_query("threadsubscriptions", "uid='".(int)$post['uid']."' AND tid='".(int)$post['tid']."'");
+			$db->delete_query("threadsubscriptions", "uid='".(int)$uid."' AND tid='".(int)$post['tid']."'");
 		}
 
 		update_forum_lastpost($post['fid']);

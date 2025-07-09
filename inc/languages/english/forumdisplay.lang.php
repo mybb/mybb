@@ -95,8 +95,8 @@ $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selecte
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 $l['deleted_thread'] = "Deleted Thread";
-
+$l['select_a_tool'] = "Select A Tool";
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
-
+$l['inline_no_tool_selected'] = "Please select a tool to perform moderation action.";
+$l['inline_no_post_selected'] = "You need to select one or more posts to perform the moderation action on.";
 $l['inline_edit_description'] = '(Click and hold to edit)';
-

@@ -29,6 +29,7 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
+	$username = '';
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
 
@@ -690,7 +691,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 			{
 				$votes[$i] = "0";
 			}
-			$voteslist .= $votes[$i];
+			$voteslist .= (int)$votes[$i];
 			$numvotes = (int)$numvotes + (int)$votes[$i];
 		}
 	}
@@ -779,7 +780,7 @@ if($mybb->input['action'] == "showresults")
 	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 	add_breadcrumb($lang->nav_pollresults);
 
-	$voters = $votedfor = array();
+	$voters = $votedfor = $guest_voters = array();
 
 	// Calculate votes
 	$query = $db->query("
@@ -801,7 +802,14 @@ if($mybb->input['action'] == "showresults")
 		if($voter['uid'] == 0 || $voter['username'] == '')
 		{
 			// Add one to the number of voters for guests
-			++$guest_voters[$voter['voteoption']];
+			if(isset($guest_voters[$voter['voteoption']]))
+			{
+				++$guest_voters[$voter['voteoption']];
+			}
+			else
+			{
+				$guest_voters[$voter['voteoption']] = 1;
+			}
 		}
 		else
 		{
@@ -972,7 +980,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$query = $db->simple_select("pollvotes", "*", "{$user_check} AND pid='".$poll['pid']."'");
 	$votecheck = $db->fetch_array($query);
 
-	if($votecheck['vid'])
+	if($votecheck)
 	{
 		error($lang->error_alreadyvoted);
 	}
@@ -1079,7 +1087,7 @@ if($mybb->input['action'] == "do_undovote")
 	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$poll = $db->fetch_array($query);
 
-	if(!$poll['pid'])
+	if(!$poll)
 	{
 		error($lang->error_invalidpoll);
 	}
@@ -1150,7 +1158,7 @@ if($mybb->input['action'] == "do_undovote")
 	$votesarray = explode("||~|~||", $poll['votes']);
 	if(count($votesarray) > $poll['numoptions'])
 	{
-		$votesarray = array_slice(0, $poll['numoptions']);
+		$votesarray = array_slice($votesarray, 0, $poll['numoptions']);
 	}
 
 	if($poll['multiple'] == 1)

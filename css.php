@@ -31,7 +31,7 @@ if(!empty($stylesheets))
 			$sql = <<<SQL
 SELECT stylesheet FROM {$prefix}themestylesheets
   WHERE sid IN ({$stylesheet_list})
-  ORDER BY CASE sid
+  ORDER BY CASE sid\n
 SQL;
 
 			$i = 0;

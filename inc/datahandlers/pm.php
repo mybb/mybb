@@ -129,6 +129,16 @@ class PMDataHandler extends DataHandler
 			return true;
 		}
 
+		if($pm['fromid'] <= 0)
+		{
+			$pm['sender'] = array(
+				"uid" => 0,
+				"username" => ''
+			);
+
+			return true;
+		}
+
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
 
@@ -187,7 +197,7 @@ class PMDataHandler extends DataHandler
 				// No recipients? Skip query
 				if(empty($pm[$recipient_type]))
 				{
-					if($recipient_type == 'to' && !$pm['saveasdraft'])
+					if($recipient_type == 'to' && empty($pm['saveasdraft']))
 					{
 						$this->set_error("no_recipients");
 						return false;
@@ -284,15 +294,19 @@ class PMDataHandler extends DataHandler
 			return false;
 		}
 
-		$sender_permissions = user_permissions($pm['fromid']);
-
-		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+		if($pm['fromid'] > 0)
 		{
-			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
+			$sender_permissions = user_permissions($pm['fromid']);
+
+			// Are we trying to send this message to more users than the permissions allow?
+			if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+			{
+				$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
+			}
 		}
 
 		// Now we're done with that we loop through each recipient
+		$pm['recipients'] = array();
 		foreach($recipients as $user)
 		{
 			// Collect group permissions for this recipient.
@@ -301,7 +315,7 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if($this->admin_override != true && $sender_permissions['canoverridepm'] != 1)
+			if($this->admin_override != true && empty($sender_permissions['canoverridepm']))
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
@@ -323,7 +337,7 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && empty($sender_permissions['cancp']) && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
@@ -403,7 +417,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] > 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -543,13 +557,10 @@ class PMDataHandler extends DataHandler
 
 		$uid = 0;
 
-		if(!is_array($pm['recipients']))
+		// Build recipient list
+		$recipient_list = array();
+		if(isset($pm['recipients']) && is_array($pm['recipients']))
 		{
-			$recipient_list = array();
-		}
-		else
-		{
-			// Build recipient list
 			foreach($pm['recipients'] as $recipient)
 			{
 				if(!empty($recipient['bcc']))
@@ -585,7 +596,7 @@ class PMDataHandler extends DataHandler
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
-		if($draftcheck['pmid'])
+		if($draftcheck)
 		{
 			if($draftcheck['deletetime'])
 			{
@@ -629,7 +640,7 @@ class PMDataHandler extends DataHandler
 			// Send email notification of new PM if it is enabled for the recipient
 			$query = $db->simple_select("privatemessages", "dateline", "uid='".$recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$lastpm = $db->fetch_array($query);
-			if($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
+			if($recipient['pmnotify'] == 1 && (empty($lastpm['dateline']) || $recipient['lastactive'] > $lastpm['dateline']))
 			{
 				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
 				{
@@ -665,7 +676,7 @@ class PMDataHandler extends DataHandler
 
 				require_once MYBB_ROOT.'inc/class_parser.php';
 				$parser = new Postparser;
-			
+
 				$parser_options = array(
 					'me_username'		=> $pm['sender']['username'],
 					'filter_badwords'	=> 1

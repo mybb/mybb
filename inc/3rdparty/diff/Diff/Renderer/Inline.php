@@ -165,7 +165,7 @@ class Horde_Text_Diff_Renderer_Inline extends Horde_Text_Diff_Renderer
         }
 
         /* Get the diff in inline format. */
-        $renderer = new Horde_Text_Diff_Renderer_inline
+        $renderer = new Horde_Text_Diff_Renderer_Inline
             (array_merge($this->getParams(),
                          array('split_level' => $this->_split_characters ? 'characters' : 'words')));
 

@@ -18,8 +18,6 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-@set_time_limit(0);
-
 function upgrade35_dbchanges()
 {
 	global $db, $output;
@@ -164,12 +162,13 @@ function upgrade35_dbchanges4()
 	echo "<p>Adding index files to attachment directories...</p>";
 	flush();
 
-	$dir = @opendir('../'.$mybb->settings['uploadspath']);
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
+	$dir = @opendir($uploadspath_abs);
 	if($dir)
 	{
 		while(($file = @readdir($dir)) !== false)
 		{
-			$filename = "../{$mybb->settings['uploadspath']}/{$file}";
+			$filename = "{$uploadspath_abs}/{$file}";
 			$indexfile = "{$filename}/index.html";
 
 			if(preg_match('#^[0-9]{6}$#', $file) && @is_dir($filename) && @is_writable($filename) && !file_exists($indexfile))

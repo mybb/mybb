@@ -86,12 +86,15 @@ $l['remove_subscriptions'] = "Remove thread subscriptions?";
 $l['recount_rebuild'] = "Recount & Rebuild?";
 $l['apply_thread_prefix'] = "Apply thread prefix?";
 $l['new_subject'] = "New subject?";
-$l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
+$l['new_subject_desc'] = "Enter the new subject for the thread.";
+
+$l['subject_message_replacements'] = "Available replacements";
+$l['subject_message_replacements_desc'] = "{subject} represents the original subject. {username} represents the moderator's username. {author} represents the thread author's username.";
 
 $l['add_new_reply'] = "Add New Reply";
 $l['add_new_reply_desc'] = "Leave blank for no reply.";
 $l['reply_subject'] = "Reply subject.";
-$l['reply_subject_desc'] = "Only used if a reply was made.<br />{subject} represents the original subject. {username} represents the moderator's username.";
+$l['reply_subject_desc'] = "Only used if a reply was made.";
 
 $l['success_mod_tool_created'] = "The moderation tool has been created successfully.";
 $l['success_mod_tool_updated'] = "The moderation tool has been updated successfully.";
@@ -112,7 +115,7 @@ $l['stick_split_thread'] = "Stick split thread?";
 $l['unapprove_split_thread'] = "Unapprove split thread?";
 $l['split_thread_prefix'] = "Split thread prefix";
 $l['split_thread_subject'] = "Split thread subject";
-$l['split_thread_subject_desc'] = "{subject} represents the original subject. Only required if splitting posts.";
+$l['split_thread_subject_desc'] = "Only required if splitting posts.";
 $l['add_new_split_reply'] = "Add reply to split thread";
 $l['add_new_split_reply_desc'] = "Leave blank for no reply.";
 $l['split_reply_subject'] = "Reply subject";

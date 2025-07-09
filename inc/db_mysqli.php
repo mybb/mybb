@@ -74,6 +74,11 @@ class DB_MySQLi implements DB_Base
 	public $current_link;
 
 	/**
+	 * @var array
+	 */
+	public $connections = array();
+
+	/**
 	 * The database name.
 	 *
 	 * @var string
@@ -147,7 +152,7 @@ class DB_MySQLi implements DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return mysqli The DB connection resource. Returns false on fail or -1 on a db connect failure.
+	 * @return mysqli|int|false The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
 	{
@@ -177,7 +182,10 @@ class DB_MySQLi implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
@@ -485,7 +493,11 @@ class DB_MySQLi implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**
@@ -889,7 +901,7 @@ class DB_MySQLi implements DB_Base
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
 	 * @param boolean $no_quote An option to quote incoming values of the array.
-	 * @return mysqli_result The query data.
+	 * @return mysqli_result|false The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
@@ -1384,7 +1396,7 @@ class DB_MySQLi implements DB_Base
 			$not_null = '';
 		}
 
-		if($new_default_value !== null)
+		if($new_default_value !== false)
 		{
 			$default = "DEFAULT ".$new_default_value;
 		}
@@ -1393,7 +1405,7 @@ class DB_MySQLi implements DB_Base
 			$default = '';
 		}
 
-		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null}");
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null} {$default}");
 	}
 
 	/**

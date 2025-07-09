@@ -49,7 +49,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
@@ -297,6 +297,11 @@ if($mybb->input['action'] == "edit")
 		$form_container = new FormContainer("{$module['name']}");
 		foreach($module['permissions'] as $action => $title)
 		{
+			if(!isset($permission_data[$key][$action]))
+			{
+				$permission_data[$key][$action] = 0;
+			}
+
 			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', (int)$permission_data[$key][$action], array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
@@ -450,7 +455,7 @@ if(!$mybb->input['action'])
 		while($admin = $db->fetch_array($query))
 		{
 			$perm_type = "default";
-			
+
 			if($admin['permissions'] != "")
 			{
 				$perm_type = "user";
@@ -473,7 +478,7 @@ if(!$mybb->input['action'])
 
 			// Build a list of group memberships that have access to the Admin CP
 			// Primary usergroup?
-			if($usergroups[$admin['usergroup']]['cancp'] == 1)
+			if(!empty($usergroups[$admin['usergroup']]) && $usergroups[$admin['usergroup']]['cancp'] == 1)
 			{
 				$usergroup_list[] = "<i>".htmlspecialchars_uni($usergroups[$admin['usergroup']]['title'])."</i>";
 			}
@@ -484,7 +489,7 @@ if(!$mybb->input['action'])
 			{
 				foreach($additional_groups as $gid)
 				{
-					if($usergroups[$gid]['cancp'] == 1)
+					if(!empty($usergroups[$gid]) && $usergroups[$gid]['cancp'] == 1)
 					{
 						$usergroup_list[] = htmlspecialchars_uni($usergroups[$gid]['title']);
 					}
@@ -493,7 +498,7 @@ if(!$mybb->input['action'])
 			$usergroup_list = implode($lang->comma, $usergroup_list);
 
 			$username = htmlspecialchars_uni($admin['username']);
-			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$username}</a></strong><br /><small>{$usergroup_list}</small></div>");
+			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->permissions_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$username}</a></strong><br /><small>{$usergroup_list}</small></div>");
 
 			$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
 
