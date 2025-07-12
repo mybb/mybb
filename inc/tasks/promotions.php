@@ -251,5 +251,7 @@ function task_promotions($task)
 
 	$cache->update_moderators();
 
+	$cache->update_awaitingactivation();
+
 	add_task_log($task, $lang->task_promotions_ran);
 }

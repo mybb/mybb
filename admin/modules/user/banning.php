@@ -153,6 +153,8 @@ if($mybb->input['action'] == "lift")
 
 		$cache->update_moderators();
 
+		$cache->update_awaitingactivation();
+
 		// Log admin action
 		log_admin_action($ban['uid'], $user['username']);
 
@@ -237,6 +239,8 @@ if($mybb->input['action'] == "edit")
 			$db->update_query('users', $update_array, "uid = {$ban['uid']}");
 
 			$plugins->run_hooks("admin_user_banning_edit_commit");
+
+			$cache->update_awaitingactivation();
 
 			// Log admin action
 			log_admin_action($ban['uid'], $user['username']);

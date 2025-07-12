@@ -174,6 +174,12 @@ elseif(!$mybb->input['action'])
 	// Get the number of users awaiting validation
 	$awaitingusers = $cache->read('awaitingactivation');
 
+	if(isset($awaitingusers['time']) && $awaitingusers['time'] + 86400 < TIME_NOW)
+	{
+		$cache->update_awaitingactivation();
+		$awaitingusers = $cache->read('awaitingactivation');
+	}
+
 	if(!empty($awaitingusers['users']))
 	{
 		$awaitingusers = (int)$awaitingusers['users'];
