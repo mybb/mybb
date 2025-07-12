@@ -66,24 +66,6 @@ if($mybb->get_input('action') == "search")
 		$additionalgroups = '';
 	}
 
-	$contact_fields = array();
-	foreach(array('skype', 'google') as $field)
-	{
-		$contact_fields[$field] = '';
-		$settingkey = 'allow'.$field.'field';
-
-		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $usergroup, 'additionalgroups' => $additionalgroups)))
-		{
-			$tmpl = 'memberlist_search_'.$field;
-
-			$lang_string = 'search_'.$field;
-			$lang_string = $lang->{$lang_string};
-
-			$bgcolors[$field] = alt_trow();
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
-		}
-	}
-
 	$referrals_option = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -254,43 +236,6 @@ else
 	{
 		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($mybb->input['website'])."%'";
 		$search_url .= "&website=".urlencode($mybb->input['website']);
-	}
-
-	// Search by contact field input
-	foreach(array('google', 'skype') as $cfield)
-	{
-		$csetting = 'allow'.$cfield.'field';
-		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
-		if($mybb->input[$cfield] && $mybb->settings[$csetting] != '')
-		{
-			if($mybb->settings[$csetting] != -1)
-			{
-				$gids = explode(',', (string)$mybb->settings[$csetting]);
-
-				$search_query .= " AND (";
-				$or = '';
-				foreach($gids as $gid)
-				{
-					$gid = (int)$gid;
-					$search_query .= $or.'u.usergroup=\''.$gid.'\'';
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$search_query .= " OR ','||u.additionalgroups||',' LIKE '%,{$gid},%'";
-							break;
-						default:
-							$search_query .= " OR CONCAT(',',u.additionalgroups,',') LIKE '%,{$gid},%'";
-							break;
-					}
-					$or = ' OR ';
-				}
-				$search_query .= ")";
-			}
-			
-			$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
-			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
-		}
 	}
 
 	$usergroups_cache = $cache->read('usergroups');

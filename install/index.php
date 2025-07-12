@@ -2326,8 +2326,6 @@ function install_done()
 		'lastactive' => $now,
 		'lastvisit' => $now,
 		'website' => '',
-		'skype' =>'',
-		'google' =>'',
 		'birthday' => '',
 		'signature' => '',
 		'allownotices' => 1,

@@ -37,7 +37,6 @@ $l['user_id'] = "User ID:";
 $l['title'] = "User Title:";
 $l['postnum'] = "Posts:";
 $l['posts_day'] = "({1} per day | {2} percent of total posts)";
-$l['additional_contact_details'] = "Additional Contact Information";
 $l['email'] = "Email:";
 $l['reputation'] = "Reputation:";
 $l['website'] = "Website:";
@@ -208,9 +207,6 @@ $l['change_email_notice'] = "To change your email address please click <a href=\
 $l['profile_optional'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
 $l['birthdate'] = "Birthdate:";
-$l['contact_field_skype'] = "Skype ID:";
-$l['contact_field_google'] = "Google Hangouts ID:";
-$l['contact_field_error'] = "Sorry, but we cannot change your contact information as the ID specified is too long. Google Hangouts IDs and Skype IDs can be up to 75 characters long.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['away_information'] = "Away Information";

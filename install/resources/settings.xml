@@ -2616,26 +2616,6 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="28" isdefault="1">
-		<setting name="allowskypefield">
-			<title>Allow Skype ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the Skype ID contact field.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[-1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
-		<setting name="allowgooglefield">
-			<title>Allow Google Hangouts ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the Google Hangouts ID contact field.]]></description>
-			<disporder>3</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[-1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
-	</settinggroup>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
 		<setting name="statsenabled">
 			<title>Enable Statistics Pages</title>
