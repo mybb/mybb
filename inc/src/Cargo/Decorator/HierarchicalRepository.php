@@ -347,11 +347,8 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
     protected function getMergedProperties(array $old, array $new): array
     {
         return $this->getDecorated()::getMergedProperties([
-            Arr::except(
-                $new,
-                self::NON_INHERITABLE_PROPERTIES,
-            ),
-            $old,
+            Arr::except($old, self::NON_INHERITABLE_PROPERTIES),
+            Arr::except($new, self::NON_INHERITABLE_PROPERTIES),
         ]);
     }
 
