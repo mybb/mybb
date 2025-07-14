@@ -733,7 +733,9 @@ function generate_post_check($rotation_shift=0)
 }
 
 /**
- * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours)
+ * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours).
+ *
+ * Additionally, if the SameSite Cookie Flag setting is enabled, verifies same-site request origin.
  *
  * @param string $code The incoming POST check code
  * @param boolean $silent Don't show an error to the user
@@ -741,12 +743,22 @@ function generate_post_check($rotation_shift=0)
  */
 function verify_post_check($code, $silent=false)
 {
-	global $lang;
+	global $mybb, $lang;
 	if(
-		generate_post_check() !== $code &&
-		generate_post_check(-1) !== $code &&
-		generate_post_check(-2) !== $code &&
-		generate_post_check(-3) !== $code
+		(
+			generate_post_check() !== $code &&
+			generate_post_check(-1) !== $code &&
+			generate_post_check(-2) !== $code &&
+			generate_post_check(-3) !== $code
+		) ||
+		(
+			$mybb->settings['cookiesamesiteflag'] == 1 &&
+			isset($_SERVER['HTTP_SEC_FETCH_SITE']) &&
+			!in_array(
+				$_SERVER['HTTP_SEC_FETCH_SITE'],
+				array('same-origin', 'same-site')
+			)
+		)
 	)
 	{
 		if($silent == true)
