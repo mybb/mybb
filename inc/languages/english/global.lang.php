@@ -348,6 +348,7 @@ $l['groupleader_notice'] = "Group Leader Notice:";
 $l['pending_joinrequest'] = "1 pending group membership join request.";
 $l['pending_joinrequests'] = "{1} pending group membership join requests.";
 
+$l['advanced_search'] = "Advanced Search";
 $l['search_user'] = "Search for a user";
 
 $l['year'] = "Year";
