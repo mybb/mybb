@@ -871,12 +871,6 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	}
 }
 
-$jsTemplates = array();
-foreach (array('modal', 'modal_button') as $template) {
-	$jsTemplates[$template] = \MyBB\View\template("modals/{$template}.twig");
-	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
-}
-
 // Check to see if we have any tasks to run
 $task_image = '';
 $task_cache = $cache->read('tasks');
