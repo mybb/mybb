@@ -450,6 +450,7 @@ class session
 		$mybb->user['displaygroup'] = $mybb->user['usergroup'];
 		$mybb->user['additionalgroups'] = '';
 		$mybb->user['invisible'] = 0;
+		$mybb->user['lastvisit'] = $spider['lastvisit'];
 
 		// Set spider language
 		if($spider['language'] && $lang->language_exists($spider['language']))
