@@ -159,11 +159,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     }
 
     /**
-     * @param FileStamp::TYPE_* $type
-     *
      * @override decorated
      */
-    public function stampValid(array $stamp, string $type = FileStamp::TYPE_MODIFICATION_TIME): bool
+    public function stampValid(array $stamp): bool
     {
         $repositories = $this->getRepositories();
 
