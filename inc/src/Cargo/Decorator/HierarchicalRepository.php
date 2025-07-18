@@ -8,7 +8,7 @@ use BadMethodCallException;
 use Illuminate\Support\Arr;
 use LogicException;
 use MyBB\Cargo\EntityInterface;
-use MyBB\Cargo\FileRepositoryInterface;
+use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\Utilities\ManagedValue\ManagedValue;
@@ -119,8 +119,8 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function getAll(...$args): array
     {
-        if (!($this->getDecorated() instanceof FileRepositoryInterface)) {
-            throw new BadMethodCallException('`' . __FUNCTION__ . '()` can only be used on decorated Repositories implementing `' . FileRepositoryInterface::class . '`');
+        if (!($this->getDecorated() instanceof StoreRepositoryInterface)) {
+            throw new BadMethodCallException('`' . __FUNCTION__ . '()` can only be used on decorated Repositories implementing `' . StoreRepositoryInterface::class . '`');
         }
 
         $results = [];

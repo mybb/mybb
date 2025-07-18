@@ -6,7 +6,7 @@ namespace MyBB\View\Themelet\NamespaceCargo\Resource\Decorator;
 
 use LogicException;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
-use MyBB\Cargo\FileRepositoryInterface;
+use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\View\HierarchicalResource;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -14,7 +14,7 @@ use MyBB\View\Resource;
 /**
  * An inheritance-aware Resource Repository.
  */
-class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository implements FileRepositoryInterface
+class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository implements StoreRepositoryInterface
 {
     /**
      * @override decorated scope
