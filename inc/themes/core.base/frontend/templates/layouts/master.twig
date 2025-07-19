@@ -45,8 +45,13 @@
         lang.select2_searching = "{{ lang.select2_searching }}";
 
         var templates = {
-            modal: '{{ jsTemplates.modal|raw }}',
-            modal_button: '{{ jsTemplates.modal_button|raw }}'
+            {% for template in ['modal', 'modal_button'] %}
+                {{ template }}: '{{
+                    include('modals/' ~ template ~ '.twig')
+                        |replace({"\n": "\\n", "\r": ""})
+                        |raw
+                }}',
+            {% endfor %}
         };
 
         var cookieDomain = "{{ mybb.settings.cookiedomain }}";

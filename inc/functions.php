@@ -884,23 +884,27 @@ function get_child_list($fid)
 /**
  * Produce a friendly error message page
  *
- * @param string $error The error message to be shown
+ * @param string $message The error message to be shown
  * @param string $title The title of the message shown in the title of the page and the error table
+ * @param string $extra_content Optional additional error page content
+ * @param int $status_code HTTP status code to send with the error page
  */
-function error($error_message = "", $title = "", $error_page = "")
+function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 200): never
 {
 	global $db, $lang, $mybb, $plugins;
 
-	$error_message = $plugins->run_hooks("error", $error_message);
+	$message = $plugins->run_hooks("error", $message);
 
 	// AJAX error message?
 	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("errors" => array($error_message)));
+		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
+	
+	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
 	reset_breadcrumb();
@@ -908,8 +912,8 @@ function error($error_message = "", $title = "", $error_page = "")
 
 	output_page(\MyBB\View\template('@frontend/error/error.twig', [
 		'title' => $title,
-		'error_message' => $error_message,
-		'error_page' => $error_page,
+		'message' => $message,
+		'extra_content' => $extra_content,
 	]));
 
 	exit;
@@ -1023,7 +1027,7 @@ function error_no_permission()
 		'redirect_url' => $redirect_url
 	]);
 
-	error($error_message, $lang->error_nopermission, $error_page);
+	error($error_message, $lang->error_nopermission, $error_page, 403);
 }
 
 /**
@@ -5292,8 +5296,6 @@ function convert_through_utf8($str, $to = true)
 {
 	global $lang;
 	static $charset;
-	static $use_mb;
-	static $use_iconv;
 
 	if(!isset($charset))
 	{
@@ -5305,52 +5307,18 @@ function convert_through_utf8($str, $to = true)
 		return $str;
 	}
 
-	if(!isset($use_iconv))
+	if($to)
 	{
-		$use_iconv = function_exists("iconv");
-	}
-
-	if(!isset($use_mb))
-	{
-		$use_mb = function_exists("mb_convert_encoding");
-	}
-
-	if($use_iconv || $use_mb)
-	{
-		if($to)
-		{
-			$from_charset = $lang->settings['charset'];
-			$to_charset = "UTF-8";
-		}
-		else
-		{
-			$from_charset = "UTF-8";
-			$to_charset = $lang->settings['charset'];
-		}
-		if($use_iconv)
-		{
-			return iconv($from_charset, $to_charset."//IGNORE", $str);
-		}
-		else
-		{
-			return @mb_convert_encoding($str, $to_charset, $from_charset);
-		}
-	}
-	elseif($charset == "iso-8859-1" && function_exists("utf8_encode"))
-	{
-		if($to)
-		{
-			return utf8_encode($str);
-		}
-		else
-		{
-			return utf8_decode($str);
-		}
+		$from_charset = $lang->settings['charset'];
+		$to_charset = "UTF-8";
 	}
 	else
 	{
-		return $str;
+		$from_charset = "UTF-8";
+		$to_charset = $lang->settings['charset'];
 	}
+
+	return mb_convert_encoding($str, $to_charset, $from_charset);
 }
 
 /**

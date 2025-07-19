@@ -126,12 +126,12 @@
     </footer>
 
     {# The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE #}
-        {% if task_image %}
+        {% if task_image is not empty %}
             <img src="{{ task_image }}" width="1" height="1" alt="" />
         {% endif %}
     {# End task image code. #}
 
-    {% if mybb.settings.dst_correction %}
-        {{ mybb.settings.dst_correction }}
+    {% if mybb.settings.dstcorrection %}
+        {{ mybb.settings.dstcorrection }}
     {% endif %}
 </div>

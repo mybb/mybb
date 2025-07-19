@@ -1,6 +1,6 @@
 <div class="breadcrumb">
     {% for crumb in breadcrumbs %}
-        {% if crumb.multipage is not empty %}
+        {% if crumb.multipage is defined and not empty %}
             {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
                 {% set perPage = 20 %}
             {% else %}

@@ -23,6 +23,13 @@ class pluginSystem
 	public $current_hook;
 
 	/**
+	 * Stores a list of current nested hooks
+	 *
+	 * @var array
+	 */
+	public array $current_hook_stack = [];
+
+	/**
 	 * Load all plugins.
 	 */
 	function load()
@@ -147,6 +154,9 @@ class pluginSystem
 		}
 
 		$this->current_hook = $hook;
+
+		$this->current_hook_stack[] = $this->current_hook;
+
 		ksort($this->hooks[$hook]);
 
 		foreach($this->hooks[$hook] as $priority => $hooks)
@@ -179,7 +189,9 @@ class pluginSystem
 			}
 		}
 
-		$this->current_hook = '';
+		array_pop($this->current_hook_stack);
+
+		$this->current_hook = end($this->current_hook_stack);
 
 		return $arguments;
 	}

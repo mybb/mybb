@@ -22,8 +22,8 @@
     },
     "require": {
         "php": "^8.2",
-        "ext-pdo": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "illuminate/config": "^10.0",
         "illuminate/container": "^10.0",
         "illuminate/events": "^10.0",
@@ -33,6 +33,7 @@
         "scssphp/scssphp": "^1.12",
         "symfony/console": "^7.0",
         "symfony/filesystem": "^7.1",
+        "symfony/polyfill-mbstring": "^1.32",
         "twig/twig": "^3.10"
     },
     "require-dev": {

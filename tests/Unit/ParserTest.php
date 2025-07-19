@@ -286,6 +286,9 @@ test<br />
         ];
 
         foreach ($fonts as $font) {
+            if (str_contains($font, ' ')) {
+                $font = "'{$font}'";
+            }
             $tests = [
                 "[font={$font}]test[/font]" =>
                     "<span style=\"font-family: {$font};\" class=\"mycode_font\">test</span>",

@@ -6,7 +6,7 @@ namespace MyBB\View\Themelet\NamespaceCargo\Resource;
 
 use FilesystemIterator;
 use LogicException;
-use MyBB\Cargo\FileRepositoryInterface;
+use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Path;
 /**
  * Manages Resources and their declarations in a Themelet's namespace.
  */
-class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implements FileRepositoryInterface
+class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implements StoreRepositoryInterface
 {
     public const NAME = 'resources';
 
