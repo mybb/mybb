@@ -329,6 +329,14 @@ For example:
 ```
 
 
+## Data Sharing
+A shared key-value store for custom runtime data is available in various execution contexts.
+
+The API functions `get()` and `set()`, accessible in PHP and Twig, allow Plugins to use custom data in Templates.
+
+Compared to global variables in Twig, which cannot be declared after the initialization of `Twig\Environment` or loaded after the initialization of extensions, the uniform functions provide consistent behavior regardless of used plugin hooks.
+
+
 ## Templates
 Themelets may include **Templates** — Resources processed server-side with [Twig](https://twig.symfony.com/).
 
