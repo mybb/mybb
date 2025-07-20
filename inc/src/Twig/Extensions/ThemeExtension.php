@@ -56,7 +56,6 @@ class ThemeExtension extends AbstractExtension implements GlobalsInterface
                 'theme' => $GLOBALS['theme'],
                 'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
             ],
-            $this->view->getSharedData(),
         );
     }
 
