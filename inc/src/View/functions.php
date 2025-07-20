@@ -135,6 +135,18 @@ function assetUrl(
 }
 
 /**
+ * Returns shared data.
+ *
+ * @param ?string $key The key of the variable to return. If not provided, an array with all data is returned.
+ *
+ * @api
+ */
+function get(?string $key = null): array|null|int|float|string|bool
+{
+    return app(Runtime::class)->getSharedData($key);
+}
+
+/**
  * Passes data to Resources.
  *
  * @param array<string, scalar> $data
