@@ -97,22 +97,73 @@ Issues can have specific [**Milestones**](https://github.com/mybb/mybb/milestone
 #### Assignments
 Issues with personal assignments are expected to be handled by assigned developers. Similarly, the review process of Pull Requests can be directed by developers assigned to them.
 
+## Process
+Before submitting changes to the codebase, engage with the Community and developers to establish consensus on:
+- whether the change is warranted and fit for the product,
+- the understanding of the problem and suggested solution,
+- the impact of the change and related work needed.
+
+Changes are more likely to be accepted if they address [confirmed Issues](https://github.com/mybb/mybb/issues?q=is%3Aissue+is%3Aopen+label%3As%3Aconfirmed) or follow development discussions and roadmaps.
+
+## Submitting Changes
+You can submit suggested code changes to MyBB by creating a Pull Request (PR).
+
+### Workflow
+1. [Clone](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) the repository, and select the target branch.
+
+   If you have a local copy already, make sure the target branch is up to date.
+
+2. Create a new branch for your changes, based on the target branch.
+
+   When working on a specific Issue, use the following naming convention:
+   Pattern | Example | Scenario
+   -|-|-
+   `fix-<id>` | `fix-123` | Fully resolve an Issue
+   `fix-<id>-<description>` | `fix-123-postgres` | Partially resolve an Issue
+
+3. Apply your code changes on the created branch.
+4. Push the created branch to your forked repository.
+5. Submit a Pull Request for the target branch in the official MyBB repository.
+
+### Scope
+Changes submitted in a Pull Request should have a clear focus and limited scope — usually addressing a specific, documented Issue.
+
+Complex changes should be split into several Pull Requests for each independent layer or problem area.
+
+### Coding Standards
+Submitted code must conform to the following standards:
+- for MyBB 1.8 code and existing legacy files: [MyBB Documentation &rsaquo; Development Standards](https://docs.mybb.com/1.8/development/standards/),
+- for MyBB 1.9 code and modern files: the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
+
 ### Commits
+Group changes into logical commits.
+
+Before committing your changes, review the resulting git diff. Do not include unrelated changes (some editors may automatically change indentation or line endings).
+
 Follow [The seven rules of a great Git commit message](https://chris.beams.io/posts/git-commit/#seven-rules).
 
 ### Pull Requests
-Pull Requests (PRs) should only be sent for [confirmed Issues](https://github.com/mybb/mybb/issues?q=is%3Aissue+is%3Aopen+label%3As%3Aconfirmed), and only one issue should be fixed per Pull Request.
+Use imperative mood in the title, summarizing the changes.
 
-All changes made in Pull Requests must follow the development standards:
-- for MyBB 1.8, see [MyBB Documentation &rsaquo; Development Standards](https://docs.mybb.com/1.8/development/standards/),
-- for MyBB 1.9 and later, follow the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
-
-Use imperative mood in the title, summarizing changes the Pull Request introduces, and reference the Issue ID in the message.
-
-Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
+Reference the Issue ID(s) in the description. Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
 ```
 Resolves #123
 Resolves #345
 
 Replaces `Anvil::push()` with `Anvil::fall()`.
 ```
+
+When applicable, include additional background information, research, compatibility impact, related work, considerations, and other helpful details.
+
+### Review
+Submitted code is reviewed by core developers and contributors.
+
+Problems relating to correctness, coding standards, technical debt, performance, or other issues must be addressed before proceeding.
+
+### Merging
+Accepted Pull Requests are merged using one of the following [methods](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github):
+
+Method | Result | Scenario
+-|-|-
+Rebase and merge | Commits added onto the target branch | Well-planned commits
+Squash and merge | Commits combined into one, and added onto the target branch | Individual commits with no relevance outside of the Pull Request context
