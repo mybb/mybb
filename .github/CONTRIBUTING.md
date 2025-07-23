@@ -1,6 +1,6 @@
 # Contributing to MyBB
 
-To **report a confirmed bug or problem**, create a thread the Community Forums for the appropriate version of MyBB within the [Development category](http://community.mybb.com/forum-161.html), if the problem was not reported already on the Forums or as [Issues](https://github.com/mybb/mybb/issues) on GitHub. If it is, but receives little attention, you can share details on how it impacts your forum to help diagnose the problem.
+To **report a confirmed bug or problem**, create a thread in the Community Forums for the appropriate version of MyBB within the [Development category](http://community.mybb.com/forum-161.html), if the problem was not reported already on the Forums or as [Issues](https://github.com/mybb/mybb/issues) on GitHub. If it is, but receives little attention, you can share details on how it impacts your forum to help diagnose the problem.
 
 To **suggest changes or features**, go to the [**Suggestions and Feedback**](https://community.mybb.com/forum-199.html) forum. Please make sure that your feature hasn't already been suggested and is not already planned.
 
@@ -114,5 +114,5 @@ Include a [closing keyword](https://help.github.com/articles/closing-issues-usin
 Resolves #123
 Resolves #345
 
-Replaces Anvil::push() with Anvil::fall().
+Replaces `Anvil::push()` with `Anvil::fall()`.
 ```
