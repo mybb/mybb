@@ -116,7 +116,7 @@ class PublishableThemelet extends ThemeletDecorator
             ) {
                 $asset = new ThemeletAsset($locator, $this);
 
-                $this->publishThemeletAsset($asset);
+                $this->publishAsset($asset);
             }
 
             return $this->publishedAssets[$locatorString];
@@ -136,8 +136,8 @@ class PublishableThemelet extends ThemeletDecorator
      */
     public function publishAssets(bool $force = false): void
     {
-        foreach ($this->getPublishableThemeletAssets() as $asset) {
-            $this->publishThemeletAsset($asset, $force);
+        foreach ($this->getPublishableAssets() as $asset) {
+            $this->publishAsset($asset, $force);
         }
     }
 
@@ -149,7 +149,7 @@ class PublishableThemelet extends ThemeletDecorator
     public function publishAssetsFromResource(Resource $resource, bool $force = false): void
     {
         foreach ($this->getAssetsFromResource($resource) as $asset) {
-            $this->publishThemeletAsset($asset, $force);
+            $this->publishAsset($asset, $force);
         }
     }
 
@@ -158,7 +158,7 @@ class PublishableThemelet extends ThemeletDecorator
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
-    public function publishThemeletAsset(ThemeletAsset $asset, bool $force = false): void
+    public function publishAsset(ThemeletAsset $asset, bool $force = false): void
     {
         if ($force || $this->publishMode !== self::PUBLISH_NEVER) {
             $publication = app()->make(Publication::class, [
@@ -181,7 +181,7 @@ class PublishableThemelet extends ThemeletDecorator
     public function getAssetsFromResource(Resource $resource): array
     {
         return array_merge(
-            $this->getPublishableThemeletAssets([$resource]),
+            $this->getPublishableAssets([$resource]),
             Publication::getAssetsPublishedUsingResource($resource, $this),
         );
     }
@@ -192,7 +192,7 @@ class PublishableThemelet extends ThemeletDecorator
      * @param ?Resource[] $sourceResources
      * @return ThemeletAsset[]
      */
-    public function getPublishableThemeletAssets(?array $sourceResources = null): array
+    public function getPublishableAssets(?array $sourceResources = null): array
     {
         $explicitlyPublishableAssets = $this->getExplicitlyPublishableAssets($sourceResources);
 
