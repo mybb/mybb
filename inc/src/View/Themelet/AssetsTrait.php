@@ -19,12 +19,18 @@ trait AssetsTrait
      */
     private array $assetRepositories = [];
 
+    /**
+     * Returns the Asset Repository for the given namespace.
+     */
     public function getAssetRepository(string $namespace): NamespaceCargoRepository
     {
         return $this->assetRepositories[$namespace] ??=
             new AssetRepository($this, $namespace);
     }
 
+    /**
+     * Returns an Asset object with the Themelet's context.
+     */
     public function getAsset(
         Locator $locator,
         ?string $declarationNamespace = null,
@@ -39,6 +45,9 @@ trait AssetsTrait
         );
     }
 
+    /**
+     * Returns Asset Properties by identifier, for Assets with the given Type.
+     */
     public function getAssetPropertiesOfType(string $namespace, ResourceType $type): array
     {
         return array_filter(
@@ -48,6 +57,11 @@ trait AssetsTrait
         );
     }
 
+    /**
+     * Returns Asset Properties by identifier.
+     *
+     * @return array<string, array>
+     */
     public function getAssetProperties(string $namespace): array
     {
         $repository = $this->getAssetRepository($namespace);

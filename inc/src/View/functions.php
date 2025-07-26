@@ -20,7 +20,8 @@ const DEFAULT_THEME_PACKAGE = 'core.base';
  *
  * @param Locator|string $locator The path to the Asset.
  * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
- * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$path` if not provided.
+ * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$locator` if not provided.
+ * @param array $attributes Extra attributes to add to the HTML tag.
  * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
  *
  * @api

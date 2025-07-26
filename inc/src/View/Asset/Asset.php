@@ -50,6 +50,8 @@ abstract class Asset
     }
 
     /**
+     * Returns Properties merged from multiple sources.
+     *
      * @param array[] $properties
      */
     public static function getMergedProperties(array $properties): array

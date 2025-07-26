@@ -8,7 +8,7 @@ use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Themelet\ThemeletInterface;
 
 /**
- * Metadata of items in a Themelet's namespace.
+ * Manages Asset declarations in a Themelet's namespace.
  */
 class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository
 {

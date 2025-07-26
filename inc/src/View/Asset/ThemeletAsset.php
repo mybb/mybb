@@ -50,7 +50,7 @@ class ThemeletAsset extends Asset
     }
 
     /**
-     * Return an HTTP-accessible path to the file.
+     * Return an HTTP-accessible path to the file, relative to the MyBB root directory.
      */
     public function getPublicPath(): string
     {
