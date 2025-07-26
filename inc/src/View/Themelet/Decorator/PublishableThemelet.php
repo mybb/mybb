@@ -75,6 +75,16 @@ class PublishableThemelet extends ThemeletDecorator
                 $namespace,
             ])
                 ->withDefault([])
+                ->withBuild(
+                    function (&$stamp) use ($namespace) {
+                        $stamp = $this->getAssetRepository($namespace)->getStamp();
+
+                        return [];
+                    },
+                )
+                ->withStampValidation(
+                    $this->getAssetRepository($namespace)->stampValid(...),
+                )
             ;
         }
 
