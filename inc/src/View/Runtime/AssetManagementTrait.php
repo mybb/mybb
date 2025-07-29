@@ -17,6 +17,8 @@ use function MyBB\View\template;
 trait AssetManagementTrait
 {
     /**
+     * Types that can be attached for managed insertion into the DOM.
+     *
      * @var ResourceType[]
      */
     public const ATTACHABLE_TYPES = [
@@ -25,6 +27,8 @@ trait AssetManagementTrait
     ];
 
     /**
+     * Types that can be inserted into the DOM.
+     *
      * @var ResourceType[]
      */
     public const INSERTABLE_TYPES = [
@@ -33,6 +37,8 @@ trait AssetManagementTrait
     ];
 
     /**
+     * Environment information used as a reference for conditional attaching of Assets.
+     *
      * @var array{
      *   script: string,
      *   action: string,
@@ -57,7 +63,7 @@ trait AssetManagementTrait
     private SplObjectStorage $assetProperties;
 
     /**
-     * Assets by type and Locator string.
+     * Assets for managed insertion into the DOM, by type and Locator string.
      *
      * @var array<value-of<ResourceType>, array<string, Asset>
      */
@@ -70,9 +76,14 @@ trait AssetManagementTrait
      */
     private array $assetsInDom = [];
 
+    /**
+     * Whether attached Asset information has been populated from Themelet declarations.
+     */
     private bool $attachedAssetsPopulatedFromThemelet = false;
 
     /**
+     * Whether the given Asset attaching conditions are satisfied in the given context.
+     *
      * @param array{
      *   script: string,
      *   actions?: string[],
@@ -105,14 +116,18 @@ trait AssetManagementTrait
         return false;
     }
 
+    /**
+     * Sets the environment information used for conditional attaching of Assets.
+     */
     public function setContext(array $context): void
     {
         $this->context = $context;
     }
 
     /**
-     * Replaces placeholders with asset tags yet to be inserted into DOM.
-     * Used for assets declared after the placeholder's template was rendered.
+     * Replaces placeholders with Asset tags yet to be inserted into the DOM.
+     *
+     * Used for Assets declared after the template with the placeholder was rendered.
      */
     public function insertDeferredAttachedAssets(string $contents): string
     {
@@ -137,6 +152,8 @@ trait AssetManagementTrait
     }
 
     /**
+     * Returns Assets of the given Type for managed insertion into the DOM.
+     *
      * @param bool $inserting Get assets not yet inserted, and declare them as such.
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
@@ -164,6 +181,9 @@ trait AssetManagementTrait
         return $assets;
     }
 
+    /**
+     * Adds Assets for managed insertion into the DOM from Themelet declarations.
+     */
     public function populateAttachedAssetsFromThemelet(): void
     {
         foreach ($this->themelet->getCompositeAssetProperties() as $locatorString => $properties) {
@@ -174,7 +194,11 @@ trait AssetManagementTrait
     }
 
     /**
-     * @param string[] $dependentAncestors
+     * Schedules an Asset for managed insertion into the DOM, and returns the Asset object.
+     *
+     * @param string[] $dependentAncestors Identifiers of dependent Assets passed in recursive calls.
+     *
+     * @throws Exception if the given Asset cannot be attached.
      */
     public function attachAsset(
         Locator $locator,
@@ -310,6 +334,11 @@ trait AssetManagementTrait
         return $asset;
     }
 
+    /**
+     * Whether an Asset should be attached according to its Properties.
+     *
+     * @param ?array $properties The Properties of the Asset.
+     */
     private function assetApplicableThroughProperties(?array $properties = null): bool
     {
         return (
