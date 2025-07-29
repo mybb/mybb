@@ -63,21 +63,13 @@ function asset(
     }
 
     if ($local) {
-        $asset = $view->themelet->getPublishedAsset(
+        return $view->getAssetForInsertion(
             locator: $locatorObject,
+            properties: [
+                'attributes' => $attributes,
+            ],
             type: $typeObject,
         );
-
-        $asset->setCompositeProperties(
-            $view->themelet->getCompositeAssetProperties($locatorObject)
-        );
-        $asset->setCompositeProperties([
-            'attributes' => $attributes,
-        ]);
-
-        $asset->insertedToDom = true;
-
-        return $asset->getHtml();
     } else {
         $view->attachAsset(
             locator: $locatorObject,
