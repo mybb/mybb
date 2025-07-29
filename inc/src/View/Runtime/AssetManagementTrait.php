@@ -70,7 +70,7 @@ trait AssetManagementTrait
      */
     private array $assetsInDom = [];
 
-    private bool $attachedAssetsPopulated = false;
+    private bool $attachedAssetsPopulatedFromThemelet = false;
 
     /**
      * @param array{
@@ -141,10 +141,10 @@ trait AssetManagementTrait
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
     {
-        if (!$this->attachedAssetsPopulated) {
+        if (!$this->attachedAssetsPopulatedFromThemelet) {
             $this->populateAttachedAssetsFromThemelet();
 
-            $this->attachedAssetsPopulated = true;
+            $this->attachedAssetsPopulatedFromThemelet = true;
         }
 
         $assets = $this->attachedAssets[$type->value] ?? [];
@@ -310,7 +310,7 @@ trait AssetManagementTrait
         return $asset;
     }
 
-    public function assetApplicableThroughProperties(?array $properties = null): bool
+    private function assetApplicableThroughProperties(?array $properties = null): bool
     {
         return (
             isset($properties['attached_to']) &&
@@ -326,8 +326,7 @@ trait AssetManagementTrait
     private function getAssetImmediateDependencies(Locator $locator): array
     {
         return array_map(
-            fn (string $identifier) =>
-                Locator::fromDependencyIdentifier($identifier, $locator),
+            fn (string $identifier) => Locator::fromDependencyIdentifier($identifier, $locator),
             $this->themelet->getCompositeAssetProperties($locator)['depends_on'] ?? [],
         );
     }
