@@ -260,3 +260,82 @@ function upgrade100_convert_innodb()
         }
     }
 }
+
+
+function upgrade100_smilies()
+{
+    global $db;
+
+    $smilies_dir = MYBB_ROOT . 'images/smilies/';
+    if (!is_dir($smilies_dir)) {
+        return;
+    }
+
+    // Update existing smilies from PNG to SVG if SVG exists
+    $svg_files = glob($smilies_dir . '*.svg');
+    if ($svg_files !== false) {
+        foreach ($svg_files as $svg_file_path) {
+            $smiley_name = basename($svg_file_path, '.svg');
+            $png_image_path = 'images/smilies/' . $smiley_name . '.png';
+            $svg_image_path = 'images/smilies/' . $smiley_name . '.svg';
+
+            // Only update if PNG entry exists
+            $query = $db->simple_select('smilies', 'sid', "image='" . $db->escape_string($png_image_path) . "'");
+            if ($db->num_rows($query)) {
+                $db->update_query('smilies', ['image' => $db->escape_string($svg_image_path)], "image='" . $db->escape_string($png_image_path) . "'");
+            }
+        }
+    }
+
+    // List of new smilies to insert
+    $smilies = [
+        ['name' => 'Censored', 'find' => ':censored:', 'image' => 'images/smilies/censored.svg', 'showclickable' => 1],
+        ['name' => 'Dead', 'find' => ':dead:', 'image' => 'images/smilies/dead.svg', 'showclickable' => 1],
+        ['name' => 'Evil', 'find' => ':evil:', 'image' => 'images/smilies/evil.svg', 'showclickable' => 1],
+        ['name' => 'Frozen', 'find' => ':frozen:', 'image' => 'images/smilies/frozen.svg', 'showclickable' => 1],
+        ['name' => 'Grimace', 'find' => ':grimace:', 'image' => 'images/smilies/grimace.svg', 'showclickable' => 1],
+        ['name' => 'Hot', 'find' => ':hot:', 'image' => 'images/smilies/hot.svg', 'showclickable' => 1],
+        ['name' => 'Like', 'find' => ':like:', 'image' => 'images/smilies/like.svg', 'showclickable' => 1],
+        ['name' => 'Lol', 'find' => ':lol:', 'image' => 'images/smilies/lol.svg', 'showclickable' => 1],
+        ['name' => 'Neutral', 'find' => ':neutral:', 'image' => 'images/smilies/neutral.svg', 'showclickable' => 1],
+        ['name' => 'Shocked', 'find' => ':shocked:', 'image' => 'images/smilies/shocked.svg', 'showclickable' => 1],
+        ['name' => 'Surprise', 'find' => ':surprise:', 'image' => 'images/smilies/surprise.svg', 'showclickable' => 1],
+        ['name' => 'Unlike', 'find' => ':unlike:', 'image' => 'images/smilies/unlike.svg', 'showclickable' => 1],
+        ['name' => 'Wtf', 'find' => ':wtf:', 'image' => 'images/smilies/wtf.svg', 'showclickable' => 1],
+        ['name' => 'Yawn', 'find' => ':yawn:', 'image' => 'images/smilies/yawn.svg', 'showclickable' => 1],
+        ['name' => 'Zzz', 'find' => ':zzz:', 'image' => 'images/smilies/zzz.svg', 'showclickable' => 1],
+        ['name' => 'Huh Dark', 'find' => ':huh_d:', 'image' => 'images/smilies/huh_d.svg', 'showclickable' => 1],
+    ];
+
+    $disporder = 0;
+    $query = $db->simple_select('smilies', 'MAX(disporder) AS max_disporder');
+    $max_disporder = $db->fetch_field($query, 'max_disporder');
+    if ($max_disporder !== null) {
+        $disporder = (int)$max_disporder;
+    }
+
+    // Avoid inserting duplicates
+    $existing_smilies = [];
+    $query = $db->simple_select('smilies', 'find');
+    while ($row = $db->fetch_array($query)) {
+        $existing_smilies[] = $row['find'];
+    }
+
+    $insert = [];
+    foreach ($smilies as $smiley) {
+        if (in_array($smiley['find'], $existing_smilies, true)) {
+            continue;
+        }
+        $insert[] = [
+            'name' => $smiley['name'],
+            'find' => $smiley['find'],
+            'image' => $smiley['image'],
+            'disporder' => ++$disporder,
+            'showclickable' => $smiley['showclickable'],
+        ];
+    }
+
+    if (!empty($insert)) {
+        $db->insert_query_multiple('smilies', $insert);
+    }
+}
