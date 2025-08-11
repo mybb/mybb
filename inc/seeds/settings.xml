@@ -2504,19 +2504,10 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="purgespammerapikey">
-			<title>Stop Forum Spam API Key</title>
-			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="purgespammerbanip">
 			<title>Add banned IP filter</title>
 			<description><![CDATA[Do you want to ban the spammer's IP using this tool? If other users are issued the same banned IP, they will not be able to use the forums.]]></description>
-			<disporder>7</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2613,6 +2604,15 @@ delete=Delete]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
+		</setting>
+		<setting name="purgespammerapikey">
+			<title>Stop Forum Spam API Key</title>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
