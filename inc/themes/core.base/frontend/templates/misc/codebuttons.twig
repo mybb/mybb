@@ -37,6 +37,6 @@
         $("#{{ bind }}").sceditor(opt_editor);
 
         MyBBEditor = $("#{{ bind }}").sceditor("instance");
-        {% if mybb.user.sourceeditor %}MyBBEditor.sourceMode(true);{% endif %}
+        {% if mybb.user.sourceeditor == 1 or (mybb.user.sourceeditor == 0 and mybb.settings.forcesourceeditor) %}MyBBEditor.sourceMode(true);{% endif %}
     });
 </script>
