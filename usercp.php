@@ -2011,7 +2011,7 @@ if($mybb->input['action'] == "avatar")
 	if($mybb->settings['maxavatardims'] != "")
 	{
 		list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
-		$extranotes[] = "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
+		$extranotes[] = $lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
 	}
 
 	if($mybb->settings['avatarsize'])
