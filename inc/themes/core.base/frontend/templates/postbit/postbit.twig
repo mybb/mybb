@@ -95,10 +95,9 @@
             <input type="checkbox" class="checkbox post__inline-mod" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" {% if post.inlinechecked %}checked="checked"{% endif %}/>
         {% endif %}
 
-        {# TO DO : CLEAN UP EDITED MESSAGE #}
         {% if post.editedmsg %}
             <a href="#" class="post__edit-log" title="" id="edited_by_{{ post.pid }}">{{ include('partials/icon.twig', {icon: 'pencil-alt', class: ''}, with_context = false) }}</a>
-            <span class="edited_post" style="display: none;">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
+            <span class="post__edit-reason">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
         {% endif %}
 
         {# IP address #}
