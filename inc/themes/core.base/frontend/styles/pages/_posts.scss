@@ -67,6 +67,12 @@ $post-spacing: 25px;
         }
     }
 
+    &__edit-reason {
+        color: $alt-font-color-1;
+        margin-#{$left}: 4px;
+        font-size: 0.8em;
+    }
+
     &__ip-address {
         float: $right;
         font-size: 0.8em;
