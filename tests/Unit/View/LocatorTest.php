@@ -69,22 +69,87 @@ final class LocatorTest extends TestCase
         $this->assertSame($expectedString, $string);
     }
 
-    public static function decomposeStringCases(): array
+    public static function fromStringCases(): array
     {
         return [
             [
                 '/a/b/c.css',
-                [],
-                StaticLocator::class,
-                [
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => StaticLocator::class,
+                'expectedProperties' => [
                     'path' => '/a/b/c.css',
+                ],
+                'expectedReturn' => [
+                    'isRemote' => false,
+                    'isCurrentDirectoryRelative' => false,
                 ],
             ],
             [
+                './a/b.css',
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => StaticLocator::class,
+                'expectedProperties' => [
+                    'path' => './a/b.css',
+                ],
+                'expectedReturn' => [
+                    'isRemote' => false,
+                    'isCurrentDirectoryRelative' => true,
+                ],
+            ],
+            [
+                '../a/b.css',
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => StaticLocator::class,
+                'expectedProperties' => [
+                    'path' => '../a/b.css',
+                ],
+                'expectedReturn' => [
+                    'isRemote' => false,
+                    'isCurrentDirectoryRelative' => false,
+                ],
+            ],
+            [
+                'https://example.com/style.css',
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => StaticLocator::class,
+                'expectedProperties' => [
+                    'path' => 'https://example.com/style.css',
+                ],
+                'expectedReturn' => [
+                    'isRemote' => true,
+                    'isCurrentDirectoryRelative' => false,
+                ],
+            ],
+            [
+                '//example.com/style.css',
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => StaticLocator::class,
+                'expectedProperties' => [
+                    'path' => '//example.com/style.css',
+                ],
+                'expectedReturn' => [
+                    'isRemote' => true,
+                    'isCurrentDirectoryRelative' => false,
+                ],
+            ],
+
+            [
                 '@frontend/styles/main/header.css',
-                [],
-                ThemeletLocator::class,
-                [
+                'directives' => [],
+                'context' => [],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                     'group' => 'main',
@@ -93,11 +158,13 @@ final class LocatorTest extends TestCase
             ],
             [
                 '@frontend/main/header.css',
-                [
+                'directives' => [
                     'type' => ThemeletLocator::COMPONENT_UNSET,
                 ],
-                ThemeletLocator::class,
-                [
+                'context' => [],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
                     'namespace' => 'frontend',
                     'group' => 'main',
                     'filename' => 'header.css',
@@ -105,11 +172,13 @@ final class LocatorTest extends TestCase
             ],
             [
                 'styles/main/header.css',
-                [
+                'directives' => [
                     'namespace' => ThemeletLocator::COMPONENT_UNSET,
                 ],
-                ThemeletLocator::class,
-                [
+                'context' => [],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => null,
                     'group' => 'main',
@@ -118,14 +187,69 @@ final class LocatorTest extends TestCase
             ],
             [
                 'main/header.css',
-                [
+                'directives' => [
                     'type' => ThemeletLocator::COMPONENT_UNSET,
                     'namespace' => ThemeletLocator::COMPONENT_UNSET,
                 ],
-                ThemeletLocator::class,
-                [
+                'context' => [],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
                     'type' => null,
                     'namespace' => null,
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ],
+            ],
+            [
+                'styles/main/header.css',
+                'directives' => [
+                    'type' => ThemeletLocator::COMPONENT_SET,
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'frontend',
+                ],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'frontend',
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ],
+            ],
+            [
+                '@parser/main/header.css',
+                'directives' => [
+                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'frontend',
+                ],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'parser',
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ],
+            ],
+            [
+                '@frontend/styles/main/header.css',
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [],
+
+                'expectedClass' => ThemeletLocator::class,
+                'expectedProperties' => [
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'frontend',
                     'group' => 'main',
                     'filename' => 'header.css',
                 ],
@@ -133,15 +257,25 @@ final class LocatorTest extends TestCase
         ];
     }
 
-    #[DataProvider('decomposeStringCases')]
-    public function testDecomposeString(string $string, array $directives, string $expectedClass, array $expectedProperties)
-    {
-        $locator = Locator::fromString($string, $directives);
+    #[DataProvider('fromStringCases')]
+    public function testFromString(
+        string $string,
+        array $directives,
+        array $context,
+        string $expectedClass,
+        array $expectedProperties,
+        array $expectedReturn = [],
+    ): void {
+        $locator = Locator::fromString($string, $directives, $context);
 
         $this->assertInstanceOf($expectedClass, $locator);
 
         foreach ($expectedProperties as $name => $value) {
             $this->assertSame($value, $locator->$name);
+        }
+
+        foreach ($expectedReturn as $method => $expected) {
+            self::assertSame($expected, $locator->$method());
         }
     }
 }
