@@ -2,11 +2,13 @@
 
 namespace MyBB\Tests\Unit\View;
 
+use Exception;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 final class LocatorTest extends TestCase
@@ -67,6 +69,25 @@ final class LocatorTest extends TestCase
     public function testComposeString(string $string, string $expectedString)
     {
         $this->assertSame($expectedString, $string);
+    }
+
+
+    /**
+     * @param class-string<Locator> $class
+     * @param class-string<Exception> $expectedException
+     */
+    #[TestWith([
+        StaticLocator::class,
+        [
+            'path' => null,
+        ],
+        Exception::class,
+    ])]
+    public function testComposeStringException(string $class, array $components, string $expectedException): void
+    {
+        self::expectException($expectedException);
+
+        $class::composeString($components);
     }
 
 
@@ -342,5 +363,136 @@ final class LocatorTest extends TestCase
         foreach ($expectedReturn as $method => $expected) {
             self::assertSame($expected, $locator->$method());
         }
+    }
+
+
+    public static function fromStringExceptionCases(): array
+    {
+        return [
+            [
+                'styles/main/header.css',
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_SET,
+                ],
+            ],
+            [
+                '@frontend/styles/main/header.css',
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                ],
+            ],
+            [
+                'styles/main/header.css',
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [],
+            ],
+        ];
+    }
+
+    #[DataProvider('fromStringExceptionCases')]
+    public function testFromStringException(
+        string $string,
+        array $directives,
+        array $context = [],
+    ): void {
+        self::expectException(Exception::class);
+
+        ThemeletLocator::fromString($string, $directives, $context);
+    }
+
+
+    public static function getStringExceptionCases(): array
+    {
+        return [
+            [
+                new ThemeletLocator([
+                    'type' => ResourceType::STYLE,
+                    'namespace' => null,
+                    'group' => null,
+                    'filename' => 'test.css',
+                ]),
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_SET,
+                ],
+            ],
+
+            [
+                new ThemeletLocator([
+                    'type' => null,
+                    'namespace' => 'frontend',
+                    'group' => null,
+                    'filename' => 'test.css',
+                ]),
+                'directives' => [
+                    'type' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [],
+            ],
+
+            [
+                new ThemeletLocator([
+                    'type' => null,
+                    'namespace' => null,
+                    'group' => null,
+                    'filename' => null,
+                ]),
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                ],
+            ],
+            [
+                new ThemeletLocator([
+                    'type' => null,
+                    'namespace' => null,
+                    'group' => null,
+                    'filename' => '',
+                ]),
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                ],
+            ],
+            [
+                new ThemeletLocator([
+                    'type' => null,
+                    'namespace' => null,
+                    'group' => null,
+                    'filename' => null,
+                ]),
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                ],
+                'context' => [
+                    'filename' => null,
+                ],
+            ],
+            [
+                new ThemeletLocator([
+                    'type' => null,
+                    'namespace' => null,
+                    'group' => null,
+                    'filename' => null,
+                ]),
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [
+                    'filename' => '',
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('getStringExceptionCases')]
+    public function testGetStringException(Locator $locator, array $directives, array $context = []): void
+    {
+        self::expectException(Exception::class);
+
+        $locator->getString($directives, $context);
     }
 }
