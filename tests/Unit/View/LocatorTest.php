@@ -69,6 +69,71 @@ final class LocatorTest extends TestCase
         $this->assertSame($expectedString, $string);
     }
 
+
+    public static function getStringCases(): array
+    {
+        return [
+            [
+                new ThemeletLocator([
+                    'type' => ResourceType::STYLE,
+                    'namespace' => null,
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ]),
+
+                'directives' => [],
+                'context' => [
+                    'namespace' => 'frontend',
+                ],
+
+                'expectedString' => '@frontend/styles/main/header.css',
+            ],
+            [
+                new ThemeletLocator([
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'frontend',
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ]),
+
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                ],
+                'context' => [
+                    'namespace' => 'frontend',
+                ],
+
+                'expectedString' => 'styles/main/header.css',
+            ],
+            [
+                new ThemeletLocator([
+                    'type' => ResourceType::STYLE,
+                    'namespace' => 'parser',
+                    'group' => 'main',
+                    'filename' => 'header.css',
+                ]),
+
+                'directives' => [
+                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                ],
+                'context' => [
+                    'namespace' => 'frontend',
+                ],
+
+                'expectedString' => '@parser/styles/main/header.css',
+            ],
+        ];
+    }
+
+    #[DataProvider('getStringCases')]
+    public function testGetString(Locator $locator, array $directives, array $context, string $expectedString): void
+    {
+        $string = $locator->getString($directives, $context);
+
+        self::assertSame($expectedString, $string);
+    }
+
+
     public static function fromStringCases(): array
     {
         return [
