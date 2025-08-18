@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyBB\Tests\Unit\View;
 
 use Exception;
-use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
+use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Locator::class)]
+#[CoversClass(StaticLocator::class)]
+#[CoversClass(ThemeletLocator::class)]
 final class LocatorTest extends TestCase
 {
     public static function composeStringCases(): array
@@ -66,9 +72,9 @@ final class LocatorTest extends TestCase
     }
 
     #[DataProvider('composeStringCases')]
-    public function testComposeString(string $string, string $expectedString)
+    public function testComposeString(string $string, string $expectedString): void
     {
-        $this->assertSame($expectedString, $string);
+        self::assertSame($expectedString, $string);
     }
 
 
@@ -354,10 +360,10 @@ final class LocatorTest extends TestCase
     ): void {
         $locator = Locator::fromString($string, $directives, $context);
 
-        $this->assertInstanceOf($expectedClass, $locator);
+        self::assertInstanceOf($expectedClass, $locator);
 
         foreach ($expectedProperties as $name => $value) {
-            $this->assertSame($value, $locator->$name);
+            self::assertSame($value, $locator->$name);
         }
 
         foreach ($expectedReturn as $method => $expected) {
