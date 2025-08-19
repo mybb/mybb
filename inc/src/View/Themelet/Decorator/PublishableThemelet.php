@@ -65,8 +65,7 @@ class PublishableThemelet extends ThemeletDecorator
 
     public function __construct(
         private readonly Optimization $optimization,
-    )
-    {
+    ) {
         $managedValueRepository = $this->getManagedValueRepository();
 
         foreach ($this->getNamespaces() as $namespace) {
@@ -98,8 +97,7 @@ class PublishableThemelet extends ThemeletDecorator
         Locator $locator,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
-    ): Asset
-    {
+    ): Asset {
         return Asset::fromLocator(
             locator: $locator,
             themelet: $this,
@@ -115,30 +113,29 @@ class PublishableThemelet extends ThemeletDecorator
         Locator $locator,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
-    ): Asset
-    {
+    ): Asset {
         if ($locator instanceof ThemeletLocator) {
             $locatorString = $locator->getString();
 
             if (
-                $this->optimization->getDirective('publication.runtimeCache') === false ||
-                !array_key_exists($locatorString, $this->publishedAssets)
+                $this->optimization->getDirective('publication.runtimeCache') &&
+                array_key_exists($locatorString, $this->publishedAssets)
             ) {
+                $asset = $this->publishedAssets[$locatorString];
+            } else {
                 $asset = new ThemeletAsset($locator, $this);
 
                 $this->publishAsset($asset);
-            } else {
-                $asset = $this->publishedAssets[$locatorString];
             }
-
-            return $asset;
         } else {
-            return $this->getAsset(
+            $asset = $this->getAsset(
                 locator: $locator,
                 declarationNamespace: $declarationNamespace,
                 type: $type,
             );
         }
+
+        return $asset;
     }
 
     /**
