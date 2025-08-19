@@ -127,9 +127,11 @@ class PublishableThemelet extends ThemeletDecorator
                 $asset = new ThemeletAsset($locator, $this);
 
                 $this->publishAsset($asset);
+            } else {
+                $asset = $this->publishedAssets[$locatorString];
             }
 
-            return $this->publishedAssets[$locatorString];
+            return $asset;
         } else {
             return $this->getAsset(
                 locator: $locator,
