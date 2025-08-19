@@ -71,12 +71,14 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="footer-menu__item">
-                            <a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
-                                {{ include('partials/icon.twig', {icon: 'home', class: 'footer-menu__icon'}, with_context = false) }}
-                                <span class="footer-menu__text">{{ mybb.settings.homename }}</span>
-                            </a>
-                        </li>
+                        {% if mybb.settings.homeurl and mybb.settings.homename %}
+                            <li class="footer-menu__item">
+                                <a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
+                                    {{ include('partials/icon.twig', {icon: 'home', class: 'footer-menu__icon'}, with_context = false) }}
+                                    <span class="footer-menu__text">{{ mybb.settings.homename }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="footer-menu__item">
                             <a href="#top" class="footer-menu__link">
                                 {{ include('partials/icon.twig', {icon: 'arrow-up', class: 'footer-menu__icon'}, with_context = false) }}
