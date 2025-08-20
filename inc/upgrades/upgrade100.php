@@ -21,6 +21,10 @@ $upgrade_detail = array(
 function upgrade100_dbchanges()
 {
     global $db;
+    
+    if ($db->type == 'sqlite') {
+        $db->close_cursors();
+    }
 
     // Drop deprecated columns
     if ($db->field_exists("google", "users")) {
