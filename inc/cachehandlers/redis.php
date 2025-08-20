@@ -74,6 +74,27 @@ class redisCacheHandler implements CacheHandlerInterface
 			die;
 		}
 
+		// Authenticate if credentials are provided
+		if(!empty($mybb->config['redis']['password']))
+		{
+			// Redis 6+ supports ACLs (username+password), fallback to password only
+			if(!empty($mybb->config['redis']['username']))
+			{
+				$auth = $this->redis->auth([$mybb->config['redis']['username'], $mybb->config['redis']['password']]);
+			}
+			else
+			{
+				$auth = $this->redis->auth($mybb->config['redis']['password']);
+			}
+
+			if(!$auth)
+			{
+				$message = "Unable to authenticate to the redis server. Check your credentials.";
+				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
+				die;
+			}
+		}
+
 		// Set a unique identifier for all queries in case other forums are using the same redis server
 		$this->unique_id = md5(MYBB_ROOT);
 
