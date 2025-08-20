@@ -167,7 +167,7 @@ class dbpdoEngine
 	 */
 	public function error_number($query)
 	{
-		if(!method_exists($query, "errorCode"))
+		if(!is_object($query) || !method_exists($query, "errorCode"))
 		{
 			return 0;
 		}
