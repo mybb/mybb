@@ -28,6 +28,8 @@ $l['language_in_html'] = "Language in &lt;html&gt; tag";
 $l['charset'] = "Character Set";
 $l['admin'] = "Contains Admin CP language variables?";
 $l['rtl'] = "Right-To-Left?";
+$l['support_link'] = "Support Website Link";
+$l['support_name'] = "Support Website Name";
 
 $l['quickphrases_agreement'] = 'Registration Agreement - Title';
 $l['quickphrases_agreement_1'] = 'Registration Agreement - Paragraph 1';
