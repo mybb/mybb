@@ -23,8 +23,8 @@ $langinfo['website'] = "https://mybb.com/";
 // The support website link
 //$langinfo['support_link'] = "";
 
-// The additional website name
-//$langinfo['additional_name'] = " ";
+// The support website name
+//$langinfo['support_name'] = " ";
 
 // Compatible version of MyBB
 $langinfo['version'] = "1839";

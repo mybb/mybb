@@ -68,6 +68,12 @@ if($mybb->input['action'] == "edit_properties")
 // The language authors website
 \$langinfo['website'] = \"{$langinfo['website']}\";
 
+// The support website link
+\$langinfo['support_link'] = \"{$newlanginfo['support_link']}\";
+
+// The support website name
+\$langinfo['support_name'] = \"{$newlanginfo['support_name']}\";
+
 // Compatible version of MyBB
 \$langinfo['version'] = \"{$langinfo['version']}\";
 
@@ -151,6 +157,8 @@ if($mybb->input['action'] == "edit_properties")
 		$mybb->input['info']['name'] = $langinfo['name'];
 		$mybb->input['info']['htmllang'] = $langinfo['htmllang'];
 		$mybb->input['info']['charset'] = $langinfo['charset'];
+		$mybb->input['info']['support_link'] = $langinfo['support_link'];
+		$mybb->input['info']['support_name'] = $langinfo['support_name'];
 	}
 
 	$form_container = new FormContainer($lang->edit_properties);
@@ -160,6 +168,8 @@ if($mybb->input['action'] == "edit_properties")
 	$form_container->output_row($lang->charset." <em>*</em>", "", $form->generate_text_box('info[charset]', $mybb->input['info']['charset'], array('id' => 'charset')), 'charset');
 	$form_container->output_row($lang->rtl." <em>*</em>", "", $form->generate_yes_no_radio('info[rtl]', $mybb->input['info']['rtl'], array('id' => 'rtl')), 'rtl');
 	$form_container->output_row($lang->admin." <em>*</em>", "", $form->generate_yes_no_radio('info[admin]', $mybb->input['info']['admin'], array('id' => 'admin')), 'admin');
+	$form_container->output_row($lang->support_link, "", $form->generate_text_box('info[support_link]', $mybb->input['info']['support_link'], array('id' => 'support_link')), 'support_link');
+	$form_container->output_row($lang->support_name, "", $form->generate_text_box('info[support_name]', $mybb->input['info']['support_name'], array('id' => 'support_name')), 'support_name');
 
 	// Check if file is writable, before allowing submission
 	if(!is_writable($file))
