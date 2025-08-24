@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MyBB\View\Runtime;
 
 use MyBB;
-use MyBB\Extensions\Plugin;
-use MyBB\Extensions\Theme;
+use MyBB\Extensions\Plugin\Plugin;
+use MyBB\Extensions\Theme\Theme;
 use MyBB\View\Optimization;
 use MyBB\View\Themelet\Decorator\CompositeThemelet;
 use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;

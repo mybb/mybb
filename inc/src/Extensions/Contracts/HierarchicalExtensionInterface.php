@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Contracts;
 
 interface HierarchicalExtensionInterface
 {

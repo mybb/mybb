@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Theme;
 
 use InvalidArgumentException;
+use MyBB\Extensions\Extension;
 
 enum ThemeType
 {

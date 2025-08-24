@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Traits;
 
 use BadMethodCallException;
 use MyBB\View\Themelet\Themelet;

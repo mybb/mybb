@@ -2,10 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Theme;
 
 use Exception;
 use FilesystemIterator;
+use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
+use MyBB\Extensions\Contracts\ViewExtensionInterface;
+use MyBB\Extensions\Extension;
+use MyBB\Extensions\Traits\HierarchicalExtensionTrait;
+use MyBB\Extensions\Traits\ViewExtensionTrait;
 use MyBB\View\NamespaceType;
 use SplFileInfo;
 

@@ -472,8 +472,8 @@ $theme['editortheme'] = 'mybb.css';
 $packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
 
 \MyBB\app()->instance(
-	\MyBB\Extensions\Theme::class,
-	\MyBB\Extensions\Theme::get($packageName),
+	\MyBB\Extensions\Theme\Theme::class,
+	\MyBB\Extensions\Theme\Theme::get($packageName),
 );
 
 $view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);

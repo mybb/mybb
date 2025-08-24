@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Traits;
 
 use Exception;
 use Illuminate\Support\Arr;
+use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
 
 /**
  * Resolves Extension inheritance.

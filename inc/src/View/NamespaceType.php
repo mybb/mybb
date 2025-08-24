@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use InvalidArgumentException;
+use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Extensions\Extension;
-use MyBB\Extensions\ViewExtensionInterface;
 
 enum NamespaceType
 {

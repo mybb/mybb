@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
-use MyBB\Extensions\Theme;
+use MyBB\Extensions\Theme\Theme;
 use MyBB\View\Runtime\Runtime;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider implements DeferrableProvider

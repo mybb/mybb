@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Plugin;
 
 use Exception;
+use MyBB\Extensions\Contracts\ViewExtensionInterface;
+use MyBB\Extensions\Extension;
+use MyBB\Extensions\Traits\ViewExtensionTrait;
 use MyBB\View\NamespaceType;
 
 class Plugin extends Extension implements ViewExtensionInterface
