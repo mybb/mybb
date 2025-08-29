@@ -473,7 +473,7 @@ $packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
 
 \MyBB\app()->instance(
 	\MyBB\Extensions\Theme\Theme::class,
-	\MyBB\Extensions\Theme\Theme::get($packageName),
+	\MyBB\App(\MyBB\Extensions\Theme\Repository::class)->get($packageName),
 );
 
 $view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);

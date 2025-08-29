@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\Extensions\Plugin;
 
 use Exception;
+use Illuminate\Filesystem\Filesystem;
 use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
@@ -16,6 +17,9 @@ class Plugin extends Extension implements ViewExtensionInterface
 
     public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/plugins/';
 
+    public const REPOSITORY_CLASS = Repository::class;
+
+
     public const PACKAGE_RELATIVE_THEMELET_PATH = '/view';
 
     public const NAMESPACE_TYPE_ACCESS = [
@@ -24,9 +28,9 @@ class Plugin extends Extension implements ViewExtensionInterface
 
     public const THEMELET_DIRECT_NAMESPACE = true;
 
-    public function __construct(string $packageName, ?string $version = null)
+    public function __construct(string $packageName, Filesystem $filesystem)
     {
-        parent::__construct($packageName, $version);
+        parent::__construct($packageName, $filesystem);
 
         if (!self::codenameValid($packageName)) {
             throw new Exception('Invalid Extension package name `' . $packageName . '`');
@@ -37,6 +41,16 @@ class Plugin extends Extension implements ViewExtensionInterface
             'type' => 'string',
             'value' => 'mybb-plugin',
         ];
+    }
+
+    public function exists(): bool
+    {
+        return (
+            parent::exists() ||
+            $this->filesystem->isFile(
+                $this->getLegacyManifestFilePath()
+            )
+        );
     }
 
     public function getThemeletDirectNamespace(): string
@@ -55,8 +69,8 @@ class Plugin extends Extension implements ViewExtensionInterface
     {
         $absolutePath = self::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName() . '.php';
 
-        if (file_exists($absolutePath)) {
-            require_once $absolutePath;
+        if ($this->filesystem->isFile($absolutePath)) {
+            $this->filesystem->requireOnce($absolutePath);
 
             $infoFunctionName = $this->getPackageName() . '_info';
 

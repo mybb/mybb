@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\Extensions;
 
 use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use MyBB\Extensions\Traits\IntegrityTrait;
 use MyBB\Utilities\FileStamp;
@@ -13,17 +14,15 @@ abstract class Extension
 {
     use IntegrityTrait;
 
+    /**
+     * @var class-string<Repository<static>>
+     */
+    public const REPOSITORY_CLASS = Repository::class;
+
     final public const MANIFEST_FILE_PATH = 'manifest.json';
 
     public const DEFAULT_VERSION = 'dev';
 
-    /**
-     * @var array<string, array{
-     *   default: static,
-     *   versions: array<string, static>
-     * }>
-     */
-    private static array $instances = [];
 
     /**
      * Definitions and validation of manifest fields.
@@ -41,7 +40,6 @@ abstract class Extension
 
     private FileStamp $manifestStamp;
 
-    private readonly string $packageName;
     private readonly string $version;
 
     public static function codenameValid(string $value): bool
@@ -49,21 +47,12 @@ abstract class Extension
         return preg_match('/[a-z_]+/', $value) === 1;
     }
 
-    public static function get(string $packageName, ?string $version = null): static
+    public function __construct(
+        protected readonly string $packageName,
+        protected readonly Filesystem $filesystem,
+        ?string $version = null,
+    )
     {
-        if ($version === null) {
-            $instance = &static::$instances[$packageName]['default'];
-        } else {
-            $instance = &static::$instances[$packageName]['versions'][$version];
-        }
-
-        return $instance ??= new static($packageName, $version);
-    }
-
-    public function __construct(string $packageName, ?string $version = null)
-    {
-        $this->packageName = $packageName;
-
         if ($version !== null) {
             $this->version = $version;
         }
@@ -75,6 +64,16 @@ abstract class Extension
                 'value' => fn ($value) => preg_match('/^[A-Za-z0-9.-]+$/', $value),
             ],
         ];
+    }
+
+    /**
+     * Whether the Extension's package exists in the filesystem.
+     */
+    public function exists(): bool
+    {
+        return $this->filesystem->isDirectory(
+            $this->getAbsolutePath()
+        );
     }
 
     public function getAbsolutePath(): string
@@ -98,12 +97,8 @@ abstract class Extension
         if (!isset($this->manifest)) {
             $path = $this->getManifestFilePath();
 
-            if (file_exists($path)) {
-                $content = file_get_contents($path);
-
-                if ($content === false) {
-                    throw new Exception('Could not open manifest file: ' . $path);
-                }
+            if ($this->filesystem->isFile($path)) {
+                $content = $this->filesystem->get($path);
 
                 $this->manifestStamp = FileStamp::fromFile($path, $content);
 

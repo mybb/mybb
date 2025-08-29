@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\View\Themelet\Decorator\Hierarchy;
 
+use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
+use MyBB\Extensions\Repository;
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Optimization;
@@ -39,10 +41,17 @@ class HierarchicalThemelet extends ThemeletDecorator
      */
     private array $themeletsByNamespace;
 
+    /**
+     * @param Repository<HierarchicalExtensionInterface> $extensionRepository The Repository with ancestor Extensions.
+     */
     public function __construct(
+        Themelet $themelet,
+        private readonly Repository $extensionRepository,
         Optimization $optimization,
     )
     {
+        parent::__construct($themelet);
+
         $managedValueRepository = $this->getManagedValueRepository();
 
         $storeMode = $optimization->getDirective('hierarchy.cache')
@@ -119,7 +128,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
     public function getThemelet(string $identifier): ?ThemeletInterface
     {
-        return $this->getExtension()::get($identifier)->getThemelet();
+        return $this->extensionRepository->get($identifier)->getThemelet();
     }
 
     /**
@@ -169,7 +178,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
         $extensions = [
             $this->getExtension(),
-            ...$this->getExtension()->getAncestors(),
+            ...$this->getExtension()->getAncestors($this->extensionRepository),
         ];
 
         foreach ($extensions as $extension) {
@@ -185,7 +194,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
     private function ancestorsStampValid(array $stamp): bool
     {
-        $extensions = $this->getExtension()->getInheritanceChain();
+        $extensions = $this->getExtension()->getInheritanceChain($this->extensionRepository);
 
         if (count($stamp) !== count($extensions)) {
             return false;

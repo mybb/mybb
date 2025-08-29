@@ -6,14 +6,16 @@ namespace MyBB\View;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use MyBB\Extensions\Theme\Theme;
+use MyBB\Extensions\Theme\Repository as ThemeRepository;
 use MyBB\View\Runtime\Runtime;
+use Psr\Container\ContainerInterface;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider implements DeferrableProvider
 {
     public function register()
     {
-        $this->app->singleton(Theme::class, function () {
-            return Theme::get(DEFAULT_THEME_PACKAGE);
+        $this->app->singleton(Theme::class, function (ContainerInterface $container) {
+            return $container->get(ThemeRepository::class)->get(DEFAULT_THEME_PACKAGE);
         });
 
         $this->app->singleton(Runtime::class);

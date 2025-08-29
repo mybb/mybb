@@ -7,6 +7,7 @@ namespace MyBB\Extensions\Traits;
 use Exception;
 use Illuminate\Support\Arr;
 use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
+use MyBB\Extensions\Repository;
 
 /**
  * Resolves Extension inheritance.
@@ -56,13 +57,14 @@ trait HierarchicalExtensionTrait
     /**
      * Returns the Extension and its ancestors from closest to furthest.
      *
+     * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
      */
-    public function getInheritanceChain(): array
+    public function getInheritanceChain(Repository $repository): array
     {
         if (!isset($this->inheritanceChain)) {
             $orderedNames = self::getLinearizedNodes(
-                $this->getInheritanceChainDirectDependants()
+                $this->getInheritanceChainDirectDependants($repository)
             );
 
             if ($orderedNames === null) {
@@ -72,7 +74,7 @@ trait HierarchicalExtensionTrait
             $this->inheritanceChain = array_combine(
                 $orderedNames,
                 array_map(
-                    fn (string $packageName) => static::get($packageName),
+                    fn (string $packageName) => $repository->get($packageName),
                     $orderedNames,
                 ),
             );
@@ -84,21 +86,23 @@ trait HierarchicalExtensionTrait
     /**
      * Returns ancestors from closest to furthest.
      *
+     * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
      */
-    public function getAncestors(array $dependants = []): array
+    public function getAncestors(Repository $repository): array
     {
         return Arr::except(
-            $this->getInheritanceChain(),
+            $this->getInheritanceChain($repository),
             $this->getPackageName(),
         );
     }
 
     /**
+     * @param Repository<HierarchicalExtensionInterface> $repository
      * @param string[] $dependants
      * @return array<string, HierarchicalExtensionInterface>
      */
-    public function getDescendants(array $dependants = []): array
+    public function getDescendants(Repository $repository, array $dependants = []): array
     {
         if (!isset($this->descendants)) {
             $extensions = [];
@@ -109,12 +113,12 @@ trait HierarchicalExtensionTrait
 
             $dependants[] = $this->getPackageName();
 
-            foreach ($this->getExtensionsDeclaringAsAncestor() as $packageName => $extension) {
+            foreach ($this->getExtensionsDeclaringAsAncestor($repository) as $packageName => $extension) {
                 $extensions[$packageName] = $extension;
 
                 $extensions = array_merge(
                     $extensions,
-                    $extension->getDescendants($dependants),
+                    $extension->getDescendants($repository, $dependants),
                 );
             }
 
@@ -127,14 +131,15 @@ trait HierarchicalExtensionTrait
     /**
      * Returns Extensions explicitly declaring the Extension as their ancestor.
      *
+     * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
      */
-    public function getExtensionsDeclaringAsAncestor(): array
+    public function getExtensionsDeclaringAsAncestor(Repository $repository): array
     {
         if (!isset($this->extensionsDeclaringAsAncestor)) {
             $extensions = [];
 
-            foreach (self::getAll() as $packageName => $extension) {
+            foreach ($repository->getAll() as $packageName => $extension) {
                 if (
                     array_key_exists(
                         $this->getPackageName(),
@@ -204,16 +209,17 @@ trait HierarchicalExtensionTrait
      *
      * Used to construct the final, reconciled inheritance chain.
      *
+     * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, string[]>
      */
-    private function getInheritanceChainDirectDependants(array $visited = []): array
+    private function getInheritanceChainDirectDependants(Repository $repository, array $visited = []): array
     {
         $dependants = [];
 
         $dependants[$this->getPackageName()] = [];
 
         foreach ($this->getAncestorDeclarations() as $packageName => $versionDeclaration) {
-            $extension = static::get($packageName);
+            $extension = $repository->get($packageName);
 
             if (!$extension->canInheritFrom($this)) {
                 throw new Exception('Illegal inheritance declared involving Extension `' . $packageName . '`');
@@ -226,7 +232,7 @@ trait HierarchicalExtensionTrait
 
                 $dependants = array_merge_recursive(
                     $dependants,
-                    $extension->getInheritanceChainDirectDependants($visited),
+                    $extension->getInheritanceChainDirectDependants($repository, $visited),
                 );
             }
         }
