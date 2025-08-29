@@ -6,12 +6,14 @@ namespace MyBB\Extensions;
 
 use Exception;
 use Illuminate\Support\Arr;
+use MyBB\Extensions\Traits\IntegrityTrait;
 use MyBB\Utilities\FileStamp;
 
 abstract class Extension
 {
+    use IntegrityTrait;
+
     final public const MANIFEST_FILE_PATH = 'manifest.json';
-    final public const CHECKSUMS_FILE_PATH = 'checksums';
 
     public const DEFAULT_VERSION = 'dev';
 
@@ -172,106 +174,5 @@ abstract class Extension
             $this->getManifestFilePath(),
             $type,
         );
-    }
-
-    /**
-     * @return null|array<string, string[]>
-     *
-     * @see \MyBB\Maintenance\getDeclaredFileChecksums()
-     */
-    public function getDeclaredFileChecksums(): ?array
-    {
-        if (!isset($this->declaredFileChecksums)) {
-            $declaredFiles = [];
-
-            $path = $this->getAbsolutePath() . '/' . static::CHECKSUMS_FILE_PATH;
-
-            if (!file_exists($path)) {
-                return null;
-            }
-
-            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-            if ($lines === false) {
-                throw new Exception('Could not open checksums file: ' . $path);
-            }
-
-            foreach ($lines as $line) {
-                $parts = explode(' ', $line, 2);
-
-                if (count($parts) !== 2) {
-                    continue;
-                }
-
-                $declaredChecksum = trim($parts[0]);
-                $relativePath = trim($parts[1]);
-
-                if (!isset($declaredFiles[$relativePath])) {
-                    $declaredFiles[$relativePath] = [];
-                }
-
-                $declaredFiles[$relativePath][] = $declaredChecksum;
-            }
-
-            $this->declaredFileChecksums = $declaredFiles;
-        }
-
-        return $this->declaredFileChecksums;
-    }
-
-    /**
-     * Returns a list of file checksum mismatches by type.
-     * Files not declared with checksums are ignored.
-     *
-     * @return null|array{
-     *   changed: string[],
-     *   missing: string[],
-     * }
-     *
-     * @see \MyBB\Maintenance\getFileVerificationErrors()
-     */
-    public function getFileVerificationErrors(): ?array
-    {
-        $algorithm = 'sha512';
-        $bufferLength = 8192;
-
-        $extensionAbsolutePath = $this->getAbsolutePath();
-
-        $fileChecksums = $this->getDeclaredFileChecksums();
-
-        if ($fileChecksums !== null) {
-            $results = [
-                'changed' => [],
-                'missing' => [],
-            ];
-
-            // calculate & compare checksums
-            foreach ($fileChecksums as $relativePath => $declaredChecksums) {
-                $absolutePath = $extensionAbsolutePath . $relativePath;
-
-                if (file_exists($absolutePath)) {
-                    $handle = fopen($absolutePath, 'rb');
-                    $hashingContext = hash_init($algorithm);
-
-                    while (!feof($handle)) {
-                        hash_update($hashingContext, fread($handle, $bufferLength));
-                    }
-
-                    fclose($handle);
-
-                    $localChecksum = hash_final($hashingContext);
-
-                    if (!in_array($localChecksum, $declaredChecksums, true)) {
-                        $results['changed'][] = $relativePath;
-                    }
-                } else {
-                    $results['missing'][] = $relativePath;
-                }
-            }
-
-            return $results;
-        } else {
-            return null;
-        }
     }
 }
