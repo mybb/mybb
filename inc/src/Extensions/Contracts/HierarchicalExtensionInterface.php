@@ -13,4 +13,6 @@ interface HierarchicalExtensionInterface
 {
     public function getInheritanceChain(Repository $repository): array;
     public function getAncestors(Repository $repository): array;
+    public function getDescendants(Repository $repository): array;
+    public function getExtensionsDeclaringAsAncestor(Repository $repository): array;
 }

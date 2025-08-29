@@ -18,7 +18,7 @@ class Plugin extends Extension implements ViewExtensionInterface
 {
     use ViewExtensionTrait;
 
-    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/plugins/';
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/plugins';
 
     public const REPOSITORY_CLASS = Repository::class;
 
@@ -43,10 +43,18 @@ class Plugin extends Extension implements ViewExtensionInterface
             throw new ExtensionException('Invalid Extension package name `' . $packageName . '`');
         }
 
-        $this->manifestFields['type'] = [
-            'required' => false,
-            'type' => 'string',
-            'value' => 'mybb-plugin',
+        parent::__construct($packageName, $filesystem);
+    }
+
+    protected static function getManifestFields(): array
+    {
+        return [
+            ...parent::getManifestFields(),
+            'type' => [
+                'required' => false,
+                'type' => 'string',
+                'value' => 'mybb-plugin',
+            ],
         ];
     }
 
@@ -60,6 +68,12 @@ class Plugin extends Extension implements ViewExtensionInterface
         );
     }
 
+    public function getManifest(): ?array
+    {
+        return parent::getManifest() ?? $this->getLegacyManifest();
+    }
+
+
     public function getThemeletDirectNamespace(): string
     {
         return NamespaceType::EXTENSION->getNamespaceFromIdentifier(
@@ -67,14 +81,9 @@ class Plugin extends Extension implements ViewExtensionInterface
         );
     }
 
-    public function getManifest(): ?array
-    {
-        return parent::getManifest() ?? $this->getLegacyManifest();
-    }
-
     private function getLegacyManifest(): ?array
     {
-        $absolutePath = self::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName() . '.php';
+        $absolutePath = $this->getLegacyManifestFilePath();
 
         if ($this->filesystem->isFile($absolutePath)) {
             $this->filesystem->requireOnce($absolutePath);
@@ -93,5 +102,10 @@ class Plugin extends Extension implements ViewExtensionInterface
         }
 
         return null;
+    }
+
+    private function getLegacyManifestFilePath(): string
+    {
+        return self::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . '/' . $this->getPackageName() . '.php';
     }
 }

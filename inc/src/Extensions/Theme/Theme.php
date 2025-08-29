@@ -21,7 +21,7 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
     use ViewExtensionTrait;
     use HierarchicalExtensionTrait;
 
-    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/themes/';
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/themes';
 
     public const REPOSITORY_CLASS = Repository::class;
 
@@ -40,32 +40,32 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
      */
     public function __construct(string $packageName, Filesystem $filesystem)
     {
-        parent::__construct($packageName, $filesystem);
-
         $this->type =
             ThemeType::tryFromPackageName($packageName)
-            ?? throw new ExtensionException('Invalid Extension package name `' . $packageName . '`')
-        ;
+            ?? throw new ExtensionException('Invalid Extension package name `' . $packageName . '`');
 
-        $this->manifestFields['type'] = [
-            'required' => false,
-            'type' => 'string',
-            'value' => 'mybb-theme',
-        ];
-        $this->manifestFields['extra.inherits'] = [
-            'required' => false,
-            'type' => 'array',
+        parent::__construct($packageName, $filesystem);
+    }
+
+    protected static function getManifestFields(): array
+    {
+        return [
+            ...parent::getManifestFields(),
+            'type' => [
+                'required' => false,
+                'type' => 'string',
+                'value' => 'mybb-theme',
+            ],
+            'extra.inherits' => [
+                'required' => false,
+                'type' => 'array',
+            ],
         ];
     }
 
     public function getType(): ThemeType
     {
         return $this->type;
-    }
-
-    public function getAbsolutePath(): string
-    {
-        return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName();
     }
 
     private function canInheritFrom(self $extension): bool
@@ -75,6 +75,6 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
         $ownPriority = array_search($this->getType(), $types);
         $targetPriority = array_search($extension->getType(), $types);
 
-        return $ownPriority <= $targetPriority;
+        return $targetPriority <= $ownPriority;
     }
 }

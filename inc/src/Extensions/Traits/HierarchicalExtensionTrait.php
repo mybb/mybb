@@ -38,7 +38,7 @@ trait HierarchicalExtensionTrait
     /**
      * Returns nodes sorted topologically using Kahn's algorithm.
      *
-     * @template T scalar
+     * @template T of scalar
      * @param array<T, T[]> $nodes Nodes as key, and source nodes of their incoming edges.
      * @return ?list<T>
      */
@@ -125,38 +125,13 @@ trait HierarchicalExtensionTrait
      * Returns descendants of the Extension.
      *
      * @param Repository<HierarchicalExtensionInterface> $repository
-     * @param string[] $dependants
      * @return array<string, HierarchicalExtensionInterface>
      *
      * @throws ExtensionException if the declared inheritance is invalid.
      */
-    public function getDescendants(Repository $repository, array $dependants = []): array
+    public function getDescendants(Repository $repository): array
     {
-        if (!isset($this->descendants)) {
-            $extensions = [];
-
-            if (in_array($this->getPackageName(), $dependants)) {
-                throw new ExtensionException(
-                	'Circular inheritance declared involving Extension `' . $this->getPackageName() . '`',
-                	$this,
-            	);
-            }
-
-            $dependants[] = $this->getPackageName();
-
-            foreach ($this->getExtensionsDeclaringAsAncestor($repository) as $packageName => $extension) {
-                $extensions[$packageName] = $extension;
-
-                $extensions = array_merge(
-                    $extensions,
-                    $extension->getDescendants($repository, $dependants),
-                );
-            }
-
-            $this->descendants = $extensions;
-        }
-
-        return $this->descendants;
+        return $this->getDescendantsRecursively($repository);
     }
 
     /**
@@ -207,12 +182,14 @@ trait HierarchicalExtensionTrait
             isset($manifest['extra']['inherits']) &&
             is_array($manifest['extra']['inherits'])
         ) {
+            $isList = array_is_list($manifest['extra']['inherits']);
+
             foreach ($manifest['extra']['inherits'] as $key => $value) {
                 if (!is_string($value)) {
                     throw new ExtensionException('Invalid ancestor declaration', $this);
                 }
 
-                if (is_int($key)) {
+                if (is_int($key) && $isList) {
                     $packageName = $value;
                     $versionDeclaration = null;
                 } elseif (is_string($key)) {
@@ -234,6 +211,44 @@ trait HierarchicalExtensionTrait
         }
 
         return $declarations;
+    }
+
+    /**
+     * Returns descendants of the Extension.
+     *
+     * @param Repository<HierarchicalExtensionInterface> $repository
+     * @param string[] $dependants
+     * @return array<string, HierarchicalExtensionInterface>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
+     */
+    private function getDescendantsRecursively(Repository $repository, array $dependants = []): array
+    {
+        if (!isset($this->descendants)) {
+            $extensions = [];
+
+            if (in_array($this->getPackageName(), $dependants)) {
+                throw new ExtensionException(
+                    'Circular inheritance declared involving Extension `' . $this->getPackageName() . '`',
+                    $this,
+                );
+            }
+
+            $dependants[] = $this->getPackageName();
+
+            foreach ($this->getExtensionsDeclaringAsAncestor($repository) as $packageName => $extension) {
+                $extensions[$packageName] = $extension;
+
+                $extensions = array_merge(
+                    $extensions,
+                    $extension->getDescendantsRecursively($repository, $dependants),
+                );
+            }
+
+            $this->descendants = $extensions;
+        }
+
+        return $this->descendants;
     }
 
     /**
@@ -264,7 +279,14 @@ trait HierarchicalExtensionTrait
         foreach ($this->getAncestorDeclarations() as $packageName => $versionDeclaration) {
             $extension = $repository->get($packageName);
 
-            if (!$extension->canInheritFrom($this)) {
+            if (!$extension->exists()) {
+                throw new ExtensionException(
+                    'Missing ancestor Extension `' . $packageName . '`',
+                    $this,
+                );
+            }
+
+            if (!$this->canInheritFrom($extension)) {
                 throw new ExtensionException(
                     'Illegal inheritance declared involving Extension `' . $packageName . '`',
                     $this,

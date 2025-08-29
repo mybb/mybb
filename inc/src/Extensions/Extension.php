@@ -25,23 +25,15 @@ abstract class Extension
      */
     final public const MANIFEST_FILE_PATH = 'manifest.json';
 
+    /**
+     * The absolute path to the directory containing Extension packages of the type.
+     */
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = '';
 
     /**
      * The value used when no version is specified in the manifest.
      */
     public const DEFAULT_VERSION = 'dev';
-
-
-    /**
-     * Definitions and validation of manifest fields.
-     *
-     * @var array<string, array{
-     *   required: bool,
-     *   type: string,
-     *   value?: scalar|callable,
-     * }>
-     */
-    protected array $manifestFields = [];
 
     /**
      * The validated manifest data.
@@ -50,31 +42,37 @@ abstract class Extension
      */
     protected array $manifest;
 
-    protected array $declaredFileChecksums;
-
-    private FileStamp $manifestStamp;
+    protected FileStamp $manifestStamp;
 
     /**
      * The version from the manifest, or the default version if not set.
      */
-    private readonly string $version;
-
-    public static function codenameValid(string $value): bool
-    {
-        return preg_match('/[a-z_]+/', $value) === 1;
-    }
+    protected readonly string $version;
 
     public function __construct(
         protected readonly string $packageName,
         protected readonly Filesystem $filesystem,
-        ?string $version = null,
-    )
-    {
-        if ($version !== null) {
-            $this->version = $version;
-        }
+    ) {}
 
-        $this->manifestFields = [
+    public static function codenameValid(string $value): bool
+    {
+        return preg_match('/^[a-z_]+$/', $value) === 1;
+    }
+
+    /**
+     * Definitions and validation of manifest fields.
+     *
+     * @return array<string, array{
+     *   required: bool,
+     *   type: string,
+     *   value?: scalar|callable,
+     * }>
+     *
+     * @note https://wiki.php.net/rfc/closures_in_const_expr
+     */
+    protected static function getManifestFields(): array
+    {
+        return [
             'version' => [
                 'required' => false,
                 'type' => 'string',
@@ -98,7 +96,7 @@ abstract class Extension
      */
     public function getAbsolutePath(): string
     {
-        return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName();
+        return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . '/' . $this->getPackageName();
     }
 
     /**
@@ -174,7 +172,7 @@ abstract class Extension
      */
     public function validateManifestValues(array $values): void
     {
-        foreach ($this->manifestFields as $name => $field) {
+        foreach (static::getManifestFields() as $name => $field) {
             $error = null;
 
             if (Arr::has($values, $name)) {
@@ -210,6 +208,10 @@ abstract class Extension
      */
     public function getManifestStamp(): ?array
     {
+        if (!isset($this->manifestStamp)) {
+            $this->getManifest();
+        }
+
         return $this->manifestStamp->getStamp();
     }
 
