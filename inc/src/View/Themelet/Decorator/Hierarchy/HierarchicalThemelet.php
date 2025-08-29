@@ -194,20 +194,12 @@ class HierarchicalThemelet extends ThemeletDecorator
 
     private function ancestorsStampValid(array $stamp): bool
     {
-        $extensions = $this->getExtension()->getInheritanceChain($this->extensionRepository);
+        foreach ($stamp as $packageName => $manifestStamp) {
+            $extension = $this->extensionRepository->get($packageName);
 
-        if (count($stamp) !== count($extensions)) {
-            return false;
-        }
-
-        if (array_keys($extensions) !== array_keys($stamp)) {
-            return false;
-        }
-
-        foreach ($extensions as $packageName => $extension) {
             if (
                 !$extension->manifestStampValid(
-                    $stamp[$packageName],
+                    $manifestStamp,
                     $this->inheritanceManagedValueValidationType,
                 )
             ) {
