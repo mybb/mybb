@@ -14,8 +14,25 @@ use MyBB\Extensions\Repository;
  */
 trait HierarchicalExtensionTrait
 {
+    /**
+     * The Extension and its ancestors from closest to furthest.
+     *
+     * @var array<string, HierarchicalExtensionInterface>
+     */
     private array $inheritanceChain;
+
+    /**
+     * Descendants of the Extension.
+     *
+     * @var array<string, HierarchicalExtensionInterface>
+     */
     private array $descendants;
+
+    /**
+     * Extensions explicitly declaring the Extension as their ancestor.
+     *
+     * @var array<string, HierarchicalExtensionInterface>
+     */
     private array $extensionsDeclaringAsAncestor;
 
     /**
@@ -98,6 +115,8 @@ trait HierarchicalExtensionTrait
     }
 
     /**
+     * Returns descendants of the Extension.
+     *
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @param string[] $dependants
      * @return array<string, HierarchicalExtensionInterface>
@@ -198,6 +217,9 @@ trait HierarchicalExtensionTrait
         return $declarations;
     }
 
+    /**
+     * Whether the given Extension can be an ancestor of this Extension.
+     */
     private function canInheritFrom(self $extension): bool
     {
         return true;

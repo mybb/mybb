@@ -7,15 +7,20 @@ namespace MyBB\Extensions\Contracts;
 use MyBB\View\NamespaceType;
 use MyBB\View\Themelet\Themelet;
 
+/**
+ * An Extension that may supply its own Themelet.
+ */
 interface ViewExtensionInterface
 {
     /**
+     * The types of namespaces the Extension's Themelet can contain.
+     *
      * @var NamespaceType[]
      */
     public const NAMESPACE_TYPE_ACCESS = [];
 
     /**
-     * Resources are located directly in the Themelet directory,
+     * Whether Resources are located directly in the Themelet directory,
      * and assigned to an implied namespace.
      *
      * @see self::getThemeletDirectNamespace()

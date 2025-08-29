@@ -11,6 +11,9 @@ use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
 use MyBB\View\NamespaceType;
 
+/**
+ * An Extension with custom executable code.
+ */
 class Plugin extends Extension implements ViewExtensionInterface
 {
     use ViewExtensionTrait;

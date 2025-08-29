@@ -19,8 +19,15 @@ abstract class Extension
      */
     public const REPOSITORY_CLASS = Repository::class;
 
+    /**
+     * The path to the manifest file, relative to the Extension's package directory.
+     */
     final public const MANIFEST_FILE_PATH = 'manifest.json';
 
+
+    /**
+     * The value used when no version is specified in the manifest.
+     */
     public const DEFAULT_VERSION = 'dev';
 
 
@@ -35,11 +42,20 @@ abstract class Extension
      */
     protected array $manifestFields = [];
 
+    /**
+     * The validated manifest data.
+     *
+     * @var array<string, mixed>
+     */
     protected array $manifest;
+
     protected array $declaredFileChecksums;
 
     private FileStamp $manifestStamp;
 
+    /**
+     * The version from the manifest, or the default version if not set.
+     */
     private readonly string $version;
 
     public static function codenameValid(string $value): bool
@@ -76,22 +92,34 @@ abstract class Extension
         );
     }
 
+    /**
+     * Returns the absolute path to the Extension's package directory.
+     */
     public function getAbsolutePath(): string
     {
         return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName();
     }
 
+    /**
+     * Returns the filesystem identifier of the Extension's package.
+     */
     public function getPackageName(): string
     {
         return $this->packageName;
     }
 
+    /**
+     * Returns the version from the manifest, or the default version if not set.
+     */
     public function getVersion(): string
     {
         return $this->version ??=
             $this->getManifest()['version'] ?? self::DEFAULT_VERSION;
     }
 
+    /**
+     * @return ?array<string, mixed> The validated manifest data.
+     */
     public function getManifest(): ?array
     {
         if (!isset($this->manifest)) {
@@ -120,6 +148,9 @@ abstract class Extension
         return $this->manifest;
     }
 
+    /**
+     * Returns the path to the Extension's manifest file.
+     */
     public function getManifestFilePath(): string
     {
         return $this->getAbsolutePath() . '/' . static::MANIFEST_FILE_PATH;

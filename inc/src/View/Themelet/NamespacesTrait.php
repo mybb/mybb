@@ -12,6 +12,8 @@ use SplFileInfo;
 trait NamespacesTrait
 {
     /**
+     * The types of namespaces the Themelet can contain.
+     *
      * @var NamespaceType[]
      */
     private array $namespaceTypeAccess = [];

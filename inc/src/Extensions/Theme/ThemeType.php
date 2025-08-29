@@ -9,8 +9,19 @@ use MyBB\Extensions\Extension;
 
 enum ThemeType
 {
+    /**
+     * A part of the application.
+     */
     case CORE;
+
+    /**
+     * A distributable Extension Package.
+     */
     case ORIGINAL;
+
+    /**
+     * A local Theme.
+     */
     case BOARD;
 
     public static function tryFromPackageName(string $value): ?self

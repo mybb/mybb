@@ -13,6 +13,9 @@ use MyBB\Extensions\Traits\HierarchicalExtensionTrait;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
 use MyBB\View\NamespaceType;
 
+/**
+ * An Extension customizing the GUI.
+ */
 class Theme extends Extension implements ViewExtensionInterface, HierarchicalExtensionInterface
 {
     use ViewExtensionTrait;
