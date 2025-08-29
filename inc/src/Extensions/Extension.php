@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions;
 
-use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use JsonException;
+use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Traits\IntegrityTrait;
 use MyBB\Utilities\FileStamp;
 
@@ -110,6 +111,8 @@ abstract class Extension
 
     /**
      * Returns the version from the manifest, or the default version if not set.
+     *
+     * @throws ExtensionException if the manifest is not valid.
      */
     public function getVersion(): string
     {
@@ -119,6 +122,8 @@ abstract class Extension
 
     /**
      * @return ?array<string, mixed> The validated manifest data.
+     *
+     * @throws ExtensionException if the manifest is not valid.
      */
     public function getManifest(): ?array
     {
@@ -130,10 +135,18 @@ abstract class Extension
 
                 $this->manifestStamp = FileStamp::fromFile($path, $content);
 
-                $values = json_decode(
-                    $content,
-                    flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
-                );
+                try {
+                    $values = json_decode(
+                        $content,
+                        flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
+                    );
+                } catch (JsonException $e) {
+                    throw new ExtensionException(
+                        'Invalid manifest JSON',
+                        $this,
+                        previous: $e,
+                    );
+                }
 
                 $this->validateManifestValues($values);
 
@@ -156,6 +169,9 @@ abstract class Extension
         return $this->getAbsolutePath() . '/' . static::MANIFEST_FILE_PATH;
     }
 
+    /**
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function validateManifestValues(array $values): void
     {
         foreach ($this->manifestFields as $name => $field) {
@@ -181,11 +197,17 @@ abstract class Extension
             }
 
             if ($error) {
-                throw new Exception('Package `' . $this->getPackageName() . '` manifest field `' . $name . '` ' . $error);
+                throw new ExtensionException(
+                    'Manifest field `' . $name . '` ' . $error,
+                    $this,
+                );
             }
         }
     }
 
+    /**
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function getManifestStamp(): ?array
     {
         return $this->manifestStamp->getStamp();

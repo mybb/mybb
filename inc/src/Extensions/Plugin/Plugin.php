@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions\Plugin;
 
-use Exception;
 use Illuminate\Filesystem\Filesystem;
 use MyBB\Extensions\Contracts\ViewExtensionInterface;
+use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
 use MyBB\View\NamespaceType;
@@ -31,12 +31,16 @@ class Plugin extends Extension implements ViewExtensionInterface
 
     public const THEMELET_DIRECT_NAMESPACE = true;
 
+
+    /**
+     * @throws ExtensionException if the Extension package name is invalid.
+     */
     public function __construct(string $packageName, Filesystem $filesystem)
     {
         parent::__construct($packageName, $filesystem);
 
         if (!self::codenameValid($packageName)) {
-            throw new Exception('Invalid Extension package name `' . $packageName . '`');
+            throw new ExtensionException('Invalid Extension package name `' . $packageName . '`');
         }
 
         $this->manifestFields['type'] = [

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions\Traits;
 
-use Exception;
 use Illuminate\Support\Arr;
 use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
+use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Repository;
 
 /**
@@ -76,6 +76,8 @@ trait HierarchicalExtensionTrait
      *
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     public function getInheritanceChain(Repository $repository): array
     {
@@ -85,7 +87,10 @@ trait HierarchicalExtensionTrait
             );
 
             if ($orderedNames === null) {
-                throw new Exception('Circular inheritance declared involving Extension `' . $this->getPackageName() . '`');
+                throw new ExtensionException(
+                    'Circular inheritance declared involving Extension `' . $this->getPackageName() . '`',
+                    $this,
+                );
             }
 
             $this->inheritanceChain = array_combine(
@@ -105,6 +110,8 @@ trait HierarchicalExtensionTrait
      *
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     public function getAncestors(Repository $repository): array
     {
@@ -120,6 +127,8 @@ trait HierarchicalExtensionTrait
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @param string[] $dependants
      * @return array<string, HierarchicalExtensionInterface>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     public function getDescendants(Repository $repository, array $dependants = []): array
     {
@@ -127,7 +136,10 @@ trait HierarchicalExtensionTrait
             $extensions = [];
 
             if (in_array($this->getPackageName(), $dependants)) {
-                throw new Exception('Circular inheritance declared involving Extension `' . $this->getPackageName() . '`');
+                throw new ExtensionException(
+                	'Circular inheritance declared involving Extension `' . $this->getPackageName() . '`',
+                	$this,
+            	);
             }
 
             $dependants[] = $this->getPackageName();
@@ -152,6 +164,8 @@ trait HierarchicalExtensionTrait
      *
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, HierarchicalExtensionInterface>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     public function getExtensionsDeclaringAsAncestor(Repository $repository): array
     {
@@ -179,6 +193,8 @@ trait HierarchicalExtensionTrait
      * Returns declared package names as keys, and version strings as values.
      *
      * @return array<string, ?string>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     private function getAncestorDeclarations(): array
     {
@@ -193,7 +209,7 @@ trait HierarchicalExtensionTrait
         ) {
             foreach ($manifest['extra']['inherits'] as $key => $value) {
                 if (!is_string($value)) {
-                    throw new Exception('Invalid ancestor declaration for `' . $this->getPackageName() . '`');
+                    throw new ExtensionException('Invalid ancestor declaration', $this);
                 }
 
                 if (is_int($key)) {
@@ -203,11 +219,14 @@ trait HierarchicalExtensionTrait
                     $packageName = $key;
                     $versionDeclaration = $value;
                 } else {
-                    throw new Exception('Invalid ancestor declaration for `' . $this->getPackageName() . '`');
+                    throw new ExtensionException('Invalid ancestor declaration', $this);
                 }
 
                 if (array_key_exists($packageName, $declarations)) {
-                    throw new Exception('Duplicate inheritance declared involving Extension `' . $packageName . '`');
+                    throw new ExtensionException(
+                        'Duplicate inheritance declared involving Extension `' . $packageName . '`',
+                        $this,
+                    );
                 }
 
                 $declarations[$packageName] = $versionDeclaration;
@@ -233,6 +252,8 @@ trait HierarchicalExtensionTrait
      *
      * @param Repository<HierarchicalExtensionInterface> $repository
      * @return array<string, string[]>
+     *
+     * @throws ExtensionException if the declared inheritance is invalid.
      */
     private function getInheritanceChainDirectDependants(Repository $repository, array $visited = []): array
     {
@@ -244,7 +265,10 @@ trait HierarchicalExtensionTrait
             $extension = $repository->get($packageName);
 
             if (!$extension->canInheritFrom($this)) {
-                throw new Exception('Illegal inheritance declared involving Extension `' . $packageName . '`');
+                throw new ExtensionException(
+                    'Illegal inheritance declared involving Extension `' . $packageName . '`',
+                    $this,
+                );
             }
 
             if (!in_array($packageName, $visited)) {

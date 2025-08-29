@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions\Theme;
 
-use Exception;
 use Illuminate\Filesystem\Filesystem;
 use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
 use MyBB\Extensions\Contracts\ViewExtensionInterface;
+use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\HierarchicalExtensionTrait;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
@@ -35,13 +35,16 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
 
     private readonly ThemeType $type;
 
+    /**
+     * @throws ExtensionException if the Extension package name is invalid.
+     */
     public function __construct(string $packageName, Filesystem $filesystem)
     {
         parent::__construct($packageName, $filesystem);
 
         $this->type =
             ThemeType::tryFromPackageName($packageName)
-            ?? throw new Exception('Invalid Extension package name `' . $packageName . '`')
+            ?? throw new ExtensionException('Invalid Extension package name `' . $packageName . '`')
         ;
 
         $this->manifestFields['type'] = [
