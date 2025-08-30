@@ -127,12 +127,7 @@ class ThemeletAsset extends Asset
     {
         $path = $this->getAbsolutePath();
 
-        if (
-            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php', true)
-        ) {
-            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), recursive: true);
@@ -166,12 +161,7 @@ class ThemeletAsset extends Asset
     {
         $path = $this->getAbsolutePath();
 
-        if (
-            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php', true)
-        ) {
-            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         return unlink($path);
     }
@@ -179,5 +169,15 @@ class ThemeletAsset extends Asset
     protected function getEntityNamespace(): string
     {
         return $this->getNamespace();
+    }
+
+    protected function validateWritePath(string $path): void
+    {
+        if (
+            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
+            Path::hasExtension($path, 'php', true)
+        ) {
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
+        }
     }
 }
