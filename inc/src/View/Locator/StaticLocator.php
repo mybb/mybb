@@ -76,10 +76,10 @@ class StaticLocator extends Locator
 
     public static function isStaticLocator(string $locator): bool
     {
-        return self::isExplicitDirectoryPath($locator) || self::isRemoteLocator($locator);
+        return self::isExplicitDirectoryPath($locator) || self::isRemotePath($locator);
     }
 
-    private static function isRemoteLocator(string $locator): bool
+    private static function isRemotePath(string $locator): bool
     {
         return (
             str_starts_with($locator, self::URI_AUTHORITY_PREFIX) || // network-path / scheme-relative URI
@@ -107,7 +107,7 @@ class StaticLocator extends Locator
     private static function isImplicitCurrentDirectoryRelativePath(string $locator): bool
     {
         return (
-            !self::isRemoteLocator($locator) &&
+            !self::isRemotePath($locator) &&
             !self::isExplicitDirectoryPath($locator)
         );
     }
@@ -151,7 +151,7 @@ class StaticLocator extends Locator
 
     public function isRemote(): bool
     {
-        return self::isRemoteLocator(
+        return self::isRemotePath(
             $this->getPath()
         );
     }
