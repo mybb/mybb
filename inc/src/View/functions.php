@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use MyBB\Stopwatch\Stopwatch;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ThemeletLocator;
@@ -23,6 +24,8 @@ const DEFAULT_THEME_PACKAGE = 'core.base';
  * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$locator` if not provided.
  * @param array $attributes Extra attributes to add to the HTML tag.
  * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
+ *
+ * @throws LocatorException|Exception
  *
  * @api
  */
@@ -91,6 +94,8 @@ function asset(
  * @param bool $useCdn Whether to use the configured CDN options.
  *
  * @return string The complete URL to the asset.
+ *
+ * @throws LocatorException
  *
  * @api
  */

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\View\Runtime;
 
-use Exception;
 use MyBB\View\Asset\Asset;
+use MyBB\View\Exception as ViewException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
@@ -128,6 +128,8 @@ trait AssetManagementTrait
      * Replaces placeholders with Asset tags yet to be inserted into the DOM.
      *
      * Used for Assets declared after the template with the placeholder was rendered.
+     *
+     * @throws ViewException
      */
     public function insertDeferredAttachedAssets(string $contents): string
     {
@@ -155,6 +157,8 @@ trait AssetManagementTrait
      * Returns Assets of the given Type for managed insertion into the DOM.
      *
      * @param bool $inserting Get assets not yet inserted, and declare them as such.
+     *
+     * @throws ViewException
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
     {
@@ -183,6 +187,8 @@ trait AssetManagementTrait
 
     /**
      * Adds Assets for managed insertion into the DOM from Themelet declarations.
+     *
+     * @throws ViewException
      */
     public function populateAttachedAssetsFromThemelet(): void
     {
@@ -198,7 +204,7 @@ trait AssetManagementTrait
      *
      * @param string[] $dependentAncestors Identifiers of dependent Assets passed in recursive calls.
      *
-     * @throws Exception if the given Asset cannot be attached.
+     * @throws ViewException if the given Asset cannot be attached.
      */
     public function attachAsset(
         Locator $locator,
@@ -219,11 +225,11 @@ trait AssetManagementTrait
 
 
         if ($type === null) {
-            throw new Exception('Unknown Asset type (`' . $locatorString . '`)');
+            throw new ViewException('Unknown Asset type (`' . $locatorString . '`)');
         }
 
         if (!in_array($type, static::ATTACHABLE_TYPES)) {
-            throw new Exception('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+            throw new ViewException('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
         }
 
 
@@ -240,7 +246,7 @@ trait AssetManagementTrait
     /**
      * Returns the HTML to insert the Asset into the DOM, and sets it as inserted.
      *
-     * @throws Exception if the given Asset cannot be inserted.
+     * @throws ViewException if the given Asset cannot be inserted.
      */
     public function getAssetForInsertion(
         Locator $locator,
@@ -260,11 +266,11 @@ trait AssetManagementTrait
 
 
         if ($type === null) {
-            throw new Exception('Unknown Asset type (`' . $locatorString . '`)');
+            throw new ViewException('Unknown Asset type (`' . $locatorString . '`)');
         }
 
         if (!in_array($type, static::INSERTABLE_TYPES)) {
-            throw new Exception('Cannot insert Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+            throw new ViewException('Cannot insert Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
         }
 
 
@@ -282,6 +288,8 @@ trait AssetManagementTrait
      * Adds the given Asset and its dependencies for managed insertion the DOM (if not already present).
      *
      * @param string[] $dependentAncestors Identifiers of dependent Assets passed in recursive calls.
+     *
+     * @throws ViewException if dependencies cannot be resolved.
      */
     private function attachAssetWithDependencies(Asset $asset, array $dependentAncestors = []): void
     {
@@ -292,7 +300,7 @@ trait AssetManagementTrait
         }
 
         if (in_array($locatorString, $dependentAncestors)) {
-            throw new Exception('Circular dependency declared for Asset `' . $locatorString . '`');
+            throw new ViewException('Circular dependency declared for Asset `' . $locatorString . '`');
         }
 
 
@@ -373,17 +381,19 @@ trait AssetManagementTrait
 
     /**
      * Returns the HTML to insert the Asset into the DOM.
+     *
+     * @throws ViewException
      */
     private function getAssetHtml(Asset $asset): string
     {
         $type = $asset->getType();
 
         if ($type === null) {
-            throw new Exception('Unknown Asset type (`' . $asset->getLocator()->getString() . '`)');
+            throw new ViewException('Unknown Asset type (`' . $asset->getLocator()->getString() . '`)');
         }
 
         if (!in_array($type, self::INSERTABLE_TYPES)) {
-            throw new Exception('Cannot insert Asset of type `' . $type->value . '` (`' . $asset->getLocator()->getString() . '`)');
+            throw new ViewException('Cannot insert Asset of type `' . $type->value . '` (`' . $asset->getLocator()->getString() . '`)');
         }
 
         return template(
