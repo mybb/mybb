@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Locator;
 
-use Exception;
-use InvalidArgumentException;
 use MyBB\View\ResourceType;
 
 /**
@@ -42,6 +40,8 @@ class ThemeletLocator extends Locator
      *   type?: ?ResourceType,
      *   namespace?: ?string,
      * } $context
+     *
+     * @throws Exception
      */
     public static function fromString(string $string, array $directives = [], array $context = []): static
     {
@@ -62,6 +62,9 @@ class ThemeletLocator extends Locator
         return $locator;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fromResourceContextString(string $string, ResourceType $type, ?string $contextNamespace): static
     {
         return static::fromString(
@@ -118,6 +121,8 @@ class ThemeletLocator extends Locator
      *   group: ?string,
      *   filename: ?string,
      * }
+     *
+     * @throws Exception
      */
     public static function decomposeString(string $string): array
     {
@@ -132,7 +137,7 @@ class ThemeletLocator extends Locator
             \DIRECTORY_SEPARATOR !== self::DIRECTORY_SEPARATOR &&
             str_contains($string, '\\')
         ) {
-            throw new InvalidArgumentException('Cannot use non-normalized backslash `\` in Locator: `' . $string . '`');
+            throw new Exception('Cannot use non-normalized backslash `\` in Locator: `' . $string . '`');
         }
 
         $offset = 0;
@@ -200,6 +205,8 @@ class ThemeletLocator extends Locator
      *   type?: self::COMPONENT_*,
      *   namespace?: self::COMPONENT_*,
      * } $directives
+     *
+     * @throws Exception
      */
     private static function validate(array $components, array $context, array $directives): void
     {
@@ -229,6 +236,8 @@ class ThemeletLocator extends Locator
      *   namespace: ?string,
      *   type: ?ResourceType,
      * } $context
+     *
+     * @throws Exception
      */
     public function getString(array $directives = [], array $context = []): string
     {
@@ -269,6 +278,9 @@ class ThemeletLocator extends Locator
         return self::composeString($components);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getNamespaceRelativeIdentifier(): string
     {
         return $this->getString([
@@ -311,6 +323,8 @@ class ThemeletLocator extends Locator
 
     /**
      * Returns a Locator used for Resources and Assets with shared context.
+     *
+     * @throws Exception
      */
     public function getSibling(string $subPath): static
     {

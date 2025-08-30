@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\Tests\Unit\View;
 
-use Exception;
 use MyBB\View\Locator\Locator;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
@@ -80,14 +80,14 @@ final class LocatorTest extends TestCase
 
     /**
      * @param class-string<Locator> $class
-     * @param class-string<Exception> $expectedException
+     * @param class-string<LocatorException> $expectedException
      */
     #[TestWith([
         StaticLocator::class,
         [
             'path' => null,
         ],
-        Exception::class,
+        LocatorException::class,
     ])]
     public function testComposeStringException(string $class, array $components, string $expectedException): void
     {
@@ -403,7 +403,7 @@ final class LocatorTest extends TestCase
         array $directives,
         array $context = [],
     ): void {
-        self::expectException(Exception::class);
+        self::expectException(LocatorException::class);
 
         ThemeletLocator::fromString($string, $directives, $context);
     }
@@ -497,7 +497,7 @@ final class LocatorTest extends TestCase
     #[DataProvider('getStringExceptionCases')]
     public function testGetStringException(Locator $locator, array $directives, array $context = []): void
     {
-        self::expectException(Exception::class);
+        self::expectException(LocatorException::class);
 
         $locator->getString($directives, $context);
     }

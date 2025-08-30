@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Locator;
 
-use Exception;
-
 /**
  * A reference to an Asset with a static path (outside any Themelet structure).
  */
@@ -44,6 +42,8 @@ class StaticLocator extends Locator
      * @param array{
      *   path?: ?string,
      * } $components
+     *
+     * @throws Exception if required components are missing.
      */
     public static function composeString(array $components): string
     {
@@ -112,6 +112,9 @@ class StaticLocator extends Locator
         );
     }
 
+    /**
+     * @throws Exception if required components are missing.
+ */
     public function getString(array $directives = [], array $context = []): string
     {
         $information = [];
@@ -125,6 +128,9 @@ class StaticLocator extends Locator
         return self::composeString($information);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getNamespaceRelativeIdentifier(): string
     {
         // no transformations needed for Static Locators
