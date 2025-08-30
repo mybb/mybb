@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Tests\Unit\View;
+namespace MyBB\Tests\Unit\View\Locator;
 
-use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\Exception as LocatorException;
+use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
