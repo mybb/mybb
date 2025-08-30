@@ -12,6 +12,7 @@ use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\ThemeletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 readonly class Resource implements CargoEntityInterface
 {
@@ -57,9 +58,9 @@ readonly class Resource implements CargoEntityInterface
                 $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path
             ) ||
-            Path::hasExtension($path, 'php')
+            Path::hasExtension($path, 'php', true)
         ) {
-            throw new Exception('Illegal write path `' . $path . '`');
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
         }
 
         if (!is_dir(dirname($path))) {
@@ -99,9 +100,9 @@ readonly class Resource implements CargoEntityInterface
                 $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path,
             ) ||
-            Path::hasExtension($path, 'php')
+            Path::hasExtension($path, 'php', true)
         ) {
-            throw new Exception('Illegal write path `' . $path . '`');
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
         }
 
         if (!unlink($path)) {

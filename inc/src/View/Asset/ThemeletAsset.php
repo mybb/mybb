@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Asset;
 
-use Exception;
 use InvalidArgumentException;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -13,6 +12,7 @@ use MyBB\View\Themelet\Decorator\PublishableThemelet;
 use MyBB\View\Themelet\ThemeletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 /**
  * An Asset created from a Themelet Resource.
@@ -129,9 +129,9 @@ class ThemeletAsset extends Asset
 
         if (
             !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php')
+            Path::hasExtension($path, 'php', true)
         ) {
-            throw new Exception('Illegal write path `' . $path . '`');
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
         }
 
         if (!is_dir(dirname($path))) {
@@ -168,9 +168,9 @@ class ThemeletAsset extends Asset
 
         if (
             !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php')
+            Path::hasExtension($path, 'php', true)
         ) {
-            throw new Exception('Illegal write path `' . $path . '`');
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
         }
 
         return unlink($path);
