@@ -368,7 +368,7 @@ function check_admin_permissions($action, $error = true)
 			{
 				$page->output_header($lang->access_denied);
 				$page->add_breadcrumb_item($lang->access_denied, "index.php?module=home-index");
-				$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
+				$page->output_error("<strong>{$lang->access_denied}</strong><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
 				$page->output_footer();
 				exit;
 			}
