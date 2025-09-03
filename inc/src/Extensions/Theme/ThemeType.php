@@ -2,14 +2,26 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Extensions;
+namespace MyBB\Extensions\Theme;
 
 use InvalidArgumentException;
+use MyBB\Extensions\Extension;
 
 enum ThemeType
 {
+    /**
+     * A part of the application.
+     */
     case CORE;
+
+    /**
+     * A distributable Extension Package.
+     */
     case ORIGINAL;
+
+    /**
+     * A local Theme.
+     */
     case BOARD;
 
     public static function tryFromPackageName(string $value): ?self

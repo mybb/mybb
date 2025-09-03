@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace MyBB\View\Runtime;
 
 use MyBB;
-use MyBB\Extensions\Plugin;
-use MyBB\Extensions\Theme;
+use MyBB\Extensions\Plugin\Repository as PluginRepository;
+use MyBB\Extensions\Theme\Repository as ThemeRepository;
+use MyBB\Extensions\Theme\Theme;
 use MyBB\View\Optimization;
 use MyBB\View\Themelet\Decorator\CompositeThemelet;
 use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
@@ -29,6 +30,8 @@ class Runtime
     public function __construct(
         private readonly MyBB $mybb,
         private readonly Theme $theme,
+        private readonly ThemeRepository $themeRepository,
+        private readonly PluginRepository $pluginRepository,
         private readonly Optimization $optimization,
     )
     {
@@ -47,12 +50,10 @@ class Runtime
         $themelet = $this->theme->getThemelet();
 
         // HierarchicalThemelet
-
-        $themelet = ThemeletDecorator::decorate(
+        $themelet = new HierarchicalThemelet(
             $themelet,
-            [
-                HierarchicalThemelet::class,
-            ],
+            $this->themeRepository,
+            $this->optimization,
         );
 
         $pluginThemelets = $this->getPluginThemelets();
@@ -86,7 +87,7 @@ class Runtime
     private function getPluginThemelets(): array
     {
         return array_map(
-            fn (string $codename) => Plugin::get($codename)->getThemelet(),
+            fn (string $codename) => $this->pluginRepository->get($codename)->getThemelet(),
             $this->mybb->cache?->read('plugins')['active'] ?? [],
         );
     }

@@ -8,18 +8,41 @@ use BadMethodCallException;
 use Illuminate\Support\Arr;
 use LogicException;
 use MyBB\Cargo\EntityInterface;
-use MyBB\Cargo\FileRepositoryInterface;
+use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 
+/**
+ * An inheritance-aware Cargo Repository.
+ *
+ * Provides resolution of entities to Repositories, merging of properties,
+ *   and hierarchy information according to inheritance declarations.
+ */
 abstract class HierarchicalRepository extends RepositoryDecorator implements RepositoryInterface
 {
+    /**
+     * Names of properties to exclude from the resolved list.
+     */
     protected const NON_INHERITABLE_PROPERTIES = [
         Repository::ANCESTOR_DECLARATIONS_KEY,
     ];
 
+    /**
+     * Properties combined according to inheritance logic.
+     *
+     * @var ManagedValue<array{
+     *   shared: array,
+     *   entity: array<string, array>,
+     * }>
+     */
     public ManagedValue $resolvedProperties;
+
+    /**
+     * A mapping of entity keys to their effective Repositories.
+     *
+     * @var ManagedValue<array<string, RepositoryInterface>>
+     */
     public ManagedValue $resolvedRepositories;
 
     public function __construct()
@@ -96,8 +119,8 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function getAll(...$args): array
     {
-        if (!($this->getDecorated() instanceof FileRepositoryInterface)) {
-            throw new BadMethodCallException('`' . __FUNCTION__ . '()` can only be used on decorated Repositories implementing `' . FileRepositoryInterface::class . '`');
+        if (!($this->getDecorated() instanceof StoreRepositoryInterface)) {
+            throw new BadMethodCallException('`' . __FUNCTION__ . '()` can only be used on decorated Repositories implementing `' . StoreRepositoryInterface::class . '`');
         }
 
         $results = [];
@@ -108,7 +131,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
 
             foreach ($entities as $key => $entity) {
                 if (!in_array($key, $disinherited)) {
-                    $results[$key] ??= $this->get($key); // use own decorated method
+                    $results[$key] ??= $this->get($key);
                 }
             }
 
@@ -121,6 +144,9 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         return $results;
     }
 
+    /**
+     * Returns the effective entity.
+     */
     public function getResolved(string $key): ?EntityInterface
     {
         return $this->getResolvedRepository($key)?->get($key);
@@ -212,12 +238,17 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         ;
     }
 
+    /**
+     * Returns the closest Repository in the inheritance chain, excluding own Repository, that contains the entity.
+     */
     public function getClosestEntityAncestorRepository(string $key): ?RepositoryInterface
     {
         return $this->getEntityAncestorRepositories($key)?->current();
     }
 
     /**
+     * Returns Repositories in the inheritance chain, excluding own Repository, that contain the entity.
+     *
      * @return iterable<RepositoryInterface>
      */
     public function getEntityAncestorRepositories(string $key): iterable
@@ -236,11 +267,19 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         }
     }
 
+    /**
+     * Returns the concrete, non-inheritance-aware Repository.
+     */
     public function getOwnRepository(): RepositoryInterface
     {
         return $this->getDecorated();
     }
 
+    /**
+     * Returns shared and entity properties combined according to inheritance logic.
+     *
+     * @param-out array $stamp A stamp used for cache validation.
+     */
     protected function buildResolvedProperties(&$stamp = []): array
     {
         $results = [
@@ -280,6 +319,13 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         return $results;
     }
 
+    /**
+     * Returns a mapping of entity keys to their effective Repositories.
+     *
+     * @param-out array $stamp A stamp used for cache validation.
+     *
+     * @return array<string, RepositoryInterface>
+     */
     protected function buildResolvedRepositories(&$stamp = []): array
     {
         $results = [];
@@ -295,14 +341,14 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
         return $results;
     }
 
+    /**
+     * Returns the resulting set of properties assigned the same entity key.
+     */
     protected function getMergedProperties(array $old, array $new): array
     {
         return $this->getDecorated()::getMergedProperties([
-            Arr::except(
-                $new,
-                self::NON_INHERITABLE_PROPERTIES,
-            ),
-            $old,
+            Arr::except($old, self::NON_INHERITABLE_PROPERTIES),
+            Arr::except($new, self::NON_INHERITABLE_PROPERTIES),
         ]);
     }
 

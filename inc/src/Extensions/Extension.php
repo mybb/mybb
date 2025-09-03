@@ -4,69 +4,75 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions;
 
-use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use JsonException;
+use MyBB\Extensions\Exception as ExtensionException;
+use MyBB\Extensions\Traits\IntegrityTrait;
 use MyBB\Utilities\FileStamp;
 
 abstract class Extension
 {
-    final public const MANIFEST_FILE_PATH = 'manifest.json';
-    final public const CHECKSUMS_FILE_PATH = 'checksums';
+    use IntegrityTrait;
 
+    /**
+     * @var class-string<Repository<static>>
+     */
+    public const REPOSITORY_CLASS = Repository::class;
+
+    /**
+     * The path to the manifest file, relative to the Extension's package directory.
+     */
+    final public const MANIFEST_FILE_PATH = 'manifest.json';
+
+    /**
+     * The absolute path to the directory containing Extension packages of the type.
+     */
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = '';
+
+    /**
+     * The value used when no version is specified in the manifest.
+     */
     public const DEFAULT_VERSION = 'dev';
 
     /**
-     * @var array<string, array{
-     *   default: static,
-     *   versions: array<string, static>
-     * }>
+     * The validated manifest data.
+     *
+     * @var array<string, mixed>
      */
-    private static array $instances = [];
+    protected array $manifest;
+
+    protected FileStamp $manifestStamp;
+
+    /**
+     * The version from the manifest, or the default version if not set.
+     */
+    protected readonly string $version;
+
+    public function __construct(
+        protected readonly string $packageName,
+        protected readonly Filesystem $filesystem,
+    ) {}
+
+    public static function codenameValid(string $value): bool
+    {
+        return preg_match('/^[a-z_]+$/', $value) === 1;
+    }
 
     /**
      * Definitions and validation of manifest fields.
      *
-     * @var array<string, array{
+     * @return array<string, array{
      *   required: bool,
      *   type: string,
      *   value?: scalar|callable,
      * }>
+     *
+     * @note https://wiki.php.net/rfc/closures_in_const_expr
      */
-    protected array $manifestFields = [];
-
-    protected array $manifest;
-    protected array $declaredFileChecksums;
-
-    private FileStamp $manifestStamp;
-
-    private readonly string $packageName;
-    private readonly string $version;
-
-    public static function codenameValid(string $value): bool
+    protected static function getManifestFields(): array
     {
-        return preg_match('/[a-z_]+/', $value) === 1;
-    }
-
-    public static function get(string $packageName, ?string $version = null): static
-    {
-        if ($version === null) {
-            $instance = &static::$instances[$packageName]['default'];
-        } else {
-            $instance = &static::$instances[$packageName]['versions'][$version];
-        }
-
-        return $instance ??= new static($packageName, $version);
-    }
-
-    public function __construct(string $packageName, ?string $version = null)
-    {
-        $this->packageName = $packageName;
-
-        if ($version !== null) {
-            $this->version = $version;
-        }
-
-        $this->manifestFields = [
+        return [
             'version' => [
                 'required' => false,
                 'type' => 'string',
@@ -75,40 +81,70 @@ abstract class Extension
         ];
     }
 
-    public function getAbsolutePath(): string
+    /**
+     * Whether the Extension's package exists in the filesystem.
+     */
+    public function exists(): bool
     {
-        return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . $this->getPackageName();
+        return $this->filesystem->isDirectory(
+            $this->getAbsolutePath()
+        );
     }
 
+    /**
+     * Returns the absolute path to the Extension's package directory.
+     */
+    public function getAbsolutePath(): string
+    {
+        return static::EXTENSION_TYPE_ABSOLUTE_BASE_PATH . '/' . $this->getPackageName();
+    }
+
+    /**
+     * Returns the filesystem identifier of the Extension's package.
+     */
     public function getPackageName(): string
     {
         return $this->packageName;
     }
 
+    /**
+     * Returns the version from the manifest, or the default version if not set.
+     *
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function getVersion(): string
     {
         return $this->version ??=
             $this->getManifest()['version'] ?? self::DEFAULT_VERSION;
     }
 
+    /**
+     * @return ?array<string, mixed> The validated manifest data.
+     *
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function getManifest(): ?array
     {
         if (!isset($this->manifest)) {
             $path = $this->getManifestFilePath();
 
-            if (file_exists($path)) {
-                $content = file_get_contents($path);
-
-                if ($content === false) {
-                    throw new Exception('Could not open manifest file: ' . $path);
-                }
+            if ($this->filesystem->isFile($path)) {
+                $content = $this->filesystem->get($path);
 
                 $this->manifestStamp = FileStamp::fromFile($path, $content);
 
-                $values = json_decode(
-                    $content,
-                    flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
-                );
+                try {
+                    $values = json_decode(
+                        $content,
+                        flags: JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR,
+                    );
+                } catch (JsonException $e) {
+                    throw new ExtensionException(
+                        'Invalid manifest JSON',
+                        $this,
+                        previous: $e,
+                    );
+                }
 
                 $this->validateManifestValues($values);
 
@@ -123,14 +159,20 @@ abstract class Extension
         return $this->manifest;
     }
 
+    /**
+     * Returns the path to the Extension's manifest file.
+     */
     public function getManifestFilePath(): string
     {
         return $this->getAbsolutePath() . '/' . static::MANIFEST_FILE_PATH;
     }
 
+    /**
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function validateManifestValues(array $values): void
     {
-        foreach ($this->manifestFields as $name => $field) {
+        foreach (static::getManifestFields() as $name => $field) {
             $error = null;
 
             if (Arr::has($values, $name)) {
@@ -153,13 +195,23 @@ abstract class Extension
             }
 
             if ($error) {
-                throw new Exception('Package `' . $this->getPackageName() . '` manifest field `' . $name . '` ' . $error);
+                throw new ExtensionException(
+                    'Manifest field `' . $name . '` ' . $error,
+                    $this,
+                );
             }
         }
     }
 
+    /**
+     * @throws ExtensionException if the manifest is not valid.
+     */
     public function getManifestStamp(): ?array
     {
+        if (!isset($this->manifestStamp)) {
+            $this->getManifest();
+        }
+
         return $this->manifestStamp->getStamp();
     }
 
@@ -172,106 +224,5 @@ abstract class Extension
             $this->getManifestFilePath(),
             $type,
         );
-    }
-
-    /**
-     * @return null|array<string, string[]>
-     *
-     * @see \MyBB\Maintenance\getDeclaredFileChecksums()
-     */
-    public function getDeclaredFileChecksums(): ?array
-    {
-        if (!isset($this->declaredFileChecksums)) {
-            $declaredFiles = [];
-
-            $path = $this->getAbsolutePath() . '/' . static::CHECKSUMS_FILE_PATH;
-
-            if (!file_exists($path)) {
-                return null;
-            }
-
-            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-            if ($lines === false) {
-                throw new Exception('Could not open checksums file: ' . $path);
-            }
-
-            foreach ($lines as $line) {
-                $parts = explode(' ', $line, 2);
-
-                if (count($parts) !== 2) {
-                    continue;
-                }
-
-                $declaredChecksum = trim($parts[0]);
-                $relativePath = trim($parts[1]);
-
-                if (!isset($declaredFiles[$relativePath])) {
-                    $declaredFiles[$relativePath] = [];
-                }
-
-                $declaredFiles[$relativePath][] = $declaredChecksum;
-            }
-
-            $this->declaredFileChecksums = $declaredFiles;
-        }
-
-        return $this->declaredFileChecksums;
-    }
-
-    /**
-     * Returns a list of file checksum mismatches by type.
-     * Files not declared with checksums are ignored.
-     *
-     * @return null|array{
-     *   changed: string[],
-     *   missing: string[],
-     * }
-     *
-     * @see \MyBB\Maintenance\getFileVerificationErrors()
-     */
-    public function getFileVerificationErrors(): ?array
-    {
-        $algorithm = 'sha512';
-        $bufferLength = 8192;
-
-        $extensionAbsolutePath = $this->getAbsolutePath();
-
-        $fileChecksums = $this->getDeclaredFileChecksums();
-
-        if ($fileChecksums !== null) {
-            $results = [
-                'changed' => [],
-                'missing' => [],
-            ];
-
-            // calculate & compare checksums
-            foreach ($fileChecksums as $relativePath => $declaredChecksums) {
-                $absolutePath = $extensionAbsolutePath . $relativePath;
-
-                if (file_exists($absolutePath)) {
-                    $handle = fopen($absolutePath, 'rb');
-                    $hashingContext = hash_init($algorithm);
-
-                    while (!feof($handle)) {
-                        hash_update($hashingContext, fread($handle, $bufferLength));
-                    }
-
-                    fclose($handle);
-
-                    $localChecksum = hash_final($hashingContext);
-
-                    if (!in_array($localChecksum, $declaredChecksums, true)) {
-                        $results['changed'][] = $relativePath;
-                    }
-                } else {
-                    $results['missing'][] = $relativePath;
-                }
-            }
-
-            return $results;
-        } else {
-            return null;
-        }
     }
 }

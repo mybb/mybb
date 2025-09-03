@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Asset;
 
-use Exception;
 use InvalidArgumentException;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Resource;
@@ -13,6 +12,7 @@ use MyBB\View\Themelet\Decorator\PublishableThemelet;
 use MyBB\View\Themelet\ThemeletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 /**
  * An Asset created from a Themelet Resource.
@@ -50,7 +50,7 @@ class ThemeletAsset extends Asset
     }
 
     /**
-     * Return an HTTP-accessible path to the file.
+     * Return an HTTP-accessible path to the file, relative to the MyBB root directory.
      */
     public function getPublicPath(): string
     {
@@ -127,12 +127,7 @@ class ThemeletAsset extends Asset
     {
         $path = $this->getAbsolutePath();
 
-        if (
-            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), recursive: true);
@@ -166,12 +161,7 @@ class ThemeletAsset extends Asset
     {
         $path = $this->getAbsolutePath();
 
-        if (
-            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         return unlink($path);
     }
@@ -179,5 +169,15 @@ class ThemeletAsset extends Asset
     protected function getEntityNamespace(): string
     {
         return $this->getNamespace();
+    }
+
+    protected function validateWritePath(string $path): void
+    {
+        if (
+            !Path::isBasePath(self::ABSOLUTE_BASE_PATH, $path) ||
+            Path::hasExtension($path, 'php', true)
+        ) {
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
+        }
     }
 }

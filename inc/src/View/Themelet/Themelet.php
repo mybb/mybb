@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Themelet;
 
-use MyBB\Extensions\ViewExtensionInterface;
+use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
 
 use function MyBB\app;

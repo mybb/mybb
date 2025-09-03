@@ -65,8 +65,7 @@ class PublishableThemelet extends ThemeletDecorator
 
     public function __construct(
         private readonly Optimization $optimization,
-    )
-    {
+    ) {
         $managedValueRepository = $this->getManagedValueRepository();
 
         foreach ($this->getNamespaces() as $namespace) {
@@ -75,6 +74,16 @@ class PublishableThemelet extends ThemeletDecorator
                 $namespace,
             ])
                 ->withDefault([])
+                ->withBuild(
+                    function (&$stamp) use ($namespace) {
+                        $stamp = $this->getAssetRepository($namespace)->getStamp();
+
+                        return [];
+                    },
+                )
+                ->withStampValidation(
+                    $this->getAssetRepository($namespace)->stampValid(...),
+                )
             ;
         }
 
@@ -88,8 +97,7 @@ class PublishableThemelet extends ThemeletDecorator
         Locator $locator,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
-    ): Asset
-    {
+    ): Asset {
         return Asset::fromLocator(
             locator: $locator,
             themelet: $this,
@@ -105,28 +113,29 @@ class PublishableThemelet extends ThemeletDecorator
         Locator $locator,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
-    ): Asset
-    {
+    ): Asset {
         if ($locator instanceof ThemeletLocator) {
             $locatorString = $locator->getString();
 
             if (
-                $this->optimization->getDirective('publication.runtimeCache') === false ||
-                !array_key_exists($locatorString, $this->publishedAssets)
+                $this->optimization->getDirective('publication.runtimeCache') &&
+                array_key_exists($locatorString, $this->publishedAssets)
             ) {
+                $asset = $this->publishedAssets[$locatorString];
+            } else {
                 $asset = new ThemeletAsset($locator, $this);
 
-                $this->publishThemeletAsset($asset);
+                $this->publishAsset($asset);
             }
-
-            return $this->publishedAssets[$locatorString];
         } else {
-            return $this->getAsset(
+            $asset = $this->getAsset(
                 locator: $locator,
                 declarationNamespace: $declarationNamespace,
                 type: $type,
             );
         }
+
+        return $asset;
     }
 
     /**
@@ -136,8 +145,8 @@ class PublishableThemelet extends ThemeletDecorator
      */
     public function publishAssets(bool $force = false): void
     {
-        foreach ($this->getPublishableThemeletAssets() as $asset) {
-            $this->publishThemeletAsset($asset, $force);
+        foreach ($this->getPublishableAssets() as $asset) {
+            $this->publishAsset($asset, $force);
         }
     }
 
@@ -149,7 +158,7 @@ class PublishableThemelet extends ThemeletDecorator
     public function publishAssetsFromResource(Resource $resource, bool $force = false): void
     {
         foreach ($this->getAssetsFromResource($resource) as $asset) {
-            $this->publishThemeletAsset($asset, $force);
+            $this->publishAsset($asset, $force);
         }
     }
 
@@ -158,7 +167,7 @@ class PublishableThemelet extends ThemeletDecorator
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
-    public function publishThemeletAsset(ThemeletAsset $asset, bool $force = false): void
+    public function publishAsset(ThemeletAsset $asset, bool $force = false): void
     {
         if ($force || $this->publishMode !== self::PUBLISH_NEVER) {
             $publication = app()->make(Publication::class, [
@@ -181,7 +190,7 @@ class PublishableThemelet extends ThemeletDecorator
     public function getAssetsFromResource(Resource $resource): array
     {
         return array_merge(
-            $this->getPublishableThemeletAssets([$resource]),
+            $this->getPublishableAssets([$resource]),
             Publication::getAssetsPublishedUsingResource($resource, $this),
         );
     }
@@ -192,7 +201,7 @@ class PublishableThemelet extends ThemeletDecorator
      * @param ?Resource[] $sourceResources
      * @return ThemeletAsset[]
      */
-    public function getPublishableThemeletAssets(?array $sourceResources = null): array
+    public function getPublishableAssets(?array $sourceResources = null): array
     {
         $explicitlyPublishableAssets = $this->getExplicitlyPublishableAssets($sourceResources);
 

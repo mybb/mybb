@@ -669,7 +669,6 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
 		$this->verify_yesno_option($options, 'showcodebuttons', 1);
-		$this->verify_yesno_option($options, 'sourceeditor', 0);
 		$this->verify_yesno_option($options, 'buddyrequestspm', 1);
 		$this->verify_yesno_option($options, 'buddyrequestsauto', 0);
 

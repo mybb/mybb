@@ -45,7 +45,7 @@ class CompositeThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns Asset properties defined in all applied namespaces.
+     * Returns Asset Properties defined in all applied namespaces.
      */
     public function getCompositeAssetProperties(?Locator $selector = null): array
     {
@@ -66,6 +66,9 @@ class CompositeThemelet extends ThemeletDecorator
         }
     }
 
+    /**
+     * Adds Asset Properties defined in all applied namespaces.
+     */
     private function populateAssetProperties(?Locator $locator = null): void
     {
         $sets = [];
@@ -95,7 +98,7 @@ class CompositeThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns namespaces from which an Asset's properties may be retrieved.
+     * Returns namespaces from which an Asset's Properties may be retrieved.
      */
     private function getAssetSourceNamespaces(Locator $locator): array
     {

@@ -53,6 +53,14 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+
+            // Update moved threads
+            $db->query("
+                UPDATE ".TABLE_PREFIX."threads
+                SET closed = '0', moved = SUBSTRING(closed FROM 7)::INTEGER
+                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
+            ");
+
             if (!$db->field_exists("showinlegend", "usergroups")) {
                 $db->add_column("usergroups", "showinlegend", "smallint NOT NULL default '0'");
             }
@@ -72,7 +80,6 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
-            $moved_tid_substring = "SUBSTRING(closed FROM 7)::INTEGER";
             break;
 
         case 'sqlite':
@@ -82,6 +89,14 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+
+            // Update moved threads
+            $db->query("
+                UPDATE ".TABLE_PREFIX."threads
+                SET closed = '0', moved = SUBSTR(closed, 7)
+                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
+            ");
+
             if (!$db->field_exists("showinlegend", "usergroups")) {
                 $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0'");
             }
@@ -99,7 +114,6 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
-            $moved_tid_substring = "SUBSTR(closed, 7)";
             break;
 
         default: // MySQL
@@ -109,6 +123,14 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
             }
+
+            // Update moved threads
+            $db->query("
+                UPDATE ".TABLE_PREFIX."threads
+                SET closed = '0', moved = CAST(SUBSTRING(closed, 7) AS SIGNED)
+                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
+            ");
+
             if (!$db->field_exists("showinlegend", "usergroups")) {
                 $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0' AFTER canchangewebsite");
             }
@@ -127,16 +149,8 @@ function upgrade100_dbchanges()
                     KEY uid (uid)
                 ) ENGINE=MyISAM;");
             }
-            $moved_tid_substring = "CAST(SUBSTRING(closed, 7) AS SIGNED)";
             break;
     }
-
-    // Update moved threads
-    $db->query("
-        UPDATE ".TABLE_PREFIX."threads
-        SET closed = '0', moved = ".$moved_tid_substring."
-        WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
-    ");
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");

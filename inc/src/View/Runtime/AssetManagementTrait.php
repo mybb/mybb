@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace MyBB\View\Runtime;
 
-use Exception;
 use MyBB\View\Asset\Asset;
+use MyBB\View\Exception as ViewException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\ResourceType;
+use SplObjectStorage;
+
+use function MyBB\View\template;
 
 trait AssetManagementTrait
 {
     /**
+     * Types that can be attached for managed insertion into the DOM.
+     *
      * @var ResourceType[]
      */
     public const ATTACHABLE_TYPES = [
@@ -22,6 +27,18 @@ trait AssetManagementTrait
     ];
 
     /**
+     * Types that can be inserted into the DOM.
+     *
+     * @var ResourceType[]
+     */
+    public const INSERTABLE_TYPES = [
+        ResourceType::STYLE,
+        ResourceType::SCRIPT,
+    ];
+
+    /**
+     * Environment information used as a reference for conditional attaching of Assets.
+     *
      * @var array{
      *   script: string,
      *   action: string,
@@ -30,15 +47,43 @@ trait AssetManagementTrait
     private array $context;
 
     /**
-     * Assets by type and Locator string.
+     * Published Assets for insertion into the DOM, by Locator string.
+     *
+     * @var array<string, Asset>
+     */
+    private array $publishedAssets = [];
+
+    /**
+     * Effective Asset Properties to use when inserting Assets into the DOM.
+     *
+     * Collected from static and runtime declarations.
+     *
+     * @var SplObjectStorage<Asset, array>
+     */
+    private SplObjectStorage $assetProperties;
+
+    /**
+     * Assets for managed insertion into the DOM, by type and Locator string.
      *
      * @var array<value-of<ResourceType>, array<string, Asset>
      */
-    private array $attachedAssets;
-
-    private bool $attachedAssetsPopulated = false;
+    private array $attachedAssets = [];
 
     /**
+     * Assets reported as included in the DOM, by Locator string.
+     *
+     * @var array<string, Asset>
+     */
+    private array $assetsInDom = [];
+
+    /**
+     * Whether attached Asset information has been populated from Themelet declarations.
+     */
+    private bool $attachedAssetsPopulatedFromThemelet = false;
+
+    /**
+     * Whether the given Asset attaching conditions are satisfied in the given context.
+     *
      * @param array{
      *   script: string,
      *   actions?: string[],
@@ -71,14 +116,20 @@ trait AssetManagementTrait
         return false;
     }
 
+    /**
+     * Sets the environment information used for conditional attaching of Assets.
+     */
     public function setContext(array $context): void
     {
         $this->context = $context;
     }
 
     /**
-     * Replaces placeholders with asset tags yet to be inserted into DOM.
-     * Used for assets declared after the placeholder's template was rendered.
+     * Replaces placeholders with Asset tags yet to be inserted into the DOM.
+     *
+     * Used for Assets declared after the template with the placeholder was rendered.
+     *
+     * @throws ViewException
      */
     public function insertDeferredAttachedAssets(string $contents): string
     {
@@ -86,7 +137,7 @@ trait AssetManagementTrait
             $assets = $this->getAttachedAssets($type, inserting: true);
 
             $elements = array_map(
-                fn (Asset $asset) => $asset->getHtml(),
+                fn (Asset $asset) => $this->getAssetHtml($asset),
                 $assets,
             );
 
@@ -103,14 +154,18 @@ trait AssetManagementTrait
     }
 
     /**
+     * Returns Assets of the given Type for managed insertion into the DOM.
+     *
      * @param bool $inserting Get assets not yet inserted, and declare them as such.
+     *
+     * @throws ViewException
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
     {
-        if (!$this->attachedAssetsPopulated) {
+        if (!$this->attachedAssetsPopulatedFromThemelet) {
             $this->populateAttachedAssetsFromThemelet();
 
-            $this->attachedAssetsPopulated = true;
+            $this->attachedAssetsPopulatedFromThemelet = true;
         }
 
         $assets = $this->attachedAssets[$type->value] ?? [];
@@ -118,11 +173,11 @@ trait AssetManagementTrait
         if ($inserting) {
             $assets = array_filter(
                 $assets,
-                fn (Asset $asset) => $asset->insertedToDom === false,
+                fn (Asset $asset) => !in_array($asset, $this->assetsInDom),
             );
 
             array_map(
-                fn (Asset $asset) => $asset->insertedToDom = true,
+                fn (Asset $asset) => $this->assetsInDom[$asset->getLocator()->getString()] = $asset,
                 $assets,
             );
         }
@@ -130,6 +185,11 @@ trait AssetManagementTrait
         return $assets;
     }
 
+    /**
+     * Adds Assets for managed insertion into the DOM from Themelet declarations.
+     *
+     * @throws ViewException
+     */
     public function populateAttachedAssetsFromThemelet(): void
     {
         foreach ($this->themelet->getCompositeAssetProperties() as $locatorString => $properties) {
@@ -140,7 +200,11 @@ trait AssetManagementTrait
     }
 
     /**
-     * @param string[] $dependentAncestors
+     * Schedules an Asset for managed insertion into the DOM, and returns the Asset object.
+     *
+     * @param string[] $dependentAncestors Identifiers of dependent Assets passed in recursive calls.
+     *
+     * @throws ViewException if the given Asset cannot be attached.
      */
     public function attachAsset(
         Locator $locator,
@@ -161,48 +225,129 @@ trait AssetManagementTrait
 
 
         if ($type === null) {
-            throw new Exception('Unknown Asset type (`' . $locatorString . '`)');
+            throw new ViewException('Unknown Asset type (`' . $locatorString . '`)');
         }
 
         if (!in_array($type, static::ATTACHABLE_TYPES)) {
-            throw new Exception('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+            throw new ViewException('Cannot attach Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+        }
+
+
+        $asset = $this->getAsset($locator, $type);
+
+        $this->addAssetProperties($asset, $properties);
+
+
+        $this->attachAssetWithDependencies($asset, $dependentAncestors);
+
+        return $asset;
+    }
+
+    /**
+     * Returns the HTML to insert the Asset into the DOM, and sets it as inserted.
+     *
+     * @throws ViewException if the given Asset cannot be inserted.
+     */
+    public function getAssetForInsertion(
+        Locator $locator,
+        array $properties = [],
+        ?ResourceType $type = null,
+    ): string
+    {
+        $locatorString = $locator->getString([
+            'type' => ThemeletLocator::COMPONENT_SET,
+            'namespace' => ThemeletLocator::COMPONENT_SET,
+        ]);
+
+        $type ??= match (get_class($locator)) {
+            StaticLocator::class => ResourceType::tryFromFilename($locator->getPath()),
+            ThemeletLocator::class => $locator->getType(),
+        };
+
+
+        if ($type === null) {
+            throw new ViewException('Unknown Asset type (`' . $locatorString . '`)');
+        }
+
+        if (!in_array($type, static::INSERTABLE_TYPES)) {
+            throw new ViewException('Cannot insert Asset of type `' . $type->value . '` (`' . $locatorString . '`)');
+        }
+
+
+        $asset = $this->getAsset($locator, $type);
+
+        $this->addAssetProperties($asset, $properties);
+
+
+        $this->assetsInDom[$locatorString] = $asset;
+
+        return $this->getAssetHtml($asset);
+    }
+
+    /**
+     * Adds the given Asset and its dependencies for managed insertion the DOM (if not already present).
+     *
+     * @param string[] $dependentAncestors Identifiers of dependent Assets passed in recursive calls.
+     *
+     * @throws ViewException if dependencies cannot be resolved.
+     */
+    private function attachAssetWithDependencies(Asset $asset, array $dependentAncestors = []): void
+    {
+        $locatorString = $asset->getLocator()->getString();
+
+        if (isset($this->attachedAssets[$asset->getType()->value][$locatorString])) {
+            return;
         }
 
         if (in_array($locatorString, $dependentAncestors)) {
-            throw new Exception('Circular dependency declared for Asset `' . $locatorString . '`');
+            throw new ViewException('Circular dependency declared for Asset `' . $locatorString . '`');
         }
 
 
-        if (isset($this->attachedAssets[$type->value][$locatorString])) {
-            $asset = $this->attachedAssets[$type->value][$locatorString];
+        $dependentAncestors[] = $locatorString;
+
+        $dependencies = $this->getAssetImmediateDependencies($asset->getLocator());
+
+        foreach ($dependencies as $dependency) {
+            $this->attachAsset($dependency, dependentAncestors: $dependentAncestors);
+        }
+
+
+        $this->attachedAssets[$asset->getType()->value][$locatorString] = $asset;
+    }
+
+    /**
+     * Returns a published Asset with Properties initialized from the Themelet.
+     */
+    private function getAsset(Locator $locator, ResourceType $type): Asset
+    {
+        $locatorString = $locator->getString();
+
+        if (array_key_exists($locatorString, $this->publishedAssets)) {
+            $asset = $this->publishedAssets[$locatorString];
         } else {
-            $dependentAncestors[] = $locatorString;
-
-            $dependencies = $this->getAssetImmediateDependencies($locator);
-
-            foreach ($dependencies as $dependency) {
-                $this->attachAsset($dependency, dependentAncestors: $dependentAncestors);
-            }
-
-
             $asset = $this->themelet->getPublishedAsset(
                 locator: $locator,
                 type: $type,
             );
 
-            $asset->setCompositeProperties(
+            $this->publishedAssets[$locatorString] = $asset;
+
+            $this->addAssetProperties(
+                $asset,
                 $this->themelet->getCompositeAssetProperties($locator),
             );
-
-            $this->attachedAssets[$type->value][$locatorString] = $asset;
         }
-
-        $asset->setCompositeProperties($properties);
 
         return $asset;
     }
 
-    public function assetApplicableThroughProperties(?array $properties = null): bool
+    /**
+     * Whether an Asset should be attached according to its Properties.
+     *
+     * @param ?array $properties The Properties of the Asset.
+     */
+    private function assetApplicableThroughProperties(?array $properties = null): bool
     {
         return (
             isset($properties['attached_to']) &&
@@ -218,9 +363,47 @@ trait AssetManagementTrait
     private function getAssetImmediateDependencies(Locator $locator): array
     {
         return array_map(
-            fn (string $identifier) =>
-                Locator::fromDependencyIdentifier($identifier, $locator),
+            fn (string $identifier) => Locator::fromDependencyIdentifier($identifier, $locator),
             $this->themelet->getCompositeAssetProperties($locator)['depends_on'] ?? [],
+        );
+    }
+
+    /**
+     * Adds extra Asset Properties accepted during runtime.
+     */
+    private function addAssetProperties(Asset $asset, array $properties): void
+    {
+        $this->assetProperties[$asset] = Asset::getMergedProperties([
+            $this->assetProperties[$asset] ?? [],
+            $properties,
+        ]);
+    }
+
+    /**
+     * Returns the HTML to insert the Asset into the DOM.
+     *
+     * @throws ViewException
+     */
+    private function getAssetHtml(Asset $asset): string
+    {
+        $type = $asset->getType();
+
+        if ($type === null) {
+            throw new ViewException('Unknown Asset type (`' . $asset->getLocator()->getString() . '`)');
+        }
+
+        if (!in_array($type, self::INSERTABLE_TYPES)) {
+            throw new ViewException('Cannot insert Asset of type `' . $type->value . '` (`' . $asset->getLocator()->getString() . '`)');
+        }
+
+        return template(
+            'partials/' . $type->value . '.twig',
+            [
+                'asset' => [
+                    'url' => $asset->getUrl(),
+                    'attributes' => $this->assetProperties[$asset]['attributes'] ?? [],
+                ],
+            ],
         );
     }
 }

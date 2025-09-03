@@ -12,6 +12,7 @@ use MyBB\View\Locator\ThemeletLocator;
 use MyBB\View\Themelet\ThemeletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 readonly class Resource implements CargoEntityInterface
 {
@@ -50,17 +51,11 @@ readonly class Resource implements CargoEntityInterface
 
     public function setContent(string $content, $pointer = null): bool
     {
-        $path = realpath($this->getAbsolutePath());
+        $path = realpath(
+            $this->getAbsolutePath()
+        );
 
-        if (
-            !Path::isBasePath(
-                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
-                $path
-            ) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), recursive: true);
@@ -92,17 +87,11 @@ readonly class Resource implements CargoEntityInterface
 
     public function delete(): void
     {
-        $path = realpath($this->getAbsolutePath());
+        $path = realpath(
+            $this->getAbsolutePath()
+        );
 
-        if (
-            !Path::isBasePath(
-                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
-                $path,
-            ) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!unlink($path)) {
             throw new Exception('Could not delete file `' . $path . '`');
@@ -178,5 +167,18 @@ readonly class Resource implements CargoEntityInterface
         return $this->getThemelet()->getResourceRepository(
             $this->getNamespace()
         );
+    }
+
+    protected function validateWritePath(string $path): void
+    {
+        if (
+            !Path::isBasePath(
+                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
+                $path,
+            ) ||
+            Path::hasExtension($path, 'php', true)
+        ) {
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
+        }
     }
 }

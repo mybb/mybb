@@ -71,12 +71,14 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="footer-menu__item">
-                            <a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
-                                {{ include('partials/icon.twig', {icon: 'home', class: 'footer-menu__icon'}, with_context = false) }}
-                                <span class="footer-menu__text">{{ mybb.settings.homename }}</span>
-                            </a>
-                        </li>
+                        {% if mybb.settings.homeurl and mybb.settings.homename %}
+                            <li class="footer-menu__item">
+                                <a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
+                                    {{ include('partials/icon.twig', {icon: 'home', class: 'footer-menu__icon'}, with_context = false) }}
+                                    <span class="footer-menu__text">{{ mybb.settings.homename }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="footer-menu__item">
                             <a href="#top" class="footer-menu__link">
                                 {{ include('partials/icon.twig', {icon: 'arrow-up', class: 'footer-menu__icon'}, with_context = false) }}
@@ -126,12 +128,12 @@
     </footer>
 
     {# The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE #}
-        {% if task_image %}
+        {% if task_image is not empty %}
             <img src="{{ task_image }}" width="1" height="1" alt="" />
         {% endif %}
     {# End task image code. #}
 
-    {% if mybb.settings.dst_correction %}
-        {{ mybb.settings.dst_correction }}
+    {% if mybb.settings.dstcorrection %}
+        {{ mybb.settings.dstcorrection }}
     {% endif %}
 </div>

@@ -472,8 +472,8 @@ $theme['editortheme'] = 'mybb.css';
 $packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
 
 \MyBB\app()->instance(
-	\MyBB\Extensions\Theme::class,
-	\MyBB\Extensions\Theme::get($packageName),
+	\MyBB\Extensions\Theme\Theme::class,
+	\MyBB\App(\MyBB\Extensions\Theme\Repository::class)->get($packageName),
 );
 
 $view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
@@ -869,12 +869,6 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 		}
 		$headerMessages[] = $aamessage;
 	}
-}
-
-$jsTemplates = array();
-foreach (array('modal', 'modal_button') as $template) {
-	$jsTemplates[$template] = \MyBB\View\template("modals/{$template}.twig");
-	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
 }
 
 // Check to see if we have any tasks to run

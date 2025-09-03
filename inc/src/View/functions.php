@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use MyBB\Stopwatch\Stopwatch;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ThemeletLocator;
@@ -20,8 +21,11 @@ const DEFAULT_THEME_PACKAGE = 'core.base';
  *
  * @param Locator|string $locator The path to the Asset.
  * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
- * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$path` if not provided.
+ * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$locator` if not provided.
+ * @param array $attributes Extra attributes to add to the HTML tag.
  * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
+ *
+ * @throws LocatorException|Exception
  *
  * @api
  */
@@ -62,21 +66,13 @@ function asset(
     }
 
     if ($local) {
-        $asset = $view->themelet->getPublishedAsset(
+        return $view->getAssetForInsertion(
             locator: $locatorObject,
+            properties: [
+                'attributes' => $attributes,
+            ],
             type: $typeObject,
         );
-
-        $asset->setCompositeProperties(
-            $view->themelet->getCompositeAssetProperties($locatorObject)
-        );
-        $asset->setCompositeProperties([
-            'attributes' => $attributes,
-        ]);
-
-        $asset->insertedToDom = true;
-
-        return $asset->getHtml();
     } else {
         $view->attachAsset(
             locator: $locatorObject,
@@ -98,6 +94,8 @@ function asset(
  * @param bool $useCdn Whether to use the configured CDN options.
  *
  * @return string The complete URL to the asset.
+ *
+ * @throws LocatorException
  *
  * @api
  */
@@ -132,6 +130,18 @@ function assetUrl(
     $asset = $view->themelet->getPublishedAsset($locatorObject);
 
     return $asset->getUrl($useCdn);
+}
+
+/**
+ * Returns shared data.
+ *
+ * @param ?string $key The key of the variable to return. If not provided, an array with all data is returned.
+ *
+ * @api
+ */
+function get(?string $key = null): array|null|int|float|string|bool
+{
+    return app(Runtime::class)->getSharedData($key);
 }
 
 /**

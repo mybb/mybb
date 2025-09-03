@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Locator;
 
-use Exception;
-
 /**
  * A reference to an Asset with a static path (outside any Themelet structure).
  */
@@ -44,6 +42,8 @@ class StaticLocator extends Locator
      * @param array{
      *   path?: ?string,
      * } $components
+     *
+     * @throws Exception if required components are missing.
      */
     public static function composeString(array $components): string
     {
@@ -76,10 +76,10 @@ class StaticLocator extends Locator
 
     public static function isStaticLocator(string $locator): bool
     {
-        return self::isExplicitDirectoryPath($locator) || self::isRemoteLocator($locator);
+        return self::isExplicitDirectoryPath($locator) || self::isRemotePath($locator);
     }
 
-    private static function isRemoteLocator(string $locator): bool
+    private static function isRemotePath(string $locator): bool
     {
         return (
             str_starts_with($locator, self::URI_AUTHORITY_PREFIX) || // network-path / scheme-relative URI
@@ -107,11 +107,14 @@ class StaticLocator extends Locator
     private static function isImplicitCurrentDirectoryRelativePath(string $locator): bool
     {
         return (
-            !self::isRemoteLocator($locator) &&
+            !self::isRemotePath($locator) &&
             !self::isExplicitDirectoryPath($locator)
         );
     }
 
+    /**
+     * @throws Exception if required components are missing.
+ */
     public function getString(array $directives = [], array $context = []): string
     {
         $information = [];
@@ -125,6 +128,9 @@ class StaticLocator extends Locator
         return self::composeString($information);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getNamespaceRelativeIdentifier(): string
     {
         // no transformations needed for Static Locators
@@ -145,7 +151,7 @@ class StaticLocator extends Locator
 
     public function isRemote(): bool
     {
-        return self::isRemoteLocator(
+        return self::isRemotePath(
             $this->getPath()
         );
     }

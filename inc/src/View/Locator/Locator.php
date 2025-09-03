@@ -20,6 +20,8 @@ abstract class Locator
      *   type?: ResourceType,
      *   namespace?: string,
      * } $context
+     *
+     * @throws Exception
      */
     public static function fromString(string $string, array $directives = [], array $context = []): static
     {
@@ -32,6 +34,9 @@ abstract class Locator
 
     abstract public static function decomposeString(string $string): array;
 
+    /**
+     * @throws Exception
+     */
     public static function fromNamespaceRelativeIdentifier(string $namespace, string $identifier): static
     {
         return self::fromString(
@@ -46,6 +51,9 @@ abstract class Locator
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fromDependencyIdentifier(string $identifier, self $locator): static
     {
         if (StaticLocator::isStaticLocator($identifier)) {

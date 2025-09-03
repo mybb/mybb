@@ -358,18 +358,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	$subject = $mybb->get_input('value');
 	if(my_strtolower($charset) != "utf-8")
 	{
-		if(function_exists("iconv"))
-		{
-			$subject = iconv($charset, "UTF-8//IGNORE", $subject);
-		}
-		else if(function_exists("mb_convert_encoding"))
-		{
-			$subject = @mb_convert_encoding($subject, $charset, "UTF-8");
-		}
-		else if(my_strtolower($charset) == "iso-8859-1")
-		{
-			$subject = utf8_decode($subject);
-		}
+		$subject = mb_convert_encoding($subject, $charset, "UTF-8");
 	}
 
 	// Only edit subject if subject has actually been changed
@@ -512,21 +501,8 @@ else if($mybb->input['action'] == "edit_post")
 		$editreason = $mybb->get_input('editreason');
 		if(my_strtolower($charset) != "utf-8")
 		{
-			if(function_exists("iconv"))
-			{
-				$message = iconv($charset, "UTF-8//IGNORE", $message);
-				$editreason = iconv($charset, "UTF-8//IGNORE", $editreason);
-			}
-			else if(function_exists("mb_convert_encoding"))
-			{
-				$message = @mb_convert_encoding($message, $charset, "UTF-8");
-				$editreason = @mb_convert_encoding($editreason, $charset, "UTF-8");
-			}
-			else if(my_strtolower($charset) == "iso-8859-1")
-			{
-				$message = utf8_decode($message);
-				$editreason = utf8_decode($editreason);
-			}
+			$message = mb_convert_encoding($message, $charset, "UTF-8");
+			$editreason = mb_convert_encoding($editreason, $charset, "UTF-8");
 		}
 
 		// Set up posthandler.
