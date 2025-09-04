@@ -339,7 +339,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					log_moderator_action($modlogdata, $lang->thread_deleted);
 				}
 
-				if($mybb->input['ajax'] == 1)
+				if(!empty($mybb->input['ajax']))
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
