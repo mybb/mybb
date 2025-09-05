@@ -159,6 +159,9 @@ function upgrade100_dbchanges()
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
 
+    // Remove deprecated profile fields
+    $db->delete_query("profilefields", "name='Skype'");
+        
     // Set legacy password algorithm for existing users
     $db->update_query("users", ["password_algorithm" => "mybb"], "password_algorithm = ''");
 }
