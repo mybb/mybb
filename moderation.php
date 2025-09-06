@@ -246,7 +246,7 @@ switch($mybb->input['action'])
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", 'tid, name, `groups`', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name, "groups"', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
 					break;
 				default:
 					$query = $db->simple_select("modtools", 'tid, name, `groups`', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
