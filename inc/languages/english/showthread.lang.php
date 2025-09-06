@@ -18,7 +18,6 @@ $l['linear'] = "Show Linear Mode";
 $l['thread_modes'] = "Thread Modes";
 $l['next_oldest'] = "Next Oldest";
 $l['next_newest'] = "Next Newest";
-$l['select_a_tool'] = "Select A Tool";
 $l['view_printable'] = "Print Thread";
 $l['send_thread'] = "Share Thread";
 $l['subscribe_thread'] = "Subscribe";
