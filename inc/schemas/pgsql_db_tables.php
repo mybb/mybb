@@ -573,6 +573,7 @@ $tables[] = "CREATE TABLE mybb_posts (
 );";
 
 $tables[] = "CREATE INDEX mybb_posts_tid_uid ON mybb_posts (tid, uid);";
+$tables[] = "CREATE INDEX mybb_posts_uid ON mybb_posts (uid);";
 $tables[] = "CREATE INDEX mybb_posts_visible ON mybb_posts (visible);";
 $tables[] = "CREATE INDEX mybb_posts_dateline ON mybb_posts (dateline);";
 $tables[] = "CREATE INDEX mybb_posts_ipaddress ON mybb_posts (ipaddress);";
@@ -732,6 +733,8 @@ $tables[] = "CREATE TABLE mybb_securitylog (
   dateline int NOT NULL default '0',
   type varchar(50) NOT NULL default ''
 );";
+
+$tables[] = "CREATE INDEX mybb_securitylog_uid ON mybb_securitylog (uid);";
 
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
@@ -987,6 +990,7 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   PRIMARY KEY (sid)
 );";
 
+$tables[] = "CREATE INDEX mybb_threadsubscriptions_uid ON mybb_threadsubscriptions (uid);";
 $tables[] = "CREATE INDEX mybb_threadsubscriptions_tid_notification ON mybb_threadsubscriptions (tid, notification);";
 
 $tables[] = "CREATE TABLE mybb_userfields (
