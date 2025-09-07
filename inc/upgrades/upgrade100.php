@@ -191,6 +191,7 @@ function upgrade100_indexes()
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."polls_tid ON ".TABLE_PREFIX."polls (tid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."pollvotes_pid_uid ON ".TABLE_PREFIX."pollvotes (pid, uid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_tid_uid ON ".TABLE_PREFIX."posts (tid, uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_uid ON ".TABLE_PREFIX."posts (uid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_visible ON ".TABLE_PREFIX."posts (visible);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_dateline ON ".TABLE_PREFIX."posts (dateline);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_ipaddress ON ".TABLE_PREFIX."posts (ipaddress);";
@@ -200,6 +201,7 @@ function upgrade100_indexes()
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reportedcontent_reportstatus ON ".TABLE_PREFIX."reportedcontent (reportstatus);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reportedcontent_lastreport ON ".TABLE_PREFIX."reportedcontent (lastreport);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reputation_uid ON ".TABLE_PREFIX."reputation (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."securitylog_uid ON ".TABLE_PREFIX."securitylog (uid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_location ON ".TABLE_PREFIX."sessions (location1, location2);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_time ON ".TABLE_PREFIX."sessions (time);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_uid ON ".TABLE_PREFIX."sessions (uid);";
@@ -215,6 +217,7 @@ function upgrade100_indexes()
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_firstpost ON ".TABLE_PREFIX."threads (firstpost);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_uid ON ".TABLE_PREFIX."threads (uid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsread_dateline ON ".TABLE_PREFIX."threadsread (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsubscriptions_uid ON ".TABLE_PREFIX."threadsubscriptions (uid);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsubscriptions_tid_notification ON ".TABLE_PREFIX."threadsubscriptions (tid, notification);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_usergroup ON ".TABLE_PREFIX."users (usergroup);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_regip ON ".TABLE_PREFIX."users (regip);";
