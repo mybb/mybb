@@ -37,8 +37,6 @@ class Plugin extends Extension implements ViewExtensionInterface
      */
     public function __construct(string $packageName, Filesystem $filesystem)
     {
-        parent::__construct($packageName, $filesystem);
-
         if (!self::codenameValid($packageName)) {
             throw new ExtensionException('Invalid Extension package name `' . $packageName . '`');
         }
