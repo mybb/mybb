@@ -16,16 +16,13 @@ use function MyBB\View\assetUrl;
 /**
  * A Twig extension class to provide functionality related to themes and assets.
  */
-class ThemeExtension extends AbstractExtension implements GlobalsInterface
+class ViewExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * @var string $altRowState
      */
     private ?string $altRowState = null;
 
-    /**
-     * Create a new instance of the ThemeExtension.
-     */
     public function __construct(
         private readonly MyBB $mybb,
         private readonly DB_Base $db,
