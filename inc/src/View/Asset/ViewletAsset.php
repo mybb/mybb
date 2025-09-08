@@ -5,38 +5,38 @@ declare(strict_types=1);
 namespace MyBB\View\Asset;
 
 use InvalidArgumentException;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\Decorator\PublishableThemelet;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\Decorator\PublishableViewlet;
+use MyBB\View\Viewlet\ViewletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
 use UnexpectedValueException;
 
 /**
- * An Asset created from a Themelet Resource.
+ * An Asset created from a Viewlet Resource.
  *
- * @property ThemeletLocator $locator
+ * @property ViewletLocator $locator
  */
-class ThemeletAsset extends Asset
+class ViewletAsset extends Asset
 {
-    public const WEB_ROOT_RELATIVE_BASE_PATH = 'cache/themelets/';
+    public const WEB_ROOT_RELATIVE_BASE_PATH = 'cache/viewlets/';
     public const ABSOLUTE_BASE_PATH = MYBB_ROOT . self::WEB_ROOT_RELATIVE_BASE_PATH;
 
     private Resource $resource;
 
     public function __construct(
-        readonly protected ThemeletLocator $locator,
-        readonly protected ThemeletInterface $themelet,
+        readonly protected ViewletLocator $locator,
+        readonly protected ViewletInterface $viewlet,
     )
     {
-        if (!PublishableThemelet::decorates($themelet)) {
-            throw new InvalidArgumentException('PublishableThemelet required for `' . static::class . '`');
+        if (!PublishableViewlet::decorates($viewlet)) {
+            throw new InvalidArgumentException('PublishableViewlet required for `' . static::class . '`');
         }
     }
 
-    public function getLocator(): ThemeletLocator
+    public function getLocator(): ViewletLocator
     {
         return $this->locator;
     }
@@ -55,7 +55,7 @@ class ThemeletAsset extends Asset
     public function getPublicPath(): string
     {
         return
-            $this->themelet->getPublishingPath() .
+            $this->viewlet->getPublishingPath() .
             '/' .
             $this->locator->getNamespace() .
             '/' .
@@ -110,7 +110,7 @@ class ThemeletAsset extends Asset
                 $resourceLocator = $this->locator;
             }
 
-            $this->resource = $this->getThemelet()->getResource($resourceLocator);
+            $this->resource = $this->getViewlet()->getResource($resourceLocator);
         }
 
         return $this->resource;

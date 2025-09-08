@@ -13,8 +13,8 @@ abstract class Locator
 {
     /**
      * @param array{
-     *   type?: ThemeletLocator::COMPONENT_*,
-     *   namespace?: ThemeletLocator::COMPONENT_*,
+     *   type?: ViewletLocator::COMPONENT_*,
+     *   namespace?: ViewletLocator::COMPONENT_*,
      * } $directives
      * @param array{
      *   type?: ResourceType,
@@ -25,7 +25,7 @@ abstract class Locator
      */
     public static function fromString(string $string, array $directives = [], array $context = []): static
     {
-        $class = StaticLocator::isStaticLocator($string) ? StaticLocator::class : ThemeletLocator::class;
+        $class = StaticLocator::isStaticLocator($string) ? StaticLocator::class : ViewletLocator::class;
 
         return $class::fromString($string, $directives, $context);
     }
@@ -42,8 +42,8 @@ abstract class Locator
         return self::fromString(
             $identifier,
             [
-                'type' => ThemeletLocator::COMPONENT_SET,
-                'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                'type' => ViewletLocator::COMPONENT_SET,
+                'namespace' => ViewletLocator::COMPONENT_UNSET,
             ],
             [
                 'namespace' => $namespace,
@@ -59,11 +59,11 @@ abstract class Locator
         if (StaticLocator::isStaticLocator($identifier)) {
             return StaticLocator::fromString($identifier);
         } else {
-            return ThemeletLocator::fromString(
+            return ViewletLocator::fromString(
                 $identifier,
                 [
-                    'type' => ThemeletLocator::COMPONENT_CONTEXT,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_CONTEXT,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 [
                     'type' => ResourceType::tryFromFilename($identifier),

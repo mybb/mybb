@@ -9,11 +9,11 @@ use MyBB\Extensions\Plugin\Repository as PluginRepository;
 use MyBB\Extensions\Theme\Repository as ThemeRepository;
 use MyBB\Extensions\Theme\Theme;
 use MyBB\View\Optimization;
-use MyBB\View\Themelet\Decorator\CompositeThemelet;
-use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
-use MyBB\View\Themelet\Decorator\PublishableThemelet;
-use MyBB\View\Themelet\Decorator\ThemeletDecorator;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\Decorator\CompositeViewlet;
+use MyBB\View\Viewlet\Decorator\Hierarchy\HierarchicalViewlet;
+use MyBB\View\Viewlet\Decorator\PublishableViewlet;
+use MyBB\View\Viewlet\Decorator\ViewletDecorator;
+use MyBB\View\Viewlet\ViewletInterface;
 use SplObjectStorage;
 
 /**
@@ -25,7 +25,7 @@ class Runtime
     use DataSharingTrait;
     use NamespacesTrait;
 
-    public readonly ThemeletInterface $themelet;
+    public readonly ViewletInterface $viewlet;
 
     public function __construct(
         private readonly MyBB $mybb,
@@ -35,59 +35,59 @@ class Runtime
         private readonly Optimization $optimization,
     )
     {
-        $this->themelet = $this->getDecoratedThemelet();
+        $this->viewlet = $this->getDecoratedViewlet();
 
         /* @see AssetManagementTrait */
         $this->assetProperties = new SplObjectStorage();
 
         if ($this->optimization->getDirective('publication.all')) {
-            $this->themelet->publishAssets();
+            $this->viewlet->publishAssets();
         }
     }
 
-    private function getDecoratedThemelet(): ThemeletInterface
+    private function getDecoratedViewlet(): ViewletInterface
     {
-        $themelet = $this->theme->getThemelet();
+        $viewlet = $this->theme->getViewlet();
 
-        // HierarchicalThemelet
-        $themelet = new HierarchicalThemelet(
-            $themelet,
+        // HierarchicalViewlet
+        $viewlet = new HierarchicalViewlet(
+            $viewlet,
             $this->themeRepository,
             $this->optimization,
         );
 
-        $pluginThemelets = $this->getPluginThemelets();
+        $pluginViewlets = $this->getPluginViewlets();
 
-        $themelet->setBaseThemelets($pluginThemelets);
+        $viewlet->setBaseViewlets($pluginViewlets);
 
 
-        // PublishableThemelet, CompositeThemelet
+        // PublishableViewlet, CompositeViewlet
 
-        $themelet = ThemeletDecorator::decorate(
-            $themelet,
+        $viewlet = ViewletDecorator::decorate(
+            $viewlet,
             [
-                PublishableThemelet::class,
-                CompositeThemelet::class,
+                PublishableViewlet::class,
+                CompositeViewlet::class,
             ],
         );
 
-        foreach ($pluginThemelets as $pluginThemelet) {
-            foreach ($pluginThemelet->getNamespaces() as $namespace) {
-                $themelet->applyNamespace($namespace);
+        foreach ($pluginViewlets as $pluginViewlet) {
+            foreach ($pluginViewlet->getNamespaces() as $namespace) {
+                $viewlet->applyNamespace($namespace);
             }
         }
 
 
-        return $themelet;
+        return $viewlet;
     }
 
     /**
-     * @return ThemeletInterface[]
+     * @return ViewletInterface[]
      */
-    private function getPluginThemelets(): array
+    private function getPluginViewlets(): array
     {
         return array_map(
-            fn (string $codename) => $this->pluginRepository->get($codename)->getThemelet(),
+            fn (string $codename) => $this->pluginRepository->get($codename)->getViewlet(),
             $this->mybb->cache?->read('plugins')['active'] ?? [],
         );
     }

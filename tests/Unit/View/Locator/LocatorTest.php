@@ -7,7 +7,7 @@ namespace MyBB\Tests\Unit\View\Locator;
 use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\ResourceType;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Locator::class)]
 #[CoversClass(StaticLocator::class)]
-#[CoversClass(ThemeletLocator::class)]
+#[CoversClass(ViewletLocator::class)]
 final class LocatorTest extends TestCase
 {
     public static function composeStringCases(): array
@@ -29,7 +29,7 @@ final class LocatorTest extends TestCase
                 './general.js',
             ],
             [
-                ThemeletLocator::composeString([
+                ViewletLocator::composeString([
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                     'group' => 'main',
@@ -38,7 +38,7 @@ final class LocatorTest extends TestCase
                 '@frontend/styles/main/header.css',
             ],
             [
-                ThemeletLocator::composeString([
+                ViewletLocator::composeString([
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                     'filename' => 'header.css',
@@ -46,7 +46,7 @@ final class LocatorTest extends TestCase
                 '@frontend/styles/header.css',
             ],
             [
-                ThemeletLocator::composeString([
+                ViewletLocator::composeString([
                     'type' => ResourceType::STYLE,
                     'group' => 'main',
                     'filename' => 'header.css',
@@ -54,7 +54,7 @@ final class LocatorTest extends TestCase
                 'styles/main/header.css',
             ],
             [
-                ThemeletLocator::composeString([
+                ViewletLocator::composeString([
                     'namespace' => 'frontend',
                     'group' => 'main',
                     'filename' => 'header.css',
@@ -62,7 +62,7 @@ final class LocatorTest extends TestCase
                 '@frontend/main/header.css',
             ],
             [
-                ThemeletLocator::composeString([
+                ViewletLocator::composeString([
                     'group' => 'main',
                     'filename' => 'header.css',
                 ]),
@@ -101,7 +101,7 @@ final class LocatorTest extends TestCase
     {
         return [
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => ResourceType::STYLE,
                     'namespace' => null,
                     'group' => 'main',
@@ -116,7 +116,7 @@ final class LocatorTest extends TestCase
                 'expectedString' => '@frontend/styles/main/header.css',
             ],
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                     'group' => 'main',
@@ -124,7 +124,7 @@ final class LocatorTest extends TestCase
                 ]),
 
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
                 ],
                 'context' => [
                     'namespace' => 'frontend',
@@ -133,7 +133,7 @@ final class LocatorTest extends TestCase
                 'expectedString' => 'styles/main/header.css',
             ],
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => ResourceType::STYLE,
                     'namespace' => 'parser',
                     'group' => 'main',
@@ -141,7 +141,7 @@ final class LocatorTest extends TestCase
                 ]),
 
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [
                     'namespace' => 'frontend',
@@ -240,7 +240,7 @@ final class LocatorTest extends TestCase
                 'directives' => [],
                 'context' => [],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
@@ -251,11 +251,11 @@ final class LocatorTest extends TestCase
             [
                 '@frontend/main/header.css',
                 'directives' => [
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
                 ],
                 'context' => [],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'namespace' => 'frontend',
                     'group' => 'main',
@@ -265,11 +265,11 @@ final class LocatorTest extends TestCase
             [
                 'styles/main/header.css',
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
                 ],
                 'context' => [],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => null,
@@ -280,12 +280,12 @@ final class LocatorTest extends TestCase
             [
                 'main/header.css',
                 'directives' => [
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
                 ],
                 'context' => [],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => null,
                     'namespace' => null,
@@ -296,15 +296,15 @@ final class LocatorTest extends TestCase
             [
                 'styles/main/header.css',
                 'directives' => [
-                    'type' => ThemeletLocator::COMPONENT_SET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_SET,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                 ],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
@@ -315,15 +315,15 @@ final class LocatorTest extends TestCase
             [
                 '@parser/main/header.css',
                 'directives' => [
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
                 ],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'parser',
@@ -334,11 +334,11 @@ final class LocatorTest extends TestCase
             [
                 '@frontend/styles/main/header.css',
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [],
 
-                'expectedClass' => ThemeletLocator::class,
+                'expectedClass' => ViewletLocator::class,
                 'expectedProperties' => [
                     'type' => ResourceType::STYLE,
                     'namespace' => 'frontend',
@@ -378,19 +378,19 @@ final class LocatorTest extends TestCase
             [
                 'styles/main/header.css',
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_SET,
+                    'namespace' => ViewletLocator::COMPONENT_SET,
                 ],
             ],
             [
                 '@frontend/styles/main/header.css',
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
                 ],
             ],
             [
                 'styles/main/header.css',
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [],
             ],
@@ -405,7 +405,7 @@ final class LocatorTest extends TestCase
     ): void {
         self::expectException(LocatorException::class);
 
-        ThemeletLocator::fromString($string, $directives, $context);
+        ViewletLocator::fromString($string, $directives, $context);
     }
 
 
@@ -413,79 +413,79 @@ final class LocatorTest extends TestCase
     {
         return [
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => ResourceType::STYLE,
                     'namespace' => null,
                     'group' => null,
                     'filename' => 'test.css',
                 ]),
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_SET,
+                    'namespace' => ViewletLocator::COMPONENT_SET,
                 ],
             ],
 
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => null,
                     'namespace' => 'frontend',
                     'group' => null,
                     'filename' => 'test.css',
                 ]),
                 'directives' => [
-                    'type' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [],
             ],
 
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => null,
                     'namespace' => null,
                     'group' => null,
                     'filename' => null,
                 ]),
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
                 ],
             ],
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => null,
                     'namespace' => null,
                     'group' => null,
                     'filename' => '',
                 ]),
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
                 ],
             ],
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => null,
                     'namespace' => null,
                     'group' => null,
                     'filename' => null,
                 ]),
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
-                    'type' => ThemeletLocator::COMPONENT_UNSET,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_UNSET,
                 ],
                 'context' => [
                     'filename' => null,
                 ],
             ],
             [
-                new ThemeletLocator([
+                new ViewletLocator([
                     'type' => null,
                     'namespace' => null,
                     'group' => null,
                     'filename' => null,
                 ]),
                 'directives' => [
-                    'namespace' => ThemeletLocator::COMPONENT_UNSET,
-                    'type' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'namespace' => ViewletLocator::COMPONENT_UNSET,
+                    'type' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 'context' => [
                     'filename' => '',

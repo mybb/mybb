@@ -10,12 +10,12 @@ use MyBB\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\HierarchicalResource;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
 
 /**
  * Prepares an Asset for web usage.
@@ -37,7 +37,7 @@ class Publication
      * Resources declared as contributing to the converted Asset.
      *
      * @var array<string, array{
-     *   themelet: string,
+     *   viewlet: string,
      *   subPath: string,
      * }>
      */
@@ -47,7 +47,7 @@ class Publication
      * @param Processor[] $processors
      */
     public function __construct(
-        private readonly ThemeletAsset $asset,
+        private readonly ViewletAsset $asset,
         public readonly Filesystem $filesystem,
         public readonly Optimization $optimization,
         private array $processors = [],
@@ -64,26 +64,26 @@ class Publication
     /**
      * Returns a list of Resources effectively used as a source for a published Asset.
      */
-    public static function getPublishedAssetResources(ThemeletAsset $asset): ?array
+    public static function getPublishedAssetResources(ViewletAsset $asset): ?array
     {
-        return $asset->getThemelet()->getAssetPublicationData($asset)['sources'] ?? null;
+        return $asset->getViewlet()->getAssetPublicationData($asset)['sources'] ?? null;
     }
 
     /**
      * Returns a list of Assets published using the provided Resource.
      */
-    public static function getAssetsPublishedUsingResource(Resource $resource, ThemeletInterface $themelet): array
+    public static function getAssetsPublishedUsingResource(Resource $resource, ViewletInterface $viewlet): array
     {
         $assets = [];
 
-        foreach ($themelet->getAssetPublicationData() as $namespaceAssetData) {
+        foreach ($viewlet->getAssetPublicationData() as $namespaceAssetData) {
             foreach ($namespaceAssetData as $assetLocatorString => $assetData) {
                 $assetSourceSignatures = $assetData['sources'] ?? [];
 
                 if (in_array(self::getSourceSignature($resource), $assetSourceSignatures)) {
-                    $assetLocator = ThemeletLocator::fromString($assetLocatorString);
+                    $assetLocator = ViewletLocator::fromString($assetLocatorString);
 
-                    $assets[$assetLocatorString] = new ThemeletAsset($assetLocator, $themelet);
+                    $assets[$assetLocatorString] = new ViewletAsset($assetLocator, $viewlet);
                 }
             }
         }
@@ -97,13 +97,13 @@ class Publication
     public static function getSourceSignature(Resource $resource): array
     {
         return [
-            'themelet' =>
+            'viewlet' =>
                 (
                     $resource instanceof HierarchicalResource
                         ? $resource->getResolved()
                         : $resource
                 )
-                ->getThemelet()
+                ->getViewlet()
                 ->getIdentifier(),
             'subPath' => $resource->getLocator()->getSubPath(),
         ];
@@ -112,7 +112,7 @@ class Publication
     /**
      * Whether the given Asset can be published as-is.
      */
-    public static function isPlain(ThemeletAsset $asset): bool
+    public static function isPlain(ViewletAsset $asset): bool
     {
         return self::getBaseProcessor($asset) === null;
     }
@@ -130,7 +130,7 @@ class Publication
      *
      * @return ?class-string<static>
      */
-    private static function getBaseProcessor(ThemeletAsset $asset): ?string
+    private static function getBaseProcessor(ViewletAsset $asset): ?string
     {
         return match ($asset->getResource()->getLanguage()) {
             ResourceLanguage::SASS,
@@ -166,7 +166,7 @@ class Publication
             }
 
             foreach ($sourceResources as $sourceResource) {
-                $resource = $this->asset->getThemelet()->getResource(
+                $resource = $this->asset->getViewlet()->getResource(
                     $this->asset->getLocator()->getSibling($sourceResource['subPath'])
                 );
 
@@ -176,7 +176,7 @@ class Publication
                         !$resource->exists() ||
                         (
                             $resource instanceof HierarchicalResource &&
-                            $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
+                            $resource->getResolved()->getViewlet()->getIdentifier() !== $sourceResource['viewlet']
                         )
                     )
                 ) {
@@ -241,7 +241,7 @@ class Publication
                     $result = $this->asset->write($content, $fh);
 
                     if ($result === true) {
-                        $this->asset->getThemelet()->setAssetPublicationData($this->asset, [
+                        $this->asset->getViewlet()->setAssetPublicationData($this->asset, [
                             'sources' => $this->sources,
                         ]);
                     }

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator;
+namespace MyBB\View\Viewlet\Decorator;
 
 use Exception;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Asset\Publication;
-use MyBB\View\Asset\ThemeletAsset;
+use MyBB\View\Asset\ViewletAsset;
 use MyBB\View\Locator\Locator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
@@ -18,9 +18,9 @@ use MyBB\View\ResourceType;
 use function MyBB\app;
 
 /**
- * Adds asset generation features to a Themelet.
+ * Adds asset generation features to a Viewlet.
  */
-class PublishableThemelet extends ThemeletDecorator
+class PublishableViewlet extends ViewletDecorator
 {
     /**
      * Rely on generated Asset files without validation.
@@ -45,11 +45,11 @@ class PublishableThemelet extends ThemeletDecorator
     public int $publishMode;
 
     /**
-     * Publication data, indexed by namespace, and Asset's Themelet Locator.
+     * Publication data, indexed by namespace, and Asset's Viewlet Locator.
      *
      * @var array<string, ManagedValue<array<string, array{
      *   sources: array{
-     *     themelet: string,
+     *     viewlet: string,
      *     subPath: string,
      *   }
      * }>>>
@@ -59,7 +59,7 @@ class PublishableThemelet extends ThemeletDecorator
     /**
      * Asset objects on which `Publication::publish()` was already called.
      *
-     * @var array<string, ThemeletAsset>
+     * @var array<string, ViewletAsset>
      */
     private array $publishedAssets = [];
 
@@ -100,21 +100,21 @@ class PublishableThemelet extends ThemeletDecorator
     ): Asset {
         return Asset::fromLocator(
             locator: $locator,
-            themelet: $this,
+            viewlet: $this,
             declarationNamespace: $declarationNamespace,
             type: $type,
         );
     }
 
     /**
-     * Publishes and returns an Asset object with the Themelet's context.
+     * Publishes and returns an Asset object with the Viewlet's context.
      */
     public function getPublishedAsset(
         Locator $locator,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
     ): Asset {
-        if ($locator instanceof ThemeletLocator) {
+        if ($locator instanceof ViewletLocator) {
             $locatorString = $locator->getString();
 
             if (
@@ -123,7 +123,7 @@ class PublishableThemelet extends ThemeletDecorator
             ) {
                 $asset = $this->publishedAssets[$locatorString];
             } else {
-                $asset = new ThemeletAsset($locator, $this);
+                $asset = new ViewletAsset($locator, $this);
 
                 $this->publishAsset($asset);
             }
@@ -139,7 +139,7 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Publishes all Themelet Assets.
+     * Publishes all Viewlet Assets.
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
@@ -163,11 +163,11 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Publishes the given Themelet Asset.
+     * Publishes the given Viewlet Asset.
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
-    public function publishAsset(ThemeletAsset $asset, bool $force = false): void
+    public function publishAsset(ViewletAsset $asset, bool $force = false): void
     {
         if ($force || $this->publishMode !== self::PUBLISH_NEVER) {
             $publication = app()->make(Publication::class, [
@@ -183,9 +183,9 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Return Themelet Assets publishable from, or published using, the provided Resource.
+     * Return Viewlet Assets publishable from, or published using, the provided Resource.
      *
-     * @return ThemeletAsset[]
+     * @return ViewletAsset[]
      */
     public function getAssetsFromResource(Resource $resource): array
     {
@@ -196,17 +196,17 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Returns Themelet Assets that can be published.
+     * Returns Viewlet Assets that can be published.
      *
      * @param ?Resource[] $sourceResources
-     * @return ThemeletAsset[]
+     * @return ViewletAsset[]
      */
     public function getPublishableAssets(?array $sourceResources = null): array
     {
         $explicitlyPublishableAssets = $this->getExplicitlyPublishableAssets($sourceResources);
 
         $claimedResources = array_map(
-            fn (ThemeletAsset $asset) => $asset->getResource(),
+            fn (ViewletAsset $asset) => $asset->getResource(),
             $explicitlyPublishableAssets,
         );
 
@@ -225,7 +225,7 @@ class PublishableThemelet extends ThemeletDecorator
      * Returns Assets referenced in the properties file.
      *
      * @param ?Resource[] $sourceResources
-     * @return ThemeletAsset[]
+     * @return ViewletAsset[]
      */
     public function getExplicitlyPublishableAssets(?array $sourceResources = null): array
     {
@@ -245,7 +245,7 @@ class PublishableThemelet extends ThemeletDecorator
             foreach ($this->getAssetProperties($namespace) as $identifier => $asset) {
                 $locator = Locator::fromNamespaceRelativeIdentifier($namespace, $identifier);
 
-                if ($locator instanceof ThemeletLocator) {
+                if ($locator instanceof ViewletLocator) {
                     $asset = $this->getAsset($locator);
 
                     if (in_array($asset->getResource(), $sourceResources)) {
@@ -262,7 +262,7 @@ class PublishableThemelet extends ThemeletDecorator
      * Returns Assets that could be published without being referenced in the properties file.
      *
      * @param ?Resource[] $sourceResources
-     * @return ThemeletAsset[]
+     * @return ViewletAsset[]
      */
     public function getImplicitlyPublishableAssets(?array $sourceResources = null): array
     {
@@ -271,7 +271,7 @@ class PublishableThemelet extends ThemeletDecorator
         foreach ($sourceResources ?? $this->getPublishableResources() as $resource) {
             $resourceLocator = $resource->getLocator();
 
-            $asset = new ThemeletAsset($resourceLocator, $this);
+            $asset = new ViewletAsset($resourceLocator, $this);
 
             if (Publication::isPlain($asset)) {
                 $assets[$resourceLocator->getString()] = $asset;
@@ -299,16 +299,16 @@ class PublishableThemelet extends ThemeletDecorator
         $extension = $this->getExtension();
 
         if ($extension === null) {
-            throw new Exception('Cannot use publishing path for non-Extension Themelet');
+            throw new Exception('Cannot use publishing path for non-Extension Viewlet');
         }
 
-        return ThemeletAsset::WEB_ROOT_RELATIVE_BASE_PATH . $extension->getPackageName();
+        return ViewletAsset::WEB_ROOT_RELATIVE_BASE_PATH . $extension->getPackageName();
     }
 
     /**
-     * Returns metadata related to the most recent publication of the given Themelet Asset.
+     * Returns metadata related to the most recent publication of the given Viewlet Asset.
      */
-    public function getAssetPublicationData(?ThemeletAsset $asset = null): ?array
+    public function getAssetPublicationData(?ViewletAsset $asset = null): ?array
     {
         if ($asset === null) {
             return array_merge(
@@ -325,9 +325,9 @@ class PublishableThemelet extends ThemeletDecorator
     }
 
     /**
-     * Sets metadata related to the most recent publication of the given Themelet Asset.
+     * Sets metadata related to the most recent publication of the given Viewlet Asset.
      */
-    public function setAssetPublicationData(ThemeletAsset $asset, array $data): void
+    public function setAssetPublicationData(ViewletAsset $asset, array $data): void
     {
         $this->assetPublicationData[$asset->getNamespace()]->setNested(
             [$asset->getLocator()->getString()],

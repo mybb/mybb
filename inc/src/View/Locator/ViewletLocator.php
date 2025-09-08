@@ -7,9 +7,9 @@ namespace MyBB\View\Locator;
 use MyBB\View\ResourceType;
 
 /**
- * A reference to a file in a Themelet structure.
+ * A reference to a file in a Viewlet structure.
  */
-class ThemeletLocator extends Locator
+class ViewletLocator extends Locator
 {
     final public const COMPONENT_SET = 2;
     final public const COMPONENT_OPTIONAL = 4;
@@ -70,10 +70,10 @@ class ThemeletLocator extends Locator
         return static::fromString(
             $string,
             [
-                'type' => ThemeletLocator::COMPONENT_UNSET,
+                'type' => ViewletLocator::COMPONENT_UNSET,
                 'namespace' => $contextNamespace === null
-                    ? ThemeletLocator::COMPONENT_SET
-                    : ThemeletLocator::COMPONENT_CONTEXT
+                    ? ViewletLocator::COMPONENT_SET
+                    : ViewletLocator::COMPONENT_CONTEXT
                 ,
             ],
             [
@@ -331,8 +331,8 @@ class ThemeletLocator extends Locator
         return static::fromString(
             $subPath,
             [
-                'type' => ThemeletLocator::COMPONENT_UNSET,
-                'namespace' => ThemeletLocator::COMPONENT_UNSET,
+                'type' => ViewletLocator::COMPONENT_UNSET,
+                'namespace' => ViewletLocator::COMPONENT_UNSET,
             ],
             [
                 'type' => $this->getType(),

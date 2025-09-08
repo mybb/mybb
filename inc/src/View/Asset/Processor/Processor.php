@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Asset\Processor;
 
 use MyBB\View\Asset\Publication;
-use MyBB\View\Asset\ThemeletAsset;
+use MyBB\View\Asset\ViewletAsset;
 
 /**
  * Transforms the given content of an Asset before publication.
@@ -16,7 +16,7 @@ abstract class Processor
 
     public function __construct(
         protected Publication $publication,
-        protected ThemeletAsset $asset,
+        protected ViewletAsset $asset,
     )
     {}
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\NamespaceCargo;
+namespace MyBB\View\Viewlet\NamespaceCargo;
 
 trait EntityTrait
 {

@@ -5,35 +5,35 @@ declare(strict_types=1);
 namespace MyBB\Extensions\Traits;
 
 use BadMethodCallException;
-use MyBB\View\Themelet\Themelet;
+use MyBB\View\Viewlet\Viewlet;
 
 trait ViewExtensionTrait
 {
     /**
-     * The Extension's Themelet.
+     * The Extension's Viewlet.
      */
-    private Themelet $themelet;
+    private Viewlet $viewlet;
 
     /**
-     * Returns the Extension's Themelet.
+     * Returns the Extension's Viewlet.
      */
-    public function getThemelet(): Themelet
+    public function getViewlet(): Viewlet
     {
-        return $this->themelet ??= Themelet::fromExtension($this);
+        return $this->viewlet ??= Viewlet::fromExtension($this);
     }
 
     /**
-     * Returns the absolute path to the Extension's Themelet.
+     * Returns the absolute path to the Extension's Viewlet.
      */
-    public function getThemeletAbsolutePath(): string
+    public function getViewletAbsolutePath(): string
     {
-        return $this->getAbsolutePath() . static::PACKAGE_RELATIVE_THEMELET_PATH;
+        return $this->getAbsolutePath() . static::PACKAGE_RELATIVE_VIEWLET_PATH;
     }
 
     /**
      * Returns the name of the implied namespace.
      */
-    public function getThemeletDirectNamespace(): string
+    public function getViewletDirectNamespace(): string
     {
         throw new BadMethodCallException('Cannot use direct namespace with Extension type `' . static::class . '`');
     }

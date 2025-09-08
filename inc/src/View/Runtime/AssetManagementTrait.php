@@ -8,7 +8,7 @@ use MyBB\View\Asset\Asset;
 use MyBB\View\Exception as ViewException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\ResourceType;
 use SplObjectStorage;
 
@@ -77,9 +77,9 @@ trait AssetManagementTrait
     private array $assetsInDom = [];
 
     /**
-     * Whether attached Asset information has been populated from Themelet declarations.
+     * Whether attached Asset information has been populated from Viewlet declarations.
      */
-    private bool $attachedAssetsPopulatedFromThemelet = false;
+    private bool $attachedAssetsPopulatedFromViewlet = false;
 
     /**
      * Whether the given Asset attaching conditions are satisfied in the given context.
@@ -162,10 +162,10 @@ trait AssetManagementTrait
      */
     public function getAttachedAssets(ResourceType $type, bool $inserting = false): array
     {
-        if (!$this->attachedAssetsPopulatedFromThemelet) {
-            $this->populateAttachedAssetsFromThemelet();
+        if (!$this->attachedAssetsPopulatedFromViewlet) {
+            $this->populateAttachedAssetsFromViewlet();
 
-            $this->attachedAssetsPopulatedFromThemelet = true;
+            $this->attachedAssetsPopulatedFromViewlet = true;
         }
 
         $assets = $this->attachedAssets[$type->value] ?? [];
@@ -186,13 +186,13 @@ trait AssetManagementTrait
     }
 
     /**
-     * Adds Assets for managed insertion into the DOM from Themelet declarations.
+     * Adds Assets for managed insertion into the DOM from Viewlet declarations.
      *
      * @throws ViewException
      */
-    public function populateAttachedAssetsFromThemelet(): void
+    public function populateAttachedAssetsFromViewlet(): void
     {
-        foreach ($this->themelet->getCompositeAssetProperties() as $locatorString => $properties) {
+        foreach ($this->viewlet->getCompositeAssetProperties() as $locatorString => $properties) {
             if ($this->assetApplicableThroughProperties($properties)) {
                 $this->attachAsset(Locator::fromString($locatorString));
             }
@@ -214,13 +214,13 @@ trait AssetManagementTrait
     ): Asset
     {
         $locatorString = $locator->getString([
-            'type' => ThemeletLocator::COMPONENT_SET,
-            'namespace' => ThemeletLocator::COMPONENT_SET,
+            'type' => ViewletLocator::COMPONENT_SET,
+            'namespace' => ViewletLocator::COMPONENT_SET,
         ]);
 
         $type ??= match (get_class($locator)) {
             StaticLocator::class => ResourceType::tryFromFilename($locator->getPath()),
-            ThemeletLocator::class => $locator->getType(),
+            ViewletLocator::class => $locator->getType(),
         };
 
 
@@ -255,13 +255,13 @@ trait AssetManagementTrait
     ): string
     {
         $locatorString = $locator->getString([
-            'type' => ThemeletLocator::COMPONENT_SET,
-            'namespace' => ThemeletLocator::COMPONENT_SET,
+            'type' => ViewletLocator::COMPONENT_SET,
+            'namespace' => ViewletLocator::COMPONENT_SET,
         ]);
 
         $type ??= match (get_class($locator)) {
             StaticLocator::class => ResourceType::tryFromFilename($locator->getPath()),
-            ThemeletLocator::class => $locator->getType(),
+            ViewletLocator::class => $locator->getType(),
         };
 
 
@@ -317,7 +317,7 @@ trait AssetManagementTrait
     }
 
     /**
-     * Returns a published Asset with Properties initialized from the Themelet.
+     * Returns a published Asset with Properties initialized from the Viewlet.
      */
     private function getAsset(Locator $locator, ResourceType $type): Asset
     {
@@ -326,7 +326,7 @@ trait AssetManagementTrait
         if (array_key_exists($locatorString, $this->publishedAssets)) {
             $asset = $this->publishedAssets[$locatorString];
         } else {
-            $asset = $this->themelet->getPublishedAsset(
+            $asset = $this->viewlet->getPublishedAsset(
                 locator: $locator,
                 type: $type,
             );
@@ -335,7 +335,7 @@ trait AssetManagementTrait
 
             $this->addAssetProperties(
                 $asset,
-                $this->themelet->getCompositeAssetProperties($locator),
+                $this->viewlet->getCompositeAssetProperties($locator),
             );
         }
 
@@ -364,7 +364,7 @@ trait AssetManagementTrait
     {
         return array_map(
             fn (string $identifier) => Locator::fromDependencyIdentifier($identifier, $locator),
-            $this->themelet->getCompositeAssetProperties($locator)['depends_on'] ?? [],
+            $this->viewlet->getCompositeAssetProperties($locator)['depends_on'] ?? [],
         );
     }
 

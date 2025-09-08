@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator\Hierarchy;
+namespace MyBB\View\Viewlet\Decorator\Hierarchy;
 
 use MyBB\Cargo\Decorator\RepositoryDecorator;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\Themelet\AssetsTrait;
-use MyBB\View\Themelet\NamespaceCargo\Asset\Repository as AssetRepository;
-use MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository;
-use MyBB\View\Themelet\NamespaceCargo\Repository as NamespaceCargoRepository;
+use MyBB\View\Viewlet\AssetsTrait;
+use MyBB\View\Viewlet\NamespaceCargo\Asset\Repository as AssetRepository;
+use MyBB\View\Viewlet\NamespaceCargo\HierarchicalRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Repository as NamespaceCargoRepository;
 
 trait HierarchicalAssetsTrait
 {

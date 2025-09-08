@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet;
+namespace MyBB\View\Viewlet;
 
 use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\Locator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\NamespaceType;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\Repository;
+use MyBB\View\Viewlet\NamespaceCargo\Repository;
 
 /**
  * @method static self fromExtension(?ViewExtensionInterface $extension = null)
@@ -41,10 +41,10 @@ use MyBB\View\Themelet\NamespaceCargo\Repository;
  * @method array getResourceTypeAbsolutePaths(ResourceType $type)
  * @method array getResources(?array $namespaces = null, ?array $resourceTypes = null)
  * @method array getNamespaceResources(string $namespace, ?array $resourceTypes = null)
- * @method bool hasResource(ThemeletLocator $locator)
- * @method Resource|null getExistingResource(ThemeletLocator $locator)
- * @method Resource|null getResource(ThemeletLocator $locator)
- * @method Resource|null createResource(ThemeletLocator $locator)
+ * @method bool hasResource(ViewletLocator $locator)
+ * @method Resource|null getExistingResource(ViewletLocator $locator)
+ * @method Resource|null getResource(ViewletLocator $locator)
+ * @method Resource|null createResource(ViewletLocator $locator)
  * @method array getResourceProperties()
  */
-interface ThemeletInterface {}
+interface ViewletInterface {}

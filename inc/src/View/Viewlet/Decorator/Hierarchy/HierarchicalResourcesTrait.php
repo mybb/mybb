@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator\Hierarchy;
+namespace MyBB\View\Viewlet\Decorator\Hierarchy;
 
 use MyBB\Cargo\Decorator\RepositoryDecorator;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\Repository as NamespaceCargoRepository;
-use MyBB\View\Themelet\NamespaceCargo\Resource\Repository as ResourceRepository;
-use MyBB\View\Themelet\NamespaceCargo\Resource\Decorator\HierarchicalRepository as HierarchicalResourceRepository;
-use MyBB\View\Themelet\ResourcesTrait;
+use MyBB\View\Viewlet\NamespaceCargo\Repository as NamespaceCargoRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Resource\Repository as ResourceRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Resource\Decorator\HierarchicalRepository as HierarchicalResourceRepository;
+use MyBB\View\Viewlet\ResourcesTrait;
 
 trait HierarchicalResourcesTrait
 {

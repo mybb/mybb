@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet;
+namespace MyBB\View\Viewlet;
 
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\Locator;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\Asset\Repository as AssetRepository;
-use MyBB\View\Themelet\NamespaceCargo\Repository as NamespaceCargoRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Asset\Repository as AssetRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Repository as NamespaceCargoRepository;
 
 trait AssetsTrait
 {
@@ -29,7 +29,7 @@ trait AssetsTrait
     }
 
     /**
-     * Returns an Asset object with the Themelet's context.
+     * Returns an Asset object with the Viewlet's context.
      */
     public function getAsset(
         Locator $locator,
@@ -39,7 +39,7 @@ trait AssetsTrait
     {
         return Asset::fromLocator(
             locator: $locator,
-            themelet: $this,
+            viewlet: $this,
             declarationNamespace: $declarationNamespace,
             type: $type,
         );

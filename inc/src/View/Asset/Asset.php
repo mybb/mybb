@@ -6,12 +6,12 @@ namespace MyBB\View\Asset;
 
 use MyBB;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
-use MyBB\View\Locator\ThemeletLocator;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Locator\ViewletLocator;
+use MyBB\View\ResourceType;
+use MyBB\View\Viewlet\NamespaceCargo\EntityTrait;
+use MyBB\View\Viewlet\ViewletInterface;
 
 use function MyBB\app;
 
@@ -21,14 +21,14 @@ abstract class Asset
 
     public static function fromLocator(
         Locator $locator,
-        ?ThemeletInterface $themelet = null,
+        ?ViewletInterface $viewlet = null,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
     ): static
     {
         return match (get_class($locator)) {
-            ThemeletLocator::class => new ThemeletAsset($locator, $themelet),
-            StaticLocator::class => new StaticAsset($locator, $themelet, $declarationNamespace, $type),
+            ViewletLocator::class => new ViewletAsset($locator, $viewlet),
+            StaticLocator::class => new StaticAsset($locator, $viewlet, $declarationNamespace, $type),
         };
     }
 
@@ -47,14 +47,14 @@ abstract class Asset
         return $this->locator;
     }
 
-    public function getThemelet(): ThemeletInterface
+    public function getViewlet(): ViewletInterface
     {
-        return $this->themelet;
+        return $this->viewlet;
     }
 
     public function getRepository(): RepositoryInterface
     {
-        return $this->getThemelet()->getAssetRepository(
+        return $this->getViewlet()->getAssetRepository(
             $this->getEntityNamespace()
         );
     }

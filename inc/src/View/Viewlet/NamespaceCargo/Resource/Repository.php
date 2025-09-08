@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\NamespaceCargo\Resource;
+namespace MyBB\View\Viewlet\NamespaceCargo\Resource;
 
 use FilesystemIterator;
 use LogicException;
 use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Path;
 
 /**
- * Manages Resources and their declarations in a Themelet's namespace.
+ * Manages Resources and their declarations in a Viewlet's namespace.
  */
-class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implements StoreRepositoryInterface
+class Repository extends \MyBB\View\Viewlet\NamespaceCargo\Repository implements StoreRepositoryInterface
 {
     public const NAME = 'resources';
 
-    public function getRepositoryInThemelet(ThemeletInterface $themelet): RepositoryInterface
+    public function getRepositoryInViewlet(ViewletInterface $viewlet): RepositoryInterface
     {
-        return $themelet->getResourceRepository($this->namespace);
+        return $viewlet->getResourceRepository($this->namespace);
     }
 
     /**
@@ -37,7 +37,7 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
         $results = [];
 
         foreach ($resourceTypes ?? ResourceType::cases() as $resourceType) {
-            $resourceTypeAbsolutePath = $this->themelet->getResourceTypeAbsolutePath(
+            $resourceTypeAbsolutePath = $this->viewlet->getResourceTypeAbsolutePath(
                 $this->namespace,
                 $resourceType,
             );
@@ -53,11 +53,11 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
                 foreach ($files as $file) {
                     $path = Path::makeRelative($file->getRealpath(), $resourceTypeAbsolutePath);
 
-                    $locator = ThemeletLocator::fromString(
+                    $locator = ViewletLocator::fromString(
                         $path,
                         [
-                            'namespace' => ThemeletLocator::COMPONENT_UNSET,
-                            'type' => ThemeletLocator::COMPONENT_UNSET,
+                            'namespace' => ViewletLocator::COMPONENT_UNSET,
+                            'type' => ViewletLocator::COMPONENT_UNSET,
                         ],
                         [
                             'namespace' => $this->namespace,
@@ -75,12 +75,12 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
         return $results;
     }
 
-    public function has(string|ThemeletLocator $key): bool
+    public function has(string|ViewletLocator $key): bool
     {
         return $this->get($key)->exists();
     }
 
-    public function getExisting(string|ThemeletLocator $key): ?Resource
+    public function getExisting(string|ViewletLocator $key): ?Resource
     {
         $resource = $this->get($key);
 
@@ -91,16 +91,16 @@ class Repository extends \MyBB\View\Themelet\NamespaceCargo\Repository implement
         }
     }
 
-    public function get(string|ThemeletLocator $key): Resource
+    public function get(string|ViewletLocator $key): Resource
     {
-        if (!($key instanceof ThemeletLocator)) {
-            $key = ThemeletLocator::fromNamespaceRelativeIdentifier($this->namespace, $key);
+        if (!($key instanceof ViewletLocator)) {
+            $key = ViewletLocator::fromNamespaceRelativeIdentifier($this->namespace, $key);
         }
 
-        return new Resource($this->themelet, $key);
+        return new Resource($this->viewlet, $key);
     }
 
-    public function create(string|ThemeletLocator $key): Resource
+    public function create(string|ViewletLocator $key): Resource
     {
         $resource = $this->get($key);
 

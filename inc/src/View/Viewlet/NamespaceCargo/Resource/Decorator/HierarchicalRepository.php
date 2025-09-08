@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\NamespaceCargo\Resource\Decorator;
+namespace MyBB\View\Viewlet\NamespaceCargo\Resource\Decorator;
 
 use LogicException;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
 use MyBB\Cargo\StoreRepositoryInterface;
 use MyBB\View\HierarchicalResource;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 
 /**
  * An inheritance-aware Resource Repository.
  */
-class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\HierarchicalRepository implements StoreRepositoryInterface
+class HierarchicalRepository extends \MyBB\View\Viewlet\NamespaceCargo\HierarchicalRepository implements StoreRepositoryInterface
 {
     /**
      * @override decorated scope
      */
-    public function has(string|ThemeletLocator $key): bool
+    public function has(string|ViewletLocator $key): bool
     {
         return $this->get($key)->exists();
     }
@@ -27,7 +27,7 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
     /**
      * @override decorated scope
      */
-    public function getExisting(string|ThemeletLocator $key): ?Resource
+    public function getExisting(string|ViewletLocator $key): ?Resource
     {
         $resource = $this->get($key);
 
@@ -41,19 +41,19 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
     /**
      * @override decorated scope
      */
-    public function get(string|ThemeletLocator $key): Resource
+    public function get(string|ViewletLocator $key): Resource
     {
-        if (!($key instanceof ThemeletLocator)) {
-            $key = ThemeletLocator::fromNamespaceRelativeIdentifier($this->namespace, $key);
+        if (!($key instanceof ViewletLocator)) {
+            $key = ViewletLocator::fromNamespaceRelativeIdentifier($this->namespace, $key);
         }
 
-        return new HierarchicalResource($this->themelet, $key);
+        return new HierarchicalResource($this->viewlet, $key);
     }
 
     /**
      * @override decorated
      */
-    public function create(string|ThemeletLocator $key): Resource
+    public function create(string|ViewletLocator $key): Resource
     {
         $resource = $this->getOwnRepository()->get($key);
 
@@ -64,9 +64,9 @@ class HierarchicalRepository extends \MyBB\View\Themelet\NamespaceCargo\Hierarch
         }
     }
 
-    public function getResolved(string|ThemeletLocator $key): ?CargoEntityInterface
+    public function getResolved(string|ViewletLocator $key): ?CargoEntityInterface
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $key = $key->getNamespaceRelativeIdentifier();
         }
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\NamespaceCargo;
+namespace MyBB\View\Viewlet\NamespaceCargo;
 
 use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\ManagedValue\ManagedValue;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 
 use function MyBB\app;
@@ -32,7 +32,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             : ManagedValue::MODE_PASSIVE
         ;
 
-        $managedValueRepository = $this->themelet->getManagedValueRepository();
+        $managedValueRepository = $this->viewlet->getManagedValueRepository();
 
         $this->resolvedProperties = $managedValueRepository->create([
             'hierarchy.properties.' . $this->getDecorated()::NAME,
@@ -70,8 +70,8 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             )
             ->withLoad(
                 fn (array $data) => array_map(
-                    fn (string $identifier) => $this->getRepositoryInThemelet(
-                        $this->themelet->getThemelet($identifier)
+                    fn (string $identifier) => $this->getRepositoryInViewlet(
+                        $this->viewlet->getViewlet($identifier)
                     ),
                     $data,
                 ),
@@ -83,31 +83,31 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             );
     }
 
-    public function getResolvedRepository(string|ThemeletLocator $key): ?RepositoryInterface
+    public function getResolvedRepository(string|ViewletLocator $key): ?RepositoryInterface
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
         return parent::getResolvedRepository($key);
     }
 
-    public function resolveRepository(string|ThemeletLocator $key): ?RepositoryInterface
+    public function resolveRepository(string|ViewletLocator $key): ?RepositoryInterface
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
         return parent::resolveRepository($key);
     }
 
-    public function queryRepository(string|ThemeletLocator $key): ?RepositoryInterface
+    public function queryRepository(string|ViewletLocator $key): ?RepositoryInterface
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $locator = $key;
             $key = $key->getNamespaceRelativeIdentifier();
         } else {
-            $locator = ThemeletLocator::fromNamespaceRelativeIdentifier(
+            $locator = ViewletLocator::fromNamespaceRelativeIdentifier(
                 $this->namespace,
                 $key,
             );
@@ -125,9 +125,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
         }
     }
 
-    public function getClosestEntityAncestorRepository(string|ThemeletLocator $key): ?RepositoryInterface
+    public function getClosestEntityAncestorRepository(string|ViewletLocator $key): ?RepositoryInterface
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
@@ -137,9 +137,9 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     /**
      * @return iterable<RepositoryInterface>
      */
-    public function getEntityAncestorRepositories(string|ThemeletLocator $key): iterable
+    public function getEntityAncestorRepositories(string|ViewletLocator $key): iterable
     {
-        if ($key instanceof ThemeletLocator) {
+        if ($key instanceof ViewletLocator) {
             $key = $key->getNamespaceRelativeIdentifier();
         }
 
@@ -147,14 +147,14 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     }
 
     /**
-     * Returns the concrete, non-inheritance-aware Repository associated with the concrete Themelet.
+     * Returns the concrete, non-inheritance-aware Repository associated with the concrete Viewlet.
      *
      * @override decorated
      */
     public function getOwnRepository(): RepositoryInterface
     {
-        return $this->getRepositoryInThemelet(
-            $this->themelet->getOwnThemelet()
+        return $this->getRepositoryInViewlet(
+            $this->viewlet->getOwnViewlet()
         );
     }
 
@@ -209,10 +209,10 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
     {
         $results = [];
 
-        $themelets = $this->themelet->getThemeletsByNamespace($this->namespace);
+        $viewlets = $this->viewlet->getViewletsByNamespace($this->namespace);
 
-        foreach ($themelets as $themelet) {
-            $results[$themelet->getIdentifier()] = $this->getRepositoryInThemelet($themelet);
+        foreach ($viewlets as $viewlet) {
+            $results[$viewlet->getIdentifier()] = $this->getRepositoryInViewlet($viewlet);
         }
 
         return $results;

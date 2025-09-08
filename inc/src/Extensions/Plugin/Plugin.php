@@ -23,13 +23,13 @@ class Plugin extends Extension implements ViewExtensionInterface
     public const REPOSITORY_CLASS = Repository::class;
 
 
-    public const PACKAGE_RELATIVE_THEMELET_PATH = '/view';
+    public const PACKAGE_RELATIVE_VIEWLET_PATH = '/view';
 
     public const NAMESPACE_TYPE_ACCESS = [
         NamespaceType::EXTENSION_OWN,
     ];
 
-    public const THEMELET_DIRECT_NAMESPACE = true;
+    public const VIEWLET_DIRECT_NAMESPACE = true;
 
 
     /**
@@ -72,7 +72,7 @@ class Plugin extends Extension implements ViewExtensionInterface
     }
 
 
-    public function getThemeletDirectNamespace(): string
+    public function getViewletDirectNamespace(): string
     {
         return NamespaceType::EXTENSION->getNamespaceFromIdentifier(
             $this->getPackageName(),

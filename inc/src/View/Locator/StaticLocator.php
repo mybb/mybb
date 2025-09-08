@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Locator;
 
 /**
- * A reference to an Asset with a static path (outside any Themelet structure).
+ * A reference to an Asset with a static path (outside any Viewlet structure).
  */
 class StaticLocator extends Locator
 {

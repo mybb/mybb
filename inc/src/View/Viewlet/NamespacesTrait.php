@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet;
+namespace MyBB\View\Viewlet;
 
 use FilesystemIterator;
 use InvalidArgumentException;
@@ -12,7 +12,7 @@ use SplFileInfo;
 trait NamespacesTrait
 {
     /**
-     * The types of namespaces the Themelet can contain.
+     * The types of namespaces the Viewlet can contain.
      *
      * @var NamespaceType[]
      */
@@ -20,7 +20,7 @@ trait NamespacesTrait
 
     /**
      * An implied and only namespace for Resources,
-     * located directly in the Themelet directory.
+     * located directly in the Viewlet directory.
      */
     private ?string $directNamespace = null;
 

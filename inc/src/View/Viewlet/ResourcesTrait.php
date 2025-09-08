@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet;
+namespace MyBB\View\Viewlet;
 
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\Repository as NamespaceCargoRepository;
-use MyBB\View\Themelet\NamespaceCargo\Resource\Repository as ResourceRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Repository as NamespaceCargoRepository;
+use MyBB\View\Viewlet\NamespaceCargo\Resource\Repository as ResourceRepository;
 
 trait ResourcesTrait
 {
@@ -85,28 +85,28 @@ trait ResourcesTrait
         return $repository->getAll($resourceTypes);
     }
 
-    public function hasResource(ThemeletLocator $locator): bool
+    public function hasResource(ViewletLocator $locator): bool
     {
         $repository = $this->getResourceRepository($locator->getNamespace());
 
         return $repository->has($locator);
     }
 
-    public function getExistingResource(ThemeletLocator $locator): ?Resource
+    public function getExistingResource(ViewletLocator $locator): ?Resource
     {
         $repository = $this->getResourceRepository($locator->getNamespace());
 
         return $repository->getExisting($locator);
     }
 
-    public function getResource(ThemeletLocator $locator): Resource
+    public function getResource(ViewletLocator $locator): Resource
     {
         $repository = $this->getResourceRepository($locator->getNamespace());
 
         return $repository->get($locator);
     }
 
-    public function createResource(ThemeletLocator $locator): ?Resource
+    public function createResource(ViewletLocator $locator): ?Resource
     {
         $repository = $this->getResourceRepository($locator->getNamespace());
 

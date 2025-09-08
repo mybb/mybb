@@ -26,7 +26,7 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
     public const REPOSITORY_CLASS = Repository::class;
 
 
-    public const PACKAGE_RELATIVE_THEMELET_PATH = ''; // same directory
+    public const PACKAGE_RELATIVE_VIEWLET_PATH = ''; // same directory
 
     public const NAMESPACE_TYPE_ACCESS = [
         NamespaceType::GENERIC,

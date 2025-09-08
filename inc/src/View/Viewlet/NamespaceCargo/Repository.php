@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\NamespaceCargo;
+namespace MyBB\View\Viewlet\NamespaceCargo;
 
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Optimization;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
 
 use function MyBB\app;
 
 /**
- * The base class for Repositories managing entities and related manifests in a Themelet's namespace.
+ * The base class for Repositories managing entities and related manifests in a Viewlet's namespace.
  */
 abstract class Repository extends \MyBB\Cargo\Repository
 {
     public function __construct(
-        public readonly ?ThemeletInterface $themelet,
+        public readonly ?ViewletInterface $viewlet,
         public readonly ?string $namespace,
     ) {
         $this->inheritanceManagedValueValidationType =
@@ -25,19 +25,19 @@ abstract class Repository extends \MyBB\Cargo\Repository
 
     public function getHierarchicalIdentifier(): string
     {
-        return $this->themelet->getIdentifier();
+        return $this->viewlet->getIdentifier();
     }
 
     /**
      * Returns a Repository with the same type and namespace
-     * from the provided Themelet.
+     * from the provided Viewlet.
      */
-    abstract public function getRepositoryInThemelet(ThemeletInterface $themelet): RepositoryInterface;
+    abstract public function getRepositoryInViewlet(ViewletInterface $viewlet): RepositoryInterface;
 
     protected function getPropertiesFilePath(): string
     {
         return
-            $this->themelet->getNamespaceAbsolutePath($this->namespace) .
+            $this->viewlet->getNamespaceAbsolutePath($this->namespace) .
             '/' .
             static::NAME .
             '.json'

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator\Hierarchy;
+namespace MyBB\View\Viewlet\Decorator\Hierarchy;
 
 use MyBB\View\NamespaceType;
 
@@ -23,7 +23,7 @@ trait HierarchicalNamespacesTrait
     public function getNamespaces(): array
     {
         return array_keys(
-            $this->getThemeletsByNamespace()
+            $this->getViewletsByNamespace()
         );
     }
 
@@ -37,9 +37,9 @@ trait HierarchicalNamespacesTrait
     {
         $pathsByNamespace = [];
 
-        foreach ($this->getThemeletsByNamespace() as $namespace => $themelets) {
-            foreach ($themelets as $themelet) {
-                $pathsByNamespace[$namespace][] = $themelet->getNamespaceAbsolutePath($namespace);
+        foreach ($this->getViewletsByNamespace() as $namespace => $viewlets) {
+            foreach ($viewlets as $viewlet) {
+                $pathsByNamespace[$namespace][] = $viewlet->getNamespaceAbsolutePath($namespace);
             }
         }
 

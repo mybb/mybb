@@ -7,9 +7,9 @@ namespace MyBB\View;
 use Exception;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
-use MyBB\View\Locator\ThemeletLocator;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Locator\ViewletLocator;
+use MyBB\View\Viewlet\NamespaceCargo\EntityTrait;
+use MyBB\View\Viewlet\ViewletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
 use UnexpectedValueException;
@@ -18,13 +18,13 @@ readonly class Resource implements CargoEntityInterface
 {
     use EntityTrait;
 
-    protected ThemeletInterface $themelet;
+    protected ViewletInterface $viewlet;
 
-    protected ThemeletLocator $locator;
+    protected ViewletLocator $locator;
 
-    public function __construct(ThemeletInterface $themelet, ThemeletLocator $locator)
+    public function __construct(ViewletInterface $viewlet, ViewletLocator $locator)
     {
-        $this->themelet = $themelet;
+        $this->viewlet = $viewlet;
         $this->locator = $locator;
     }
 
@@ -103,7 +103,7 @@ readonly class Resource implements CargoEntityInterface
     public function getAbsolutePath(): string
     {
         return
-            $this->getThemelet()->getResourceTypeAbsolutePath($this->getNamespace(), $this->getType()) .
+            $this->getViewlet()->getResourceTypeAbsolutePath($this->getNamespace(), $this->getType()) .
             '/' .
             $this->getSubPath()
         ;
@@ -120,12 +120,12 @@ readonly class Resource implements CargoEntityInterface
         ;
     }
 
-    public function getThemelet(): ThemeletInterface
+    public function getViewlet(): ViewletInterface
     {
-        return $this->themelet;
+        return $this->viewlet;
     }
 
-    public function getLocator(): ThemeletLocator
+    public function getLocator(): ViewletLocator
     {
         return $this->locator;
     }
@@ -164,7 +164,7 @@ readonly class Resource implements CargoEntityInterface
 
     public function getRepository(): RepositoryInterface
     {
-        return $this->getThemelet()->getResourceRepository(
+        return $this->getViewlet()->getResourceRepository(
             $this->getNamespace()
         );
     }
@@ -173,7 +173,7 @@ readonly class Resource implements CargoEntityInterface
     {
         if (
             !Path::isBasePath(
-                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
+                $this->getViewlet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
                 $path,
             ) ||
             Path::hasExtension($path, 'php', true)

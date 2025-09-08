@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace MyBB\Twig;
 
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
 use Twig\Error\LoaderError;
 use Twig\Loader\FilesystemLoader;
 
 /**
- * Loads templates from the provided Themelet.
+ * Loads templates from the provided Viewlet.
  */
-class ThemeletLoader extends FilesystemLoader
+class ViewletLoader extends FilesystemLoader
 {
     public function __construct(
-        private readonly ThemeletInterface $themelet,
+        private readonly ViewletInterface $viewlet,
         private readonly ?string $mainNamespace = null,
     ) {
         parent::__construct();
@@ -39,13 +39,13 @@ class ThemeletLoader extends FilesystemLoader
             throw new LoaderError($this->errorCache[$name]);
         }
 
-        $locator = ThemeletLocator::fromResourceContextString(
+        $locator = ViewletLocator::fromResourceContextString(
             $name,
             ResourceType::TEMPLATE,
             $this->mainNamespace,
         );
 
-        $path = $this->themelet->getExistingResource($locator)?->getAbsolutePath();
+        $path = $this->viewlet->getExistingResource($locator)?->getAbsolutePath();
 
         if ($path !== null) {
             $this->cache[$name] = $path;

@@ -7,16 +7,16 @@ namespace MyBB\View\Asset;
 use LogicException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
 
 /**
- * An Asset not published from Themelet sources.
+ * An Asset not published from Viewlet sources.
  */
 class StaticAsset extends Asset
 {
     public function __construct(
         readonly protected StaticLocator $locator,
-        readonly protected ?ThemeletInterface $themelet = null,
+        readonly protected ?ViewletInterface $viewlet = null,
         readonly protected ?string $declarationNamespace = null,
         protected ?ResourceType $type = null,
     ) {}

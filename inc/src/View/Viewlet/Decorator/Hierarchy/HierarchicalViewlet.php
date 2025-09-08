@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator\Hierarchy;
+namespace MyBB\View\Viewlet\Decorator\Hierarchy;
 
 use MyBB\Extensions\Contracts\HierarchicalExtensionInterface;
 use MyBB\Extensions\Repository;
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Optimization;
-use MyBB\View\Themelet\Decorator\ThemeletDecorator;
-use MyBB\View\Themelet\Themelet;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\Decorator\ViewletDecorator;
+use MyBB\View\Viewlet\Viewlet;
+use MyBB\View\Viewlet\ViewletInterface;
 
 /**
- * Adds awareness of parent and base extensions to a Themelet.
+ * Adds awareness of parent and base extensions to a Viewlet.
  */
-class HierarchicalThemelet extends ThemeletDecorator
+class HierarchicalViewlet extends ViewletDecorator
 {
     use HierarchicalAssetsTrait;
     use HierarchicalNamespacesTrait;
@@ -27,30 +27,30 @@ class HierarchicalThemelet extends ThemeletDecorator
     private ManagedValue $ancestors;
 
     /**
-     * @var ThemeletInterface[]
+     * @var ViewletInterface[]
      */
-    private array $baseThemelets = [];
+    private array $baseViewlets = [];
 
     /**
-     * @var array<string, ThemeletInterface>
+     * @var array<string, ViewletInterface>
      */
-    private array $themelets;
+    private array $viewlets;
 
     /**
-     * @var array<string, ThemeletInterface[]>
+     * @var array<string, ViewletInterface[]>
      */
-    private array $themeletsByNamespace;
+    private array $viewletsByNamespace;
 
     /**
      * @param Repository<HierarchicalExtensionInterface> $extensionRepository The Repository with ancestor Extensions.
      */
     public function __construct(
-        Themelet $themelet,
+        Viewlet $viewlet,
         private readonly Repository $extensionRepository,
         Optimization $optimization,
     )
     {
-        parent::__construct($themelet);
+        parent::__construct($viewlet);
 
         $managedValueRepository = $this->getManagedValueRepository();
 
@@ -62,7 +62,7 @@ class HierarchicalThemelet extends ThemeletDecorator
         $this->ancestors = $managedValueRepository->create('hierarchy.ancestors')
             ->withDefault(
                 /**
-                 * @type array<string, ThemeletInterface>
+                 * @type array<string, ViewletInterface>
                  */
                 [],
             )
@@ -73,7 +73,7 @@ class HierarchicalThemelet extends ThemeletDecorator
             )
             ->withLoad(
                 fn (array $value) => array_map(
-                    $this->getThemelet(...),
+                    $this->getViewlet(...),
                     $value,
                 ),
                 $storeMode,
@@ -87,81 +87,81 @@ class HierarchicalThemelet extends ThemeletDecorator
     }
 
     /**
-     * @param ThemeletInterface[] $themelets
+     * @param ViewletInterface[] $viewlets
      */
-    public function setBaseThemelets(array $themelets): void
+    public function setBaseViewlets(array $viewlets): void
     {
-        $this->baseThemelets = $themelets;
+        $this->baseViewlets = $viewlets;
     }
 
-    public function getOwnThemelet(): Themelet
+    public function getOwnViewlet(): Viewlet
     {
-        /** @var Themelet */
+        /** @var Viewlet */
         return $this->getDecorated();
     }
 
     /**
-     * Returns Themelets by target namespace in descending priority.
+     * Returns Viewlets by target namespace in descending priority.
      *
-     * @return array<string, ThemeletInterface>
+     * @return array<string, ViewletInterface>
      */
-    public function getThemeletsByNamespace(?string $namespace = null): array
+    public function getViewletsByNamespace(?string $namespace = null): array
     {
-        if (!isset($this->themeletsByNamespace)) {
-            $this->themeletsByNamespace = [];
+        if (!isset($this->viewletsByNamespace)) {
+            $this->viewletsByNamespace = [];
 
-            foreach ($this->getThemelets() as $themelet) {
-                $names = $themelet->getNamespaces();
+            foreach ($this->getViewlets() as $viewlet) {
+                $names = $viewlet->getNamespaces();
 
                 foreach ($names as $name) {
-                    $this->themeletsByNamespace[$name][] = $themelet;
+                    $this->viewletsByNamespace[$name][] = $viewlet;
                 }
             }
         }
 
         if ($namespace === null) {
-            return $this->themeletsByNamespace;
+            return $this->viewletsByNamespace;
         } else {
-            return $this->themeletsByNamespace[$namespace] ?? [];
+            return $this->viewletsByNamespace[$namespace] ?? [];
         }
     }
 
-    public function getThemelet(string $identifier): ?ThemeletInterface
+    public function getViewlet(string $identifier): ?ViewletInterface
     {
-        return $this->extensionRepository->get($identifier)->getThemelet();
+        return $this->extensionRepository->get($identifier)->getViewlet();
     }
 
     /**
-     * Returns source Themelets in descending priority.
+     * Returns source Viewlets in descending priority.
      *
-     * @return array<string, ThemeletInterface>
+     * @return array<string, ViewletInterface>
      */
-    private function getThemelets(): array
+    private function getViewlets(): array
     {
-        if (!isset($this->themelets)) {
-            $themelets = [
-                // the Themelet itself
-                $this->getOwnThemelet(),
+        if (!isset($this->viewlets)) {
+            $viewlets = [
+                // the Viewlet itself
+                $this->getOwnViewlet(),
 
-                // the Themelet's ancestors
+                // the Viewlet's ancestors
                 ...$this->getAncestors(),
 
                 // the common inheritance base
-                ...$this->baseThemelets,
+                ...$this->baseViewlets,
             ];
 
-            $this->themelets = [];
+            $this->viewlets = [];
 
-            foreach ($themelets as $themelet) {
-                $this->themelets[$themelet->getIdentifier()] = $themelet;
+            foreach ($viewlets as $viewlet) {
+                $this->viewlets[$viewlet->getIdentifier()] = $viewlet;
             }
         }
 
-        return $this->themelets;
+        return $this->viewlets;
     }
 
     /**
-     * @return array<string, ThemeletInterface>
+     * @return array<string, ViewletInterface>
      */
     private function getAncestors(): array
     {
@@ -169,7 +169,7 @@ class HierarchicalThemelet extends ThemeletDecorator
     }
 
     /**
-     * @return array<string, ThemeletInterface>
+     * @return array<string, ViewletInterface>
      */
     private function buildAncestors(&$stamp = []): array
     {
@@ -183,7 +183,7 @@ class HierarchicalThemelet extends ThemeletDecorator
 
         foreach ($extensions as $extension) {
             if ($extension !== $this->getExtension()) {
-                $results[$extension->getPackageName()] = $extension->getThemelet();
+                $results[$extension->getPackageName()] = $extension->getViewlet();
             }
 
             $stamp[$extension->getPackageName()] = $extension->getManifestStamp();

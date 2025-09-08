@@ -50,7 +50,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->singleton(LoaderInterface::class, function (Container $container) {
             $view = $container->get(Runtime::class);
 
-            return new ThemeletLoader($view->themelet, $view->getMainNamespace());
+            return new ViewletLoader($view->viewlet, $view->getMainNamespace());
         });
 
         $this->app->singleton('twig.options', function (Container $container) {

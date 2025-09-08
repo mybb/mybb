@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet\Decorator;
+namespace MyBB\View\Viewlet\Decorator;
 
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 
 /**
  * Merges common data from active namespaces.
  */
-class CompositeThemelet extends ThemeletDecorator
+class CompositeViewlet extends ViewletDecorator
 {
     /**
      * Namespaces from which Resources are used.
@@ -104,7 +104,7 @@ class CompositeThemelet extends ThemeletDecorator
     {
         return match (get_class($locator)) {
             StaticLocator::class => $this->getAppliedNamespaces(),
-            ThemeletLocator::class => [$locator->getNamespace()],
+            ViewletLocator::class => [$locator->getNamespace()],
         };
     }
 }

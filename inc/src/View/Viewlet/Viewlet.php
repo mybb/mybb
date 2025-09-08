@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View\Themelet;
+namespace MyBB\View\Viewlet;
 
 use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
@@ -12,13 +12,13 @@ use function MyBB\app;
 /**
  * A UI package containing Resources and metadata.
  */
-class Themelet implements ThemeletInterface
+class Viewlet implements ViewletInterface
 {
     use AssetsTrait;
     use NamespacesTrait;
     use ResourcesTrait;
 
-    public const CACHE_BASE_PATH = MYBB_ROOT . 'cache/themelets/';
+    public const CACHE_BASE_PATH = MYBB_ROOT . 'cache/viewlets/';
 
     private ?ViewExtensionInterface $extension = null;
 
@@ -49,7 +49,7 @@ class Themelet implements ThemeletInterface
     {
         if (!isset($this->managedValueRepository)) {
             $this->managedValueRepository = app(ManagedValueRepository::class, [
-                'path' => ['themelets', $this->getIdentifier()],
+                'path' => ['viewlets', $this->getIdentifier()],
             ]);
         }
 
@@ -61,12 +61,12 @@ class Themelet implements ThemeletInterface
         if ($extension !== null) {
             $this->extension = $extension;
 
-            $this->absolutePath = $extension->getThemeletAbsolutePath();
+            $this->absolutePath = $extension->getViewletAbsolutePath();
 
             $this->namespaceTypeAccess = $extension::NAMESPACE_TYPE_ACCESS;
 
-            if ($extension::THEMELET_DIRECT_NAMESPACE) {
-                $this->directNamespace = $extension->getThemeletDirectNamespace();
+            if ($extension::VIEWLET_DIRECT_NAMESPACE) {
+                $this->directNamespace = $extension->getViewletDirectNamespace();
             }
         }
     }

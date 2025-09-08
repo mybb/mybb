@@ -8,7 +8,7 @@ use MyBB\Stopwatch\Stopwatch;
 use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Runtime\Runtime;
 use Twig\Environment;
 
@@ -48,8 +48,8 @@ function asset(
             $locatorObject = Locator::fromString(
                 $locator,
                 [
-                    'type' => ThemeletLocator::COMPONENT_SET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_SET,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 [
                     // may differ from evoking template's namespace
@@ -116,8 +116,8 @@ function assetUrl(
             $locatorObject = Locator::fromString(
                 $locator,
                 [
-                    'type' => ThemeletLocator::COMPONENT_SET,
-                    'namespace' => ThemeletLocator::COMPONENT_CONTEXT,
+                    'type' => ViewletLocator::COMPONENT_SET,
+                    'namespace' => ViewletLocator::COMPONENT_CONTEXT,
                 ],
                 [
                     // may differ from evoking template's namespace
@@ -127,7 +127,7 @@ function assetUrl(
         }
     }
 
-    $asset = $view->themelet->getPublishedAsset($locatorObject);
+    $asset = $view->viewlet->getPublishedAsset($locatorObject);
 
     return $asset->getUrl($useCdn);
 }
