@@ -21,7 +21,7 @@ $upgrade_detail = array(
 function upgrade100_dbchanges()
 {
     global $db;
-    
+
     if ($db->type == 'sqlite') {
         $db->close_cursors();
     }
@@ -226,9 +226,15 @@ function upgrade100_indexes()
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_regip ON ".TABLE_PREFIX."users (regip);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_lastip ON ".TABLE_PREFIX."users (lastip);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."warnings_uid ON ".TABLE_PREFIX."warnings (uid);";
+    }
 
-        foreach ($indexes as $index) {
-            $db->write_query($index);
-        }
+    if ($db->type == 'sqlite') {
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."forumsread_fid_uid_uq ON ".TABLE_PREFIX."forumsread (fid, uid);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsread_tid_uid_uq ON ".TABLE_PREFIX."threadsread (tid, uid);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_username_uq ON ".TABLE_PREFIX."users (username);";
+    }
+
+    foreach ($indexes as $index) {
+        $db->write_query($index);
     }
 }
