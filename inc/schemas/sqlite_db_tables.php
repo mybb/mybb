@@ -308,7 +308,8 @@ $tables[] = "CREATE TABLE mybb_forums (
 $tables[] = "CREATE TABLE mybb_forumsread (
 	fid int NOT NULL default '0',
 	uid int NOT NULL default '0',
-	dateline int(10) NOT NULL default '0'
+	dateline int(10) NOT NULL default '0',
+	UNIQUE (fid, uid)
 );";
 
 $tables[] = "CREATE INDEX mybb_forumsread_dateline ON mybb_forumsread (dateline);";
@@ -908,7 +909,8 @@ $tables[] = "CREATE INDEX mybb_threads_uid ON mybb_threads (uid);";
 $tables[] = "CREATE TABLE mybb_threadsread (
 	tid int NOT NULL default '0',
 	uid int NOT NULL default '0',
-	dateline int(10) NOT NULL default '0'
+	dateline int(10) NOT NULL default '0',
+	UNIQUE (tid, uid)
 );";
 
 $tables[] = "CREATE INDEX mybb_threadsread_dateline ON mybb_threadsread (dateline);";
@@ -1110,7 +1112,8 @@ $tables[] = "CREATE TABLE mybb_users (
 	loginattempts smallint(2) NOT NULL default '0',
 	loginlockoutexpiry int NOT NULL default '0',
 	usernotes TEXT NOT NULL,
-	sourceeditor tinyint(1) NOT NULL default '0'
+	sourceeditor tinyint(1) NOT NULL default '0',
+	UNIQUE (username)
 );";
 
 $tables[] = "CREATE INDEX mybb_users_usergroup ON mybb_users (usergroup);";
