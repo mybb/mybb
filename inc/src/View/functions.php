@@ -23,7 +23,7 @@ const DEFAULT_THEME_PACKAGE = 'core.base';
  * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
  * @param ResourceType|string|null $type The Asset type identifier. Deduced from `$locator` if not provided.
  * @param array $attributes Extra attributes to add to the HTML tag.
- * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
+ * @param bool $return Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
  *
  * @throws LocatorException|Exception
  *
@@ -34,7 +34,7 @@ function asset(
     bool $static = false,
     ResourceType|string|null $type = null,
     array $attributes = [],
-    bool $local = false,
+    bool $return = false,
 ): ?string
 {
     $view = app(Runtime::class);
@@ -65,7 +65,7 @@ function asset(
         $typeObject = $type;
     }
 
-    if ($local) {
+    if ($return) {
         return $view->getAssetForInsertion(
             locator: $locatorObject,
             properties: [

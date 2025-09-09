@@ -62,7 +62,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
      * @param string $locator The path to the Asset.
      * @param bool $static Whether `$locatorString` is a literal path (not managed by the Theme System).
      * @param ?string $type The Asset type identifier. Deduced from `$path` if not provided.
-     * @param bool $local Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
+     * @param bool $return Whether the Asset HTML tag should be returned, rather than delegating the appending of it.
      *
      * @api
      */
@@ -71,7 +71,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
         bool $static = false,
         ?string $type = null,
         array $attributes = [],
-        bool $local = false,
+        bool $return = false,
     ): ?string
     {
         return asset(...func_get_args());

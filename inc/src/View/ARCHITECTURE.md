@@ -374,7 +374,7 @@ Asset Management features may be declared using:
 
 - ##### **API functions**
   PHP and Twig Template functions used for dynamic declarations:
-  - `asset()`, used to declare, insert, and render Assets for local HTML inclusion (`local: true`).
+  - `asset()`, used to declare, insert, and render Assets for local HTML inclusion (`return: true`).
   - `asset_url()`, used to access the web-accessible Asset path.
 
 <br>
@@ -385,7 +385,7 @@ Declaration Type | ℹ Metadata | ℹ Content | 🚥 Path | 🚥 HTML | 🚥 Pla
 -|-|-|-|-|-
 Asset Properties | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
 `asset()` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
-`asset(local: true)` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No
+`asset(return: true)` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No
 Hardcoded `asset_url()` | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ❌ No
 Hardcoded | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No
 
