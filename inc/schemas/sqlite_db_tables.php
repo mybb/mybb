@@ -21,7 +21,7 @@ $tables[] = "CREATE INDEX mybb_adminlog_module_action ON mybb_adminlog (module, 
 $tables[] = "CREATE INDEX mybb_adminlog_uid ON mybb_adminlog (uid);";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
-	uid int NOT NULL default '0',
+	uid INTEGER PRIMARY KEY,
 	cpstyle varchar(50) NOT NULL default '',
 	cplanguage varchar(50) NOT NULL default '',
 	codepress tinyint(1) NOT NULL default '1',
@@ -636,7 +636,7 @@ $tables[] = "CREATE TABLE mybb_questions (
 );";
 
 $tables[] = "CREATE TABLE mybb_questionsessions (
-	sid varchar(32) NOT NULL default '',
+	sid varchar(32) NOT NULL default '' PRIMARY KEY,
 	qid int NOT NULL default '0',
 	dateline int NOT NULL default '0'
 );";
@@ -690,7 +690,7 @@ $tables[] = "CREATE TABLE mybb_securitylog (
 $tables[] = "CREATE INDEX mybb_securitylog_uid ON mybb_securitylog (uid);";
 
 $tables[] = "CREATE TABLE mybb_searchlog (
-	sid varchar(32) NOT NULL default '',
+	sid varchar(32) NOT NULL default '' PRIMARY KEY,
 	uid int NOT NULL default '0',
 	dateline int NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default '',
@@ -702,7 +702,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
 );";
 
 $tables[] = "CREATE TABLE mybb_sessions (
-	sid varchar(32) NOT NULL default '',
+	sid varchar(32) NOT NULL default '' PRIMARY KEY,
 	uid int NOT NULL default '0',
 	ip blob(16) NOT NULL default '',
 	time int NOT NULL default '0',
@@ -927,7 +927,7 @@ $tables[] = "CREATE INDEX mybb_threadsubscriptions_uid ON mybb_threadsubscriptio
 $tables[] = "CREATE INDEX mybb_threadsubscriptions_tid_notification ON mybb_threadsubscriptions (tid, notification);";
 
 $tables[] = "CREATE TABLE mybb_userfields (
-	ufid int NOT NULL default '0',
+	ufid INTEGER PRIMARY KEY,
 	fid1 TEXT NOT NULL,
 	fid2 TEXT NOT NULL,
 	fid3 TEXT NOT NULL,
