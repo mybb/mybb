@@ -89,7 +89,10 @@ elseif(!$mybb->user['uid'] && !empty($mybb->cookies['mybblang']) && $lang->langu
 }
 else
 {
-	$mybb->settings['bblanguage'] = 'english';
+	if(empty($mybb->settings['bblanguage']) || !$lang->language_exists($mybb->settings['bblanguage']))
+	{
+		$mybb->settings['bblanguage'] = 'english';
+	}
 }
 
 // Load language
