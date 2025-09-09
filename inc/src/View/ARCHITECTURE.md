@@ -586,7 +586,7 @@ extension-directory-path  = plugin-directory-path
 plugin-directory-path = plugins-directory-path "/" plugin-package-name
 theme-directory-path  = themes-directory-path "/" theme-package-name
 
-extension-manifest-file-path   = extension-directory-path "/manifest.json"
+extension-manifest-file-path   = extension-directory-path "/extension.json"
 
 ; Viewlets
 viewlet-directory-path = plugin-directory-path "/view"

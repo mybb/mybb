@@ -23,7 +23,7 @@ abstract class Extension
     /**
      * The path to the manifest file, relative to the Extension's package directory.
      */
-    final public const MANIFEST_FILE_PATH = 'manifest.json';
+    final public const MANIFEST_FILE_PATH = 'extension.json';
 
     /**
      * The absolute path to the directory containing Extension packages of the type.
