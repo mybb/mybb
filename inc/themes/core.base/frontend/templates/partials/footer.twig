@@ -4,7 +4,7 @@
     <footer class="footer">
         <div class="wrapper wrapper--footer">
             <div class="footer__selectors">
-                {% if mybb.settings.footer.langselect is iterable and mybb.settings.footer.langselect|length > 1 %}
+                {% if mybb.settings.footer.langselect.options is iterable and mybb.settings.footer.langselect.options|length > 1 %}
                     <div class="language">
                         <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />

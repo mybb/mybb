@@ -895,7 +895,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 {
 	$mybb->settings['footer']['langselect']['options'] = $lang->get_languages();
 
-	if(count($mybb->settings['footer']['langselect']) > 1)
+	if(count($mybb->settings['footer']['langselect']['options']) > 1)
 	{
 		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
 	}
