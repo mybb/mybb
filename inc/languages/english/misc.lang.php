@@ -11,14 +11,14 @@ $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
-$l['online_none'] = "<em>You have no online buddies</em>";
+$l['online_none'] = "You have no online buddies";
 $l['offline'] = "Offline";
-$l['offline_none'] = "<em>You have no offline buddies</em>";
+$l['offline_none'] = "You have no offline buddies";
 $l['delete_buddy'] = "X";
 $l['pm_buddy'] = "Send Private Message";
 $l['last_active'] = "Last Active";
 $l['close'] = "Close";
-$l['no_buddies'] = "<em>Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.</em>";
+$l['no_buddies'] = "Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.";
 
 $l['help_docs'] = "Help Documents";
 
