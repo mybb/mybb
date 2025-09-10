@@ -6434,9 +6434,23 @@ function login_attempt_check($uid = 0, $fatal = true)
  * @param string $email The string to check.
  * @return boolean True when valid, false when invalid.
  */
-function validate_email_format($email)
+function validate_email_format(string $email): bool
 {
-	return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+	$parts = explode('@', $email, 2);
+	if(count($parts) !== 2)
+	{
+		return false;
+	}
+
+	[$local, $domain] = $parts;
+
+	$domain = idn_to_ascii($domain);
+	if($domain === false)
+	{
+		return false;
+	}
+
+	return filter_var($local . '@' . $domain, FILTER_VALIDATE_EMAIL, FILTER_FLAG_EMAIL_UNICODE) !== false;
 }
 
 /**
