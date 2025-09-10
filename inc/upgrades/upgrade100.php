@@ -158,6 +158,9 @@ function upgrade100_dbchanges()
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
+
+    // Set legacy password algorithm for existing users
+    $db->update_query("users", ["password_algorithm" => "mybb"], "password_algorithm = ''");
 }
 
 function upgrade100_indexes()
