@@ -1403,6 +1403,25 @@ if($mybb->input['action'] == "disporder" && $mybb->request_method == "post")
 
 if(!$mybb->input['action'])
 {
+	$query = $db->simple_select("usergroups", "COUNT(gid) as usergroups");
+	$total_rows = $db->fetch_field($query, "usergroups");
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum-1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
+	}
+
 	$plugins->run_hooks("admin_user_groups_start");
 
 	if($mybb->request_method == "post")
@@ -1500,7 +1519,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center"));
 
-	$query = $db->simple_select("usergroups", "*", "", array('order_by' => 'disporder'));
+	$query = $db->simple_select("usergroups", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'disporder'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		if($usergroup['type'] > 1)
@@ -1590,6 +1609,6 @@ if(!$mybb->input['action'])
 <img src="styles/default/images/icons/default.png" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
 </fieldset>
 LEGEND;
-
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=user-groups&amp;page={page}");
 	$page->output_footer();
 }
