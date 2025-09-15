@@ -1043,7 +1043,7 @@ if(
 if($mybb->usergroup['cancp'] != 1 && $mybb->settings['load'] > 0 && ($load = get_server_load()) && $load != $lang->unknown && $load > $mybb->settings['load'])
 {
 	// User is not an administrator and the load limit is higher than the limit, show an error
-	error($lang->error_loadlimit);
+	error($lang->error_loadlimit, status_code: 503);
 }
 
 // If there is a valid referrer in the URL, cookie it
