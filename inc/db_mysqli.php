@@ -104,7 +104,7 @@ class DB_MySQLi implements DB_Base
 	 *
 	 * @var string
 	 */
-	public $table_type = "myisam";
+	public $table_type = "innodb";
 
 	/**
 	 * The table prefix used for simple select, update, insert and delete queries
@@ -132,7 +132,7 @@ class DB_MySQLi implements DB_Base
 	 *
 	 * @var string
 	 */
-	public $db_encoding = "utf8";
+	public $db_encoding = "utf8mb4";
 
 	/**
 	 * The time spent performing queries
