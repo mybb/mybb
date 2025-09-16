@@ -1450,43 +1450,6 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=user-groups", "post", "groups");
 
-	$primaryusers = $secondaryusers = array();
-
-	$query = $db->query("
-		SELECT g.gid, COUNT(u.uid) AS users
-		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-		GROUP BY g.gid
-	");
-	while($groupcount = $db->fetch_array($query))
-	{
-		$primaryusers[$groupcount['gid']] = $groupcount['users'];
-	}
-
-	switch($db->type)
-	{
-		case "pgsql":
-		case "sqlite":
-			$query = $db->query("
-				SELECT g.gid, COUNT(u.uid) AS users
-				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')
-				WHERE g.gid != '0' AND g.gid is not NULL GROUP BY g.gid
-			");
-			break;
-		default:
-			$query = $db->query("
-				SELECT g.gid, COUNT(u.uid) AS users
-				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))
-				WHERE g.gid != '0' AND g.gid is not NULL GROUP BY g.gid
-			");
-	}
-	while($groupcount = $db->fetch_array($query))
-	{
-		$secondaryusers[$groupcount['gid']] = $groupcount['users'];
-	}
-
 	$query = $db->query("
 		SELECT g.gid, COUNT(r.uid) AS users
 		FROM ".TABLE_PREFIX."joinrequests r
@@ -1549,16 +1512,15 @@ if(!$mybb->input['action'])
 
 		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".format_name(htmlspecialchars_uni($usergroup['title']), $usergroup['gid'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
-		if(!isset($primaryusers[$usergroup['gid']]))
+		$groupscache = $cache->read('usergroups');
+
+		if(!is_array($groupscache))
 		{
-			$primaryusers[$usergroup['gid']] = 0;
+			$cache->update_usergroups();
+			$groupscache = $cache->read('usergroups');
 		}
-		if(!isset($secondaryusers[$usergroup['gid']]))
-		{
-			$secondaryusers[$usergroup['gid']] = 0;
-		}
-		$numusers = $primaryusers[$usergroup['gid']];
-		$numusers += $secondaryusers[$usergroup['gid']];
+
+		$numusers = isset($groupscache[$usergroup['gid']]['usercount']) ? $groupscache[$usergroup['gid']]['usercount'] : 0;
 
 		$form_container->output_cell(my_number_format($numusers), array("class" => "align_center"));
 
