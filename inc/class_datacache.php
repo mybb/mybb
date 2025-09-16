@@ -532,6 +532,26 @@ class datacache
 		while($g = $db->fetch_array($query))
 		{
 			$gs[$g['gid']] = $g;
+			$gs[$g['gid']]['usercount'] = 0;
+		}
+
+		// Build usercount cache for each group
+		$query = $db->simple_select('users', 'usergroup, additionalgroups');
+		while($user = $db->fetch_array($query))
+		{
+			$groups = array($user['usergroup']);
+			if(!empty($user['additionalgroups']))
+			{
+				$groups = array_merge($groups, explode(',', $user['additionalgroups']));
+			}
+
+			foreach($groups as $gid)
+			{
+				if(isset($gs[$gid]))
+				{
+					$gs[$gid]['usercount']++;
+				}
+			}
 		}
 
 		$this->update("usergroups", $gs);
