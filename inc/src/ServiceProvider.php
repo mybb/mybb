@@ -2,10 +2,10 @@
 
 namespace MyBB;
 
-use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\BreadcrumbManager;
 use MyBB\Utilities\ManagedValue\FilesystemNestedStore;
 use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use Psr\Container\ContainerInterface;
 
 /** @property \MyBB\Application $app */

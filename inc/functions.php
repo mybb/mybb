@@ -18,7 +18,7 @@ function output_page($contents)
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $parsetime;
 
-	$stopwatch = \MyBB\app(\MyBB\Stopwatch\Stopwatch::class);
+	$stopwatch = \MyBB\app(\MyBB\Utilities\Stopwatch\Stopwatch::class);
 
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);

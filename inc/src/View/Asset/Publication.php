@@ -6,7 +6,7 @@ namespace MyBB\View\Asset;
 
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\HierarchicalResource;

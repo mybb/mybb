@@ -44,11 +44,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
-require_once MYBB_ROOT.'inc/src/Stopwatch/Stopwatch.php';
-require_once MYBB_ROOT.'inc/src/Stopwatch/Event.php';
-require_once MYBB_ROOT.'inc/src/Stopwatch/Period.php';
+require_once MYBB_ROOT.'inc/src/Utilities/Stopwatch/Stopwatch.php';
+require_once MYBB_ROOT.'inc/src/Utilities/Stopwatch/Event.php';
+require_once MYBB_ROOT.'inc/src/Utilities/Stopwatch/Period.php';
 
-$stopwatch = new \MyBB\Stopwatch\Stopwatch();
+$stopwatch = new \MyBB\Utilities\Stopwatch\Stopwatch();
 
 $stopwatch->start('main');
 $stopwatch->start('core.init');
@@ -266,7 +266,7 @@ require_once __DIR__.'/src/bootstrap.php';
 
 $stopwatch->stop('core.init.bootstrap');
 
-MyBB\app()->instance(\MyBB\Stopwatch\Stopwatch::class, $stopwatch);
+MyBB\app()->instance(\MyBB\Utilities\Stopwatch\Stopwatch::class, $stopwatch);
 
 use Illuminate\Support\Arr;
 

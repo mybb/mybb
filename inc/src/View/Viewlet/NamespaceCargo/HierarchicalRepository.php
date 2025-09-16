@@ -6,9 +6,9 @@ namespace MyBB\View\Viewlet\NamespaceCargo;
 
 use MyBB\Cargo\Repository;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\FileStamp;
 use MyBB\Utilities\ManagedValue\ManagedValue;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\Stopwatch;
+namespace MyBB\Utilities\Stopwatch;
 
 /**
  * Stores an individual measurement of time and peak memory usage.

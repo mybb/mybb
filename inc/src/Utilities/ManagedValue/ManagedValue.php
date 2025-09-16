@@ -6,9 +6,9 @@ namespace MyBB\Utilities\ManagedValue;
 
 use InvalidArgumentException;
 use LogicException;
-use MyBB\Stopwatch\Period;
-use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\Arrays;
+use MyBB\Utilities\Stopwatch\Period;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use ReflectionFunction;
 use RuntimeException;
 

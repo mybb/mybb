@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View;
 
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;

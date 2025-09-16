@@ -7,7 +7,7 @@ namespace MyBB\Http\Controllers;
 use DB_Base;
 use Illuminate\Support\Str;
 use MyBB;
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyLanguage;
 use Twig\Profiler\Dumper\TextDumper;
 
