@@ -151,7 +151,7 @@ function upgrade100_dbchanges()
                     dateline int unsigned NOT NULL default '0',
                     type varchar(50) NOT NULL default '',
                     KEY uid (uid)
-                ) ENGINE=MyISAM;");
+                ) ENGINE=InnoDB;");
             }
             break;
     }
@@ -239,5 +239,24 @@ function upgrade100_indexes()
 
     foreach ($indexes as $index) {
         $db->write_query($index);
+    }
+}
+
+function upgrade100_convert_innodb()
+{
+    global $db;
+
+    if ($db->type == "mysql" || $db->type == "mysqli") {
+        $tables = $db->query("SHOW TABLE STATUS LIKE '" . TABLE_PREFIX . "%'");
+
+        while ($table = $db->fetch_array($tables))
+        {
+            if (strtoupper($table['Engine']) != 'INNODB')
+            {
+                $db->write_query(
+                    "ALTER TABLE `{$table['Name']}` ENGINE=InnoDB;"
+                );
+            }
+        }
     }
 }

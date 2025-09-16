@@ -132,7 +132,7 @@ class DB_MySQLi implements DB_Base
 	 *
 	 * @var string
 	 */
-	public $db_encoding = "utf8mb4";
+	public $db_encoding = "utf8";
 
 	/**
 	 * The time spent performing queries
