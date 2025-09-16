@@ -1072,32 +1072,30 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
-	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->get_input('showmemberlist', MyBB::INPUT_INT)));
-	$general_options[] = $form->generate_check_box("showinlegend", 1, $lang->show_in_legend, array("checked" => $mybb->get_input('showinlegend', MyBB::INPUT_INT)));	
-	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
-	{
-		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->get_input('showforumteam', MyBB::INPUT_INT)));
-	}
-	$general_options[] =	$form->generate_check_box("isbannedgroup", 1, $lang->is_banned_group, array("checked" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT)));
+	$general_options_disabled = in_array($usergroup['gid'], array(1, 5, 7)) ? array("disabled" => true) : array();
+	$ban_option_disabled = $usergroup['type'] == 1 ? array("disabled" => true) : array();
+	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array_merge(array("checked" => $mybb->get_input('showmemberlist', MyBB::INPUT_INT)), $general_options_disabled));
+	$general_options[] = $form->generate_check_box("showinlegend", 1, $lang->show_in_legend, array_merge(array("checked" => $mybb->get_input('showinlegend', MyBB::INPUT_INT)), $general_options_disabled));	
+	$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array_merge(array("checked" => $mybb->get_input('showforumteam', MyBB::INPUT_INT)), $general_options_disabled));
+	$general_options[] = $form->generate_check_box("isbannedgroup", 1, $lang->is_banned_group, array_merge(array("checked" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT)), $ban_option_disabled));
 
 	$form_container->output_row($lang->general_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $general_options)."</div>");
 
-	if($usergroup['type'] != 1)
-	{
-		$public_options = array(
-			$form->generate_check_box("joinable", 1, $lang->user_joinable, array("checked" => $mybb->input['joinable'])),
-			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->get_input('moderate', MyBB::INPUT_INT))),
-			$form->generate_check_box("invite", 1, $lang->invite_only, array("checked" => $mybb->input['invite'])),
-			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->get_input('candisplaygroup', MyBB::INPUT_INT))),
-			);
-		$form_container->output_row($lang->publicly_joinable_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
-	}
+	$public_options = array();
+	$public_options_disabled = $usergroup['type'] == 1 ? array("disabled" => true) : array();
+	$public_options[] = $form->generate_check_box("joinable", 1, $lang->user_joinable, array_merge(array("checked" => $mybb->input['joinable']), $public_options_disabled));
+	$public_options[] = $form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array_merge(array("checked" => $mybb->get_input('moderate', MyBB::INPUT_INT)), $public_options_disabled));
+	$public_options[] = $form->generate_check_box("invite", 1, $lang->invite_only, array_merge(array("checked" => $mybb->input['invite']), $public_options_disabled));
+	$public_options[] = $form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array_merge(array("checked" => $mybb->get_input('candisplaygroup', MyBB::INPUT_INT)), $public_options_disabled));
 
-	$admin_options = array(
-		$form->generate_check_box("issupermod", 1, $lang->is_super_mod, array("checked" => $mybb->get_input('issupermod', MyBB::INPUT_INT))),
-		$form->generate_check_box("canmodcp", 1, $lang->can_access_mod_cp, array("checked" => $mybb->get_input('canmodcp', MyBB::INPUT_INT))),
-		$form->generate_check_box("cancp", 1, $lang->can_access_admin_cp, array("checked" => $mybb->get_input('cancp', MyBB::INPUT_INT)))
-	);
+	$form_container->output_row($lang->publicly_joinable_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
+
+	$admin_options = array();
+	$admin_options_disabled = in_array($usergroup['gid'], array(1, 5, 7)) ? array("disabled" => true) : array();
+	$admin_options[] = $form->generate_check_box("issupermod", 1, $lang->is_super_mod, array_merge(array("checked" => $mybb->get_input('issupermod', MyBB::INPUT_INT)), $admin_options_disabled));
+	$admin_options[] = $form->generate_check_box("canmodcp", 1, $lang->can_access_mod_cp, array_merge(array("checked" => $mybb->get_input('canmodcp', MyBB::INPUT_INT)), $admin_options_disabled));
+	$admin_options[] = $form->generate_check_box("cancp", 1, $lang->can_access_admin_cp, array_merge(array("checked" => $mybb->get_input('cancp', MyBB::INPUT_INT)), $admin_options_disabled));
+
 	$form_container->output_row($lang->moderation_administration_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $admin_options)."</div>");
 
 	$form_container->end();
