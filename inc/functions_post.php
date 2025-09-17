@@ -846,13 +846,13 @@ function build_postbit($post, $post_type=0)
 	$post['showbcc'] = false;
 	if($post_type == 2)
 	{
-		if(count($post['bcc_recipients']) > 0)
+		if(isset($post['bcc_recipients']) && count($post['bcc_recipients']) > 0)
 		{
 			$post['showbcc'] = true;
 			$post['bcc_recipients'] = implode(', ', $post['bcc_recipients']);
 		}
 
-		if(count($post['to_recipients']) > 0)
+		if(isset($post['to_recipients']) && count($post['to_recipients']) > 0)
 		{
 			$post['to_recipients'] = implode($lang->comma, $post['to_recipients']);
 		}
