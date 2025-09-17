@@ -2401,6 +2401,16 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="mail_format">
+			<title>Email format</title>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[select
+text=Plain text only
+html=HTML only
+both=Plain text + HTML]]></optionscode>
+			<settingvalue><![CDATA[text]]></settingvalue>		
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
