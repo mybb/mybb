@@ -156,17 +156,23 @@ class PostgresPdoDbDriver extends AbstractPdoDbDriver
 
 	public function insert_query_multiple($table, $array)
 	{
-		if (!is_array($array) || empty($array)){
+		if(!is_array($array) || empty($array))
+		{
 			return;
 		}
 
 		// Field names
-		$fields = array_keys($array[array_key_first($array)]);
-		$fields = implode(",", $fields);
+		$fields_array = array_keys($array[array_key_first($array)]);
+		$fields = implode(",", $fields_array);
 
 		$insert_rows = array();
 		foreach ($array as $values) {
-			$insert_rows[] = "(".$this->build_value_string($table, $values).")";
+			$ordered_values = array();
+			foreach($fields_array as $field)
+			{
+				$ordered_values[$field] = $values[$field] ?? null;
+			}
+			$insert_rows[] = "(" . $this->build_value_string($table, $ordered_values) . ")";
 		}
 
 		$insert_rows = implode(", ", $insert_rows);
