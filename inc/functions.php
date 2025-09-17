@@ -614,9 +614,15 @@ function &get_my_mailhandler($use_buitlin = false)
  * @param string $return_email The email address to return to. Defaults to admin return email address.
  * @return bool True if the mail is sent, false otherwise.
  */
-function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "text", $message_text = "", $return_email = "")
+function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "", $message_text = "", $return_email = "")
 {
 	global $mybb, $plugins;
+
+	// Default to ACP setting if no format was explicitly passed
+	if(empty($format))
+	{
+		$format = !empty($mybb->settings['mail_format']) ? $mybb->settings['mail_format'] : 'text';
+	}
 
 	// Get our mail handler.
 	$mail = &get_my_mailhandler();
