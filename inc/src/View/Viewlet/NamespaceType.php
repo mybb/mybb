@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View;
+namespace MyBB\View\Viewlet;
 
 use InvalidArgumentException;
 use MyBB\Extensions\Contracts\ViewExtensionInterface;

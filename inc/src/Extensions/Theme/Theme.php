@@ -11,7 +11,7 @@ use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\HierarchicalExtensionTrait;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
-use MyBB\View\NamespaceType;
+use MyBB\View\Viewlet\NamespaceType;
 
 /**
  * An Extension customizing the GUI.

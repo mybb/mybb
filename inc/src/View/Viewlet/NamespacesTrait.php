@@ -6,7 +6,6 @@ namespace MyBB\View\Viewlet;
 
 use FilesystemIterator;
 use InvalidArgumentException;
-use MyBB\View\NamespaceType;
 use SplFileInfo;
 
 trait NamespacesTrait

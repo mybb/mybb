@@ -9,7 +9,6 @@ use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\ViewletLocator;
-use MyBB\View\NamespaceType;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
 use MyBB\View\Viewlet\NamespaceCargo\Repository;

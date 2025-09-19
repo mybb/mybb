@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\View\Viewlet\Decorator\Hierarchy;
 
-use MyBB\View\NamespaceType;
+use MyBB\View\Viewlet\NamespaceType;
 
 trait HierarchicalNamespacesTrait
 {

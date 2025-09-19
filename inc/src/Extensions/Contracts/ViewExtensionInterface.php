@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyBB\Extensions\Contracts;
 
-use MyBB\View\NamespaceType;
+use MyBB\View\Viewlet\NamespaceType;
 use MyBB\View\Viewlet\Viewlet;
 
 /**

@@ -9,7 +9,7 @@ use MyBB\Extensions\Contracts\ViewExtensionInterface;
 use MyBB\Extensions\Exception as ExtensionException;
 use MyBB\Extensions\Extension;
 use MyBB\Extensions\Traits\ViewExtensionTrait;
-use MyBB\View\NamespaceType;
+use MyBB\View\Viewlet\NamespaceType;
 
 /**
  * An Extension with custom executable code.
