@@ -1543,7 +1543,7 @@ if(!$mybb->input['action'])
 
 		$form_container->output_cell(my_number_format($numusers), array("class" => "align_center"));
 
-		if($usergroup['showforumteam'] == 1)
+		if($usergroup['showforumteam'] == 1 || $usergroup['showinlegend'] == 1)
 		{
 			$form_container->output_cell($form->generate_numeric_field("disporder[{$usergroup['gid']}]", "{$usergroup['disporder']}", array('min' => 0, 'class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
 		}
