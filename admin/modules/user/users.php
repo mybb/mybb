@@ -4295,7 +4295,7 @@ function user_search_conditions($input, &$form)
 		$input['conditions'] = (array)my_unserialize($input['conditions']);
 	}
 
-	$array = array('username', 'email', 'usergroup', 'website', 'website_blank', 'skype', 'skype_blank', 'google', 'google_blank', 'signature', 'signature_blank', 'usertitle', 'usertitle_blank', 'postnum_dir', 'postnum', 'threadnum_dir', 'threadnum', 'regdate', 'regip', 'lastip', 'postip');
+	$array = array('username', 'email', 'usergroup', 'website', 'website_blank', 'signature', 'signature_blank', 'usertitle', 'usertitle_blank', 'postnum_dir', 'postnum', 'threadnum_dir', 'threadnum', 'regdate', 'regip', 'lastip', 'postip');
 	foreach($array as $condition)
 	{
 		if(!isset($input['conditions'][$condition]))
