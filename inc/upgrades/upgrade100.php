@@ -61,8 +61,8 @@ function upgrade100_dbchanges()
             // Update moved threads
             $db->query("
                 UPDATE ".TABLE_PREFIX."threads
-                SET closed = '0', moved = SUBSTRING(closed FROM 7)::INTEGER
-                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
+                SET closed = '0', moved = SUBSTRING(closed::text FROM 7)::integer
+                WHERE closed::text LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
             if (!$db->field_exists("showinlegend", "usergroups")) {
