@@ -184,6 +184,8 @@ class UpgradeModel extends Model
                 $i = 0;
 
                 foreach ($upgradeScript['migrationFunctions'] ?? [] as $migrationFunctionName) {
+                    $i++;
+
                     $migrationOperations[$migrationFunctionName] = [
                         'parameters' => $upgradeScript['directives']['parameters'] ?? [],
                         'conditions' => [
@@ -220,8 +222,6 @@ class UpgradeModel extends Model
                             return $result;
                         },
                     ];
-
-                    $i++;
                 }
             }
         }
