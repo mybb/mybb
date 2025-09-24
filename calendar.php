@@ -2220,6 +2220,7 @@ if($mybb->input['action'] == "weekview")
 	$days = [];
 	while($weekday_date <= $week_to_stamp)
 	{
+		$day = [];
 		$weekday = gmdate("w", $weekday_date);
 		$day['weekday_month'] = $weekday_month = gmdate("n", $weekday_date);
 		$weekday_year = gmdate("Y", $weekday_date);
