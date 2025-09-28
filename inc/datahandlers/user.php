@@ -1889,7 +1889,8 @@ class UserDataHandler extends DataHandler
 
 		if($this->method == "insert")
 		{
-			$query = $db->simple_select("banned", "uid", "uid='{$ban['uid']}'");
+			$uid = (int)$ban['uid'];
+			$query = $db->simple_select("banned", "uid", "uid='{$uid}'");
 			if($db->fetch_field($query, "uid"))
 			{
 				$this->set_error('already_banned');
