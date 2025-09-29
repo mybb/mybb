@@ -47,7 +47,7 @@ class DebugController
 
     private function getData(): array
     {
-        global $templates, $templatelist;
+        global $templates;
 
         $data = [];
 
@@ -147,7 +147,12 @@ class DebugController
         $data['resources'] = [
             'No. Included Files' => count(get_included_files()),
             'No. DB Queries' => $this->db->query_count,
-            'No. DB Templates Used' => count($templates->cache) . " (" . count(explode(",", $templatelist ?? '')) . " Cached / " . count($templates->uncached_templates) . " Manually Loaded)",
+            'No. DB Templates Used' => count($templates->cache) .
+                " (" .
+                (count($templates->cache) - count($templates->uncached_templates)) .
+                " Cached / " .
+                count($templates->uncached_templates) .
+                " Manually Loaded)",
             'Memory Usage' => $memoryUsage,
             'Server Load' => get_server_load(),
             'File Read Time' => $fileReadTime ? format_time_duration($fileReadTime) : '-',
