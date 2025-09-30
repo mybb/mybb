@@ -491,13 +491,15 @@ $view->setMainNamespace('frontend');
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {
-	$templatelist .= ',';
+	if(!empty($templatelist))
+	{
+		$templates->cache($db->escape_string($templatelist));
+	}
 }
 else
 {
 	$templatelist = '';
 }
-$templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
