@@ -352,7 +352,7 @@ if($mybb->input['action'] == "add_multiple")
 					if($file != ".." && $file != ".")
 					{
 						$ext = get_extension($file);
-						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+						if(in_array($ext, array("bmp", "gif", "jpg", "jpeg", "png", "svg")))
 						{
 							if(!$asmilies[$path.$file])
 							{
