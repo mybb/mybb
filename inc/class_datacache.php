@@ -963,7 +963,7 @@ class datacache
 	{
 		global $db;
 
-		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
+		$query = $db->simple_select("themes", "tid, package, name, properties, stylesheets, allowedgroups", "def='1'", array('limit' => 1));
 		$theme = $db->fetch_array($query);
 		$this->update("default_theme", $theme);
 	}

@@ -114,8 +114,10 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 	@mb_internal_encoding($lang->settings['charset']);
 }
 
-// Select the board theme to use.
-$loadstyle = '';
+// Select the Theme model to use.
+$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+$tid = null;
+$theme_model = null;
 $load_from_forum = $load_from_user = 0;
 $style = array();
 
@@ -168,7 +170,7 @@ if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
 
-	$loadstyle = "tid = '{$mybb->user['style']}'";
+	$tid = $mybb->user['style'];
 	$load_from_user = 1;
 }
 
@@ -238,23 +240,16 @@ if(isset($style['style']) && $style['style'] > 0)
 	// This theme is forced upon the user, overriding their selection
 	if($style['overridestyle'] == 1 || !isset($mybb->user['style']))
 	{
-		$loadstyle = "tid = '{$style['style']}'";
+		$tid = $style['style'];
 	}
 }
 
-// After all of that no theme? Load the board default
-if(empty($loadstyle))
+// Fetch the theme to load
+if($tid != null)
 {
-	$loadstyle = "def='1'";
-}
+	$theme_model = $repository->find($tid);
 
-// Fetch the theme to load from the cache
-if($loadstyle != "def='1'")
-{
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
-
-	if($theme && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme_model && !$load_from_forum && !$theme_model->allowedForUser($mybb->user))
 	{
 		if($load_from_user == 1)
 		{
@@ -266,24 +261,19 @@ if($loadstyle != "def='1'")
 			my_unsetcookie('mybbtheme');
 		}
 
-		$loadstyle = "def='1'";
+		$tid = null;
 	}
 }
 
-if($loadstyle == "def='1'")
+if($tid == null)
 {
-	if(!$cache->read('default_theme'))
-	{
-		$cache->update_default_theme();
-	}
-
-	$theme = $cache->read('default_theme');
+	$theme_model = $repository->findDefault();
 
 	$load_from_forum = $load_from_user = 0;
 }
 
-// No theme was found - we attempt to load the master or any other theme
-if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
+// No Theme model was found - load fallback values
+if(!$theme_model)
 {
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
 	if($load_from_forum == 1)
@@ -296,13 +286,14 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 		$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 	}
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	$theme_model = $repository->getFallback();
 }
+
+$theme = $repository->getArray($theme_model);
+
 $theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
 
-// Fetch all necessary stylesheets
+// Fetch all legacy stylesheets
 $stylesheets = '';
 $theme['stylesheets'] = my_unserialize($theme['stylesheets']);
 $stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
@@ -471,13 +462,14 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 // TODO initialize theme properties from package & load set values from DB
 $theme['editortheme'] = 'mybb.css';
 
-// TODO determine package name from DB/cache; `core.base` already registered by default
-$packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
-
-\MyBB\app()->instance(
-	\MyBB\Extensions\Theme\Theme::class,
-	\MyBB\App(\MyBB\Extensions\Theme\Repository::class)->get($packageName),
-);
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
+}
 
 $view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
 

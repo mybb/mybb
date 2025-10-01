@@ -902,9 +902,10 @@ class UserDataHandler extends DataHandler
 
 		if(!empty($user['style']))
 		{
-			$theme = get_theme($user['style']);
+			$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+			$theme = $repository->find($user['style']);
 
-			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
+			if(!$theme || !$theme->allowedForUser($user))
 			{
 				$this->set_error('invalid_style');
 				return false;

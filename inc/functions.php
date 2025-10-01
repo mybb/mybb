@@ -5149,7 +5149,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+		$query = $db->simple_select('themes', 'tid, name, allowedgroups');
 
 		while($theme = $db->fetch_array($query))
 		{
