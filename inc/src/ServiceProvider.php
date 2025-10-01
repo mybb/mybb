@@ -20,6 +20,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return $GLOBALS['mybb'];
         });
 
+        $this->app->singleton(\datacache::class, function () {
+            return $GLOBALS['cache'];
+        });
+
         $this->app->singleton(\DB_Base::class, function () {
             return $GLOBALS['db'];
         });
