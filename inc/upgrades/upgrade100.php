@@ -36,9 +36,32 @@ function upgrade100_dbchanges()
     }
 
     // Modify columns
-    $db->modify_column("forums", "style", "varchar(30)", "set", "''");
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
-    $db->modify_column("users", "style", "varchar(30)", "set", "''");
+
+    if ($db->field_exists("pid", "themes")) {
+        $db->drop_column("themes", "pid");
+    }
+    if (!$db->field_exists("package", "themes")) {
+        // Delete incompatible data
+        $db->delete_query("themes");
+        $db->delete_query("themestylesheets");
+
+        $db->add_column("themes", "package", "varchar(100) NOT NULL");
+
+        // Insert new default theme entry
+        $db->insert_query("themes", [
+            'package' => 'core.base',
+            'name' => 'Base',
+            'def' => '1',
+            'properties' => 'a:0:{}',
+            'stylesheets' => 'a:0:{}',
+            'allowedgroups' => 'all',
+        ]);
+
+        // Reset incompatible preferences
+        $db->update_query("users", ["style" => 0], "style != 0");
+        $db->update_query("forums", ["style" => 0], "style != 0");
+    }
 
     // Add userfields columns
     foreach (["fid4", "fid5"] as $fid) {
