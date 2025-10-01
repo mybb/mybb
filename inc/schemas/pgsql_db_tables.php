@@ -888,8 +888,8 @@ $tables[] = "CREATE TABLE mybb_templatesets (
 
 $tables[] = "CREATE TABLE mybb_themes (
   tid serial,
+  package varchar(100) NOT NULL,
   name varchar(100) NOT NULL default '',
-  pid smallint NOT NULL default '0',
   def smallint NOT NULL default '0',
   properties text NOT NULL default '',
   stylesheets text NOT NULL default '',
