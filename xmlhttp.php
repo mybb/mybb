@@ -74,52 +74,47 @@ if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 }
 
 // 2. Load style
+$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+$tid = null;
+$theme_model = null;
+
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
-	$loadstyle = "tid='".(int)$mybb->user['style']."'";
-}
-else
-{
-	$loadstyle = "def='1'";
+	$tid = (int)$mybb->user['style'];
 }
 
-// Load basic theme information that we could be needing.
-if($loadstyle != "def='1'")
+// Fetch the theme to load
+if($tid != null)
 {
-	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
+	$theme_model = $repository->find($tid);
 
-	if($theme && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme_model && !$theme_model->allowedForUser($mybb->user))
 	{
 		if(isset($mybb->cookies['mybbtheme']))
 		{
 			my_unsetcookie('mybbtheme');
 		}
 
-		$loadstyle = "def='1'";
+		$tid = null;
 	}
 }
 
-if($loadstyle == "def='1'")
+if($tid == null)
 {
-	if(!$cache->read('default_theme'))
-	{
-		$cache->update_default_theme();
-	}
-
-	$theme = $cache->read('default_theme');
+	$theme_model = $repository->findDefault();
 }
 
-// No theme was found - we attempt to load the master or any other theme
-if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
+// No Theme model was found - load fallback values
+if(!$theme_model)
 {
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	$theme_model = $repository->getFallback();
 }
+
+$theme = $repository->getArray($theme_model);
+
 $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
@@ -180,6 +175,15 @@ else
 
 	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
 	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
+}
+
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
 }
 
 if($lang->settings['charset'])

@@ -791,6 +791,7 @@ function rebuildDatacache(): void
     $cache->update_groupleaders();
     $cache->update_threadprefixes();
     $cache->update_forumsdisplay();
+    $cache->update_default_theme();
     $cache->update_reportreasons(true);
 }
 
