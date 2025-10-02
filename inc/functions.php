@@ -3608,9 +3608,13 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 
 		if($dimensions[0] && $dimensions[1])
 		{
-			list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
+			$dims_arr = preg_split('/[|x]/', $max_dimensions);
+			if (count($dims_arr) == 2)
+			{
+				list($max_width, $max_height) = $dims_arr;
+			}
 
-			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
+			if(count($dims_arr) == 2 && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
@@ -8839,3 +8843,4 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	}
 	return $backtrace;
 }
+
