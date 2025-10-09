@@ -737,7 +737,6 @@ $(function() {
 			'canpostreplys' => 'posting',
 			'canonlyreplyownthreads' => 'posting',
 			'canpostattachments' => 'posting',
-			'canratethreads' => 'posting',
 
 			'caneditposts' => 'editing',
 			'candeleteposts' => 'editing',
@@ -756,11 +755,12 @@ $(function() {
 		);
 
 		$hidefields = array();
-			if($usergroup['gid'] == 1)
-			{
-				$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletetionnotice');
-			}
-
+		if($usergroup['gid'] == 1)
+		{
+			$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletetionnotice');
+		}
+		$hidefields[] = 'canratethreads'; // deprecated: Thread rating feature is deprecated since 1.9.0
+		
 		$groups = $plugins->run_hooks("admin_forum_management_permission_groups", $groups);
 
 		foreach($hidefields as $field)
