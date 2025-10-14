@@ -225,7 +225,7 @@ if(!empty($firstposts))
 			}
 		}
 
-		$items[$post['tid']]['description'] = $parsed_message;
+		$items[$post['tid']]['description'] = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $parsed_message);
 		$items[$post['tid']]['updated'] = $post['edittime'];
 		$items[$post['tid']]['author'] = array("uid" => $post['uid'], "name" => $post['username']);
 		$feedgenerator->add_item($items[$post['tid']]);
