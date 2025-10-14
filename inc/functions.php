@@ -9208,7 +9208,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	$ip_address = my_inet_pton($ip_address);
 
 	$insert_array = array(
-		'username'  => $db->escape_string($username),
+		'username'  => $db->escape_string(my_substr($username, 0, 120)),
 		'email'     => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline'  => (int)TIME_NOW,
