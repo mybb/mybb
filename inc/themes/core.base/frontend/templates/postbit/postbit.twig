@@ -95,9 +95,27 @@
             <input type="checkbox" class="checkbox post__inline-mod" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" {% if post.inlinechecked %}checked="checked"{% endif %}/>
         {% endif %}
 
+        {# Post edit information #}
         {% if post.editedmsg %}
-            <a href="#" class="post__edit-log" title="" id="edited_by_{{ post.pid }}">{{ include('partials/icon.twig', {icon: 'pencil-alt', class: ''}, with_context = false) }}</a>
-            <span class="post__edit-reason">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
+            <span class="post__edit-log">
+                <button popovertarget="editlog-{{ post.pid }}" popovertargetaction="toggle" class="post__edit-log-button" aria-label="{{ lang.postbit_editreason }}" style="anchor-name: editlog-button-{{ post.pid }};">
+                    {{ include('partials/icon.twig', { icon: 'pencil-alt', class: '' }, with_context = false) }}
+                </button>
+                <div
+                    id="editlog-{{ post.pid }}"
+                    popover="auto"
+                    class="post__edit-log-popover"
+                    style="position-anchor: editlog-button-{{ post.pid }};"
+                    role="dialog"
+                >
+                    {{ post.editnote|raw }} {{ post.editedprofilelink|raw }}
+                    {% if post.editreason %}
+                        <div class="edit-reason">
+                            {{ lang.postbit_editreason }}: <em>{{ post.editreason }}</em>
+                        </div>
+                    {% endif %}
+                </div>
+            </span>
         {% endif %}
 
         {# IP address #}
