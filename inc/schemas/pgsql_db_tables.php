@@ -1000,7 +1000,6 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid3 text NOT NULL default '',
   fid4 text NOT NULL default '',
   fid5 text NOT NULL default '',
-  fid6 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
 $tables[] = "CREATE SEQUENCE mybb_userfields_ufid_seq;";

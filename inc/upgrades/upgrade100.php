@@ -41,7 +41,7 @@ function upgrade100_dbchanges()
     $db->modify_column("users", "style", "varchar(30)", "set", "''");
 
     // Add userfields columns
-    foreach (["fid4", "fid5", "fid6"] as $fid) {
+    foreach (["fid4", "fid5"] as $fid) {
         if (!$db->field_exists($fid, "userfields")) {
             $db->add_column("userfields", $fid, "text NOT NULL DEFAULT ''");
         }

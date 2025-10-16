@@ -932,8 +932,7 @@ $tables[] = "CREATE TABLE mybb_userfields (
 	fid2 TEXT NOT NULL,
 	fid3 TEXT NOT NULL,
 	fid4 TEXT NOT NULL,
-	fid5 TEXT NOT NULL,
-	fid6 TEXT NOT NULL
+	fid5 TEXT NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
