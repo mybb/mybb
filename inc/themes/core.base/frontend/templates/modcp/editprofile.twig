@@ -198,7 +198,7 @@
                                     {% if user.suspensiontime == 0 %}
                                         {{ lang.suspendsignature_perm }}
                                     {% else %}
-                                        {{ trans('suspendsignature_for', user.suspensiontime) }}{# TODO: my_date(user.suspensiontime) #}
+                                        {{ trans('suspendsignature_for', user.suspensiontime|my_date) }}
                                     {% endif %}
                                 </p>
                             {% endif %}
@@ -235,7 +235,7 @@
                                         {% if user[opt.length] == 0 %}
                                             {{ attribute(lang, opt.option ~ '_perm') }}
                                         {% else %}
-                                            {{ trans(opt.option ~ '_for', user[opt.length]) }}{# TODO: my_date(user[opt.length]) #}
+                                            {{ trans(opt.option ~ '_for', user[opt.length]|my_date) }}
                                         {% endif %}
                                     </p>
                                 {% endif %}
