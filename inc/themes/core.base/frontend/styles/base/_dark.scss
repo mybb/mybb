@@ -1,66 +1,66 @@
 $dark: false !default;
 
 @if $dark {
-    // Theme colors
-    $primary-color: #005084;
-    $secondary-color: #d05100;
+    // Theme colors - Modern dark theme palette
+    $primary-color: #4a9eff;
+    $secondary-color: #ff8c42;
 
 
-    // Font colors
-    $font-color: #ddd;
+    // Font colors - Optimized for readability on dark backgrounds
+    $font-color: #e4e4e7;
     $invert-font-color: #fff;
-    $alt-font-color-1: #aaa;
-    $alt-font-color-2: #777;
-    $alt-font-color-3: #717171;
-    $alt-font-color-4: #6e6e6e;
+    $alt-font-color-1: #a1a1aa;
+    $alt-font-color-2: #71717a;
+    $alt-font-color-3: #52525b;
+    $alt-font-color-4: #3f3f46;
 
 
-    // Border colors
-    $border-1: #3a3a3a;
-    $border-2: #444;
-    $border-3: #555;
-    $dark-border-1: #222;
-    $dark-border-2: #999;
-    $dark-border-3: #666;
-    $primary-color-border: #003151;
+    // Border colors - Subtle yet visible
+    $border-1: #3f3f46;
+    $border-2: #52525b;
+    $border-3: #71717a;
+    $dark-border-1: #27272a;
+    $dark-border-2: #71717a;
+    $dark-border-3: #52525b;
+    $primary-color-border: #3b82f6;
 
 
-    // Background colors
-    $background-default: #222;
-    $background-1: #292929;
-    $background-2: #333;
-    $background-3: #444;
-    $background-4: #555;
-    $dark-background-1: #1a1a1a;
-    $dark-background-2: #333;
-    $dark-background-3: #222;
-    $dark-background-4: #444;
-    $unread-count: #eb5257;
+    // Background colors - Rich, comfortable dark palette
+    $background-default: #18181b;
+    $background-1: #1f1f23;
+    $background-2: #27272a;
+    $background-3: #3f3f46;
+    $background-4: #52525b;
+    $dark-background-1: #09090b;
+    $dark-background-2: #27272a;
+    $dark-background-3: #1f1f23;
+    $dark-background-4: #3f3f46;
+    $unread-count: #ef4444;
 
 
     // Status background & border colors
     $new-icon-color: $primary-color;
-    // $status-highlight: #ebf4fb;
-    // $status-highlight-border: #afd9fa;
-    $status-deleted: #864ddf;
-    $status-deleted-border: #864ddf;
-    $status-deleted-font-color: #fff;
-    $status-pending: #c00;
-    $status-pending-border: #c00;
-    $status-pending-font-color: #fff;
+    $status-highlight: #1e293b;
+    $status-highlight-border: #3b82f6;
+    $status-deleted: #a855f7;
+    $status-deleted-border: #a855f7;
+    $status-deleted-font-color: #faf5ff;
+    $status-pending: #dc2626;
+    $status-pending-border: #dc2626;
+    $status-pending-font-color: #fef2f2;
 
-    // Success / danger colors
-    // $success-color: #68c000;
-    // $success-color-border: #5dac00;
-    // $moderate-color: #d7611e;
-    // $moderate-color-border: #c1571b;
-    // $danger-color: #eb5257;
-    // $danger-color-border: #d3494e;
+    // Success / danger colors - Vivid but not harsh
+    $success-color: #22c55e;
+    $success-color-border: #16a34a;
+    $moderate-color: #f97316;
+    $moderate-color-border: #ea580c;
+    $danger-color: #ef4444;
+    $danger-color-border: #dc2626;
 
 
-    // Link colors
-    $link-default: #eee;
-    $link-hover: $secondary-color;
+    // Link colors - High contrast and accessible
+    $link-default: #60a5fa;
+    $link-hover: #ff8c42;
 
 
     // Button colors
@@ -68,13 +68,15 @@ $dark: false !default;
     $button-hover: $secondary-color;
 
 
-    // Heading colors
-    $major-heading-background: #444;
+    // Heading colors - Distinguished from content
+    $major-heading-background: #27272a;
+    $major-heading-border: #3f3f46;
 
 
-    // Font smothing
+    // Font smoothing for better text rendering
     body {
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
 }

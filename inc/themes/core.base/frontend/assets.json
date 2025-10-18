@@ -8,6 +8,9 @@
 				}
 			]
 		},
+		"styles/dark.css": {
+			"source": "dark.scss"
+		},
 		"./jscripts/jquery.js": {
 			"attached_to": [
 				{
@@ -34,6 +37,16 @@
 			"depends_on": [
 				"./jscripts/jquery.js",
 				"./jscripts/jquery.plugins.min.js"
+			]
+		},
+		"./jscripts/theme-switcher.js": {
+			"attached_to": [
+				{
+					"script": "global"
+				}
+			],
+			"depends_on": [
+				"./jscripts/jquery.js"
 			]
 		},
 		"./jscripts/jeditable/jeditable.min.js": {

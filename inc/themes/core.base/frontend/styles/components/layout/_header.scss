@@ -185,3 +185,38 @@
         display: block;
     }
 }
+
+/**
+ * Theme switcher button
+ */
+.theme-switcher-toggle {
+    position: relative;
+    cursor: pointer;
+
+    // Hide the light icon by default (show dark mode toggle)
+    .theme-icon-light {
+        display: none;
+    }
+
+    .theme-icon-dark {
+        display: inline-block;
+    }
+
+    // When active (dark mode enabled), show sun icon
+    &.active {
+        .theme-icon-light {
+            display: inline-block;
+        }
+
+        .theme-icon-dark {
+            display: none;
+        }
+    }
+}
+
+// Hide "Theme" text on mobile for cleaner look
+@include bp-medium-max {
+    .main-menu__text--desktop-only {
+        display: none;
+    }
+}
