@@ -81,7 +81,7 @@
                 <span class="thread__page-legend">{{ lang.pages }}</span>
                 {% set pagesStop = (thread.pages > mybb.settings.maxmultipagelinks) ? mybb.settings.maxmultipagelinks : thread.pages %}
                 {% for page in 1..pagesStop %}
-                    <a href="{{ page_link }}" class="thread__page-link">{{ page }}</a>{# TODO: page_link to be replaced when get_thread_link is adapted to Twig #}
+                    <a href="{{ get_thread_link(thread.tid, page) }}" class="thread__page-link">{{ page }}</a>
                 {% endfor %}
                 {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
             </span>
