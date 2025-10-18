@@ -1,4 +1,5 @@
 {% block head %}
+    <link rel="canonical" href="{{ mybb.settings.bburl }}/{{ get_thread_link(thread.tid) }}">
     <title>{{ thread.threadprefix }} {{ thread.subject }} - {{ lang.printable_version }} - {{ mybb.settings.bbname }}</title>
     <style type="text/css">
         body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
