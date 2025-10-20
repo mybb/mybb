@@ -355,7 +355,7 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
 
-		$buttons[] = $form->generate_submit_button($lang->edit_section);
+		$buttons[] = $form->generate_submit_button($lang->save_section);
 
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -484,7 +484,7 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
 
-		$buttons[] = $form->generate_submit_button($lang->edit_document);
+		$buttons[] = $form->generate_submit_button($lang->save_document);
 
 		$form->output_submit_wrapper($buttons);
 		$form->end();
