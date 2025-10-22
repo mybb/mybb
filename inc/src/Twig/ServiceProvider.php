@@ -7,6 +7,7 @@ use MyBB;
 use MyBB\Twig\Extensions\CoreExtension;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\UrlExtension;
+use MyBB\Twig\Extensions\UserExtension;
 use MyBB\Twig\Extensions\ViewExtension;
 use MyBB\Utilities\BreadcrumbManager;
 use MyBB\View\Optimization;
@@ -47,6 +48,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new UrlExtension();
         });
 
+        $this->app->singleton(UserExtension::class, function () {
+            return new UserExtension();
+        });
+
         $this->app->singleton(LoaderInterface::class, function (Container $container) {
             $view = $container->get(Runtime::class);
 
@@ -77,6 +82,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $env->addExtension($container->make(ViewExtension::class));
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
+            $env->addExtension($container->make(UserExtension::class));
 
             if ($mybb->dev_mode) {
                 $env->addExtension($container->make(DebugExtension::class));
@@ -100,6 +106,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             CoreExtension::class,
             LangExtension::class,
             UrlExtension::class,
+            UserExtension::class,
             ViewExtension::class,
             LoaderInterface::class,
             Environment::class,
