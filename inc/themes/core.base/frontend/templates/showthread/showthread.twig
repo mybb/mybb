@@ -296,8 +296,7 @@
                         <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
                             {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar) }}
                         </a>
-                        {# TO DO: username styling #}
-                        <h3 class="post__author"><a href="{{ get_profile_link(mybb.user.uid) }}">{{ mybb.user.username }}</a></h3>
+                        <h3 class="post__author"><a href="{{ get_profile_link(mybb.user.uid) }}">{{ mybb.user|format_name }}</a></h3>
                         <span class="post__date">{{ lang.quick_reply }}</span>
                     </div>
                     <div class="post__body">
