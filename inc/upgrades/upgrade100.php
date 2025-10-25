@@ -161,7 +161,7 @@ function upgrade100_dbchanges()
 
     // Remove deprecated profile fields
     $db->delete_query("profilefields", "name='Skype'");
-        
+
     // Set legacy password algorithm for existing users
     $db->update_query("users", ["password_algorithm" => "mybb"], "password_algorithm = ''");
 }
@@ -249,10 +249,8 @@ function upgrade100_convert_innodb()
     if ($db->type == "mysql" || $db->type == "mysqli") {
         $tables = $db->query("SHOW TABLE STATUS LIKE '" . TABLE_PREFIX . "%'");
 
-        while ($table = $db->fetch_array($tables))
-        {
-            if (strtoupper($table['Engine']) != 'INNODB')
-            {
+        while ($table = $db->fetch_array($tables)) {
+            if (strtoupper($table['Engine']) != 'INNODB') {
                 $db->write_query(
                     "ALTER TABLE `{$table['Name']}` ENGINE=InnoDB;"
                 );
@@ -312,6 +310,16 @@ function upgrade100_smilies()
     $max_disporder = $db->fetch_field($query, 'max_disporder');
     if ($max_disporder !== null) {
         $disporder = (int)$max_disporder;
+    }
+
+    // Resynchronize the PostgreSQL sequence for smilies
+    if ($db->type == "pgsql") {
+        $db->query("
+            SELECT setval(
+                pg_get_serial_sequence('" . TABLE_PREFIX . "smilies', 'sid'),
+                (SELECT MAX(sid) FROM " . TABLE_PREFIX . "smilies)
+            )
+        ");
     }
 
     // Avoid inserting duplicates
