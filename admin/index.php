@@ -526,7 +526,7 @@ if(isset($mybb->user['uid']))
 	$is_super_admin = is_super_admin($mybb->user['uid']);
 }
 
-if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
+if(empty($mybb->usergroup['cancp']) && !$is_super_admin || empty($mybb->user['uid']))
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
