@@ -338,25 +338,22 @@ function upload_avatar($avatar=array(), $uid=0)
 	switch($avatar['type'])
 	{
 		case 'image/png':
-			$img_type = IMAGETYPE_PNG;
+			$img_type = IMG_PNG;
 			break;
 		case 'image/avif':
 			$img_type =  IMG_AVIF;
 			break;
 		case 'image/gif':
-			$img_type =  IMAGETYPE_GIF;
+			$img_type =  IMG_GIF;
 			break;
 		case 'image/jpeg':
-			$img_type = IMAGETYPE_JPEG;
+			$img_type = IMG_JPEG;
 			break;
 		case 'image/webp':
-			$img_type = IMAGETYPE_WEBP;
+			$img_type = IMG_WEBP;
 			break;
 		case 'image/bmp':
-			$img_type = IMAGETYPE_BMP;
-			break;
-		case 'image/x-icon':
-			$img_type = IMAGETYPE_ICO;
+			$img_type = IMG_BMP;
 			break;
 		default:
 			$img_type = 0;
@@ -587,25 +584,22 @@ function upload_attachment($attachment, $update_attachment=false)
 		switch(my_strtolower($file['type']))
 		{
 			case 'image/png':
-				$img_type = IMAGETYPE_PNG;
+				$img_type = IMG_PNG;
 				break;
 			case 'image/avif':
 				$img_type =  IMG_AVIF;
 				break;
 			case 'image/gif':
-				$img_type =  IMAGETYPE_GIF;
+				$img_type =  IMG_GIF;
 				break;
 			case 'image/jpeg':
-				$img_type = IMAGETYPE_JPEG;
+				$img_type = IMG_JPEG;
 				break;
 			case 'image/webp':
-				$img_type = IMAGETYPE_WEBP;
+				$img_type = IMG_WEBP;
 				break;
 			case 'image/bmp':
-				$img_type = IMAGETYPE_BMP;
-				break;
-			case 'image/x-icon':
-				$img_type = IMAGETYPE_ICO;
+				$img_type = IMG_BMP;
 				break;
 			default:
 				$img_type = 0;

@@ -327,6 +327,8 @@ $time_formats = array(
 	3 => "H:i"
 );
 
-defined('IMAGETYPE_WEBP') || define('IMAGETYPE_WEBP', 18);
+defined('IMG_WEBP') || define('IMG_WEBP', 18);
+
+defined('IMG_BMP') || define('IMG_BMP', 64);
 
 defined('IMG_AVIF') || define('IMG_AVIF', 256);

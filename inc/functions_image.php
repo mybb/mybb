@@ -45,23 +45,23 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 
-		if($imgtype === IMAGETYPE_PNG && function_exists('imagecreatefrompng'))
+		if($imgtype === IMG_PNG && function_exists('imagecreatefrompng'))
 		{
 			$im = @imagecreatefrompng($file);
 		}
-		elseif($imgtype === IMAGETYPE_JPEG && function_exists('imagecreatefromjpeg'))
+		elseif($imgtype === IMG_JPEG && function_exists('imagecreatefromjpeg'))
 		{
 			$im = @imagecreatefromjpeg($file);
 		}
-		elseif($imgtype === IMAGETYPE_GIF && function_exists('imagecreatefromgif'))
+		elseif($imgtype === IMG_GIF && function_exists('imagecreatefromgif'))
 		{
 			$im = @imagecreatefromgif($file);
 		}
-		elseif($imgtype === IMAGETYPE_BMP && function_exists('imagecreatefrombmp'))
+		elseif($imgtype === IMG_BMP && function_exists('imagecreatefrombmp'))
 		{
 			$im = @imagecreatefrombmp($file);
 		}
-		elseif($imgtype === IMAGETYPE_WEBP && function_exists('imagecreatefromwebp'))
+		elseif($imgtype === IMG_WEBP && function_exists('imagecreatefromwebp'))
 		{
 			$im = @imagecreatefromwebp($file);
 		}
@@ -92,7 +92,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		}
 
 		// Attempt to preserve the transparency if there is any
-		if($imgtype === IMAGETYPE_PNG)
+		if($imgtype === IMG_PNG)
 		{
 			// A PNG!
 			imagealphablending($thumbim, false);
@@ -101,7 +101,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			// Save Alpha...
 			imagesavealpha($thumbim, true);
 		}
-		elseif($imgtype === IMAGETYPE_GIF)
+		elseif($imgtype === IMG_GIF)
 		{
 			// Transparent GIF?
 			$trans_color = imagecolortransparent($im);
@@ -123,12 +123,12 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
-		if(!function_exists('imagegif') && $imgtype === IMAGETYPE_GIF)
+		if(!function_exists('imagegif') && $imgtype === IMG_GIF)
 		{
 			$filename = str_replace('.gif', '.jpg', $filename);
 		}
 
-		if(!function_exists('imagebmp') && $imgtype === IMAGETYPE_BMP)
+		if(!function_exists('imagebmp') && $imgtype === IMG_BMP)
 		{
 			$filename = str_replace('.bmp', '.jpg', $filename);
 		}
@@ -140,7 +140,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 
 		switch($imgtype)
 		{
-			case IMAGETYPE_GIF:
+			case IMG_GIF:
 				if(function_exists('imagegif'))
 				{
 					@imagegif($thumbim, $path. '/' .$filename);
@@ -150,13 +150,13 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 					@imagejpeg($thumbim, $path. '/' .$filename);
 				}
 				break;
-			case IMAGETYPE_JPEG:
+			case IMG_JPEG:
 				@imagejpeg($thumbim, $path. '/' .$filename);
 				break;
-			case IMAGETYPE_PNG:
+			case IMG_PNG:
 				@imagepng($thumbim, $path. '/' .$filename);
 				break;
-			case IMAGETYPE_BMP:
+			case IMG_BMP:
 				if(function_exists('imagebmp'))
 				{
 					@imagebmp($thumbim, $path. '/' .$filename);
@@ -166,7 +166,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 					@imagejpeg($thumbim, $path. '/' .$filename);
 				}
 				break;
-			case IMAGETYPE_WEBP:
+			case IMG_WEBP:
 				@imagewebp($thumbim, $path. '/' .$filename);
 				break;
 			case IMG_AVIF:
