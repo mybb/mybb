@@ -141,7 +141,24 @@ if($mybb->input['action'] == "add_multiple")
 					if($file != ".." && $file != ".")
 					{
 						$ext = get_extension($file);
-						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+						if(in_array($ext, array(
+							'apng',
+							'png',
+							'avif',
+							'gif',
+							'jpg',
+							'jpeg',
+							'jfif',
+							'pjpeg',
+							'pjp',
+							'svg',
+							'webp',
+							'bmp',
+							'ico',
+							'cur',
+							'tif',
+							'tiff',
+						)))
 						{
 							if(!isset($aicons[$path.$file]))
 							{

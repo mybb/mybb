@@ -1004,7 +1004,36 @@ function get_post_attachments($id, &$post)
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$ext = get_extension($attachment['filename']);
-				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
+
+				if(in_array($ext, array(
+						'apng',
+						'png',
+						'avif',
+						'gif',
+						'jpg',
+						'jpeg',
+						'jfif',
+						'pjpeg',
+						'pjp',
+						'svg',
+						'webp',
+						'bmp',
+						'ico',
+						'cur',
+						'tif',
+						'tiff',
+					)) && in_array($attachment['filetype'], array(
+						'image/apng',
+						'image/png',
+						'image/avif',
+						'image/gif',
+						'image/jpeg',
+						'image/svg+xml',
+						'image/webp',
+						'image/bmp',
+						'image/x-icon',
+						'image/tiff',
+					)))
 				{
 					$isimage = true;
 				}

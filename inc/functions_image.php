@@ -9,7 +9,7 @@
  */
 
 /**
- * Generates a thumbnail based on specified dimensions (supports png, jpg, and gif)
+ * Generates a thumbnail based on specified dimensions (supports png, jpg, gif, bmp, webp, and avif)
  *
  * @param string $file the full path to the original image
  * @param string $path the directory path to where to save the new image
@@ -31,7 +31,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgdesc = getimagesize($file);
 	$imgwidth = $imgdesc[0];
 	$imgheight = $imgdesc[1];
-	$imgtype = $imgdesc[2];
+	$imgtype = (int)$imgdesc[2];
 	$imgattr = $imgdesc[3];
 	$imgbits = isset($imgdesc['bits']) ? $imgdesc['bits'] : null;
 	$imgchan = isset($imgdesc['channels']) ? $imgdesc['channels'] : null;
@@ -45,26 +45,30 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 
-		if($imgtype == 3)
+		if($imgtype === IMAGETYPE_PNG && function_exists('imagecreatefrompng'))
 		{
-			if(@function_exists("imagecreatefrompng"))
-			{
-				$im = @imagecreatefrompng($file);
-			}
+			$im = @imagecreatefrompng($file);
 		}
-		elseif($imgtype == 2)
+		elseif($imgtype === IMAGETYPE_JPEG && function_exists('imagecreatefromjpeg'))
 		{
-			if(@function_exists("imagecreatefromjpeg"))
-			{
-				$im = @imagecreatefromjpeg($file);
-			}
+			$im = @imagecreatefromjpeg($file);
 		}
-		elseif($imgtype == 1)
+		elseif($imgtype === IMAGETYPE_GIF && function_exists('imagecreatefromgif'))
 		{
-			if(@function_exists("imagecreatefromgif"))
-			{
-				$im = @imagecreatefromgif($file);
-			}
+			$im = @imagecreatefromgif($file);
+		}
+		elseif($imgtype === IMAGETYPE_BMP && function_exists('imagecreatefrombmp'))
+		{
+			$im = @imagecreatefrombmp($file);
+		}
+		elseif($imgtype === IMAGETYPE_WEBP && function_exists('imagecreatefromwebp'))
+		{
+			$im = @imagecreatefromwebp($file);
+		}
+		// imagecreatefromavif() is only available in PHP >= 8.1
+		elseif(defined('IMG_AVIF') && $imgtype === IMG_AVIF && function_exists('imagecreatefromavif'))
+		{
+			$im = @imagecreatefromavif($file);
 		}
 		else
 		{
@@ -88,7 +92,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		}
 
 		// Attempt to preserve the transparency if there is any
-		if($imgtype == 3)
+		if($imgtype === IMAGETYPE_PNG)
 		{
 			// A PNG!
 			imagealphablending($thumbim, false);
@@ -97,7 +101,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			// Save Alpha...
 			imagesavealpha($thumbim, true);
 		}
-		elseif($imgtype == 1)
+		elseif($imgtype === IMAGETYPE_GIF)
 		{
 			// Transparent GIF?
 			$trans_color = imagecolortransparent($im);
@@ -119,27 +123,61 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
-		if(!function_exists("imagegif") && $imgtype == 1)
+		if(!function_exists('imagegif') && $imgtype === IMAGETYPE_GIF)
 		{
-			$filename = str_replace(".gif", ".jpg", $filename);
+			$filename = str_replace('.gif', '.jpg', $filename);
 		}
+
+		if(!function_exists('imagebmp') && $imgtype === IMAGETYPE_BMP)
+		{
+			$filename = str_replace('.bmp', '.jpg', $filename);
+		}
+
+		if(!function_exists('imageavif') && $imgtype === IMG_AVIF)
+		{
+			$filename = str_replace('.avif', '.jpg', $filename);
+		}
+
 		switch($imgtype)
 		{
-			case 1:
-				if(function_exists("imagegif"))
+			case IMAGETYPE_GIF:
+				if(function_exists('imagegif'))
 				{
-					@imagegif($thumbim, $path."/".$filename);
+					@imagegif($thumbim, $path. '/' .$filename);
 				}
 				else
 				{
-					@imagejpeg($thumbim, $path."/".$filename);
+					@imagejpeg($thumbim, $path. '/' .$filename);
 				}
 				break;
-			case 2:
-				@imagejpeg($thumbim, $path."/".$filename);
+			case IMAGETYPE_JPEG:
+				@imagejpeg($thumbim, $path. '/' .$filename);
 				break;
-			case 3:
-				@imagepng($thumbim, $path."/".$filename);
+			case IMAGETYPE_PNG:
+				@imagepng($thumbim, $path. '/' .$filename);
+				break;
+			case IMAGETYPE_BMP:
+				if(function_exists('imagebmp'))
+				{
+					@imagebmp($thumbim, $path. '/' .$filename);
+				}
+				else
+				{
+					@imagejpeg($thumbim, $path. '/' .$filename);
+				}
+				break;
+			case IMAGETYPE_WEBP:
+				@imagewebp($thumbim, $path. '/' .$filename);
+				break;
+			case IMG_AVIF:
+				if(function_exists('imageavif'))
+				{
+					@imageavif($thumbim, $path. '/' .$filename);
+				}
+				else
+				{
+					@imagejpeg($thumbim, $path. '/' .$filename);
+				}
 				break;
 		}
 		@my_chmod($path."/".$filename, '0644');

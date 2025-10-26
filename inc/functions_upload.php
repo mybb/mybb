@@ -229,12 +229,20 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check we have a valid extension
-    	$ext = get_extension(my_strtolower($avatar['name']));
-    	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
-    	{
-        	$ret['error'] = $lang->error_avatartype;
-        	return $ret;
-    	}
+	$ext = get_extension(my_strtolower($avatar['name']));
+	if(!in_array($ext, array(
+		'png',
+		'avif',
+		'gif',
+		'jpg',
+		'jpeg',
+		'webp',
+		'bmp',
+	)))
+	{
+		$ret['error'] = $lang->error_avatartype;
+		return $ret;
+	}
 
 	if(defined('IN_ADMINCP'))
 	{
@@ -329,24 +337,26 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	switch($avatar['type'])
 	{
-		case "image/gif":
-			$img_type =  1;
+		case 'image/png':
+			$img_type = IMAGETYPE_PNG;
 			break;
-		case "image/jpeg":
-		case "image/x-jpg":
-		case "image/x-jpeg":
-		case "image/pjpeg":
-		case "image/jpg":
-			$img_type = 2;
+		case 'image/avif':
+			$img_type =  IMG_AVIF;
 			break;
-		case "image/png":
-		case "image/x-png":
-			$img_type = 3;
+		case 'image/gif':
+			$img_type =  IMAGETYPE_GIF;
 			break;
-		case "image/bmp":
-		case "image/x-bmp":
-		case "image/x-windows-bmp":
-			$img_type = 6;
+		case 'image/jpeg':
+			$img_type = IMAGETYPE_JPEG;
+			break;
+		case 'image/webp':
+			$img_type = IMAGETYPE_WEBP;
+			break;
+		case 'image/bmp':
+			$img_type = IMAGETYPE_BMP;
+			break;
+		case 'image/x-icon':
+			$img_type = IMAGETYPE_ICO;
 			break;
 		default:
 			$img_type = 0;
@@ -563,24 +573,39 @@ function upload_attachment($attachment, $update_attachment=false)
 	);
 
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
-	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+	if(in_array($ext, array(
+		'png',
+		'avif',
+		'gif',
+		'jpg',
+		'jpeg',
+		'webp',
+		'bmp',
+	)))
 	{
 		// Check a list of known MIME types to establish what kind of image we're uploading
 		switch(my_strtolower($file['type']))
 		{
-			case "image/gif":
-				$img_type =  1;
+			case 'image/png':
+				$img_type = IMAGETYPE_PNG;
 				break;
-			case "image/jpeg":
-			case "image/x-jpg":
-			case "image/x-jpeg":
-			case "image/pjpeg":
-			case "image/jpg":
-				$img_type = 2;
+			case 'image/avif':
+				$img_type =  IMG_AVIF;
 				break;
-			case "image/png":
-			case "image/x-png":
-				$img_type = 3;
+			case 'image/gif':
+				$img_type =  IMAGETYPE_GIF;
+				break;
+			case 'image/jpeg':
+				$img_type = IMAGETYPE_JPEG;
+				break;
+			case 'image/webp':
+				$img_type = IMAGETYPE_WEBP;
+				break;
+			case 'image/bmp':
+				$img_type = IMAGETYPE_BMP;
+				break;
+			case 'image/x-icon':
+				$img_type = IMAGETYPE_ICO;
 				break;
 			default:
 				$img_type = 0;

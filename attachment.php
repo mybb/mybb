@@ -132,31 +132,43 @@ $plugins->run_hooks("attachment_end");
 
 if(isset($mybb->input['thumbnail']))
 {
-	if(!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
+	$ext = get_extension($attachment['thumbnail']);
+
+	$type = $attachment['filetype'];
+
+	if(!in_array($ext, array(
+			'apng',
+			'png',
+			'avif',
+			'gif',
+			'jpg',
+			'jpeg',
+			'jfif',
+			'pjpeg',
+			'pjp',
+			'svg',
+			'webp',
+			'bmp',
+			'ico',
+			'cur',
+			'tif',
+			'tiff',
+		)) ||
+		!in_array($type, array(
+			'image/apng',
+			'image/png',
+			'image/avif',
+			'image/gif',
+			'image/jpeg',
+			'image/svg+xml',
+			'image/webp',
+			'image/bmp',
+			'image/x-icon',
+			'image/tiff',
+		)) ||
+		!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
 	{
 		error($lang->error_invalidattachment);
-	}
-
-	$ext = get_extension($attachment['thumbnail']);
-	switch($ext)
-	{
-		case "gif":
-			$type = "image/gif";
-			break;
-		case "bmp":
-			$type = "image/bmp";
-			break;
-		case "png":
-			$type = "image/png";
-			break;
-		case "jpg":
-		case "jpeg":
-		case "jpe":
-			$type = "image/jpeg";
-			break;
-		default:
-			$type = "image/unknown";
-			break;
 	}
 
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
@@ -181,13 +193,18 @@ else
 
 	switch($attachment['filetype'])
 	{
-		case "application/pdf":
-		case "image/bmp":
-		case "image/gif":
-		case "image/jpeg":
-		case "image/pjpeg":
-		case "image/png":
-		case "text/plain":
+		case 'application/pdf':
+		case 'image/apng':
+		case 'image/png':
+		case 'image/avif':
+		case 'image/gif':
+		case 'image/jpeg':
+		case 'image/svg+xml':
+		case 'image/webp':
+		case 'image/bmp':
+		case 'image/x-icon':
+		case 'image/tiff':
+		case 'text/plain':
 			header("Content-type: {$attachment['filetype']}");
 			if(!empty($attachtypes[$ext]['forcedownload']))
 			{

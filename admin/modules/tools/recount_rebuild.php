@@ -370,7 +370,15 @@ function acp_rebuild_attachment_thumbnails()
 	while($attachment = $db->fetch_array($query))
 	{
 		$ext = my_strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
-		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+		if(in_array($ext, array(
+			'png',
+			'avif',
+			'gif',
+			'jpg',
+			'jpeg',
+			'webp',
+			'bmp',
+		)))
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
 			$thumbnail = generate_thumbnail($uploadspath_abs."/".$attachment['attachname'], $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
