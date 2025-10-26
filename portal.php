@@ -661,96 +661,16 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$parser_options['allow_videocode'] = 0;
 			}
 
-			$message = $parser->parse_message($announcement['message'], $parser_options);
+			$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
-			$post['attachments'] = '';
-			if($mybb->settings['enableattachments'] == 1 && isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
-			{ // This post has 1 or more attachments
-				$validationcount = 0;
-				$id = $announcement['pid'];
-				$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = $post['attachedthumbs'] = $post['attachedimages'] = '';
-				foreach($attachcache[$id] as $aid => $attachment)
-				{
-					if($attachment['visible'])
-					{ // There is an attachment thats visible!
-						$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-						$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-						$ext = get_extension($attachment['filename']);
-						if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
-						{
-							$isimage = true;
-						}
-						else
-						{
-							$isimage = false;
-						}
-						$attachment['icon'] = get_attachment_icon($ext);
-						if(!$attachment['dateuploaded'])
-						{
-							$attachment['dateuploaded'] = $announcement['dateline'];
-						}
-						$attachdate = my_date('normal', $attachment['dateuploaded']);
-						// Support for [attachment=id] code
-						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
-						{
-							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-							{ // We have a thumbnail to show (and its not the "SMALL" enough image
-								eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-							}
-							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-							{
-								// Image is small enough to show - no thumbnail
-								eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
-							}
-							else
-							{
-								// Show standard link to attachment
-								eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-							}
-							$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
-						}
-						else
-						{
-							$tcount = 0;
-							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-							{ // We have a thumbnail to show
-								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-								if($tcount == 5)
-								{
-									$post['thumblist'] .= "<br />";
-									$tcount = 0;
-								}
-								++$tcount;
-							}
-							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-							{
-								// Image is small enough to show - no thumbnail
-								eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-							}
-							else
-							{
-								eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
-							}
-						}
-					}
-					else
-					{
-						$validationcount++;
-					}
-				}
-				if($post['thumblist'])
-				{
-					eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
-				}
-				if($post['imagelist'])
-				{
-					eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
-				}
-				if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-				{
-					eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
-				}
+			if($mybb->settings['enableattachments'] != 0)
+			{
+				get_post_attachments($announcement['pid'], $announcement);
 			}
+
+			$message = $announcement['message'];
+
+			$post = &$announcement;
 
 			eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
 			unset($post);
