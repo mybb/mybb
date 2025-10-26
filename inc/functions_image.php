@@ -66,7 +66,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			$im = @imagecreatefromwebp($file);
 		}
 		// imagecreatefromavif() is only available in PHP >= 8.1
-		elseif(defined('IMG_AVIF') && $imgtype === IMG_AVIF && function_exists('imagecreatefromavif'))
+		elseif($imgtype === IMG_AVIF && function_exists('imagecreatefromavif'))
 		{
 			$im = @imagecreatefromavif($file);
 		}
