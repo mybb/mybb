@@ -18,6 +18,8 @@ $page->add_breadcrumb_item($lang->banning, "index.php?module=config-banning");
 
 $plugins->run_hooks("admin_config_banning_begin");
 
+$mybb->input['filter'] = $mybb->get_input('filter');
+
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_banning_add");
@@ -31,6 +33,28 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	if($db->num_rows($query))
 	{
 		$errors[] = $lang->error_filter_already_banned;
+	}
+
+	if(!$errors && $mybb->input['type'] == 1)
+	{
+		$ip_address = $db->escape_string($mybb->input['filter']);
+		$subnet_mask = "0";
+		if(strpos($ip_address, "*") !== false)
+		{
+			$ip_address = str_replace("*", "0", $ip_address);
+		}
+		else if(strpos($ip_address, "/") !== false)
+		{
+			list($ip_address, $subnet_mask) = explode("/", $ip_address);
+		}
+
+		$is_valid_v4 = filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && $subnet_mask <= 32 && $subnet_mask >= 0;
+		$is_valid_v6 = filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) && $subnet_mask <= 128 && $subnet_mask >= 0;
+
+		if (!$is_valid_v4 && !$is_valid_v6 || !ctype_digit($subnet_mask))
+		{
+			$errors[] = $lang->error_invalid_filter;
+		}
 	}
 
 	if(!$errors)
@@ -96,9 +120,9 @@ if($mybb->input['action'] == "delete")
 	$filter = $db->fetch_array($query);
 
 	// Does the filter not exist?
-	if(!$filter['fid'])
+	if(!$filter)
 	{
-		flash_message($lang->error_invalid_filter, 'error');
+		flash_message($lang->error_filter_not_found, 'error');
 		admin_redirect("index.php?module=config-banning");
 	}
 
@@ -118,7 +142,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-banning&type={$type}");
 	}
@@ -156,7 +180,7 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_banning_start");
 
-	switch($mybb->input['type'])
+	switch($mybb->get_input('type'))
 	{
 		case "emails":
 			$type = "3";
@@ -202,6 +226,26 @@ if(!$mybb->input['action'])
 	if($errors)
 	{
 		$page->output_inline_error($errors);
+	}
+
+	$query = $db->simple_select("banfilters", "COUNT(fid) AS filter", "type='{$type}'");
+	$total_rows = $db->fetch_field($query, "filter");
+
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
+	if($pagenum)
+	{
+		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$pagenum = 1;
 	}
 
 	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
@@ -253,7 +297,7 @@ if(!$mybb->input['action'])
 	}
 	$table->construct_header($lang->controls, array("width" => 1));
 
-	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array("order_by" => "filter", "order_dir" => "asc"));
+	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array('limit_start' => $start, 'limit' => 20, "order_by" => "filter", "order_dir" => "asc"));
 	while($filter = $db->fetch_array($query))
 	{
 		$filter['filter'] = htmlspecialchars_uni($filter['filter']);
@@ -290,6 +334,8 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($title);
+
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-banning&amp;type={$mybb->get_input('type')}&amp;page={page}");
 
 	$page->output_footer();
 }

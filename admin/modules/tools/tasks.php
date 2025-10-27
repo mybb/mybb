@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add")
 			$mybb->input['day'] = '*';
 		}
 
-		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
+		$mybb->input['month'] = check_time_values($mybb->get_input('month', MyBB::INPUT_ARRAY), 1, 12, 'array');
 		if($mybb->input['month'] === false)
 		{
 			$errors[] = $lang->error_invalid_month;
@@ -188,8 +188,8 @@ if($mybb->input['action'] == "add")
 		$mybb->input['month'] = '*';
 	}
 	$form_container = new FormContainer($lang->add_new_task);
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
 	$task_list = array();
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
@@ -201,10 +201,10 @@ if($mybb->input['action'] == "add")
 			$task_list[$file_id] = $task_file;
 		}
 	}
-	$form_container->output_row($lang->task_file." <em>*</em>", $lang->task_file_desc, $form->generate_select_box("file", $task_list, $mybb->input['file'], array('id' => 'file')), 'file');
-	$form_container->output_row($lang->time_minutes, $lang->time_minutes_desc, $form->generate_text_box('minute', $mybb->input['minute'], array('id' => 'minute')), 'minute');
-	$form_container->output_row($lang->time_hours, $lang->time_hours_desc, $form->generate_text_box('hour', $mybb->input['hour'], array('id' => 'hour')), 'hour');
-	$form_container->output_row($lang->time_days_of_month, $lang->time_days_of_month_desc, $form->generate_text_box('day', $mybb->input['day'], array('id' => 'day')), 'day');
+	$form_container->output_row($lang->task_file." <em>*</em>", $lang->task_file_desc, $form->generate_select_box("file", $task_list, $mybb->get_input('file'), array('id' => 'file')), 'file');
+	$form_container->output_row($lang->time_minutes, $lang->time_minutes_desc, $form->generate_text_box('minute', $mybb->get_input('minute'), array('id' => 'minute')), 'minute');
+	$form_container->output_row($lang->time_hours, $lang->time_hours_desc, $form->generate_text_box('hour', $mybb->get_input('hour'), array('id' => 'hour')), 'hour');
+	$form_container->output_row($lang->time_days_of_month, $lang->time_days_of_month_desc, $form->generate_text_box('day', $mybb->get_input('day'), array('id' => 'day')), 'day');
 
 	$options = array(
 		"*" => $lang->every_weekday,
@@ -233,11 +233,11 @@ if($mybb->input['action'] == "add")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->get_input('month', MyBB::INPUT_ARRAY), array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "edit")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -313,7 +313,7 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['day'] = '*';
 		}
 
-		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
+		$mybb->input['month'] = check_time_values($mybb->get_input('month', MyBB::INPUT_ARRAY), 1, 12, 'array');
 		if($mybb->input['month'] === false)
 		{
 			$errors[] = $lang->error_invalid_month;
@@ -459,14 +459,14 @@ if($mybb->input['action'] == "delete")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=tools-tasks");
 	}
@@ -499,7 +499,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -529,7 +529,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		if($task['file'] == "backupdb" || $task['file'] == "checktables")
 		{
 			// User clicked no
-			if($mybb->input['no'])
+			if($mybb->get_input('no'))
 			{
 				admin_redirect("index.php?module=tools-tasks");
 			}
@@ -588,14 +588,15 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "run")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
 	ignore_user_abort(true);
-	@set_time_limit(0);
+
+    my_set_time_limit();
 
 	$plugins->run_hooks("admin_tools_tasks_run");
 
@@ -603,7 +604,7 @@ if($mybb->input['action'] == "run")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if(!$task)
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -656,7 +657,7 @@ if($mybb->input['action'] == "logs")
 	$per_page = 50;
 	$current_page = 1;
 
-	if($mybb->input['page'] > 0)
+	if(($mybb->get_input('page', MyBB::INPUT_INT)) > 0)
 	{
 		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($current_page-1)*$per_page;

@@ -47,7 +47,6 @@ $mybb->config = &$config;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
-require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
@@ -62,6 +61,7 @@ if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 's
 
 // Load DB interface
 require_once MYBB_ROOT."inc/db_base.php";
+require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 
 require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 switch($config['database']['type'])
@@ -72,8 +72,14 @@ switch($config['database']['type'])
 	case "pgsql":
 		$db = new DB_PgSQL;
 		break;
+	case "pgsql_pdo":
+		$db = new PostgresPdoDbDriver();
+		break;
 	case "mysqli":
 		$db = new DB_MySQLi;
+		break;
+	case "mysql_pdo":
+		$db = new MysqlPdoDbDriver();
 		break;
 	default:
 		$db = new DB_MySQL;
@@ -194,14 +200,14 @@ else
 		);
 		$user = get_user_by_username($mybb->get_input('username'), $options);
 
-		if(!$user['uid'])
+		if(!$user)
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
 		else
 		{
 			$user = validate_password_from_uid($user['uid'], $mybb->get_input('password'), $user);
-			if(!$user['uid'])
+			if(!$user)
 			{
 				$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
 			}
@@ -261,18 +267,27 @@ else
 		{
 			$db->drop_table("upgrade_data");
 		}
+
+		$collation = $db->build_create_table_collation();
+		
+		$engine = '';
+		if($db->type == "mysql" || $db->type == "mysqli")
+		{
+			$engine = 'ENGINE=MyISAM';
+		}
+		
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
 			UNIQUE (title)
-		);");
+		) {$engine}{$collation};");
 
 		$dh = opendir(INSTALL_ROOT."resources");
 
 		$upgradescripts = array();
 		while(($file = readdir($dh)) !== false)
 		{
-			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
+			if(preg_match("#upgrade(\d+(p\d+)*).php$#i", $file, $match))
 			{
 				$upgradescripts[$match[1]] = $file;
 				$key_order[] = $match[1];
@@ -288,12 +303,31 @@ else
 		// If array is empty then we must be upgrading to 1.6 since that's when this feature was added
 		if(empty($version_history))
 		{
-			$next_update_version = 17; // 16+1
+			$candidates = array(
+				17, // 16+1
+			);
 		}
 		else
 		{
-			$next_update_version = (int)(end($version_history)+1);
+			$latest_installed = end($version_history);
+
+			// Check for standard migrations and old branch patches (1 < 1p1 < 1p2 < 2)
+			$parts = explode('p', $latest_installed);
+
+			$candidates = array(
+				(string)((int)$parts[0] + 1),
+			);
+
+			if(isset($parts[1]))
+			{
+				$candidates[] = $parts[0].'p'.((int)$parts[1] + 1);
+			}
+			else
+			{
+				$candidates[] = $parts[0].'p1';
+			}
 		}
+
 
 		$vers = '';
 		foreach($key_order as $k => $key)
@@ -301,12 +335,14 @@ else
 			$file = $upgradescripts[$key];
 			$upgradescript = file_get_contents(INSTALL_ROOT."resources/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
-			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
+			preg_match("#upgrade(\d+(p\d+)*).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
 			{
-				if($keynum[1] == $next_update_version)
+				if(in_array($keynum[1], $candidates))
 				{
 					$vers .= "<option value=\"$keynum[1]\" selected=\"selected\">$verinfo[1]</option>\n";
+
+					$candidates = array();
 				}
 				else
 				{
@@ -317,33 +353,49 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
-		$output->print_footer("doupgrade");
+		if(end($version_history) == reset($key_order) && empty($mybb->input['force']))
+		{
+			$output->print_contents($lang->upgrade_not_needed);
+			$output->print_footer("finished");
+		}
+		else
+		{
+			$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
+			$output->print_footer("doupgrade");
+		}
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
+		if(ctype_alnum($mybb->get_input('from')))
+		{
+			$from = $mybb->get_input('from');
+		}
+		else{
+			$from = 0;
+		}
+
 		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
-		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
-		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
+		require_once INSTALL_ROOT."resources/upgrade".$from.".php";
+		if($db->table_exists("datacache") && !empty($upgrade_detail['requires_deactivated_plugins']) && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$from."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
 			{
-				add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
-				$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
+				add_upgrade_store("startscript", $from);
+				$runfunction = next_function($from);
 			}
 		}
 		else
 		{
-			add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
-			$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
+			add_upgrade_store("startscript", $from);
+			$runfunction = next_function($from);
 		}
 	}
 	$currentscript = get_upgrade_store("currentscript");
@@ -368,10 +420,18 @@ else
 	else // Busy running modules, come back later
 	{
 		$bits = explode("_", $mybb->input['action'], 2);
-		if($bits[1]) // We're still running a module
+		if(!empty($bits[1])) // We're still running a module
 		{
-			$from = $bits[0];
-			$runfunction = next_function($bits[0], $bits[1]);
+			if(ctype_alnum($bits[0]))
+			{
+				$from = $bits[0];
+			}
+			else
+			{
+				$from = 0;
+			}
+
+			$runfunction = next_function($from, $bits[1]);
 
 		}
 	}
@@ -379,6 +439,8 @@ else
 	// Fetch current script we're in
 	if(function_exists($runfunction))
 	{
+		my_set_time_limit();
+
 		$runfunction();
 	}
 }
@@ -491,7 +553,7 @@ function upgradethemes()
 
 	// Now deal with the master templates
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
@@ -507,7 +569,7 @@ function upgradethemes()
 			$time = TIME_NOW;
 			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='".$db->escape_string($templatename)."'");
 			$oldtemp = $db->fetch_array($query);
-			if($oldtemp['tid'])
+			if($oldtemp)
 			{
 				$update_array = array(
 					'template' => $templatevalue,
@@ -566,7 +628,7 @@ function buildcaches()
 
 	$output->print_header($lang->upgrade_datacache_building);
 
-	$contents .= $lang->upgrade_building_datacache;
+	$contents = $lang->upgrade_building_datacache;
 
 	$cache->update_version();
 	$cache->update_attachtypes();
@@ -648,7 +710,7 @@ function upgradedone()
 			$lock_note = $lang->sprintf($lang->upgrade_locked, $config['admin_dir']);
 		}
 	}
-	if(!$written)
+	if(empty($written))
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
@@ -699,7 +761,7 @@ function whatsnext()
 /**
  * Determine the next function we need to call
  *
- * @param int $from
+ * @param string $from
  * @param string $func
  *
  * @return string
@@ -707,6 +769,11 @@ function whatsnext()
 function next_function($from, $func="dbchanges")
 {
 	global $oldvers, $system_upgrade_detail, $currentscript, $cache;
+
+	if(!ctype_alnum($from))
+	{
+		$from = 0;
+	}
 
 	load_module("upgrade".$from.".php");
 	if(function_exists("upgrade".$from."_".$func))
@@ -716,18 +783,41 @@ function next_function($from, $func="dbchanges")
 	else
 	{
  		// We're done with our last upgrade script, so add it to the upgrade scripts we've already completed.
+		if (ctype_digit($from)) {
+			$from = (int)$from;
+		}
+
 		$version_history = $cache->read("version_history");
 		$version_history[$from] = $from;
 		$cache->update("version_history", $version_history);
 
-		$from = $from+1;
-		if(file_exists(INSTALL_ROOT."resources/upgrade".$from.".php"))
+		// Check for standard migrations and old branch patches (1 < 1p1 < 1p2 < 2)
+		$parts = explode('p', $from);
+
+		$candidates = array(
+			(string)((int)$parts[0] + 1),
+		);
+
+		if(isset($parts[1]))
 		{
-			$function = next_function($from);
+			$candidates[] = $parts[0].'p'.((int)$parts[1] + 1);
+		}
+		else
+		{
+			$candidates[] = $parts[0].'p1';
+		}
+
+		foreach($candidates as $candidate)
+		{
+			if(file_exists(INSTALL_ROOT."resources/upgrade".$candidate.".php"))
+			{
+				$function = next_function($candidate);
+				break;
+			}
 		}
 	}
 
-	if(!$function)
+	if(empty($function))
 	{
 		$function = "whatsnext";
 	}
@@ -746,7 +836,7 @@ function load_module($module)
 	{
 		foreach($upgrade_detail as $key => $val)
 		{
-			if(!$system_upgrade_detail[$key] || $val > $system_upgrade_detail[$key])
+			if(empty($system_upgrade_detail[$key]) || $val > $system_upgrade_detail[$key])
 			{
 				$system_upgrade_detail[$key] = $val;
 			}
@@ -769,6 +859,12 @@ function get_upgrade_store($title)
 
 	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
+
+	if(!isset($data['contents']))
+	{
+		return null;
+	}
+
 	return my_unserialize($data['contents']);
 }
 
@@ -910,7 +1006,7 @@ function sync_settings($redo=0)
 		}
 	}
 	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
-	$parser = new XMLParser($settings_xml);
+	$parser = create_xml_parser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 	$settinggroupnames = array();
@@ -979,6 +1075,7 @@ function sync_settings($redo=0)
 		}
 	}
 	unset($settings);
+	$settings = '';
 	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
@@ -1078,7 +1175,7 @@ function sync_tasks($redo=0)
 
 	require_once MYBB_ROOT."inc/functions_task.php";
 	$task_file = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-	$parser = new XMLParser($task_file);
+	$parser = create_xml_parser($task_file);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 

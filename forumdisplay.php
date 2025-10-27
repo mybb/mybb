@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'forumdisplay.php');
 
-$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating";
+$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_searchforum,forumdisplay_forumsort,forumdisplay_thread_rating,forumdisplay_threadlist_rating";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules_link,forumdisplay_orderarrow,forumdisplay_newthread";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumbit_subforums,forumbit_moderators,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden";
@@ -95,7 +95,7 @@ if($mybb->user['uid'] == 0)
 	$forumsread = array();
 	if(isset($mybb->cookies['mybb']['forumread']))
 	{
-		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread'], false);
 	}
 
  	if(is_array($forumsread) && empty($forumsread))
@@ -152,10 +152,10 @@ else
 
 $subforums = '';
 $child_forums = build_forumbits($fid, 2);
-$forums = $child_forums['forum_list'];
 
-if($forums)
+if(!empty($child_forums) && !empty($child_forums['forum_list']))
 {
+	$forums = $child_forums['forum_list'];
 	$lang->sub_forums_in = $lang->sprintf($lang->sub_forums_in, $foruminfo['name']);
 	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
@@ -172,16 +172,19 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
+$forumjump = '';
 if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
+$newthread = '';
 if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
 
+$searchforum = '';
 if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 {
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
@@ -213,11 +216,12 @@ $done_moderators = array(
 
 $moderators = '';
 $parentlistexploded = explode(",", $parentlist);
+$comma = '';
 
 foreach($parentlistexploded as $mfid)
 {
 	// This forum has moderators
-	if(is_array($moderatorcache[$mfid]))
+	if(isset($moderatorcache[$mfid]) && is_array($moderatorcache[$mfid]))
 	{
 		// Fetch each moderator from the cache and format it, appending it to the list
 		foreach($moderatorcache[$mfid] as $modtype)
@@ -272,6 +276,7 @@ else
 }
 
 // Get the users browsing this forum.
+$usersbrowsing = '';
 if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -607,8 +612,39 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many threads are there?
-	$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
-	$threadcount = $db->fetch_field($query, "threads");
+	if ($useronly === "" && $datecutsql === "" && $prefixsql === "")
+	{
+		$threadcount = 0;
+
+		$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid=".(int)$fid);
+		$forum_threads = $db->fetch_array($query);
+
+		if(in_array(1, $visible_states))
+		{
+			$threadcount += $forum_threads['threads'];
+		}
+
+		if(in_array(-1, $visible_states))
+		{
+			$threadcount += $forum_threads['deletedthreads'];
+		}
+
+		if(in_array(0, $visible_states))
+		{
+			$threadcount += $forum_threads['unapprovedthreads'];
+		}
+		elseif($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' AND t.visible=0 AND t.uid=".(int)$mybb->user['uid']);
+			$threadcount += $db->fetch_field($query, "threads");
+		}
+	}
+	else
+	{
+		$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
+
+		$threadcount = $db->fetch_field($query, "threads");
+	}
 }
 
 // How many pages are there?
@@ -694,6 +730,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
+$ratingcol = $ratingsort = '';
 if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
@@ -754,14 +791,14 @@ if($has_announcements == true)
 	$cookie = array();
 	if(isset($mybb->cookies['mybb']['announcements']))
 	{
-		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']), false);
 	}
 
 	$announcementlist = '';
 	$bgcolor = alt_trow(true); // Reset the trow colors
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']])
+		if($announcement['startdate'] > $mybb->user['lastvisit'] && !isset($cookie[$announcement['aid']]))
 		{
 			$new_class = ' class="subject_new"';
 			$folder = "newfolder";
@@ -833,8 +870,11 @@ else
 	$announcementlist = '';
 }
 
-$tids = $threadcache = array();
-$icon_cache = $cache->read("posticons");
+$tids = $threadCache = $icon_cache = array();
+if($mybb->settings['allowposticons'] == 1 && $foruminfo['allowpicons'] != 0)
+{
+	$icon_cache = (array)$cache->read("posticons");
+}
 
 if($fpermissions['canviewthreads'] != 0)
 {
@@ -859,6 +899,11 @@ if($fpermissions['canviewthreads'] != 0)
 		if($thread['numratings'] > 0 && $ratings == false)
 		{
 			$ratings = true; // Looks for ratings in the forum
+		}
+
+		if(!empty($icon_cache[$thread['icon']]['path']))
+		{
+			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
@@ -954,8 +999,12 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadc
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
+	$forum_read = 0;
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$forum_read = $db->fetch_field($query, "dateline");
+	if($db->num_rows($query) > 0)
+	{
+		$forum_read = $db->fetch_field($query, "dateline");
+	}
 
 	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
@@ -1050,7 +1099,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
-		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+		if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
@@ -1090,9 +1139,18 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 			else
 			{
-				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-				$thread['width'] = (int)round($thread['averagerating'])*20;
 				$thread['numratings'] = (int)$thread['numratings'];
+
+				if($thread['numratings'] == 0)
+				{
+					$thread['averagerating'] = 0;
+					$thread['width'] = 0;
+				}
+				else
+				{
+					$thread['averagerating'] = (float)round($thread['averagerating'], 2);
+					$thread['width'] = (int)round($thread['averagerating']) * 20;
+				}
 
 				$not_rated = '';
 				if(!isset($thread['rated']) || empty($thread['rated']))
@@ -1455,7 +1513,7 @@ if($mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
 
-	if($db->fetch_field($query, 'fid'))
+	if($db->num_rows($query) > 0)
 	{
 		$add_remove_subscription = 'remove';
 		$add_remove_subscription_text = $lang->unsubscribe_forum;
@@ -1463,8 +1521,6 @@ if($mybb->user['uid'])
 
 	eval("\$addremovesubscription = \"".$templates->get("forumdisplay_threadlist_subscription")."\";");
 }
-
-$inline_edit_js = $clearstoredpass = '';
 
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
@@ -1486,6 +1542,10 @@ if($foruminfo['type'] != "c")
 	}
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
+
+	// Populate Forumsort
+	$forumsort = '';
+	eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
 
 	$plugins->run_hooks("forumdisplay_threadlist");
 

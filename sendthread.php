@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,sendthread_fromemail,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_nocaptcha,post_captcha_hcaptcha";
+$templatelist = "sendthread,sendthread_fromemail,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_nocaptcha,post_captcha_cfturnstile,post_captcha_hcaptcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -55,7 +55,7 @@ $forum = get_forum($thread['fid']);
 $forumpermissions = forum_permissions($forum['fid']);
 
 // Invalid forum?
-if(!$forum['fid'] || $forum['type'] != "f")
+if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
@@ -145,7 +145,7 @@ $mybb->input['action'] = $mybb->get_input('action');
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 
@@ -198,21 +198,12 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	// No errors detected
 	if(count($errors) == 0)
 	{
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			$from = $mybb->input['fromemail'];
-		}
-		else
-		{
-			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
-		}
-
 		$threadlink = get_thread_link($thread['tid']);
 
 		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
 
 		// Send the actual message
-		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->input['fromemail']);
+		my_mail($mybb->input['email'], $mybb->input['subject'], $message, "", "", "", false, "text", "", $mybb->input['fromemail']);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{

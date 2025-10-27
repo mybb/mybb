@@ -71,7 +71,7 @@ class LoginDataHandler extends DataHandler
 			{
 				$mybb->cookies['loginattempts'] = 0;
 			}
-			if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
+			if($mybb->settings['failedcaptchalogincount'] > 0 && (isset($user['loginattempts']) && $user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 			{
 				$this->captcha_verified = false;
 				$this->verify_captcha();
@@ -109,7 +109,7 @@ class LoginDataHandler extends DataHandler
 				return true;
 			}
 		}
-		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+		else if(!empty($mybb->input['quick_login']) && !empty($mybb->input['quick_password']) && !empty($mybb->input['quick_username']))
 		{
 			$this->set_error('regimagerequired');
 			return false;
@@ -128,7 +128,7 @@ class LoginDataHandler extends DataHandler
 	{
 		$this->get_login_data();
 
-		if(!$this->login_data['uid'])
+		if(empty($this->login_data) || !$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
@@ -171,14 +171,6 @@ class LoginDataHandler extends DataHandler
 
 		if($strict == true)
 		{
-			if(!$this->login_data['salt'])
-			{
-				// Generate a salt for this user and assume the password stored in db is a plain md5 password
-				$password_fields = create_password($this->login_data['password']);
-				$this->login_data = array_merge($this->login_data, $password_fields);
-				$db->update_query("users", $password_fields, "uid = '{$this->login_data['uid']}'");
-			}
-
 			if(!$this->login_data['loginkey'])
 			{
 				$this->login_data['loginkey'] = generate_loginkey();

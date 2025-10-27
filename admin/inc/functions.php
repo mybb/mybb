@@ -212,7 +212,7 @@ function make_parent_list($fid, $navsep=",")
 	{
 		if($fid == $forum['fid'])
 		{
-			if($pforumcache[$forum['pid']])
+			if(!empty($pforumcache[$forum['pid']]))
 			{
 				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
 			}
@@ -266,9 +266,9 @@ function save_quick_perms($fid)
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 
 		// Only insert the new ones if we're using custom permissions
-		if($inherit[$usergroup['gid']] != 1)
+		if(empty($inherit[$usergroup['gid']]))
 		{
-			if($canview[$usergroup['gid']] == 1)
+			if(!empty($canview[$usergroup['gid']]))
 			{
 				$pview = 1;
 			}
@@ -277,7 +277,7 @@ function save_quick_perms($fid)
 				$pview = 0;
 			}
 
-			if($canpostthreads[$usergroup['gid']] == 1)
+			if(!empty($canpostthreads[$usergroup['gid']]))
 			{
 				$pthreads = 1;
 			}
@@ -286,7 +286,7 @@ function save_quick_perms($fid)
 				$pthreads = 0;
 			}
 
-			if($canpostreplies[$usergroup['gid']] == 1)
+			if(!empty($canpostreplies[$usergroup['gid']]))
 			{
 				$preplies = 1;
 			}
@@ -295,7 +295,7 @@ function save_quick_perms($fid)
 				$preplies = 0;
 			}
 
-			if($canpostpolls[$usergroup['gid']] == 1)
+			if(!empty($canpostpolls[$usergroup['gid']]))
 			{
 				$ppolls = 1;
 			}
@@ -329,7 +329,7 @@ function save_quick_perms($fid)
 					continue;
 				}
 
-				$insertquery[$db->escape_string($field)] = (int)$existing_permissions[$field];
+				$insertquery[$db->escape_string($field)] = isset($existing_permissions[$field]) ? (int)$existing_permissions[$field] : 0;
 			}
 
 			$db->insert_query("forumpermissions", $insertquery);
@@ -359,7 +359,10 @@ function check_admin_permissions($action, $error = true)
 	{
 		$func = $action['module']."_admin_permissions";
 		$permissions = $func();
-		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
+		if(
+			!empty($permissions['permissions'][$action['action']]) &&
+			empty($mybb->admin['permissions'][$action['module']][$action['action']])
+		)
 		{
 			if($error)
 			{
@@ -504,10 +507,12 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 		{
 			return $final_group_perms;
 		}
-		else
+		elseif(isset($perms_def))
 		{
 			return $perms_def;
 		}
+
+		return array();
 	}
 }
 
@@ -523,6 +528,7 @@ function fetch_iconv_encoding($mysql_encoding)
     switch($mysql_encoding[0])
     {
         case "utf8":
+        case "utf8mb3":
             return "utf-8";
 			break;
         case "latin1":
@@ -607,6 +613,11 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 	{
 		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
 		$attempts = $db->fetch_array($query);
+
+		if(!$attempts)
+		{
+			return false;
+		}
 	}
 
 	if($attempts['loginattempts'] <= 0)
@@ -657,20 +668,21 @@ function is_mobile($useragent)
 function check_template($template)
 {
 	// Check to see if our database password is in the template
-	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template)) 
+	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template) !== 0)
 	{
 		return true;
 	}
 
 	// System calls via backtick
-	if(preg_match('#\$\s*\{#', $template))
+	if(preg_match('#\$\s*\{#', $template) !== 0)
 	{
 		return true;
 	}
 
 	// Any other malicious acts?
 	// Courtesy of ZiNgA BuRgA
-	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
+	$allowed = preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template);
+	if($allowed === null || preg_match("~\\{\\$.+?\\}~s", $allowed) !== 0)
 	{
 		return true;
 	}
@@ -683,7 +695,7 @@ function check_template($template)
  *
  * @param integer $uid The uid of the user
  * @param int $date A UNIX timestamp to delete posts that are older
- * @return array An array of threads to delete, threads/forums to recount
+ * @return array|false An array of threads to delete, threads/forums to recount
  */
 function delete_user_posts($uid, $date)
 {

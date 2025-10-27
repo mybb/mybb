@@ -33,6 +33,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+#[AllowDynamicProperties]
 class Page extends DefaultPage
 {
 	function _generate_breadcrumb()
@@ -44,10 +45,10 @@ class Page extends DefaultPage
 		$trail = "";
 		foreach($this->_breadcrumb_trail as $key => $crumb)
 		{
-			if($this->_breadcrumb_trail[$key+1])
+			if(!empty($this->_breadcrumb_trail[$key+1]))
 			{
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->_breadcrumb_trail[$key+2])
+				if(!empty($this->_breadcrumb_trail[$key+2]))
 				{
 					$trail .= " &raquo; ";
 				}
@@ -61,22 +62,27 @@ class Page extends DefaultPage
 	}
 }
 
+#[AllowDynamicProperties]
 class SidebarItem extends DefaultSidebarItem
 {
 }
 
+#[AllowDynamicProperties]
 class PopupMenu extends DefaultPopupMenu
 {
 }
 
+#[AllowDynamicProperties]
 class Table extends DefaultTable
 {
 }
 
+#[AllowDynamicProperties]
 class Form extends DefaultForm
 {
 }
 
+#[AllowDynamicProperties]
 class FormContainer extends DefaultFormContainer
 {
 }

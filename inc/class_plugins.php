@@ -126,7 +126,7 @@ class pluginSystem
 			{
 				foreach($hooks as $key => $hook)
 				{
-					if($hook['file'])
+					if(!empty($hook['file']))
 					{
 						require_once $hook['file'];
 					}
@@ -225,7 +225,7 @@ class pluginSystem
 		$plugin_info = $info_func();
 
 		// No compatibility set or compatibility = * - assume compatible
-		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
+		if(empty($plugin_info['compatibility']) || $plugin_info['compatibility'] == "*")
 		{
 			return true;
 		}

@@ -44,7 +44,7 @@ $l['new_subject'] = "New Subject:";
 $l['thread_to_merge_with'] = "Thread to merge with:";
 $l['merge_with_note'] = "Copy the URL of the thread to be merged into this one into the textbox on the right.<br />The thread on the right will be deleted and all posts will be merged into this one.";
 $l['merge_posts'] = "Merge Posts";
-$l['merge_posts_note'] ="All selected posts will be merged into the first selected post.";
+$l['merge_posts_note'] = "All selected posts will be merged into the first selected post.";
 $l['move_copy_thread'] = "Move / Copy Thread";
 $l['new_forum'] = "New Forum:";
 $l['method'] = "Method";
@@ -159,7 +159,7 @@ $l['purgespammer_invalid_user'] = "You have specified an invalid user.";
 $l['purgespammer_modlog'] = "Purged Spammer";
 
 $l['error_invalidpm'] = "Invalid PM";
-$l['error_nomergeposts'] = "You need to select one or more posts to be able to merge posts together.";
+$l['error_nomergeposts'] = "You need to select at least two or more posts to be able to merge posts together.";
 $l['error_cantsplitonepost'] = "You cannot split a thread that contains only one post.";
 $l['error_badmergeurl'] = "The URL for the thread to be merged seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";
 $l['error_badmovepostsurl'] = "The URL for the thread to move to seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";

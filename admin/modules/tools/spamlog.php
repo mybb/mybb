@@ -87,18 +87,18 @@ if($mybb->input['action'] == 'prune')
 	$page->output_nav_tabs($sub_tabs, 'prune_spam_logs');
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
-	$ordersel[$mybb->input['order']] = 'selected="selected"';
+	$sortbysel[$mybb->get_input('sortby')] = 'selected="selected"';
+	$ordersel[$mybb->get_input('order')] = 'selected="selected"';
 
 	$form = new Form("index.php?module=tools-spamlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_spam_logs);
-	$form_container->output_row($lang->spam_username, "", $form->generate_text_box('filter_username', $mybb->input['filter_username'], array('id' => 'filter_username')), 'filter_username');
-	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('filter_email', $mybb->input['filter_email'], array('id' => 'filter_email')), 'filter_email');
-	if(!$mybb->input['older_than'])
+	$form_container->output_row($lang->spam_username, "", $form->generate_text_box('filter_username', $mybb->get_input('filter_username'), array('id' => 'filter_username')), 'filter_username');
+	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('filter_email', $mybb->get_input('filter_email'), array('id' => 'filter_email')), 'filter_email');
+	if(!$mybb->get_input('older_than'))
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->get_input('older_than'), array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_spam_logs);
 	$form->output_submit_wrapper($buttons);
@@ -107,7 +107,7 @@ if($mybb->input['action'] == 'prune')
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
+if(!$mybb->get_input('action'))
 {
 	$plugins->run_hooks("admin_tools_spamlog_start");
 
@@ -126,24 +126,24 @@ if(!$mybb->input['action'])
 	$additional_criteria = array();
 
 	// Searching for entries witha  specific username
-	if($mybb->input['username'])
+	if($mybb->get_input('username'))
 	{
-		$where .= " AND username='".$db->escape_string($mybb->input['username'])."'";
-		$additional_criteria[] = "username=".urlencode($mybb->input['username']);
+		$where .= " AND username='".$db->escape_string($mybb->get_input('username'))."'";
+		$additional_criteria[] = "username=".urlencode($mybb->get_input('username'));
 	}
 
 	// Searching for entries with a specific email
-	if($mybb->input['email'])
+	if($mybb->get_input('email'))
 	{
-		$where .= " AND email='".$db->escape_string($mybb->input['email'])."'";
-		$additional_criteria[] = "email=".urlencode($mybb->input['email']);
+		$where .= " AND email='".$db->escape_string($mybb->get_input('email'))."'";
+		$additional_criteria[] = "email=".urlencode($mybb->get_input('email'));
 	}
 	
 	// Searching for entries with a specific IP
-	if($mybb->input['ipaddress'] > 0)
+	if($mybb->get_input('ipaddress') > 0)
 	{
-		$where .= " AND ipaddress=".$db->escape_binary(my_inet_pton($mybb->input['ipaddress']));
-		$additional_criteria[] = "ipaddress=".urlencode($mybb->input['ipaddress']);
+		$where .= " AND ipaddress=".$db->escape_binary(my_inet_pton($mybb->get_input('ipaddress')));
+		$additional_criteria[] = "ipaddress=".urlencode($mybb->get_input('ipaddress'));
 	}
 
 	if($additional_criteria)
@@ -156,7 +156,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Order?
-	switch($mybb->input['sortby'])
+	switch($mybb->get_input('sortby'))
 	{
 		case "username":
 			$sortby = "username";
@@ -170,7 +170,7 @@ if(!$mybb->input['action'])
 		default:
 			$sortby = "dateline";
 	}
-	$order = $mybb->input['order'];
+	$order = $mybb->get_input('order');
 	if($order != "asc")
 	{
 		$order = "desc";
@@ -180,7 +180,7 @@ if(!$mybb->input['action'])
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if($mybb->input['page'] != "last")
+	if($mybb->get_input('page') != "last")
 	{
 		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -189,7 +189,7 @@ if(!$mybb->input['action'])
 	$pages = $logcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if($mybb->get_input('page') == "last")
 	{
 		$pagecnt = $pages;
 	}
@@ -260,12 +260,12 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-spamlog&amp;perpage={$perpage}{$additional_criteria}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-spamlog&amp;perpage={$perpage}{$additional_criteria}&amp;sortby={$mybb->get_input('sortby')}&amp;order={$order}")."<br />";
 	}
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
-	$ordersel[$mybb->input['order']] = "selected=\"selected\"";
+	$sortbysel[$mybb->get_input('sortby')] = "selected=\"selected\"";
+	$ordersel[$mybb->get_input('order')] = "selected=\"selected\"";
 
 	$sort_by = array(
 		'dateline' => $lang->spam_date,
@@ -282,9 +282,9 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=tools-spamlog", "post");
 	$form_container = new FormContainer($lang->filter_spam_logs);
 	$form_container->output_row($lang->spam_username, "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'suername');
-	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
-	$form_container->output_row($lang->spam_ip, "", $form->generate_text_box('ipaddress', $mybb->input['ipaddress'], array('id' => 'ipaddress')), 'ipaddress');
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
+	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('email', $mybb->get_input('email'), array('id' => 'email')), 'email');
+	$form_container->output_row($lang->spam_ip, "", $form->generate_text_box('ipaddress', $mybb->get_input('ipaddress'), array('id' => 'ipaddress')), 'ipaddress');
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$form_container->end();

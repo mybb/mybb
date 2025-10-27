@@ -156,4 +156,16 @@
         <enabled>0</enabled>
         <logging>1</logging>
     </task>
+    <task>
+        <title>Send Mail Queue</title>
+        <description><![CDATA[Sends the mail queue every minute.]]></description>
+        <file>sendmailqueue</file>
+        <minute>*</minute>
+        <hour>*</hour>
+        <day>*</day>
+        <weekday>*</weekday>
+        <month>*</month>
+        <enabled>1</enabled>
+        <logging>1</logging>
+    </task>
 </tasks>

@@ -69,6 +69,12 @@ $pid = $attachment['pid'];
 if($pid || $attachment['uid'] != $mybb->user['uid'])
 {
 	$post = get_post($pid);
+
+	if(!$post)
+	{
+		error($lang->error_invalidthread);
+	}
+
 	// Check permissions if the post is not a draft
 	if($post['visible'] != -2)
 	{
@@ -86,7 +92,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 		// Permissions
 		$forumpermissions = forum_permissions($fid);
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && empty($mybb->input['thumbnail'])))
 		{
 			error_no_permission();
 		}
@@ -120,11 +126,13 @@ if(!isset($mybb->input['thumbnail'])) // Only increment the download count if th
 // basename isn't UTF-8 safe. This is a workaround.
 $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
+$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
+
 $plugins->run_hooks("attachment_end");
 
 if(isset($mybb->input['thumbnail']))
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['thumbnail']))
+	if(!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
 	{
 		error($lang->error_invalidattachment);
 	}
@@ -153,7 +161,7 @@ if(isset($mybb->input['thumbnail']))
 
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
 	header("Content-type: ".$type);
-	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
+	$thumb = $uploadspath_abs."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
 	$handle = fopen($thumb, 'rb');
 	while(!feof($handle))
@@ -164,7 +172,7 @@ if(isset($mybb->input['thumbnail']))
 }
 else
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
+	if(!file_exists($uploadspath_abs."/".$attachment['attachname']))
 	{
 		error($lang->error_invalidattachment);
 	}
@@ -181,7 +189,14 @@ else
 		case "image/png":
 		case "text/plain":
 			header("Content-type: {$attachment['filetype']}");
-			$disposition = "inline";
+			if(!empty($attachtypes[$ext]['forcedownload']))
+			{
+				$disposition = "attachment";
+			}
+			else
+			{
+				$disposition = "inline";
+			}
 			break;
 
 		default:
@@ -212,7 +227,7 @@ else
 
 	header("Content-length: {$attachment['filesize']}");
 	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
-	$handle = fopen($mybb->settings['uploadspath']."/".$attachment['attachname'], 'rb');
+	$handle = fopen($uploadspath_abs."/".$attachment['attachname'], 'rb');
 	while(!feof($handle))
 	{
 		echo fread($handle, 8192);

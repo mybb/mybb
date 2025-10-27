@@ -184,7 +184,7 @@ function task_promotions($task)
 				$log_inserts[] = array(
 					'pid' => $promotion['pid'],
 					'uid' => $user['uid'],
-					'oldusergroup' => $user['additionalgroups'],
+					'oldusergroup' => $db->escape_string($user['additionalgroups']),
 					'newusergroup' => $promotion['newusergroup'],
 					'dateline' => TIME_NOW,
 					'type' => "secondary",

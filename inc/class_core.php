@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.22";
+	public $version = "1.8.39";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1822;
+	public $version_code = 1839;
 
 	/**
 	 * The current working directory.
@@ -184,6 +184,22 @@ class MyBB {
 	 * @var string
 	 */
 	public $asset_url = null;
+
+	/**
+	 * @var array
+	 */
+	public $session = array();
+
+	/**
+	 * @var string
+	 */
+	public $post_code;
+
+	/**
+	 * @var array
+	 */
+	public $admin;
+
 	/**
 	 * String input constant for use with get_input().
 	 *
@@ -261,11 +277,11 @@ class MyBB {
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
 
-		if($_SERVER['REQUEST_METHOD'] == "POST")
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST")
 		{
 			$this->request_method = "post";
 		}
-		else if($_SERVER['REQUEST_METHOD'] == "GET")
+		else
 		{
 			$this->request_method = "get";
 		}
@@ -349,7 +365,7 @@ class MyBB {
 
 				// Fixes conflicts with one board having a prefix and another that doesn't on the same domain
 				// Gives priority to our cookies over others (overwrites them)
-				if($this->cookies[$key])
+				if(isset($this->cookies[$key]))
 				{
 					unset($this->cookies[$key]);
 				}
@@ -607,7 +623,41 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxposts", "edittimelimit", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
+$groupzerogreater = array(
+	'maxposts',
+	'attachquota',
+	'edittimelimit',
+	'maxreputationsperthread',
+	'maxreputationsperuser',
+	'maxreputationsday',
+	'maxwarningsday',
+	'pmquota',
+	'maxpmrecipients',
+	'maxemails',
+);
+$groupzerolesser = array(
+	'canusesigxposts',
+	'emailfloodtime',
+);
+$groupxgreater = array(
+	'reputationpower' => 0,
+);
+$grouppermbyswitch = array(
+	'maxposts' => array('canpostthreads', 'canpostreplys'),
+	'attachquota' => 'canpostattachments',
+	'edittimelimit' => 'caneditposts',
+	'canusesigxposts' => 'canusesig',
+	'reputationpower' => 'cangivereputations',
+	'maxreputationsperthread' => 'cangivereputations',
+	'maxreputationsperuser' => 'cangivereputations',
+	'maxreputationsday' => 'cangivereputations',
+	'maxwarningsday' => 'canwarnusers',
+	'pmquota' => 'canusepms',
+	'maxpmrecipients' => 'canusepms',
+	'maxemails' => 'cansendemail',
+	'emailfloodtime' => 'cansendemail',
+);
+
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.

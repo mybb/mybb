@@ -227,7 +227,7 @@ if($mybb->input['action'] == "addevent")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -780,7 +780,7 @@ if($mybb->input['action'] == "editevent")
 		$calendar = $db->fetch_array($query);
 
 		// Invalid calendar?
-		if(!$calendar['cid'])
+		if(!$calendar)
 		{
 			error($lang->invalid_calendar);
 		}
@@ -799,7 +799,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
-	$event['timezone'] = (float)$event['timezone'];
+	$event['timezone'] = isset($event['timezone']) ? (float) $event['timezone'] : 0;
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
@@ -1432,12 +1432,12 @@ if($mybb->input['action'] == "event")
 		"allow_videocode" => $calendar['allowvideocode']
 	);
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$event_parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 	{
 		$event_parser_options['allow_videocode'] = 0;
 	}
@@ -1781,12 +1781,12 @@ if($mybb->input['action'] == "dayview")
 				"allow_videocode" => $calendar['allowvideocode']
 			);
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showimages'] != 1 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$event_parser_options['allow_imgcode'] = 0;
 			}
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			if($mybb->user['uid'] != 0 && $mybb->user['showvideos'] != 1 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
 			{
 				$event_parser_options['allow_videocode'] = 0;
 			}
@@ -2300,7 +2300,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}

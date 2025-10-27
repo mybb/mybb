@@ -44,15 +44,13 @@ if($mybb->input['action'] == "browse")
 	$page->output_nav_tabs($sub_tabs, 'browse_plugins');
 
 	// Process search requests
-	require_once MYBB_ROOT."inc/class_xml.php";
-
 	$keywords = "";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$keywords = "&keywords=".urlencode($mybb->input['keywords']);
 	}
 
-	if($mybb->input['page'])
+	if($mybb->get_input('page'))
 	{
 		$url_page = "&page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -67,7 +65,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=plugins&version={$search_version}{$keywords}{$url_page}");
 
 	if(!$contents)
 	{
@@ -81,7 +79,7 @@ if($mybb->input['action'] == "browse")
 	$table->construct_header($lang->latest_version, array("class" => "align_center", 'width' => 125));
 	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['results']))
@@ -119,15 +117,17 @@ if($mybb->input['action'] == "browse")
 		}
 	}
 
+	$no_results = false;
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->error_no_results_found, array("colspan" => 3));
 		$table->construct_row();
+		$no_results = true;
 	}
 
 	$search = new Form("index.php?module=config-plugins&amp;action=browse", 'post', 'search_form');
 	echo "<div style=\"padding-bottom: 3px; margin-top: -9px; text-align: right;\">";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$default_class = '';
 		$value = htmlspecialchars_uni($mybb->input['keywords']);
@@ -189,7 +189,10 @@ if($mybb->input['action'] == "browse")
 		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=plugins\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
 	}
 
-	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
+	if(!$no_results)
+	{
+		echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
+	}
 
 	$page->output_footer();
 }
@@ -215,8 +218,8 @@ if($mybb->input['action'] == "check")
 				continue;
 			}
 			$plugininfo = $infofunc();
-			$plugininfo['guid'] = trim($plugininfo['guid']);
-			$plugininfo['codename'] = trim($plugininfo['codename']);
+			$plugininfo['guid'] = isset($plugininfo['guid']) ? trim($plugininfo['guid']) : null;
+			$plugininfo['codename'] = isset($plugininfo['codename']) ? trim($plugininfo['codename']) : null;
 
 			if($plugininfo['codename'] != "")
 			{
@@ -240,7 +243,6 @@ if($mybb->input['action'] == "check")
 
 	$url = "https://community.mybb.com/version_check.php?";
 	$url .= http_build_query(array("info" => $info))."&";
-	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file($url);
 
 	if(!$contents)
@@ -251,7 +253,7 @@ if($mybb->input['action'] == "check")
 
 	$contents = trim($contents);
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['plugins']))
@@ -304,8 +306,12 @@ if($mybb->input['action'] == "check")
 		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
 			$plugin['download_url']['value'] = htmlspecialchars_uni($plugin['download_url']['value']);
-			$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
 			$plugin['version']['value'] = htmlspecialchars_uni($plugin['version']['value']);
+
+			if(isset($plugin['vulnerable']['value']))
+			{
+				$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
+			}
 
 			if($is_vulnerable)
 			{
@@ -369,7 +375,7 @@ if($mybb->input['action'] == "check")
 // Activates or deactivates a specific plugin
 if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if(!verify_post_check($mybb->get_input('my_post_key')))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=config-plugins");
@@ -396,7 +402,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	}
 
 	$plugins_cache = $cache->read("plugins");
-	$active_plugins = $plugins_cache['active'];
+	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
 
 	require_once MYBB_ROOT."inc/plugins/$file";
 
@@ -445,7 +451,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 			call_user_func("{$codename}_deactivate");
 		}
 
-		if($mybb->input['uninstall'] == 1 && function_exists("{$codename}_uninstall"))
+		if($mybb->get_input('uninstall') == 1 && function_exists("{$codename}_uninstall"))
 		{
 			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;
@@ -501,7 +507,11 @@ if(!$mybb->input['action'])
 	// Let's make things easier for our user - show them active
 	// and inactive plugins in different lists
 	$plugins_cache = $cache->read("plugins");
-	$active_plugins = $plugins_cache['active'];
+	$active_plugins = array();
+	if(!empty($plugins_cache['active']))
+	{
+		$active_plugins = $plugins_cache['active'];
+	}
 
 	$plugins_list = get_plugins_list();
 
@@ -525,17 +535,19 @@ if(!$mybb->input['action'])
 			$plugininfo = $infofunc();
 			$plugininfo['codename'] = $codename;
 
-			if($active_plugins[$codename])
+			if(isset($active_plugins[$codename]))
 			{
 				// This is an active plugin
 				$plugininfo['is_active'] = 1;
 
 				$a_plugins[] = $plugininfo;
-				continue;
 			}
-
-			// Either installed and not active or completely inactive
-			$i_plugins[] = $plugininfo;
+			else
+			{
+				// Either installed and not active or completely inactive
+				$plugininfo['is_active'] = 0;
+				$i_plugins[] = $plugininfo;
+			}
 		}
 
 		$table = new Table;
@@ -591,6 +603,8 @@ if(!$mybb->input['action'])
  */
 function get_plugins_list()
 {
+	$plugins_list = array();
+
 	// Get a list of the plugin files which exist in the plugins directory
 	$dir = @opendir(MYBB_ROOT."inc/plugins/");
 	if($dir)
@@ -619,12 +633,12 @@ function build_plugin_list($plugin_list)
 
 	foreach($plugin_list as $plugininfo)
 	{
-		if($plugininfo['website'])
+		if(!empty($plugininfo['website']))
 		{
 			$plugininfo['name'] = "<a href=\"".$plugininfo['website']."\">".$plugininfo['name']."</a>";
 		}
 
-		if($plugininfo['authorsite'])
+		if(!empty($plugininfo['authorsite']))
 		{
 			$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 		}

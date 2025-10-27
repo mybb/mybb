@@ -94,6 +94,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
 	maxsize int(15) NOT NULL default '0',
 	icon varchar(100) NOT NULL default '',
 	enabled tinyint(1) NOT NULL default '1',
+	forcedownload tinyint(1) NOT NULL default '0',
 	groups TEXT NOT NULL,
 	forums TEXT NOT NULL,
 	avatarfile tinyint(1) NOT NULL default '0'
@@ -481,7 +482,7 @@ $tables[] = "CREATE TABLE mybb_posts (
 	subject varchar(120) NOT NULL default '',
 	icon smallint NOT NULL default '0',
 	uid int NOT NULL default '0',
-	username varchar(80) NOT NULL default '',
+	username varchar(120) NOT NULL default '',
 	dateline int NOT NULL default '0',
 	message TEXT NOT NULL,
 	ipaddress blob(16) NOT NULL default '',
@@ -798,7 +799,7 @@ $tables[] = "CREATE TABLE mybb_threads (
 	icon smallint NOT NULL default '0',
 	poll int NOT NULL default '0',
 	uid int NOT NULL default '0',
-	username varchar(80) NOT NULL default '',
+	username varchar(120) NOT NULL default '',
 	dateline int NOT NULL default '0',
 	firstpost int NOT NULL default '0',
 	lastpost int NOT NULL default '0',
@@ -898,6 +899,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	canratemembers tinyint(1) NOT NULL default '0',
 	canchangename tinyint(1) NOT NULL default '0',
 	canbereported tinyint(1) NOT NULL default '0',
+	canbeinvisible tinyint(1) NOT NULL default '1',
 	canchangewebsite tinyint(1) NOT NULL default '1',
 	showforumteam tinyint(1) NOT NULL default '0',
 	usereputationsystem tinyint(1) NOT NULL default '0',
@@ -953,7 +955,6 @@ $tables[] = "CREATE TABLE mybb_users (
 	lastvisit int NOT NULL default '0',
 	lastpost int NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
-	icq varchar(10) NOT NULL default '',
 	skype varchar(75) NOT NULL default '',
 	google varchar(75) NOT NULL default '',
 	birthday varchar(15) NOT NULL default '',
@@ -1055,5 +1056,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	revokereason TEXT NOT NULL,
 	notes TEXT NOT NULL
 );";
-
 

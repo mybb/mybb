@@ -179,7 +179,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 		$query = $db->simple_select("searchlog", "*", "uid='{$mybb->user['uid']}' AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
-		if($last_search['sid'])
+		if($last_search)
 		{
 			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			if($remaining_time == 1)
@@ -405,15 +405,15 @@ elseif($mybb->input['action'] == "help")
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
 				$langdocvar = "d".$helpdoc['hid']."_document";
-				if($lang->$langnamevar)
+				if(isset($lang->$langnamevar))
 				{
 					$helpdoc['name'] = $lang->$langnamevar;
 				}
-				if($lang->$langdescvar)
+				if(isset($lang->$langdescvar))
 				{
 					$helpdoc['description'] = $lang->$langdescvar;
 				}
-				if($lang->$langdocvar)
+				if(isset($lang->$langdocvar))
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
 				}
@@ -476,11 +476,11 @@ elseif($mybb->input['action'] == "help")
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if($lang->$langnamevar)
+								if(isset($lang->$langnamevar))
 								{
 									$helpdoc['name'] = $lang->$langnamevar;
 								}
-								if($lang->$langdescvar)
+								if(isset($lang->$langdescvar))
 								{
 									$helpdoc['description'] = $lang->$langdescvar;
 								}
@@ -490,19 +490,19 @@ elseif($mybb->input['action'] == "help")
 						}
 					}
 					$expdisplay = '';
-					$sname = "sid_".$section['sid']."_c";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;")
+					$sname = "sid_".$section['sid']."_e";
+					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: none;")
 					{
 						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 						$expthead = " thead_collapsed";
-						$expaltext = "[+]";
+						$expaltext = $lang->expcol_expand;
 					}
 					else
 					{
 						$expcolimage = "collapse.png";
 						$expthead = "";
-						$expaltext = "[-]";
+						$expaltext = $lang->expcol_collapse;
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
@@ -529,7 +529,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		error_no_permission();
 	}
 
-	if(isset($mybb->input['removebuddy']) && verify_post_check($mybb->input['my_post_key']))
+	if(isset($mybb->input['removebuddy']) && verify_post_check($mybb->get_input('my_post_key')))
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",", $buddies);
@@ -721,11 +721,11 @@ elseif($mybb->input['action'] == "whoposted")
 			$profile_link = build_profile_link($poster_name, $poster['uid']);
 		}
 		$numposts += $poster['posts'];
+		$poster['posts'] = my_number_format($poster['posts']);
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
 	}
 	$numposts = my_number_format($numposts);
-	$poster['posts'] = my_number_format($poster['posts']);
 	if($modal)
 	{
 		eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");

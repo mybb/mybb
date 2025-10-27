@@ -111,22 +111,20 @@ function acp_recount_user_posts()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
+	$fids = array();
 	$query = $db->simple_select("forums", "fid", "usepostcounts = 0");
 	while($forum = $db->fetch_array($query))
 	{
 		$fids[] = $forum['fid'];
 	}
-	if(is_array($fids))
-    {
-        $fids = implode(',', $fids);
-    }
-	if($fids)
+	if(!empty($fids))
 	{
+		$fids = implode(',', $fids);
 		$fids = " AND p.fid NOT IN($fids)";
 	}
 	else
 	{
-		$fids = "";
+		$fids = '';
 	}
 
 	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
@@ -162,22 +160,20 @@ function acp_recount_user_threads()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
+	$fids = array();
 	$query = $db->simple_select("forums", "fid", "usethreadcounts = 0");
 	while($forum = $db->fetch_array($query))
 	{
 		$fids[] = $forum['fid'];
 	}
-	if(is_array($fids))
-    {
-        $fids = implode(',', $fids);
-    }
-	if($fids)
+	if(!empty($fids))
 	{
+		$fids = implode(',', $fids);
 		$fids = " AND t.fid NOT IN($fids)";
 	}
 	else
 	{
-		$fids = "";
+		$fids = '';
 	}
 
 	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
@@ -366,11 +362,7 @@ function acp_rebuild_attachment_thumbnails()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	$uploadspath = $mybb->settings['uploadspath'];
-	if(my_substr($uploadspath, 0, 1) == '.')
-	{
-		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
-	}
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
 	require_once MYBB_ROOT."inc/functions_image.php";
 
@@ -381,7 +373,7 @@ function acp_rebuild_attachment_thumbnails()
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
-			$thumbnail = generate_thumbnail($uploadspath."/".$attachment['attachname'], $uploadspath, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+			$thumbnail = generate_thumbnail($uploadspath_abs."/".$attachment['attachname'], $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
 			{
 				$thumbnail['filename'] = "SMALL";

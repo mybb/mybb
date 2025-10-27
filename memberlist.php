@@ -33,19 +33,46 @@ if($mybb->usergroup['canviewmemberlist'] == 0)
 	error_no_permission();
 }
 
+$orderarrow = $sort_selected = array(
+	'regdate' => '',
+	'lastvisit' => '',
+	'reputation' => '',
+	'postnum' => '',
+	'threadnum' => '',
+	'referrals' => '',
+	'username' => ''
+);
+
 // Showing advanced search page?
 if($mybb->get_input('action') == "search")
 {
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
+	if(isset($mybb->usergroup['usergroup']))
+	{
+		$usergroup = $mybb->usergroup['usergroup'];
+	}
+	else
+	{
+		$usergroup = '';
+	}
+	if(isset($mybb->usergroup['additionalgroups']))
+	{
+		$additionalgroups = $mybb->usergroup['additionalgroups'];
+	}
+	else
+	{
+		$additionalgroups = '';
+	}
+
 	$contact_fields = array();
-	foreach(array('skype', 'google', 'icq') as $field)
+	foreach(array('skype', 'google') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
 
-		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups'])))
+		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $usergroup, 'additionalgroups' => $additionalgroups)))
 		{
 			$tmpl = 'memberlist_search_'.$field;
 
@@ -57,6 +84,7 @@ if($mybb->get_input('action') == "search")
 		}
 	}
 
+	$referrals_option = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
@@ -79,15 +107,6 @@ else
 	{
 		$mybb->input['sort'] = $mybb->settings['default_memberlist_sortby'];
 	}
-
-	$sort_selected = array(
-		'regdate' => '',
-		'lastvisit' => '',
-		'reputation' => '',
-		'postnum' => '',
-		'referrals' => '',
-		'username' => ''
-	);
 
 	switch($mybb->input['sort'])
 	{
@@ -207,13 +226,13 @@ else
 		$username_like_query = $db->escape_string_like($search_username);
 
 		// Name begins with
-		if($mybb->input['username_match'] == "begins")
+		if($mybb->get_input('username_match') == "begins")
 		{
 			$search_query .= " AND u.username {$like} '".$username_like_query."%'";
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains
-		else if($mybb->input['username_match'] == "contains")
+		else if($mybb->get_input('username_match') == "contains")
 		{
 			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
 			$search_url .= "&username_match=contains";
@@ -221,7 +240,8 @@ else
 		// Exact
 		else
 		{
-			$search_query .= " AND u.username='{$username_like_query}'";
+			$username_esc = $db->escape_string(my_strtolower($search_username));
+			$search_query .= " AND LOWER(u.username)='{$username_esc}'";
 		}
 
 		$search_url .= "&username=".urlencode($search_username);
@@ -237,7 +257,7 @@ else
 	}
 
 	// Search by contact field input
-	foreach(array('icq', 'google', 'skype') as $cfield)
+	foreach(array('google', 'skype') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
@@ -267,14 +287,8 @@ else
 				}
 				$search_query .= ")";
 			}
-			if($cfield == 'icq')
-			{
-				$search_query .= " AND u.{$cfield} LIKE '%".(int)$mybb->input[$cfield]."%'";
-			}
-			else
-			{
-				$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
-			}
+			
+			$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
 			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
 		}
 	}
@@ -339,6 +353,8 @@ else
 	$sort = htmlspecialchars_uni($mybb->input['sort']);
 	eval("\$orderarrow['{$sort}'] = \"".$templates->get("memberlist_orderarrow")."\";");
 
+	$referral_header = '';
+
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -397,6 +413,8 @@ else
 			$usergroup = array_merge($usergroup, $display_group);
 		}
 
+		$referral_bit = '';
+
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
@@ -408,7 +426,6 @@ else
 			}
 
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
-			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';
@@ -468,7 +485,7 @@ else
 		}
 
 		$user['userstars'] = '';
-		if(!empty($user['starimage']))
+		if(!empty($user['starimage']) && isset($user['stars']))
 		{
 			// Only display stars if we have an image to use...
 			$starimage = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
@@ -516,6 +533,12 @@ else
 	if(!$users)
 	{
 		eval("\$users = \"".$templates->get("memberlist_error")."\";");
+	}
+
+	$referrals_option = '';
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 	}
 
 	$plugins->run_hooks("memberlist_end");

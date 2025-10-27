@@ -13,6 +13,7 @@ options = array(
 	allow_html
 	allow_smilies
 	allow_mycode
+	allow_auto_url
 	nl2br
 	filter_badwords
 	me_username
@@ -97,15 +98,41 @@ class postParser
 	public $clear_needed = false;
 
 	/**
+	 * Don't validate parser output
+	 */
+	const VALIDATION_DISABLE = 0;
+
+	/**
+	 * Validate parser output and log errors
+	 */
+	const VALIDATION_REPORT_ONLY = 1;
+
+	/**
+	 * Validate parser output, log errors, and block output on failure
+	 */
+	const VALIDATION_REQUIRE = 2;
+
+	/**
+	 * Whether to validate the parser's HTML output when `allow_html` is disabled.
+	 * Validation errors will be logged/sent/displayed according to board settings.
+	 *
+	 * @access public
+	 * @var self::VALIDATION_*
+	 */
+	public $output_validation_policy = self::VALIDATION_REQUIRE;
+
+	/**
 	 * Parses a message with the specified options.
 	 *
 	 * @param string $message The message to be parsed.
-	 * @param array $options Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
+	 * @param array $options Array of yes/no options
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
+
+		$original_message = $message;
 
 		$this->clear_needed = false;
 
@@ -241,12 +268,26 @@ class postParser
 
 		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
 		{
-			$message = nl2br($message);
-			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
-		}
+			// Split the message into chunks, separating <code> blocks and plain text
+			$parts = preg_split("#(<code>.*?</code>)#is", $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
+			foreach($parts as &$part)
+			{
+				// Apply nl2br only to parts that are not code blocks
+				if (stripos($part, '<code>') !== 0) 
+				{
+					$part = nl2br($part);
+				}
+				
+				// Fix up new lines and block level elements
+				$part = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $part);
+				$part = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $part);				
+			}
+
+			// Reassemble the message
+			$message = implode('', $parts);
+		}
+		
 		if($this->clear_needed)
 		{
 			$message .= '<br class="clear" />';
@@ -254,7 +295,14 @@ class postParser
 
 		$message = $plugins->run_hooks("parse_message_end", $message);
 
-		return $message;
+		if ($this->output_allowed($original_message, $message) === true)
+		{
+			return $message;
+		}
+		else
+		{
+			return '';
+		}
 	}
 
 	/**
@@ -281,8 +329,8 @@ class postParser
 		global $cache, $lang, $mybb;
 		$this->mycode_cache = array();
 
-		$standard_mycode = $callback_mycode = $nestable_mycode = array();
-		$standard_count = $callback_count = $nestable_count = 0;
+		$standard_mycode = $callback_mycode = $nestable_mycode = $nestable_callback_mycode = array();
+		$standard_count = $callback_count = $nestable_count = $nestable_callback_count = 0;
 
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
@@ -366,20 +414,20 @@ class postParser
 			++$callback_count;
 		}
 
-		if($mybb->settings['allowfontmycode'] == 1)
-		{
-			$nestable_mycode['font']['regex'] = "#\[font=(\"?)([a-z0-9 ,\-_']+)\\1\](.*?)\[/font\]#si";
-			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $2;\" class=\"mycode_font\">$3</span>";
-
-			++$nestable_count;
-		}
-
 		if($mybb->settings['allowalignmycode'] == 1)
 		{
 			$nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
 			$nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>";
 
 			++$nestable_count;
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$nestable_callback_mycode['font']['regex'] = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
+			$nestable_callback_mycode['font']['replacement'] = array($this, 'mycode_parse_font_callback');
+
+			++$nestable_callback_count;
 		}
 
 		$custom_mycode = $cache->read("mycode");
@@ -414,15 +462,22 @@ class postParser
 			$this->mycode_cache['nestable'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
 		}
 
-		// Assign the nestable MyCode to the cache.
+		// Assign the callback MyCode to the cache.
 		foreach($callback_mycode as $code)
 		{
 			$this->mycode_cache['callback'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
 		}
 
+		// Assign the nestable callback MyCode to the cache.
+		foreach($nestable_callback_mycode as $code)
+		{
+			$this->mycode_cache['nestable_callback'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
+		}
+
 		$this->mycode_cache['standard_count'] = $standard_count;
 		$this->mycode_cache['callback_count'] = $callback_count;
 		$this->mycode_cache['nestable_count'] = $nestable_count;
+		$this->mycode_cache['nestable_callback_count'] = $nestable_callback_count;
 	}
 
 	/**
@@ -504,6 +559,23 @@ class postParser
 			}
 		}
 
+		// Replace the nestable callback mycodes
+		if($this->mycode_cache['nestable_callback_count'] > 0)
+		{
+			foreach($this->mycode_cache['nestable_callback'] as $replace)
+			{
+				while(preg_match($replace['find'], $message))
+				{
+					$message_org = $message;
+					$message = preg_replace_callback($replace['find'], $replace['replacement'], $message);
+					if ($message_org == $message)
+					{
+						break;
+					}
+				}
+			}
+		}
+
 		// Reset list cache
 		if($mybb->settings['allowlistmycode'] == 1)
 		{
@@ -521,7 +593,13 @@ class postParser
 			}
 		}
 
-		$message = $this->mycode_auto_url($message);
+		if(
+			(!isset($this->options['allow_auto_url']) || $this->options['allow_auto_url'] == 1) &&
+			$mybb->settings['allowautourl'] == 1
+		)
+		{
+			$message = $this->mycode_auto_url($message);
+		}
 
 		return $message;
 	}
@@ -542,8 +620,17 @@ class postParser
 			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
+				if(isset($theme['imgdir']))
+				{
+					$imgdir = $theme['imgdir'];
+				}
+				else
+				{
+					$imgdir = '';
+				}
+
 				$smilie['find'] = explode("\n", $smilie['find']);
-				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = str_replace("{theme}", $imgdir, $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
@@ -863,7 +950,7 @@ class postParser
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
-		if((int)$match[1])
+		if(isset($match[1]) && (int)$match[1])
 		{
 			$pid = (int)$match[1];
 			$url = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
@@ -882,7 +969,7 @@ class postParser
 
 		unset($match);
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
-		if((int)$match[1])
+		if(isset($match[1]) && (int)$match[1])
 		{
 			if($match[1] < TIME_NOW)
 			{
@@ -902,7 +989,7 @@ class postParser
 
 		if($delete_quote)
 		{
-			$username = my_substr($username, 0, my_strlen($username)-1);
+			$username = my_substr($username, 0, my_strlen($username)-1, true);
 		}
 
 		if(!empty($this->options['allow_html']))
@@ -978,9 +1065,7 @@ class postParser
 		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
-		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
-		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
-
+		
 		eval("\$mycode_code = \"".$templates->get("mycode_code", 1, 0)."\";");
 		return $mycode_code;
 	}
@@ -1042,8 +1127,10 @@ class postParser
 		$code = @highlight_string($str, true);
 
 		// Do the actual replacing.
+		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code);
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
 		$code = str_replace('$', '&#36;', $code);
@@ -1051,7 +1138,7 @@ class postParser
 
 		if($added_open_tag)
 		{
-			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
+			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />|\n)#", "<code><span style=\"color: #$1\">", $code);
 		}
 
 		if($added_end_tag)
@@ -1140,6 +1227,41 @@ class postParser
 	}
 
 	/**
+	* Parses font MyCode.
+	*
+	* @param array $matches Matches.
+	* @return string The HTML <span> tag with styled font.
+	*/
+	function mycode_parse_font_callback($matches)
+	{
+		preg_match_all("/
+			(?:                                 
+				\"(?:[^\"]*)\"|	# double-quoted font                    
+				'(?:[^']*)'|	# single-quoted font 
+				[^,]+			# unquoted font name (anything but comma)
+			)
+		/x", $matches[2], $matchedFonts);
+		
+		$cleanFonts = array();
+		
+		foreach ($matchedFonts[0] as $font)
+		{
+			// Remove leading/trailing quotes and spaces
+			$font = trim($font, "\"' ");
+	
+			// If font name contains a space or comma, wrap it in single quotes
+			if (strpos($font, ' ') !== false || strpos($font, ',') !== false) {
+				$font = "'{$font}'";
+			}
+	
+			$cleanFonts[] = $font;
+		}
+	
+		$fonts = implode(', ', $cleanFonts);
+		return "<span style=\"font-family: {$fonts};\" class=\"mycode_font\">{$matches[3]}</span>";
+	}
+
+	/**
 	* Parses URL MyCode.
 	*
 	* @param array $matches Matches.
@@ -1211,6 +1333,7 @@ class postParser
 			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
 		$alt = $this->encode_url($alt);
+		$alt = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $alt); // fix & but allow unicode
 
 		$alt = $lang->sprintf($lang->posted_image, $alt);
 		$width = $height = '';
@@ -1347,14 +1470,8 @@ class postParser
 		{
 			$name = $email;
 		}
-		if(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
-		{
-			$email = $email;
-		}
-		elseif(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+\?(.*?)$/si", $email))
-		{
-			$email = htmlspecialchars_uni($email);
-		}
+
+		$email = $this->encode_url($email);
 
 		eval("\$mycode_email = \"".$templates->get("mycode_email", 1, 0)."\";");
 		return $mycode_email;
@@ -1384,7 +1501,7 @@ class postParser
 	*/
 	function mycode_parse_video($video, $url)
 	{
-		global $templates;
+		global $mybb, $templates;
 
 		if(empty($video) || empty($url))
 		{
@@ -1394,8 +1511,8 @@ class postParser
 		// Check URL is a valid URL first, as `parse_url` doesn't check validity.
 		if(false === filter_var($url, FILTER_VALIDATE_URL))
 		{
-            return "[video={$video}]{$url}[/video]";
-        }
+			return "[video={$video}]{$url}[/video]";
+		}
 
 		$parsed_url = @parse_url(urldecode($url));
 		if($parsed_url === false)
@@ -1403,109 +1520,125 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$fragments = array();
-		if($parsed_url['fragment'])
-		{
-			$fragments = explode("&", $parsed_url['fragment']);
-		}
+		$bbdomain = parse_url($mybb->settings['bburl'], PHP_URL_HOST);
 
-		if($video == "liveleak")
+		$fragments = empty($parsed_url['fragment']) ? array() : explode("&", $parsed_url['fragment']);
+
+		if($video == "liveleak" && !empty($parsed_url['query']))
 		{
 			// The query part can start with any alphabet, but set only 'i' to catch in index key later
 			$parsed_url['query'] = "i".substr($parsed_url['query'], 1);
 		}
 
-		$queries = explode("&", $parsed_url['query']);
+		$queries = empty($parsed_url['query']) ? array() : explode("&", $parsed_url['query']);
 
 		$input = array();
 		foreach($queries as $query)
 		{
-			list($key, $value) = explode("=", $query);
-			$key = str_replace("amp;", "", $key);
-			$input[$key] = $value;
+			$query_array = explode("=", $query);
+			if(count($query_array) == 2)
+			{
+				list($key, $value) = $query_array;
+				$key = str_replace("amp;", "", $key);
+				$input[$key] = $value;
+			}
 		}
 
-		$path = explode('/', $parsed_url['path']);
+		$path = empty($parsed_url['path']) ? array() : explode('/', $parsed_url['path']);
 
 		switch($video)
 		{
 			case "dailymotion":
-				if(isset($path[2]))
+				if(!empty($path[2]))
 				{
 					list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://dai.ly/fds123
 				}
 				break;
 			case "metacafe":
-				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
-				$title = htmlspecialchars_uni($path[3]);
+				if(!empty($path[2]))
+				{
+					$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
+				}
 				break;
 			case "myspacetv":
-				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				if(!empty($path[4]))
+				{
+					$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				}
 				break;
 			case "facebook":
-				if(isset($input['v']))
+				if(!empty($input['v']))
 				{
 					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
 				}
-				elseif(substr($path[3], 0, 3) == 'vb.')
+				elseif(!empty($path[3]) && substr($path[3], 0, 3) == 'vb.' && !empty($path[4]))
 				{
 					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
 				}
-				else
+				elseif(!empty($path[3]))
 				{
 					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
 				}
 				break;
 			case "mixer":
-				$id = $path[1]; // https://mixer.com/streamer
+				if(!empty($path[1]))
+				{
+					$id = $path[1]; // https://mixer.com/streamer
+				}
 				break;
 			case "liveleak":
-				$id = $input['i']; // http://www.liveleak.com/view?i=123
+				if(!empty($input['i']))
+				{
+					$id = $input['i']; // http://www.liveleak.com/view?i=123
+				}
 				break;
 			case "yahoo":
-				if(isset($path[2]))
+				if(!empty($path[2]))
 				{
 					$id = $path[2]; // http://xy.screen.yahoo.com/fds/fds-123.html
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
 				}
 				// Support for localized portals
-				$domain = explode('.', $parsed_url['host']);
-				if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
+				if(!empty($parsed_url['host']))
 				{
-					$local = "{$domain[0]}.";
-				}
-				else
-				{
-					$local = '';
+					$domain = explode('.', $parsed_url['host']);
+					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
+					{
+						$local = "{$domain[0]}.";
+					}
+					else
+					{
+						$local = '';
+					}
 				}
 				break;
 			case "vimeo":
-				if(isset($path[3]))
+				if(!empty($path[3]))
 				{
 					$id = $path[3]; // http://vimeo.com/fds/fds/fds123
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://vimeo.com/fds123
 				}
 				break;
 			case "youtube":
-				if($fragments[0])
+				if(!empty($fragments[0]))
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
-				elseif($input['v'])
+				elseif(!empty($input['v']))
 				{
 					$id = $input['v']; // http://www.youtube.com/watch?v=fds123
 				}
-				else
+				elseif(!empty($path[1]))
 				{
 					$id = $path[1]; // http://www.youtu.be/fds123
 				}
@@ -1590,13 +1723,44 @@ class postParser
 	*/
 	function mycode_auto_url($message)
 	{
-		$message = " ".$message;
-
-		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
-		// Don't create links within existing links (handled up-front in the callback function).
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(www|ftp)(\.)(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
-		$message = my_substr($message, 1);
+		/*
+		 * Don't create links:
+		 * - within existing links (any <a> HTML tag must be returned as-is)
+		 * - within HTML tags (must not be followed by a > character without a matching < after the link)
+		 *
+		 * Don't include:
+		 * - common punctuation characters around the link
+		 * - braces that likely constitute punctuation around the particular link (handled in the callback function)
+		 * - partial HTML entities (https://github.com/mybb/mybb/issues/4303)
+		 */
+		$message = preg_replace_callback(
+			"~
+				<a\\s[^>]*>.*?</a>|								# match and return existing links
+				(?<=^|[\s\(\)\[\>])								# character preceding the link
+				(?P<prefix>
+					(?:http|https|ftp|news|irc|ircs|irc6)://|	# scheme, or
+					(?:www|ftp)\.								# common subdomain
+				)
+				(?P<link>
+					(?:
+						\[[0-9a-fA-F:]+(?:%[0-9a-zA-Z._-]+)?\]|	# IPv6 address with optional zone
+						(?:\d{1,3}\.){3}\d{1,3}|				# IPv4 address
+						(?:[^\"\s<>\[\]:/?&#.]+\.)*[\w-]+		# domain name
+					)
+					(?::[0-9]+)?								# optional port number
+					(?:/[^\"\s<>\[\]?&#]*)?						# optional path
+					(?:\?(?:[^\"\s<>\[\]?#]|\[\])*)?			# optional query
+					(?:\#[^\"\s<>\[\]]*)?						# optional fragment
+				)
+				(?:
+					(?<=&amp;)|(?<=&lt;)|(?<=&gt;)|				# allow trailing entities
+					(?<![.,:`'\"?!])(?<!&)						# exclude other trailing punctuation
+				)
+				(?![^<>]*?>)									# not followed by unopened > (within HTML tags)
+			~iusx",
+			array($this, 'mycode_auto_url_callback'),
+			$message
+		);
 
 		return $message;
 	}
@@ -1618,11 +1782,11 @@ class postParser
 
 		$external = '';
 		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
-		while(my_substr($matches[4], -1) == ')')
+		while(my_substr($matches['link'], -1) == ')')
 		{
-			if(substr_count($matches[4], ')') > substr_count($matches[4], '('))
+			if(substr_count($matches['link'], ')') > substr_count($matches['link'], '('))
 			{
-				$matches[4] = my_substr($matches[4], 0, -1);
+				$matches['link'] = my_substr($matches['link'], 0, -1);
 				$external = ')'.$external;
 			}
 			else
@@ -1631,17 +1795,17 @@ class postParser
 			}
 
 			// Example: ([...] http://en.wikipedia.org/Example_(disambiguation).)
-			$last_char = my_substr($matches[4], -1);
+			$last_char = my_substr($matches['link'], -1);
 			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
 			{
-				$matches[4] = my_substr($matches[4], 0, -1);
+				$matches['link'] = my_substr($matches['link'], 0, -1);
 				$external = $last_char.$external;
-				$last_char = my_substr($matches[4], -1);
+				$last_char = my_substr($matches['link'], -1);
 			}
 		}
-		$url = "{$matches[2]}{$matches[3]}{$matches[4]}";
+		$url = $matches['prefix'].$matches['link'];
 
-		return $matches[1].$this->mycode_parse_url($url, $url).$external;
+		return $this->mycode_parse_url($url, $url).$external;
 	}
 
 	/**
@@ -1808,6 +1972,7 @@ class postParser
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
 			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
 			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
+			"#\[attachment=([0-9]+?)\]#i",
 		);
 
 		$replace = array(
@@ -1816,6 +1981,7 @@ class postParser
 			"$4",
 			"$3 ($1$2)",
 			"$2 ($1)",
+			"",
 		);
 		
 		$messageBefore = "";
@@ -1868,5 +2034,88 @@ class postParser
 		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		return $url;
+	}
+
+	/**
+	 * Determines whether the resulting HTML syntax is acceptable for output,
+	 * according to the parser's validation policy and HTML support.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool
+	 */
+	function output_allowed($source, $output)
+	{
+		if($this->output_validation_policy === self::VALIDATION_DISABLE || !empty($this->options['allow_html']))
+		{
+			return true;
+		}
+		else
+		{
+			$output_valid = $this->validate_output($source, $output);
+
+			if($this->output_validation_policy === self::VALIDATION_REPORT_ONLY)
+			{
+				return true;
+			}
+			else
+			{
+				return $output_valid === true;
+			}
+		}
+	}
+
+	/**
+	 * Validate HTML syntax and pass errors to the error handler.
+	 *
+	 * @param string $source The original MyCode.
+	 * @param string $output The output HTML code.
+	 * @return bool
+	 */
+	function validate_output($source, $output)
+	{
+		global $error_handler;
+
+		$ignored_error_codes = array(
+			// entities may be broken through smilie parsing; cache_smilies() method workaround doesn't cover all entities
+			'XML_ERR_INVALID_DEC_CHARREF' => 7,
+			'XML_ERR_INVALID_CHAR' => 9,
+
+			'XML_ERR_UNDECLARED_ENTITY' => 26, // unrecognized HTML entities
+			'XML_ERR_ATTRIBUTE_WITHOUT_VALUE' => 41,
+			'XML_ERR_TAG_NAME_MISMATCH' => 76, // the parser may output tags closed in different levels and siblings
+		);
+
+		libxml_use_internal_errors(true);
+		@libxml_disable_entity_loader(true);
+
+		simplexml_load_string('<root>'.$output.'</root>', 'SimpleXMLElement', 524288 /* LIBXML_PARSEHUGE */);
+
+		$errors = libxml_get_errors();
+
+		libxml_use_internal_errors(false);
+
+		if(
+			$errors &&
+			array_diff(
+				array_column($errors, 'code'),
+				$ignored_error_codes
+			)
+		)
+		{
+			$data = array(
+				'sourceHtmlEntities' => htmlspecialchars_uni($source),
+				'outputHtmlEntities' => htmlspecialchars_uni($output),
+				'errors' => $errors,
+			);
+			$error_message = "Parser output validation failed.\n";
+			$error_message .= var_export($data, true);
+
+			$error_handler->error(E_USER_WARNING, $error_message, __FILE__, __LINE__, false);
+
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

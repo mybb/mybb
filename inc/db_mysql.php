@@ -74,6 +74,11 @@ class DB_MySQL implements DB_Base
 	public $current_link;
 
 	/**
+	 * @var array
+	 */
+	public $connections = array();
+
+	/**
 	 * The database name.
 	 *
 	 * @var string
@@ -148,7 +153,7 @@ class DB_MySQL implements DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns false on fail or -1 on a db connect failure.
+	 * @return resource|int|false The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
 	{
@@ -178,7 +183,10 @@ class DB_MySQL implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
@@ -485,7 +493,11 @@ class DB_MySQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
 		else
 		{
@@ -891,7 +903,7 @@ class DB_MySQL implements DB_Base
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
 	 * @param boolean $no_quote An option to quote incoming values of the array.
-	 * @return resource The query data.
+	 * @return resource|false The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
@@ -1042,7 +1054,7 @@ class DB_MySQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**
@@ -1412,7 +1424,7 @@ class DB_MySQL implements DB_Base
 			$default = '';
 		}
 
-		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null}");
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null} {$default}");
 	}
 
 	/**

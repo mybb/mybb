@@ -25,6 +25,13 @@ class DB_PgSQL implements DB_Base
 	public $short_title = "PostgreSQL";
 
 	/**
+	 * The type of db software being used.
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * A count of the number of queries.
 	 *
 	 * @var int
@@ -65,6 +72,11 @@ class DB_PgSQL implements DB_Base
 	 * @var resource
 	 */
 	public $current_link;
+
+	/**
+	 * @var array
+	 */
+	public $connections = array();
 
 	/**
 	 * Explanation of a query.
@@ -154,7 +166,7 @@ class DB_PgSQL implements DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns false on failure
+	 * @return resource|false The DB connection resource. Returns false on failure
 	 */
 	function connect($config)
 	{
@@ -181,7 +193,10 @@ class DB_PgSQL implements DB_Base
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
@@ -219,6 +234,10 @@ class DB_PgSQL implements DB_Base
 				if(strpos($single_connection['hostname'], ':') !== false)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
+				}
+				else
+				{
+					$single_connection['port'] = null;
 				}
 
 				if($single_connection['port'])
@@ -441,12 +460,14 @@ class DB_PgSQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null && $array !== false)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
-		else
-		{
-			return pg_fetch_result($query, $row, $field);
-		}
+
+		return pg_fetch_result($query, $row, $field);
 	}
 
 	/**
@@ -837,7 +858,7 @@ class DB_PgSQL implements DB_Base
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
 	 * @param boolean $no_quote An option to quote incoming values of the array.
-	 * @return resource The query data.
+	 * @return resource|false The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
@@ -934,7 +955,7 @@ class DB_PgSQL implements DB_Base
 	{
 		if(function_exists("pg_escape_string"))
 		{
-			$string = pg_escape_string($string);
+			$string = pg_escape_string($this->read_link, $string);
 		}
 		else
 		{
@@ -962,7 +983,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**
@@ -1137,19 +1158,50 @@ class DB_PgSQL implements DB_Base
 		$primary_key = $this->fetch_field($query, 'column_name');
 
 		$query = $this->write_query("
-			SELECT column_name as Field, data_type as Extra
+			SELECT column_name, data_type, is_nullable, column_default, character_maximum_length, numeric_precision, numeric_precision_radix, numeric_scale
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
 		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
-			if($field['field'] == $primary_key)
+			if($field['column_name'] == $primary_key)
 			{
-				$field['extra'] = 'auto_increment';
+				$field['_key'] = 'PRI';
+			}
+			else
+			{
+				$field['_key'] = '';
 			}
 
-			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
+			if(stripos($field['column_default'], 'nextval') !== false)
+			{
+				$field['_extra'] = 'auto_increment';
+			}
+			else
+			{
+				$field['_extra'] = '';
+			}
+
+			// bit, character, text fields.
+			if(!is_null($field['character_maximum_length']))
+			{
+				$field['data_type'] .= '('.(int)$field['character_maximum_length'].')';
+			}
+			// numeric/decimal fields.
+			else if($field['numeric_precision_radix'] == 10 && !is_null($field['numeric_precision']) && !is_null($field['numeric_scale']))
+			{
+				$field['data_type'] .= '('.(int)$field['numeric_precision'].','.(int)$field['numeric_scale'].')';
+			}
+
+			$field_info[] = array(
+				'Field' => $field['column_name'],
+				'Type' => $field['data_type'],
+				'Null' => $field['is_nullable'],
+				'Key' => $field['_key'],
+				'Default' => $field['column_default'],
+				'Extra' => $field['_extra'],
+			);
 		}
 
 		return $field_info;
@@ -1262,9 +1314,13 @@ class DB_PgSQL implements DB_Base
 			$table_prefix = $this->table_prefix;
 		}
 
+		$table_prefix_bak = $this->table_prefix;
+		$this->table_prefix = '';
+		$fields = array_column($this->show_fields_from($table_prefix.$table), 'Field');
+
 		if($hard == false)
 		{
-			if($this->table_exists($table))
+			if($this->table_exists($table_prefix.$table))
 			{
 				$this->write_query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1274,13 +1330,30 @@ class DB_PgSQL implements DB_Base
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 
-		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
-		$field = $this->fetch_field($query, 'column_name');
+		$this->table_prefix = $table_prefix_bak;
 
-		// Do we not have a primary field?
-		if($field)
+		if(!empty($fields))
 		{
-			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
+			foreach($fields as &$field)
+			{
+				$field = "{$table_prefix}{$table}_{$field}_seq";
+			}
+			unset($field);
+
+			if(version_compare($this->get_version(), '8.2.0', '>='))
+			{
+				$fields = implode(', ', $fields);
+				$this->write_query("DROP SEQUENCE IF EXISTS {$fields}");
+			}
+			else
+			{
+				$fields = "'".implode("', '", $fields)."'";
+				$query = $this->query("SELECT sequence_name as field FROM information_schema.sequences WHERE sequence_name in ({$fields}) AND sequence_schema = 'public'");
+				while($row = $this->fetch_array($query))
+				{
+					$this->write_query("DROP SEQUENCE {$row['field']}");
+				}
+			}
 		}
 	}
 
@@ -1557,7 +1630,7 @@ class DB_PgSQL implements DB_Base
 	 */
 	function escape_binary($string)
 	{
-		return "'".pg_escape_bytea($string)."'";
+		return "'".pg_escape_bytea($this->read_link, $string)."'";
 	}
 
 	/**

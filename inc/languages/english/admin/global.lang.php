@@ -52,6 +52,7 @@ $l['error_admin_session_expired'] = "Your administration session has expired.";
 $l['error_invalid_ip'] = "Your IP address is not valid for this session.";
 $l['error_mybb_admin_lockedout'] = "This account has been locked out.";
 $l['error_mybb_admin_lockedout_message'] = "Your account is currently locked out after failing to login {1} times. You have been sent an email with instructions on how to unlock your account.";
+$l['error_mybb_not_admin_account'] = "You do not have permission to access the administration control panel.";
 
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_invalid_uid'] = "The user id you entered is invalid.";
@@ -328,6 +329,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
 $l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
+$l['task_sendmailqueue_ran'] = 'The send mail queue task sent up to {1} messages.';
 
 $l['massmail_username'] = "Username";
 $l['email_addr'] = "Email Address";

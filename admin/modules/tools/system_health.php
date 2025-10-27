@@ -184,7 +184,8 @@ if($mybb->input['action'] == "utf8_conversion")
 			flash_message($lang->error_utf8mb4_version, 'error');
 			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
 		}
-		@set_time_limit(0);
+
+		my_set_time_limit();
 
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');
@@ -238,7 +239,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_cell($lang->please_wait);
 		$table->construct_row();
 
-		$table->output($converting_table." {$mybb->input['table']}");
+		$table->output($lang->sprintf($lang->converting_table, $mybb->input['table']));
 
 		$db->set_table_prefix($old_table_prefix);
 
@@ -280,6 +281,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET {$character_set} COLLATE {$collation}");
 
 		// Fetch any fulltext keys
+		$fulltext_to_create = array();
 		if($db->supports_fulltext($mybb->input['table']))
 		{
 			$table_structure = $db->show_create_table($mybb->input['table']);
@@ -357,12 +359,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 
 		// Any fulltext indexes to recreate?
-		if(is_array($fulltext_to_create))
+		foreach($fulltext_to_create as $name => $fields)
 		{
-			foreach($fulltext_to_create as $name => $fields)
-			{
-				$db->create_fulltext_index($mybb->input['table'], $fields, $name);
-			}
+			$db->create_fulltext_index($mybb->input['table'], $fields, $name);
 		}
 
 		$db->set_table_prefix($old_table_prefix);
@@ -438,7 +437,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 
-	if($mybb->input['table'] || $mybb->input['do'] == "all")
+	if(!empty($mybb->input['table']) || $mybb->input['do'] == "all")
 	{
 		if(!empty($mybb->input['mb4']) && version_compare($db->get_version(), '5.5.3', '<'))
 		{
@@ -850,12 +849,8 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	$uploadspath = $mybb->settings['uploadspath'];
-	if(my_substr($uploadspath, 0, 1) == '.')
-	{
-		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
-	}
-	if(is_writable($uploadspath))
+	$uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
+	if(is_writable($uploadspath_abs))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -865,12 +860,8 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	$avataruploadpath = $mybb->settings['avataruploadpath'];
-	if(my_substr($avataruploadpath, 0, 1) == '.')
-	{
-		$avataruploadpath = MYBB_ROOT . $mybb->settings['avataruploadpath'];
-	}
-	if(is_writable($avataruploadpath))
+	$avataruploadpath_abs = mk_path_abs($mybb->settings['avataruploadpath']);
+	if(is_writable($avataruploadpath_abs))
 	{
 		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}

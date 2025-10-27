@@ -70,7 +70,7 @@ class EventDataHandler extends DataHandler
 	function verify_name()
 	{
 		$name = &$this->data['name'];
-		$name = trim($name);
+		$name = trim_blank_chrs($name);
 		if(!$name)
 		{
 			$this->set_error("missing_name");
@@ -87,7 +87,7 @@ class EventDataHandler extends DataHandler
 	function verify_description()
 	{
 		$description = &$this->data['description'];
-		$description = trim($description);
+		$description = trim_blank_chrs($description);
 		if(!$description)
 		{
 			$this->set_error("missing_description");
@@ -577,18 +577,19 @@ class EventDataHandler extends DataHandler
 		if(isset($event['starttime']))
 		{
 			$this->event_update_data['starttime'] = (int)$event['starttime'];
-			$this->event_update_data['usingtime'] = (int)$event['usingtime'];
+			$this->event_update_data['usingtime'] = isset($event['usingtime']) ? (int) $event['usingtime'] : 0;
 		}
 
 		if(isset($event['endtime']))
 		{
 			$this->event_update_data['endtime'] = (int)$event['endtime'];
-			$this->event_update_data['usingtime'] = (int)$event['usingtime'];
+			$this->event_update_data['usingtime'] = isset($event['usingtime']) ? (int) $event['usingtime'] : 0;
 		}
-		else
+		
+		if(!isset($event['starttime'], $event['endtime']))
 		{
-			$this->event_update_data['endtime'] = 0;
-			$this->event_update_data['usingtime'] = 0;
+  			$this->event_update_data['endtime'] = 0;
+ 		 	$this->event_update_data['usingtime'] = 0;
 		}
 
 		if(isset($event['repeats']))

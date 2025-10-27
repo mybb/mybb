@@ -10,7 +10,7 @@ $l['nav_memberlist'] = "Member List";
 $l['memberlist_disabled'] = "The member list functionality has been disabled by the Administrator.";
 
 $l['member_list'] = "Member List";
-$l['avatar']  ="Avatar";
+$l['avatar']  = "Avatar";
 $l['username'] = "Username";
 $l['joined'] = "Joined";
 $l['lastvisit'] = "Last Visit";
@@ -43,7 +43,6 @@ $l['username_exact'] = "exactly";
 $l['search_website'] = "Website URL";
 $l['search_skype'] = "Skype Address";
 $l['search_google'] = "Google Hangouts Address";
-$l['search_icq'] = "ICQ Number";
 $l['search_options'] = "Search Options";
 $l['per_page'] = "Results Per Page";
 $l['search'] = "Search";
