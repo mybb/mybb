@@ -318,7 +318,12 @@ if($mybb->input['action'] == "results")
 	$multipage = multipage($pmscount, $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
 	$messagelist = '';
 
-	$icon_cache = $cache->read("posticons");
+	$icon_cache = array();
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		$icon_cache = (array)$cache->read("posticons");
+	}
 
 	// Cache users in multiple recipients for sent & drafts folder
 	// Get all recipients into an array
@@ -445,7 +450,7 @@ if($mybb->input['action'] == "results")
 
 		$denyreceipt = '';
 
-		if($message['icon'] > 0 && $icon_cache[$message['icon']])
+		if($message['icon'] > 0 && !empty($icon_cache[$message['icon']]))
 		{
 			$icon = $icon_cache[$message['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
@@ -691,7 +696,13 @@ if($mybb->input['action'] == "send")
 
 	$lang->post_icon = $lang->message_icon;
 
-	$posticons = get_post_icons();
+	$posticons = '';
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		$posticons = get_post_icons();
+	}
+
 	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('message')));
 	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('subject')));
 
@@ -2213,7 +2224,12 @@ if(!$mybb->input['action'])
 	$multipage = multipage($pmscount, $perpage, $page, $page_url);
 	$selective = $messagelist = '';
 
-	$icon_cache = $cache->read("posticons");
+	$icon_cache = array();
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		$icon_cache = (array)$cache->read("posticons");
+	}
 
 	// Cache users in multiple recipients for sent & drafts folder
 	if($folder == 2 || $folder == 3)
@@ -2414,7 +2430,7 @@ if(!$mybb->input['action'])
 				$denyreceipt = '';
 			}
 
-			if($message['icon'] > 0 && $icon_cache[$message['icon']])
+			if($message['icon'] > 0 && !empty($icon_cache[$message['icon']]))
 			{
 				$icon = $icon_cache[$message['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);

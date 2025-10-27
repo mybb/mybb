@@ -605,7 +605,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$preview = '';
 	$posticons = '';
 
-	if($forum['allowpicons'] != 0)
+	$posticons = '';
+
+	if($mybb->settings['allowposticons'] == 1 && $forum['allowpicons'] != 0)
 	{
 		$posticons = get_post_icons();
 	}
