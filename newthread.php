@@ -101,7 +101,7 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 $posticons = '';
 
 // Does this forum allow post icons? If so, fetch the post icons.
-if($forum['allowpicons'] != 0)
+if($mybb->settings['allowposticons'] == 1 && $forum['allowpicons'] != 0)
 {
 	$posticons = get_post_icons();
 }
@@ -693,10 +693,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$icon = $post['icon'];
-		if($forum['allowpicons'] != 0)
-		{
-			$posticons = get_post_icons();
-		}
 
 		$newthread['numpolloptions'] = 2;
 

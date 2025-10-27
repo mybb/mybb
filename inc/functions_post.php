@@ -899,13 +899,29 @@ function build_postbit($post, $post_type=0)
 		$post['showsig'] = true;
 	}
 
-	$icon_cache = $cache->read('posticons');
+	$icon_cache = array();
 
 	$post['showicon'] = false;
 	$icon = [];
-	if(isset($post['icon']) &&
-		$post['icon'] > 0 &&
-		$icon_cache[$post['icon']])
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		switch($post_type)
+		{
+			case 2: // Private message
+				$icon_cache = (array)$cache->read("posticons");
+				break;
+			default:
+				global $forum;
+
+				if($forum['allowpicons'] != 0)
+				{
+					$icon_cache = (array)$cache->read("posticons");
+				}
+		}
+	}
+
+	if(isset($post['icon']) && $post['icon'] > 0 && !empty($icon_cache[$post['icon']]))
 	{
 		$post['showicon'] = true;
 
