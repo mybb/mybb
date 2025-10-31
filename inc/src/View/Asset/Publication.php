@@ -153,7 +153,7 @@ class Publication
     {
         $path = $this->asset->getAbsolutePath();
 
-        $publishedFileTime = filemtime($path);
+        $publishedFileTime = $this->filesystem->lastModified($path);
 
         if ($publishedFileTime === false) {
             return true;
@@ -214,9 +214,9 @@ class Publication
 
         $path = $this->asset->getAbsolutePath();
 
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), recursive: true);
-        }
+        $this->filesystem->ensureDirectoryExists(
+            dirname($path)
+        );
 
         $fh = fopen($path, 'cb');
 
