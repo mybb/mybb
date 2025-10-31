@@ -34,7 +34,7 @@ class Publication
     ];
 
     /**
-     * Resources declared as contributing to the converted Asset.
+     * Signatures of Resources declared as contributing to the converted Asset.
      *
      * @var array<string, array{
      *   viewlet: string,
@@ -44,7 +44,7 @@ class Publication
     private array $sources = [];
 
     /**
-     * @param Processor[] $processors
+     * @param list<class-string<Processor>> $processors
      */
     public function __construct(
         private readonly ViewletAsset $asset,
@@ -132,7 +132,7 @@ class Publication
     /**
      * Returns the Base Processor necessary to prepare the Asset for usage.
      *
-     * @return ?class-string<static>
+     * @return ?class-string<Processor>
      */
     private static function getBaseProcessor(ViewletAsset $asset): ?string
     {

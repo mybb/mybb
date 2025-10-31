@@ -22,7 +22,7 @@ use MyBB\View\Viewlet\NamespaceCargo\Repository;
  *
  * // AssetsTrait
  * @method Repository getAssetRepository(string $namespace)
- * @method Asset getAsset(Locator $locator, ?string $declarationNamespace = null)
+ * @method Asset getAsset(Locator $locator, ?string $declarationNamespace = null, ?ResourceType $type = null)
  * @method array getAssetPropertiesOfType(string $namespace, ResourceType $type)
  * @method array getAssetProperties(string $namespace)
  *
@@ -42,8 +42,8 @@ use MyBB\View\Viewlet\NamespaceCargo\Repository;
  * @method array getNamespaceResources(string $namespace, ?array $resourceTypes = null)
  * @method bool hasResource(ViewletLocator $locator)
  * @method Resource|null getExistingResource(ViewletLocator $locator)
- * @method Resource|null getResource(ViewletLocator $locator)
- * @method Resource|null createResource(ViewletLocator $locator)
+ * @method Resource getResource(ViewletLocator $locator)
+ * @method Resource createResource(ViewletLocator $locator)
  * @method array getResourceProperties()
  */
 interface ViewletInterface {}
