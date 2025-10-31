@@ -10,12 +10,14 @@ use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\HierarchicalResource;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
 use MyBB\View\Viewlet\ViewletInterface;
+use TypeError;
 
 /**
  * Prepares an Asset for web usage.
@@ -34,14 +36,13 @@ class Publication
     ];
 
     /**
-     * Signatures of Resources declared as contributing to the converted Asset.
+     * Signatures of Resources declared as contributing to the converted Asset, by Locator string.
      *
      * @var array<string, array{
      *   viewlet: string,
-     *   subPath: string,
      * }>
      */
-    private array $sources = [];
+    private array $sourceSignatures = [];
 
     /**
      * @param list<class-string<Processor>> $processors
@@ -66,9 +67,12 @@ class Publication
      *
      * @return list<Resource>
      */
-    public static function getPublishedAssetResources(ViewletAsset $asset): ?array
+    public static function getPublishedAssetResources(ViewletAsset $asset): array
     {
-        return $asset->getViewlet()->getAssetPublicationData($asset)['sources'] ?? null;
+        return array_map(
+            fn (string $locatorString) => self::getAssetSourceFromLocatorString($asset, $locatorString),
+            array_keys(self::getPublishedAssetSourceSignatures($asset) ?? []),
+        );
     }
 
     /**
@@ -80,15 +84,16 @@ class Publication
     {
         $assets = [];
 
-        foreach ($viewlet->getAssetPublicationData() as $namespaceAssetData) {
-            foreach ($namespaceAssetData as $assetLocatorString => $assetData) {
-                $assetSourceSignatures = $assetData['sources'] ?? [];
+        $locatorString = $resource->getLocator()->getString();
 
-                if (in_array(self::getSourceSignature($resource), $assetSourceSignatures)) {
-                    $assetLocator = ViewletLocator::fromString($assetLocatorString);
+        foreach ($viewlet->getAssetPublicationData() as $assetLocatorString => $assetData) {
+            $assetSourceSignatures = $assetData['sources'] ?? [];
 
-                    $assets[$assetLocatorString] = new ViewletAsset($assetLocator, $viewlet);
-                }
+            if (array_key_exists($locatorString, $assetSourceSignatures)) {
+                $assets[$assetLocatorString] = new ViewletAsset(
+                    ViewletLocator::fromString($assetLocatorString),
+                    $viewlet,
+                );
             }
         }
 
@@ -123,10 +128,29 @@ class Publication
                         ? $resource->getResolved()
                         : $resource
                 )
-                ->getViewlet()
-                ->getIdentifier(),
-            'subPath' => $resource->getLocator()->getSubPath(),
+                    ->getViewlet()
+                    ->getIdentifier(),
         ];
+    }
+
+    /**
+     * Returns a Resource corresponding to the given Asset and source Locator string, linked to the Asset's Viewlet.
+     */
+    private static function getAssetSourceFromLocatorString(ViewletAsset $asset, string $locatorString): Resource
+    {
+        return $asset->getViewlet()->getResource(
+            ViewletLocator::fromString($locatorString)
+        );
+    }
+
+    /**
+     * Returns an array of source signatures for a published Asset, indexed by Locator string.
+     *
+     * @return ?array<string, array>
+     */
+    private static function getPublishedAssetSourceSignatures(ViewletAsset $asset): ?array
+    {
+        return $asset->getViewlet()->getAssetPublicationData($asset)['sources'] ?? null;
     }
 
     /**
@@ -163,16 +187,18 @@ class Publication
             $this->optimization->getDirective('publication.resolutionValidation') ||
             $this->optimization->getDirective('publication.sourceValidation')
         ) {
-            $sourceResources = self::getPublishedAssetResources($this->asset);
+            $sourceSignatures = self::getPublishedAssetSourceSignatures($this->asset);
 
-            if ($sourceResources === null) {
+            if ($sourceSignatures === null) {
                 return true;
             }
 
-            foreach ($sourceResources as $sourceResource) {
-                $resource = $this->asset->getViewlet()->getResource(
-                    $this->asset->getLocator()->getSibling($sourceResource['subPath'])
-                );
+            foreach ($sourceSignatures as $locatorString => $sourceSignature) {
+                try {
+                    $resource = self::getAssetSourceFromLocatorString($this->asset, $locatorString);
+                } catch (TypeError | LocatorException) {
+                    return true;
+                }
 
                 if (
                     $this->optimization->getDirective('publication.resolutionValidation') &&
@@ -180,7 +206,7 @@ class Publication
                         !$resource->exists() ||
                         (
                             $resource instanceof HierarchicalResource &&
-                            $resource->getResolved()->getViewlet()->getIdentifier() !== $sourceResource['viewlet']
+                            $sourceSignature !== self::getSourceSignature($resource)
                         )
                     )
                 ) {
@@ -250,7 +276,7 @@ class Publication
 
                             if ($result === true) {
                                 $this->asset->getViewlet()->setAssetPublicationData($this->asset, [
-                                    'sources' => $this->sources,
+                                    'sources' => $this->sourceSignatures,
                                 ]);
                             }
                         } finally {
@@ -285,7 +311,7 @@ class Publication
             throw new InvalidArgumentException('Cannot use non-existent Resource `' . $resource->getLocator()->getString() . '` as a source for Asset');
         }
 
-        $this->sources[] = self::getSourceSignature($resource);
+        $this->sourceSignatures[$resource->getLocator()->getString()] = self::getSourceSignature($resource);
     }
 
     /**
