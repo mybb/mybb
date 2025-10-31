@@ -64,18 +64,25 @@ readonly class Resource implements CargoEntityInterface
         if ($pointer !== null) {
             $fh = $pointer;
         } else {
-            $fh = fopen($path, 'c');
+            $fh = fopen($path, 'cb');
 
             if ($fh === false) {
                 throw new RuntimeException('Failed to open `' . $path . '`');
             }
 
             if (!flock($fh, LOCK_EX)) {
+                fclose($fh);
+
                 throw new RuntimeException('Failed to acquire exclusive lock for `' . $path . '`');
             }
         }
 
-        $result = fwrite($fh, $content) !== false;
+        $result =
+            ftruncate($fh, 0) &&
+            rewind($fh) &&
+            fwrite($fh, $content) !== false;
+
+        fflush($fh);
 
         if ($pointer === null) {
             flock($fh, LOCK_UN);

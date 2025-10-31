@@ -218,7 +218,7 @@ class Publication
             mkdir(dirname($path), recursive: true);
         }
 
-        $fh = fopen($path, 'c');
+        $fh = fopen($path, 'cb');
 
         if (!$fh) {
             return false;
@@ -226,40 +226,44 @@ class Publication
 
         $result = false;
 
-        if (
-            flock($fh, LOCK_EX | LOCK_NB, $wasLocked) ||
-            flock($fh, LOCK_EX)
-        ) {
+        try {
             if (
-                !$wasLocked ||
-                ($force || $this->needsUpdate())
+                flock($fh, LOCK_EX | LOCK_NB, $wasLocked) ||
+                flock($fh, LOCK_EX)
             ) {
-                $stopwatchPeriod = $this->stopwatch?->start(
-                    $this->asset->getLocator()->getString(),
-                    'core.view.asset.publish',
-                );
-
                 try {
-                    $content = $this->getProcessedContent(
-                        $this->getContent()
-                    );
+                    if (
+                        !$wasLocked ||
+                        ($force || $this->needsUpdate())
+                    ) {
+                        $stopwatchPeriod = $this->stopwatch?->start(
+                            $this->asset->getLocator()->getString(),
+                            'core.view.asset.publish',
+                        );
 
-                    $result = $this->asset->write($content, $fh);
+                        try {
+                            $content = $this->getProcessedContent(
+                                $this->getContent()
+                            );
 
-                    if ($result === true) {
-                        $this->asset->getViewlet()->setAssetPublicationData($this->asset, [
-                            'sources' => $this->sources,
-                        ]);
+                            $result = $this->asset->write($content, $fh);
+
+                            if ($result === true) {
+                                $this->asset->getViewlet()->setAssetPublicationData($this->asset, [
+                                    'sources' => $this->sources,
+                                ]);
+                            }
+                        } finally {
+                            $stopwatchPeriod?->stop();
+                        }
                     }
                 } finally {
-                    $stopwatchPeriod?->stop();
+                    flock($fh, LOCK_UN);
                 }
             }
-
-            flock($fh, LOCK_UN);
+        } finally {
+            fclose($fh);
         }
-
-        fclose($fh);
 
         return $result;
     }
