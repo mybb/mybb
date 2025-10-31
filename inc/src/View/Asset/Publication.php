@@ -63,7 +63,7 @@ class Publication
     }
 
     /**
-     * Returns a list of Resources effectively used as a source for a published Asset, linked to the Assets's Viewlet.
+     * Returns a list of Resources effectively used as a source for a published Asset, linked to the Asset's Viewlet.
      *
      * @return list<Resource>
      */
@@ -228,7 +228,7 @@ class Publication
     }
 
     /**
-     * Processes the Asset and writes to resulting content to the Asset file.
+     * Processes the Asset and writes the resulting content to the Asset file.
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
