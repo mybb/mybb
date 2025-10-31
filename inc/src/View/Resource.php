@@ -6,9 +6,9 @@ namespace MyBB\View;
 
 use Exception;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
+use MyBB\Cargo\EntityTrait;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Locator\ViewletLocator;
-use MyBB\View\Viewlet\NamespaceCargo\EntityTrait;
 use MyBB\View\Viewlet\ViewletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
@@ -167,6 +167,11 @@ readonly class Resource implements CargoEntityInterface
         return $this->getViewlet()->getResourceRepository(
             $this->getNamespace()
         );
+    }
+
+    public function getRepositoryKey(): string
+    {
+        return $this->getLocator()->getNamespaceRelativeIdentifier();
     }
 
     protected function validateWritePath(string $path): void

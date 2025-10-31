@@ -73,7 +73,7 @@ class HierarchicalViewlet extends ViewletDecorator
             )
             ->withLoad(
                 fn (array $value) => array_map(
-                    $this->getViewlet(...),
+                    $this->getAncestryViewlet(...),
                     $value,
                 ),
                 $storeMode,
@@ -126,7 +126,10 @@ class HierarchicalViewlet extends ViewletDecorator
         }
     }
 
-    public function getViewlet(string $identifier): ?ViewletInterface
+    /**
+     * Returns a Viewlet from an Extension of the same type with the given identifier.
+     */
+    public function getAncestryViewlet(string $identifier): ViewletInterface
     {
         return $this->extensionRepository->get($identifier)->getViewlet();
     }

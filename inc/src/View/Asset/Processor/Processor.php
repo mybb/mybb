@@ -15,8 +15,8 @@ abstract class Processor
     protected readonly string $inputContent;
 
     public function __construct(
-        protected Publication $publication,
-        protected ViewletAsset $asset,
+        protected readonly Publication $publication,
+        protected readonly ViewletAsset $asset,
     )
     {}
 

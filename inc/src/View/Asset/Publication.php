@@ -62,7 +62,9 @@ class Publication
     }
 
     /**
-     * Returns a list of Resources effectively used as a source for a published Asset.
+     * Returns a list of Resources effectively used as a source for a published Asset, linked to the Assets's Viewlet.
+     *
+     * @return list<Resource>
      */
     public static function getPublishedAssetResources(ViewletAsset $asset): ?array
     {
@@ -70,7 +72,9 @@ class Publication
     }
 
     /**
-     * Returns a list of Assets published using the provided Resource.
+     * Returns Assets published using the provided Resource, indexed by Locator string.
+     *
+     * @return array<string, ViewletAsset>
      */
     public static function getAssetsPublishedUsingResource(Resource $resource, ViewletInterface $viewlet): array
     {
@@ -92,24 +96,6 @@ class Publication
     }
 
     /**
-     * Returns metadata identifying the given source's origin.
-     */
-    public static function getSourceSignature(Resource $resource): array
-    {
-        return [
-            'viewlet' =>
-                (
-                    $resource instanceof HierarchicalResource
-                        ? $resource->getResolved()
-                        : $resource
-                )
-                ->getViewlet()
-                ->getIdentifier(),
-            'subPath' => $resource->getLocator()->getSubPath(),
-        ];
-    }
-
-    /**
      * Whether the given Asset can be published as-is.
      */
     public static function isPlain(ViewletAsset $asset): bool
@@ -123,6 +109,24 @@ class Publication
     public static function resourcePublishable(Resource $resource): bool
     {
         return in_array($resource->getType(), self::PUBLISHABLE_RESOURCE_TYPES);
+    }
+
+    /**
+     * Returns metadata identifying the given source's origin.
+     */
+    private static function getSourceSignature(Resource $resource): array
+    {
+        return [
+            'viewlet' =>
+                (
+                    $resource instanceof HierarchicalResource
+                        ? $resource->getResolved()
+                        : $resource
+                )
+                ->getViewlet()
+                ->getIdentifier(),
+            'subPath' => $resource->getLocator()->getSubPath(),
+        ];
     }
 
     /**
@@ -265,6 +269,14 @@ class Publication
     {
         if (!self::resourcePublishable($resource)) {
             throw new InvalidArgumentException('Cannot use Resource `' . $resource->getLocator()->getString() . '` as a source for Asset');
+        }
+
+        if ($resource->getNamespace() !== $this->asset->getNamespace()) {
+            throw new InvalidArgumentException('Cannot use Resource in namespace `' . $resource->getNamespace() . '` as a source for Asset in namespace `' . $this->asset->getNamespace() . '`');
+        }
+
+        if (!$resource->exists()) {
+            throw new InvalidArgumentException('Cannot use non-existent Resource `' . $resource->getLocator()->getString() . '` as a source for Asset');
         }
 
         $this->sources[] = self::getSourceSignature($resource);

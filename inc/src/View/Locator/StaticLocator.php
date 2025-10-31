@@ -114,7 +114,7 @@ class StaticLocator extends Locator
 
     /**
      * @throws Exception if required components are missing.
- */
+     */
     public function getString(array $directives = [], array $context = []): string
     {
         $information = [];

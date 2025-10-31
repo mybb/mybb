@@ -71,7 +71,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
             ->withLoad(
                 fn (array $data) => array_map(
                     fn (string $identifier) => $this->getRepositoryInViewlet(
-                        $this->viewlet->getViewlet($identifier)
+                        $this->viewlet->getAncestryViewlet($identifier)
                     ),
                     $data,
                 ),

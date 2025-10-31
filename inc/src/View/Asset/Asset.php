@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace MyBB\View\Asset;
 
 use MyBB;
+use MyBB\Cargo\EntityTrait;
 use MyBB\Cargo\RepositoryInterface;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\ResourceType;
-use MyBB\View\Viewlet\NamespaceCargo\EntityTrait;
 use MyBB\View\Viewlet\ViewletInterface;
 
 use function MyBB\app;
@@ -57,6 +57,11 @@ abstract class Asset
         return $this->getViewlet()->getAssetRepository(
             $this->getEntityNamespace()
         );
+    }
+
+    public function getRepositoryKey(): string
+    {
+        return $this->getLocator()->getNamespaceRelativeIdentifier();
     }
 
     public function getUrl(bool $useCdn = true): string
