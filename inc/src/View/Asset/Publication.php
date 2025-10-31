@@ -184,7 +184,9 @@ class Publication
                         )
                     )
                 ) {
-                    $resource->resolve();
+                    if ($resource instanceof HierarchicalResource) {
+                        $resource->resolve();
+                    }
 
                     return true;
                 } elseif (
