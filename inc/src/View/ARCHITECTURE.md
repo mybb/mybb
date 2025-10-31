@@ -123,12 +123,12 @@ The resulting resolved hierarchy is used as a virtual source for building and re
 The metadata of _View_ entities — including inheritance declarations — is stored in the respective JSON files (`resources.json`, `assets.json`).
 
 ### Properties
-The JSON files include shared properties (applied to all entities) at the top level, and entity-specific properties grouped under the corresponding key (`assets`, `resources`).
+The JSON files include shared properties (applied to all entities) at the top level, and entity-specific properties grouped under the corresponding type key (`assets`, `resources`).
 ```json5
 {
   // shared properties
 
-  "<NAME>": {
+  "<TYPE>": {
     "<ENTITY-KEY>": {
       // entity properties
     },
@@ -289,7 +289,7 @@ block-beta
 ## Locators
 References to Resources and Assets use _Locators_, saved as strings in configuration files and Resources.
 
-**Viewlet Locators** refer to entities within a Viewlet structure, resolved according to the inheritance hierarchy, or for a specific Package.
+**Viewlet Locators** refer to entities within a Viewlet structure, resolved according to the inheritance hierarchy when not in the context of a specific Package.
 
 Its components correspond to the directory structure within a Viewlet, and include the namespace (prefixed with `@`), Resource Type, Resource group, and Resource name. Depending on the place of use, some components may be implied by context.
 
@@ -344,7 +344,7 @@ Templates are rendered using the `template()` function, which accepts a Viewlet 
 
 The Locator is used to establish the filesystem path to the Template file, and passed to Twig (`ViewletLoader`).
 
-The Twig runtime renders the template using the configured options, Twig extensions, and variables; and cached.
+The Twig runtime renders the template using the configured options, Twig extensions, and variables; and caches the result.
 
 
 ## Assets
@@ -526,7 +526,7 @@ The `Runtime` object accepts and manages context data — including the referenc
 - #### Hierarchy
   `HierarchicalViewlet` provides **vertical resolution and merging** of entities and their properties.
 
-  It accepts Plugin Viewlets as as the inheritance base, and uses the Theme's defined inheritance.
+  It accepts Plugin Viewlets as the inheritance base, and uses the Theme's defined inheritance.
 
   The Hierarchical Viewlet functions as a single set of metadata and Resources for reading, and a dispatcher for write operations.
 
