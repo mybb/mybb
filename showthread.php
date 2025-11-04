@@ -1059,15 +1059,6 @@ if($mybb->input['action'] == "thread")
 				$similar_thread['icon_name'] = $icon['name'];
 			}
 
-			if(!$similar_thread['username'])
-			{
-				$similar_thread['username'] = $similar_thread['profilelink'] = $similar_thread['threadusername'];
-			}
-			else
-			{
-				$similar_thread['profilelink'] = build_profile_link($similar_thread['username'], $similar_thread['uid']);
-			}
-
 			// If this thread has a prefix, insert a space between prefix and subject
 			if($similar_thread['prefix'] != 0)
 			{
@@ -1083,23 +1074,6 @@ if($mybb->input['action'] == "thread")
 			}
 
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);
-			$similar_thread['threadlink'] = get_thread_link($similar_thread['tid']);
-			$similar_thread['lastpostlink'] = get_thread_link($similar_thread['tid'], 0, "lastpost");
-
-			$similar_thread['lastpostdate'] = my_date('relative', $similar_thread['lastpost']);
-			$lastposter = $similar_thread['lastposter'];
-			$lastposteruid = $similar_thread['lastposteruid'];
-
-			// Don't link to guest's profiles (they have no profile).
-			if($lastposteruid == 0)
-			{
-				$similar_thread['lastposterlink'] = $lastposter;
-			}
-			else
-			{
-				$similar_thread['lastposterlink'] = build_profile_link($lastposter, $lastposteruid);
-			}
-
 			$similar_thread['replies'] = my_number_format($similar_thread['replies']);
 			$similar_thread['views'] = my_number_format($similar_thread['views']);
 
@@ -1360,10 +1334,7 @@ if($mybb->input['action'] == "thread")
 
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
-					$user['profilelink'] = get_profile_link($user['uid']);
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
-
 					++$thread['onlinemembers'];
 					$onlinemembers[] = $user;
 				}
@@ -1435,8 +1406,6 @@ function buildtree($replyto = 0, $indent = 0)
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
 
-			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
-
 			$post['bitactive'] = false;
 			if($mybb->input['pid'] == $post['pid'])
 			{
@@ -1451,7 +1420,6 @@ function buildtree($replyto = 0, $indent = 0)
 				$posts = buildtree($post['pid'], $indent);
 				$posttree = array_merge($posttree, $posts);
 			}
-
 		}
 		--$indent;
 	}

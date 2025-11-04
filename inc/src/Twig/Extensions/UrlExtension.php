@@ -10,10 +10,14 @@ class UrlExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('get_profile_link', [$this, 'getProfileLink']),
+            new TwigFunction('get_profile_link', [$this, 'getProfileLink'], [
+                'is_safe' => ['html'],
+            ]),
             new TwigFunction('get_announcement_link', [$this, 'getAnnouncementLink']),
             new TwigFunction('get_forum_link', [$this, 'getForumLink']),
-            new TwigFunction('get_thread_link', [$this, 'getThreadLink']),
+            new TwigFunction('get_thread_link', [$this, 'getThreadLink'], [
+                'is_safe' => ['html'],
+            ]),
             new TwigFunction('get_post_link', [$this, 'getPostLink']),
             new TwigFunction('get_event_link', [$this, 'getEventLink']),
             new TwigFunction('get_calendar_link', [$this, 'getCalendarLink']),
