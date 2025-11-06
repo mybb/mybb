@@ -6018,21 +6018,23 @@ function get_thread_link($tid, $page = 0, $action = '')
  *
  * @param int $pid The post ID of the post
  * @param int $tid The thread id of the post.
+ * @param string $mode The mode used to display the post.
  * @return string The url to the post.
  */
-function get_post_link($pid, $tid = 0)
+function get_post_link(int $pid, int $tid = 0, string $mode = '') : string
 {
-	if($tid > 0)
+	$link = empty($mode) ? POST_URL : POST_URL_MODE;
+    if($tid > 0)
 	{
-		$link = str_replace("{tid}", $tid, THREAD_URL_POST);
-		$link = str_replace("{pid}", $pid, $link);
-		return htmlspecialchars_uni($link);
-	}
-	else
-	{
-		$link = str_replace("{pid}", $pid, POST_URL);
-		return htmlspecialchars_uni($link);
-	}
+        $link = empty($mode) ? THREAD_URL_POST : THREAD_URL_POST_MODE;
+    }
+
+    $replacements = [
+		'{pid}' => urlencode($pid),
+		'{tid}' => urlencode($tid),
+		'{mode}' => urlencode($mode)
+	];
+    return strtr($link, $replacements);
 }
 
 /**

@@ -295,7 +295,9 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('THREAD_URL_PAGED', "thread-{tid}-page-{page}.html");
 	define('THREAD_URL_ACTION', 'thread-{tid}-{action}.html');
 	define('THREAD_URL_POST', 'thread-{tid}-post-{pid}.html');
+	define('THREAD_URL_POST_MODE', 'thread-{tid}-post-{pid}-{mode}.html');
 	define('POST_URL', "post-{pid}.html");
+	define('POST_URL_MODE', "post-{pid}-{mode}.html");
 	define('PROFILE_URL', "user-{uid}.html");
 	define('ANNOUNCEMENT_URL', "announcement-{aid}.html");
 	define('CALENDAR_URL', "calendar-{calendar}.html");
@@ -312,7 +314,9 @@ else
 	define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
 	define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&action={action}');
 	define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
+	define('THREAD_URL_POST_MODE', 'showthread.php?tid={tid}&pid={pid}&mode={mode}');
 	define('POST_URL', "showthread.php?pid={pid}");
+	define('POST_URL_MODE', "showthread.php?pid={pid}&mode={mode}");
 	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
 	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
 	define('CALENDAR_URL', "calendar.php?calendar={calendar}");

@@ -37,7 +37,11 @@ rewrite ^/thread-([0-9]+)-nextnewest.html$ /showthread.php?tid=$1&action=nextnew
 rewrite ^/thread-([0-9]+)-nextoldest.html$ /showthread.php?tid=$1&action=nextoldest last;
 rewrite ^/thread-([0-9]+)-newpost.html$ /showthread.php?tid=$1&action=newpost last;
 rewrite ^/thread-([0-9]+)-post-([0-9]+).html$ /showthread.php?tid=$1&pid=$2 last;
+rewrite ^/thread-([0-9]+)-post-([0-9]+)-linear.html$ /showthread.php?tid=$1&pid=$2&mode=linear last;
+rewrite ^/thread-([0-9]+)-post-([0-9]+)-threaded.html$ /showthread.php?tid=$1&pid=$2&mode=threaded last;
 rewrite ^/post-([0-9]+).html$ /showthread.php?pid=$1 last;
+rewrite ^/post-([0-9]+)-linear.html$ /showthread.php?pid=$1&mode=linear last;
+rewrite ^/post-([0-9]+)-threaded.html$ /showthread.php?pid=$1&mode=threaded last;
 rewrite ^/announcement-([0-9]+).html$ /announcements.php?aid=$1 last;
 rewrite ^/user-([0-9]+).html$ /member.php?action=profile&uid=$1 last;
 rewrite ^/calendar-([0-9]+).html$ /calendar.php?calendar=$1 last;

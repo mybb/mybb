@@ -50,8 +50,12 @@ Options -MultiViews +FollowSymlinks -Indexes
 	RewriteRule ^thread-([0-9]+)-nextoldest\.html$ showthread.php?tid=$1&action=nextoldest [L,QSA]
 	RewriteRule ^thread-([0-9]+)-newpost\.html$ showthread.php?tid=$1&action=newpost [L,QSA]
 	RewriteRule ^thread-([0-9]+)-post-([0-9]+)\.html$ showthread.php?tid=$1&pid=$2 [L,QSA]
+	RewriteRule ^thread-([0-9]+)-post-([0-9]+)-linear\.html$ showthread.php?tid=$1&pid=$2&mode=linear [L,QSA]
+	RewriteRule ^thread-([0-9]+)-post-([0-9]+)-threaded\.html$ showthread.php?tid=$1&pid=$2&mode=threaded [L,QSA]
 
 	RewriteRule ^post-([0-9]+)\.html$ showthread.php?pid=$1 [L,QSA]
+	RewriteRule ^post-([0-9]+)-linear\.html$ showthread.php?pid=$1&mode=linear [L,QSA]
+	RewriteRule ^post-([0-9]+)-threaded\.html$ showthread.php?pid=$1&mode=threaded [L,QSA]
 
 	RewriteRule ^announcement-([0-9]+)\.html$ announcements.php?aid=$1 [L,QSA]
 
