@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use MyBB\Extensions\Theme\Theme;
 use MyBB\Extensions\Theme\Repository as ThemeRepository;
 use MyBB\View\Runtime\Runtime;
+use MyBB\View\Runtime\SharedData;
 use Psr\Container\ContainerInterface;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider implements DeferrableProvider
@@ -17,6 +18,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider implements Def
         $this->app->singleton(Theme::class, function (ContainerInterface $container) {
             return $container->get(ThemeRepository::class)->get(DEFAULT_THEME_PACKAGE);
         });
+
+        $this->app->singleton(SharedData::class);
 
         $this->app->singleton(Runtime::class);
 
@@ -28,6 +31,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider implements Def
         return [
             Optimization::class,
             Runtime::class,
+            SharedData::class,
             Theme::class,
         ];
     }

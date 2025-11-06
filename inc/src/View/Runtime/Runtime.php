@@ -22,7 +22,6 @@ use SplObjectStorage;
 class Runtime
 {
     use AssetManagementTrait;
-    use DataSharingTrait;
     use NamespacesTrait;
 
     public readonly ViewletInterface $viewlet;

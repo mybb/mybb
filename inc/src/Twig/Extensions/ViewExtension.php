@@ -33,7 +33,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
     public function getFunctions()
     {
         return [
-            new TwigFunction('get', [$this->view, 'getSharedData']),
+            new TwigFunction('get', 'MyBB\View\get'),
             new TwigFunction('asset', [$this, 'getAsset']),
             new TwigFunction('asset_url', [$this, 'getAssetUrl']),
             new TwigFunction('alt_trow', [$this, 'altTrow']),

@@ -10,6 +10,7 @@ use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Runtime\Runtime;
+use MyBB\View\Runtime\SharedData;
 use Twig\Environment;
 
 use function MyBB\app;
@@ -141,7 +142,13 @@ function assetUrl(
  */
 function get(?string $key = null): array|null|int|float|string|bool
 {
-    return app(Runtime::class)->getSharedData($key);
+    $sharedData = app(SharedData::class);
+
+    if ($key === null) {
+        return $sharedData->getAll();
+    } else {
+        return $sharedData->tryGet($key);
+    }
 }
 
 /**
@@ -153,7 +160,7 @@ function get(?string $key = null): array|null|int|float|string|bool
  */
 function set(array $data): void
 {
-    app(Runtime::class)->setSharedData($data);
+    app(SharedData::class)->setMultiple($data);
 }
 
 /**
