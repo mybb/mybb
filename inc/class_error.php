@@ -194,7 +194,7 @@ class errorHandler {
 
 			$this->error(
 				MYBB_UNCAUGHT_EXCEPTION,
-				$exception->getMessage(),
+				$exception::class.': '.$exception->getMessage(),
 				$exception->getFile(),
 				$exception->getLine(),
 				trace: $exception->getTrace(),
