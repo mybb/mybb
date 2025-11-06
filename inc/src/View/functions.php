@@ -38,6 +38,10 @@ function asset(
     bool $return = false,
 ): ?string
 {
+    if (!app()->resolved(Runtime::class)) {
+        throw new Exception('Cannot use `' . __FUNCTION__ . '()` before View Runtime initialization');
+    }
+
     $view = app(Runtime::class);
 
     if ($locator instanceof Locator) {
@@ -106,6 +110,10 @@ function assetUrl(
     bool $useCdn = true
 ): string
 {
+    if (!app()->resolved(Runtime::class)) {
+        throw new Exception('Cannot use `' . __FUNCTION__ . '()` before View Runtime initialization');
+    }
+
     $view = app(Runtime::class);
 
     if ($locator instanceof Locator) {
