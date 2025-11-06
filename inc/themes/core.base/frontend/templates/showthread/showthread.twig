@@ -249,7 +249,7 @@
                             </div>
                         {% else %}
                             <div class="threaded-mode__post" style="margin-left: {{ post.indentsize }}px;">
-                                <span class="threaded-mode__date"><a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.postdate|raw }}</a></span>
+                                <span class="threaded-mode__date"><a href="{{ get_post_link(post.pid, thread.tid, 'threaded') }}">{{ post.postdate|raw }}</a></span>
                                 <span class="threaded-mode__author">{{ lang.by }} {{ post.profilelink|raw }}</span>
                             </div>
                         {% endif %}
