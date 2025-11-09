@@ -164,7 +164,13 @@ if($mybb->input['action'] == "results")
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
-	$icon_cache = $cache->read("posticons");
+
+	$icon_cache = array();
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		$icon_cache = (array)$cache->read("posticons");
+	}
 
 	$threads = array();
 
@@ -378,6 +384,8 @@ if($mybb->input['action'] == "results")
 
 		$threads = [];
 
+		$forums_cache = cache_forums();
+
 		foreach($thread_cache as $thread)
 		{
 			if($thread['userusername'])
@@ -396,7 +404,7 @@ if($mybb->input['action'] == "results")
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 
 			$thread['hasicon'] = false;
-			if(isset($icon_cache[$thread['icon']]))
+			if(isset($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 			{
 				$thread['hasicon'] = true;
 				$posticon = $icon_cache[$thread['icon']];
@@ -795,6 +803,8 @@ if($mybb->input['action'] == "results")
 			$page = 1;
 		}
 
+		$forums_cache = cache_forums();
+
 		$query = $db->query("
             SELECT p.*, u.username AS userusername, u.avatar AS user_avatar, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
             FROM ".TABLE_PREFIX."posts p
@@ -817,7 +827,7 @@ if($mybb->input['action'] == "results")
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 
 			$post['hasicon'] = false;
-			if(isset($icon_cache[$post['icon']]))
+			if(isset($icon_cache[$post['icon']]) && $forums_cache[$post['fid']]['allowpicons'] != 0)
 			{
 				$post['hasicon'] = true;
 				$posticon = $icon_cache[$post['icon']];
