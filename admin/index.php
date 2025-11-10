@@ -183,7 +183,7 @@ elseif($mybb->input['do'] == "login")
 	}
 
 	// Validate PIN first
-	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
+	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || !my_hash_equals($config['secret_pin'], $mybb->input['pin'])))
 	{
 		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
 
