@@ -44,6 +44,13 @@
                             </a>
                         </li>
                     {% endif %}
+                    <li class="main-menu__item main-menu__item--theme-switcher">
+                        <a href="#" class="main-menu__link theme-switcher-toggle" title="Toggle dark mode">
+                            {{ include('partials/icon.twig', {icon: 'moon', class: 'main-menu__icon fa-fw theme-icon-dark'}, with_context = false) }}
+                            {{ include('partials/icon.twig', {icon: 'sun', class: 'main-menu__icon fa-fw theme-icon-light'}, with_context = false) }}
+                            <span class="main-menu__text main-menu__text--desktop-only">Theme</span>
+                        </a>
+                    </li>
                     {% endapply %}
                 </ul>
            </nav>
