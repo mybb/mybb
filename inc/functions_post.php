@@ -281,6 +281,15 @@ function build_postbit($post, $post_type=0)
 	
 	$post['profilelink_plain'] = $post['username_formatted'] = '';
 	$post['isguest'] = true;
+	$post['showavatar'] = false;
+	$post['useravatar'] = '';
+
+	if((isset($mybb->user['showavatars']) && $mybb->user['showavatars'] != 0) || $mybb->user['uid'] == 0)
+	{
+		$post['showavatar'] = true;
+		$post['useravatar'] = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
+	}
+	
 	if($post['userusername'])
 	{
 		$post['isguest'] = false;
@@ -360,15 +369,6 @@ function build_postbit($post, $post_type=0)
 			{
 				$post['onlinestatus'] = 'offline';
 			}
-		}
-
-		$post['showavatar'] = false;
-		if(isset($mybb->user['showavatars']) &&
-			$mybb->user['showavatars'] != 0 ||
-			$mybb->user['uid'] == 0)
-		{
-			$post['showavatar'] = true;
-			$post['useravatar'] = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 		}
 
 		$post['button_find'] = false;
@@ -553,7 +553,6 @@ function build_postbit($post, $post_type=0)
 
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 		$post['userstars'] = '';
-		$post['useravatar'] = '';
 
 		$usergroup['title'] = $lang->na;
 
