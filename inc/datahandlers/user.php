@@ -1530,7 +1530,7 @@ class UserDataHandler extends DataHandler
 
 		foreach($this->delete_uids as $key => $uid)
 		{
-			if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+			if(!$uid || is_super_admin($uid) || (isset($mybb->user['uid']) && $uid === $mybb->user['uid']))
 			{
 				// Remove super admins
 				unset($this->delete_uids[$key]);
