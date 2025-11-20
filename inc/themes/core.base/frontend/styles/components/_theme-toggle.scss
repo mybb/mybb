@@ -1,0 +1,59 @@
+.main-menu__item--theme-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 0 20px;
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 300;
+    color: $invert-font-color;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    outline: none;
+    transition: background $transition-speed ease;
+
+    @include bp-medium-max {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 8px 20px;
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    &:hover {
+        background: rgba($dark-background-3, 0.6);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &__icon {
+        display: none;
+        color: $alt-font-color-2;
+
+        &--light {
+            display: inline-block;
+
+            [data-theme="dark"] & {
+                display: none;
+            }
+        }
+
+        &--dark {
+            display: none;
+
+            [data-theme="dark"] & {
+                display: inline-block;
+            }
+        }
+    }
+}
