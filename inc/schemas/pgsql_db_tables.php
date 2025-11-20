@@ -419,7 +419,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   fromaddress varchar(150) NOT NULL default '',
   dateline int NOT NULL default '0',
   error text NOT NULL default '',
-  smtperror varchar(200) NOT NULL default '',
+  smtperror text NOT NULL,
   smtpcode smallint NOT NULL default '0',
   PRIMARY KEY(eid)
 );";
