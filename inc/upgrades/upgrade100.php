@@ -371,3 +371,45 @@ function upgrade100_smilies()
         $db->insert_query_multiple('smilies', $insert);
     }
 }
+
+function upgrade100_check_constraints()
+{
+    global $db;
+
+    $constraints = [
+        ['table' => 'calendars', 'column' => 'disporder'],
+        ['table' => 'forums', 'column' => 'disporder'],
+        ['table' => 'helpdocs', 'column' => 'disporder'],
+        ['table' => 'helpsections', 'column' => 'disporder'],
+        ['table' => 'profilefields', 'column' => 'disporder'],
+        ['table' => 'reportreasons', 'column' => 'disporder'],
+        ['table' => 'settinggroups', 'column' => 'disporder'],
+        ['table' => 'settings', 'column' => 'disporder'],
+        ['table' => 'smilies', 'column' => 'disporder'],
+        ['table' => 'usergroups', 'column' => 'disporder'],
+    ];
+
+    if ($db->type === "pgsql") {
+        foreach ($constraints as $constraint) {
+            $table_name = TABLE_PREFIX . $constraint['table'];
+            $column_name = $constraint['column'];
+            $constraint_name = $table_name . '_' . $column_name ."_check";
+            $query = $db->query("
+                SELECT 1 FROM pg_constraint
+                WHERE conrelid = '" . $table_name . "'::regclass
+                    AND contype = 'c' AND conname = '" . $constraint_name . "'
+            ");
+
+            if ($db->num_rows($query) == 0) {
+                // Reset values that are negative
+                $db->update_query($constraint['table'], array($column_name => 0), $column_name . ' < 0');
+                // Create constraint
+                $db->write_query("
+                    ALTER TABLE " . $table_name . "
+                    ADD CONSTRAINT " . $constraint_name . " CHECK (" . $column_name  . " >= 0)
+                ");
+            }
+        }
+    }
+}
+
