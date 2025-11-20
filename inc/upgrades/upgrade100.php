@@ -37,6 +37,7 @@ function upgrade100_dbchanges()
 
     // Modify columns
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
+    $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
     if ($db->field_exists("pid", "themes")) {
         $db->drop_column("themes", "pid");

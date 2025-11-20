@@ -402,7 +402,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   fromaddress varchar(150) NOT NULL default '',
   dateline int unsigned NOT NULL default '0',
   error text NOT NULL,
-  smtperror varchar(200) NOT NULL default '',
+  smtperror text NOT NULL,
   smtpcode smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY (eid)
 ) ENGINE=InnoDB;";
