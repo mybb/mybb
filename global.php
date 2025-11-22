@@ -45,7 +45,7 @@ if($current_page != 'attachment.php')
 }
 
 // Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->get_input('action')])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
 {
 	define('NO_ONLINE', 1);
 }
