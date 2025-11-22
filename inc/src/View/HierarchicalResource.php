@@ -7,26 +7,26 @@ namespace MyBB\View;
 use Exception;
 use LogicException;
 use MyBB\Cargo\HierarchicalEntityTrait;
-use MyBB\View\Locator\ThemeletLocator;
-use MyBB\View\Themelet\Decorator\Hierarchy\HierarchicalThemelet;
-use MyBB\View\Themelet\NamespaceCargo\Repository;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Locator\ViewletLocator;
+use MyBB\View\Viewlet\Decorator\Hierarchy\HierarchicalViewlet;
+use MyBB\View\Viewlet\NamespaceCargo\Repository;
+use MyBB\View\Viewlet\ViewletInterface;
 
 /**
  * Inheritance-aware Resource.
  *
- * Reads from resolved Themelets; writes to own Themelet. Properties not inherited.
+ * Reads from resolved Viewlets; writes to own Viewlet. Properties not inherited.
  */
 readonly class HierarchicalResource extends Resource
 {
     use HierarchicalEntityTrait;
 
-    public function __construct(ThemeletInterface $themelet, ThemeletLocator $locator)
+    public function __construct(ViewletInterface $viewlet, ViewletLocator $locator)
     {
-        parent::__construct($themelet, $locator);
+        parent::__construct($viewlet, $locator);
 
-        if (!HierarchicalThemelet::decorates($themelet)) {
-            throw new Exception('`' . __CLASS__ . '` must be associated with a Hierarchical Themelet');
+        if (!HierarchicalViewlet::decorates($viewlet)) {
+            throw new Exception('`' . __CLASS__ . '` must be associated with a Hierarchical Viewlet');
         }
     }
 
@@ -73,7 +73,7 @@ readonly class HierarchicalResource extends Resource
     }
 
     /**
-     * Makes a Themelet's Resource inherit its content.
+     * Makes a Viewlet's Resource inherit its content.
      */
     public function revert(): void
     {

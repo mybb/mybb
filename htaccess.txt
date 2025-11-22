@@ -22,6 +22,24 @@ Options -MultiViews +FollowSymlinks -Indexes
 #
 <IfModule mod_rewrite.c>
 	RewriteEngine on
+
+    # Redirect old archive query URLs
+    RewriteCond %{REQUEST_URI} ^/archive/index\.php$ [NC]
+    RewriteCond %{QUERY_STRING} ^thread-(\d+)\.html$ [NC]
+    #RewriteRule ^ /showthread.php?tid=%1 [R=301,L] # if not using friendly URLs
+	RewriteRule ^ /thread-%1.html? [R=301,L]
+
+    RewriteCond %{REQUEST_URI} ^/archive/index\.php$ [NC]
+    RewriteCond %{QUERY_STRING} ^forum-(\d+)\.html$ [NC]
+    #RewriteRule ^ /forumdisplay.php?fid=%1 [R=301,L] # if not using friendly URLs
+	RewriteRule ^ /forum-%1.html? [R=301,L]
+
+    RewriteCond %{REQUEST_URI} ^/archive/index\.php$ [NC]
+    RewriteCond %{QUERY_STRING} ^announcement-(\d+)\.html$ [NC]
+    #RewriteRule ^ /announcements.php?aid=%1 [R=301,L] # if not using friendly URLs
+	RewriteRule ^ /announcement-%1.html? [R=301,L]
+
+	# SEO-friendly rules
 	RewriteRule ^forum-([0-9]+)\.html$ forumdisplay.php?fid=$1 [L,QSA]
 	RewriteRule ^forum-([0-9]+)-page-([0-9]+)\.html$ forumdisplay.php?fid=$1&page=$2 [L,QSA]
 

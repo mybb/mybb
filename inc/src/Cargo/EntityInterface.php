@@ -10,5 +10,5 @@ interface EntityInterface
     public function setProperties(array $properties);
     public function declaredInherited(): bool;
     public function getRepository(): RepositoryInterface;
-    public function getRepositoryEntityKey(): string;
+    public function getRepositoryKey(): string;
 }

@@ -110,6 +110,8 @@ function writeConfigurationFile(array $config): void
 
     \$config['redis']['host'] = 'localhost';
     \$config['redis']['port'] = 6379;
+    \$config['redis']['username'] = '';
+    \$config['redis']['password'] = '';
 
     /**
      * Super Administrators
@@ -789,6 +791,7 @@ function rebuildDatacache(): void
     $cache->update_groupleaders();
     $cache->update_threadprefixes();
     $cache->update_forumsdisplay();
+    $cache->update_default_theme();
     $cache->update_reportreasons(true);
 }
 

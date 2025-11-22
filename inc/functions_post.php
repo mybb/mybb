@@ -846,13 +846,13 @@ function build_postbit($post, $post_type=0)
 	$post['showbcc'] = false;
 	if($post_type == 2)
 	{
-		if(count($post['bcc_recipients']) > 0)
+		if(isset($post['bcc_recipients']) && count($post['bcc_recipients']) > 0)
 		{
 			$post['showbcc'] = true;
 			$post['bcc_recipients'] = implode(', ', $post['bcc_recipients']);
 		}
 
-		if(count($post['to_recipients']) > 0)
+		if(isset($post['to_recipients']) && count($post['to_recipients']) > 0)
 		{
 			$post['to_recipients'] = implode($lang->comma, $post['to_recipients']);
 		}
@@ -899,13 +899,29 @@ function build_postbit($post, $post_type=0)
 		$post['showsig'] = true;
 	}
 
-	$icon_cache = $cache->read('posticons');
+	$icon_cache = array();
 
 	$post['showicon'] = false;
 	$icon = [];
-	if(isset($post['icon']) &&
-		$post['icon'] > 0 &&
-		$icon_cache[$post['icon']])
+
+	if($mybb->settings['allowposticons'] == 1)
+	{
+		switch($post_type)
+		{
+			case 2: // Private message
+				$icon_cache = (array)$cache->read("posticons");
+				break;
+			default:
+				global $forum;
+
+				if($forum['allowpicons'] != 0)
+				{
+					$icon_cache = (array)$cache->read("posticons");
+				}
+		}
+	}
+
+	if(isset($post['icon']) && $post['icon'] > 0 && !empty($icon_cache[$post['icon']]))
 	{
 		$post['showicon'] = true;
 

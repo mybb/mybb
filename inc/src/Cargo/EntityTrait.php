@@ -18,7 +18,7 @@ trait EntityTrait
         $repository = $this->getRepository();
 
         return $repository->getEntityProperties(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -43,7 +43,7 @@ trait EntityTrait
         }
 
         $repository->setEntityProperties(
-            $this->getRepositoryEntityKey(),
+            $this->getRepositoryKey(),
             $mergedProperties,
         );
     }
@@ -51,7 +51,7 @@ trait EntityTrait
     public function declaredInherited(): bool
     {
         return $this->getRepository()->entityDeclaredInherited(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -67,5 +67,5 @@ trait EntityTrait
 
     abstract public function getRepository(): RepositoryInterface;
 
-    abstract protected function getRepositoryEntityKey(): string;
+    abstract protected function getRepositoryKey(): string;
 }

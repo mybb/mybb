@@ -197,7 +197,14 @@
                     <div class="row row--form field">
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1"{% if user.showredirect %} checked{% endif %} /> {{ lang.show_redirect }}</label></p>
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1"{% if user.showcodebuttons %} checked{% endif %} /> {{ lang.show_codebuttons }}</label></p>
-                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="sourceeditor" id="sourceeditor" value="1"{% if user.sourceeditor %} checked{% endif %} /> {{ lang.source_editor }}</label></p>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="sourceeditor">{{ lang.editor_mode }}</label></h3>
+                        <select name="sourceeditor" id="sourceeditor">
+                            <option value="0" {% if user.sourceeditor == 0 %} selected{% endif %}>{{ lang.use_default }}</option>
+                            <option value="1" {% if user.sourceeditor == 1 %} selected{% endif %}>{{ lang.editor_mode_source }}</option>
+                            <option value="2" {% if user.sourceeditor == 2 %} selected{% endif %}>{{ lang.editor_mode_wysiwyg }}</option>
+                        </select>
                     </div>
                     {% if stylelist %}
                         <div class="row row--form field">

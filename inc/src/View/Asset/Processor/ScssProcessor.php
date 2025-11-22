@@ -6,10 +6,10 @@ namespace MyBB\View\Asset\Processor;
 
 use Exception;
 use MyBB\View\HierarchicalResource;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
-use MyBB\View\Themelet\Themelet;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\Viewlet;
+use MyBB\View\Viewlet\ViewletInterface;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\Filesystem\Path;
 use UnexpectedValueException;
@@ -20,13 +20,13 @@ use UnexpectedValueException;
 class ScssProcessor extends Processor
 {
     /**
-     * A cache of used, non-resolved Themelets.
+     * A cache of used, non-resolved Viewlets.
      *
      * @see self::getResourceFromAbsolutePath()
      *
-     * @var ThemeletInterface[]
+     * @var ViewletInterface[]
      */
-    protected array $sourceThemelets = [];
+    protected array $sourceViewlets = [];
 
     /**
      * Whether to use a temporary directory with resolved Resource files.
@@ -49,9 +49,9 @@ class ScssProcessor extends Processor
     {
         $importableResources = $this->getImportableResources();
 
-        $resolvedThemeletIdentifiers = $this->getResolvedThemeletIdentifiers($importableResources);
+        $resolvedViewletIdentifiers = $this->getResolvedViewletIdentifiers($importableResources);
 
-        if (count($resolvedThemeletIdentifiers) > 1) {
+        if (count($resolvedViewletIdentifiers) > 1) {
             $this->useResolvedDirectory = true;
 
             $this->prepareImportableResourceFiles($importableResources);
@@ -60,7 +60,7 @@ class ScssProcessor extends Processor
                 $this->asset->getResource()
             );
         } else {
-            $this->sourceThemelets[] = $this->asset->getResource()->getThemelet();
+            $this->sourceViewlets[] = $this->asset->getResource()->getViewlet();
 
             $sourcePath = $this->asset->getResource()->getAbsolutePath();
         }
@@ -89,20 +89,20 @@ class ScssProcessor extends Processor
      */
     private function getImportableResources(): array
     {
-        return $this->asset->getThemelet()->getResources(
+        return $this->asset->getViewlet()->getResources(
             namespaces: [$this->asset->getResource()->getNamespace()],
             resourceTypes: [$this->asset->getResource()->getType()],
         );
     }
 
     /**
-     * Returns identifiers of Themelets to which at least one given Resource resolves to.
+     * Returns identifiers of Viewlets to which at least one given Resource resolves to.
      *
      * @param Resource[] $resources
      *
      * @return string[]
      */
-    private function getResolvedThemeletIdentifiers(array $resources): array
+    private function getResolvedViewletIdentifiers(array $resources): array
     {
         return array_values(
             array_unique(
@@ -113,7 +113,7 @@ class ScssProcessor extends Processor
                                 ? $resource->getResolved()
                                 : $resource
                         )
-                            ->getThemelet()
+                            ->getViewlet()
                             ->getIdentifier(),
                     $resources,
                 ),
@@ -136,11 +136,11 @@ class ScssProcessor extends Processor
             foreach ($this->getImportCandidatePaths($path) as $candidatePath) {
                 $locator = $this->asset->getLocator()->getSibling($candidatePath);
 
-                if ($this->asset->getThemelet()->hasResource($locator)) {
-                    $resource = $this->asset->getThemelet()->getExistingResource($locator);
+                if ($this->asset->getViewlet()->hasResource($locator)) {
+                    $resource = $this->asset->getViewlet()->getExistingResource($locator);
 
-                    if (!in_array($resource->getThemelet(), $this->sourceThemelets)) {
-                        $this->sourceThemelets[] = $resource->getThemelet();
+                    if (!in_array($resource->getViewlet(), $this->sourceViewlets)) {
+                        $this->sourceViewlets[] = $resource->getViewlet();
                     }
 
                     if ($this->useResolvedDirectory) {
@@ -217,26 +217,26 @@ class ScssProcessor extends Processor
      */
     private function getResourceFromAbsolutePath(string $path): ?Resource
     {
-        foreach ($this->sourceThemelets as $themelet) {
-            if (!Path::isBasePath($themelet->getAbsolutePath(), $path)) {
+        foreach ($this->sourceViewlets as $viewlet) {
+            if (!Path::isBasePath($viewlet->getAbsolutePath(), $path)) {
                 continue;
             }
 
-            foreach ($themelet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
+            foreach ($viewlet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
                 foreach ($namespacePaths as $namespacePath) {
                     if (!Path::isBasePath($namespacePath, $path)) {
                         continue;
                     }
 
-                    $locator = ThemeletLocator::fromNamespaceRelativeIdentifier(
+                    $locator = ViewletLocator::fromNamespaceRelativeIdentifier(
                         $namespace,
                         Path::makeRelative($path, $namespacePath)
                     );
 
-                    $resource = $themelet->getResource($locator);
+                    $resource = $viewlet->getResource($locator);
 
                     if ($resource === null) {
-                        continue 3; // continue search in other Themelets
+                        continue 3; // continue search in other Viewlets
                     } else {
                         return $resource;
                     }
@@ -301,8 +301,8 @@ class ScssProcessor extends Processor
     private function getImportableResourceDirectory(): string
     {
         return
-            Themelet::CACHE_BASE_PATH .
-            $this->asset->getThemelet()->getIdentifier() .
+            Viewlet::CACHE_BASE_PATH .
+            $this->asset->getViewlet()->getIdentifier() .
             '/resolvedResources'
         ;
     }

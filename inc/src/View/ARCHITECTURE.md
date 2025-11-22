@@ -5,11 +5,11 @@ _The View domain manages the graphical user interface, themes, layout resources 
 ## Overview
 To render pages for web browsers, MyBB's core and Plugins use _View_ — by calling the `Runtime` object and helper functions.
 
-The web GUI is built using files (_Resources_) provided by active Themes and Plugins. Resources from each Extension's GUI package (_Themelet_) are included in an inheritance hierarchy queried to return metadata, publish Assets, and render HTML.
+The web GUI is built using files (_Resources_) provided by active Themes and Plugins. Resources from each Extension's GUI package (_Viewlet_) are included in an inheritance hierarchy queried to return metadata, publish Assets, and render HTML.
 
 
-## Themelets
-A **Themelet** contains files defining the visual appearance of the GUI.
+## Viewlets
+A **Viewlet** contains files defining the visual appearance of the GUI.
 
 The files are organized into **namespaces**, which style separate interfaces and contexts. Each namespace may contain:
 - **Resources** — files used for server-side rendering, or for generating client-side Assets,
@@ -18,7 +18,7 @@ The files are organized into **namespaces**, which style separate interfaces and
 
 Resources are organized by Type, and may be grouped in arbitrary directories, while metadata files are stored at the top level.
 
-##### **Example: A Themelet Directory Tree**
+##### **Example: A Viewlet Directory Tree**
 ```
 frontend/
     images/
@@ -33,12 +33,12 @@ acp/
 ```
 
 ### View Extensions
-Two types of Extensions provide Themelets (`ViewExtensionInterface`):
-- A **Plugin** may supply a Themelet (in a `view/` subdirectory) to provide default styling for its interface.
+Two types of Extensions provide Viewlets (`ViewExtensionInterface`):
+- A **Plugin** may supply a Viewlet (in a `view/` subdirectory) to provide default styling for its interface.
 
   Plugins' Resources are placed in a dedicated namespace for the Plugin (`ext.`…), and can be overridden by Themes.
 
-- A **Theme** has its own Themelet (in the same directory), and may style any namespace.
+- A **Theme** has its own Viewlet (in the same directory), and may style any namespace.
 
   Each Theme has an implicit type, according to its package name prefix:
   - **Board Theme** (`theme.`…) — a local package authored by administrators,
@@ -53,26 +53,26 @@ A Theme's manifest file may include an `inherits` declaration, referencing one o
 The effective **inheritance chain** is defined in the following order, by decreasing priority:
   1. The reference Theme
   2. Ancestors of the reference Theme (from closest to furthest, ending with a Core Theme)
-  3. Themelets of active Plugins
+  3. Viewlets of active Plugins
 
 <br>
 
-**Diagram: Themelet Inheritance Path**
+**Diagram: Viewlet Inheritance Path**
 
 ```mermaid
 flowchart RL
-  subgraph PluginsGraph[Base Themelets]
+  subgraph PluginsGraph[Base Viewlets]
       Plugins@{shape: processes, label: "Plugins"}
       Plugins:::plugin
 
-      PluginThemelets@{shape: processes, label: "Plugin Themelets"}
-      PluginThemelets:::themelet
-      PluginThemelets---Plugins
+      PluginViewlets@{shape: processes, label: "Plugin Viewlets"}
+      PluginViewlets:::viewlet
+      PluginViewlets---Plugins
   end
   PluginsGraph:::domainGraph
   PluginsGraph:::baseGraph
 
-  subgraph ThemesGraph[Theme Themelets]
+  subgraph ThemesGraph[Theme Viewlets]
       CoreTheme[Core Theme]
       CoreTheme:::coreTheme
 
@@ -86,15 +86,15 @@ flowchart RL
   end
   ThemesGraph:::domainGraph
   ThemesGraph:::themesGraph
-  ThemesGraph==>PluginThemelets
+  ThemesGraph==>PluginViewlets
 
-  HierarchicalThemelet{{Hierarchical Themelet}}
-  HierarchicalThemelet:::themelet
-  HierarchicalThemelet==>ThemesGraph
+  HierarchicalViewlet{{Hierarchical Viewlet}}
+  HierarchicalViewlet:::viewlet
+  HierarchicalViewlet==>ThemesGraph
 
 
-  class HierarchicalThemelet colorPrimaryBlock
-  class Plugins,PluginThemelets colorBlock
+  class HierarchicalViewlet colorPrimaryBlock
+  class Plugins,PluginViewlets colorBlock
   class CoreTheme,OriginalThemes,BoardThemes colorBlock
 
   classDef domainGraph rx:10px,fill:currentColor,fill-opacity:0.1,stroke:currentColor,font-weight:bold
@@ -104,7 +104,7 @@ flowchart RL
   classDef baseGraph color:#e1711f
   classDef themesGraph color:#7d659e
 
-  classDef themelet color:hotpink
+  classDef viewlet color:hotpink
   classDef plugin color:#e1711f
   classDef coreTheme color:#007fd0
   classDef originalTheme color:#e1711f
@@ -123,12 +123,12 @@ The resulting resolved hierarchy is used as a virtual source for building and re
 The metadata of _View_ entities — including inheritance declarations — is stored in the respective JSON files (`resources.json`, `assets.json`).
 
 ### Properties
-The JSON files include shared properties (applied to all entities) at the top level, and entity-specific properties grouped under the corresponding key (`assets`, `resources`).
+The JSON files include shared properties (applied to all entities) at the top level, and entity-specific properties grouped under the corresponding type key (`assets`, `resources`).
 ```json5
 {
   // shared properties
 
-  "<NAME>": {
+  "<TYPE>": {
     "<ENTITY-KEY>": {
       // entity properties
     },
@@ -161,7 +161,7 @@ Shared, and entity-specific properties may include the `inherits` key, set to on
 ### Cargo
 Entities use the repository pattern with logic provided by `Cargo` classes, which return properties and instances according to resolved inheritance.
 
-Entities contained in namespaces use the specialized `NamespaceCargo` classes, which add Themelet-related logic.
+Entities contained in namespaces use the specialized `NamespaceCargo` classes, which add Viewlet-related logic.
 
 ##### **Diagram: Cargo Abstraction**
 ```mermaid
@@ -171,15 +171,15 @@ block-beta
     block:LevelTitles
       columns 1
       space
-      
+
       space
       LevelTitleGeneric["Cargo"]
       space
       space
-      LevelTitleNamespace["Themelet\nNamespace Cargo"]
+      LevelTitleNamespace["Viewlet\nNamespace Cargo"]
       space
       space
-      LevelTitleConcrete["Themelet Entities"]
+      LevelTitleConcrete["Viewlet Entities"]
       space
     end
 
@@ -289,13 +289,13 @@ block-beta
 ## Locators
 References to Resources and Assets use _Locators_, saved as strings in configuration files and Resources.
 
-**Themelet Locators** refer to entities within a Themelet structure, resolved according to the inheritance hierarchy, or for a specific Package.
+**Viewlet Locators** refer to entities within a Viewlet structure, resolved according to the inheritance hierarchy when not in the context of a specific Package.
 
-Its components correspond to the directory structure within a Themelet, and include the namespace (prefixed with `@`), Resource Type, Resource group, and Resource name. Depending on the place of use, some components may be implied by context.
+Its components correspond to the directory structure within a Viewlet, and include the namespace (prefixed with `@`), Resource Type, Resource group, and Resource name. Depending on the place of use, some components may be implied by context.
 
 For example, Locators in Templates are resolved in relation to the containing Resource:
 ```twig
-{# Full Themelet Locator #}
+{# Full Viewlet Locator #}
 {% include '@frontend/templates/partials/header/avatar.twig' %}
 
 {# Type "template" implied when in templates context #}
@@ -329,23 +329,31 @@ For example:
 ```
 
 
+## Data Sharing
+A shared key-value store for custom runtime data is available in various execution contexts.
+
+The API functions `get()` and `set()`, accessible in PHP and Twig, allow Plugins to use custom data in Templates.
+
+Compared to global variables in Twig, which cannot be declared after the initialization of `Twig\Environment` or loaded after the initialization of extensions, the uniform functions provide consistent behavior regardless of used plugin hooks.
+
+
 ## Templates
-Themelets may include **Templates** — Resources processed server-side with [Twig](https://twig.symfony.com/).
+Viewlets may include **Templates** — Resources processed server-side with [Twig](https://twig.symfony.com/).
 
-Templates are rendered using the `template()` function, which accepts a Themelet Locator relative to the main namespace, and returns the resulting HTML.
+Templates are rendered using the `template()` function, which accepts a Viewlet Locator relative to the main namespace, and returns the resulting HTML.
 
-The Locator is used to establish the filesystem path to the Template file, and passed to Twig (`ThemeletLoader`).
+The Locator is used to establish the filesystem path to the Template file, and passed to Twig (`ViewletLoader`).
 
-The Twig runtime renders the template using the configured options, Twig extensions, and variables; and cached.
+The Twig runtime renders the template using the configured options, Twig extensions, and variables; and caches the result.
 
 
 ## Assets
-Returned HTML pages rely on **Assets** — additional files accessible to the web browser (e.g. styles, scripts, images). _View_ uses Themelet contents and Asset declarations to prepare and include them automatically.
+Returned HTML pages rely on **Assets** — additional files accessible to the web browser (e.g. styles, scripts, images). _View_ uses Viewlet contents and Asset declarations to prepare and include them automatically.
 
 ### Asset Publishing
-Themelet Resources are used to create local Assets. Assets may be published:
+Viewlet Resources are used to create local Assets. Assets may be published:
 - explicitly — by declaring Assets and source Resource(s) in the Asset Properties file or function calls, or
-- implicitly — by adding Resources of common web file types to the Themelet.
+- implicitly — by adding Resources of common web file types to the Viewlet.
 
 _View_ may **process** them to desired formats (e.g. SCSS to CSS), and **publish** them by placing the resulting files in a web-accessible directory.
 
@@ -355,7 +363,7 @@ _View_ manages:
   - **insertion** of Assets into the DOM with the necessary HTML tags.
 
 
-Asset Management supports both Themelet Assets and non-system Assets (external URLs or hardcoded local paths).
+Asset Management supports both Viewlet Assets and non-system Assets (external URLs or hardcoded local paths).
 
 Additionally, _legacy_ stylesheets (stored in the database and associated with the activated theme), which may be inserted by Plugins, are attached depending on the accompanying conditions.
 
@@ -366,7 +374,7 @@ Asset Management features may be declared using:
 
 - ##### **API functions**
   PHP and Twig Template functions used for dynamic declarations:
-  - `asset()`, used to declare, insert, and render Assets for local HTML inclusion (`local: true`).
+  - `asset()`, used to declare, insert, and render Assets for local HTML inclusion (`return: true`).
   - `asset_url()`, used to access the web-accessible Asset path.
 
 <br>
@@ -377,7 +385,7 @@ Declaration Type | ℹ Metadata | ℹ Content | 🚥 Path | 🚥 HTML | 🚥 Pla
 -|-|-|-|-|-
 Asset Properties | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
 `asset()` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
-`asset(local: true)` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No
+`asset(return: true)` | ⚠️ Dynamic | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No
 Hardcoded `asset_url()` | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ❌ No
 Hardcoded | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No
 
@@ -395,7 +403,7 @@ The application has:
 ##### **Diagram: Asset Publishing and Management**
 ```mermaid
 flowchart BT
-    subgraph SourceThemelet[Source Themelet]
+    subgraph SourceViewlet[Source Viewlet]
 
         Resources@{shape: processes, label: "Resources"}
         Resources:::resource
@@ -416,8 +424,8 @@ flowchart BT
         AssetPublicationDirectives:::assetProperties
         AssetPublicationDirectives-->AssetProperties
     end
-    SourceThemelet:::domainGraph
-    SourceThemelet:::themeletGraph
+    SourceViewlet:::domainGraph
+    SourceViewlet:::viewletGraph
 
     subgraph AssetManagement[Asset Management]
         StaticAssets@{shape: processes, label: "Static Assets"}
@@ -440,9 +448,9 @@ flowchart BT
             ProcessedResources-->ExplicitSources
             ProcessedResources-->ImplicitSources
 
-            PublishedThemeletAssets@{shape: processes, label: "Published Themelet Assets"}
-            PublishedThemeletAssets:::publishedThemeletAssets
-            PublishedThemeletAssets-->ProcessedResources
+            PublishedViewletAssets@{shape: processes, label: "Published Viewlet Assets"}
+            PublishedViewletAssets:::publishedViewletAssets
+            PublishedViewletAssets-->ProcessedResources
         end
         AssetPublishing:::domainGraph
         AssetPublishing:::assetPublishingGraph
@@ -452,7 +460,7 @@ flowchart BT
         PublishedAssets@{shape: processes, label: "Published Assets"}
         PublishedAssets:::abstract
         PublishedAssets:::asset
-        PublishedAssets-->PublishedThemeletAssets
+        PublishedAssets-->PublishedViewletAssets
         PublishedAssets-->StaticAssets
 
         AssetCall[["asset()"]]
@@ -483,7 +491,7 @@ flowchart BT
     DOM-.->PublishedAssets
 
 
-    class AssetProperties,Resources,PublishedThemeletAssets colorPrimaryBlock
+    class AssetProperties,Resources,PublishedViewletAssets colorPrimaryBlock
     class PublishableResources,AssetAttachingDirectives,AssetPublicationDirectives colorBlock
     class ExplicitSources,ImplicitSources,ProcessedResources colorBlock
     class PublishedAssets,AssetCall,AssetUrlCall,AttachedAssets,InsertedAssets,StaticAssets,HttpResponse colorBlock
@@ -497,14 +505,14 @@ flowchart BT
     classDef abstract stroke-dasharray:5 5
     classDef subroutine font-family:monospace
 
-    classDef themeletGraph color:orchid
+    classDef viewletGraph color:orchid
     classDef assetManagementGraph color:seagreen
     classDef assetPublishingGraph color:teal
 
     classDef resource color:mediumpurple
     classDef processedResource color:steelblue
     classDef asset color:seagreen
-    classDef publishedThemeletAssets color:teal
+    classDef publishedViewletAssets color:teal
     classDef assetProperties color:olivedrab
 ```
 
@@ -512,21 +520,21 @@ flowchart BT
 ## Runtime
 The `Runtime` object accepts and manages context data — including the reference Theme (the global default, group/forum setting, or user preference) — and provides View-related features.
 
-### Themelet Decoration
-`Runtime` uses the Themelet from the reference Theme extended with the following functionality:
+### Viewlet Decoration
+`Runtime` uses the Viewlet from the reference Theme extended with the following functionality:
 
 - #### Hierarchy
-  `HierarchicalThemelet` provides **vertical resolution and merging** of entities and their properties.
-  
-  It accepts Plugin Themelets as as the inheritance base, and uses the Theme's defined inheritance.
+  `HierarchicalViewlet` provides **vertical resolution and merging** of entities and their properties.
 
-  The Hierarchical Themelet functions as a single set of metadata and Resources for reading, and a dispatcher for write operations.
+  It accepts Plugin Viewlets as the inheritance base, and uses the Theme's defined inheritance.
+
+  The Hierarchical Viewlet functions as a single set of metadata and Resources for reading, and a dispatcher for write operations.
 
 - #### Publishing
-  `PublishableThemelet` provides **Asset publishing** information and features.
+  `PublishableViewlet` provides **Asset publishing** information and features.
 
 - #### Composition
-  `CompositeThemelet` performs **horizontal resolution and merging** from active namespaces, reconciling references to the same Assets to render the page.
+  `CompositeViewlet` performs **horizontal resolution and merging** from active namespaces, reconciling references to the same Assets to render the page.
 
 
 ## Performance
@@ -537,7 +545,7 @@ The table below highlights the practical performance impact (a product of indivi
 ##### **Table: Performance Impact of View Operations**
 Stage | Data | Sources | Building Cost | Validation Target | Validation Cost
 -|-|-|-|-|-
-**Ancestry** | Source Themelets | Extension manifests | 🟢 Low | Extension manifest stamp | 🟢 Low
+**Ancestry** | Source Viewlets | Extension manifests | 🟢 Low | Extension manifest stamp | 🟢 Low
 **Resolution** | Entity Properties | Property files | 🟢 Low | Ancestry; Property file stamps | 🟢 Low
 **Resolution** | Entities | Property files, Entity files | 🟨 Medium | Ancestry; Property file stamps | 🟨 Medium
 **Generation** | Assets | Resources | 🔺 High | Entity Properties; Resources | 🟨 Medium
@@ -578,10 +586,10 @@ extension-directory-path  = plugin-directory-path
 plugin-directory-path = plugins-directory-path "/" plugin-package-name
 theme-directory-path  = themes-directory-path "/" theme-package-name
 
-extension-manifest-file-path   = extension-directory-path "/manifest.json"
+extension-manifest-file-path   = extension-directory-path "/extension.json"
 
-; Themelets
-themelet-directory-path = plugin-directory-path "/view"
+; Viewlets
+viewlet-directory-path = plugin-directory-path "/view"
                         / theme-directory-path
 
 ; Resources
@@ -589,7 +597,7 @@ namespace = 1*( a-z / "_" )           ; Generic Namespace
           / "ext." extension-codename ; Extension Namespace
 
 namespace-path = namespace "/"
-               / "" ; direct (single-namespace Plugin Themelet)
+               / "" ; direct (single-namespace Plugin Viewlet)
 
 resource-type = "images"
               / "scripts"
@@ -600,10 +608,10 @@ resource-group = 1*( a-z / "_" / "/" )
 resource-filename = 1*VCHAR "." 1*VCHAR
 
 resource-path = namespace-path resource-type "/" [resource-group "/"] resource-filename
-absolute-resource-path = <web-root-directory> "/" themelet-directory-path "/" resource-path
+absolute-resource-path = <web-root-directory> "/" viewlet-directory-path "/" resource-path
 
-resource-properties-file-path = themelet-directory-path "/" namespace "/resources.json"
-asset-properties-file-path = themelet-directory-path "/" namespace "/assets.json"
+resource-properties-file-path = viewlet-directory-path "/" namespace "/resources.json"
+asset-properties-file-path = viewlet-directory-path "/" namespace "/assets.json"
 
 ; Locators
 explicit-directory-path = ( "/" / "./" / "../" ) *VCHAR
@@ -611,7 +619,7 @@ remote-path = "//" *VCHAR
             / *VCHAR "://" *VCHAR
 static-locator = explicit-directory-path / remote-path
 
-themelet-locator = ["@" namespace "/"] [resource-type "/"] [resource-group "/"] resource-filename
+viewlet-locator = ["@" namespace "/"] [resource-type "/"] [resource-group "/"] resource-filename
 ```
 
 ---

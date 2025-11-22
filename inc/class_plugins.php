@@ -157,6 +157,8 @@ class pluginSystem
 
 		$this->current_hook_stack[] = $this->current_hook;
 
+		$existing_globals = array_keys($GLOBALS);
+
 		ksort($this->hooks[$hook]);
 
 		foreach($this->hooks[$hook] as $priority => $hooks)
@@ -188,6 +190,18 @@ class pluginSystem
 				}
 			}
 		}
+
+		$new_globals = array_diff_key(
+			$GLOBALS,
+			array_flip($existing_globals),
+		);
+
+		$legacy_template_variables = array_filter(
+			$new_globals,
+			$this->has_scalar_values(...),
+		);
+
+		\MyBB\View\set($legacy_template_variables);
 
 		array_pop($this->current_hook_stack);
 
@@ -297,6 +311,38 @@ class pluginSystem
 
 		// Nothing matches
 		return false;
+	}
+
+	/**
+	 * Returns whether the provided value is scalar, or an array of scalar values.
+	 */
+	private function has_scalar_values(mixed $value, int $allowed_nesting = 10): bool
+	{
+		if(is_scalar($value))
+		{
+			return true;
+		}
+		elseif(is_array($value))
+		{
+			if($allowed_nesting === 0)
+			{
+				return false;
+			}
+
+			foreach($value as $item)
+			{
+				if(!$this->has_scalar_values($item, $allowed_nesting - 1))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 

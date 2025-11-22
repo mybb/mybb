@@ -13,6 +13,21 @@ location ~ /inc/ {
     internal;
 }
 
+location = /archive/index.php {
+    if ($args ~* "^thread-(\d+)\.html$") {
+        #return 301 $scheme://$http_host/showthread.php?tid=$1; # if not using friendly URLs
+        return 301 $scheme://$http_host/thread-$1.html;
+    }
+    if ($args ~* "^forum-(\d+)\.html$") {
+        #return 301 $scheme://$http_host/forumdisplay.php?fid=$1; # if not using friendly URLs
+        return 301 $scheme://$http_host/forum-$1.html;
+    }
+    if ($args ~* "^announcement-(\d+)\.html$") {
+        #return 301 $scheme://$http_host/announcements.php?aid=$1; # if not using friendly URLs
+        return 301 $scheme://$http_host/announcement-$1.html;
+    }
+}
+
 rewrite ^/forum-([0-9]+).html$ /forumdisplay.php?fid=$1 last;
 rewrite ^/forum-([0-9]+)-page-([0-9]+).html$ /forumdisplay.php?fid=$1&page=$2 last;
 rewrite ^/thread-([0-9]+).html$ /showthread.php?tid=$1 last;

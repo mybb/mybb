@@ -82,7 +82,7 @@ $l['error_utf8mb4_version'] = "Your MySQL version doesn't support 4-Byte UTF-8 e
 
 
 $l['warning_multiple_encodings'] = "It is recommend not to use different encodings in your database. This may cause unexpected behavior or MySQL errors.";
-$l['warning_utf8mb4_config'] = "For full 4-Byte UTF-8 support you need to change <i>\$config['database']['encoding'] = 'utf8';</i> to <i>\$config['database']['encoding'] = 'utf8mb4';</i> in your inc/config.php.";
+$l['warning_utf8mb4_config'] = "For full 4-Byte UTF-8 support you need to change <em>\$config['database']['encoding'] = 'utf8';</em> to <em>\$config['database']['encoding'] = 'utf8mb4';</em> in your inc/config.php.";
 
 $l['success_templates_checked'] = "Templates checked successfully - no security issues were found!";
 $l['success_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";

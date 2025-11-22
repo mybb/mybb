@@ -6,8 +6,8 @@ namespace MyBB\Utilities\ManagedValue;
 
 use InvalidArgumentException;
 use LogicException;
-use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\Arrays;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 
 /**
  * A runtime registry for defined Managed Values.

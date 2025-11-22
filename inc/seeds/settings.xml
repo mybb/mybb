@@ -446,7 +446,7 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
-			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers). If it is a relative path then it is taken to be relative to the MyBB root directory. Default value: "./uploads" (relative path).]]></description>
+			<description><![CDATA[The path used for all board uploads. It <strong>must be chmod 777</strong> (on *nix servers). If it is a relative path then it is taken to be relative to the MyBB root directory. Default value: "./uploads" (relative path).]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
@@ -1301,7 +1301,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
-			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
+			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <strong>must be chmod 777</strong> (writable) for uploads to work.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
@@ -1510,10 +1510,18 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[12]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowposticons">
+			<title>Allow Post Icons</title>
+			<description><![CDATA[Do you want to allow users to use Post Icons?]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1521,7 +1529,7 @@ min=0]]></optionscode>
 		<setting name="alloweditreason">
 			<title>Allow Edit Reason</title>
 			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1529,7 +1537,7 @@ min=0]]></optionscode>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete for Users</title>
 			<description><![CDATA[If enabled, posts and threads deleted by users will be hidden and can be restored by moderators. Otherwise, these posts and threads will be deleted permanently.]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1537,7 +1545,7 @@ min=0]]></optionscode>
 		<setting name="announcementshtml">
 			<title>Allow HTML in Announcements</title>
 			<description><![CDATA[Allow moderators to enable HTML parsing in announcements?]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1545,11 +1553,19 @@ min=0]]></optionscode>
 		<setting name="showownunapproved">
 			<title>Access Own Unapproved Threads / Posts</title>
 			<description><![CDATA[Allow general users to access their own unapproved threads and posts.]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="forcesourceeditor">
+			<title>Force editor to open in source mode by default</title>
+			<description><![CDATA[Make the editor start in source (HTML/code) mode by default instead of the visual mode.]]></description>
+			<disporder>26</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>		
 	</settinggroup>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
@@ -2393,6 +2409,16 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="mail_format">
+			<title>Email format</title>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[select
+text=Plain text only
+html=HTML only
+both=Plain text + HTML]]></optionscode>
+			<settingvalue><![CDATA[text]]></settingvalue>		
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
@@ -2496,19 +2522,10 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="purgespammerapikey">
-			<title>Stop Forum Spam API Key</title>
-			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="purgespammerbanip">
 			<title>Add banned IP filter</title>
 			<description><![CDATA[Do you want to ban the spammer's IP using this tool? If other users are issued the same banned IP, they will not be able to use the forums.]]></description>
-			<disporder>7</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2605,6 +2622,15 @@ delete=Delete]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
+		</setting>
+		<setting name="purgespammerapikey">
+			<title>Stop Forum Spam API Key</title>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">

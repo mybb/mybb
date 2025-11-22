@@ -1,6 +1,6 @@
 <?php
 
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 
 /**
  * MyBB 1.8
@@ -1057,7 +1057,7 @@ EOF;
 			$code = "code,php,";
 		}
 
-		if($mybb->user['sourceeditor'] == 1)
+		if($mybb->user['sourceeditor'] == 1 || ($mybb->user['sourceeditor'] == 0 && $mybb->settings['forcesourceeditor'] == 1))
 		{
 			$sourcemode = "MyBBEditor.sourceMode(true);";
 		}

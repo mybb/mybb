@@ -6,16 +6,18 @@ namespace MyBB\View\Asset;
 
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
 use MyBB\View\HierarchicalResource;
-use MyBB\View\Locator\ThemeletLocator;
+use MyBB\View\Locator\Exception as LocatorException;
+use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Viewlet\ViewletInterface;
+use TypeError;
 
 /**
  * Prepares an Asset for web usage.
@@ -34,20 +36,19 @@ class Publication
     ];
 
     /**
-     * Resources declared as contributing to the converted Asset.
+     * Signatures of Resources declared as contributing to the converted Asset, by Locator string.
      *
      * @var array<string, array{
-     *   themelet: string,
-     *   subPath: string,
+     *   viewlet: string,
      * }>
      */
-    private array $sources = [];
+    private array $sourceSignatures = [];
 
     /**
-     * @param Processor[] $processors
+     * @param list<class-string<Processor>> $processors
      */
     public function __construct(
-        private readonly ThemeletAsset $asset,
+        private readonly ViewletAsset $asset,
         public readonly Filesystem $filesystem,
         public readonly Optimization $optimization,
         private array $processors = [],
@@ -62,29 +63,37 @@ class Publication
     }
 
     /**
-     * Returns a list of Resources effectively used as a source for a published Asset.
+     * Returns a list of Resources effectively used as a source for a published Asset, linked to the Asset's Viewlet.
+     *
+     * @return list<Resource>
      */
-    public static function getPublishedAssetResources(ThemeletAsset $asset): ?array
+    public static function getPublishedAssetResources(ViewletAsset $asset): array
     {
-        return $asset->getThemelet()->getAssetPublicationData($asset)['sources'] ?? null;
+        return array_map(
+            fn (string $locatorString) => self::getAssetSourceFromLocatorString($asset, $locatorString),
+            array_keys(self::getPublishedAssetSourceSignatures($asset) ?? []),
+        );
     }
 
     /**
-     * Returns a list of Assets published using the provided Resource.
+     * Returns Assets published using the provided Resource, indexed by Locator string.
+     *
+     * @return array<string, ViewletAsset>
      */
-    public static function getAssetsPublishedUsingResource(Resource $resource, ThemeletInterface $themelet): array
+    public static function getAssetsPublishedUsingResource(Resource $resource, ViewletInterface $viewlet): array
     {
         $assets = [];
 
-        foreach ($themelet->getAssetPublicationData() as $namespaceAssetData) {
-            foreach ($namespaceAssetData as $assetLocatorString => $assetData) {
-                $assetSourceSignatures = $assetData['sources'] ?? [];
+        $locatorString = $resource->getLocator()->getString();
 
-                if (in_array(self::getSourceSignature($resource), $assetSourceSignatures)) {
-                    $assetLocator = ThemeletLocator::fromString($assetLocatorString);
+        foreach ($viewlet->getAssetPublicationData() as $assetLocatorString => $assetData) {
+            $assetSourceSignatures = $assetData['sources'] ?? [];
 
-                    $assets[$assetLocatorString] = new ThemeletAsset($assetLocator, $themelet);
-                }
+            if (array_key_exists($locatorString, $assetSourceSignatures)) {
+                $assets[$assetLocatorString] = new ViewletAsset(
+                    ViewletLocator::fromString($assetLocatorString),
+                    $viewlet,
+                );
             }
         }
 
@@ -92,27 +101,9 @@ class Publication
     }
 
     /**
-     * Returns metadata identifying the given source's origin.
-     */
-    public static function getSourceSignature(Resource $resource): array
-    {
-        return [
-            'themelet' =>
-                (
-                    $resource instanceof HierarchicalResource
-                        ? $resource->getResolved()
-                        : $resource
-                )
-                ->getThemelet()
-                ->getIdentifier(),
-            'subPath' => $resource->getLocator()->getSubPath(),
-        ];
-    }
-
-    /**
      * Whether the given Asset can be published as-is.
      */
-    public static function isPlain(ThemeletAsset $asset): bool
+    public static function isPlain(ViewletAsset $asset): bool
     {
         return self::getBaseProcessor($asset) === null;
     }
@@ -126,11 +117,48 @@ class Publication
     }
 
     /**
+     * Returns metadata identifying the given source's origin.
+     */
+    private static function getSourceSignature(Resource $resource): array
+    {
+        return [
+            'viewlet' =>
+                (
+                    $resource instanceof HierarchicalResource
+                        ? $resource->getResolved()
+                        : $resource
+                )
+                    ->getViewlet()
+                    ->getIdentifier(),
+        ];
+    }
+
+    /**
+     * Returns a Resource corresponding to the given Asset and source Locator string, linked to the Asset's Viewlet.
+     */
+    private static function getAssetSourceFromLocatorString(ViewletAsset $asset, string $locatorString): Resource
+    {
+        return $asset->getViewlet()->getResource(
+            ViewletLocator::fromString($locatorString)
+        );
+    }
+
+    /**
+     * Returns an array of source signatures for a published Asset, indexed by Locator string.
+     *
+     * @return ?array<string, array>
+     */
+    private static function getPublishedAssetSourceSignatures(ViewletAsset $asset): ?array
+    {
+        return $asset->getViewlet()->getAssetPublicationData($asset)['sources'] ?? null;
+    }
+
+    /**
      * Returns the Base Processor necessary to prepare the Asset for usage.
      *
-     * @return ?class-string<static>
+     * @return ?class-string<Processor>
      */
-    private static function getBaseProcessor(ThemeletAsset $asset): ?string
+    private static function getBaseProcessor(ViewletAsset $asset): ?string
     {
         return match ($asset->getResource()->getLanguage()) {
             ResourceLanguage::SASS,
@@ -149,7 +177,7 @@ class Publication
     {
         $path = $this->asset->getAbsolutePath();
 
-        $publishedFileTime = filemtime($path);
+        $publishedFileTime = $this->filesystem->lastModified($path);
 
         if ($publishedFileTime === false) {
             return true;
@@ -159,16 +187,18 @@ class Publication
             $this->optimization->getDirective('publication.resolutionValidation') ||
             $this->optimization->getDirective('publication.sourceValidation')
         ) {
-            $sourceResources = self::getPublishedAssetResources($this->asset);
+            $sourceSignatures = self::getPublishedAssetSourceSignatures($this->asset);
 
-            if ($sourceResources === null) {
+            if ($sourceSignatures === null) {
                 return true;
             }
 
-            foreach ($sourceResources as $sourceResource) {
-                $resource = $this->asset->getThemelet()->getResource(
-                    $this->asset->getLocator()->getSibling($sourceResource['subPath'])
-                );
+            foreach ($sourceSignatures as $locatorString => $sourceSignature) {
+                try {
+                    $resource = self::getAssetSourceFromLocatorString($this->asset, $locatorString);
+                } catch (TypeError | LocatorException) {
+                    return true;
+                }
 
                 if (
                     $this->optimization->getDirective('publication.resolutionValidation') &&
@@ -176,11 +206,13 @@ class Publication
                         !$resource->exists() ||
                         (
                             $resource instanceof HierarchicalResource &&
-                            $resource->getResolved()->getThemelet()->getIdentifier() !== $sourceResource['themelet']
+                            $sourceSignature !== self::getSourceSignature($resource)
                         )
                     )
                 ) {
-                    $resource->resolve();
+                    if ($resource instanceof HierarchicalResource) {
+                        $resource->resolve();
+                    }
 
                     return true;
                 } elseif (
@@ -196,7 +228,7 @@ class Publication
     }
 
     /**
-     * Processes the Asset and writes to resulting content to the Asset file.
+     * Processes the Asset and writes the resulting content to the Asset file.
      *
      * @param bool $force Whether to proceed even if the Asset is determined up-to-date.
      */
@@ -208,11 +240,11 @@ class Publication
 
         $path = $this->asset->getAbsolutePath();
 
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), recursive: true);
-        }
+        $this->filesystem->ensureDirectoryExists(
+            dirname($path)
+        );
 
-        $fh = fopen($path, 'c');
+        $fh = fopen($path, 'cb');
 
         if (!$fh) {
             return false;
@@ -220,40 +252,44 @@ class Publication
 
         $result = false;
 
-        if (
-            flock($fh, LOCK_EX | LOCK_NB, $wasLocked) ||
-            flock($fh, LOCK_EX)
-        ) {
+        try {
             if (
-                !$wasLocked ||
-                ($force || $this->needsUpdate())
+                flock($fh, LOCK_EX | LOCK_NB, $wasLocked) ||
+                flock($fh, LOCK_EX)
             ) {
-                $stopwatchPeriod = $this->stopwatch?->start(
-                    $this->asset->getLocator()->getString(),
-                    'core.view.asset.publish',
-                );
-
                 try {
-                    $content = $this->getProcessedContent(
-                        $this->getContent()
-                    );
+                    if (
+                        !$wasLocked ||
+                        ($force || $this->needsUpdate())
+                    ) {
+                        $stopwatchPeriod = $this->stopwatch?->start(
+                            $this->asset->getLocator()->getString(),
+                            'core.view.asset.publish',
+                        );
 
-                    $result = $this->asset->write($content, $fh);
+                        try {
+                            $content = $this->getProcessedContent(
+                                $this->getContent()
+                            );
 
-                    if ($result === true) {
-                        $this->asset->getThemelet()->setAssetPublicationData($this->asset, [
-                            'sources' => $this->sources,
-                        ]);
+                            $result = $this->asset->write($content, $fh);
+
+                            if ($result === true) {
+                                $this->asset->getViewlet()->setAssetPublicationData($this->asset, [
+                                    'sources' => $this->sourceSignatures,
+                                ]);
+                            }
+                        } finally {
+                            $stopwatchPeriod?->stop();
+                        }
                     }
                 } finally {
-                    $stopwatchPeriod?->stop();
+                    flock($fh, LOCK_UN);
                 }
             }
-
-            flock($fh, LOCK_UN);
+        } finally {
+            fclose($fh);
         }
-
-        fclose($fh);
 
         return $result;
     }
@@ -267,7 +303,15 @@ class Publication
             throw new InvalidArgumentException('Cannot use Resource `' . $resource->getLocator()->getString() . '` as a source for Asset');
         }
 
-        $this->sources[] = self::getSourceSignature($resource);
+        if ($resource->getNamespace() !== $this->asset->getNamespace()) {
+            throw new InvalidArgumentException('Cannot use Resource in namespace `' . $resource->getNamespace() . '` as a source for Asset in namespace `' . $this->asset->getNamespace() . '`');
+        }
+
+        if (!$resource->exists()) {
+            throw new InvalidArgumentException('Cannot use non-existent Resource `' . $resource->getLocator()->getString() . '` as a source for Asset');
+        }
+
+        $this->sourceSignatures[$resource->getLocator()->getString()] = self::getSourceSignature($resource);
     }
 
     /**

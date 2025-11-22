@@ -17,6 +17,7 @@ $l['ipaddress'] = "IP Address";
 
 $l['security_log_failed_login'] = "Failed Login";
 $l['security_log_failed_login_admincp'] = "Failed Login (Admin CP)";
+$l['security_log_login_admincp'] = "Successful Login (Admin CP)";
 $l['security_log_incorrect_pin'] = "Incorrect Admin CP Pin";
 $l['security_log_changed_email'] = "Changed Email Address";
 $l['security_log_changed_password'] = "Changed Password";

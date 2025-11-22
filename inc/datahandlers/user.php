@@ -669,7 +669,6 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
 		$this->verify_yesno_option($options, 'showcodebuttons', 1);
-		$this->verify_yesno_option($options, 'sourceeditor', 0);
 		$this->verify_yesno_option($options, 'buddyrequestspm', 1);
 		$this->verify_yesno_option($options, 'buddyrequestsauto', 0);
 
@@ -903,9 +902,10 @@ class UserDataHandler extends DataHandler
 
 		if(!empty($user['style']))
 		{
-			$theme = get_theme($user['style']);
+			$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+			$theme = $repository->find($user['style']);
 
-			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
+			if(!$theme || !$theme->allowedForUser($user))
 			{
 				$this->set_error('invalid_style');
 				return false;
@@ -1890,7 +1890,8 @@ class UserDataHandler extends DataHandler
 
 		if($this->method == "insert")
 		{
-			$query = $db->simple_select("banned", "uid", "uid='{$ban['uid']}'");
+			$uid = (int)$ban['uid'];
+			$query = $db->simple_select("banned", "uid", "uid='{$uid}'");
 			if($db->fetch_field($query, "uid"))
 			{
 				$this->set_error('already_banned');

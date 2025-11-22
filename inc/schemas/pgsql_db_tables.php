@@ -419,7 +419,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   fromaddress varchar(150) NOT NULL default '',
   dateline int NOT NULL default '0',
   error text NOT NULL default '',
-  smtperror varchar(200) NOT NULL default '',
+  smtperror text NOT NULL,
   smtpcode smallint NOT NULL default '0',
   PRIMARY KEY(eid)
 );";
@@ -573,6 +573,7 @@ $tables[] = "CREATE TABLE mybb_posts (
 );";
 
 $tables[] = "CREATE INDEX mybb_posts_tid_uid ON mybb_posts (tid, uid);";
+$tables[] = "CREATE INDEX mybb_posts_uid ON mybb_posts (uid);";
 $tables[] = "CREATE INDEX mybb_posts_visible ON mybb_posts (visible);";
 $tables[] = "CREATE INDEX mybb_posts_dateline ON mybb_posts (dateline);";
 $tables[] = "CREATE INDEX mybb_posts_ipaddress ON mybb_posts (ipaddress);";
@@ -733,6 +734,8 @@ $tables[] = "CREATE TABLE mybb_securitylog (
   type varchar(50) NOT NULL default ''
 );";
 
+$tables[] = "CREATE INDEX mybb_securitylog_uid ON mybb_securitylog (uid);";
+
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int NOT NULL default '0',
@@ -885,8 +888,8 @@ $tables[] = "CREATE TABLE mybb_templatesets (
 
 $tables[] = "CREATE TABLE mybb_themes (
   tid serial,
+  package varchar(100) NOT NULL,
   name varchar(100) NOT NULL default '',
-  pid smallint NOT NULL default '0',
   def smallint NOT NULL default '0',
   properties text NOT NULL default '',
   stylesheets text NOT NULL default '',
@@ -987,6 +990,7 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   PRIMARY KEY (sid)
 );";
 
+$tables[] = "CREATE INDEX mybb_threadsubscriptions_uid ON mybb_threadsubscriptions (uid);";
 $tables[] = "CREATE INDEX mybb_threadsubscriptions_tid_notification ON mybb_threadsubscriptions (tid, notification);";
 
 $tables[] = "CREATE TABLE mybb_userfields (
@@ -996,7 +1000,6 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid3 text NOT NULL default '',
   fid4 text NOT NULL default '',
   fid5 text NOT NULL default '',
-  fid6 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
 $tables[] = "CREATE SEQUENCE mybb_userfields_ufid_seq;";

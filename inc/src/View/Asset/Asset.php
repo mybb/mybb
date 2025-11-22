@@ -4,52 +4,37 @@ declare(strict_types=1);
 
 namespace MyBB\View\Asset;
 
-use Exception;
 use MyBB;
+use MyBB\Cargo\EntityTrait;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\ResourceType;
-use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
 use MyBB\View\Locator\Locator;
 use MyBB\View\Locator\StaticLocator;
-use MyBB\View\Locator\ThemeletLocator;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Locator\ViewletLocator;
+use MyBB\View\ResourceType;
+use MyBB\View\Viewlet\ViewletInterface;
 
 use function MyBB\app;
-use function MyBB\View\template;
 
 abstract class Asset
 {
     use EntityTrait;
 
-    /**
-     * @var ResourceType[]
-     */
-    public const INCLUDABLE_TYPES = [
-        ResourceType::STYLE,
-        ResourceType::SCRIPT,
-    ];
-
-    public bool $insertedToDom = false;
-
-    /**
-     * Properties to use during runtime.
-     */
-    private array $compositeProperties = [];
-
     public static function fromLocator(
         Locator $locator,
-        ?ThemeletInterface $themelet = null,
+        ?ViewletInterface $viewlet = null,
         ?string $declarationNamespace = null,
         ?ResourceType $type = null,
     ): static
     {
         return match (get_class($locator)) {
-            ThemeletLocator::class => new ThemeletAsset($locator, $themelet),
-            StaticLocator::class => new StaticAsset($locator, $themelet, $declarationNamespace, $type),
+            ViewletLocator::class => new ViewletAsset($locator, $viewlet),
+            StaticLocator::class => new StaticAsset($locator, $viewlet, $declarationNamespace, $type),
         };
     }
 
     /**
+     * Returns Properties merged from multiple sources.
+     *
      * @param array[] $properties
      */
     public static function getMergedProperties(array $properties): array
@@ -62,29 +47,21 @@ abstract class Asset
         return $this->locator;
     }
 
-    public function getThemelet(): ThemeletInterface
+    public function getViewlet(): ViewletInterface
     {
-        return $this->themelet;
+        return $this->viewlet;
     }
 
     public function getRepository(): RepositoryInterface
     {
-        return $this->getThemelet()->getAssetRepository(
+        return $this->getViewlet()->getAssetRepository(
             $this->getEntityNamespace()
         );
     }
 
-    public function setCompositeProperties(array $properties): void
+    public function getRepositoryKey(): string
     {
-        $this->compositeProperties = static::getMergedProperties([
-            $this->compositeProperties,
-            $properties,
-        ]);
-    }
-
-    public function getAttributes(): array
-    {
-        return $this->compositeProperties['attributes'] ?? [];
+        return $this->getLocator()->getNamespaceRelativeIdentifier();
     }
 
     public function getUrl(bool $useCdn = true): string
@@ -94,26 +71,6 @@ abstract class Asset
         $url = app(MyBB::class)->get_asset_url($this->getPublicPath(), $useCdn);
 
         return $url;
-    }
-
-    public function getHtml(): string
-    {
-        $type = $this->getType();
-
-        if ($type === null) {
-            throw new Exception('Unknown Asset type (`' . $this->getLocator()->getString() . '`)');
-        }
-
-        if (!in_array($type, self::INCLUDABLE_TYPES)) {
-            throw new Exception('Cannot include Asset of type `' . $type->value . '` (`' . $this->getLocator()->getString() . '`)');
-        }
-
-        return template(
-            'partials/' . $type->value . '.twig',
-            [
-                'asset' => $this,
-            ],
-        );
     }
 
     abstract public function getPublicPath(): string;

@@ -6,24 +6,25 @@ namespace MyBB\View;
 
 use Exception;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
+use MyBB\Cargo\EntityTrait;
 use MyBB\Cargo\RepositoryInterface;
-use MyBB\View\Themelet\NamespaceCargo\EntityTrait;
-use MyBB\View\Locator\ThemeletLocator;
-use MyBB\View\Themelet\ThemeletInterface;
+use MyBB\View\Locator\ViewletLocator;
+use MyBB\View\Viewlet\ViewletInterface;
 use RuntimeException;
 use Symfony\Component\Filesystem\Path;
+use UnexpectedValueException;
 
 readonly class Resource implements CargoEntityInterface
 {
     use EntityTrait;
 
-    protected ThemeletInterface $themelet;
+    protected ViewletInterface $viewlet;
 
-    protected ThemeletLocator $locator;
+    protected ViewletLocator $locator;
 
-    public function __construct(ThemeletInterface $themelet, ThemeletLocator $locator)
+    public function __construct(ViewletInterface $viewlet, ViewletLocator $locator)
     {
-        $this->themelet = $themelet;
+        $this->viewlet = $viewlet;
         $this->locator = $locator;
     }
 
@@ -50,17 +51,11 @@ readonly class Resource implements CargoEntityInterface
 
     public function setContent(string $content, $pointer = null): bool
     {
-        $path = realpath($this->getAbsolutePath());
+        $path = realpath(
+            $this->getAbsolutePath()
+        );
 
-        if (
-            !Path::isBasePath(
-                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
-                $path
-            ) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), recursive: true);
@@ -69,18 +64,25 @@ readonly class Resource implements CargoEntityInterface
         if ($pointer !== null) {
             $fh = $pointer;
         } else {
-            $fh = fopen($path, 'c');
+            $fh = fopen($path, 'cb');
 
             if ($fh === false) {
                 throw new RuntimeException('Failed to open `' . $path . '`');
             }
 
             if (!flock($fh, LOCK_EX)) {
+                fclose($fh);
+
                 throw new RuntimeException('Failed to acquire exclusive lock for `' . $path . '`');
             }
         }
 
-        $result = fwrite($fh, $content) !== false;
+        $result =
+            ftruncate($fh, 0) &&
+            rewind($fh) &&
+            fwrite($fh, $content) !== false;
+
+        fflush($fh);
 
         if ($pointer === null) {
             flock($fh, LOCK_UN);
@@ -92,17 +94,11 @@ readonly class Resource implements CargoEntityInterface
 
     public function delete(): void
     {
-        $path = realpath($this->getAbsolutePath());
+        $path = realpath(
+            $this->getAbsolutePath()
+        );
 
-        if (
-            !Path::isBasePath(
-                $this->getThemelet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
-                $path,
-            ) ||
-            Path::hasExtension($path, 'php')
-        ) {
-            throw new Exception('Illegal write path `' . $path . '`');
-        }
+        $this->validateWritePath($path);
 
         if (!unlink($path)) {
             throw new Exception('Could not delete file `' . $path . '`');
@@ -114,7 +110,7 @@ readonly class Resource implements CargoEntityInterface
     public function getAbsolutePath(): string
     {
         return
-            $this->getThemelet()->getResourceTypeAbsolutePath($this->getNamespace(), $this->getType()) .
+            $this->getViewlet()->getResourceTypeAbsolutePath($this->getNamespace(), $this->getType()) .
             '/' .
             $this->getSubPath()
         ;
@@ -131,12 +127,12 @@ readonly class Resource implements CargoEntityInterface
         ;
     }
 
-    public function getThemelet(): ThemeletInterface
+    public function getViewlet(): ViewletInterface
     {
-        return $this->themelet;
+        return $this->viewlet;
     }
 
-    public function getLocator(): ThemeletLocator
+    public function getLocator(): ViewletLocator
     {
         return $this->locator;
     }
@@ -175,8 +171,26 @@ readonly class Resource implements CargoEntityInterface
 
     public function getRepository(): RepositoryInterface
     {
-        return $this->getThemelet()->getResourceRepository(
+        return $this->getViewlet()->getResourceRepository(
             $this->getNamespace()
         );
+    }
+
+    public function getRepositoryKey(): string
+    {
+        return $this->getLocator()->getNamespaceRelativeIdentifier();
+    }
+
+    protected function validateWritePath(string $path): void
+    {
+        if (
+            !Path::isBasePath(
+                $this->getViewlet()->getExtension()::EXTENSION_TYPE_ABSOLUTE_BASE_PATH,
+                $path,
+            ) ||
+            Path::hasExtension($path, 'php', true)
+        ) {
+            throw new UnexpectedValueException('Illegal write path `' . $path . '`');
+        }
     }
 }

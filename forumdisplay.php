@@ -208,7 +208,7 @@ foreach($parentlistexploded as $mfid)
 					$moderator['profilelink'] = get_profile_link($moderator['id']);
 					$moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
 
-					$moderator['users'][$moderator['id']] = $moderator;
+					$moderators['users'][$moderator['id']] = $moderator;
 				}
 			}
 		}
@@ -718,8 +718,11 @@ if($has_announcements == true)
 	}
 }
 
-$tids = $threadCache = [];
-$icon_cache = $cache->read("posticons");
+$tids = $threadCache = $icon_cache = array();
+if($mybb->settings['allowposticons'] == 1 && $foruminfo['allowpicons'] != 0)
+{
+	$icon_cache = (array)$cache->read("posticons");
+}
 
 if($fpermissions['canviewthreads'] != 0)
 {
@@ -744,6 +747,11 @@ if($fpermissions['canviewthreads'] != 0)
 
 		//todo thread icons need some work after introducing theme system. Currently missing $theme settings
 		//$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+
+		if(!empty($icon_cache[$thread['icon']]['path']))
+		{
+			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 		if($thread['moved'] != 0)

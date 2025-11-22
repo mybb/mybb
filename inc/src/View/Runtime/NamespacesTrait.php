@@ -15,7 +15,7 @@ trait NamespacesTrait
     {
         $this->mainNamespace = $name;
 
-        $this->themelet->applyNamespace($name);
+        $this->viewlet->applyNamespace($name);
     }
 
     public function getMainNamespace(): ?string
@@ -25,6 +25,6 @@ trait NamespacesTrait
 
     public function applyNamespace(string $name): void
     {
-        $this->themelet->applyNamespace($name);
+        $this->viewlet->applyNamespace($name);
     }
 }

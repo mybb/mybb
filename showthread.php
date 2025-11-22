@@ -1045,12 +1045,19 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$thread['similarthreads'] = 0;
-		$icon_cache = $cache->read("posticons");
+
+		$icon_cache = array();
+
+		if($mybb->settings['allowposticons'] == 1 && $forum['allowpicons'] != 0)
+		{
+			$icon_cache = (array)$cache->read("posticons");
+		}
+
 		while($similar_thread = $db->fetch_array($query))
 		{
 			++$thread['similarthreads'];
 			$similar_thread['hasicon'] = false;
-			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
+			if($similar_thread['icon'] > 0 && !empty($icon_cache[$similar_thread['icon']]))
 			{
 				$similar_thread['hasicon'] = true;
 				$icon = $icon_cache[$similar_thread['icon']];

@@ -2,5 +2,7 @@
     "containerEnv": {
         "containerWorkspaceFolder": "${containerWorkspaceFolder}"
     },
+    "forwardPorts": [8080],
+    "postCreateCommand": "echo 'export PATH=/usr/local/php/current/bin:$PATH' >> ~/.bashrc",
     "postStartCommand": "bash .devcontainer/mybb-install.sh && php -S 0.0.0.0:8080"
 }

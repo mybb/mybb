@@ -184,6 +184,8 @@ class UpgradeModel extends Model
                 $i = 0;
 
                 foreach ($upgradeScript['migrationFunctions'] ?? [] as $migrationFunctionName) {
+                    $i++;
+
                     $migrationOperations[$migrationFunctionName] = [
                         'parameters' => $upgradeScript['directives']['parameters'] ?? [],
                         'conditions' => [
@@ -200,7 +202,7 @@ class UpgradeModel extends Model
                             $i,
                         ): array {
                             if (function_exists('set_time_limit')) {
-                                @set_time_limit(0);
+                                set_time_limit(0);
                             }
 
                             try {
@@ -220,8 +222,6 @@ class UpgradeModel extends Model
                             return $result;
                         },
                     ];
-
-                    $i++;
                 }
             }
         }

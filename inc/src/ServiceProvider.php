@@ -2,10 +2,10 @@
 
 namespace MyBB;
 
-use MyBB\Stopwatch\Stopwatch;
 use MyBB\Utilities\BreadcrumbManager;
 use MyBB\Utilities\ManagedValue\FilesystemNestedStore;
 use MyBB\Utilities\ManagedValue\Repository as ManagedValueRepository;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 use Psr\Container\ContainerInterface;
 
 /** @property \MyBB\Application $app */
@@ -18,6 +18,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->app->singleton(\MyBB::class, function () {
             return $GLOBALS['mybb'];
+        });
+
+        $this->app->singleton(\datacache::class, function () {
+            return $GLOBALS['cache'];
         });
 
         $this->app->singleton(\DB_Base::class, function () {

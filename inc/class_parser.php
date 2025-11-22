@@ -1,6 +1,6 @@
 <?php
 
-use MyBB\Stopwatch\Stopwatch;
+use MyBB\Utilities\Stopwatch\Stopwatch;
 
 use function MyBB\app;
 use function MyBB\View\template;
