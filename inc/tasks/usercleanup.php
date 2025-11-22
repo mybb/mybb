@@ -19,7 +19,7 @@ function task_usercleanup($task)
 	$warningshandler->expire_warnings();
 
 	// Expire any post moderation or suspension limits
-	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime", "(moderationtime!=0 AND moderationtime<".TIME_NOW.") OR (suspensiontime!=0 AND suspensiontime<".TIME_NOW.")");
+	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime, suspendpmtime", "(moderationtime!=0 AND moderationtime<".TIME_NOW.") OR (suspensiontime!=0 AND suspensiontime<".TIME_NOW.") OR (suspendpmtime!=0 AND suspendpmtime<".TIME_NOW.")");
 	while($user = $db->fetch_array($query))
 	{
 		$updated_user = array();
@@ -32,6 +32,11 @@ function task_usercleanup($task)
 		{
 			$updated_user['suspendposting'] = 0;
 			$updated_user['suspensiontime'] = 0;
+		}
+		if($user['suspendpmtime'] != 0 && $user['suspendpmtime'] < TIME_NOW)
+		{
+			$updated_user['suspendpm'] = 0;
+			$updated_user['suspendpmtime'] = 0;
 		}
 		$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 	}

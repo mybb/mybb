@@ -2296,7 +2296,7 @@ if($mybb->input['action'] == "do_editprofile")
 			remove_avatars($user['uid']);
 		}
 
-		// Moderator "Options" (suspend signature, suspend/moderate posting)
+		// Moderator "Options" (suspend signature, suspend/moderate posting, suspend private messaging)
 		$modoptions = array(
 			1 => array(
 				"action" => "suspendsignature", // The moderator action we're performing
@@ -2318,6 +2318,13 @@ if($mybb->input['action'] == "do_editprofile")
 				"time" => "suspost_time",
 				"update_field" => "suspendposting",
 				"update_length" => "suspensiontime"
+			),
+			4 => array(
+				"action" => "suspendpm",
+				"period" => "suspm_period",
+				"time" => "suspm_time",
+				"update_field" => "suspendpm",
+				"update_length" => "suspendpmtime"
 			)
 		);
 
@@ -2594,6 +2601,17 @@ if($mybb->input['action'] == "editprofile")
 			"select_option" => "suspost",
 			"lang" => [
 				"title" => "suspend_posts",
+				"length" => "suspend_length"
+			]
+		),
+		array(
+			"action" => "suspendpm",
+			"option" => "suspendpm",
+			"time" => "suspm_time",
+			"length" => "suspendpmtime",
+			"select_option" => "suspm",
+			"lang" => [
+				"title" => "suspend_pm",
 				"length" => "suspend_length"
 			]
 		)
