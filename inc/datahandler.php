@@ -193,6 +193,11 @@ class DataHandler
 	{
 		if($this->method == "insert" || array_key_exists($option, $options))
 		{
+			if(!is_array($options))
+			{
+				$options = array();
+			}
+
 			if(isset($options[$option]) && $options[$option] != $default && $options[$option] != "")
 			{
 				if($default == 1)
@@ -204,7 +209,7 @@ class DataHandler
 					$options[$option] = 1;
 				}
 			}
-			else if(@array_key_exists($option, $options) && $options[$option] == '')
+			else if(array_key_exists($option, $options) && $options[$option] == '')
 			{
 				$options[$option] = 0;
 			}
