@@ -11,7 +11,178 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'attachment.php');
 
-require_once "./global.php";
+// Load MyBB core files
+require_once dirname(__FILE__).'/inc/init.php';
+
+$shutdown_queries = $shutdown_functions = array();
+
+// Load some of the stock caches we'll be using.
+$groupscache = $cache->read('usergroups');
+
+if(!is_array($groupscache))
+{
+	$cache->update_usergroups();
+	$groupscache = $cache->read('usergroups');
+}
+
+// Do not use a session system for defined pages
+if(isset($mybb->input['thumbnail']))
+{
+	define('NO_ONLINE', 1);
+}
+
+// Create the session
+require_once MYBB_ROOT.'inc/class_session.php';
+
+$session = new session();
+
+$session->init();
+
+// Load the language we'll be using
+if(!isset($mybb->settings['bblanguage']))
+{
+	$mybb->settings['bblanguage'] = "english";
+}
+
+if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
+{
+	$mybb->settings['bblanguage'] = $mybb->user['language'];
+}
+
+$lang->set_language($mybb->settings['bblanguage']);
+
+if($lang->settings['charset'])
+{
+	$charset = $lang->settings['charset'];
+}
+// If not, revert to UTF-8
+else
+{
+	$charset = "UTF-8";
+}
+
+if(function_exists('mb_internal_encoding'))
+{
+	mb_internal_encoding($charset);
+}
+
+// Load the theme
+// 1. Check cookies
+if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
+{
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
+}
+
+// 2. Load style
+if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
+{
+	$loadstyle = "tid='".(int)$mybb->user['style']."'";
+}
+else
+{
+	$loadstyle = "def='1'";
+}
+
+// Load basic theme information that we could be needing.
+if($loadstyle != "def='1'")
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
+
+	$theme = $db->fetch_array($query);
+
+	if($theme && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$loadstyle = "def='1'";
+	}
+}
+
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		$cache->update_default_theme();
+	}
+
+	$theme = $cache->read('default_theme');
+}
+
+// No theme was found - we attempt to load the master or any other theme
+if(!isset($theme['tid']) || !$theme['tid'])
+{
+	// Missing theme was from a user, run a query to set any users using the theme to the default
+	$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
+
+	// Attempt to load the master or any other theme if the master is not available
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
+
+	$theme = $db->fetch_array($query);
+}
+
+$theme = array_merge($theme, my_unserialize($theme['properties']));
+
+// Set the appropriate image language directory for this theme.
+// Are we linking to a remote theme server?
+if(my_validate_url($theme['imgdir']))
+{
+	// If a language directory for the current language exists within the theme - we use it
+	if(!empty($mybb->user['language']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+	}
+	// Check if a custom language directory exists for this theme
+	elseif(!empty($mybb->settings['bblanguage']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+	}
+	// Otherwise, the image language directory is the same as the language directory for the theme
+	else
+	{
+		$theme['imglangdir'] = $theme['imgdir'];
+	}
+}
+else
+{
+	$img_directory = $theme['imgdir'];
+
+	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	{
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
+	}
+
+	if(!is_dir($img_directory))
+	{
+		$theme['imgdir'] = 'images';
+	}
+
+	// If a language directory for the current language exists within the theme - we use it
+	if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+	}
+	// Check if a custom language directory exists for this theme
+	elseif(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+	}
+	// Otherwise, the image language directory is the same as the language directory for the theme
+	else
+	{
+		$theme['imglangdir'] = $theme['imgdir'];
+	}
+
+	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+
+	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
+}
+
+$lang->load("global");
+
+$mybb->input['action'] = $mybb->get_input('action');
 
 if($mybb->settings['enableattachments'] != 1)
 {
@@ -39,6 +210,7 @@ else
 {
 	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
+
 $attachment = $db->fetch_array($query);
 
 $plugins->run_hooks("attachment_start");
@@ -54,6 +226,7 @@ if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
 }
 
 $attachtypes = (array)$cache->read('attachtypes');
+
 $ext = get_extension($attachment['filename']);
 
 if(empty($attachtypes[$ext]))
