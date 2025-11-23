@@ -48,7 +48,7 @@ $l['neu_rep_disabled'] = "<span class=\"smalltext\">* - <em>Neutral reputation i
 $l['rating'] = "Rating";
 $l['comment'] = "Comment";
 $l['no_comment_needed'] = "You're adding reputation because of this user's post, which is linked in their profile. A comment isn't needed, but if you want to leave one, please enter it below.<br />";
-$l['no_comment'] = "[No comment]";
+$l['no_comment'] = "No comment";
 $l['vote_added'] = "Rating Added";
 $l['vote_updated'] = "Rating Updated";
 $l['vote_deleted'] = "Rating Deleted";
