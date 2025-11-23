@@ -2846,9 +2846,44 @@ function update_stats($changes = array(), $force = false)
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{
-		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 1));
+		$banned_groups = [];
+		$conditions = [];
+
+		$query = $db->simple_select("usergroups", "gid", "isbannedgroup = 1");
+		while($group = $db->fetch_array($query))
+		{
+			$banned_groups[] = (int)$group['gid'];
+		}
+
+		if(!empty($banned_groups))
+		{
+			$conditions[] = "u.usergroup NOT IN (" . implode(',', $banned_groups) . ")";
+			foreach($banned_groups as $gid)
+			{
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						$conditions[] = "',' || u.additionalgroups || ',' NOT LIKE '%,{$gid},%'";
+						break;
+					default:
+						$conditions[] = "CONCAT(',', u.additionalgroups, ',') NOT LIKE '%,{$gid},%'";
+						break;
+				}
+			}
+		}
+
+		$where = empty($conditions) ? '1=1' : implode(' AND ', $conditions);
+		$query = $db->query("
+			SELECT u.uid, u.username
+			FROM ".TABLE_PREFIX."users u
+			WHERE {$where}
+			ORDER BY u.regdate DESC
+			LIMIT 1
+		");
+
 		$lastmember = $db->fetch_array($query);
-		$new_stats['lastuid'] = $lastmember['uid'];
+		$new_stats['lastuid'] = (int)$lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'] = htmlspecialchars_uni($lastmember['username']);
 	}
 
