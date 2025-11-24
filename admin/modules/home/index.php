@@ -276,6 +276,54 @@ elseif(!$mybb->input['action'])
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
+	// Show & compare development version information
+	$development_version = '';
+	if(\MyBB\Maintenance\hasDevelopmentArtifacts())
+	{
+		$branch_name = \MyBB\Maintenance\getDevelopmentBranchName($mybb->version);
+
+		$latest_commit_hash = $update_check['repository'][$branch_name]['latest_commit']['hash'] ?? null;
+
+		if($latest_commit_hash !== null)
+		{
+			$local_commit_hash = \MyBB\Maintenance\getDevelopmentVersionCommitHash($mybb);
+
+			if($local_commit_hash !== null)
+			{
+				$local_commit_code =
+					'<code>'.
+					htmlspecialchars_uni(substr($local_commit_hash, 0, 7)).
+					'</code>';
+				$latest_commit_code =
+					'<code>'.
+					htmlspecialchars_uni(substr($latest_commit_hash, 0, 7)).
+					'</code>';
+
+				$development_version =
+					' <span title="'.$lang->local_commit.'" class="development-local-commit">('.
+					$local_commit_code.
+					')</span>';
+
+				if($local_commit_hash !== $latest_commit_hash)
+				{
+					$commits_url = \MyBB\Maintenance\getDevelopmentBranchCommitsUrl($branch_name);
+
+					$development_version .=
+						'<br /><br />' .
+						'<a
+							href="'.htmlspecialchars_uni($commits_url).'"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="development-latest-commit"
+							title="'.$lang->latest_commit.'"
+						>' .
+						$lang->sprintf($lang->new_development_version_available, $latest_commit_code) .
+						'</a>';
+				}
+			}
+		}
+	}
+
 	$plugins->run_hooks("admin_home_index_output_message");
 
 	$adminmessage = $cache->read("adminnotes");
@@ -292,7 +340,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_header($lang->forum_stats, array("colspan" => 2));
 
 	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
-	$table->construct_cell($mybb->version, array('width' => '25%'));
+	$table->construct_cell($mybb->version.$development_version, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$threads}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
