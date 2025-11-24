@@ -1059,6 +1059,7 @@ $tables[] = "CREATE TABLE mybb_users (
 	hideemail tinyint(1) NOT NULL default '0',
 	subscriptionmethod tinyint(1) NOT NULL default '0',
 	invisible tinyint(1) NOT NULL default '0',
+	showtimespentonline tinyint(1) NOT NULL default '1',
 	receivepms tinyint(1) NOT NULL default '0',
 	receivefrombuddy tinyint(1) NOT NULL default '0',
 	pmnotice tinyint(1) NOT NULL default '0',

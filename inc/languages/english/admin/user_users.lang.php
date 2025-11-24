@@ -176,6 +176,7 @@ $l['return_date_desc'] = "If you know when you will be back, you can enter your 
 $l['error_acp_return_date_past'] = "You cannot return in the past!";
 
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
+$l['show_time_spent_online'] = "Display time spent online on profile";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
 $l['recieve_admin_emails'] = "Receive emails from administrators";
 $l['hide_email_from_others'] = "Hide email address from other members";

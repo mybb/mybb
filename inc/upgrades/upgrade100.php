@@ -81,6 +81,9 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
+            }            
 
             // Update moved threads
             $db->query("
@@ -117,6 +120,9 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
+            }            
 
             // Update moved threads
             $db->query("
@@ -151,6 +157,9 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
+            }           
 
             // Update moved threads
             $db->query("

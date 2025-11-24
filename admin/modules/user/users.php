@@ -563,6 +563,7 @@ if($mybb->input['action'] == "edit")
 			"hideemail" => $mybb->get_input('hideemail'),
 			"subscriptionmethod" => $mybb->get_input('subscriptionmethod'),
 			"invisible" => $mybb->get_input('invisible'),
+			"showtimespentonline" => $mybb->get_input('showtimespentonline'),
 			"dstcorrection" => $mybb->get_input('dstcorrection'),
 			"threadmode" => $mybb->get_input('threadmode'),
 			"classicpostbit" => $mybb->get_input('classicpostbit'),
@@ -1278,6 +1279,7 @@ EOF;
 	$form_container = new FormContainer($lang->account_settings.': '.htmlspecialchars_uni($user['username']));
 	$login_options = array(
 		$form->generate_check_box("invisible", 1, $lang->hide_from_whos_online, array("checked" => $mybb->get_input('invisible'))),
+		$form->generate_check_box("showtimespentonline", 1, $lang->show_time_spent_online, array("checked" => $mybb->get_input('showtimespentonline'))),
 	);
 	$form_container->output_row($lang->login_cookies_privacy, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
 
