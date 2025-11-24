@@ -36,6 +36,7 @@ require_once MYBB_ROOT . 'inc/src/Maintenance/functions_core.php';
 require_once MYBB_ROOT . 'inc/src/Maintenance/functions_data.php';
 require_once MYBB_ROOT . 'inc/src/Maintenance/functions_db.php';
 require_once MYBB_ROOT . 'inc/src/Maintenance/functions_upgrades.php';
+require_once MYBB_ROOT . 'inc/src/Maintenance/functions_version.php';
 
 // core
 $mybb = new MyBB();

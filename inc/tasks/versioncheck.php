@@ -14,8 +14,6 @@ function task_versioncheck($task)
 
 	require_once MYBB_ROOT.'inc/src/Maintenance/functions_version.php';
 
-	$current_version = rawurlencode($mybb->version_code);
-
 	$updated_cache = array(
 		'last_check' => TIME_NOW
 	);
@@ -34,13 +32,8 @@ function task_versioncheck($task)
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
-		$version_warn = 1;
 		$updated_cache['latest_version'] = $latest_version;
 		$updated_cache['latest_version_code'] = $latest_code;
-	}
-	else
-	{
-		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
 	}
 
 	// Check for latest development information

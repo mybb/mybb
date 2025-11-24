@@ -555,18 +555,3 @@ function developmentEnvironment(): bool
 {
     return getenv('MYBB_DEV_MODE') === '1';
 }
-
-function getLatestVersionDetails(): ?array
-{
-    $body = fetch_remote_file('https://mybb.com/version_check.json');
-
-    if ($body !== false) {
-        $data = json_decode($body, true);
-
-        if (isset($data['mybb'])) {
-            return $data['mybb'];
-        }
-    }
-
-    return null;
-}

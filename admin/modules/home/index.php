@@ -34,8 +34,6 @@ if($mybb->input['action'] == "version_check")
 {
 	$plugins->run_hooks("admin_home_version_check_start");
 
-	$current_version = rawurlencode($mybb->version_code);
-
 	$updated_cache = array(
 		"last_check" => TIME_NOW
 	);
