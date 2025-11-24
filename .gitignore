@@ -50,5 +50,7 @@ Thumbs.db
 # Generic git files
 *.orig
 
+# Distribution
 inc/vendor
 inc/checksums
+.source-commit
