@@ -5,6 +5,11 @@
 
 @import url('fonts.css');
 
+:root {
+	--color-development: #007fd0;
+	--color-development-update: #ff7500;
+}
+
 body, td {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
@@ -1025,6 +1030,15 @@ input.submit_button.inline_element {
 	height: 400px;
 	width: 980px;
 	border: 1px solid #ccc;
+}
+
+/* Development information */
+.development-local-commit {
+	color: var(--color-development);
+}
+
+.development-latest-commit {
+	color: var(--color-development-update);
 }
 
 /** jGrowl Start **/
