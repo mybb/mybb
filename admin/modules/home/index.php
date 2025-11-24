@@ -40,7 +40,8 @@ if($mybb->input['action'] == "version_check")
 		"last_check" => TIME_NOW
 	);
 
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	// Check for the latest version
+	$contents = \MyBB\Maintenance\fetchLatestVersionDetails();
 
 	if(!$contents)
 	{
@@ -54,13 +55,8 @@ if($mybb->input['action'] == "version_check")
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
 
-	$contents = trim($contents);
-
-	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
-
-	$latest_code = (int)$tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
+	$latest_code = (int)$contents['version_code'];
+	$latest_version = "<strong>".htmlspecialchars_uni($contents['latest_version'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";

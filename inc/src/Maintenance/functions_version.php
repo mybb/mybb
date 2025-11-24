@@ -12,6 +12,7 @@ use FeedParser;
 use InvalidArgumentException;
 use MyBB;
 
+const PRODUCT_VERSION_CHECK_JSON_URL = 'https://mybb.com/version_check.json';
 const PRODUCT_NEWS_FEED_URL = 'http://feeds.feedburner.com/MyBBDevelopmentBlog';
 
 const DEVELOPMENT_REPOSITORY_API_BASE_URL = 'https://api.github.com';
@@ -135,6 +136,21 @@ function readRepositoryDetails(string $path): ?array
         }
 
         return $results;
+    }
+
+    return null;
+}
+
+function fetchLatestVersionDetails(): ?array
+{
+    $body = fetch_remote_file(PRODUCT_VERSION_CHECK_JSON_URL);
+
+    if ($body !== false) {
+        $data = json_decode($body, true);
+
+        if (isset($data['mybb'])) {
+            return $data['mybb'];
+        }
     }
 
     return null;

@@ -21,7 +21,7 @@ function task_versioncheck($task)
 	);
 
 	// Check for the latest version
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	$contents = \MyBB\Maintenance\fetchLatestVersionDetails();
 
 	if(!$contents)
 	{
@@ -29,13 +29,8 @@ function task_versioncheck($task)
 		return false;
 	}
 
-	$contents = trim($contents);
-
-	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
-
-	$latest_code = (int)$tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
+	$latest_code = (int)$contents['version_code'];
+	$latest_version = "<strong>".htmlspecialchars_uni($contents['latest_version'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
