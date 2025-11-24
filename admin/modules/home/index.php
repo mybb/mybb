@@ -97,31 +97,15 @@ if($mybb->input['action'] == "version_check")
 		}
 	}
 
-	require_once MYBB_ROOT."inc/class_feedparser.php";
+	// Check for the latest news
+	$news = \MyBB\Maintenance\fetchLatestNews();
 
-	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
-
-	$updated_cache['news'] = array();
-
-	if($feed_parser->error == '')
+	if($news !== null)
 	{
-		require_once MYBB_ROOT . '/inc/class_parser.php';
-		$post_parser = new postParser();
+		$updated_cache['news'] = $news;
 
-		foreach($feed_parser->items as $item)
+		foreach($news as $item)
 		{
-			if(!isset($updated_cache['news'][2]))
-			{
-				$updated_cache['news'][] = array(
-					'title' => $item['title'],
-					'description' => $item['description'],
-					'link' => $item['link'],
-					'author' => $item['author'],
-					'dateline' => $item['date_timestamp'],
-				);
-			}
-
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
@@ -138,7 +122,7 @@ if($mybb->input['action'] == "version_check")
 	}
 	else
 	{
-		$table->construct_cell("{$lang->error_fetch_news} <!-- error code: {$feed_parser->error} -->");
+		$table->construct_cell($lang->error_fetch_news);
 		$table->construct_row();
 	}
 

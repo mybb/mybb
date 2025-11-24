@@ -8,8 +8,11 @@ declare(strict_types=1);
 
 namespace MyBB\Maintenance;
 
+use FeedParser;
 use InvalidArgumentException;
 use MyBB;
+
+const PRODUCT_NEWS_FEED_URL = 'http://feeds.feedburner.com/MyBBDevelopmentBlog';
 
 const DEVELOPMENT_REPOSITORY_API_BASE_URL = 'https://api.github.com';
 const DEVELOPMENT_REPOSITORY = 'mybb/mybb';
@@ -129,6 +132,48 @@ function readRepositoryDetails(string $path): ?array
                     $results['branch']['latest_commit']['hash'] = $commitHash;
                 }
             }
+        }
+
+        return $results;
+    }
+
+    return null;
+}
+
+/**
+ * Returns latest MyBB news entries.
+ *
+ * @param non-negative-int $limit
+ *
+ * @return ?list<array{
+ *   title: string,
+ *   description: string,
+ *   link: string,
+ *   author: string,
+ *   dateline: int,
+ * }>
+ */
+function fetchLatestNews(int $limit = 3): ?array
+{
+    require_once MYBB_ROOT . 'inc/class_feedparser.php';
+
+    $parser = new FeedParser();
+
+    $parser->parse_feed(PRODUCT_NEWS_FEED_URL);
+
+    if ($parser->error == '') {
+        $results = [];
+
+        $items = array_slice($parser->items, 0, $limit);
+
+        foreach ($items as $item) {
+            $results[] = [
+                'title' => $item['title'],
+                'description' => $item['description'],
+                'link' => $item['link'],
+                'author' => $item['author'],
+                'dateline' => $item['date_timestamp'],
+            ];
         }
 
         return $results;

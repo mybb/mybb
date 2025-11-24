@@ -62,33 +62,11 @@ function task_versioncheck($task)
 	}
 
 	// Check for the latest news
-	require_once MYBB_ROOT."inc/class_feedparser.php";
+	$news = \MyBB\Maintenance\fetchLatestNews();
 
-	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
-
-	$updated_cache['news'] = array();
-
-	require_once MYBB_ROOT . '/inc/class_parser.php';
-	$post_parser = new postParser();
-
-	if($feed_parser->error == '')
+	if($news !== null)
 	{
-		foreach($feed_parser->items as $item)
-		{
-			if (isset($updated_cache['news'][2]))
-			{
-				break;
-			}
-
-			$updated_cache['news'][] = array(
-				'title' => $item['title'],
-				'description' => $item['description'],
-				'link' => $item['link'],
-				'author' => $item['author'],
-				'dateline' => $item['date_timestamp']
-			);
-		}
+		$updated_cache['news'] = $news;
 	}
 
 	$cache->update("update_check", $updated_cache);
