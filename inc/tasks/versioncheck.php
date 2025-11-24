@@ -12,6 +12,8 @@ function task_versioncheck($task)
 {
 	global $cache, $lang, $mybb;
 
+	require_once MYBB_ROOT.'inc/src/Maintenance/functions_version.php';
+
 	$current_version = rawurlencode($mybb->version_code);
 
 	$updated_cache = array(
@@ -44,6 +46,19 @@ function task_versioncheck($task)
 	else
 	{
 		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
+	}
+
+	// Check for latest development information
+	if(\MyBB\Maintenance\hasDevelopmentArtifacts())
+	{
+		$branch_name = \MyBB\Maintenance\getDevelopmentBranchName($mybb->version);
+
+		$details = \MyBB\Maintenance\fetchDevelopmentBranchDetails($branch_name);
+
+		if($details !== null)
+		{
+			$updated_cache['repository'][$branch_name] = $details;
+		}
 	}
 
 	// Check for the latest news

@@ -14,6 +14,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+require_once MYBB_ROOT.'inc/src/Maintenance/functions_version.php';
+
 $plugins->run_hooks("admin_home_index_begin");
 
 $sub_tabs['dashboard'] = array(
@@ -81,6 +83,19 @@ if($mybb->input['action'] == "version_check")
 	$table->construct_row();
 
 	$table->output($lang->version_check);
+
+	// Check for latest development information
+	if(\MyBB\Maintenance\hasDevelopmentArtifacts())
+	{
+		$branch_name = \MyBB\Maintenance\getDevelopmentBranchName($mybb->version);
+
+		$details = \MyBB\Maintenance\fetchDevelopmentBranchDetails($branch_name);
+
+		if($details !== null)
+		{
+			$updated_cache['repository'][$branch_name] = $details;
+		}
+	}
 
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 
