@@ -21,6 +21,30 @@ function output_page($contents)
 	$stopwatch = \MyBB\app(\MyBB\Utilities\Stopwatch\Stopwatch::class);
 
 
+	if($mybb->config['compat_page_render'] ?? true)
+	{
+		$templates = [
+			'headerinclude',
+			'header',
+			'footer',
+		];
+
+		foreach($templates as $name)
+		{
+			$placeholder = '<!-- compat_page_render.'.$name.' -->';
+
+			if(str_contains($contents, $placeholder))
+			{
+				$contents = str_replace(
+					$placeholder,
+					\MyBB\View\template('partials/'.$name.'.twig'),
+					$contents,
+				);
+			}
+		}
+	}
+
+
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
 
