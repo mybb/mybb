@@ -868,6 +868,13 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	}
 }
 
+if($mybb->config['compat_page_render'] ?? true)
+{
+	$headerinclude = '<!-- compat_page_render.headerinclude -->';
+	$header = '<!-- compat_page_render.header -->';
+	$footer = '<!-- compat_page_render.footer -->';
+}
+
 // Check to see if we have any tasks to run
 $task_image = '';
 $task_cache = $cache->read('tasks');
