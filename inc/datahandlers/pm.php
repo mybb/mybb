@@ -63,6 +63,13 @@ class PMDataHandler extends DataHandler
 	public $return_values = array();
 
 	/**
+	 * Maximum length for subjects
+	 *
+	 * @var int
+	 */
+	public $max_subject_length = 120;
+
+	/**
 	 * Verifies a private message subject.
 	 *
 	 * @return boolean True when valid, false when invalid.
@@ -72,7 +79,7 @@ class PMDataHandler extends DataHandler
 		$subject = &$this->data['subject'];
 
 		// Subject is over 85 characters, too long.
-		if(my_strlen($subject) > 85)
+		if(my_strlen($subject) > $this->max_subject_length)
 		{
 			$this->set_error("too_long_subject");
 			return false;
