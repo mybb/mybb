@@ -204,6 +204,7 @@ $l['error_already_leader'] = "The user is already a leader of this user group.";
 $l['error_invalid_group_leader'] = "You specified an invalid group leader.";
 $l['error_missing_namestyle_username'] = "The username style must contain {username}";
 $l['error_disallowed_namestyle_username'] = "You can't use script, meta or base tags in the username style.";
+$l['error_disallowed_starimage_path'] = "You can't use script, meta or base tags in the star image path.";
 $l['error_default_group_delete'] = "Default groups cannot be deleted";
 $l['error_cannot_have_both_types'] = "You cannot have a joinable group that is both moderated and invite only. Please choose one or the other.";
 
