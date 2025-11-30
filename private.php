@@ -736,7 +736,6 @@ if($mybb->input['action'] == "send")
 	// Preview
 	if(!empty($mybb->input['preview']))
 	{
-		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
 		$query = $db->query("
 			SELECT u.username AS userusername, u.*, f.*
 			FROM ".TABLE_PREFIX."users u
@@ -751,6 +750,8 @@ if($mybb->input['action'] == "send")
 		$post['message'] = $mybb->get_input('message');
 		$post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
 		$post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
+		$post['to'] = $to;
+		$post['bcc'] = $bcc;
 		if(!isset($options['disablesmilies']))
 		{
 			$options['disablesmilies'] = 0;
@@ -766,6 +767,8 @@ if($mybb->input['action'] == "send")
 		{
 			$post['includesig'] = 1;
 		}
+
+		$post['options'] = $options;
 
 		// Merge usergroup data from the cache
 		$data_key = array(
@@ -783,7 +786,27 @@ if($mybb->input['action'] == "send")
 			$post[$key] = $groupscache[$post['usergroup']][$field];
 		}
 
-		$postbit = build_postbit($post, 2);
+		require_once MYBB_ROOT . "inc/datahandlers/pm.php";
+		$pmhandler = new PMDataHandler();
+		$pmhandler->set_data($post);
+
+		$send_errors = '';
+		$display_preview = true;
+		if(!$pmhandler->validate_pm())
+		{
+			$send_errors = $pmhandler->get_friendly_errors();
+			if(!empty($send_errors))
+			{
+				$send_errors = inline_error($send_errors);
+			}
+
+			$display_preview = false;
+		}
+
+		if($display_preview)
+		{
+			$postbit = build_postbit($post, 2);
+		}
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else if(!$send_errors)
