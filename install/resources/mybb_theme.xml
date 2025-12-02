@@ -4957,17 +4957,7 @@ if(use_xmlhttprequest == "1")
 	{$website}
 	{$sendemail}
 	{$sendpm}
-	{$contact_fields['skype']}
-	{$contact_fields['google']}
 </table>]]></template>
-		<template name="member_profile_contact_fields_google" version="1800"><![CDATA[<tr>
-	<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
-	<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
-</tr>]]></template>
-		<template name="member_profile_contact_fields_skype" version="1823"><![CDATA[<tr>
-	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-	<td class="{$bgcolors['skype']}">{$memprofile['skype']}</td>
-</tr>]]></template>
 		<template name="member_profile_customfields" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
 <col style="width: 30%;" />
@@ -5868,8 +5858,6 @@ if(use_xmlhttprequest == "1")
 		<input type="text" class="textbox" name="website" id="website" />
 	</td>
 </tr>
-{$contact_fields['skype']}
-{$contact_fields['google']}
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->search_options}</strong></td>
 </tr>
@@ -6905,24 +6893,6 @@ if(use_xmlhttprequest == "1")
 										</tr>
 										<tr>
 											<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
-										</tr>
-									</table>
-								</fieldset>
-								<br />
-								<fieldset class="trow2">
-									<legend><strong>{$lang->additional_contact_details}</strong></legend>
-									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-										<tr>
-											<td><span class="smalltext">{$lang->skype_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="skype" size="25" value="{$user_skype}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->google_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="google" size="25" value="{$user_google}" /></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -13312,7 +13282,6 @@ if(use_xmlhttprequest == "1")
 </td>
 <td width="50%" class="trow1" valign="top">
 {$customtitle}
-{$contactfields}
 {$awaysection}
 </td>
 </tr>
@@ -13329,20 +13298,6 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-	<template name="usercp_profile_contact_fields" version="1839"><![CDATA[<br />
-<fieldset class="trow2">
-<legend><strong>{$lang->additional_contact_details}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-	{$contact_fields['skype']}
-	{$contact_fields['google']}
-</table>
-</fieldset>]]></template>
-	<template name="usercp_profile_contact_fields_field" version="1800"><![CDATA[<tr>
-<td><span class="smalltext">{$lang_string}</span></td>
-</tr>
-<tr>
-  <td><input type="text" class="textbox" name="{$cfield}" size="25" value="{$cfvalue}" /></td>
-</tr>]]></template>
 		<template name="usercp_profile_away" version="1816"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>

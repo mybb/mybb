@@ -955,8 +955,6 @@ $tables[] = "CREATE TABLE mybb_users (
 	lastvisit int NOT NULL default '0',
 	lastpost int NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
-	skype varchar(75) NOT NULL default '',
-	google varchar(75) NOT NULL default '',
 	birthday varchar(15) NOT NULL default '',
 	birthdayprivacy varchar(4) NOT NULL default 'all',
 	signature TEXT NOT NULL,

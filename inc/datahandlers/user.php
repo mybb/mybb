@@ -1099,7 +1099,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad', 'regip', 'lastip', 'coppa_user');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad', 'regip', 'lastip', 'coppa_user');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1141,8 +1141,6 @@ class UserDataHandler extends DataHandler
 			"lastactive" => (int)$user['lastactive'],
 			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
-			"skype" => $db->escape_string($user['skype']),
-			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => (int)$user['options']['allownotices'],
@@ -1349,14 +1347,6 @@ class UserDataHandler extends DataHandler
 		if(isset($user['website']))
 		{
 			$this->user_update_data['website'] = $db->escape_string($user['website']);
-		}
-		if(isset($user['skype']))
-		{
-			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
-		}
-		if(isset($user['google']))
-		{
-			$this->user_update_data['google'] = $db->escape_string($user['google']);
 		}
 		if(isset($user['bday']))
 		{
@@ -1761,8 +1751,6 @@ class UserDataHandler extends DataHandler
 		$update = array(
 			"website" => "",
 			"birthday" => "",
-			"skype" => "",
-			"google" => "",
 			"usertitle" => "",
 			"away" => 0,
 			"awaydate" => 0,

@@ -21,7 +21,7 @@ $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,user
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts,usercp_options_language,usercp_options_date_format,usercp_profile_website,usercp_latest_subscribed,usercp_warnings";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
 $templatelist .= ",usercp_warnings_warning,usercp_nav_messenger_tracking,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
-$templatelist .= ",codebuttons,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists,usercp_profile_contact_fields_field,usercp_latest_subscribed_threads,usercp_profile_contact_fields,usercp_profile_day,usercp_nav_home";
+$templatelist .= ",codebuttons,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists,usercp_latest_subscribed_threads,usercp_profile_day,usercp_nav_home";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 $templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user,usercp_options";
 $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum,usercp_editlists_user";
@@ -228,26 +228,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
 	));
-	foreach(array('skype', 'google') as $cfield)
-	{
-		$csetting = 'allow'.$cfield.'field';
-		if($mybb->settings[$csetting] == '')
-		{
-			continue;
-		}
-
-		if(!is_member($mybb->settings[$csetting]))
-		{
-			continue;
-		}
-
-		$user[$cfield] = $mybb->get_input($cfield);
-
-		if(my_strlen($user[$cfield]) > 75)
-		{
-			error($lang->contact_field_error);
-		}
-	}
 
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
@@ -365,44 +345,6 @@ if($mybb->input['action'] == "profile")
 	else
 	{
 		$user['website'] = htmlspecialchars_uni($user['website']);
-	}
-
-	if($errors)
-	{
-		$user['skype'] = htmlspecialchars_uni($user['skype']);
-		$user['google'] = htmlspecialchars_uni($user['google']);
-	}
-
-	$contact_fields = array();
-	$contactfields = '';
-	$cfieldsshow = false;
-
-	foreach(array('skype', 'google') as $cfield)
-	{
-		$contact_fields[$cfield] = '';
-		$csetting = 'allow'.$cfield.'field';
-		if($mybb->settings[$csetting] == '')
-		{
-			continue;
-		}
-
-		if(!is_member($mybb->settings[$csetting]))
-		{
-			continue;
-		}
-
-		$cfieldsshow = true;
-
-		$lang_string = 'contact_field_'.$cfield;
-		$lang_string = $lang->{$lang_string};
-		$cfvalue = htmlspecialchars_uni($user[$cfield]);
-
-		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
-	}
-
-	if($cfieldsshow)
-	{
-		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
 
 	$awaysection = '';

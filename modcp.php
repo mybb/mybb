@@ -2569,8 +2569,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
-		"skype" => $mybb->get_input('skype'),
-		"google" => $mybb->get_input('google'),
 		"signature" => $mybb->get_input('signature'),
 		"usernotes" => $mybb->get_input('usernotes'),
 		"away" => $away
@@ -2797,7 +2795,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
@@ -3267,8 +3265,6 @@ if($mybb->input['action'] == "editprofile")
 
 	$birthday_year = $mybb->input['birthday_year'];
 	$user_website = $mybb->input['website'];
-	$user_skype = $mybb->input['skype'];
-	$user_google = $mybb->input['google'];
 
 	$plugins->run_hooks("modcp_editprofile_end");
 
