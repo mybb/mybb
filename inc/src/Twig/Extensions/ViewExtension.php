@@ -38,6 +38,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('asset_url', [$this, 'getAssetUrl']),
             new TwigFunction('alt_trow', [$this, 'altTrow']),
             new TwigFunction('attached_assets', [$this, 'getAttachedAssets']),
+            new TwigFunction('legacy_styles', [$this, 'getLegacyStyles']),
         ];
     }
 
@@ -132,7 +133,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return \Generator A generator object that yields each stylesheet, as a full URL.
      */
-    private function getLegacyStyles(): \Generator
+    public function getLegacyStyles(): \Generator
     {
         // TODO: Optimise this function - it looks like it can be improved at a glance
         $theme = $GLOBALS['theme'];
