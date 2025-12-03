@@ -113,6 +113,11 @@ if(!$theme_model)
 	$theme_model = $repository->getFallback();
 }
 
+\MyBB\app()->instance(
+	\MyBB\Database\Models\Theme::class,
+	$theme_model,
+);
+
 $theme = $repository->getArray($theme_model);
 
 $theme = @array_merge($theme, my_unserialize($theme['properties']));
