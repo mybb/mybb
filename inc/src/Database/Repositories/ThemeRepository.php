@@ -103,7 +103,10 @@ readonly class ThemeRepository
     {
         $this->db->insert_query(
             self::TABLE,
-            $this->getArray($model),
+            array_map(
+                $this->db->escape_string(...),
+                $this->getArray($model),
+            ),
         );
 
         $id = (int)$this->db->insert_id();
@@ -117,7 +120,10 @@ readonly class ThemeRepository
     {
         $this->db->update_query(
             self::TABLE,
-            $this->getArray($model),
+            array_map(
+                $this->db->escape_string(...),
+                $this->getArray($model),
+            ),
             'tid = ' . (int)$model->id,
         );
 
