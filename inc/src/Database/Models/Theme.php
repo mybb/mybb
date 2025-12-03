@@ -12,7 +12,7 @@ use MyBB\Extensions\Theme\Theme as ThemeExtension;
 class Theme
 {
     public function __construct(
-        public int $id,
+        public ?int $id,
         public ThemeExtension $package,
         public string $name,
         public string $properties = 'a:0:{}',
