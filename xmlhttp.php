@@ -191,6 +191,16 @@ if($theme_model->package->exists())
 	);
 }
 
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
+
 if($lang->settings['charset'])
 {
 	$charset = $lang->settings['charset'];
