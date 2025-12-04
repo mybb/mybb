@@ -27,4 +27,24 @@ class Theme
             is_member($this->allowedgroups, $user)
         );
     }
+
+    /**
+     * Returns a stored representation of the instance.
+     */
+    public function toArray(): array
+    {
+        $array = [
+            'package' => $this->package->getPackageName(),
+            'name' => $this->name,
+            'properties' => $this->properties,
+            'stylesheets' => $this->stylesheets,
+            'allowedgroups' => $this->allowedgroups,
+        ];
+
+        if ($this->id) {
+            $array['tid'] = $this->id;
+        }
+
+        return $array;
+    }
 }

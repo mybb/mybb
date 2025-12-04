@@ -136,41 +136,7 @@ $view->setContext([
 
 $view->setMainNamespace('frontend');
 
-
-$theme = $repository->getArray($theme_model);
-
-$theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
-
-// defaults for legacy variables
-$theme['imgdir'] = $view->viewlet->getPublishingPath('frontend', \MyBB\View\ResourceType::IMAGE);
-
-if(!@is_dir($theme['imgdir']))
-{
-	$theme['imgdir'] = 'images';
-}
-
-$theme['imglangdir'] = $theme['imgdir'];
-$theme['logo'] = 'images/logo.png';
-$theme['tablespace'] = '5';
-$theme['borderwidth'] = '0';
-
-// If a language directory for the current language exists within the theme - we use it
-if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
-{
-	$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-}
-elseif(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
-{
-	$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-}
-
-$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
-$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
-$theme['logo'] = $mybb->get_asset_url($theme['logo']);
-
-// TODO initialize theme properties from package & load set values from DB
-$theme['editortheme'] = 'mybb.css';
-
+$theme = $view->getGlobalThemeArray();
 
 if($lang->settings['charset'])
 {
