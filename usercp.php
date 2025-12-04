@@ -163,20 +163,13 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
 			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				error($lang->error_usercp_return_date_past);
-			}
-
 			$returndate = "{$return_day}-{$return_month}-{$return_year}";
 		}
 		else
 		{
 			$returndate = "";
 		}
+
 		$away = array(
 			"away" => 1,
 			"date" => $awaydate,
@@ -188,9 +181,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	{
 		$away = array(
 			"away" => 0,
-			"date" => '',
-			"returndate" => '',
-			"awayreason" => ''
 		);
 	}
 
@@ -264,6 +254,8 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "profile")
 {
+	$returndate = [];
+
 	if($errors)
 	{
 		$user = $mybb->input;
@@ -272,7 +264,6 @@ if($mybb->input['action'] == "profile")
 		$bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
 		$bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-		$returndate = [];
 		$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
 		$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
 		$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
@@ -307,7 +298,11 @@ if($mybb->input['action'] == "profile")
 	// Away informations
 	if($mybb->settings['allowaway'] != 0)
 	{
-		$returndate = explode("-", $mybb->user['returndate']);
+		if(empty($returndate))
+		{
+			$returndate = explode("-", $mybb->user['returndate']);
+		}
+
 		if(!isset($returndate[1]))
 		{
 			$returndate[1] = 0;
@@ -3402,7 +3397,7 @@ if($mybb->input['action'] == "securitylog")
 	}
 
     $multipage = $multipage ?? '';
-    
+
 	$securitylog = [];
 	$query = $db->query("
         SELECT *
