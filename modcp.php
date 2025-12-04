@@ -4229,6 +4229,9 @@ if($mybb->input['action'] == "liftban")
 	$db->delete_query("banned", "uid='{$ban['uid']}'");
 
 	$cache->update_moderators();
+
+	$cache->update_awaitingactivation();
+
 	log_moderator_action(array("uid" => $ban['uid'], "username" => $username), $lang->lifted_ban);
 
 	$plugins->run_hooks("modcp_liftban_end");
@@ -4398,6 +4401,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 
 		$plugins->run_hooks("modcp_do_banuser_end");
+
+		$cache->update_awaitingactivation();
 
 		if($existing_ban)
 		{
