@@ -739,6 +739,19 @@ if(!$mybb->input['action'])
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);
 		$task['description'] = htmlspecialchars_uni($task['description']);
+
+		if(!empty($task['file']))
+		{
+			foreach(['title', 'description'] as $field)
+			{
+				$lang_var = "task_{$task['file']}_{$field}";
+				if(isset($lang->$lang_var))
+				{
+					$task[$field] = $lang->$lang_var;
+				}
+			}
+		}
+
 		$next_run = my_date('normal', $task['nextrun'], "", 2);
 		if($task['enabled'] == 1)
 		{

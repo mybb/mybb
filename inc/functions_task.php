@@ -18,6 +18,8 @@ function run_task($tid=0)
 {
 	global $db, $mybb, $cache, $plugins, $task, $lang;
 
+	$lang->load('tools_tasks');
+
 	// Run a specific task
 	if($tid > 0)
 	{
@@ -67,6 +69,15 @@ function run_task($tid=0)
 			"locked" => 0
 		);
 		$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
+
+		if(!empty($task['file']))
+		{
+			$lang_var = "task_{$task['file']}_title";
+			if(isset($lang->$lang_var))
+			{
+				$task['title'] = $lang->$lang_var;
+			}
+		}
 
 		$subject = $lang->sprintf($lang->email_broken_task_subject, $mybb->settings['bbname']);
 		$message = $lang->sprintf($lang->email_broken_task, $mybb->settings['bbname'], $mybb->settings['bburl'], $task['title']);
