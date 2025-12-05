@@ -31,7 +31,7 @@
 
                 {% if mybb.settings.footer.themeselect is iterable and mybb.settings.footer.themeselect|length > 1 %}
                     <div class="theme">
-                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url }}" id="theme_select">
+                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url.location }}" id="theme_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% if mybb.settings.footer.themeselect.options %}
                                 {% for name, field in mybb.input %}
