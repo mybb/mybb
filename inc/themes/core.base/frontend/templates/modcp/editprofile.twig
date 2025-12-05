@@ -274,6 +274,7 @@
         <!--
             var mod_posts = '{% if user.moderateposts or (mybb.input.moderateposting and errors) %}1{% else %}0{% endif %}';
             var susp_posts = '{% if user.suspendposting or (mybb.input.suspendposting and errors) %}1{% else %}0{% endif %}';
+            var susp_pms = '{% if user.suspendpm or (mybb.input.suspendpm and errors) %}1{% else %}0{% endif %}';
             var sig_checked = '{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %}1{% else %}0{% endif %}';
             if(mod_posts == 0)
             {
@@ -283,6 +284,11 @@
             if(susp_posts == 0)
             {
                 $("#susposts_action").hide();
+            }
+
+            if(susp_pms == 0)
+            {
+                $("#suspms_action").hide();
             }
 
             if(sig_checked == 0)
@@ -319,6 +325,18 @@
                     } else {
                         $("#suspost").attr("checked", true);
                         $("#susposts_action").show();
+                    }
+                }
+
+                if(action == "suspms")
+                {
+                    if($("#suspm").prop("checked") == false)
+                    {
+                        $("#suspm").attr("checked", false);
+                        $("#suspms_action").hide();
+                    } else {
+                        $("#suspm").attr("checked", true);
+                        $("#suspms_action").show();
                     }
                 }
             }
