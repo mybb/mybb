@@ -34,17 +34,6 @@ $l['export_theme_desc'] = "Here you can export your themes and customized templa
 $l['duplicate_theme'] = "Duplicate Theme";
 $l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
 
-$l['colors_manage'] = "Manage Colors";
-$l['colors_attached_to'] = "color setting";
-$l['colors_setting'] = "Base Color";
-$l['colors_setting_desc'] = "Select the color this theme should use as its base color. Stylesheets attached to this color will be used.";
-$l['colors_no_color_setting'] = "There are no colors available. Please create a list of colors below to use this feature.";
-$l['colors_add'] = "Manage Colors";
-$l['colors_add_desc'] = "A list of colors available for this theme. This should be a list of key paired (key=item) colors, for example, <em>blue=Blue</em>. Separate items with a new line.";
-$l['colors_please_select'] = "None";
-$l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You can select more than one color.";
-$l['colors_specific_color'] = "Specific color";
-
 $l['include_templates'] = "Include templates in the export as well?";
 $l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
 
@@ -92,14 +81,6 @@ $l['template_set'] = "Template Set";
 $l['template_set_desc'] = "Specify the template set the theme should use. The selected template set defines the markup (HTML) used in presenting the theme.";
 $l['editor_theme'] = "Editor Style";
 $l['editor_theme_desc'] = "Specify the style to be used for the MyCode editor in this theme. Editor styles can be found in the <strong>jscripts/sceditor/themes</strong> folder.";
-$l['img_directory'] = "Image Directory";
-$l['img_directory_desc'] = "The root directory for the location of the images used in this theme. Note that this only specifies the directory for the images used in templates, not the stylesheets.";
-$l['logo'] = "Board Logo";
-$l['logo_desc'] = "Location of the board logo used in this theme (this is the logo that appears at the top of each page).";
-$l['table_spacing'] = "Table Spacing";
-$l['table_spacing_desc'] = "The width of the inner padding of table cells, in pixels. This is HTML's <em>cellpadding</em> attribute of the <em>table</em> tag.";
-$l['inner_border'] = "Inner Table Border Width";
-$l['inner_border_desc'] = "The amount of padding between each table cell, in pixels. This is HTML's <em>cellspacing</em> attribute of the <em>table</em> tag.";
 $l['save_theme_properties'] = "Save Theme Properties";
 $l['save_stylesheet_order'] = "Save Stylesheet Orders";
 
@@ -169,11 +150,9 @@ $l['error_invalid_version'] = "This theme has been written for another version o
 $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet.";
 $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the correct file extension, for example, {1}<em>.css</em>";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
-$l['error_invalid_color'] = "The defined color set \"{1}\" either has invalid character(s) or is not in the prescribed format. Only numbers, Unicode letters, and underscores are allowed in a color's name and its value, which must be separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
-$l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
 $l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
 
 $l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";

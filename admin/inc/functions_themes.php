@@ -99,7 +99,7 @@ function import_theme_xml($xml, $options=array())
 				continue;
 			}
 
-			if($property == 'colors' || $property == 'disporder')
+			if($property == 'disporder')
 			{
 				$data = my_unserialize($value['value']);
 

@@ -145,9 +145,6 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
-        if (!empty($theme['color'])) {
-            $stylesheetScripts[] = $theme['color'];
-        }
 
         $stylesheetActions = array("global");
         if (!empty($this->mybb->input['action'])) {
