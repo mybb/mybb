@@ -10,9 +10,9 @@ $l['template_set'] = "Template Set";
 $l['templates'] = "{1} Templates";
 
 $l['manage_template_sets'] = "Manage Template Sets";
-$l['manage_template_sets_desc'] = "Here you can manage template sets, view the templates using these sets, and begin customizing your board's layout.";
+$l['manage_template_sets_desc'] = "Here you can manage template sets from legacy plugins, view the templates using these sets, and customize them.";
 $l['add_set'] = "Add Set";
-$l['add_set_desc'] = "Here you can create a new template set. A new template set creates a copy of the master MyBB templates and allows you to edit them without interfering with changes in any other template sets you may already have";
+$l['add_set_desc'] = "Here you can create a new template set.";
 $l['add_template'] = "Add Template";
 $l['add_template_desc'] = "Here you can create a new template.";
 $l['add_template_group'] = "Add Template Group";

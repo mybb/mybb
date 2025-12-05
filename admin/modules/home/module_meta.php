@@ -68,7 +68,7 @@ function home_action_handler($action)
 		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum-management&action=add", "module" => "forum", "action" => "management");
 		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?module=user-users&action=search", "module" => "user", "action" => "users");
 		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style-themes", "module" => "style", "action" => "themes");
-		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates", "module" => "style", "action" => "templates");
+		//$sub_menu['40'] = array("id" => "style_packages", "title" => $lang->style_packages, "link" => "index.php?module=style-packages", "module" => "style", "action" => "packages"); // TODO
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins", "module" => "config", "action" => "plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb", "module" => "tools", "action" => "backupdb");
 
