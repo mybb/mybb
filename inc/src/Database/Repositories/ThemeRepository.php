@@ -28,14 +28,21 @@ readonly class ThemeRepository
      */
     public function fromArray(array $data): Theme
     {
+        $properties = my_unserialize(
+            $data['properties'] ?? throw new InvalidArgumentException()
+        );
+        $stylesheets = my_unserialize(
+            $data['stylesheets'] ?? throw new InvalidArgumentException()
+        );
+
         return new Theme(
             $data['tid'] ?? throw new InvalidArgumentException(),
             $this->themeExtensionRepository->getExisting(
                 $data['package'] ?? throw new InvalidArgumentException(),
             ),
             $data['name'] ?? throw new InvalidArgumentException(),
-            $data['properties'] ?? throw new InvalidArgumentException(),
-            $data['stylesheets'] ?? throw new InvalidArgumentException(),
+            $properties,
+            $stylesheets,
             $data['allowedgroups'] ?? throw new InvalidArgumentException(),
         );
     }
@@ -90,7 +97,12 @@ readonly class ThemeRepository
     {
         $instances = [];
 
-        $rows = $this->db->simple_select(self::TABLE);
+        $rows = $this->db->simple_select(
+            self::TABLE,
+            options: [
+                'order_by' => 'name, tid',
+            ],
+        );
 
         while ($row = $this->db->fetch_array($rows)) {
             $instances[$row['tid']] = $this->fromArray($row);

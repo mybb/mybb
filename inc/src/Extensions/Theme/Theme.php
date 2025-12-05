@@ -21,7 +21,9 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
     use ViewExtensionTrait;
     use HierarchicalExtensionTrait;
 
-    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/themes';
+    public const EXTENSION_TYPE_BASE_PATH = 'inc/themes';
+
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . self::EXTENSION_TYPE_BASE_PATH;
 
     public const REPOSITORY_CLASS = Repository::class;
 

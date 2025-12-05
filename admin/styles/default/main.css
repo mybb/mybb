@@ -6,6 +6,10 @@
 @import url('fonts.css');
 
 :root {
+	--color-theme-core: #007fd0;
+	--color-theme-original: #7d659e;
+	--color-theme-board: transparent;
+
 	--color-development: #007fd0;
 	--color-development-update: #ff7500;
 }
@@ -273,7 +277,7 @@ table.bottom_cell_border td {
 	border-left: 0;
 }
 
-table.general td {
+:where(table.general) td {
 	background: #fcfcfc;
 	padding: 8px 12px;
 }
@@ -296,7 +300,7 @@ table.general th a, table.general th {
 	text-decoration: none;
 }
 
-table.general .alt_row td {
+:where(table.general .alt_row) td {
 	background: #fff;
 }
 
@@ -1030,6 +1034,23 @@ input.submit_button.inline_element {
 	height: 400px;
 	width: 980px;
 	border: 1px solid #ccc;
+}
+
+/* Extensions */
+.theme-extension {
+	background-color: color-mix(in lch, var(--color) 5%, transparent);
+}
+
+.theme-extension--core {
+	--color: var(--color-theme-core);
+}
+
+.theme-extension--original {
+	--color: var(--color-theme-original);
+}
+
+.theme-extension--board {
+	--color: var(--color-theme-board);
 }
 
 /* Development information */

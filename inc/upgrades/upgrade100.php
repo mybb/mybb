@@ -54,8 +54,12 @@ function upgrade100_dbchanges()
             'package' => 'core.base',
             'name' => 'Base',
             'def' => '1',
-            'properties' => 'a:0:{}',
-            'stylesheets' => 'a:0:{}',
+            'properties' => my_serialize([
+                'templateset' => 0,
+                'editortheme' => 'mybb.css',
+                'disporder' => [],
+            ]),
+            'stylesheets' => my_serialize([]),
             'allowedgroups' => 'all',
         ]);
 
