@@ -122,69 +122,16 @@ $view->setContext([
 
 $view->setMainNamespace('frontend');
 
+$theme = $view->getGlobalThemeArray();
 
-$theme = $repository->getArray($theme_model);
-
-$theme = @array_merge($theme, my_unserialize($theme['properties']));
-
-// Set the appropriate image language directory for this theme.
-// Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
+if($lang->settings['charset'])
 {
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(!empty($mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
+	$charset = $lang->settings['charset'];
 }
+// If not, revert to UTF-8
 else
 {
-	$img_directory = $theme['imgdir'];
-
-	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-	{
-		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
-	}
-
-	if(!@is_dir($img_directory))
-	{
-		$theme['imgdir'] = 'images';
-	}
-
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
-
-	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
-	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
+	$charset = "UTF-8";
 }
 
 $lang->load("global");
