@@ -910,36 +910,7 @@ if($mybb->input['action'] == "edit")
 		$properties = array(
 			'templateset' => $mybb->get_input('templateset', MyBB::INPUT_INT),
 			'editortheme' => $mybb->get_input('editortheme'),
-			'imgdir' => $mybb->get_input('imgdir'),
-			'logo' => $mybb->get_input('logo'),
-			'tablespace' => $mybb->get_input('tablespace', MyBB::INPUT_INT),
-			'borderwidth' => $mybb->get_input('borderwidth', MyBB::INPUT_INT),
-			'color' => $mybb->get_input('color')
 		);
-
-		if($properties['color'] == 'none')
-		{
-			unset($properties['color']);
-		}
-
-		if($mybb->input['colors'])
-		{
-			$colors = explode("\n", $mybb->input['colors']);
-
-			foreach($colors as $color)
-			{
-				$color = trim($color);
-				if(preg_match('(^((\p{L}|\p{Nd}|_)+)={1}((\p{L}|\p{Nd}|_)+)$)u', $color))
-				{
-					$color = explode("=", $color);
-					$properties['colors'][$color[0]] = $color[1];
-				}
-				else
-				{
-					$errors[] = $lang->sprintf($lang->error_invalid_color, $color);
-				}
-			}
-		}
 
 		if($properties['templateset'] < 0)
 		{
@@ -1115,45 +1086,6 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
-
-	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
-	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace', 'min' => 0)), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
-
-	$form_container->end();
-
-	$form_container = new FormContainer($lang->colors_manage);
-
-	if(empty($properties['colors']) || !is_array($properties['colors']))
-	{
-		$color_setting = $lang->colors_no_color_setting;
-	}
-	else
-	{
-		$colors = array('none' => $lang->colors_please_select);
-		$colors = array_merge($colors, $properties['colors']);
-
-		if(!isset($properties['color']))
-		{
-			$properties['color'] = 'none';
-		}
-		$color_setting = $form->generate_select_box('color', $colors, $properties['color'], array('class' => "select\" style=\"width: 200px;"));
-
-		$mybb->input['colors'] = '';
-		foreach($properties['colors'] as $key => $color)
-		{
-			if($mybb->input['colors'])
-			{
-				$mybb->input['colors'] .= "\n";
-			}
-
-			$mybb->input['colors'] .= "{$key}={$color}";
-		}
-	}
-
-	$form_container->output_row($lang->colors_setting, $lang->colors_setting_desc, $color_setting, 'color');
-	$form_container->output_row($lang->colors_add, $lang->colors_add_desc, $form->generate_text_area('colors', $mybb->get_input('colors'), array('style' => 'width: 200px;', 'rows' => '5')));
 
 	$form_container->end();
 
@@ -1373,28 +1305,10 @@ if($mybb->input['action'] == "edit_stylesheets")
 			$sep = " ";
 			$name = "";
 
-			$colors = array();
-
-			if(!isset($properties['colors']) || !is_array($properties['colors']))
-			{
-				$properties['colors'] = array();
-			}
-
 			foreach($style['applied_to'] as $name => $actions)
 			{
 				if(!$name)
 				{
-					continue;
-				}
-
-				if(array_key_exists($name, $properties['colors']))
-				{
-					$colors[] = $properties['colors'][$name];
-				}
-
-				if(count($colors))
-				{
-					// Colors override files and are handled below.
 					continue;
 				}
 
@@ -1422,28 +1336,6 @@ if($mybb->input['action'] == "edit_stylesheets")
 			if($attached_to)
 			{
 				$attached_to = "<small>{$lang->attached_to} {$attached_to}</small>";
-			}
-
-			if(count($colors))
-			{
-				// Attached to color instead of files.
-				$count = 1;
-				$color_list = $sep = '';
-
-				foreach($colors as $color)
-				{
-					if($count == count($colors) && $count > 1)
-					{
-						$sep = " {$lang->and} ";
-					}
-
-					$color_list .= $sep.trim($color);
-					++$count;
-
-					$sep = ', ';
-				}
-
-				$attached_to = "<small>{$lang->attached_to} ".$lang->sprintf($lang->colors_attached_to)." {$color_list}</small>";
 			}
 
 			if($attached_to == '')
@@ -1562,17 +1454,6 @@ if($mybb->input['action'] == "stylesheet_properties")
 					}
 				}
 			}
-			else if($mybb->input['attach'] == 2)
-			{
-				if(!is_array($mybb->input['color']))
-				{
-					$errors[] = $lang->error_no_color_picked;
-				}
-				else
-				{
-					$attached = $mybb->input['color'];
-				}
-			}
 
 			// Update Stylesheet
 			$update_array = array(
@@ -1664,27 +1545,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 	if(is_array($applied_to) && (!isset($applied_to['global']) || $applied_to['global'][0] != "global"))
 	{
 		$check_actions = "";
-		$stylesheet['colors'] = array();
-
-		if(!is_array($properties['colors']))
-		{
-			$properties['colors'] = array();
-		}
 
 		foreach($applied_to as $name => $actions)
 		{
-			// Verify this is a color for this theme
-			if(array_key_exists($name, $properties['colors']))
-			{
-				$stylesheet['colors'][] = $name;
-			}
-
-			if(count($stylesheet['colors']))
-			{
-				// Colors override files and are handled below.
-				continue;
-			}
-
 			// It's a file:
 			$action_list = "";
 			if($actions[0] != "global")
@@ -1734,35 +1597,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$global_checked[2] = "checked=\"checked\"";
 			$global_checked[1] = "";
 		}
-
-		if(!empty($stylesheet['colors']))
-		{
-			$global_checked[3] = "checked=\"checked\"";
-			$global_checked[2] = "";
-			$global_checked[1] = "";
-		}
 	}
 
 	$specific_files .= "</div>";
-
-	// Colors
-	$specific_colors = $specific_colors_option = '';
-
-	if(is_array($properties['colors']))
-	{
-		$specific_colors = "<div id=\"attach_2\" class=\"attachs\">";
-		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt><br />';
-
-		$specific_color = "
-			<small>{$lang->colors_add_edit_desc}</small>
-			<br /><br />
-			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
-		";
-
-		$form_container = new FormContainer();
-		$form_container->output_row("", "", $specific_color);
-		$specific_colors .= $form_container->end(true)."</div>";
-	}
 
 	$actions = '<script type="text/javascript">
 	function checkAction(id)
@@ -1790,8 +1627,6 @@ if($mybb->input['action'] == "stylesheet_properties")
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt><br />
 		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->specific_files.' (<a id="new_specific_file">'.$lang->add_another.'</a>)</label></dt><br />
 		'.$specific_files.'
-		'.$specific_colors_option.'
-		'.$specific_colors.'
 	</dl>
 	<script type="text/javascript">
 	checkAction(\'attach\');'.$check_actions.'
@@ -2094,17 +1929,6 @@ if($mybb->input['action'] == "add_stylesheet")
 					}
 				}
 			}
-			else if($mybb->input['attach'] == 2)
-			{
-				if(!is_array($mybb->input['color']))
-				{
-					$errors[] = $lang->error_no_color_picked;
-				}
-				else
-				{
-					$attached = $mybb->input['color'];
-				}
-			}
 
 			// Add Stylesheet
 			$insert_array = array(
@@ -2248,7 +2072,6 @@ if($mybb->input['action'] == "add_stylesheet")
 	$count = 0;
 	$check_actions = "";
 	$mybb->input['attach'] = $mybb->get_input('attach', MyBB::INPUT_INT);
-	$stylesheet['colors'] = array();
 	$stylesheet['sid'] = null;
 
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
@@ -2304,50 +2127,8 @@ if($mybb->input['action'] == "add_stylesheet")
 			$global_checked[1] = "";
 		}
 	}
-	else if($mybb->input['attach'] == 2)
-	{
-		// Colors
-		if(is_array($properties['colors']))
-		{
-			// We might have colors here...
-			foreach($mybb->input['color'] as $color)
-			{
-				// Verify this is a color for this theme
-				if(array_key_exists($color, $properties['colors']))
-				{
-					$stylesheet['colors'][] = $color;
-				}
-			}
-
-			if(!empty($stylesheet['colors']))
-			{
-				$global_checked[3] = "checked=\"checked\"";
-				$global_checked[2] = "";
-				$global_checked[1] = "";
-			}
-		}
-	}
 
 	$specific_files .= "</div>";
-
-	// Colors
-	$specific_colors = $specific_colors_option = '';
-
-	if(isset($properties['colors']) && is_array($properties['colors']))
-	{
-		$specific_colors = "<br /><div id=\"attach_2\" class=\"attachs\">";
-		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt>';
-
-		$specific_color = "
-			<small>{$lang->colors_add_edit_desc}</small>
-			<br /><br />
-			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
-		";
-
-		$form_container = new FormContainer();
-		$form_container->output_row("", "", $specific_color);
-		$specific_colors .= $form_container->end(true)."</div>";
-	}
 
 	$actions = '<script type="text/javascript">
 	function checkAction(id)
@@ -2375,8 +2156,6 @@ if($mybb->input['action'] == "add_stylesheet")
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt><br />
 		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->specific_files.' (<a id="new_specific_file">'.$lang->add_another.'</a>)</label></dt><br />
 		'.$specific_files.'
-		'.$specific_colors_option.'
-		'.$specific_colors.'
 	</dl>
 	<script type="text/javascript">
 	checkAction(\'attach\');'.$check_actions.'
