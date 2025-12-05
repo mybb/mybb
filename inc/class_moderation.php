@@ -803,7 +803,7 @@ class Moderation
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
 			WHERE p.pid IN($pidin)
-			GROUP BY p.pid
+			GROUP BY p.pid, t.visible, t.replies, t.firstpost, t.unapprovedposts
 			ORDER BY p.dateline ASC, p.pid ASC
 		");
 		$message = '';
@@ -1890,7 +1890,7 @@ class Moderation
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
 			WHERE p.pid IN ($pids_list)
-			GROUP BY p.pid
+			GROUP BY p.pid, t.visible, t.firstpost
 		");
 
 		// Move the selected posts over

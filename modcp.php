@@ -2530,7 +2530,7 @@ if($mybb->input['action'] == "editprofile")
 	// Fetch profile fields
 	$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
 	$user_fields = $db->fetch_array($query);
-	if(count($user_fields) > 0)
+	if(!empty($user_fields))
 	{
 		$user = array_merge($user, $user_fields);
 	}

@@ -83,7 +83,10 @@ elseif(!$mybb->user['uid'] && !empty($mybb->cookies['mybblang']) && $lang->langu
 }
 else
 {
-	$mybb->settings['bblanguage'] = 'english';
+	if(empty($mybb->settings['bblanguage']) || !$lang->language_exists($mybb->settings['bblanguage']))
+	{
+		$mybb->settings['bblanguage'] = 'english';
+	}
 }
 
 // Load language
@@ -105,8 +108,10 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 	@mb_internal_encoding($lang->settings['charset']);
 }
 
-// Select the board theme to use.
-$loadstyle = '';
+// Select the Theme model to use.
+$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+$tid = null;
+$theme_model = null;
 $load_from_forum = $load_from_user = 0;
 $style = array();
 
@@ -159,7 +164,7 @@ if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
 
-	$loadstyle = "tid = '{$mybb->user['style']}'";
+	$tid = $mybb->user['style'];
 	$load_from_user = 1;
 }
 
@@ -229,23 +234,16 @@ if(isset($style['style']) && $style['style'] > 0)
 	// This theme is forced upon the user, overriding their selection
 	if($style['overridestyle'] == 1 || !isset($mybb->user['style']))
 	{
-		$loadstyle = "tid = '{$style['style']}'";
+		$tid = $style['style'];
 	}
 }
 
-// After all of that no theme? Load the board default
-if(empty($loadstyle))
+// Fetch the theme to load
+if($tid != null)
 {
-	$loadstyle = "def='1'";
-}
+	$theme_model = $repository->find($tid);
 
-// Fetch the theme to load from the cache
-if($loadstyle != "def='1'")
-{
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
-
-	if($theme && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	if($theme_model && !$load_from_forum && !$theme_model->allowedForUser($mybb->user))
 	{
 		if($load_from_user == 1)
 		{
@@ -257,24 +255,19 @@ if($loadstyle != "def='1'")
 			my_unsetcookie('mybbtheme');
 		}
 
-		$loadstyle = "def='1'";
+		$tid = null;
 	}
 }
 
-if($loadstyle == "def='1'")
+if($tid == null)
 {
-	if(!$cache->read('default_theme'))
-	{
-		$cache->update_default_theme();
-	}
-
-	$theme = $cache->read('default_theme');
+	$theme_model = $repository->findDefault();
 
 	$load_from_forum = $load_from_user = 0;
 }
 
-// No theme was found - we attempt to load the master or any other theme
-if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
+// No Theme model was found - load fallback values
+if(!$theme_model)
 {
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
 	if($load_from_forum == 1)
@@ -287,112 +280,36 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 		$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 	}
 
-	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
-	$theme = $db->fetch_array($query);
+	$theme_model = $repository->getFallback();
 }
+
+\MyBB\app()->instance(
+	\MyBB\Database\Models\Theme::class,
+	$theme_model,
+);
+
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
+}
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
+
+$theme = $repository->getArray($theme_model);
+
 $theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
-
-// Fetch all necessary stylesheets
-$stylesheets = '';
-$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
-$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
-if(!empty($theme['color']))
-{
-	$stylesheet_scripts[] = $theme['color'];
-}
-$stylesheet_actions = array("global");
-if(!empty($mybb->input['action']))
-{
-	$stylesheet_actions[] = $mybb->get_input('action');
-}
-foreach($stylesheet_scripts as $stylesheet_script)
-{
-	// Load stylesheets for global actions and the current action
-	foreach($stylesheet_actions as $stylesheet_action)
-	{
-		if(!$stylesheet_action)
-		{
-			continue;
-		}
-
-		if(!empty($theme['stylesheets'][$stylesheet_script][$stylesheet_action]))
-		{
-			// Actually add the stylesheets to the list
-			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
-			{
-				if(!empty($already_loaded[$page_stylesheet]))
-				{
-					continue;
-				}
-
-				if(strpos($page_stylesheet, 'css.php') !== false)
-				{
-					$stylesheet_url = $mybb->settings['bburl'].'/'.$page_stylesheet;
-				}
-				else
-				{
-					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
-					if (file_exists(MYBB_ROOT.$page_stylesheet))
-					{
-						$stylesheet_url .= "?t=".filemtime(MYBB_ROOT.$page_stylesheet);
-					}
-				}
-
-				if($mybb->settings['minifycss'])
-				{
-					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
-				}
-
-				if(strpos($page_stylesheet, 'css.php') !== false)
-				{
-					// We need some modification to get it working with the displayorder
-					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
-					$id = (int)my_substr($query_string, 11);
-					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
-					$real_name = $db->fetch_field($query, "name");
-					$theme_stylesheets[$real_name] = $id;
-				}
-				else
-				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
-				}
-
-				$already_loaded[$page_stylesheet] = 1;
-			}
-		}
-	}
-}
-unset($actions);
-
-$css_php_script_stylesheets = array();
-
-if(!empty($theme_stylesheets) && is_array($theme['disporder']))
-{
-	foreach($theme['disporder'] as $style_name => $order)
-	{
-		if(!empty($theme_stylesheets[$style_name]))
-		{
-			if(is_int($theme_stylesheets[$style_name]))
-			{
-				$css_php_script_stylesheets[] = $theme_stylesheets[$style_name];
-			}
-			else
-			{
-				$stylesheets .= $theme_stylesheets[$style_name];
-			}
-		}
-	}
-}
-
-if(!empty($css_php_script_stylesheets))
-{
-	$sheet = $mybb->settings['bburl'] . '/css.php?' . http_build_query(array(
-		'stylesheet' => $css_php_script_stylesheets
-		));
-
-	$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$sheet}\" />\n";
-}
 
 // Are we linking to a remote theme server?
 if(my_validate_url($theme['imgdir']))
@@ -462,33 +379,19 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 // TODO initialize theme properties from package & load set values from DB
 $theme['editortheme'] = 'mybb.css';
 
-// TODO determine package name from DB/cache; `core.base` already registered by default
-$packageName = \MyBB\View\DEFAULT_THEME_PACKAGE;
-
-\MyBB\app()->instance(
-	\MyBB\Extensions\Theme::class,
-	\MyBB\Extensions\Theme::get($packageName),
-);
-
-$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
-
-$view->setContext([
-	'script' => basename($_SERVER['PHP_SELF']),
-	'action' => $mybb->get_input('action'),
-]);
-
-$view->setMainNamespace('frontend');
 
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {
-	$templatelist .= ',';
+	if(!empty($templatelist))
+	{
+		$templates->cache($db->escape_string($templatelist));
+	}
 }
 else
 {
 	$templatelist = '';
 }
-$templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
@@ -865,6 +768,13 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	}
 }
 
+if($mybb->config['compat_page_render'] ?? true)
+{
+	$headerinclude = '<!-- compat_page_render.headerinclude -->';
+	$header = '<!-- compat_page_render.header -->';
+	$footer = '<!-- compat_page_render.footer -->';
+}
+
 // Check to see if we have any tasks to run
 $task_image = '';
 $task_cache = $cache->read('tasks');
@@ -886,7 +796,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 {
 	$mybb->settings['footer']['langselect']['options'] = $lang->get_languages();
 
-	if(count($mybb->settings['footer']['langselect']) > 1)
+	if(count($mybb->settings['footer']['langselect']['options']) > 1)
 	{
 		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
 	}
@@ -1037,7 +947,7 @@ if(
 if($mybb->usergroup['cancp'] != 1 && $mybb->settings['load'] > 0 && ($load = get_server_load()) && $load != $lang->unknown && $load > $mybb->settings['load'])
 {
 	// User is not an administrator and the load limit is higher than the limit, show an error
-	error($lang->error_loadlimit);
+	error($lang->error_loadlimit, status_code: 503);
 }
 
 // If there is a valid referrer in the URL, cookie it

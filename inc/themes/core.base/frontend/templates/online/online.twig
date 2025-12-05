@@ -51,7 +51,7 @@
                                     {{ user.ip }}
                                     {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
                                         <a href="modcp.php?action=ipsearch&amp;ipaddress={{ user.ip }}&amp;search_users=1">
-                                            {{ lang.lookup }}
+                                            [{{ lang.lookup }}]
                                         </a>
                                     {% endif %}
                                 </span>

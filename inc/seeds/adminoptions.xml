@@ -124,6 +124,7 @@
 				<permission name="warninglog">1</permission>
 				<permission name="statistics">1</permission>
 				<permission name="file_verification">1</permission>
+				<permission name="securitylog">1</permission>
 			</module>
 			<module name="user">
 				<permission name="tab">1</permission>

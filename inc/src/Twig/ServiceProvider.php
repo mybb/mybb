@@ -6,8 +6,9 @@ use Illuminate\Contracts\Container\Container;
 use MyBB;
 use MyBB\Twig\Extensions\CoreExtension;
 use MyBB\Twig\Extensions\LangExtension;
-use MyBB\Twig\Extensions\ThemeExtension;
 use MyBB\Twig\Extensions\UrlExtension;
+use MyBB\Twig\Extensions\UserExtension;
+use MyBB\Twig\Extensions\ViewExtension;
 use MyBB\Utilities\BreadcrumbManager;
 use MyBB\View\Optimization;
 use MyBB\View\Runtime\Runtime;
@@ -35,7 +36,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->singleton(ThemeExtension::class);
+        $this->app->singleton(ViewExtension::class);
 
         $this->app->singleton(LangExtension::class, function (Container $container) {
             return new LangExtension(
@@ -47,10 +48,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new UrlExtension();
         });
 
+        $this->app->singleton(UserExtension::class, function () {
+            return new UserExtension();
+        });
+
         $this->app->singleton(LoaderInterface::class, function (Container $container) {
             $view = $container->get(Runtime::class);
 
-            return new ThemeletLoader($view->themelet, $view->getMainNamespace());
+            return new ViewletLoader($view->viewlet, $view->getMainNamespace());
         });
 
         $this->app->singleton('twig.options', function (Container $container) {
@@ -74,9 +79,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
 
             $env->addExtension($container->make(CoreExtension::class));
-            $env->addExtension($container->make(ThemeExtension::class));
+            $env->addExtension($container->make(ViewExtension::class));
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
+            $env->addExtension($container->make(UserExtension::class));
 
             if ($mybb->dev_mode) {
                 $env->addExtension($container->make(DebugExtension::class));
@@ -98,9 +104,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         return [
             CoreExtension::class,
-            ThemeExtension::class,
             LangExtension::class,
             UrlExtension::class,
+            UserExtension::class,
+            ViewExtension::class,
             LoaderInterface::class,
             Environment::class,
         ];

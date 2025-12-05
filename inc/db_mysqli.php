@@ -104,7 +104,7 @@ class DB_MySQLi implements DB_Base
 	 *
 	 * @var string
 	 */
-	public $table_type = "myisam";
+	public $table_type = "innodb";
 
 	/**
 	 * The table prefix used for simple select, update, insert and delete queries
@@ -752,7 +752,7 @@ class DB_MySQLi implements DB_Base
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}
@@ -791,29 +791,31 @@ class DB_MySQLi implements DB_Base
 			return;
 		}
 		// Field names
-		$fields = array_keys($array[array_key_first($array)]);
-		$fields = "`".implode("`,`", $fields)."`";
+		$fields_array = array_keys($array[array_key_first($array)]);
+		$fields = "`" . implode("`,`", $fields_array) . "`";
 
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			foreach($values as $field => $value)
+			$ordered_values = array();
+			foreach($fields_array as $field)
 			{
+				$value = $values[$field] ?? null;
+
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
-					if($value[0] != 'X') // Not escaped?
+					if($value !== null && $value[0] != 'X') // Not escaped?
 					{
 						$value = $this->escape_binary($value);
 					}
-
-					$values[$field] = $value;
+					$ordered_values[$field] = $value;
 				}
 				else
 				{
-					$values[$field] = $this->quote_val($value);
+					$ordered_values[$field] = $this->quote_val($value);
 				}
 			}
-			$insert_rows[] = "(".implode(",", $values).")";
+			$insert_rows[] = "(" . implode(",", $ordered_values) . ")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -856,7 +858,7 @@ class DB_MySQLi implements DB_Base
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}
@@ -1245,7 +1247,7 @@ class DB_MySQLi implements DB_Base
 		{
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}

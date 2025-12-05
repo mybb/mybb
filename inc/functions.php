@@ -18,7 +18,31 @@ function output_page($contents)
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $parsetime;
 
-	$stopwatch = \MyBB\app(\MyBB\Stopwatch\Stopwatch::class);
+	$stopwatch = \MyBB\app(\MyBB\Utilities\Stopwatch\Stopwatch::class);
+
+
+	if($mybb->config['compat_page_render'] ?? true)
+	{
+		$templates = [
+			'headerinclude',
+			'header',
+			'footer',
+		];
+
+		foreach($templates as $name)
+		{
+			$placeholder = '<!-- compat_page_render.'.$name.' -->';
+
+			if(str_contains($contents, $placeholder))
+			{
+				$contents = str_replace(
+					$placeholder,
+					\MyBB\View\template('partials/'.$name.'.twig'),
+					$contents,
+				);
+			}
+		}
+	}
 
 
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
@@ -614,9 +638,15 @@ function &get_my_mailhandler($use_buitlin = false)
  * @param string $return_email The email address to return to. Defaults to admin return email address.
  * @return bool True if the mail is sent, false otherwise.
  */
-function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "text", $message_text = "", $return_email = "")
+function my_mail($to, $subject, $message, $from = "", $charset = "", $headers = "", $keep_alive = false, $format = "", $message_text = "", $return_email = "")
 {
 	global $mybb, $plugins;
+
+	// Default to ACP setting if no format was explicitly passed
+	if(empty($format))
+	{
+		$format = !empty($mybb->settings['mail_format']) ? $mybb->settings['mail_format'] : 'text';
+	}
 
 	// Get our mail handler.
 	$mail = &get_my_mailhandler();
@@ -2028,7 +2058,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 
 	if(isset($hook_args['is_moderator']))
 	{
-		return (boolean) $hook_args['is_moderator'];
+		return (bool) $hook_args['is_moderator'];
 	}
 
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
@@ -5143,7 +5173,7 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+		$query = $db->simple_select('themes', 'tid, name, allowedgroups');
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5281,7 +5311,7 @@ function my_number_format($number)
 			$decimals = 0;
 		}
 
-		return number_format((double)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
+		return number_format((float)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
 
@@ -6434,9 +6464,23 @@ function login_attempt_check($uid = 0, $fatal = true)
  * @param string $email The string to check.
  * @return boolean True when valid, false when invalid.
  */
-function validate_email_format($email)
+function validate_email_format(string $email): bool
 {
-	return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+	$parts = explode('@', $email, 2);
+	if(count($parts) !== 2)
+	{
+		return false;
+	}
+
+	[$local, $domain] = $parts;
+
+	$domain = idn_to_ascii($domain);
+	if($domain === false)
+	{
+		return false;
+	}
+
+	return filter_var($local . '@' . $domain, FILTER_VALIDATE_EMAIL, FILTER_FLAG_EMAIL_UNICODE) !== false;
 }
 
 /**

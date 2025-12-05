@@ -529,7 +529,7 @@ if(!$mybb->input['action'])
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
-			$ban_period = $lang->permenantly;
+			$ban_period = $lang->permanently;
 			$time_remaining = $lifts_on = $lang->na;
 		}
 		else

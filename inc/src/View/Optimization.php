@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use MyBB\Utilities\FileStamp;
-use MyBB\View\Themelet\Decorator\PublishableThemelet;
+use MyBB\View\Viewlet\Decorator\PublishableViewlet;
 
 enum Optimization: int
 {
@@ -42,9 +42,9 @@ enum Optimization: int
             'hierarchy.cacheValidationType' => FileStamp::TYPE_MODIFICATION_TIME,
 
             'publication.publishMode' => match (true) {
-                $level <= self::NONE->value => PublishableThemelet::PUBLISH_ALWAYS,
-                $level >= self::PERFORMANCE->value => PublishableThemelet::PUBLISH_NEVER,
-                default => PublishableThemelet::PUBLISH_AUTO,
+                $level <= self::NONE->value => PublishableViewlet::PUBLISH_ALWAYS,
+                $level >= self::PERFORMANCE->value => PublishableViewlet::PUBLISH_NEVER,
+                default => PublishableViewlet::PUBLISH_AUTO,
             },
             'publication.all' => $level <= self::WATCH->value,
             'publication.resolutionValidation' => $level <= self::BALANCED->value,

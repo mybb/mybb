@@ -781,7 +781,7 @@ if($mybb->input['action'] == "send")
 		$format_preview = '';
 		if($email['format'] == 0 || $email['format'] == 2)
 		{
-			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text', null, true);\">{$lang->preview}</a>";
+			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text', {}, true);\">{$lang->preview}</a>";
 		}
 		if($email['format'] == 2)
 		{
@@ -789,7 +789,7 @@ if($mybb->input['action'] == "send")
 		}
 		if($email['format'] == 1 || $email['format'] == 2)
 		{
-			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}', null, true);\">{$lang->preview}</a>";
+			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}', {}, true);\">{$lang->preview}</a>";
 		}
 		$table->construct_cell($format_preview);
 		$table->construct_row();

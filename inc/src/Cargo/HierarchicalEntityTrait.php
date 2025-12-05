@@ -31,7 +31,7 @@ trait HierarchicalEntityTrait
     public function getOwn(): parent
     {
         return $this->getRepository()->getOwnRepository()->get(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -43,7 +43,7 @@ trait HierarchicalEntityTrait
     public function getResolved(): ?parent
     {
         return $this->getRepository()->getResolved(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -53,7 +53,7 @@ trait HierarchicalEntityTrait
     public function resolvesToAncestor(): bool
     {
         return $this->getRepository()->entityResolvesToAncestor(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -63,7 +63,7 @@ trait HierarchicalEntityTrait
     public function hasAncestors(): bool
     {
         return $this->getRepository()->entityHasAncestors(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -75,7 +75,7 @@ trait HierarchicalEntityTrait
     public function getClosestAncestor(): ?parent
     {
         return $this->getRepository()->getClosestEntityAncestor(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 
@@ -85,7 +85,7 @@ trait HierarchicalEntityTrait
     public function resolve(): void
     {
         $this->getRepository()->resolveRepository(
-            $this->getRepositoryEntityKey()
+            $this->getRepositoryKey()
         );
     }
 }

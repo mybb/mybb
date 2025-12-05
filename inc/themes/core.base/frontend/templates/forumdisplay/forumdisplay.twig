@@ -34,7 +34,7 @@
             <p>{{ lang.moderated_by }}
                 <strong>
                     {% for moderator in moderators.users %}
-                        <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        <a href="{{ moderator.profilelink|raw }}">{{ moderator.username|raw }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
                     {% endfor %}
                     {% if moderators.groups %}{{ lang.comma }} {% endif %}
                     {% for moderator in moderators.groups %}
@@ -288,6 +288,9 @@
                         {% endif %}
                     </div>
                 {% endif %}
+
+                {# Forum jump menu #}
+                {{ forumjump|raw }}
             </footer>
         {% endif %}
     </div>

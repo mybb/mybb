@@ -370,6 +370,10 @@ class DefaultForm
 		{
 			$input .= " checked=\"checked\"";
 		}
+		if(isset($options['disabled']) && ($options['disabled'] === true || $options['disabled'] == 1))
+		{
+			$input .= " disabled=\"disabled\"";
+		}
 		if(isset($options['onclick']))
 		{
 			$input .= " onclick=\"{$options['onclick']}\"";

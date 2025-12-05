@@ -480,7 +480,7 @@ if(!$mybb->input['action'])
 			// Primary usergroup?
 			if(!empty($usergroups[$admin['usergroup']]) && $usergroups[$admin['usergroup']]['cancp'] == 1)
 			{
-				$usergroup_list[] = "<i>".htmlspecialchars_uni($usergroups[$admin['usergroup']]['title'])."</i>";
+				$usergroup_list[] = "<em>".htmlspecialchars_uni($usergroups[$admin['usergroup']]['title'])."</em>";
 			}
 
 			// Secondary usergroups?

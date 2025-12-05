@@ -264,6 +264,7 @@ elseif($mybb->input['do'] == "login")
 		}
 
 		$plugins->run_hooks("admin_login_success");
+		log_security_action('login_admincp', $mybb->user['uid']);
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 

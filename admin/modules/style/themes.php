@@ -136,7 +136,7 @@ if($mybb->input['action'] == "browse")
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
 			$table->construct_cell("<img src=\"https://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><em><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></em>");
 			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
