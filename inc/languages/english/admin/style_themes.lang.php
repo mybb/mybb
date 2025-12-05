@@ -80,8 +80,6 @@ $l['import_theme'] = "Import Theme";
 $l['new_name_duplicate_desc'] = "A new name for the duplicated theme.";
 $l['duplicate_stylesheets'] = "Duplicate Stylesheets";
 $l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
-$l['duplicate_templates'] = "Duplicate Templates";
-$l['duplicate_templates_desc'] = "If this theme contains custom templates should they be duplicated?";
 
 $l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";

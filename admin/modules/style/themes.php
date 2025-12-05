@@ -708,55 +708,7 @@ if($mybb->input['action'] == "duplicate")
 
 		if(!$errors)
 		{
-			$properties = my_unserialize($theme['properties']);
-			$sid = (int)$properties['templateset'];
-			$nprops = null;
-			if($mybb->get_input('duplicate_templates'))
-			{
-				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->get_input('name'))." Templates"));
-
-				// Copy all old Templates to our new templateset
-				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
-				while($template = $db->fetch_array($query))
-				{
-					$insert = array(
-						"title" => $db->escape_string($template['title']),
-						"template" => $db->escape_string($template['template']),
-						"sid" => $nsid,
-						"version" => $db->escape_string($template['version']),
-						"dateline" => TIME_NOW
-					);
-
-					if($db->engine == "pgsql")
-					{
-						echo " ";
-						flush();
-					}
-
-					$db->insert_query("templates", $insert);
-				}
-
-				// We need to change the templateset so we need to work out the others properties too
-				foreach($properties as $property => $value)
-				{
-					if($property == "inherited")
-					{
-						continue;
-					}
-
-					$nprops[$property] = $value;
-					if(!empty($properties['inherited'][$property]))
-					{
-						$nprops['inherited'][$property] = $properties['inherited'][$property];
-					}
-					else
-					{
-						$nprops['inherited'][$property] = $theme['tid'];
-					}
-				}
-				$nprops['templateset'] = $nsid;
-			}
-			$tid = build_new_theme($mybb->get_input('name'), $nprops, $theme['tid']);
+			$tid = build_new_theme($mybb->get_input('name'), null, $theme['tid']);
 
 			update_theme_stylesheet_list($tid);
 
@@ -811,16 +763,11 @@ if($mybb->input['action'] == "duplicate")
 	{
 		$page->output_inline_error($errors);
 	}
-	else
-	{
-		$mybb->input['duplicate_templates'] = true;
-	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}", "post");
 
 	$form_container = new FormContainer($lang->duplicate_theme);
 	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('duplicate_templates', '1', $lang->duplicate_templates, array('checked' => $mybb->get_input('duplicate_templates'), 'id' => 'duplicate_templates'))."<br /><small>{$lang->duplicate_templates_desc}</small>");
 
 	$form_container->end();
 
@@ -1065,7 +1012,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		if($properties['templateset'] <= 0)
+		if($properties['templateset'] < 0)
 		{
 			$errors[] = $lang->error_invalid_templateset;
 		}
@@ -1121,7 +1068,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		if($properties['templateset'])
+		if($properties['templateset'] > 0)
 		{
 			$query = $db->simple_select("templatesets", "sid", "sid='".(int)$properties['templateset']."'");
 			$ts_check = $db->fetch_field($query, "sid");
@@ -1130,7 +1077,7 @@ if($mybb->input['action'] == "edit")
 				unset($properties['templateset']);
 			}
 		}
-		if(!$properties['templateset'])
+		if(!isset($properties['templateset']) || $properties['templateset'] < 0)
 		{
 			$errors[] = $lang->error_invalid_templateset;
 		}
@@ -1214,7 +1161,9 @@ if($mybb->input['action'] == "edit")
 	}
 	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
 
-	$options = array();
+	$options = array(
+		0 => $lang->none,
+	);
 	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
 	while($templateset = $db->fetch_array($query))
 	{
