@@ -48,6 +48,17 @@
                         </form>
                     </div>
                 {% endif %}
+
+                <div class="appearance-mode">
+                    <div class="select-field">
+                        {{ include('partials/icon.twig', {icon: 'adjust', class: 'select-field__icon'}, with_context = false) }}
+                        <select id="theme-toggle" aria-label="Appearance mode">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System / Auto</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <debugstuff>
         </div>

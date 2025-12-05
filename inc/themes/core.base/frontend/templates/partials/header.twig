@@ -44,12 +44,6 @@
                             </a>
                         </li>
                     {% endif %}
-                    <li class="main-menu__item main-menu__item--theme-toggle">
-                        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-                            <span class="theme-toggle__icon theme-toggle__icon--light">{{ include('partials/icon.twig', {icon: 'sun'}, with_context = false) }}</span>
-                            <span class="theme-toggle__icon theme-toggle__icon--dark">{{ include('partials/icon.twig', {icon: 'moon'}, with_context = false) }}</span>
-                        </button>
-                    </li>
                     {% endapply %}
                 </ul>
            </nav>

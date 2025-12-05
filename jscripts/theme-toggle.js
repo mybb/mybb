@@ -2,8 +2,6 @@
     'use strict';
 
     $(document).ready(function() {
-        console.log('Theme toggle script loaded');
-
         var themeToggle = $('#theme-toggle');
 
         // Find the main stylesheet by looking for main.css or dark.css in href
@@ -11,63 +9,63 @@
             return $(this).attr('href') && $(this).attr('href').match(/\/(main|dark)\.css/);
         }).first();
 
-        console.log('Theme toggle button found:', themeToggle.length);
-        console.log('Theme stylesheet found:', themeStylesheet.length);
-
-        if (themeStylesheet.length) {
-            console.log('Stylesheet href:', themeStylesheet.attr('href'));
-        }
-
-        if (!themeToggle.length) {
-            console.error('Theme toggle button not found!');
+        if (!themeToggle.length || !themeStylesheet.length) {
             return;
         }
 
-        if (!themeStylesheet.length) {
-            console.error('Theme stylesheet not found!');
-            return;
+        // Check if user prefers dark mode at system level
+        var systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+
+        function getSystemTheme() {
+            return systemPrefersDark && systemPrefersDark.matches ? 'dark' : 'light';
         }
 
-        function getTheme() {
-            return localStorage.getItem('mybb-theme') || 'light';
+        function getStoredMode() {
+            return localStorage.getItem('mybb-theme-mode') || 'system';
         }
 
-        function setTheme(theme) {
-            console.log('Setting theme to:', theme);
-            localStorage.setItem('mybb-theme', theme);
+        function getEffectiveTheme(mode) {
+            if (mode === 'system') {
+                return getSystemTheme();
+            }
+            return mode;
+        }
+
+        function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
 
             var stylesheetFile = theme === 'dark' ? 'dark.css' : 'main.css';
             var currentHref = themeStylesheet.attr('href');
             var newHref = currentHref.replace(/\/(main|dark)\.css/, '/' + stylesheetFile);
 
-            console.log('Changing stylesheet from', currentHref, 'to', newHref);
-            themeStylesheet.attr('href', newHref);
+            if (currentHref !== newHref) {
+                themeStylesheet.attr('href', newHref);
+            }
         }
 
-        function toggleTheme() {
-            var currentTheme = getTheme();
-            var newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            console.log('Toggling theme from', currentTheme, 'to', newTheme);
-            setTheme(newTheme);
+        function setMode(mode) {
+            localStorage.setItem('mybb-theme-mode', mode);
+            applyTheme(getEffectiveTheme(mode));
+            themeToggle.val(mode);
         }
 
-        var initialTheme = getTheme();
-        console.log('Initial theme:', initialTheme);
+        // Initialize with stored mode
+        var initialMode = getStoredMode();
+        themeToggle.val(initialMode);
+        applyTheme(getEffectiveTheme(initialMode));
 
-        if (initialTheme === 'dark') {
-            var currentHref = themeStylesheet.attr('href');
-            var newHref = currentHref.replace(/\/main\.css/, '/dark.css');
-            themeStylesheet.attr('href', newHref);
-        }
-
-        themeToggle.on('click', function(e) {
-            console.log('Theme toggle button clicked!');
-            e.preventDefault();
-            e.stopPropagation();
-            toggleTheme();
+        // Handle dropdown change
+        themeToggle.on('change', function() {
+            setMode($(this).val());
         });
 
-        console.log('Theme toggle initialized successfully');
+        // Listen for system preference changes when in system mode
+        if (systemPrefersDark) {
+            systemPrefersDark.addEventListener('change', function() {
+                if (getStoredMode() === 'system') {
+                    applyTheme(getSystemTheme());
+                }
+            });
+        }
     });
 })(jQuery);

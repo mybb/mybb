@@ -176,6 +176,7 @@ select {
         z-index: 100;
         max-width: 100%;
         padding: side-values(5px 30px 5px 8px);
+        color: inherit;
         background-color: transparent;
         background-image: none;
         border: none;
@@ -186,6 +187,11 @@ select {
 
         &:focus {
             outline: none;
+        }
+
+        option {
+            color: $font-color;
+            background-color: $background-default;
         }
     }
 
