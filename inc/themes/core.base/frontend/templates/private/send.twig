@@ -67,7 +67,7 @@
             </section>
             <section class="section section--form compose__primary-section">
                 <div class="row row--form field">
-                    <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" value="{{ sendpm.subject }}" placeholder="{{ lang.compose_subject }}" tabindex="1" />
+                    <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="120" value="{{ sendpm.subject }}" placeholder="{{ lang.compose_subject }}" tabindex="1" />
                 </div>
                 {% if sendpm.showposticons %}
                     {% set emptyiconcheck = sendpm.emptyiconcheck %}

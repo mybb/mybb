@@ -190,18 +190,6 @@ readonly class ThemeRepository
      */
     public function getArray(Theme $model): array
     {
-        $array = [
-            'package' => $model->package->getPackageName(),
-            'name' => $model->name,
-            'properties' => $model->properties,
-            'stylesheets' => $model->stylesheets,
-            'allowedgroups' => $model->allowedgroups,
-        ];
-
-        if ($model->id) {
-            $array['tid'] = $model->id;
-        }
-
-        return $array;
+        return $model->toArray();
     }
 }

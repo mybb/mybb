@@ -14,14 +14,12 @@ function task_versioncheck($task)
 
 	require_once MYBB_ROOT.'inc/src/Maintenance/functions_version.php';
 
-	$current_version = rawurlencode($mybb->version_code);
-
 	$updated_cache = array(
 		'last_check' => TIME_NOW
 	);
 
 	// Check for the latest version
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	$contents = \MyBB\Maintenance\fetchLatestVersionDetails();
 
 	if(!$contents)
 	{
@@ -29,23 +27,13 @@ function task_versioncheck($task)
 		return false;
 	}
 
-	$contents = trim($contents);
-
-	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
-
-	$latest_code = (int)$tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
+	$latest_code = (int)$contents['version_code'];
+	$latest_version = "<strong>".htmlspecialchars_uni($contents['latest_version'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
-		$version_warn = 1;
 		$updated_cache['latest_version'] = $latest_version;
 		$updated_cache['latest_version_code'] = $latest_code;
-	}
-	else
-	{
-		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
 	}
 
 	// Check for latest development information
@@ -62,33 +50,11 @@ function task_versioncheck($task)
 	}
 
 	// Check for the latest news
-	require_once MYBB_ROOT."inc/class_feedparser.php";
+	$news = \MyBB\Maintenance\fetchLatestNews();
 
-	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
-
-	$updated_cache['news'] = array();
-
-	require_once MYBB_ROOT . '/inc/class_parser.php';
-	$post_parser = new postParser();
-
-	if($feed_parser->error == '')
+	if($news !== null)
 	{
-		foreach($feed_parser->items as $item)
-		{
-			if (isset($updated_cache['news'][2]))
-			{
-				break;
-			}
-
-			$updated_cache['news'][] = array(
-				'title' => $item['title'],
-				'description' => $item['description'],
-				'link' => $item['link'],
-				'author' => $item['author'],
-				'dateline' => $item['date_timestamp']
-			);
-		}
+		$updated_cache['news'] = $news;
 	}
 
 	$cache->update("update_check", $updated_cache);
