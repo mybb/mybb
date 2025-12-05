@@ -14,8 +14,11 @@ $l['create_new_theme_desc'] = "Here you can create a new theme based on the defa
 $l['import_a_theme'] = "Import a Theme";
 $l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
 
-$l['edit_stylesheets'] = "Edit Stylesheets";
-$l['edit_stylesheets_desc'] = "Here you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
+$l['edit_theme'] = "Edit Theme";
+$l['edit_theme_desc'] = "Here you can easily manage the properties of this theme.";
+
+$l['edit_stylesheets'] = "Stylesheets (legacy)";
+$l['edit_stylesheets_desc'] = "Here you can easily manage stylesheets used for legacy plugins by this theme. Stylesheets are based on CSS and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
 $l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";

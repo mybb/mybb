@@ -623,9 +623,16 @@ if($mybb->input['action'] == "export")
 
 	$page->output_header("{$lang->themes} - {$lang->export_theme}");
 
+	$sub_tabs['edit_theme'] = array(
+		'title' => $lang->edit_theme,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_theme_desc
+	);
+
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_stylesheets_desc
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
@@ -771,9 +778,16 @@ if($mybb->input['action'] == "duplicate")
 
 	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
 
+	$sub_tabs['edit_theme'] = array(
+		'title' => $lang->edit_theme,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_theme_desc
+	);
+
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->get_input('tid')}",
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_stylesheets_desc
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
@@ -1158,6 +1172,151 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+
+	$page->output_header("{$lang->themes} - {$lang->edit_theme}");
+
+	$sub_tabs['edit_theme'] = array(
+		'title' => $lang->edit_theme,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_theme_desc
+	);
+
+	$sub_tabs['edit_stylesheets'] = array(
+		'title' => $lang->edit_stylesheets,
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_stylesheets_desc
+	);
+
+	$sub_tabs['add_stylesheet'] = array(
+		'title' => $lang->add_stylesheet,
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+	);
+
+	$sub_tabs['export_theme'] = array(
+		'title' => $lang->export_theme,
+		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}"
+	);
+
+	$sub_tabs['duplicate_theme'] = array(
+		'title' => $lang->duplicate_theme,
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->duplicate_theme_desc
+	);
+
+	$properties = my_unserialize($theme['properties']);
+	$page->output_nav_tabs($sub_tabs, 'edit_theme');
+
+	// Theme Properties table
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
+	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
+	echo $form->generate_hidden_field("tid", $theme['tid']);
+	$form_container = new FormContainer($lang->edit_theme_properties);
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
+
+	$options = build_theme_array($theme['tid']);
+	$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('pid', $options, $theme['pid'], array('id' => 'pid')), 'pid');
+
+	$options = array();
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$options['all'] = $lang->all_user_groups;
+	while($usergroup = $db->fetch_array($query))
+	{
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
+	}
+	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
+
+	$options = array();
+	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
+	while($templateset = $db->fetch_array($query))
+	{
+		$options[(int)$templateset['sid']] = $templateset['title'];
+	}
+	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
+
+	$options = array();
+	$editor_theme_root = MYBB_ROOT."jscripts/sceditor/themes/";
+	if($dh = @opendir($editor_theme_root))
+	{
+		while($dir = readdir($dh))
+		{
+			if($dir == ".svn" || $dir == "." || $dir == ".." || is_dir($editor_theme_root.$dir) || get_extension($editor_theme_root.$dir) != 'css')
+			{
+				continue;
+			}
+			$options[$dir] = ucfirst(str_replace(array('_', '.css'), array(' ', ''), $dir));
+		}
+	}
+
+	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
+
+	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
+	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace', 'min' => 0)), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
+
+	$form_container->end();
+
+	$form_container = new FormContainer($lang->colors_manage);
+
+	if(empty($properties['colors']) || !is_array($properties['colors']))
+	{
+		$color_setting = $lang->colors_no_color_setting;
+	}
+	else
+	{
+		$colors = array('none' => $lang->colors_please_select);
+		$colors = array_merge($colors, $properties['colors']);
+
+		if(!isset($properties['color']))
+		{
+			$properties['color'] = 'none';
+		}
+		$color_setting = $form->generate_select_box('color', $colors, $properties['color'], array('class' => "select\" style=\"width: 200px;"));
+
+		$mybb->input['colors'] = '';
+		foreach($properties['colors'] as $key => $color)
+		{
+			if($mybb->input['colors'])
+			{
+				$mybb->input['colors'] .= "\n";
+			}
+
+			$mybb->input['colors'] .= "{$key}={$color}";
+		}
+	}
+
+	$form_container->output_row($lang->colors_setting, $lang->colors_setting_desc, $color_setting, 'color');
+	$form_container->output_row($lang->colors_add, $lang->colors_add_desc, $form->generate_text_area('colors', $mybb->get_input('colors'), array('style' => 'width: 200px;', 'rows' => '5')));
+
+	$form_container->end();
+
+	$buttons = array();
+	$buttons[] = $form->generate_submit_button($lang->save_theme_properties);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+
+	$page->output_footer();
+}
+
+if($mybb->input['action'] == "edit_stylesheets")
+{
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$theme = $db->fetch_array($query);
+
+	// Does the theme not exist?
+	if(!$theme)
+	{
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style-themes");
+	}
+
+	$plugins->run_hooks("admin_style_themes_edit");
+
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = my_unserialize($theme['stylesheets']);
 
@@ -1220,7 +1379,7 @@ if($mybb->input['action'] == "edit")
 		{
 			// Error out
 			flash_message($lang->error_no_display_order, 'error');
-			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+			admin_redirect("index.php?module=style-themes&action=edit_stylesheets&tid={$theme['tid']}");
 		}
 
 		$orders = array();
@@ -1255,16 +1414,22 @@ if($mybb->input['action'] == "edit")
 		update_theme_stylesheet_list($theme['tid'], false, true);
 
 		flash_message($lang->success_stylesheet_order_updated, 'success');
-		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+		admin_redirect("index.php?module=style-themes&action=edit_stylesheets&tid={$theme['tid']}");
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}");
 
-	$page->output_header("{$lang->themes} - {$lang->stylesheets}");
+	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
+
+	$sub_tabs['edit_theme'] = array(
+		'title' => $lang->edit_theme,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_theme_desc
+	);
 
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}",
 		'description' => $lang->edit_stylesheets_desc
 	);
 
@@ -1293,7 +1458,7 @@ if($mybb->input['action'] == "edit")
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
 	// Display Order form
-	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheets", "post", "edit");
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 	echo $form->generate_hidden_field("do", 'save_orders');
 
@@ -1487,101 +1652,6 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<br />';
-
-	// Theme Properties table
-	if($errors)
-	{
-		$page->output_inline_error($errors);
-	}
-
-	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
-	echo $form->generate_hidden_field("tid", $theme['tid']);
-	$form_container = new FormContainer($lang->edit_theme_properties);
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
-
-	$options = build_theme_array($theme['tid']);
-	$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('pid', $options, $theme['pid'], array('id' => 'pid')), 'pid');
-
-	$options = array();
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
-	$options['all'] = $lang->all_user_groups;
-	while($usergroup = $db->fetch_array($query))
-	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
-	}
-	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
-
-	$options = array();
-	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
-	while($templateset = $db->fetch_array($query))
-	{
-		$options[(int)$templateset['sid']] = $templateset['title'];
-	}
-	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
-
-	$options = array();
-	$editor_theme_root = MYBB_ROOT."jscripts/sceditor/themes/";
-	if($dh = @opendir($editor_theme_root))
-	{
-		while($dir = readdir($dh))
-		{
-			if($dir == ".svn" || $dir == "." || $dir == ".." || is_dir($editor_theme_root.$dir) || get_extension($editor_theme_root.$dir) != 'css')
-			{
-				continue;
-			}
-			$options[$dir] = ucfirst(str_replace(array('_', '.css'), array(' ', ''), $dir));
-		}
-	}
-
-	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
-
-	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
-	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace', 'min' => 0)), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
-
-	$form_container->end();
-
-	$form_container = new FormContainer($lang->colors_manage);
-
-	if(empty($properties['colors']) || !is_array($properties['colors']))
-	{
-		$color_setting = $lang->colors_no_color_setting;
-	}
-	else
-	{
-		$colors = array('none' => $lang->colors_please_select);
-		$colors = array_merge($colors, $properties['colors']);
-
-		if(!isset($properties['color']))
-		{
-			$properties['color'] = 'none';
-		}
-		$color_setting = $form->generate_select_box('color', $colors, $properties['color'], array('class' => "select\" style=\"width: 200px;"));
-
-		$mybb->input['colors'] = '';
-		foreach($properties['colors'] as $key => $color)
-		{
-			if($mybb->input['colors'])
-			{
-				$mybb->input['colors'] .= "\n";
-			}
-
-			$mybb->input['colors'] .= "{$key}={$color}";
-		}
-	}
-
-	$form_container->output_row($lang->colors_setting, $lang->colors_setting_desc, $color_setting, 'color');
-	$form_container->output_row($lang->colors_add, $lang->colors_add_desc, $form->generate_text_area('colors', $mybb->get_input('colors'), array('style' => 'width: 200px;', 'rows' => '5')));
-
-	$form_container->end();
-
-	$buttons = array();
-	$buttons[] = $form->generate_submit_button($lang->save_theme_properties);
-	$form->output_submit_wrapper($buttons);
-	$form->end();
-
 	$page->output_footer();
 }
 
@@ -1741,7 +1811,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	}
 
 	$properties = my_unserialize($theme['properties']);
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item(htmlspecialchars_uni($stylesheet['name'])." {$lang->properties}", "index.php?module=style-themes&amp;action=edit_properties&amp;tid={$mybb->input['tid']}");
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheet_properties}");
@@ -2035,7 +2105,7 @@ if($mybb->input['action'] == "edit_stylesheet")
 		}
 		else
 		{
-			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+			admin_redirect("index.php?module=style-themes&action=edit_stylesheets&tid={$theme['tid']}");
 		}
 	}
 
@@ -2058,7 +2128,7 @@ if($mybb->input['action'] == "edit_stylesheet")
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file']));
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet}");
@@ -2183,7 +2253,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
 
 		flash_message($lang->success_stylesheet_deleted, 'success');
-		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
+		admin_redirect("index.php?module=style-themes&action=edit_stylesheets&tid={$theme['tid']}");
 	}
 	else
 	{
@@ -2329,15 +2399,22 @@ if($mybb->input['action'] == "add_stylesheet")
 ';
 	}
 
-	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item($lang->add_stylesheet);
 	$properties = my_unserialize($theme['properties']);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
 
+	$sub_tabs['edit_theme'] = array(
+		'title' => $lang->edit_theme,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_theme_desc
+	);
+
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
-		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}"
+		'link' => "index.php?module=style-themes&amp;action=edit_stylesheets&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->edit_stylesheets_desc
 	);
 
 	$sub_tabs['add_stylesheet'] = array(
