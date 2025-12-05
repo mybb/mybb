@@ -511,7 +511,7 @@ function unfix_css_urls($url)
 }
 
 /**
- * Build a theme based on the specified parameters.
+ * Build a legacy theme based on the specified parameters.
  *
  * @param string $name The name of the theme
  * @param array $properties Array of theme properties (if blank, inherits from parent)

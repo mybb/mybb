@@ -44,12 +44,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $myb
 		'description' => $lang->add_theme_desc
 	);
 
-	$sub_tabs['import_theme'] = array(
-		'title' => $lang->import_a_theme,
-		'link' => "index.php?module=style-themes&amp;action=import",
-		'description' => $lang->import_a_theme_desc
-	);
-
 	$sub_tabs['browse_themes'] = array(
 		'title' => $lang->browse_themes,
 		'link' => "index.php?module=style-themes&amp;action=browse",
@@ -343,6 +337,12 @@ if($mybb->input['action'] == "import")
 		$themes[$theme['tid']] = $theme['name'];
 	}
 
+	$sub_tabs['import_theme'] = array(
+		'title' => $lang->import_a_theme,
+		'link' => "index.php?module=style-themes&amp;action=import",
+		'description' => $lang->import_a_theme_desc
+	);
+
 	$page->add_breadcrumb_item($lang->import_a_theme, "index.php?module=style-themes&amp;action=import");
 
 	$page->output_header("{$lang->themes} - {$lang->import_a_theme}");
@@ -625,7 +625,10 @@ if($mybb->input['action'] == "export")
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
 		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}",
-		'description' => $lang->export_theme_desc
+		'description' => $lang->sprintf(
+			$lang->export_theme_desc,
+			'index.php?module=style-themes&amp;action=import',
+		),
 	);
 
 	$sub_tabs['duplicate_theme'] = array(

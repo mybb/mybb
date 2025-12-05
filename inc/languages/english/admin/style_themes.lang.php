@@ -11,8 +11,8 @@ $l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes
 $l['add_theme'] = "Add Theme";
 $l['add_theme_desc'] = "Here you can add a new theme based on the select package to make it selectable and customizable.";
 
-$l['import_a_theme'] = "Import a Theme";
-$l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
+$l['import_a_theme'] = "Import (legacy)";
+$l['import_a_theme_desc'] = "Here you can import themes with legacy resources. You may import a theme from your computer, or a remote URL.";
 
 $l['edit_theme'] = "Edit Theme";
 $l['edit_theme_desc'] = "Here you can easily manage the properties of this theme.";
@@ -21,15 +21,15 @@ $l['edit_stylesheets'] = "Stylesheets (legacy)";
 $l['edit_stylesheets_desc'] = "Here you can easily manage stylesheets used for legacy plugins by this theme. Stylesheets are based on CSS and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
-$l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
+$l['add_stylesheet_desc'] = "Here you can add a legacy stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
 
 $l['browse_themes'] = "Browse Packages";
 $l['browse_themes_desc'] = "Here you may browse the official MyBB modifications site for themes compatible with your series of MyBB.";
 
 $l['browse_all_themes'] = "Browse All Themes";
 
-$l['export_theme'] = "Export Theme";
-$l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
+$l['export_theme'] = "Export (legacy)";
+$l['export_theme_desc'] = "Here you can export your themes with legacy stylesheets and templates. Exported themes can be imported <a href=\"{1}\"><strong>here</strong></a>.";
 
 $l['duplicate_theme'] = "Duplicate Theme";
 $l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
@@ -83,7 +83,7 @@ $l['allowed_user_groups'] = "Allowed User Groups";
 $l['allowed_user_groups_desc'] = "Specify which user groups are allowed to use this theme. Selecting 'All User Groups' will override any other selection. Hold down the CTRL key to select multiple user groups.";
 $l['all_user_groups'] = "All User Groups";
 $l['template_set'] = "Template Set";
-$l['template_set_desc'] = "Specify the template set the theme should use. The selected template set defines the markup (HTML) used in presenting the theme.";
+$l['template_set_desc'] = "Specify the template set the theme should use for legacy plugins.";
 $l['editor_theme'] = "Editor Style";
 $l['editor_theme_desc'] = "Specify the style to be used for the MyCode editor in this theme. Editor styles can be found in the <strong>jscripts/sceditor/themes</strong> folder.";
 $l['save_theme_properties'] = "Save Theme Properties";
