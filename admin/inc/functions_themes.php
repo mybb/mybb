@@ -523,6 +523,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 	global $db;
 
 	$new_theme = array(
+		"package" => \MyBB\View\DEFAULT_THEME_PACKAGE,
 		"name" => $db->escape_string($name),
 		"def" => 0,
 		"allowedgroups" => "all",
@@ -814,94 +815,6 @@ function cache_themes()
 	}
 
 	return $theme_cache;
-}
-
-/**
- * @param int $parent
- * @param int $depth
- */
-function build_theme_list($parent=0, $depth=0)
-{
-	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
-	static $theme_cache;
-
-	if(!is_array($theme_cache))
-	{
-		$themes = cache_themes();
-		$query = $db->simple_select("users", "style, COUNT(uid) AS users", "", array('group_by' => 'style'));
-		while($user_themes = $db->fetch_array($query))
-		{
-			if($user_themes['style'] == 0)
-			{
-				$user_themes['style'] = $themes['default'];
-			}
-
-			if(isset($themes[$user_themes['style']]['users']) && $themes[$user_themes['style']]['users'] > 0)
-			{
-				$themes[$user_themes['style']]['users'] += (int)$user_themes['users'];
-			}
-			else
-			{
-				$themes[$user_themes['style']]['users'] = (int)$user_themes['users'];
-			}
-		}
-
-		// Restrucure the theme array to something we can "loop-de-loop" with
-		foreach($themes as $key => $theme)
-		{
-			if($key == "default")
-			{
-				continue;
-			}
-
-			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
-		}
-		$theme_cache['num_themes'] = count($themes);
-		unset($themes);
-	}
-
-	if(!isset($theme_cache[$parent]) || !is_array($theme_cache[$parent]))
-	{
-		return;
-	}
-
-	foreach($theme_cache[$parent] as $theme)
-	{
-		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
-		$set_default = '';
-		if($theme['tid'] > 1)
-		{
-			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
-			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($theme['name'])."</a>";
-
-			// We must have at least the master and 1 other active theme
-			if($theme_cache['num_themes'] > 2)
-			{
-				$popup->add_item($lang->delete_theme, "index.php?module=style-themes&amp;action=delete&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
-			}
-
-			if($theme['def'] != 1)
-			{
-				$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}");
-				$set_default = "<a href=\"index.php?module=style-themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.png\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
-			}
-			else
-			{
-				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.png\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
-			}
-			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
-			$set_default = "<div class=\"float_right\">{$set_default}</div>";
-		}
-		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;tid={$theme['tid']}");
-		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
-		$table->construct_cell("{$set_default}<div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
-		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
-		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
-		$table->construct_row();
-
-		// Fetch & build any child themes
-		build_theme_list($theme['tid'], ++$depth);
-	}
 }
 
 /**

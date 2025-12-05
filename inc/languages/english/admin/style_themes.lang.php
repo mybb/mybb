@@ -6,10 +6,10 @@
  */
 
 $l['themes'] = "Themes";
-$l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
+$l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of packages and themes using them is shown below.";
 
-$l['create_new_theme'] = "Create New Theme";
-$l['create_new_theme_desc'] = "Here you can create a new theme based on the default. <strong>Template sets, stylesheets, and other settings are inherited from the parent theme.</strong>";
+$l['add_theme'] = "Add Theme";
+$l['add_theme_desc'] = "Here you can add a new theme based on the select package to make it selectable and customizable.";
 
 $l['import_a_theme'] = "Import a Theme";
 $l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
@@ -23,7 +23,7 @@ $l['edit_stylesheets_desc'] = "Here you can easily manage stylesheets used for l
 $l['add_stylesheet'] = "Add Stylesheet";
 $l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
 
-$l['browse_themes'] = "Browse Themes";
+$l['browse_themes'] = "Browse Packages";
 $l['browse_themes_desc'] = "Here you may browse the official MyBB modifications site for themes compatible with your series of MyBB.";
 
 $l['browse_all_themes'] = "Browse All Themes";
@@ -41,6 +41,10 @@ $l['edit_stylesheet'] = "Edit Stylesheet";
 $l['edit_stylesheet_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the CSS stylesheet is shown in the text area below.";
 
 $l['theme'] = "Theme";
+$l['themes_using_package'] = "<em>{1}</em> ({2})";
+$l['theme_core_package'] = "Built-in Package";
+$l['theme_original_package'] = "Imported Package";
+$l['theme_board_package'] = "Custom Package";
 $l['num_users'] = "# Users";
 $l['edit_theme'] = "Edit Theme";
 $l['delete_theme'] = "Delete Theme";
@@ -67,9 +71,10 @@ $l['new_name_duplicate_desc'] = "A new name for the duplicated theme.";
 $l['duplicate_stylesheets'] = "Duplicate Stylesheets";
 $l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
 
-$l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
+$l['package'] = "Package";
+$l['package_desc'] = "Specify the package the theme should use. Theme packages are uploaded to <code>{1}</code>.";
 $l['display_order'] = "Order";
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
@@ -132,6 +137,7 @@ $l['error_invalid_theme'] = "You have selected an invalid theme.";
 $l['error_missing_name'] = "Please enter a name for this theme.";
 $l['error_missing_url'] = "Please enter a valid url to import a theme from.";
 $l['error_theme_already_exists'] = "A theme with the same name already exists. Please specify a different name.";
+$l['error_invalid_theme_package'] = "Please select a valid theme package.";
 $l['error_theme_security_problem'] = "A potential security issue was found in the theme. It was not imported. Please contact the Author or MyBB Group for support.";
 
 $l['error_local_file'] = "Could not open the local file. Does it exist? Please check and try again.";
