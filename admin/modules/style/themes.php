@@ -302,7 +302,6 @@ if($mybb->input['action'] == "import")
 					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
 					'version_compat' => $mybb->get_input('version_compat', MyBB::INPUT_INT),
-					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
 					'force_name_check' => true,
 				);
 				$theme_id = import_theme_xml($contents, $options);
@@ -421,7 +420,6 @@ if($mybb->input['action'] == "import")
 
 	$form_container = new FormContainer($lang->import_a_theme);
 	$form_container->output_row($lang->import_from, $lang->import_from_desc, $actions, 'file');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
 	$form_container->output_row($lang->new_name, $lang->new_name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->get_input('version_compat'), 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->get_input('import_stylesheets'), 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->get_input('import_templates'), 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
 
@@ -858,7 +856,7 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$tid = build_new_theme($mybb->input['name'], null, $mybb->input['tid']);
+			$tid = build_new_theme($mybb->input['name'], null);
 
 			$plugins->run_hooks("admin_style_themes_add_commit");
 
@@ -885,7 +883,6 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->create_a_theme);
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->get_input('tid'), array('id' => 'tid')), 'tid');
 
 	$form_container->end();
 
@@ -1104,7 +1101,6 @@ if($mybb->input['action'] == "edit")
 
 		$update_array = array(
 			'name' => $db->escape_string($mybb->input['name']),
-			'pid' => $mybb->get_input('pid', MyBB::INPUT_INT),
 			'allowedgroups' => $allowedgroups,
 			'properties' => $db->escape_string(my_serialize($properties))
 		);
@@ -1125,15 +1121,6 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		if($update_array['pid'])
-		{
-			$query = $db->simple_select("themes", "tid", "tid='".$update_array['pid']."'");
-			$parent_check = $db->fetch_field($query, "tid");
-			if(!$parent_check)
-			{
-				$errors[] = $lang->error_invalid_parent_theme;
-			}
-		}
 		if($properties['templateset'])
 		{
 			$query = $db->simple_select("templatesets", "sid", "sid='".(int)$properties['templateset']."'");
@@ -1217,9 +1204,6 @@ if($mybb->input['action'] == "edit")
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 	$form_container = new FormContainer($lang->edit_theme_properties);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
-
-	$options = build_theme_array($theme['tid']);
-	$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('pid', $options, $theme['pid'], array('id' => 'pid')), 'pid');
 
 	$options = array();
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
@@ -1669,14 +1653,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	$plugins->run_hooks("admin_style_themes_stylesheet_properties");
 
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
-	}
-
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid=".$theme['tid'], array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -2048,14 +2025,7 @@ if($mybb->input['action'] == "edit_stylesheet")
 
 	$plugins->run_hooks("admin_style_themes_edit_stylesheet");
 
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
-	}
-
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid=".$theme['tid'], array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -2213,14 +2183,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 	$plugins->run_hooks("admin_style_themes_delete_stylesheet");
 
-	$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
-	{
-		$parent_list = 1;
-	}
-
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid=".$theme['tid'], array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist? or are we trying to delete the master?
@@ -2299,11 +2262,7 @@ if($mybb->input['action'] == "add_stylesheet")
 		{
 			if($mybb->input['add_type'] == 1)
 			{
-				// Import from a current stylesheet
-				$parent_list = make_parent_theme_list($theme['tid']);
-				$parent_list = implode(',', $parent_list);
-
-				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid IN ({$parent_list})", array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
+				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid=".$theme['tid'], array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
 				$stylesheet = $db->fetch_field($query, "stylesheet");
 			}
 			else
