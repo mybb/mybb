@@ -688,7 +688,7 @@ if($mybb->input['action'] == "add")
 		{
 			$mybb->input['starimage'] = "images/star.png";
 		}
-		elseif(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->get_input('starimage')))
+		elseif(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu >]))(\s*[^>]*)>#si", $mybb->get_input('starimage')))
 		{
 			$errors[] = $lang->error_disallowed_starimage_path;
 		}
