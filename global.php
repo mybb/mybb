@@ -289,110 +289,33 @@ if(!$theme_model)
 	$theme_model = $repository->getFallback();
 }
 
+\MyBB\app()->instance(
+	\MyBB\Database\Models\Theme::class,
+	$theme_model,
+);
+
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
+}
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
+
 $theme = $repository->getArray($theme_model);
 
 $theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
-
-// Fetch all legacy stylesheets
-$stylesheets = '';
-$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
-$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
-if(!empty($theme['color']))
-{
-	$stylesheet_scripts[] = $theme['color'];
-}
-$stylesheet_actions = array("global");
-if(!empty($mybb->input['action']))
-{
-	$stylesheet_actions[] = $mybb->get_input('action');
-}
-foreach($stylesheet_scripts as $stylesheet_script)
-{
-	// Load stylesheets for global actions and the current action
-	foreach($stylesheet_actions as $stylesheet_action)
-	{
-		if(!$stylesheet_action)
-		{
-			continue;
-		}
-
-		if(!empty($theme['stylesheets'][$stylesheet_script][$stylesheet_action]))
-		{
-			// Actually add the stylesheets to the list
-			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
-			{
-				if(!empty($already_loaded[$page_stylesheet]))
-				{
-					continue;
-				}
-
-				if(strpos($page_stylesheet, 'css.php') !== false)
-				{
-					$stylesheet_url = $mybb->settings['bburl'].'/'.$page_stylesheet;
-				}
-				else
-				{
-					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
-					if (file_exists(MYBB_ROOT.$page_stylesheet))
-					{
-						$stylesheet_url .= "?t=".filemtime(MYBB_ROOT.$page_stylesheet);
-					}
-				}
-
-				if($mybb->settings['minifycss'])
-				{
-					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
-				}
-
-				if(strpos($page_stylesheet, 'css.php') !== false)
-				{
-					// We need some modification to get it working with the displayorder
-					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
-					$id = (int)my_substr($query_string, 11);
-					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
-					$real_name = $db->fetch_field($query, "name");
-					$theme_stylesheets[$real_name] = $id;
-				}
-				else
-				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
-				}
-
-				$already_loaded[$page_stylesheet] = 1;
-			}
-		}
-	}
-}
-unset($actions);
-
-$css_php_script_stylesheets = array();
-
-if(!empty($theme_stylesheets) && is_array($theme['disporder']))
-{
-	foreach($theme['disporder'] as $style_name => $order)
-	{
-		if(!empty($theme_stylesheets[$style_name]))
-		{
-			if(is_int($theme_stylesheets[$style_name]))
-			{
-				$css_php_script_stylesheets[] = $theme_stylesheets[$style_name];
-			}
-			else
-			{
-				$stylesheets .= $theme_stylesheets[$style_name];
-			}
-		}
-	}
-}
-
-if(!empty($css_php_script_stylesheets))
-{
-	$sheet = $mybb->settings['bburl'] . '/css.php?' . http_build_query(array(
-		'stylesheet' => $css_php_script_stylesheets
-		));
-
-	$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$sheet}\" />\n";
-}
 
 // Are we linking to a remote theme server?
 if(my_validate_url($theme['imgdir']))
@@ -462,23 +385,6 @@ if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($the
 // TODO initialize theme properties from package & load set values from DB
 $theme['editortheme'] = 'mybb.css';
 
-if($theme_model->package->exists())
-{
-	// override initial binding
-	\MyBB\app()->instance(
-		\MyBB\Extensions\Theme\Theme::class,
-		$theme_model->package,
-	);
-}
-
-$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
-
-$view->setContext([
-	'script' => basename($_SERVER['PHP_SELF']),
-	'action' => $mybb->get_input('action'),
-]);
-
-$view->setMainNamespace('frontend');
 
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
@@ -866,6 +772,13 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 		}
 		$headerMessages[] = $aamessage;
 	}
+}
+
+if($mybb->config['compat_page_render'] ?? true)
+{
+	$headerinclude = '<!-- compat_page_render.headerinclude -->';
+	$header = '<!-- compat_page_render.header -->';
+	$footer = '<!-- compat_page_render.footer -->';
 }
 
 // Check to see if we have any tasks to run

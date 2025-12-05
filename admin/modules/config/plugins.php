@@ -316,7 +316,7 @@ if($mybb->input['action'] == "check")
 			if($is_vulnerable)
 			{
 				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
-										{$lang->error_vcheck_vulnerable} {$names[$plugin['attributes'][$compare_by]]['name']}
+										[{$lang->error_vcheck_vulnerable}] {$names[$plugin['attributes'][$compare_by]]['name']}
 										</div>
 										<p>	<strong>{$lang->error_vcheck_vulnerable_notes}</strong> <br /><br /> {$plugin['vulnerable']['value']}</p>");
 			}

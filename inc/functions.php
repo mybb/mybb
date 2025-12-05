@@ -21,6 +21,30 @@ function output_page($contents)
 	$stopwatch = \MyBB\app(\MyBB\Utilities\Stopwatch\Stopwatch::class);
 
 
+	if($mybb->config['compat_page_render'] ?? true)
+	{
+		$templates = [
+			'headerinclude',
+			'header',
+			'footer',
+		];
+
+		foreach($templates as $name)
+		{
+			$placeholder = '<!-- compat_page_render.'.$name.' -->';
+
+			if(str_contains($contents, $placeholder))
+			{
+				$contents = str_replace(
+					$placeholder,
+					\MyBB\View\template('partials/'.$name.'.twig'),
+					$contents,
+				);
+			}
+		}
+	}
+
+
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
 
@@ -2034,7 +2058,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 
 	if(isset($hook_args['is_moderator']))
 	{
-		return (boolean) $hook_args['is_moderator'];
+		return (bool) $hook_args['is_moderator'];
 	}
 
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
@@ -5287,7 +5311,7 @@ function my_number_format($number)
 			$decimals = 0;
 		}
 
-		return number_format((double)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
+		return number_format((float)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
 

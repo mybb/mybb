@@ -113,6 +113,30 @@ if(!$theme_model)
 	$theme_model = $repository->getFallback();
 }
 
+\MyBB\app()->instance(
+	\MyBB\Database\Models\Theme::class,
+	$theme_model,
+);
+
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
+}
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
+
 $theme = $repository->getArray($theme_model);
 
 $theme = @array_merge($theme, my_unserialize($theme['properties']));
@@ -177,14 +201,6 @@ else
 	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
-if($theme_model->package->exists())
-{
-	// override initial binding
-	\MyBB\app()->instance(
-		\MyBB\Extensions\Theme\Theme::class,
-		$theme_model->package,
-	);
-}
 
 if($lang->settings['charset'])
 {

@@ -177,6 +177,10 @@ class Publication
     {
         $path = $this->asset->getAbsolutePath();
 
+        if (!$this->filesystem->isFile($path)) {
+            return true;
+        }
+
         $publishedFileTime = $this->filesystem->lastModified($path);
 
         if ($publishedFileTime === false) {

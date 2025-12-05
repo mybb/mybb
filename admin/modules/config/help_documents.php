@@ -107,13 +107,13 @@ if($mybb->input['action'] == "add")
 		}
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=section", "post", "add");
-		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
 		$form_container = new FormContainer($lang->add_new_section);
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->get_input('enabled')));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('usetranslation', $mybb->get_input('usetranslation')));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_section);
@@ -219,7 +219,6 @@ if($mybb->input['action'] == "add")
 		}
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=document", "post", "add");
-		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
 		$form_container = new FormContainer($lang->add_new_document);
 		$query = $db->simple_select("helpsections", "sid, name");
@@ -235,6 +234,7 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->get_input('document'), array('id' => 'document')), 'document');
 		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->get_input('enabled')));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('usetranslation', $mybb->get_input('usetranslation')));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_document);
@@ -346,13 +346,13 @@ if($mybb->input['action'] == "edit")
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 
 		echo $form->generate_hidden_field("sid", $section['sid']);
-		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
 		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".$section['sid'].")");
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('usetranslation', $mybb->input['usetranslation']));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_section);
@@ -466,7 +466,6 @@ if($mybb->input['action'] == "edit")
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 
 		echo $form->generate_hidden_field("hid", $doc['hid']);
-		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
 		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".$doc['hid'].")");
 
@@ -482,6 +481,7 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->input['document'], array('id' => 'document')), 'document');
 		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('usetranslation', $mybb->input['usetranslation']));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->save_document);

@@ -149,9 +149,12 @@ class FilesystemNestedStore implements NestedStoreInterface
 
     protected function saveFile(string $key): bool
     {
-        $path = $this->getFilePath($key);
+        $filePath = $this->getFilePath($key);
+        $directoryPath = dirname($filePath);
 
-        mkdir(dirname($path), recursive: true);
+        if (!is_dir($directoryPath)) {
+            mkdir($directoryPath, recursive: true);
+        }
 
         $encoded = json_encode($this->cache[$key], JSON_PRETTY_PRINT);
 
@@ -159,7 +162,7 @@ class FilesystemNestedStore implements NestedStoreInterface
             return false;
         }
 
-        return file_put_contents($path, $encoded) !== false;
+        return file_put_contents($filePath, $encoded) !== false;
     }
 
     /**

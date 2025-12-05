@@ -662,7 +662,7 @@ class DB_SQLite implements DB_Base
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}
@@ -770,7 +770,7 @@ class DB_SQLite implements DB_Base
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}
@@ -1124,7 +1124,7 @@ class DB_SQLite implements DB_Base
 			$columns .= $comma.$column;
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
-				if($value[0] != 'X') // Not escaped?
+				if($value !== '' && $value[0] != 'X') // Not escaped?
 				{
 					$value = $this->escape_binary($value);
 				}

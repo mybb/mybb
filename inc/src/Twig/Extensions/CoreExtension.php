@@ -364,7 +364,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             }
 
             return number_format(
-                (double)$number,
+                (float)$number,
                 $decimals,
                 $this->mybb->settings['decpoint'],
                 $this->mybb->settings['thousandssep']

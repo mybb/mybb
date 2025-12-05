@@ -103,17 +103,27 @@ readonly class ThemeRepository
     {
         $this->db->insert_query(
             self::TABLE,
-            $this->getArray($model),
+            array_map(
+                $this->db->escape_string(...),
+                $this->getArray($model),
+            ),
         );
 
-        return $this->db->insert_id();
+        $id = (int)$this->db->insert_id();
+
+        $model->id = $id;
+
+        return $id;
     }
 
     public function update(Theme $model): void
     {
         $this->db->update_query(
             self::TABLE,
-            $this->getArray($model),
+            array_map(
+                $this->db->escape_string(...),
+                $this->getArray($model),
+            ),
             'tid = ' . (int)$model->id,
         );
 
@@ -169,8 +179,8 @@ readonly class ThemeRepository
     public function getFallback(): Theme
     {
         return new Theme(
-            0,
-            $this->themeExtensionRepository->get(DEFAULT_THEME_PACKAGE),
+            null,
+            package: $this->themeExtensionRepository->get(DEFAULT_THEME_PACKAGE),
             name: DEFAULT_THEME_PACKAGE,
         );
     }
@@ -180,13 +190,18 @@ readonly class ThemeRepository
      */
     public function getArray(Theme $model): array
     {
-        return [
-            'tid' => $model->id,
+        $array = [
             'package' => $model->package->getPackageName(),
             'name' => $model->name,
             'properties' => $model->properties,
             'stylesheets' => $model->stylesheets,
             'allowedgroups' => $model->allowedgroups,
         ];
+
+        if ($model->id) {
+            $array['tid'] = $model->id;
+        }
+
+        return $array;
     }
 }

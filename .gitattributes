@@ -12,3 +12,5 @@
 /SECURITY.md export-ignore
 /htaccess-nginx.txt export-ignore
 /htaccess.txt export-ignore
+
+/.source-commit export-subst

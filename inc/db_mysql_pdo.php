@@ -237,7 +237,7 @@ class MysqlPdoDbDriver extends AbstractPdoDbDriver
 
 		foreach ($array as $field => $value) {
 			if (isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field]) {
-				if($value[0] != 'X') { // Not escaped?
+				if($value !== '' && $value[0] != 'X') { // Not escaped?
 					$value = $this->escape_binary($value);
 				}
 

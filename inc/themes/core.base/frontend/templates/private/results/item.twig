@@ -8,7 +8,7 @@
         <h3 class="message__subject">
             <a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
             {% if message.denyreceipt %}
-                 <span class="message__deny-receipt"><a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a></span>
+                 <span class="message__deny-receipt">[<a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a>]</span>
             {% endif %}
             <span class="message__icons">
                 {% if message.hasicon %}
