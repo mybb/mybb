@@ -679,7 +679,7 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
-		elseif(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->get_input('namestyle')))
+		elseif(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu >]))(\s*[^>]*)>#si", $mybb->get_input('namestyle')))
 		{
 			$errors[] = $lang->error_disallowed_namestyle_username;
 		}
