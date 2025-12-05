@@ -236,31 +236,6 @@ function import_theme_xml($xml, $options=array())
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
 
-		// Retrieve a list of inherited stylesheets
-		$query = $db->simple_select("themes", "stylesheets", "tid = '{$theme_id}'");
-		if($db->num_rows($query))
-		{
-			$inherited_stylesheets = my_unserialize($db->fetch_field($query, "stylesheets"));
-
-			if(isset($inherited_stylesheets['inherited']) && is_array($inherited_stylesheets['inherited']))
-			{
-				$loop = 1;
-				foreach($inherited_stylesheets['inherited'] as $action => $stylesheets)
-				{
-					foreach($stylesheets as $filename => $stylesheet)
-					{
-						if($properties['disporder'][basename($filename)])
-						{
-							continue;
-						}
-
-						$properties['disporder'][basename($filename)] = $loop;
-						++$loop;
-					}
-				}
-			}
-		}
-
 		$loop = 1;
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
@@ -741,11 +716,6 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			foreach($attached_actions as $action)
 			{
 				$theme_stylesheets[$attached_file][$action][] = $css_url;
-
-				if(!empty($stylesheet['inherited']))
-				{
-					$theme_stylesheets['inherited']["{$attached_file}_{$action}"][$css_url] = $stylesheet['inherited'];
-				}
 			}
 		}
 	}
@@ -1003,44 +973,21 @@ function fetch_theme_stylesheets($theme)
 	}
 
 	$stylesheets = array();
-	$inherited_load = array();
 
 	// Now we loop through the list of stylesheets for each file
 	foreach($file_stylesheets as $file => $action_stylesheet)
 	{
-		if($file == 'inherited')
-		{
-			continue;
-		}
-
 		foreach($action_stylesheet as $action => $style)
 		{
 			foreach($style as $stylesheet2)
 			{
 				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(isset($file_stylesheets['inherited'][$file."_".$action]) && is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
-				{
-					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-					{
-						$inherited_load[] = $value;
-					}
-				}
 			}
 		}
 	}
 
 	foreach($stylesheets as $file => $stylesheet2)
 	{
-		if(isset($stylesheet2['inherited']) && is_array($stylesheet2['inherited']))
-		{
-			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
-			{
-				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-				unset($stylesheet2['inherited'][$inherited_file]);
-			}
-		}
-
 		$stylesheets[basename($file)] = $stylesheet2;
 		unset($stylesheets[$file]);
 	}

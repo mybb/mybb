@@ -489,17 +489,6 @@ if($mybb->input['action'] == "export")
 				foreach($style as $stylesheet)
 				{
 					$stylesheets[$stylesheet]['applied_to'][$file][] = $action;
-
-					$array = &$file_stylesheets['inherited'][$file."_".$action];
-
-					if(is_array($array) && array_key_exists($stylesheet, $array))
-					{
-						$stylesheets[$stylesheet]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-						foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-						{
-							$inherited_load[] = $value;
-						}
-					}
 				}
 			}
 		}
@@ -556,11 +545,6 @@ if($mybb->input['action'] == "export")
 			else
 			{
 				$style['tid'] = null;
-			}
-
-			if($mybb->input['custom_theme'] == 1 && $style['tid'] != $mybb->input['tid'])
-			{
-				continue;
 			}
 
 			if(isset($theme_stylesheets[$filename]))
@@ -661,7 +645,6 @@ if($mybb->input['action'] == "export")
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 
 	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']));
-	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->get_input('custom_theme')), 'custom_theme');
 	$form_container->output_row($lang->include_templates, $lang->include_templates_desc, $form->generate_yes_no_radio('include_templates', $mybb->get_input('include_templates')), 'include_templates');
 
 	$form_container->end();
@@ -864,44 +847,6 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$inherited_theme_cache = array();
-
-		$query = $db->simple_select("themes", "tid,stylesheets", "tid != '{$theme['tid']}'", array('order_by' => "pid, name"));
-		while($theme2 = $db->fetch_array($query))
-		{
-			$theme2['stylesheets'] = my_unserialize($theme2['stylesheets']);
-
-			if(empty($theme2['stylesheets']['inherited']))
-			{
-				continue;
-			}
-
-			$inherited_theme_cache[$theme2['tid']] = $theme2['stylesheets']['inherited'];
-		}
-
-		$inherited_stylesheets = false;
-
-		// Are any other themes relying on stylesheets from this theme? Get a list and show an error
-		foreach($inherited_theme_cache as $tid => $inherited)
-		{
-			foreach($inherited as $file => $value)
-			{
-				foreach($value as $filepath => $val)
-				{
-					if(strpos($filepath, "cache/themes/theme{$theme['tid']}") !== false)
-					{
-						$inherited_stylesheets = true;
-					}
-				}
-			}
-		}
-
-		if($inherited_stylesheets == true)
-		{
-			flash_message($lang->error_inheriting_stylesheets, 'error');
-			admin_redirect("index.php?module=style-themes");
-		}
-
 		$query = $db->simple_select("themestylesheets", "cachefile", "tid='{$theme['tid']}'");
 		while($cachefile = $db->fetch_array($query))
 		{
@@ -928,22 +873,6 @@ if($mybb->input['action'] == "delete")
 		if(file_exists($path))
 		{
 			@rmdir($path);
-		}
-
-		$children = (array)make_child_theme_list($theme['tid']);
-		$child_tids = array();
-
-		foreach($children as $child_tid)
-		{
-			if($child_tid != 0)
-			{
-				$child_tids[] = $child_tid;
-			}
-		}
-
-		if(!empty($child_tids))
-		{
-			$db->update_query("themes", array('pid' => $theme['pid']), "tid IN (".implode(',', $child_tids).")");
 		}
 
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
@@ -1435,41 +1364,6 @@ if($mybb->input['action'] == "edit_stylesheets")
 
 		$filename = $theme_stylesheets[$filename]['name'];
 
-		$inherited = "";
-		$inherited_ary = array();
-		if(isset($style['inherited']) && is_array($style['inherited']))
-		{
-			foreach($style['inherited'] as $tid)
-			{
-				if($inherited_themes[$tid])
-				{
-					$inherited_ary[$tid] = $inherited_themes[$tid];
-				}
-			}
-		}
-
-		if(!empty($inherited_ary))
-		{
-			$inherited = " <small>({$lang->inherited_from}";
-			$sep = " ";
-			$inherited_count = count($inherited_ary);
-			$count = 0;
-
-			foreach($inherited_ary as $tid => $file)
-			{
-				if(isset($applied_to_count) && $count == $applied_to_count && $count != 0)
-				{
-					$sep = " {$lang->and} ";
-				}
-
-				$inherited .= $sep.htmlspecialchars_uni($file);
-				$sep = $lang->comma;
-
-				++$count;
-			}
-			$inherited .= ")</small>";
-		}
-
 		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = '';
@@ -1568,12 +1462,7 @@ if($mybb->input['action'] == "edit_stylesheets")
 		$popup->add_item($lang->edit_style, "index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
 		$popup->add_item($lang->properties, "index.php?module=style-themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
 
-		if($inherited == "")
-		{
-			$popup->add_item($lang->delete_revert, "index.php?module=style-themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
-		}
-
-		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($filename)."</a></strong>{$inherited}<br />{$attached_to}");
+		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($filename)."</a></strong><br />{$attached_to}");
 		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
@@ -1644,12 +1533,6 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 		if(!$errors)
 		{
-			// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
-			if($theme['tid'] != $stylesheet['tid'])
-			{
-				$stylesheet['sid'] = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
-			}
-
 			$attached = array();
 			if($mybb->input['attach'] == 1)
 			{
@@ -1741,23 +1624,6 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$page->add_breadcrumb_item(htmlspecialchars_uni($stylesheet['name'])." {$lang->properties}", "index.php?module=style-themes&amp;action=edit_properties&amp;tid={$mybb->input['tid']}");
 
 	$page->output_header("{$lang->themes} - {$lang->stylesheet_properties}");
-
-	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if($this_stylesheet['inherited'][$stylesheet['name']])
-	{
-		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
-		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
-
-		// Show inherited warning
-		if($stylesheet['tid'] == 1)
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent));
-		}
-		else
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent));
-		}
-	}
 
 	$applied_to = $this_stylesheet['applied_to'];
 	unset($this_stylesheet);
@@ -1988,12 +1854,6 @@ if($mybb->input['action'] == "edit_stylesheet")
 	{
 		$sid = $stylesheet['sid'];
 
-		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
-		if($theme['tid'] != $stylesheet['tid'])
-		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
-		}
-
 		// Now we have the new stylesheet, save it
 		$updated_stylesheet = array(
 			"cachefile" => $db->escape_string($stylesheet['name']),
@@ -2051,23 +1911,6 @@ if($mybb->input['action'] == "edit_stylesheet")
 	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style-themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file']));
 
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet}");
-
-	// If the stylesheet and theme do not match, we must be editing something that is inherited
-	if(!empty($this_stylesheet['inherited']) && $this_stylesheet['inherited'][$stylesheet['name']])
-	{
-		$query = $db->simple_select("themes", "name", "tid='{$stylesheet['tid']}'");
-		$stylesheet_parent = htmlspecialchars_uni($db->fetch_field($query, 'name'));
-
-		// Show inherited warning
-		if($stylesheet['tid'] == 1)
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent));
-		}
-		else
-		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent));
-		}
-	}
 
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet,

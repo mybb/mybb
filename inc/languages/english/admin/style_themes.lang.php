@@ -45,8 +45,6 @@ $l['colors_please_select'] = "None";
 $l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You can select more than one color.";
 $l['colors_specific_color'] = "Specific color";
 
-$l['include_custom_only'] = "Include customized items only?";
-$l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
 $l['include_templates'] = "Include templates in the export as well?";
 $l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
 
@@ -60,7 +58,6 @@ $l['delete_theme'] = "Delete Theme";
 $l['set_as_default'] = "Set as Default";
 $l['default_theme'] = "Default Theme";
 $l['force_on_users'] = "Force on Users";
-$l['delete_revert'] = "Delete / Revert";
 
 $l['local_file'] = "Local File";
 $l['url'] = "URL";
@@ -107,7 +104,6 @@ $l['save_theme_properties'] = "Save Theme Properties";
 $l['save_stylesheet_order'] = "Save Stylesheet Orders";
 
 $l['stylesheets'] = "Stylesheets";
-$l['inherited_from'] = "Inherited from";
 $l['attached_to'] = "Attached to";
 $l['attached_to_nothing'] = "Attached to nothing";
 $l['attached_to_desc'] = "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.";
@@ -118,8 +114,6 @@ $l['properties'] = "Properties";
 $l['edit_style'] = "Edit Style";
 $l['stylesheets_in'] = "Stylesheets in";
 $l['stylesheet_properties'] = "Stylesheet Properties";
-$l['stylesheet_inherited_default'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme.";
-$l['stylesheet_inherited'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme. Edit this stylesheet in {1} to keep the inheritance.";
 $l['globally'] = "Globally";
 $l['specific_files'] = "Specific files";
 $l['specific_actions'] = "Specific actions";
@@ -177,7 +171,6 @@ $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the co
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
 $l['error_invalid_color'] = "The defined color set \"{1}\" either has invalid character(s) or is not in the prescribed format. Only numbers, Unicode letters, and underscores are allowed in a color's name and its value, which must be separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
-$l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
 $l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
