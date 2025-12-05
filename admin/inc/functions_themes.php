@@ -540,7 +540,7 @@ function unfix_css_urls($url)
  *
  * @param string $name The name of the theme
  * @param array $properties Array of theme properties (if blank, inherits from parent)
- * @param int $parent The parent ID for this theme (defaults to Master)
+ * @param int $parent The parent ID for this theme (defaults to Master) (deprecated)
  * @return int The new theme ID
  */
 function build_new_theme($name, $properties=null, $parent=1)
@@ -549,95 +549,12 @@ function build_new_theme($name, $properties=null, $parent=1)
 
 	$new_theme = array(
 		"name" => $db->escape_string($name),
-		"pid" => (int)$parent,
 		"def" => 0,
 		"allowedgroups" => "all",
-		"properties" => "",
+		"properties" => $db->escape_string(my_serialize($properties)),
 		"stylesheets" => ""
 	);
 	$tid = $db->insert_query("themes", $new_theme);
-
-	$inherited_properties = false;
-	$stylesheets = array();
-	if($parent > 0)
-	{
-		$query = $db->simple_select("themes", "*", "tid='".(int)$parent."'");
-		$parent_theme = $db->fetch_array($query);
-		if(!is_array($properties) || count($properties) == 0)
-		{
-			$parent_properties = my_unserialize($parent_theme['properties']);
-			if(!empty($parent_properties))
-			{
-				foreach($parent_properties as $property => $value)
-				{
-					if($property == "inherited")
-					{
-						continue;
-					}
-
-					$properties[$property] = $value;
-					if(!empty($parent_properties['inherited'][$property]))
-					{
-						$properties['inherited'][$property] = $parent_properties['inherited'][$property];
-					}
-					else
-					{
-						$properties['inherited'][$property] = $parent;
-					}
-				}
-				$inherited_properties = true;
-			}
-		}
-
-		$parent_stylesheets = my_unserialize($parent_theme['stylesheets']);
-		if(!empty($parent_stylesheets))
-		{
-			foreach($parent_stylesheets as $location => $value)
-			{
-				if($location == "inherited")
-				{
-					continue;
-				}
-
-				foreach($value as $action => $sheets)
-				{
-					foreach($sheets as $stylesheet)
-					{
-						$stylesheets[$location][$action][] = $stylesheet;
-						$inherited_check = "{$location}_{$action}";
-						if(!empty($parent_stylesheets['inherited'][$inherited_check][$stylesheet]))
-						{
-							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
-						}
-						else
-						{
-							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if(!$inherited_properties)
-	{
-		$theme_vars = array(
-			"theme" => "cache/themes/theme{$tid}"
-		);
-		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
-	}
-
-	$updated_theme = array();
-	if(!empty($stylesheets))
-	{
-		$updated_theme['stylesheets'] = $db->escape_string(my_serialize($stylesheets));
-	}
-	$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
-
-	if(count($updated_theme) > 0)
-	{
-		$db->update_query("themes", $updated_theme, "tid='{$tid}'");
-	}
 
 	return $tid;
 }
@@ -741,13 +658,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 	$stylesheets = array();
 
-	$child_list = make_child_theme_list($tid);
-	$parent_list = make_parent_theme_list($tid);
-
-	if(!is_array($parent_list))
-	{
-		return false;
-	}
+	$parent_list = array($tid);
 
 	$tid_list = implode(',', $parent_list);
 
@@ -897,111 +808,9 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");
 
-	// Do we have any children themes that need updating too?
-	if(is_array($child_list) && count($child_list) > 0)
-	{
-		foreach($child_list as $id)
-		{
-			update_theme_stylesheet_list($id, false, $update_disporders);
-		}
-	}
-
 	$cache->update_default_theme();
 
 	return true;
-}
-
-/**
- * @param int $tid
- *
- * @return array|bool
- */
-function make_parent_theme_list($tid)
-{
-	static $themes_by_parent;
-
-	$themes = array();
-	if(!is_array($themes_by_parent))
-	{
-		$theme_cache = cache_themes();
-		foreach($theme_cache as $key => $theme)
-		{
-			if($key == "default")
-			{
-				continue;
-			}
-
-			$themes_by_parent[$theme['tid']][$theme['pid']] = $theme;
-		}
-	}
-
-	if(!isset($themes_by_parent[$tid]) || !is_array($themes_by_parent[$tid]))
-	{
-		return false;
-	}
-
-	reset($themes_by_parent);
-	reset($themes_by_parent[$tid]);
-
-	$themes = array();
-
-	foreach($themes_by_parent[$tid] as $key => $theme)
-	{
-		$themes[] = $theme['tid'];
-		$parents = make_parent_theme_list($theme['pid']);
-
-		if(is_array($parents))
-		{
-			$themes = array_merge($themes, $parents);
-		}
-	}
-
-	return $themes;
-}
-
-/**
- * @param int $tid
- *
- * @return array|null
- */
-function make_child_theme_list($tid)
-{
-	static $themes_by_child;
-
-	$themes = array();
-	if(!is_array($themes_by_child))
-	{
-		$theme_cache = cache_themes();
-		foreach($theme_cache as $key => $theme)
-		{
-			if($key == "default")
-			{
-				continue;
-			}
-
-			$themes_by_child[$theme['pid']][$theme['tid']] = $theme;
-		}
-	}
-
-	if(!isset($themes_by_child[$tid]) || !is_array($themes_by_child[$tid]))
-	{
-		return null;
-	}
-
-	$themes = array();
-
-	foreach($themes_by_child[$tid] as $theme)
-	{
-		$themes[] = $theme['tid'];
-		$children = make_child_theme_list($theme['tid']);
-
-		if(is_array($children))
-		{
-			$themes = array_merge($themes, $children);
-		}
-	}
-
-	return $themes;
 }
 
 /**
@@ -1013,7 +822,7 @@ function cache_themes()
 
 	if(empty($theme_cache) || !is_array($theme_cache))
 	{
-		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
+		$query = $db->simple_select("themes", "*", "", array('order_by' => "name"));
 		while($theme = $db->fetch_array($query))
 		{
 			$theme['users'] = 0;
@@ -1045,8 +854,6 @@ function build_theme_list($parent=0, $depth=0)
 {
 	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
 	static $theme_cache;
-
-	$padding = $depth*20; // Padding
 
 	if(!is_array($theme_cache))
 	{
