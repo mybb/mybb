@@ -10,7 +10,7 @@ $l['lastvisit_never'] = "Never";
 $l['lastvisit_hidden'] = "(Hidden)";
 
 $l['search_button'] = 'Search';
-$l['toplinks_memberlist'] = "Member List";
+$l['toplinks_memberlist'] = "Members";
 $l['toplinks_search'] = "Search";
 $l['toplinks_calendar'] = "Calendar";
 $l['toplinks_portal'] = "Portal";
@@ -20,6 +20,8 @@ $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_markread'] = "Mark all forums read";
 $l['bottomlinks_help'] = "Help";
+
+$l['nav_memberlist'] = "Members";
 
 $l['welcome_usercp'] = "My Account";
 $l['welcome_modcp'] = "Moderation";

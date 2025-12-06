@@ -331,6 +331,7 @@ if($mybb->input['action'] == "warn")
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_add_warning);
 
@@ -580,11 +581,13 @@ if($mybb->input['action'] == "view")
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	if(!empty($user['uid']))
 	{
+		add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
 	}
 	else
 	{
+		add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 		add_breadcrumb($lang->nav_profile);
 		add_breadcrumb($lang->nav_warning_log);
 	}
@@ -692,6 +695,7 @@ if(!$mybb->input['action'])
 
 	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 

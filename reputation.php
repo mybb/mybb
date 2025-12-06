@@ -551,6 +551,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Build navigation menu
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_reputation);
 
