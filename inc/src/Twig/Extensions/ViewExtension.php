@@ -51,7 +51,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
     {
         return array_merge(
             [
-                'theme' => $GLOBALS['theme'],
+                'theme' => $this->view->getGlobalThemeArray(),
                 'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
             ],
         );
@@ -136,7 +136,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
     public function getLegacyStyles(): \Generator
     {
         // TODO: Optimise this function - it looks like it can be improved at a glance
-        $theme = $GLOBALS['theme'];
+        $theme = $this->view->getGlobalThemeArray();
 
         $alreadyLoaded = [];
 
