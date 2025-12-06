@@ -55,9 +55,10 @@ class ViewletAsset extends Asset
     public function getPublicPath(): string
     {
         return
-            $this->viewlet->getPublishingPath() .
-            '/' .
-            $this->locator->getNamespace() .
+            $this->viewlet->getPublishingPath(
+                $this->locator->getNamespace(),
+                $this->locator->getType(),
+            ) .
             '/' .
             $this->locator->getSubPath()
         ;

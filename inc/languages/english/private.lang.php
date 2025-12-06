@@ -80,7 +80,7 @@ $l['update_folders'] = "Update Folders";
 $l['cannot_be_removed'] = "Cannot be removed";
 $l['reached_warning'] = "Warning. You have reached your message limit.";
 $l['reached_warning2'] = "To be able to receive messages you will need to delete old messages.";
-$l['deny_receipt'] = "[Deny Receipt]";
+$l['deny_receipt'] = "Deny Receipt";
 $l['viewing_pm'] = "Viewing PM:";
 $l['reply'] = "Reply";
 $l['reply_to_all'] = "Reply to All";
@@ -202,3 +202,8 @@ $l['quickreply_signature'] = "Signature";
 $l['quickreply_disable_smilies'] = "Disable Smilies";
 $l['quickreply_save_copy'] = "Save a Copy";
 $l['quickreply_read_receipt'] = "Request Read Receipt";
+
+$l['error_suspend_pm'] = "Your ability to send and receive private messages is currently suspended {1}.<br />
+Suspension Date: {2}";
+$l['error_suspend_pm_temporal'] = "until {1}";
+$l['error_suspend_pm_permanent'] = "permanently";

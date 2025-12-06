@@ -1984,6 +1984,10 @@ class UserDataHandler extends DataHandler
 
 		$db->update_query('users', $update_array, "uid = '{$ban['uid']}'");
 
+		$cache->update_moderators();
+
+		$cache->update_awaitingactivation();
+
 		return true;
 	}
 
@@ -2048,6 +2052,10 @@ class UserDataHandler extends DataHandler
 
 		$db->update_query('users', $update_array, "uid = '{$ban['uid']}'");
 
+		$cache->update_moderators();
+
+		$cache->update_awaitingactivation();
+
 		return true;
 	}
 
@@ -2075,6 +2083,8 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_lift_ban', $this);
 
 		$cache->update_moderators();
+
+		$cache->update_awaitingactivation();
 
 		return true;
 	}

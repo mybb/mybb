@@ -12,7 +12,7 @@ use MyBB\Extensions\Theme\Theme as ThemeExtension;
 class Theme
 {
     public function __construct(
-        public int $id,
+        public ?int $id,
         public ThemeExtension $package,
         public string $name,
         public string $properties = 'a:0:{}',
@@ -26,5 +26,25 @@ class Theme
             $this->allowedgroups === 'all' ||
             is_member($this->allowedgroups, $user)
         );
+    }
+
+    /**
+     * Returns a stored representation of the instance.
+     */
+    public function toArray(): array
+    {
+        $array = [
+            'package' => $this->package->getPackageName(),
+            'name' => $this->name,
+            'properties' => $this->properties,
+            'stylesheets' => $this->stylesheets,
+            'allowedgroups' => $this->allowedgroups,
+        ];
+
+        if ($this->id) {
+            $array['tid'] = $this->id;
+        }
+
+        return $array;
     }
 }

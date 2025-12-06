@@ -21,6 +21,30 @@ function output_page($contents)
 	$stopwatch = \MyBB\app(\MyBB\Utilities\Stopwatch\Stopwatch::class);
 
 
+	if($mybb->config['compat_page_render'] ?? true)
+	{
+		$templates = [
+			'headerinclude',
+			'header',
+			'footer',
+		];
+
+		foreach($templates as $name)
+		{
+			$placeholder = '<!-- compat_page_render.'.$name.' -->';
+
+			if(str_contains($contents, $placeholder))
+			{
+				$contents = str_replace(
+					$placeholder,
+					\MyBB\View\template('partials/'.$name.'.twig'),
+					$contents,
+				);
+			}
+		}
+	}
+
+
 	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
 
@@ -2034,7 +2058,7 @@ function is_moderator($fid = 0, $action = "", $uid = 0)
 
 	if(isset($hook_args['is_moderator']))
 	{
-		return (boolean) $hook_args['is_moderator'];
+		return (bool) $hook_args['is_moderator'];
 	}
 
 	if(!empty($user_perms['issupermod']) && $user_perms['issupermod'] == 1)
@@ -5287,7 +5311,7 @@ function my_number_format($number)
 			$decimals = 0;
 		}
 
-		return number_format((double)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
+		return number_format((float)$number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
 
@@ -5892,10 +5916,14 @@ function get_event_date($event)
  * @param int $uid The user id of the profile.
  * @return string The url to the profile.
  */
-function get_profile_link($uid = 0)
+function get_profile_link(int $uid = 0) : string
 {
-	$link = str_replace("{uid}", $uid, PROFILE_URL);
-	return htmlspecialchars_uni($link);
+	$link = PROFILE_URL;
+	$replacements = [
+		'{uid}' => urlencode($uid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -5904,10 +5932,14 @@ function get_profile_link($uid = 0)
  * @param int $aid The announement id of the announcement.
  * @return string The url to the announcement.
  */
-function get_announcement_link($aid = 0)
+function get_announcement_link(int $aid = 0) : string
 {
-	$link = str_replace("{aid}", $aid, ANNOUNCEMENT_URL);
-	return htmlspecialchars_uni($link);
+	$link = ANNOUNCEMENT_URL;
+	$replacements = [
+		'{aid}' => urlencode($aid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -5957,19 +5989,20 @@ function build_profile_link($username = "", $uid = 0, $target = "", $onclick = "
  * @param int $page (Optional) The page number of the forum.
  * @return string The url to the forum.
  */
-function get_forum_link($fid, $page = 0)
+function get_forum_link(int $fid, int $page = 0) : string
 {
-	if($page > 0)
+	$link = FORUM_URL;
+	$replacements = [
+		'{fid}' => urlencode($fid),
+	];
+
+    if($page > 0)
 	{
-		$link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-		$link = str_replace("{page}", $page, $link);
-		return htmlspecialchars_uni($link);
-	}
-	else
-	{
-		$link = str_replace("{fid}", $fid, FORUM_URL);
-		return htmlspecialchars_uni($link);
-	}
+        $link = FORUM_URL_PAGED;
+        $replacements['{page}'] = urlencode($page);
+    }
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -5980,37 +6013,26 @@ function get_forum_link($fid, $page = 0)
  * @param string $action (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
-function get_thread_link($tid, $page = 0, $action = '')
+function get_thread_link(int $tid, int $page = 0, string $action = '') : string
 {
-	if($page > 1)
+	$link = THREAD_URL;
+	$replacements = [
+		'{tid}' => urlencode($tid),
+	];
+
+	if($action)
 	{
-		if($action)
-		{
-			$link = THREAD_URL_ACTION;
-			$link = str_replace("{action}", $action, $link);
-		}
-		else
-		{
-			$link = THREAD_URL_PAGED;
-		}
-		$link = str_replace("{tid}", $tid, $link);
-		$link = str_replace("{page}", $page, $link);
-		return htmlspecialchars_uni($link);
+		$link = THREAD_URL_ACTION;
+		$replacements['{action}'] = urlencode($action);
 	}
-	else
+
+	if($page > 1 && empty($action))
 	{
-		if($action)
-		{
-			$link = THREAD_URL_ACTION;
-			$link = str_replace("{action}", $action, $link);
-		}
-		else
-		{
-			$link = THREAD_URL;
-		}
-		$link = str_replace("{tid}", $tid, $link);
-		return htmlspecialchars_uni($link);
+		$link = THREAD_URL_PAGED;
+		$replacements['{page}'] = urlencode($page);
 	}
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6020,19 +6042,20 @@ function get_thread_link($tid, $page = 0, $action = '')
  * @param int $tid The thread id of the post.
  * @return string The url to the post.
  */
-function get_post_link($pid, $tid = 0)
+function get_post_link(int $pid, int $tid = 0) : string
 {
-	if($tid > 0)
+	$link = POST_URL;
+	$replacements = [
+		'{pid}' => urlencode($pid),
+	];
+
+    if($tid > 0)
 	{
-		$link = str_replace("{tid}", $tid, THREAD_URL_POST);
-		$link = str_replace("{pid}", $pid, $link);
-		return htmlspecialchars_uni($link);
-	}
-	else
-	{
-		$link = str_replace("{pid}", $pid, POST_URL);
-		return htmlspecialchars_uni($link);
-	}
+        $link = THREAD_URL_POST;
+        $replacements['{tid}'] = urlencode($tid);
+    }
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6041,10 +6064,14 @@ function get_post_link($pid, $tid = 0)
  * @param int $eid The event ID of the event
  * @return string The URL of the event
  */
-function get_event_link($eid)
+function get_event_link(int $eid) : string
 {
-	$link = str_replace("{eid}", $eid, EVENT_URL);
-	return htmlspecialchars_uni($link);
+	$link = EVENT_URL;
+	$replacements = [
+		'{eid}' => urlencode($eid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6056,31 +6083,28 @@ function get_event_link($eid)
  * @param int $day The day (optional)
  * @return string The URL of the calendar
  */
-function get_calendar_link($calendar, $year = 0, $month = 0, $day = 0)
+function get_calendar_link(int $calendar, int $year = 0, int $month = 0, int $day = 0)
 {
+	$link = CALENDAR_URL;
+	$replacements = [
+		'{calendar}' => urlencode($calendar),
+	];
+
 	if($day > 0)
 	{
-		$link = str_replace("{month}", $month, CALENDAR_URL_DAY);
-		$link = str_replace("{year}", $year, $link);
-		$link = str_replace("{day}", $day, $link);
-		$link = str_replace("{calendar}", $calendar, $link);
-		return htmlspecialchars_uni($link);
+		$link = CALENDAR_URL_DAY;
+		$replacements['{month}'] = urlencode($month);
+		$replacements['{day}'] = urlencode($day);
+		$replacements['{year}'] = urlencode($year);
 	}
 	elseif($month > 0)
 	{
-		$link = str_replace("{month}", $month, CALENDAR_URL_MONTH);
-		$link = str_replace("{year}", $year, $link);
-		$link = str_replace("{calendar}", $calendar, $link);
-		return htmlspecialchars_uni($link);
+		$link = CALENDAR_URL_MONTH;
+		$replacements['{month}'] = urlencode($month);
+		$replacements['{year}'] = urlencode($year);
 	}
-	/* Not implemented
-    elseif ($year > 0) {
-    }*/
-	else
-	{
-		$link = str_replace("{calendar}", $calendar, CALENDAR_URL);
-		return htmlspecialchars_uni($link);
-	}
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6090,15 +6114,16 @@ function get_calendar_link($calendar, $year = 0, $month = 0, $day = 0)
  * @param int $week The week
  * @return string The URL of the calendar
  */
-function get_calendar_week_link($calendar, $week)
+function get_calendar_week_link(int $calendar, int $week) : string
 {
-	if($week < 0)
-	{
-		$week = str_replace('-', "n", $week);
-	}
-	$link = str_replace("{week}", $week, CALENDAR_URL_WEEK);
-	$link = str_replace("{calendar}", $calendar, $link);
-	return htmlspecialchars_uni($link);
+    $week = $week < 0 ? 'n' . abs($week) : (string)$week;
+	$link = CALENDAR_URL_WEEK;
+    $replacements = [
+        '{calendar}' => urlencode($calendar),
+        '{week}' => urlencode($week),
+    ];
+
+    return strtr($link, $replacements);
 }
 
 /**
@@ -8413,7 +8438,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	$ip_address = my_inet_pton($ip_address);
 
 	$insert_array = array(
-		'username' => $db->escape_string($username),
+		'username' => $db->escape_string(my_substr($username, 0, 120)),
 		'email' => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline' => (int)TIME_NOW,

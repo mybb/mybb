@@ -37,6 +37,7 @@ function upgrade100_dbchanges()
 
     // Modify columns
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
+    $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
     if ($db->field_exists("pid", "themes")) {
         $db->drop_column("themes", "pid");
@@ -66,7 +67,7 @@ function upgrade100_dbchanges()
     // Add userfields columns
     foreach (["fid4", "fid5"] as $fid) {
         if (!$db->field_exists($fid, "userfields")) {
-            $db->add_column("userfields", $fid, "text NOT NULL DEFAULT ''");
+            $db->add_column("userfields", $fid, "text NOT NULL");
         }
     }
 
@@ -79,6 +80,18 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
+            }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
+            }            
+
+            // Add private messaging suspension columns
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "smallint NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
             // Update moved threads
@@ -116,6 +129,18 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
+            }            
+
+            // Add private messaging suspension columns
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
+            }
 
             // Update moved threads
             $db->query("
@@ -149,6 +174,18 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
+            }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
+            }           
+
+            // Add private messaging suspension columns
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int unsigned NOT NULL default '0' AFTER suspendpm");
             }
 
             // Update moved threads
@@ -370,3 +407,45 @@ function upgrade100_smilies()
         $db->insert_query_multiple('smilies', $insert);
     }
 }
+
+function upgrade100_check_constraints()
+{
+    global $db;
+
+    $constraints = [
+        ['table' => 'calendars', 'column' => 'disporder'],
+        ['table' => 'forums', 'column' => 'disporder'],
+        ['table' => 'helpdocs', 'column' => 'disporder'],
+        ['table' => 'helpsections', 'column' => 'disporder'],
+        ['table' => 'profilefields', 'column' => 'disporder'],
+        ['table' => 'reportreasons', 'column' => 'disporder'],
+        ['table' => 'settinggroups', 'column' => 'disporder'],
+        ['table' => 'settings', 'column' => 'disporder'],
+        ['table' => 'smilies', 'column' => 'disporder'],
+        ['table' => 'usergroups', 'column' => 'disporder'],
+    ];
+
+    if ($db->type === "pgsql") {
+        foreach ($constraints as $constraint) {
+            $table_name = TABLE_PREFIX . $constraint['table'];
+            $column_name = $constraint['column'];
+            $constraint_name = $table_name . '_' . $column_name ."_check";
+            $query = $db->query("
+                SELECT 1 FROM pg_constraint
+                WHERE conrelid = '" . $table_name . "'::regclass
+                    AND contype = 'c' AND conname = '" . $constraint_name . "'
+            ");
+
+            if ($db->num_rows($query) == 0) {
+                // Reset values that are negative
+                $db->update_query($constraint['table'], array($column_name => 0), $column_name . ' < 0');
+                // Create constraint
+                $db->write_query("
+                    ALTER TABLE " . $table_name . "
+                    ADD CONSTRAINT " . $constraint_name . " CHECK (" . $column_name  . " >= 0)
+                ");
+            }
+        }
+    }
+}
+

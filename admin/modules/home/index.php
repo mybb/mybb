@@ -14,6 +14,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+require_once MYBB_ROOT.'inc/src/Maintenance/functions_version.php';
+
 $plugins->run_hooks("admin_home_index_begin");
 
 $sub_tabs['dashboard'] = array(
@@ -32,13 +34,12 @@ if($mybb->input['action'] == "version_check")
 {
 	$plugins->run_hooks("admin_home_version_check_start");
 
-	$current_version = rawurlencode($mybb->version_code);
-
 	$updated_cache = array(
 		"last_check" => TIME_NOW
 	);
 
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	// Check for the latest version
+	$contents = \MyBB\Maintenance\fetchLatestVersionDetails();
 
 	if(!$contents)
 	{
@@ -52,13 +53,8 @@ if($mybb->input['action'] == "version_check")
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
 
-	$contents = trim($contents);
-
-	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
-
-	$latest_code = (int)$tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
+	$latest_code = (int)$contents['version_code'];
+	$latest_version = "<strong>".htmlspecialchars_uni($contents['latest_version'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
@@ -82,31 +78,28 @@ if($mybb->input['action'] == "version_check")
 
 	$table->output($lang->version_check);
 
-	require_once MYBB_ROOT."inc/class_feedparser.php";
-
-	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
-
-	$updated_cache['news'] = array();
-
-	if($feed_parser->error == '')
+	// Check for latest development information
+	if(\MyBB\Maintenance\hasDevelopmentArtifacts())
 	{
-		require_once MYBB_ROOT . '/inc/class_parser.php';
-		$post_parser = new postParser();
+		$branch_name = \MyBB\Maintenance\getDevelopmentBranchName($mybb->version);
 
-		foreach($feed_parser->items as $item)
+		$details = \MyBB\Maintenance\fetchDevelopmentBranchDetails($branch_name);
+
+		if($details !== null)
 		{
-			if(!isset($updated_cache['news'][2]))
-			{
-				$updated_cache['news'][] = array(
-					'title' => $item['title'],
-					'description' => $item['description'],
-					'link' => $item['link'],
-					'author' => $item['author'],
-					'dateline' => $item['date_timestamp'],
-				);
-			}
+			$updated_cache['repository'][$branch_name] = $details;
+		}
+	}
 
+	// Check for the latest news
+	$news = \MyBB\Maintenance\fetchLatestNews();
+
+	if($news !== null)
+	{
+		$updated_cache['news'] = $news;
+
+		foreach($news as $item)
+		{
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
@@ -123,7 +116,7 @@ if($mybb->input['action'] == "version_check")
 	}
 	else
 	{
-		$table->construct_cell("{$lang->error_fetch_news} <!-- error code: {$feed_parser->error} -->");
+		$table->construct_cell($lang->error_fetch_news);
 		$table->construct_row();
 	}
 
@@ -173,6 +166,12 @@ elseif(!$mybb->input['action'])
 
 	// Get the number of users awaiting validation
 	$awaitingusers = $cache->read('awaitingactivation');
+
+	if(isset($awaitingusers['time']) && $awaitingusers['time'] + 86400 < TIME_NOW)
+	{
+		$cache->update_awaitingactivation();
+		$awaitingusers = $cache->read('awaitingactivation');
+	}
 
 	if(!empty($awaitingusers['users']))
 	{
@@ -261,6 +260,54 @@ elseif(!$mybb->input['action'])
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
+	// Show & compare development version information
+	$development_version = '';
+	if(\MyBB\Maintenance\hasDevelopmentArtifacts())
+	{
+		$branch_name = \MyBB\Maintenance\getDevelopmentBranchName($mybb->version);
+
+		$latest_commit_hash = $update_check['repository'][$branch_name]['latest_commit']['hash'] ?? null;
+
+		if($latest_commit_hash !== null)
+		{
+			$local_commit_hash = \MyBB\Maintenance\getDevelopmentVersionCommitHash($mybb);
+
+			if($local_commit_hash !== null)
+			{
+				$local_commit_code =
+					'<code>'.
+					htmlspecialchars_uni(substr($local_commit_hash, 0, 7)).
+					'</code>';
+				$latest_commit_code =
+					'<code>'.
+					htmlspecialchars_uni(substr($latest_commit_hash, 0, 7)).
+					'</code>';
+
+				$development_version =
+					' <span title="'.$lang->local_commit.'" class="development-local-commit">('.
+					$local_commit_code.
+					')</span>';
+
+				if($local_commit_hash !== $latest_commit_hash)
+				{
+					$commits_url = \MyBB\Maintenance\getDevelopmentBranchCommitsUrl($branch_name);
+
+					$development_version .=
+						'<br /><br />' .
+						'<a
+							href="'.htmlspecialchars_uni($commits_url).'"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="development-latest-commit"
+							title="'.$lang->latest_commit.'"
+						>' .
+						$lang->sprintf($lang->new_development_version_available, $latest_commit_code) .
+						'</a>';
+				}
+			}
+		}
+	}
+
 	$plugins->run_hooks("admin_home_index_output_message");
 
 	$adminmessage = $cache->read("adminnotes");
@@ -277,7 +324,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_header($lang->forum_stats, array("colspan" => 2));
 
 	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
-	$table->construct_cell($mybb->version, array('width' => '25%'));
+	$table->construct_cell($mybb->version.$development_version, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$threads}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();

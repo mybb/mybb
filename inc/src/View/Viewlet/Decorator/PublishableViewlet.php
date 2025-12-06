@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Viewlet\Decorator;
 
 use Exception;
+use InvalidArgumentException;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Asset\Publication;
@@ -294,7 +295,7 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns the base path to published files, relative to the MyBB root directory.
      */
-    public function getPublishingPath(): string
+    public function getPublishingPath(?string $namespace = null, ?ResourceType $resourceType = null): string
     {
         $extension = $this->getExtension();
 
@@ -302,7 +303,23 @@ class PublishableViewlet extends ViewletDecorator
             throw new Exception('Cannot use publishing path for non-Extension Viewlet');
         }
 
-        return ViewletAsset::WEB_ROOT_RELATIVE_BASE_PATH . $extension->getPackageName();
+        $components = [
+            ViewletAsset::WEB_ROOT_RELATIVE_BASE_PATH . $extension->getPackageName(),
+        ];
+
+        if ($namespace !== null) {
+            $components[] = $namespace;
+        }
+
+        if ($resourceType !== null) {
+            if ($namespace === null) {
+                throw new InvalidArgumentException('Resource Type must be provided with namespace argument');
+            }
+
+            $components[] = $resourceType->getPlural();
+        }
+
+        return implode('/', $components);
     }
 
     /**

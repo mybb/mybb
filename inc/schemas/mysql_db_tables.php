@@ -402,7 +402,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   fromaddress varchar(150) NOT NULL default '',
   dateline int unsigned NOT NULL default '0',
   error text NOT NULL,
-  smtperror varchar(200) NOT NULL default '',
+  smtperror text NOT NULL,
   smtpcode smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY (eid)
 ) ENGINE=InnoDB;";
@@ -1092,6 +1092,7 @@ $tables[] = "CREATE TABLE mybb_users (
   hideemail tinyint(1) NOT NULL default '0',
   subscriptionmethod tinyint(1) NOT NULL default '0',
   invisible tinyint(1) NOT NULL default '0',
+  showtimespentonline tinyint(1) NOT NULL default '1',
   receivepms tinyint(1) NOT NULL default '0',
   receivefrombuddy tinyint(1) NOT NULL default '0',
   pmnotice tinyint(1) NOT NULL default '0',
@@ -1139,6 +1140,8 @@ $tables[] = "CREATE TABLE mybb_users (
   suspensiontime int unsigned NOT NULL default '0',
   suspendsignature tinyint(1) NOT NULL default '0',
   suspendsigtime int unsigned NOT NULL default '0',
+  suspendpm tinyint(1) NOT NULL default '0',
+  suspendpmtime int unsigned NOT NULL default '0',
   coppauser tinyint(1) NOT NULL default '0',
   classicpostbit tinyint(1) NOT NULL default '0',
   loginattempts smallint(2) unsigned NOT NULL default '0',

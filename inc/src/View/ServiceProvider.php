@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyBB\View;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
+use MyBB\Database\Models\Theme as ThemeModel;
+use MyBB\Database\Repositories\ThemeRepository as ThemeModelRepository;
 use MyBB\Extensions\Theme\Theme;
 use MyBB\Extensions\Theme\Repository as ThemeRepository;
 use MyBB\View\Runtime\Runtime;
@@ -15,6 +17,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider implements Def
 {
     public function register()
     {
+        $this->app->singleton(ThemeModel::class, function (ContainerInterface $container) {
+            return $container->get(ThemeModelRepository::class)->getFallback();
+        });
+
         $this->app->singleton(Theme::class, function (ContainerInterface $container) {
             return $container->get(ThemeRepository::class)->get(DEFAULT_THEME_PACKAGE);
         });
@@ -33,6 +39,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider implements Def
             Runtime::class,
             SharedData::class,
             Theme::class,
+            ThemeModel::class,
         ];
     }
 }

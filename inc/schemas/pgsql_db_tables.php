@@ -179,7 +179,7 @@ $tables[] = "CREATE INDEX mybb_buddyrequests_touid ON mybb_buddyrequests (touid)
 $tables[] = "CREATE TABLE mybb_calendars (
   cid serial,
   name varchar(100) NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   startofweek smallint NOT NULL default '0',
   showbirthdays smallint NOT NULL default '0',
   eventlimit smallint NOT NULL default '0',
@@ -289,7 +289,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   type char(1) NOT NULL default '',
   pid smallint NOT NULL default '0',
   parentlist text NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   active smallint NOT NULL default '0',
   open smallint NOT NULL default '0',
   threads int NOT NULL default '0',
@@ -362,7 +362,7 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
   document text NOT NULL default '',
   usetranslation smallint NOT NULL default '0',
   enabled smallint NOT NULL default '0',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   PRIMARY KEY (hid)
 );";
 
@@ -372,7 +372,7 @@ $tables[] = "CREATE TABLE mybb_helpsections (
   description text NOT NULL default '',
   usetranslation smallint NOT NULL default '0',
   enabled smallint NOT NULL default '0',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   PRIMARY KEY (sid)
 );";
 
@@ -419,7 +419,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   fromaddress varchar(150) NOT NULL default '',
   dateline int NOT NULL default '0',
   error text NOT NULL default '',
-  smtperror varchar(200) NOT NULL default '',
+  smtperror text NOT NULL,
   smtpcode smallint NOT NULL default '0',
   PRIMARY KEY(eid)
 );";
@@ -608,7 +608,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   fid serial,
   name varchar(100) NOT NULL default '',
   description text NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   contact smallint NOT NULL default '0',
   type text NOT NULL default '',
   regex text NOT NULL default '',
@@ -710,7 +710,7 @@ $tables[] = "CREATE TABLE mybb_reportreasons (
   title varchar(250) NOT NULL default '',
   appliesto varchar(250) NOT NULL default '',
   extra smallint NOT NULL default '0',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   PRIMARY KEY (rid)
 );";
 
@@ -774,7 +774,7 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
   name varchar(100) NOT NULL default '',
   title varchar(220) NOT NULL default '',
   description text NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   isdefault smallint NOT NULL default '0',
   PRIMARY KEY (gid)
 );";
@@ -786,7 +786,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   description text NOT NULL default '',
   optionscode text NOT NULL default '',
   value text NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   gid smallint NOT NULL default '0',
   isdefault smallint NOT NULL default '0',
   PRIMARY KEY (sid)
@@ -799,7 +799,7 @@ $tables[] = "CREATE TABLE mybb_smilies (
   name varchar(120) NOT NULL default '',
   find text NOT NULL,
   image varchar(220) NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   showclickable smallint NOT NULL default '0',
   PRIMARY KEY (sid)
 );";
@@ -1014,7 +1014,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   stars smallint NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   image varchar(120) NOT NULL default '',
-  disporder smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0' CHECK (disporder >= 0),
   isbannedgroup smallint NOT NULL default '0',
   canview smallint NOT NULL default '0',
   canviewthreads smallint NOT NULL default '0',
@@ -1129,6 +1129,7 @@ $tables[] = "CREATE TABLE mybb_users (
   hideemail smallint NOT NULL default '0',
   subscriptionmethod smallint NOT NULL default '0',
   invisible smallint NOT NULL default '0',
+  showtimespentonline smallint NOT NULL default '1',
   receivepms smallint NOT NULL default '0',
   receivefrombuddy smallint NOT NULL default '0',
   pmnotice smallint NOT NULL default '0',
@@ -1176,6 +1177,8 @@ $tables[] = "CREATE TABLE mybb_users (
   suspensiontime int NOT NULL default '0',
   suspendsignature smallint NOT NULL default '0',
   suspendsigtime int NOT NULL default '0',
+  suspendpm smallint NOT NULL default '0',
+  suspendpmtime int NOT NULL default '0',
   coppauser smallint NOT NULL default '0',
   classicpostbit smallint NOT NULL default '0',
   loginattempts smallint NOT NULL default '0',

@@ -6,7 +6,7 @@
 
 <nav class="section-menu">
     <ul class="section-menu__links sidebar-navigation">
-        {% if mybb.usergroup.cansendpms %}
+        {% if mybb.usergroup.cansendpms and mybb.user.suspendpm == 0 %}
             <li class="section-menu__item section-menu__item--messenger-compose{% if mybb.input.action == 'send' %} section-menu__item--active{% endif %}">
                 <a href="private.php?action=send" class="section-menu__link">
                     {{ include('partials/icon.twig', {icon: 'edit', class: 'section-menu__icon fa-fw'}, with_context = false) }}

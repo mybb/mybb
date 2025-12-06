@@ -66,7 +66,7 @@ class StopForumSpamChecker
 	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
 	{
 		$this->plugins                   = $plugins;
-		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
+		$this->min_weighting_before_spam = (float)$min_weighting_before_spam;
 		$this->check_usernames           = (bool)$check_usernames;
 		$this->check_emails              = (bool)$check_emails;
 		$this->check_ips                 = (bool)$check_ips;
@@ -176,7 +176,7 @@ class StopForumSpamChecker
 		{
 			log_spam_block(
 				$username, $email, $ip_address, array(
-					'confidence' => (double)$confidence,
+					'confidence' => (float)$confidence,
 				)
 			);
 		}

@@ -555,6 +555,17 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
+	if((int)$mybb->user['suspendpm'] === 1)
+	{
+		$suspendpmtype = $lang->error_suspend_pm_permanent;
+		if($mybb->user['suspendpmtime'])
+		{
+			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
+		}
+		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
+		error($lang->error_suspend_pm);
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
@@ -665,6 +676,17 @@ if($mybb->input['action'] == "send")
 	if($mybb->usergroup['cansendpms'] == 0)
 	{
 		error_no_permission();
+	}
+
+	if((int)$mybb->user['suspendpm'] === 1)
+	{
+		$suspendpmtype = $lang->error_suspend_pm_permanent;
+		if($mybb->user['suspendpmtime'])
+		{
+			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
+		}
+		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
+		error($lang->error_suspend_pm);
 	}
 
 	$plugins->run_hooks("private_send_start");

@@ -415,6 +415,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"hideemail" => $mybb->get_input('hideemail', MyBB::INPUT_INT),
 		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', MyBB::INPUT_INT),
 		"invisible" => $mybb->get_input('invisible', MyBB::INPUT_INT),
+		"showtimespentonline" => $mybb->get_input('showtimespentonline', MyBB::INPUT_INT),
 		"dstcorrection" => $mybb->get_input('dstcorrection', MyBB::INPUT_INT),
 		"threadmode" => $mybb->get_input('threadmode'),
 		"showimages" => $mybb->get_input('showimages', MyBB::INPUT_INT),
