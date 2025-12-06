@@ -148,6 +148,8 @@ class pluginSystem
 	 */
 	function run_hooks(string $hook, &$arguments = "")
 	{
+		global $mybb;
+
 		if(!isset($this->hooks[$hook]) || !is_array($this->hooks[$hook]))
 		{
 			return $arguments;
@@ -157,7 +159,10 @@ class pluginSystem
 
 		$this->current_hook_stack[] = $this->current_hook;
 
-		$existing_globals = array_keys($GLOBALS);
+		if($mybb->config['compat_plugin_globals'] ?? true)
+		{
+			$existing_globals = array_keys($GLOBALS);
+		}
 
 		ksort($this->hooks[$hook]);
 
@@ -191,17 +196,20 @@ class pluginSystem
 			}
 		}
 
-		$new_globals = array_diff_key(
-			$GLOBALS,
-			array_flip($existing_globals),
-		);
+		if($mybb->config['compat_plugin_globals'] ?? true)
+		{
+			$new_globals = array_diff_key(
+				$GLOBALS,
+				array_flip($existing_globals),
+			);
 
-		$legacy_template_variables = array_filter(
-			$new_globals,
-			$this->has_scalar_values(...),
-		);
+			$legacy_template_variables = array_filter(
+				$new_globals,
+				$this->has_scalar_values(...),
+			);
 
-		\MyBB\View\set($legacy_template_variables);
+			\MyBB\View\set($legacy_template_variables);
+		}
 
 		array_pop($this->current_hook_stack);
 
