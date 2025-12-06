@@ -162,7 +162,7 @@ function get(?string $key = null): array|null|int|float|string|bool
 /**
  * Passes data to Resources.
  *
- * @param array<string, scalar> $data
+ * @param array<string, mixed> $data
  *
  * @api
  */

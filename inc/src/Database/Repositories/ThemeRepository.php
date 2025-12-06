@@ -6,7 +6,6 @@ namespace MyBB\Database\Repositories;
 
 use datacache;
 use DB_Base;
-use Exception;
 use InvalidArgumentException;
 use MyBB\Database\Models\Theme;
 use MyBB\Extensions\Theme\Repository as ThemeExtensionRepository;
