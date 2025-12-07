@@ -18,7 +18,7 @@ function run_task($tid=0)
 {
 	global $db, $mybb, $cache, $plugins, $task, $lang;
 
-	$lang->load('tools_tasks');
+	$lang->load('admin/tools_tasks', true);
 
 	// Run a specific task
 	if($tid > 0)
