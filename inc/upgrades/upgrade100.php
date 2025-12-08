@@ -83,9 +83,17 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
-            }            
+            }
 
-            // Add private messaging suspension columns
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "smallint NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
+            }
+
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "smallint NOT NULL default '0'");
             }
@@ -131,9 +139,17 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
-            }            
+            }
 
-            // Add private messaging suspension columns
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
+            }
+
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0'");
             }
@@ -177,11 +193,19 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
-            }           
+            }
 
-            // Add private messaging suspension columns
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int unsigned NOT NULL default '0' AFTER suspendavatar");
+            }
+
             if (!$db->field_exists("suspendpm", "users")) {
-                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
+                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendavatartime");
             }
 
             if (!$db->field_exists("suspendpmtime", "users")) {

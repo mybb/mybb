@@ -275,6 +275,7 @@
             var mod_posts = '{% if user.moderateposts or (mybb.input.moderateposting and errors) %}1{% else %}0{% endif %}';
             var susp_posts = '{% if user.suspendposting or (mybb.input.suspendposting and errors) %}1{% else %}0{% endif %}';
             var susp_pms = '{% if user.suspendpm or (mybb.input.suspendpm and errors) %}1{% else %}0{% endif %}';
+            var susp_avatar = '{% if user.suspendavatar or (mybb.input.suspendavatar and errors) %}1{% else %}0{% endif %}';
             var sig_checked = '{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %}1{% else %}0{% endif %}';
             if(mod_posts == 0)
             {
@@ -289,6 +290,11 @@
             if(susp_pms == 0)
             {
                 $("#suspms_action").hide();
+            }
+
+            if(susp_avatar == 0)
+            {
+                $("#suspendavatars_action").hide();
             }
 
             if(sig_checked == 0)
@@ -337,6 +343,18 @@
                     } else {
                         $("#suspm").attr("checked", true);
                         $("#suspms_action").show();
+                    }
+                }
+
+                if(action == "suspendavatars")
+                {
+                    if($("#suspendavatar").prop("checked") == false)
+                    {
+                        $("#suspendavatar").attr("checked", false);
+                        $("#suspendavatars_action").hide();
+                    } else {
+                        $("#suspendavatar").attr("checked", true);
+                        $("#suspendavatars_action").show();
                     }
                 }
             }
