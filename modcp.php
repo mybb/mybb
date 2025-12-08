@@ -2300,8 +2300,8 @@ if($mybb->input['action'] == "do_editprofile")
 		$modoptions = array(
 			1 => array(
 				"action" => "suspendsignature", // The moderator action we're performing
-				"period" => "action_period", // The time period we've selected from the dropdown box
-				"time" => "action_time", // The time we've entered
+				"period" => "suspendsignature_period", // The time period we've selected from the dropdown box
+				"time" => "suspendsignature_time", // The time we've entered
 				"update_field" => "suspendsignature", // The field in the database to update if true
 				"update_length" => "suspendsigtime" // The length of suspension field in the database
 			),

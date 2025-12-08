@@ -205,12 +205,12 @@
                             <div class="field__block">
                                 {{ lang.suspost_length }}
                                 &nbsp;
-                                <input type="text" name="suspost_time" value="{{ mybb.input.action_time }}" class="textbox textbox--small" />
+                                <input type="text" name="suspendsignature_time" value="{{ mybb.input.suspendsignature_time }}" class="textbox textbox--small" />
                                 <div class="select-field">
                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                    <select name="suspost_period">
+                                    <select name="suspendsignature_period">
                                         {% for key, value in periods %}
-                                            <option value="{{ key }}"{% if key == mybb.input.action_period %} selected{% endif %}>{{ value }}</option>
+                                            <option value="{{ key }}"{% if key == mybb.input.suspendsignature_period %} selected{% endif %}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
