@@ -193,12 +193,12 @@
                             <label><input type="checkbox" name="suspendsignature" value="1"{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %} checked{% endif %} class="checkbox" onclick="toggleAction();" /> {{ lang.suspend_signature }}</label>
                         </p>
                         <div class="field__block" id="suspend_action">
-                            {% if user.suspensiontime %}
+                            {% if user.suspendsigtime %}
                                 <p class="field__value">
-                                    {% if user.suspensiontime == 0 %}
+                                    {% if user.suspendsigtime == 0 %}
                                         {{ lang.suspendsignature_perm }}
                                     {% else %}
-                                        {{ trans('suspendsignature_for', user.suspensiontime|my_date) }}
+                                        {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
                                     {% endif %}
                                 </p>
                             {% endif %}
