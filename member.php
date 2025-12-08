@@ -2013,6 +2013,8 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $memprofile['username']);
+
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile);
 
 	$memprofile['useravatar'] = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);

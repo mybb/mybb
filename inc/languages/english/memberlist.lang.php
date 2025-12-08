@@ -5,11 +5,9 @@
  *
  */
 
-$l['nav_memberlist'] = "Member List";
-
 $l['memberlist_disabled'] = "The member list functionality has been disabled by the Administrator.";
 
-$l['member_list'] = "Member List";
+$l['member_list'] = "Members";
 $l['avatar']  = "Avatar";
 $l['username'] = "Username";
 $l['joined'] = "Joined";
@@ -17,7 +15,7 @@ $l['lastvisit'] = "Last Visit";
 $l['posts'] = "Post Count";
 $l['threads'] = "Thread Count";
 $l['referrals'] = "Referrals";
-$l['search_members'] = "Search Member List";
+$l['search_members'] = "Search Members";
 $l['website'] = "Website";
 $l['sort_by'] = "Sort by";
 $l['contains'] = "Contains:";
@@ -32,10 +30,10 @@ $l['order_asc'] = "ascending order";
 $l['order_desc'] = "descending order";
 $l['asc'] = "asc";
 $l['desc'] = "desc";
-$l['forumteam'] = "Show Forum Team";
+$l['forumteam'] = "Forum Team";
 $l['advanced_search'] = "Advanced Search";
 $l['nav_memberlist_search'] = "Search";
-$l['search_member_list'] = "Search Member List";
+$l['search_member_list'] = "Search Members";
 $l['search_criteria'] = "Search Criteria";
 $l['begins_with'] = "begins with";
 $l['username_contains'] = "contains";

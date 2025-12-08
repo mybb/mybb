@@ -21,6 +21,7 @@ if($mybb->settings['enableshowteam'] == 0)
 	error($lang->showteam_disabled);
 }
 
+add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 add_breadcrumb($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
