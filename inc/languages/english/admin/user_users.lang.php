@@ -246,6 +246,9 @@ $l['suspend_expire_info'] = "<small>Remaining: <span style=\"color: {2};\">{1}</
 $l['suspend_never_expire'] = "<small>{1}'s suspension will never expire (permanently suspended).</small>";
 $l['suspend_sig_error'] = "You entered an incorrect time to suspend this user's signature for. Please enter a correct time.";
 
+$l['suspend_avatar'] = "Suspend avatar use";
+$l['suspend_avatar_info'] = "Suspend this user's ability to use an avatar";
+
 $l['moderate_posts'] = "Moderate Posts";
 $l['moderate_posts_info'] = "Moderate new posts made by {1}.";
 $l['moderate_for'] = "Moderate for:";
@@ -261,6 +264,7 @@ $l['suspend_length'] = "<p><small>Remaining Suspension: <span style=\"color: {2}
 $l['suspend_pm'] = "Suspend private messaging";
 $l['suspend_pm_info'] = "Suspend {1} from sending and receiving new private messages.";
 
+$l['suspendavatar_error'] = "You selected to suspend this user's avatar privileges, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendposting_error'] = "You selected to suspend this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";

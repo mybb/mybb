@@ -1827,6 +1827,11 @@ if($mybb->input['action'] == 'editsig')
 
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
+	if((int)$mybb->user['suspendavatar'] === 1)
+	{
+		error($lang->avatar_suspended);
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2004,6 +2009,14 @@ if($mybb->input['action'] == "avatar")
 
 	$avatarurl = '';
 	$extranotes = [];
+
+	$suspend_avatar = (int)$mybb->user['suspendavatar'];
+	$suspend_avatar_time = (int)$mybb->user['suspendavatartime'];
+
+	if($suspend_avatar === 1 && ($suspend_avatar_time == 0 || $suspend_avatar_time > 0 && $suspend_avatar_time > TIME_NOW))
+	{
+		error($lang->avatar_suspended);
+	}
 
 	if($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath']))
 	{
