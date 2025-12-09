@@ -116,6 +116,7 @@ function output_page($contents)
 	$contents = str_replace("<debugstuff>", "", $contents);
 
 	$contents = \MyBB\app(\MyBB\View\Runtime\Runtime::class)
+		->assetManager
 		->insertDeferredAttachedAssets($contents);
 
 	if($mybb->settings['gzipoutput'] == 1)

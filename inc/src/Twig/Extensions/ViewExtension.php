@@ -122,7 +122,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getAttachedAssets(string $type, bool $inserting = false): array
     {
-        return $this->view->getAttachedAssets(
+        return $this->view->assetManager->getAttachedAssets(
             ResourceType::from($type),
             $inserting,
         );
