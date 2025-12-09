@@ -25,6 +25,7 @@ $l['nav_drafts'] = "Drafts";
 $l['nav_attachments'] = "Attachments";
 $l['nav_subscriptions'] = "Subscriptions";
 $l['nav_removesubscription'] = "Remove Subscription";
+$l['nav_warninglog'] = "Warning Log";
 $l['nav_securitylog'] = "Security Log";
 
 $l['resend_activation'] = "Resend Activation Email";
@@ -390,6 +391,7 @@ $l['warning_for_post'] = "for post: ";
 $l['warning_revoked'] = "Revoked";
 $l['already_expired'] = "Expired";
 $l['warning_points'] = "({1} points)";
+$l['acknowledge'] = "Acknowledge";
 $l['new_posts_thread'] = "New Posts";
 $l['new_hot_thread'] = "Hot Thread (New)";
 $l['posts_by_you'] = "Contains Posts by You";
@@ -433,6 +435,15 @@ $l['buddyrequest_accepted'] = 'The selected buddy request has been accepted.';
 $l['buddyrequest_declined'] = 'The selected buddy request has been declined.';
 $l['user_doesnt_exist'] = 'The end user no longer exists.';
 $l['buddyrequests_sent_success'] = 'Buddy requests sent successfully.';
+
+$l['warning_log'] = "Warning Log";
+$l['no_warning_logs'] = "There are no warning logs to view.";
+$l['warning_already_revoked'] = "This warning has already been revoked.";
+$l['warning_invalid'] = "The specified warning is invalid or does not exist.";
+$l['warning_already_acknowledged'] = "This warning has already been acknowledged.";
+$l['warning_acknowledgement_not_required'] = "This warning does not require acknowledgement.";
+$l['warning_acknowledgement_failed'] = "This warning could not be acknowledged.";
+$l['warning_acknowledgement_success'] = "This warning has been acknowledged.";
 
 $l['security_log'] = "Security Log";
 $l['no_security_logs'] = "No Security actions have been logged.";

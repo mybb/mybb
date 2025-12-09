@@ -9,6 +9,7 @@
 
     &--float {
         float: $right;
+        margin-#{$left}: 3px;
     }
 
     &--good {

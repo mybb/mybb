@@ -177,6 +177,19 @@
                         </div>
                     </section>
                 {% endif %}
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.require_acknowledgement }}</h2>
+                    <div class="section__container">
+                        <div class="row row--form row--no-border field">
+                            <p class="option-field option-field--compact">
+                                <label>
+                                    <input type="checkbox" class="checkbox" value="1" name="requiresacknowledgement" id="requiresacknowledgement" checked="checked" style="vertical-align: middle;" />
+                                    {{ lang.require_acknowledgement_description }}
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </section>
                 <div class="form__submit">
                     <button type="submit" class="button button--medimu">
                         {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'button__icon'}, with_context = false) }}

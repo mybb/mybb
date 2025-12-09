@@ -181,7 +181,7 @@
     {# Warnings #}
     {% if warnings %}
         <section class="block">
-            <h1 class="title title--major">{{ lang.latest_warnings }} {{ lang.current_warning_level }}</h1>
+            <h1 class="title title--major">{{ lang.latest_warnings }} - {{ lang.current_warning_level|raw }}</h1>
             {% for warning in warnings %}
                 <div class="row row--simple-columns warning-log">
                     <div class="row__primary">
@@ -191,10 +191,33 @@
                         {% endif %}
                         <div class="warning-log__expiry-date">
                             {{ lang.expires }}:
-                            {{ expires }}
+                            {{ warning.expiration }}
                         </div>
+                        {% if warning.requiresacknowledgement %}
+                            <div class="warning-log__acknowledgement">
+                                {{ lang.acknowledged }}:
+                                {% if warning.acknowledged %}
+                                    <span class="warning-log__acknowledgement-date">{{ warning.acknowledged|my_date }}</span>
+                                {% else %}
+                                    <span class="warning-log__acknowledgement--bad">{{ lang.no }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="row__secondary">
+                        {% if warning.requiresacknowledgement and not warning.acknowledged and not warning.daterevoked %}
+                            <form action="usercp.php" method="post" name="input">
+                                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                                <input type="hidden" name="action" value="do_acknowledge" />
+                                <input type="hidden" name="wid" value="{{ warning.wid }}" />
+                                <div class="warning-log__details">
+                                    <button class="button button--medium" type="submit">
+                                        {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
+                                        <span class="button__text">{{ lang.acknowledge }}</span>
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
                         <div class="warning-log__issued_by">{{ lang.issued_by }} {{ warning.issuedby|raw }}</div>
                         <div class="warning-log__issued-date">{{ warning.date_issued|raw }}</div>
                     </div>

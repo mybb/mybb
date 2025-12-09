@@ -662,6 +662,11 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
+		// Update the user's unacknowledged warnings count
+		$query = $db->simple_select("warnings", "COUNT(wid) AS count", "uid={$user['uid']} AND requiresacknowledgement=1 AND acknowledged=0 and daterevoked=0");
+		$result = $db->fetch_array($query);
+		$this->updated_user['unacknowledgedwarnings'] = (int)$result['count'];
+
 		// Save updated details
 		$db->update_query("users", $this->updated_user, "uid='{$user['uid']}'");
 
@@ -689,6 +694,7 @@ class WarningsHandler extends DataHandler
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
 			"issuedby" => $mybb->user['uid'],
+			"requiresacknowledgement" => (int)$warning['requiresacknowledgement'],
 			"expires" => (int)$warning['expires'],
 			"expired" => 0,
 			"revokereason" => '',
@@ -737,5 +743,21 @@ class WarningsHandler extends DataHandler
 		return $this->write_warning_data;
 	}
 
-}
+	/**
+	 * Acknowledges a warning
+	 *
+	 */
+	function acknowledge_warning() : void
+	{
+		global $db, $plugins;
 
+		$warning = &$this->data;
+
+		$db->update_query("warnings", ["acknowledged" => TIME_NOW], "wid='{$warning['wid']}'");
+		$warning['acknowledged'] = TIME_NOW;
+
+		$plugins->run_hooks("datahandler_warnings_acknowledge_warning", $this);
+
+		$this->update_user();
+	}
+}

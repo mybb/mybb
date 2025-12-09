@@ -646,6 +646,15 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	$headerMessages['pmnotice']['class'] = 'pm_alert';
 }
 
+// Check if this user has unacknowledged warnings
+$warnings_count = (int)$mybb->user['unacknowledgedwarnings'];
+if($warnings_count > 0)
+{
+	$headerMessages['warningsnotice']['id'] = 'warning_notice';
+	$headerMessages['warningsnotice']['class'] = 'alert--danger';
+	$headerMessages['warningsnotice']['message'] = $lang->sprintf($lang->unacknowledged_warnings_notice, $warnings_count);
+}
+
 if(isset($mybb->user['avatartype']) && ($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
 {
 	$headerMessages[] = [

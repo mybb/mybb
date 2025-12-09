@@ -450,3 +450,35 @@ function upgrade100_check_constraints()
     }
 }
 
+function upgrade100_warnings_acknowledgements()
+{
+    global $db;
+
+    switch($db->type)
+    {
+        case 'pgsql':
+        case 'sqlite':
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+            }
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
+            }
+            break;
+        default:
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
+            }
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
+            }
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
+            }
+            break;
+    }
+}
+
