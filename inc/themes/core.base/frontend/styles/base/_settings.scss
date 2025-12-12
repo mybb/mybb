@@ -1,13 +1,33 @@
-// Screen size breakpoints
+// Response theme screen size breakpoints
+// These are used to adjust user interface based on the size of the screen
 $bp-small: 480px;
 $bp-medium: 768px;
 $bp-large: 1140px;
 
-// Height of page header
-$header-height: 75px;
+:root {
+    // Used for rounded corners throughout theme. Set to 0 to disable rounded corners.
+    --border-radius: 4px;
 
-// Speed of transitions
-$transition-speed: .25s;
+    // Used for most borders
+    --border-width-base: 1px;
 
-// Border radius
-$radius: 4px;
+    // Used for page title borders
+    --border-width-thick: 2px;
+
+    // Speed where CSS transitions are used
+    --transition-speed: .25s;
+
+    // Standard spacings used for padding and margin properties
+    --spacing-1: 2px;
+    --spacing-2: 4px;
+    --spacing-3: 8px;
+    --spacing-4: 12px;
+    --spacing-5: 16px;
+    --spacing-6: 24px;
+    --spacing-7: 32px;
+    --spacing-8: 50px;
+
+    // Height of the forum header
+    // Automatically adjusts sizing of elements within the header to fit
+    --header-height: 75px; // TODO: complete scaling of items in header based on this height
+}

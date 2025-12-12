@@ -1,7 +1,7 @@
 .user-bar {
     min-height: 50px;
     clear: both;
-    background: $background-2;
+    background: var(--user-bar-background);
 
     &__links {
         padding: 0;
@@ -26,22 +26,21 @@
         &:link,
         &:visited {
             display: inline-block;
-            padding: 12px 12px;
-            color: $alt-font-color-1;
-            border-radius: 4px;
+            padding: var(--spacing-4);
+            color: var(--alt-font-color-1);
+            border-radius: var(--border-radius);
         }
 
         &:hover {
-            color: $link-hover;
+            color: var(--link-hover-color);
             text-decoration: none;
             cursor: pointer;
         }
     }
 
     &__icon {
-        margin-#{$right}: 4px;
-        margin-bottom: -2px;
-        font-size: 1.2em;
+        margin-#{$right}: var(--spacing-2);
+        font-size: var(--font-size-large);
     }
 
     &__text {
@@ -61,7 +60,7 @@
 
     &__caret {
         display: inline;
-        font-size: 14px;
+        font-size: var(--font-size-small);
 
         &--up {
             display: none;
@@ -70,14 +69,14 @@
 
     &__unread-count {
         padding: side-values(1px 5px 2px 5px);
-        margin: side-values(0 0 0 3px);
-        font-size: 0.7em;
+        margin: side-values(0 0 0 var(--spacing-2));
+        font-size: var(--font-size-smallest);
         font-weight: normal;
-        color: $invert-font-color;
+        color: var(--invert-font-color);
         text-decoration: none;
         vertical-align: middle;
-        background: $unread-count;
-        border-radius: 2px;
+        background: var(--status-unread-color);
+        border-radius: calc(var(--border-radius) / 2);
     }
 
     &__checkbox {
@@ -90,26 +89,26 @@
         #{$left}: -1px;
         display: none;
         width: 250px;
-        padding: side-values(6px 12px 6px 12px);
-        font-size: 0.9em;
-        background: $background-1;
-        border: 1px solid $border-1;
+        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
+        font-size: var(--font-size-small);
+        background: var(--background-1);
+        border: 1px solid var(--user-bar-background-shade-1);
         border-top: none;
-        border-radius: corner-values(0 0 4px 4px);
+        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
 
         .avatar-profile-link {
             float: $right;
-            margin: side-values(6px 0 0 10px);
+            margin: side-values(var(--spacing-3) 0 0 var(--spacing-4));
         }
     }
 
     &__username {
-        padding: 8px 4px;
+        padding: var(--spacing-3) var(--spacing-2);
         margin: 0;
         overflow: hidden;
         font-weight: bold;
-        font-size: 1.1em;
-        border-bottom: 1px solid $border-1;
+        font-size: var(--font-size-large);
+        border-bottom: 1px solid var(--border-color-1);
 
         @include bp-small {
             display: none;
@@ -122,9 +121,9 @@
 }
 
 #show-user-dropdown:checked ~ .user-bar__item--active-user {
-    background: $background-1;
-    border-left: 1px solid $border-1;
-    border-right: 1px solid $border-1;
+    background: var(--background-1);
+    border-left: 1px solid var(--border-color-1);
+    border-right: 1px solid var(--border-color-1);
 
     .user-bar__dropdown {
         display: block;
@@ -154,7 +153,7 @@
         float: none;
         padding: 0;
         margin: 0;
-        border-bottom: 1px solid $border-1;
+        border-bottom: 1px solid var(--border-color-1);
 
         &:last-child {
             border-bottom: 0;
@@ -164,7 +163,7 @@
     &__link {
         display: block;
         float: none;
-        padding: 4px;
+        padding: var(--spacing-2);
         margin: 0;
         text-align: $left;
         background: transparent;
@@ -176,6 +175,6 @@
     }
 
     &__icon {
-        margin-#{$right}: 4px;
+        margin-#{$right}: var(--spacing-2);
     }
 }

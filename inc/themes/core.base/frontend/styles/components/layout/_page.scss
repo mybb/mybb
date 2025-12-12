@@ -1,33 +1,33 @@
 html, button, input, select, textarea {
-    color: $font-color;
+    color: var(--font-color);
     word-wrap: break-word;
 }
 
 ::selection {
-    color: $invert-font-color;
-    background: $secondary-color;
+    color: var(--invert-font-color);
+    background: var(--secondary-color);
     text-shadow: none;
 }
 
 body {
     margin: 0;
-    font: 16px/26px $font-stack;
-    background: $background-default;
+    font: var(--font-size-base)/var(--line-height-base) var(--font-stack);
+    background: var(--background-default);
 }
 
 input, select, textarea, button {
-    font: 16px $font-stack;
+    font: var(--font-size-base) var(--font-stack);
 }
 
 a:link,
 a:visited {
-    color: $link-default;
+    color: var(--link-default-color);
     text-decoration: none;
 }
 
 a:hover,
 a:active {
-    color: $link-hover;
+    color: var(--link-hover-color);
     text-decoration: underline;
 }
 
@@ -38,11 +38,11 @@ button:focus {
 
 hr {
     display: block;
-    height: 1px;
+    height: var(--border-width-base);
     padding: 0;
     margin: 1em 0;
     border: 0;
-    border-top: 1px solid #ccc;
+    border-top: var(--border-width-base) solid var(--border-color-2);
 }
 
 img {
@@ -71,7 +71,7 @@ textarea {
 }
 
 .main {
-    padding: side-values(20px 0 10px 0);
+    padding: side-values(var(--spacing-6) 0 var(--spacing-4) 0);
 
     @include bp-medium {
 
@@ -103,23 +103,23 @@ textarea {
 
     .page-header {
         padding-bottom: 0;
-        margin-bottom: 20px;
-        border-bottom: 2px solid $border-3;
+        margin-bottom: var(--spacing-6);
+        border-bottom: var(--border-width-thick) solid var(--border-color-3);
 
         .page-description {
-            margin: side-values(0 0 10px 0);
-            font-size: 0.9em;
-            color: $alt-font-color-1;
+            margin: side-values(0 0 var(--spacing-4) 0);
+            font-size: var(--font-size-small);
+            color: var(--alt-font-color-1);
         }
     }
 
     .page-footer {
         clear: both;
-        border-top: 2px solid $border-3;
+        border-top: var(--border-width-thick) solid var(--border-color-3);
     }
 
     .page-sidebar {
-        padding-bottom: 10px;
-        font-size: 0.9em;
+        padding-bottom: var(--spacing-4);
+        font-size: var(--font-size-small);
     }
 }

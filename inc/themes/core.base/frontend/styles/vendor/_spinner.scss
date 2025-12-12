@@ -1,6 +1,6 @@
 #spinner {
-    background: $dark-background-2;
-    color: $invert-font-color;
+    background: var(--header-background);
+    color: var(--invert-font-color);
     position: fixed;
     top: 0;
     #{$left}: 0;

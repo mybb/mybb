@@ -1,9 +1,9 @@
 @mixin button-theme(
     $color, // background color
-    $color-text: $invert-font-color, // text color
+    $color-text: var(--invert-font-color), // text color
     $color-border: $color, // border color
-    $color-hover: $button-hover, // hover background color
-    $color-text-hover: $invert-font-color, // hover text color
+    $color-hover: var(--button-hover-color), // hover background color
+    $color-text-hover: var(--invert-font-color), // hover text color
     $color-border-hover: $color-hover) { // hover border color
 
     @content;
@@ -27,12 +27,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 10px;
-    margin: 5px;
-    font-size: 0.9em;
-    line-height: 26px;
-    border: 1px solid;
-    border-radius: 4px;
+    padding: var(--spacing-2) var(--spacing-4);
+    margin: var(--spacing-2);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-base);
+    border: var(--border-width-base) solid;
+    border-radius: var(--border-radius);
     -webkit-appearance: none;
        -moz-appearance: none;
             appearance: none;
@@ -43,24 +43,24 @@
         outline: none;
     }
 
-    @include button-theme($button-default);
+    @include button-theme(var(--button-default-color));
 
     &__icon {
-        margin-#{$right}: 8px;
+        margin-#{$right}: var(--spacing-3);
 
         &.button__icon--after {
             margin-#{$right}: 0;
-            margin-#{$left}: 8px;
+            margin-#{$left}: var(--spacing-3);
         }
     }
 
     $theme-secondary: (
-        'color': $background-default,
-        'color-text': $link-default,
-        'color-border': $border-1,
-        'color-hover': $background-default,
-        'color-text-hover': $link-hover,
-        'color-border-hover': $border-1
+        'color': var(--background-default),
+        'color-text': var(--link-default-color),
+        'color-border': var(--border-color-1),
+        'color-hover': var(--background-default),
+        'color-text-hover': var(--link-hover-color),
+        'color-border-hover': var(--border-color-1)
     );
 
     &--secondary {
@@ -68,12 +68,12 @@
     }
 
     $theme-invert: (
-        'color': $background-default,
-        'color-text': $link-default,
-        'color-border': $background-default,
-        'color-hover': $background-default,
-        'color-text-hover': $link-hover,
-        'color-border-hover': $background-default
+        'color': var(--background-default),
+        'color-text': var(--link-default-color),
+        'color-border': var(--background-default),
+        'color-hover': var(--background-default),
+        'color-text-hover': var(--link-hover-color),
+        'color-border-hover': var(--background-default)
     );
 
     &--invert {
@@ -81,10 +81,10 @@
     }
 
     $theme-danger: (
-        'color': $background-default,
-        'color-text': $danger-color,
-        'color-border': $border-1,
-        'color-hover': $danger-color
+        'color': var(--background-default),
+        'color-text': var(--danger-color),
+        'color-border': var(--border-color-1),
+        'color-hover': var(--danger-color)
     );
 
     &--danger {
@@ -92,10 +92,10 @@
     }
 
     $theme-danger-secondary: (
-        'color': $background-default,
-        'color-text': $link-default,
-        'color-border': $border-1,
-        'color-hover': $danger-color
+        'color': var(--background-default),
+        'color-text': var(--link-default-color),
+        'color-border': var(--border-color-1),
+        'color-hover': var(--danger-color)
     );
 
     &--danger.button--secondary {
@@ -103,10 +103,10 @@
     }
 
     $theme-success: (
-        'color': $background-default,
-        'color-text': $success-color,
-        'color-border': $border-1,
-        'color-hover': $success-color
+        'color': var(--background-default),
+        'color-text': var(--success-color),
+        'color-border': var(--border-color-1),
+        'color-hover': var(--success-color)
     );
 
     &--success {
@@ -114,10 +114,10 @@
     }
 
     $theme-success-secondary: (
-        'color': $background-default,
-        'color-text': $link-default,
-        'color-border': $border-1,
-        'color-hover': $success-color
+        'color': var(--background-default),
+        'color-text': var(--link-default-color),
+        'color-border': var(--border-color-1),
+        'color-hover': var(--success-color)
     );
 
     &--success.button--secondary {
@@ -126,23 +126,23 @@
 
     $theme-basic: (
         'color': transparent,
-        'color-text': $alt-font-color-1,
+        'color-text': var(--alt-font-color-1),
         'color-border': transparent,
         'color-hover': transparent,
-        'color-text-hover': $link-hover
+        'color-text-hover': var(--link-hover-color)
     );
 
     &--basic {
         @include button-theme($theme-basic...) {
-            padding: 4px 4px;
-            margin: 0 5px;
+            padding: var(--spacing-2);
+            margin: 0 var(--spacing-2);
         }
     }
 
     &--inline {
-        padding: 3px 10px;
-        margin: side-values(0 0 0 5px);
-        font-size: 0.9em;
+        padding: var(--spacing-1) var(--spacing-3);
+        margin: side-values(0 0 0 var(--spacing-2));
+        font-size: var(--font-size-small);
         vertical-align: top;
     }
 
@@ -151,15 +151,15 @@
         &--full-width {
             box-sizing: border-box;
             width: 100%;
-            padding: 8px 10px;
-            margin: 5px 0;
+            padding: var(--spacing2) var(--spacing-4);
+            margin: var(--spacing-2) 0;
         }
 
         &--half-width {
             box-sizing: border-box;
             float: $left;
             width: 49%;
-            padding: 8px 10px;
+            padding: var(--spacing-3) var(--spacing-4);
 
             &:nth-child(odd) {
                 margin-#{$left}: 0;
@@ -174,23 +174,23 @@
     }
 
     &--small {
-        padding: 0 8px;
-        margin: side-values(0 5px 0 0);
-        font-size: 0.9em;
+        padding: var(--spacing-1) var(--spacing-3);
+        margin: side-values(0 var(--spacing-2) 0 0);
+        font-size: var(--font-size-small);
         vertical-align: top;
     }
 
     &--medium {
-        padding: 6px 12px;
-        font-size: 1em;
+        padding: var(--spacing-2) var(--spacing-4);
+        font-size: var(--font-size-regular);
     }
 
     &--big {
-        padding: 8px 16px;
-        font-size: 1.1em;
+        padding: var(--spacing-3) var(--spacing-5);
+        font-size: var(--font-size-large);
 
         .button__icon {
-            margin-#{$right}: 12px;
+            margin-#{$right}: var(--spacing-4);
         }
     }
 }

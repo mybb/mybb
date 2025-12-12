@@ -1,51 +1,51 @@
 .tag {
     display: inline-block;
-    padding: 2px 8px;
-    font-size: 0.9rem;
-    color: $alt-font-color-1;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-small);
+    color: var(--alt-font-color-1);
     text-transform: uppercase;
-    background: $background-3;
-    border-radius: $radius;
+    background: var(--background-3);
+    border-radius: var(--border-radius);
 
     &--float {
         float: $right;
     }
 
     &--good {
-        color: $invert-font-color;
-        background-color: $success-color;
+        color: var(--invert-font-color);
+        background-color: var(--success-color);
     }
 
     &--medium {
-        color: $invert-font-color;
-        background-color: $moderate-color;
+        color: var(--invert-font-color);
+        background-color: var(--moderate-color);
     }
 
     &--bad {
-        color: $invert-font-color;
-        background-color: $danger-color;
+        color: var(--invert-font-color);
+        background-color: var(--danger-color);
     }
 
     &--thread-prefix {
-        margin-#{$right}: 5px;
+        margin-#{$right}: var(--spacing-2);
     }
 
     &--thread-status {
-        margin-#{$left}: 5px;
-        font-size: 0.75rem;
+        margin-#{$left}: var(--spacing-2);
+        font-size: var(--font-size-smaller);
     }
 
     &--post-status {
-        margin-bottom: 10px;
+        margin-bottom: var(--spacing-3);
     }
 
     &--deleted {
-        color: $status-deleted-font-color;
-        background-color: $status-deleted;
+        color: var(--status-deleted-font-color);
+        background-color: var(--status-deleted-background-color);
     }
 
     &--awaiting-approval {
-        color: $status-pending-font-color;
-        background-color: $status-pending;
+        color: var(--status-pending-font-color);
+        background-color: var(--status-pending-background-color);
     }
 }

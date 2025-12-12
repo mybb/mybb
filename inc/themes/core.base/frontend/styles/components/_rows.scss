@@ -1,18 +1,18 @@
 .row {
     position: relative;
-    padding: 14px 12px;
+    padding: var(--spacing-4);
     line-height: 1.4;
-    border-bottom: 1px solid $border-1;
+    border-bottom: var(--border-width-base) solid var(--border-color-1);
 
     &--form {
-        padding: 18px 12px;
+        padding: var(--spacing-5) var(--spacing-4);
 
         &:first-child {
             padding-top: 0;
         }
 
         &:last-child {
-            padding-bottom: 6px;
+            padding-bottom: var(--spacing-3);
             border-bottom: 0;
         }
     }
@@ -22,8 +22,8 @@
     }
 
     &--form.row--border-top {
-        padding-top: 12px;
-        border-top: 1px solid $border-1;
+        padding-top: var(--spacing-4);
+        border-top: var(--border-width-base) solid var(--border-color-1);
     }
 
     &--simple-columns {
@@ -40,10 +40,10 @@
     &__secondary {
 
         @include bp-small-max {
-            padding: side-values(8px 10px);
-            margin-top: 6px;
-            background: $background-1;
-            border-radius: $radius;
+            padding: side-values(var(--spacing-3) var(--spacing-4));
+            margin-top: var(--spacing-3);
+            background: var(--background-1);
+            border-radius: var(--border-radius);
         }
     }
 
@@ -51,11 +51,11 @@
         flex-shrink: 0;
 
         @include bp-small-max {
-            margin-top: 6px;
+            margin-top: var(--spacing-2);
         }
 
         @include bp-small {
-            margin-#{$left}: 10px;
+            margin-#{$left}: var(--spacing-4);
         }
     }
 
@@ -63,14 +63,14 @@
 
         @include bp-small-max {
             position: absolute;
-            top: 14px;
-            right: 12px;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
             float: $right;
         }
     }
 
     &__description {
         margin: 0;
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
     }
 }

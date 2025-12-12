@@ -4,13 +4,13 @@
         display: table-cell;
         padding: 0;
         margin: 0;
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
         line-height: 1.8em;
         list-style: none;
 
         .list__field {
-            margin-#{$right}: 6px;
-            color: $alt-font-color-2;
+            margin-#{$right}: var(--spacing-2);
+            color: var(--alt-font-color-2);
 
             &:after {
                 content: ":";
@@ -25,8 +25,8 @@
         list-style: none;
 
         .list__item {
-            padding: 6px 0;
-            border-bottom: 1px solid $border-3;
+            padding: var(--spacing-2) 0;
+            border-bottom: var(--border-width-base) solid var(--border-color-3);
 
             &:last-child {
                 border-bottom: none;
@@ -37,7 +37,7 @@
     &--rows {
 
         .list__item {
-            padding: 8px 12px;
+            padding: var(--spacing-3) var(--spacing-4);
         }
     }
 }

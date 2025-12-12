@@ -1,18 +1,18 @@
 .add-poll {
 
     .poll-option {
-        padding-#{$right}: 20px;
+        padding-#{$right}: var(--spacing-6);
     }
 
     .remove-option {
         float: #{$right};
-        margin: side-values(3px -20px 0 0);
-        color: $danger-color;
+        margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-6)) 0 0);
+        color: var(--danger-color);
     }
 }
 
 .poll {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-6);
 
     &__question {
 
@@ -21,13 +21,13 @@
     &__tag {
         display: inline-block;
         float: $right;
-        padding: 0 6px;
-        margin-#{$right}: -4px;
-        font-size: 0.6em;
+        padding: 0 var(--spacing-3);
+        margin-#{$right}: calc(-1 * var(--spacing-2));
+        font-size: var(--font-size-smallest);
         font-weight: normal;
         text-transform: uppercase;
-        border: 1px solid $background-default;
-        border-radius: $radius;
+        border: var(--border-width-base) solid var(--invert-color);
+        border-radius: var(--border-radius);
     }
 
     &__options {
@@ -35,8 +35,8 @@
     }
 
     &__row {
-        padding: 10px 12px;
-        border-bottom: 1px solid $border-3;
+        padding: var(--spacing-3) var(--spacing-4);
+        border-bottom: var(--border-width-base) solid var(--border-color-3);
 
         &--cast-vote {
             padding: 0;
@@ -54,8 +54,8 @@
         }
 
         &--information {
-            font-size: 0.9em;
-            color: $alt-font-color-1;
+            font-size: var(--font-size-small);
+            color: var(--alt-font-color-1);
         }
 
         &:last-child {
@@ -64,23 +64,23 @@
     }
 
     &__your-vote {
-        margin-#{$left}: 5px;
-        color: $primary-color;
+        margin-#{$left}: var(--spacing-2);
+        color: var(--primary-color);
     }
 
     &__option {
         float: $left;
-        margin-bottom: 8px;
+        margin-bottom: var(--spacing-3);
     }
 
     &__votes {
         position: relative;
         box-sizing: border-box;
-        height: 24px;
-        margin: 8px 0;
+        height: var(--spacing-6);
+        margin: var(--spacing-3) 0;
         clear: both;
-        background: $background-1;
-        border-radius: 4px;
+        background: var(--background-1);
+        border-radius: var(--border-radius);
     }
 
     &__bar {
@@ -90,45 +90,47 @@
         bottom: 0;
         z-index: 1;
         box-sizing: border-box;
-        background: $major-heading-background;
-        border-radius: 3px;
+        background: var(--primary-color);
+        border-radius: var(--border-radius);
     }
 
     &__count {
         float: $right;
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
     }
 
     &__vote {
-        padding: 6px 12px;
-        background: $background-2;
-        border-radius: $radius;
+        padding: var(--spacing-3) var(--spacing-4);
+        background: var(--background-2);
+        border-radius: var(--border-radius);
         @include clearfix();
     }
 
     &__total {
         float: $right;
-        margin: side-values(10px 0 10px 8px);
+        margin: side-values(var(--spacing-3) 0 var(--spacing-3) var(--spacing-3));
     }
 
+    // TODO: confirm this styling is needed or if template needs updated
     &__end-date {
-        padding: 5px 16px 0 16px;
-        font-size: 0.9em;
-        color: $alt-font-color-1;
+        padding: var(--spacing-2) var(--spacing-5) 0 var(--spacing-5);
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
 
         i {
             margin-right: 5px;
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
         }
     }
 
+    // TODO: confirm this styling is needed or if template needs updated
     &__closed {
         display: inline-block;
-        padding: 5px 11px;
-        margin: 5px;
-        color: $invert-font-color;
-        background: $danger-color;
-        border-radius: 4px;
+        padding: var(--spacing-2) var(--spacing-4);
+        margin: var(--spacing-2);
+        color: var(--invert-font-color);
+        background: var(--danger-color);
+        border-radius: var(--border-radius);
 
         i {
             margin-right: 2px;

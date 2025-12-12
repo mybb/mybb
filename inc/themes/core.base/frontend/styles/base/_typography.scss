@@ -1,7 +1,27 @@
-// Note: fonts are included in 'headerinclude'
+// Note: webfonts are included in `partials/headerinclude.twig` template
 
-// Used for body text
-$font-stack: "Open Sans", sans-serif;
+:root {
+    // Font used for most user interface elements
+    --font-stack: "Open Sans", sans-serif;
 
-// Used for logo, page and block titles
-$alt-font-stack: "Asap", sans-serif;
+    // Font used for headings throughout the user interface
+    --heading-font-stack: "Asap", sans-serif;
+
+    // Font used for forum name in the page header block
+    --logo-font-stack: var(--heading-font-stack);
+
+    // Base font size
+    --font-size-base: 16px;
+
+    // Base line height
+    --line-height-base: 26px;
+
+    // Standard font size scales
+    --font-size-smallest: 0.7rem;
+    --font-size-smaller: 0.8rem;
+    --font-size-small: 0.9rem;
+    --font-size-regular: 1.0rem;
+    --font-size-large: 1.2rem;
+    --font-size-larger: 1.4rem;
+    --font-size-largest: 2.2rem;
+}

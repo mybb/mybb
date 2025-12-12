@@ -13,13 +13,13 @@
     &__mobile-search-close-button {
         display: none; // hidden by default
         float: $right;
-        padding: 12px 8px;
+        padding: var(--spacing-4) var(--spacing-3);
         margin-#{$right}: 0px;
-        font-size: 1.2em;
-        color: $alt-font-color-1;
+        font-size: var(--font-size-large);
+        color: var(--alt-font-color-1);
 
         &:hover {
-            color: $secondary-color;
+            color: var(--secondary-color);
             cursor: pointer;
         }
     }
@@ -36,20 +36,18 @@
         box-sizing: border-box;
         display: none;
         width: auto;
-        padding: side-values(2px 0 2px 8px);
-        margin: side-values(0 0 10px 0);
+        padding: side-values(var(--spacing-1) 0 var(--spacing-1)) var(--spacing-3);
+        margin-top: var(--spacing-3);
         clear: both;
         cursor: text;
-        background: $background-default;
-        border: 1px solid $border-1;
-        border-radius: 4px;
+        background: var(--background-default);
+        border: 1px solid var(--border-color-1);
+        border-radius: var(--border-radius);
 
         @include bp-medium {
             display: block;
             float: $right;
             width: 35%;
-            margin-top: 6px;
-            margin-bottom: 6px;
             clear: none;
         }
     }
@@ -67,10 +65,10 @@
         box-sizing: border-box;
         flex-grow: 1;
         min-width: 0;
-        padding: 4px;
+        padding: var(--spacing-2);
         margin: 0;
-        font-size: 16px;
-        background-color: $background-default;
+        font-size: var(--font-size-regular);
+        background-color: var(--background-default);
         border: 0;
         outline: 0;
     }
@@ -79,7 +77,7 @@
     &__controls {
         box-sizing: border-box;
         flex-shrink: 0;
-        padding-#{$right}: 8px;
+        padding-#{$right}: var(--spacing-3);
         text-align: $right;
     }
 
@@ -88,21 +86,21 @@
     &__advanced {
         display: inline-block;
         height: 24px;
-        padding: 2px 0;
+        padding: var(--spacing-1) 0;
         margin: side-values(0 0 0 6px);
-        font-size: 16px;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-regular);
+        color: var(--alt-font-color-2);
         cursor: pointer;
         background: none;
         border: 0;
 
         &:link,
         &:visited {
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
         }
 
         &:hover {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
     }
 }

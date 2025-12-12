@@ -3,12 +3,12 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: side-values(10px 12px);
-    margin-top: 10px;
-    margin-bottom: 20px;
-    font-size: 0.9em;
-    background-color: $background-1;
-    border-radius: 4px;
+    padding: var(--spacing-4);
+    margin-top: var(--spacing-4);
+    margin-bottom: var(--spacing-5);
+    font-size: var(--font-size-small);
+    background-color: var(--background-1);
+    border-radius: var(--border-radius);
 
     &__message {
         flex-grow: 1;
@@ -17,31 +17,31 @@
     }
 
     &__icon {
-        margin-top: 5px;
-        margin-#{$right}: 12px;
-        color: $alt-font-color-1;
+        margin-top: var(--spacing-2);
+        margin-#{$right}: var(--spacing-4);
+        color: var(--alt-font-color-1);
     }
 
     &__dismiss {
         float: $right;
-        font-size: 16px;
+        font-size: var(--font-size-regular);
 
         &__link {
 
             &:link,
             &:visited {
-                color: $danger-color;
+                color: var(--danger-color);
             }
 
             &:hover {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
         }
     }
 
     &__title {
         margin: 0;
-        font-size: 1em;
+        font-size: var(--font-size-regular);
     }
 
     &__description {
@@ -49,39 +49,39 @@
     }
 
     &__list {
-        margin: 10px 0;
+        margin: var(--spacing-4) 0;
     }
 
     &--danger {
-        color: $invert-font-color;
-        background-color: $danger-color;
+        color: var(--invert-font-color);
+        background-color: var(--danger-color);
 
         :link,
         :visited,
         .alert__icon {
-            color: $invert-font-color;
+            color: var(--invert-font-color);
         }
     }
 
     &--pending {
-        color: $status-pending-font-color;
-        background-color: $status-pending;
+        color: var(--status-pending-font-color);
+        background-color: var(--status-pending-background-color);
 
         :link,
         :visited,
         .alert__icon {
-            color: $status-pending-font-color;
+            color: var(--status-pending-font-color);
         }
     }
 
     &--success {
-        color: $invert-font-color;
-        background-color: $success-color;
+        color: var(--invert-font-color);
+        background-color: var(--success-color);
 
         :link,
         :visited,
         .alert__icon {
-            color: $invert-font-color;
+            color: var(--invert-font-color);
         }
     }
 
@@ -89,15 +89,15 @@
         box-sizing: border-box;
         display: block;
         width: 100%;
-        padding: 30px;
+        padding: var(--spacing-7) var(--spacing-6);
         margin: 0;
-        font-size: 1.2em;
-        color: $alt-font-color-1;
+        font-size: var(--font-size-large);
+        color: var(--alt-font-color-1);
         text-align: center;
         background: none;
 
         &.alert--no-results-container {
-            background: $background-1;
+            background: var(--background-1);
         }
     }
 

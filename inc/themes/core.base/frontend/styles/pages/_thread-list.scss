@@ -1,38 +1,38 @@
 .thread-list {
 
     &--no-footer {
-        border-bottom: 1px solid $border-1;
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &__announcements,
     &__sticky-threads {
-        border-bottom: 3px solid $border-1;
+        border-bottom: 3px solid var(--border-color-1);
     }
 
     &__select-all {
         display: none;
         padding: 12px;
         text-align: center;
-        border-bottom: 3px solid $border-1;
+        border-bottom: 3px solid var(--border-color-1);
     }
 
     .sort-threads {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 12px;
-        font-size: 0.9em;
-        color: $alt-font-color-2;
-        background: $background-3;
-        border-radius: $radius;
+        padding: var(--spacing-3) var(--spacing-4);
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
+        background: var(--background-3);
+        border-radius: var(--border-radius);
 
         @include bp-small {
-            padding: side-values(8px 12px 8px 40px);
+            padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) 40px);
         }
 
         &--alt {
             background: none;
-            border-bottom: 1px solid $border-1;
+            border-bottom: var(--border-width-base) solid var(--border-color-1);
             border-radius: 0;
         }
 
@@ -40,26 +40,26 @@
 
             &:link,
             &:visited {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
 
             &:hover {
-                color: $link-hover;
+                color: var(--link-hover-color);
                 text-decoration: none;
             }
         }
 
         &__order {
-            margin-#{$left}: 2px;
+            margin-#{$left}: var(--spacing-1);
 
             a:link,
             a:visited {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
 
             a:hover,
             a:active {
-                color: $link-hover;
+                color: var(--link-hover-color);
             }
         }
 
@@ -69,7 +69,7 @@
 
                 @include bp-small-max {
                     flex: 1 0 40%;
-                    margin-#{$right}: 10px;
+                    margin-#{$right}: var(--spacing-3);
                     text-align: $right;
                 }
             }
@@ -93,7 +93,7 @@
 
             @include bp-small {
                 flex: 1 1 50%;
-                padding-#{$right}: 12px;
+                padding-#{$right}: var(--spacing-4);
             }
         }
 
@@ -114,7 +114,7 @@
                 flex: 0 0 28%;
                 min-width: 220px;
                 max-width: 280px;
-                padding-#{$left}: 12px;
+                padding-#{$left}: var(--spacing-4);
             }
         }
 
@@ -164,14 +164,14 @@
 
                 @include bp-small-max {
                     position: absolute;
-                    top: 12px;
-                    right: 12px;
+                    top: var(--spacing-4);
+                    right: var(--spacing-4);
                 }
             }
         }
 
         &--selected {
-            background-color: $status-highlight;
+            background-color: var(--status-highlight-background-color);
         }
 
         // TODO: change class in code to thread--selected
@@ -187,8 +187,8 @@
             display: inline-block;
             margin-top: 1px;
             margin-#{$left}: 6px;
-            font-size: 0.8em;
-            color: $new-icon-color;
+            font-size: var(--font-size-smaller);
+            color: var(--status-new-icon-color);
             vertical-align: top;
 
             @include bp-small {
@@ -199,7 +199,7 @@
 
         &__title {
             margin: 0;
-            font-size: 1em;
+            font-size: var(--font-size-regular);
             font-weight: normal;
         }
 
@@ -235,8 +235,8 @@
         &__forum {
             display: none;
             margin: side-values(3px 0 0 0);
-            font-size: 0.8em;
-            color: $alt-font-color-2;
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-2);
 
             @include bp-small {
                 display: block;
@@ -244,26 +244,26 @@
 
             a:link,
             a:visited {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
         }
 
         &__message {
             margin-top: 3px;
-            font-size: 0.9em;
+            font-size: var(--font-size-small);
         }
 
         &__notification {
             margin: side-values(3px 0 0 0);
-            font-size: 0.8em;
+            font-size: var(--font-size-smaller);
         }
 
         &__icons {
             display: block;
-            margin-top: 2px;
-            margin-bottom: 2px;
-            font-size: 14px;
-            color: $alt-font-color-2;
+            margin-top: var(--spacing-1);
+            margin-bottom: var(--spacing-1);
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-2);
 
             @include bp-medium {
                 float: $right;
@@ -281,13 +281,13 @@
             }
 
             &--sticky {
-                color: $secondary-color;
+                color: var(--secondary-color);
             }
         }
 
         &__pages {
             margin-top: 3px;
-            font-size: 0.8em;
+            font-size: var(--font-size-smaller);
 
             @include bp-medium {
                 float: $right;
@@ -295,22 +295,22 @@
         }
 
         &__page-legend {
-            margin-#{$right}: 2px;
-            color: $alt-font-color-1;
+            margin-#{$right}: var(--spacing-1);
+            color: var(--alt-font-color-1);
         }
 
         &__page-link {
             display: inline-block;
             padding: 1px 5px;
             margin: 0 1px;
-            background: $background-1;
-            border-radius: $radius - 1;
+            background: var(--background-1);
+            border-radius: calc(var(--border-radius) - 1px);
             text-decoration: none;
 
             &:hover,
             &:active {
-                background: $button-hover;
-                color: $invert-font-color;
+                background: var(--button-hover-color);
+                color: var(--invert-font-color);
             }
         }
 
@@ -320,22 +320,22 @@
 
         &__reply-legend {
             display: block;
-            font-size: 0.7em;
-            color: $alt-font-color-3;
+            font-size: var(--font-size-smallest);
+            color: var(--alt-font-color-3);
             text-transform: lowercase;
         }
 
         &__reply-count {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         &__unapproved-replies {
             padding: 1px 4px;
-            font-size: 0.7em;
+            font-size: var(--font-size-smallest);
             font-weight: normal;
-            color: $status-pending-font-color;
+            color: var(--status-pending-font-color);
             text-decoration: none;
-            background: $status-pending;
+            background: var(--status-deleted-background-color);
             border-radius: 2px;
         }
 
@@ -349,21 +349,21 @@
 
             .avatar-profile-link {
                 position: absolute;
-                top: 12px;
-                left: 8px;
+                top: var(--spacing-4);
+                left: var(--spacing-3);
 
                 @include bp-small {
                     position: static;
                     float: $left;
                     display: inline-block;
-                    margin: side-values(0 12px 0 0);
+                    margin: side-values(0 var(--spacing-4) 0 0);
                 }
             }
 
             &__text {
                 display: inline;
-                font-size: 0.8em;
-                color: $alt-font-color-2;
+                font-size: var(--font-size-smaller);
+                color: var(--alt-font-color-2);
 
                 @include bp-small {
                     @include visually-hidden;
@@ -372,26 +372,26 @@
 
             &__author {
                 display: inline-block;
-                font-size: 0.8em;
+                font-size: var(--font-size-smaller);
 
                 @include bp-small-max {
 
                     a:link,
                     a:visited {
-                        color: $alt-font-color-1;
+                        color: var(--alt-font-color-1);
                     }
                 }
 
                 @include bp-small {
                     display: block;
-                    font-size: 1em;
+                    font-size: var(--font-size-regular);
                 }
             }
 
             a.thread__latest-post__date {
                 display: block;
-                font-size: 0.8em;
-                color: $alt-font-color-1;
+                font-size: var(--font-size-smaller);
+                color: var(--alt-font-color-1);
             }
         }
 
@@ -400,7 +400,7 @@
             .thread__icons {
 
                 @include bp-small-max {
-                    margin-#{$right}: 24px;
+                    margin-#{$right}: var(--spacing-6);
                 }
             }
         }

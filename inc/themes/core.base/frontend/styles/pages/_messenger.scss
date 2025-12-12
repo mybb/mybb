@@ -1,16 +1,16 @@
 .messenger {
 
     .page-header {
-        margin-bottom: 20px;
+        margin-bottom: var(--spacing-6);
     }
 
     &__search {
-        padding-bottom: 12px;
+        padding-bottom: var(--spacing-4);
 
         .textbox--large {
 
             @include bp-small-max {
-                margin-bottom: 8px;
+                margin-bottom: var(--spacing-3);
                 width: 100%;
             }
         }
@@ -28,26 +28,26 @@
     }
 
     &__space {
-        margin-bottom: 10px;
+        margin-bottom: var(--spacing-4);
 
         .messenger-space {
             display: flex;
-            background-color: $background-1;
-            border-radius: $radius;
+            background-color: var(--background-1);
+            border-radius: var(--border-radius);
 
             &__used {
-                border-radius: $radius;
+                border-radius: var(--border-radius);
 
                 &--low {
-                    background: $success-color;
+                    background: var(--success-color);
                 }
 
                 &--medium {
-                    background: $moderate-color;
+                    background: var(--moderate-color);
                 }
 
                 &--high {
-                    background: $danger-color;
+                    background: var(--danger-color);
                 }
             }
 
@@ -57,10 +57,10 @@
 
             &__text {
                 display: inline-block;
-                padding: 4px 10px;
+                padding: var(--spacing-2) var(--spacing-4);
 
                 &--over-half {
-                    color: $invert-font-color;
+                    color: var(--invert-font-color);
                 }
             }
         }
@@ -69,26 +69,26 @@
 
 .sort-messages {
     position: relative;
-    padding: 8px 12px;
-    font-size: 0.9em;
-    color: $alt-font-color-2;
-    background: $background-3;
-    border-radius: $radius;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-small);
+    color: var(--alt-font-color-2);
+    background: var(--background-3);
+    border-radius: var(--border-radius);
 
     @include bp-small {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        padding: side-values(8px 12px 8px 70px);
+        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) 70px);
 
         &--no-avatar {
-            padding-#{$left}: 12px;
+            padding-#{$left}: var(--spacing-3);
         }
     }
 
     &--alt {
         background: none;
-        border-bottom: 1px solid $border-1;
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
         border-radius: 0;
     }
 
@@ -96,11 +96,11 @@
 
         &:link,
         &:visited {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         &:hover {
-            color: $link-hover;
+            color: var(--link-hover-color);
             text-decoration: none;
         }
     }
@@ -128,8 +128,8 @@
 
             @include bp-small-max {
                 position: absolute;
-                top: 12px;
-                right: 12px;
+                top: var(--spacing-4);
+                right: var(--spacing-4);
             }
         }
     }
@@ -138,14 +138,14 @@
 .message-list {
 
     &__actions {
-        padding: 12px;
+        padding: var(--spacing-4);
         text-align: center;
-        border-bottom: 1px solid $border-2;
+        border-bottom: 1px solid var(--border-color-2);
     }
 
     .messages__sort-arrow {
         display: inline-block;
-        padding: 0 5px;
+        padding: 0 var(--spacing-3);
 
     }
 
@@ -174,12 +174,12 @@
         }
 
         &--no-avatar {
-            padding-#{$left}: 12px;
+            padding-#{$left}: var(--spacing-4);
     	}
 
         .avatar-profile-link {
             float: $left;
-            margin: side-values(2px 0 0 -52px);
+            margin: side-values(var(--spacing-1) 0 0 -52px);
     	}
 
         &__column {
@@ -212,27 +212,27 @@
 
                 @include bp-small-max {
                     position: absolute;
-                    top: 12px;
-                    right: 12px;
+                    top: var(--spacing-4);
+                    right: var(--spacing-4);
                 }
             }
         }
 
         &__subject {
             margin: 0;
-            font-size: 1em;
+            font-size: var(--font-size-regular);
             font-weight: normal;
         }
 
         &__username,
         &__folder {
             margin: 0;
-            font-size: 0.8em;
-            color: $alt-font-color-2;
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-2);
 
             a:link,
             a:visited {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
 
             @include bp-small {
@@ -241,39 +241,39 @@
         }
 
         &__message {
-            margin: side-values(10px 0 0 0);
-            font-size: 0.9em;
+            margin: side-values(var(--spacing-3) 0 0 0);
+            font-size: var(--font-size-small);
         }
 
         &__deny-receipt {
-            margin-#{$left}: 5px;
-            font-size: 0.8em;
+            margin-#{$left}: var(--spacing-3);
+            font-size: var(--font-size-smaller);
             font-weight: normal;
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
 
             a:link,
             a:visited {
-                color: $alt-font-color-1;
+                color: var(--alt-font-color-1);
             }
     	}
 
         &__icons {
             float: $right;
-            margin-#{$left}: 16px;
-            color: $alt-font-color-2;
+            margin-#{$left}: var(--spacing-5);
+            color: var(--alt-font-color-2);
         }
 
         &__icon {
-            margin-#{$left}: 2px;
+            margin-#{$left}: var(--spacing-1);
 
             &--new_pm {
-                color: $primary-color;
+                color: var(--primary-color);
             }
         }
 
         &__date {
-            font-size: 0.9em;
-            color: $alt-font-color-2;
+            font-size: var(--font-size-small);
+            color: var(--alt-font-color-2);
         }
     }
 }

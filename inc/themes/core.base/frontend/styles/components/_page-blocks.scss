@@ -1,35 +1,35 @@
 .block {
-    margin-bottom: 30px;
+    margin-bottom: var(--spacing-7);
 
     &__content {
-        padding: 10px 0;
+        padding: var(--spacing-3) 0;
     }
 
     &--container {
-        padding: 16px;
-        border: 1px solid $border-1;
-        border-radius: $radius;
+        padding: var(--spacing-5);
+        border: var(--border-width-base) solid var(--border-color-1);
+        border-radius: var(--border-radius);
 
         .sort-results {
             border-width: 0;
-            border-top-width: 2px;
+            border-top-width: var(--border-width-thick);
         }
     }
 
     &--sidebar {
-        padding: 12px 15px;
-        border: 1px solid $border-1;
-        border-radius: $radius;
+        padding: var(--spacing-4) var(--spacing-5);
+        border: var(--border-width-base) solid var(--border-color-1);
+        border-radius: var(--border-radius);
 
         &.block--form {
-            padding: side-values(12px 0 0 0);
+            padding: side-values(var(--spacing-4) 0 0 0);
 
             .title--sidebar {
-                margin: 0 15px;
+                margin: 0 var(--spacing-5);
             }
 
             .section--form {
-                padding: 15px;
+                padding: var(--spacing-5);
             }
         }
     }
@@ -38,16 +38,16 @@
         margin-bottom: 0;
 
         .block__content {
-            padding: 8px 12px;
+            padding: var(--spacing-3) var(--spacing-4);
 
             &--text {
-                padding: 16px 12px;
+                padding: var(--spacing-5) var(--spacing-4);
             }
         }
     }
 
     &__body {
-        padding: 12px;
+        padding: var(--spacing-4);
     }
 
     &:last-child {
@@ -56,7 +56,7 @@
 
     &__footer-link {
         @extend .container;
-        padding: 8px;
+        padding: var(--spacing-3);
         text-align: center;
 
         a:link,
@@ -66,18 +66,18 @@
         }
 
         .icon {
-            margin-#{$right}: 4px;
+            margin-#{$right}: var(--spacing-2);
         }
     }
 }
 
 .section {
     @include clearfix();
-    padding: 16px 12px;
-    border-bottom: 1px solid $border-1;
+    padding: var(--spacing-4) var(--spacing-3);
+    border-bottom: var(--border-width-base) solid var(--border-color-1);
 
     @include bp-medium {
-        padding: 20px 12px;
+        padding: var(--spacing-6) var(--spacing-4);
     }
 
     &:last-child {
@@ -90,17 +90,17 @@
             float: $left;
             box-sizing: border-box;
             width: 74%;
-            padding: side-values(0 0 0 20px);
+            padding: side-values(0 0 0 var(--spacing-6));
             margin: side-values(0 0 0 3%);
-            border-#{$left}: 1px dotted $border-2;
+            border-#{$left}: var(--border-width-base) dotted var(--border-color-2);
         }
     }
 
     &--inline {
-        padding: side-values(5px 0 5px 16px);
+        padding: side-values(var(--spacing-2) 0 var(--spacing-2) var(--spacing-5));
         margin-top: 10px;
         border-bottom: 0;
-        border-left: 2px solid $border-1;
+        border-left: var(--border-width-thick) solid var(--border-color-1);
     }
 }
 
@@ -124,11 +124,11 @@
     flex-direction: column;
     align-content: center;
     justify-content: space-between;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    margin-top: var(--spacing-2);
+    margin-bottom: var(--spacing-4);
 
     &--top {
-        margin-top: -10px;
+        margin-top: calc(-1 * var(--spacing-4));
 
         .pagination {
             margin-bottom: 0;
@@ -136,8 +136,8 @@
     }
 
     &--bottom {
-        margin-top: -5px;
-        margin-bottom: 20px;
+        margin-top: calc(-1 * var(--spacing-2));
+        margin-bottom: var(--spacing-6);
     }
 
     @include bp-medium {
@@ -146,18 +146,18 @@
         .page-buttons {
             order: 2;
             margin-#{$left}: auto;
-            margin-#{$right}: -5px;
+            margin-#{$right}: calc(-1 * var(--spacing-2));
         }
     }
 }
 
 .board-statistics {
-    border: 1px solid $border-1;
-    border-radius: $radius;
+    border: var(--border-width-base) solid var(--border-color-1);
+    border-radius: var(--border-radius);
 
     &__section {
-        padding: side-values(20px 12px 20px 50px);
-        border-bottom: 1px solid $border-1;
+        padding: side-values(var(--spacing-5) var(--spacing-4) var(--spacing-5) var(--spacing-8));
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
 
         &:last-child {
             border-bottom: none;
@@ -165,30 +165,30 @@
     }
 
     &__title {
-        padding: side-values(0 0 4px 0);
+        padding: side-values(0 0 var(--spacing-2) 0);
         margin: 0;
-        font-family: $alt-font-stack;
+        font-family: var(--heading-font-stack);
         font-weight: normal;
-        border-bottom: 1px solid $border-3;
+        border-bottom: var(--border-width-base) solid var(--border-color-3);
     }
 
     &__icon {
         float: $left;
-        margin-top: 4px;
-        margin-#{$left}: -36px;
-        color: $alt-font-color-2;
+        margin-top: var(--spacing-2);
+        margin-#{$left}: calc(-1 * var(--spacing-7));
+        color: var(--alt-font-color-2);
     }
 
     &__body {
-        margin-top: 10px;
+        margin-top: var(--spacing-4);
         margin-bottom: 0;
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
 
         &--active-note {
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            color: $alt-font-color-1;
-            border-bottom: 1px solid $border-3;
+            padding-bottom: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            color: var(--alt-font-color-1);
+            border-bottom: var(--border-width-base) solid var(--border-color-3);
 
             &:last-child {
                 padding-bottom: 0;
@@ -231,7 +231,7 @@
         @extend .inline-form;
 
         &:first-child {
-            margin-bottom: 15px;
+            margin-bottom: var(--spacing-5);
 
             @include bp-large {
                 margin-bottom: 0;

@@ -4,20 +4,20 @@
 
     &__title {
         margin: 0;
-        font-family: $alt-font-stack;
-        font-size: 1.4em;
+        font-family: var(--heading-font-stack);
+        font-size: var(--font-size-larger);
         font-weight: bold;
     }
 
     &__message {
-        padding: 15px;
-        margin: 10px 0;
-        background: $background-1;
-        border-radius: $radius;
+        padding: var(--spacing-6);
+        margin: var(--spacing-3) 0;
+        background: var(--background-1);
+        border-radius: var(--border-radius);
     }
 
     &__link {
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
         text-align: center;
     }
 }
