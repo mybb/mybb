@@ -98,7 +98,7 @@
 
     &--inline {
         padding: side-values(var(--spacing-2) 0 var(--spacing-2) var(--spacing-5));
-        margin-top: 10px;
+        margin-top: var(--spacing-4);
         border-bottom: 0;
         border-left: var(--border-width-thick) solid var(--border-color-1);
     }

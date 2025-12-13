@@ -27,10 +27,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-2) var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4);
     margin: var(--spacing-2);
-    font-size: var(--font-size-small);
-    line-height: var(--line-height-base);
+    font-size: var(--font-size-regular);
+    line-height: normal;
     border: var(--border-width-base) solid;
     border-radius: var(--border-radius);
     -webkit-appearance: none;
@@ -134,15 +134,15 @@
 
     &--basic {
         @include button-theme($theme-basic...) {
-            padding: var(--spacing-2);
+            padding: var(--spacing-3);
             margin: 0 var(--spacing-2);
         }
     }
 
     &--inline {
-        padding: var(--spacing-1) var(--spacing-3);
+        padding: var(--spacing-2) var(--spacing-3);
         margin: side-values(0 0 0 var(--spacing-2));
-        font-size: var(--font-size-small);
+        font-size: var(--font-size-regular);
         vertical-align: top;
     }
 
@@ -151,7 +151,7 @@
         &--full-width {
             box-sizing: border-box;
             width: 100%;
-            padding: var(--spacing2) var(--spacing-4);
+            padding: var(--spacing-3) var(--spacing-4);
             margin: var(--spacing-2) 0;
         }
 
@@ -174,14 +174,14 @@
     }
 
     &--small {
-        padding: var(--spacing-1) var(--spacing-3);
+        padding: var(--spacing-2) var(--spacing-3);
         margin: side-values(0 var(--spacing-2) 0 0);
         font-size: var(--font-size-small);
         vertical-align: top;
     }
 
     &--medium {
-        padding: var(--spacing-2) var(--spacing-4);
+        padding: var(--spacing-3) var(--spacing-4);
         font-size: var(--font-size-regular);
     }
 

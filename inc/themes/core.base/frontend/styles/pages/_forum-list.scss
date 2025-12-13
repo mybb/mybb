@@ -1,5 +1,5 @@
 .forum {
-    padding: 12px 12px;
+    padding: var(--spacing-4);
 
     @include bp-medium {
         display: flex;
@@ -81,16 +81,20 @@
     }
 
     &__count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: var(--alt-font-color-1);
     }
 
     &__unapproved-count {
-        padding: 1px 4px;
+        padding: var(--spacing-1) var(--spacing-2);
+        margin-#{$left}: var(--spacing-2);
         font-size: var(--font-size-smallest);
         font-weight: normal;
         color: var(--status-pending-font-color);
         text-decoration: none;
-        background: var(--status-deleted-background-color);
+        background: var(--status-pending-background-color);
         border-radius: calc(var(--border-radius) / 2);
     }
 

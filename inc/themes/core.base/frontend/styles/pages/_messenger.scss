@@ -140,7 +140,7 @@
     &__actions {
         padding: var(--spacing-4);
         text-align: center;
-        border-bottom: 1px solid var(--border-color-2);
+        border-bottom: var(--border-width-base) solid var(--border-color-2);
     }
 
     .messages__sort-arrow {

@@ -183,7 +183,7 @@
     }
 
     &__header-section {
-        margin-bottom: 8px;
+        margin-bottom: var(--spacing-3);
 
         @include bp-medium {
             margin: 0;

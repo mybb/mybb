@@ -27,7 +27,7 @@
         font-size: calc(0.45 * var(--header-height));
         font-style: italic;
         color: var(--invert-font-color);
-        text-indent: 5px;
+        text-indent: var(--spacing-3);
     }
 
     &:hover {

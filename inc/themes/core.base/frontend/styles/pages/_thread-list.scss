@@ -11,7 +11,7 @@
 
     &__select-all {
         display: none;
-        padding: 12px;
+        padding: var(--spacing-4);
         text-align: center;
         border-bottom: 3px solid var(--border-color-1);
     }
@@ -267,17 +267,17 @@
 
             @include bp-medium {
                 float: $right;
-                margin: side-values(0 0 0 16px);
+                margin: side-values(0 0 0 var(--spacing-5));
             }
         }
 
         &__icon {
             display: inline-block;
-            margin-#{$right}: 2px;
+            margin-#{$right}: var(--spacing-1);
 
             @include bp-medium {
                 margin-#{$right}: 0;
-                margin-#{$left}: 2px;
+                margin-#{$left}: var(--spacing-1);
             }
 
             &--sticky {
@@ -286,7 +286,7 @@
         }
 
         &__pages {
-            margin-top: 3px;
+            margin-top: var(--spacing-1);
             font-size: var(--font-size-smaller);
 
             @include bp-medium {
@@ -301,9 +301,9 @@
 
         &__page-link {
             display: inline-block;
-            padding: 1px 5px;
-            margin: 0 1px;
-            background: var(--background-1);
+            padding: var(--spacing-1) var(--spacing-2);
+            margin: 0 var(--spacing-1);
+            background: var(--background-2);
             border-radius: calc(var(--border-radius) - 1px);
             text-decoration: none;
 
@@ -325,18 +325,25 @@
             text-transform: lowercase;
         }
 
+        &__count-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         &__reply-count {
             color: var(--alt-font-color-1);
         }
 
         &__unapproved-replies {
-            padding: 1px 4px;
+            padding: var(--spacing-1) var(--spacing-2);
+            margin-#{$left}: var(--spacing-2);
             font-size: var(--font-size-smallest);
             font-weight: normal;
             color: var(--status-pending-font-color);
             text-decoration: none;
-            background: var(--status-deleted-background-color);
-            border-radius: 2px;
+            background: var(--status-pending-background-color);
+            border-radius: calc(var(--border-radius) / 2);
         }
 
         &__latest-post {

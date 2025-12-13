@@ -54,13 +54,13 @@
 }
 
 @mixin container {
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
     background: var(--background-1);
     border-radius: var(--border-radius);
 
     &--small {
-        padding: 8px 12px;
+        padding: var(--spacing-3) var(--spacing-4);
         font-size: var(--font-size-small);
     }
 
@@ -69,9 +69,9 @@
     }
 
     &--modal {
-        padding: 8px 24px;
-        margin: -8px -14px 0 -14px;
-        border-bottom: 1px solid var(--border-color-1);
+        padding: var(--spacing-3) var(--spacing-6);
+        margin: side-values(calc(-1 * var(--spacing-3)) calc(-1 * var(--spacing-5)) 0 calc(-1 * var(--spacing-5)));
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
         border-radius: 0;
     }
 }

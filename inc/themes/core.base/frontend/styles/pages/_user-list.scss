@@ -96,10 +96,10 @@
     &--compact {
 
         .user-list__user {
-            padding: 8px;
+            padding: var(--spacing-3);
 
             .avatar-profile-link {
-                margin-#{$right}: 12px;
+                margin-#{$right}: var(--spacing-4);
             }
         }
 
@@ -108,7 +108,7 @@
         }
 
         .alert--no-results {
-            padding: 10px 0;
+            padding: var(--spacing-4) 0;
             font-size: var(--font-size-regular);
         }
     }

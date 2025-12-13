@@ -40,7 +40,7 @@
         top: 0;
         right: 0;
         display: block;
-        padding: 26px 8px; // TODO: Adjust button padding based on header height
+        padding: 26px var(--spacing-3); // TODO: Adjust button padding based on header height
         cursor: pointer;
 
         // Button icon
@@ -103,7 +103,7 @@
             flex-wrap: wrap;
             margin: 0 -6%;
             background: var(--header-background);
-            border-bottom: 1px solid var(--border-color-4);
+            border-bottom: var(--border-width-base) solid var(--border-color-4);
         }
     }
 
@@ -116,7 +116,7 @@
             box-sizing: border-box;
             width: 100%;
             text-align: left;
-            border-top: 1px solid var(--border-color-4);
+            border-top: var(--border-width-base) solid var(--border-color-4);
         }
 
         // Active menu item

@@ -15,7 +15,7 @@
     }
 
     .page-controls {
-        margin-top: -10px;
+        margin-top: calc(-1 * var(--spacing-4));
 
         @include bp-medium-max {
             margin-#{$left}: calc(-1 * var(--spacing-2));

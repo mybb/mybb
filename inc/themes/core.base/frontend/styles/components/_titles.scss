@@ -13,7 +13,7 @@
     }
 
     &--block {
-        border-bottom: 1px solid var(--border-color-1);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &--sidebar,
@@ -47,7 +47,7 @@
     &--modal {
         padding: var(--spacing-4);
         font-size: var(--font-size-larger);
-        border-bottom: 2px solid var(--major-title-border);
+        border-bottom: var(--border-width-thick) solid var(--major-title-border);
         border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
     }
 
@@ -115,7 +115,7 @@
         margin-top: 0;
         margin-bottom: var(--spacing-4);
         font-size: var(--font-size-larger);
-        border-bottom: 1px solid var(--border-color-1);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &--legend {
