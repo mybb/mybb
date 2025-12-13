@@ -9,7 +9,7 @@
         margin-bottom: var(--spacing-4);
         font-size: var(--font-size-largest);
         font-weight: normal;
-        line-height: 1.3;
+        line-height: var(--line-height-small);
     }
 
     &--block {

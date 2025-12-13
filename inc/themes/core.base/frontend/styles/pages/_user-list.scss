@@ -130,7 +130,7 @@
     display: inline;
     padding: var(--spacing-1) var(--spacing-3);
     font-size: var(--font-size-smallest);
-    line-height: 1.6;
+    line-height: var(--line-height-large);
     color: var(--alt-font-color-1);
     border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);

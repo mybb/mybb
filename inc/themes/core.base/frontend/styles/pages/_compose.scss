@@ -165,7 +165,7 @@
     &__details {
         padding-#{$left}: var(--spacing-7);
         font-size: var(--font-size-small);
-        line-height: 1.4;
+        line-height: var(--line-height-small);
     }
 
     &__icon {

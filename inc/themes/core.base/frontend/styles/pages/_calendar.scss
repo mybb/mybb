@@ -108,7 +108,7 @@
     &__event {
         margin: side-values(0 0 var(--spacing-2) 0);
         font-size: var(--font-size-small);
-        line-height: 1.4;
+        line-height: var(--line-height-small);
     }
 
     &__event-link {

@@ -2,7 +2,7 @@
 
     &__title {
         margin: 0;
-        font-size: var(--font-size-large);
+        font-size: var(--font-size-regular);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -12,8 +12,8 @@
     &__last-post,
     &__stats {
         margin: 0;
-        font-size: var(--font-size-small);
-        line-height: 22px;
+        font-size: var(--font-size-smaller);
+        line-height: var(--line-height-large);
         color: var(--alt-font-color-2);
 
         a:link,
