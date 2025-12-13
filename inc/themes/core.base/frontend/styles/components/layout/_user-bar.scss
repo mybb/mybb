@@ -1,7 +1,18 @@
 .user-bar {
-    min-height: 50px;
-    clear: both;
     background: var(--user-bar-background);
+
+    &__wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        @include bp-medium {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
 
     &__links {
         padding: 0;
@@ -10,23 +21,21 @@
     }
 
     &__item {
-        position: relative;
-        float: $left;
+        display: inline-block;
         margin: 0;
-
-        &--active-user {
-            border-right: 1px solid transparent;
-            border-left: 1px solid transparent;
-        }
     }
 
     &__link {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: var(--spacing-4);
 
         &,
         &:link,
         &:visited {
-            display: inline-block;
-            padding: var(--spacing-4);
             color: var(--alt-font-color-1);
             border-radius: var(--border-radius);
         }
@@ -45,6 +54,7 @@
 
     &__text {
         display: none;
+        padding: 0 var(--spacing-1);
 
         @include bp-large {
             display: inline-block;
@@ -59,7 +69,7 @@
     }
 
     &__caret {
-        display: inline;
+        display: inline-block;
         font-size: var(--font-size-small);
 
         &--up {
@@ -68,13 +78,12 @@
     }
 
     &__unread-count {
-        padding: side-values(1px 5px 2px 5px);
+        padding: var(--spacing-1) var(--spacing-2);
         margin: side-values(0 0 0 var(--spacing-2));
         font-size: var(--font-size-smallest);
         font-weight: normal;
+        line-height: normal;
         color: var(--invert-font-color);
-        text-decoration: none;
-        vertical-align: middle;
         background: var(--status-unread-color);
         border-radius: calc(var(--border-radius) / 2);
     }
@@ -85,20 +94,16 @@
 
     &__dropdown {
         position: absolute;
-        top: 50px;
-        #{$left}: -1px;
         display: none;
-        width: 250px;
-        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
+        padding: side-values(0 var(--spacing-4) var(--spacing-3) var(--spacing-4));
         font-size: var(--font-size-small);
-        background: var(--background-1);
-        border: 1px solid var(--user-bar-background-shade-1);
-        border-top: none;
+        background: var(--user-bar-background);
+        border-bottom: var(--border-width-thick) solid var(--border-color-1);
         border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
 
         .avatar-profile-link {
             float: $right;
-            margin: side-values(var(--spacing-3) 0 0 var(--spacing-4));
+            margin: side-values(var(--spacing-3) 0 0 var(--spacing-7));
         }
     }
 
@@ -108,7 +113,7 @@
         overflow: hidden;
         font-weight: bold;
         font-size: var(--font-size-large);
-        border-bottom: 1px solid var(--border-color-1);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
 
         @include bp-small {
             display: none;
@@ -121,9 +126,6 @@
 }
 
 #show-user-dropdown:checked ~ .user-bar__item--active-user {
-    background: var(--background-1);
-    border-left: 1px solid var(--border-color-1);
-    border-right: 1px solid var(--border-color-1);
 
     .user-bar__dropdown {
         display: block;
@@ -153,7 +155,6 @@
         float: none;
         padding: 0;
         margin: 0;
-        border-bottom: 1px solid var(--border-color-1);
 
         &:last-child {
             border-bottom: 0;
@@ -165,11 +166,17 @@
         float: none;
         padding: var(--spacing-2);
         margin: 0;
+        
         text-align: $left;
         background: transparent;
-        border-#{$left}: 0;
+
+        &:link,
+        &:visited {
+            color: var(--alt-font-color-1);
+        }
 
         &:hover {
+            color: var(--link-hover-color);
             text-decoration: none;
         }
     }

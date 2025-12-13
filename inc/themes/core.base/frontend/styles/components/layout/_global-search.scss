@@ -1,7 +1,10 @@
-/**
- * Global forum search in header
- */
+// Global forum search in forum header
 .global-search {
+    width: 100%;
+
+    @include bp-medium {
+        width: 35%;
+    }
 
     // Hidden checkbox to show/hide on mobile
     &__checkbox {
@@ -11,16 +14,22 @@
     // Search button, close button on mobile
     &__mobile-search-button,
     &__mobile-search-close-button {
+        position: absolute;
+        top: var(--spacing-4);
+        right: 0;
         display: none; // hidden by default
-        float: $right;
-        padding: var(--spacing-4) var(--spacing-3);
-        margin-#{$right}: 0px;
+        padding: 0 var(--spacing-3);
+        margin-#{$right}: 0;
         font-size: var(--font-size-large);
         color: var(--alt-font-color-1);
 
         &:hover {
             color: var(--secondary-color);
             cursor: pointer;
+        }
+
+        @include bp-small-max {
+            top: var(--spacing-3);
         }
     }
 
@@ -37,18 +46,18 @@
         display: none;
         width: auto;
         padding: side-values(var(--spacing-1) 0 var(--spacing-1)) var(--spacing-3);
-        margin-top: var(--spacing-3);
-        clear: both;
         cursor: text;
         background: var(--background-default);
-        border: 1px solid var(--border-color-1);
+        border: var(--border-width-base) solid var(--border-color-1);
         border-radius: var(--border-radius);
 
         @include bp-medium {
             display: block;
-            float: $right;
-            width: 35%;
             clear: none;
+        }
+
+        @include bp-medium-max {
+            margin-bottom: var(--spacing-3);
         }
     }
 
@@ -105,16 +114,12 @@
     }
 }
 
-/**
- * Do not show mobile search button if it has already been clicked
- */
+// Do not show mobile search button if it has already been clicked
 #show-mobile-search:checked ~ .global-search__mobile-search-button {
     display: none;
 }
 
-/**
- * Instead, show the close search button
- */
+// Instead, show the close search button
 #show-mobile-search:checked ~ .global-search__mobile-search-close-button {
 
     @include bp-medium-max {
@@ -122,9 +127,7 @@
     }
 }
 
-/**
- * Show the search box if the mobile search button has been clicked
- */
+// Show the search box if the mobile search button has been clicked
 #show-mobile-search:checked ~ .global-search__container {
     display: block;
 }

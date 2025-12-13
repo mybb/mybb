@@ -60,9 +60,12 @@ textarea {
 }
 
 .wrapper {
-    @include clearfix();
     width: 90%;
     margin: 0 5%;
+
+    &--main {
+        @include clearfix();
+    }
 
     @include bp-large {
         max-width: 1250px;
