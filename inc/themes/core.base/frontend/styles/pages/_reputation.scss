@@ -9,14 +9,11 @@
 
     &__block {
 
-        &--stats {
-        }
-
         &--counts {
 
             @include bp-medium-max {
-                padding-top: 20px;
-                margin-top: 20px;
+                padding-top: var(--spacing-5);
+                margin-top: var(--spacing-5);
                 border-top: var(--border-width-thick) solid var(--border-color-1);
             }
         }
@@ -117,6 +114,17 @@
     &__controls {
         padding: 0 var(--spacing-4);
         text-align: $right;
+    }
+    
+    &__rating {
+
+        &--positive {
+            color: var(--success-color);
+        }
+
+        &--negative {
+            color: var(--danger-color);
+        }
     }
 
 }
