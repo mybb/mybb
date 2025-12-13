@@ -218,6 +218,7 @@ function upgrade100_dbchanges()
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
+    $db->delete_query("settings", "name='smilieinsertercols'");
 
     // Remove deprecated profile fields
     $db->delete_query("profilefields", "name='Skype'");
