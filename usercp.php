@@ -2767,7 +2767,6 @@ if($mybb->input['action'] == "drafts")
 		{
 			if($draft['threadvisible'] == 1)
 			{ // We're looking at a draft post
-				$draft['threadlink'] = get_thread_link($draft['tid']);
 				$draft['editurl'] = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 				$draft['type'] = 'post';
 			}
@@ -2775,13 +2774,10 @@ if($mybb->input['action'] == "drafts")
 			{
 				if($draft['threadvisible'] == -2)
 				{ // We're looking at a draft thread
-					$draft['forumlink'] = get_forum_link($draft['fid']);
 					$draft['editurl'] = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 					$draft['type'] = 'thread';
 				}
 			}
-
-			$draft['savedate'] = my_date('relative', $draft['dateline']);
 
 			$drafts[] = $draft;
 		}
