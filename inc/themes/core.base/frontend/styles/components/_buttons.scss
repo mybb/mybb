@@ -1,29 +1,11 @@
-@mixin button-theme(
-    $color, // background color
-    $color-text: var(--invert-font-color), // text color
-    $color-border: $color, // border color
-    $color-hover: var(--button-hover-color), // hover background color
-    $color-text-hover: var(--invert-font-color), // hover text color
-    $color-border-hover: $color-hover) { // hover border color
-
-    @content;
-
-    &,
-    &:link,
-    &:visited {
-        color: $color-text;
-        background-color: $color;
-        border-color: $color-border;
-    }
-
-    &:hover {
-        color: $color-text-hover;
-        background-color: $color-hover;
-        border-color: $color-border-hover;
-    }
-}
-
 .button {
+    --button-theme-color-background: var(--button-default-color);
+    --button-theme-color-text: var(--invert-font-color);
+    --button-theme-color-border: var(--button-theme-color-background);
+    --button-theme-color-hover: var(--button-hover-color);
+    --button-theme-color-text-hover: var(--invert-font-color);
+    --button-theme-color-border-hover: var(--button-theme-color-hover);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -37,13 +19,22 @@
        -moz-appearance: none;
             appearance: none;
 
+    &,
+    &:link,
+    &:visited {
+        color: var(--button-theme-color-text);
+        background-color: var(--button-theme-color-background);
+        border-color: var(--button-theme-color-border);
+    }
+
     &:hover {
         cursor: pointer;
         text-decoration: none;
         outline: none;
+        color: var(--button-theme-color-text-hover);
+        background-color: var(--button-theme-color-hover);
+        border-color: var(--button-theme-color-border-hover);
     }
-
-    @include button-theme(var(--button-default-color));
 
     &__icon {
         margin-#{$right}: var(--spacing-3);
@@ -54,89 +45,65 @@
         }
     }
 
-    $theme-secondary: (
-        'color': var(--background-default),
-        'color-text': var(--link-default-color),
-        'color-border': var(--border-color-1),
-        'color-hover': var(--background-default),
-        'color-text-hover': var(--link-hover-color),
-        'color-border-hover': var(--border-color-1)
-    );
-
     &--secondary {
-        @include button-theme($theme-secondary...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--link-default-color);
+        --button-theme-color-border: var(--border-color-1);
+        --button-theme-color-hover: var(--background-default);
+        --button-theme-color-text-hover: var(--link-hover-color);
+        --button-theme-color-border-hover: var(--border-color-1);
     }
-
-    $theme-invert: (
-        'color': var(--background-default),
-        'color-text': var(--link-default-color),
-        'color-border': var(--background-default),
-        'color-hover': var(--background-default),
-        'color-text-hover': var(--link-hover-color),
-        'color-border-hover': var(--background-default)
-    );
 
     &--invert {
-        @include button-theme($theme-invert...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--link-default-color);
+        --button-theme-color-border: var(--background-default);
+        --button-theme-color-hover: var(--background-default);
+        --button-theme-color-text-hover: var(--link-hover-color);
+        --button-theme-color-border-hover: var(--background-default);
     }
-
-    $theme-danger: (
-        'color': var(--background-default),
-        'color-text': var(--danger-color),
-        'color-border': var(--border-color-1),
-        'color-hover': var(--danger-color)
-    );
 
     &--danger {
-        @include button-theme($theme-danger...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--danger-color);
+        --button-theme-color-border: var(--border-color-1);
+        --button-theme-color-hover: var(--danger-color);
     }
-
-    $theme-danger-secondary: (
-        'color': var(--background-default),
-        'color-text': var(--link-default-color),
-        'color-border': var(--border-color-1),
-        'color-hover': var(--danger-color)
-    );
 
     &--danger.button--secondary {
-        @include button-theme($theme-danger-secondary...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--link-default-color);
+        --button-theme-color-border: var(--border-color-1);
+        --button-theme-color-hover: var(--danger-color);
+        --button-theme-color-text-hover: var(--invert-font-color);
+        --button-theme-color-border-hover: var(--danger-color)
     }
-
-    $theme-success: (
-        'color': var(--background-default),
-        'color-text': var(--success-color),
-        'color-border': var(--border-color-1),
-        'color-hover': var(--success-color)
-    );
 
     &--success {
-        @include button-theme($theme-success...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--success-color);
+        --button-theme-color-border: var(--border-color-1);
+        --button-theme-color-hover: var(--success-color);
     }
-
-    $theme-success-secondary: (
-        'color': var(--background-default),
-        'color-text': var(--link-default-color),
-        'color-border': var(--border-color-1),
-        'color-hover': var(--success-color)
-    );
 
     &--success.button--secondary {
-        @include button-theme($theme-success-secondary...);
+        --button-theme-color-background: var(--background-default);
+        --button-theme-color-text: var(--link-default-color);
+        --button-theme-color-border: var(--border-color-1);
+        --button-theme-color-hover: var(--success-color);
+        --button-theme-color-text-hover: var(--invert-font-color);
+        --button-theme-color-border-hover: var(--success-color);
     }
 
-    $theme-basic: (
-        'color': transparent,
-        'color-text': var(--alt-font-color-1),
-        'color-border': transparent,
-        'color-hover': transparent,
-        'color-text-hover': var(--link-hover-color)
-    );
-
     &--basic {
-        @include button-theme($theme-basic...) {
-            padding: var(--spacing-3);
-            margin: 0 var(--spacing-2);
-        }
+        --button-theme-color-background: transparent;
+        --button-theme-color-text: var(--alt-font-color-1);
+        --button-theme-color-border: transparent;
+        --button-theme-color-hover: transparent;
+        --button-theme-color-text-hover: var(--link-hover-color);
+        
+        padding: var(--spacing-3);
+        margin: 0 var(--spacing-2);
     }
 
     &--inline {

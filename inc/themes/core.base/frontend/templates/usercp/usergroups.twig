@@ -125,7 +125,7 @@
                             </a>
                         {% endif %}
                         {% if not usergroup.primary and not groupleader[usergroup.gid] and usergroup.type in [3, 4, 5] %}
-                            <a href="usercp.php?action=usergroups&amp;leavegroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
+                            <a href="usercp.php?action=usergroups&amp;leavegroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--secondary button--danger">
                                 {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.usergroup_leave }}</span>
                             </a>
