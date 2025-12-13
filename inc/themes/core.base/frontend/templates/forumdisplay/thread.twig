@@ -28,7 +28,7 @@
             {# Go to unread link #}
             {% if thread.unreadpost and thread.moved == 0 %}
                 <a href="{{ thread.newpostlink }}" class="thread__status">
-                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'circle', class: 'fa-fw', title: lang.goto_first_unread}, with_context = false) }}
                 </a>
             {% endif %}
 

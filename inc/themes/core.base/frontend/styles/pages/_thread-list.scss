@@ -6,45 +6,50 @@
 
     &__announcements,
     &__sticky-threads {
-        border-bottom: 3px solid var(--border-color-1);
+        border-bottom: var(--border-width-thick) solid var(--border-color-2);
     }
 
     &__select-all {
         display: none;
         padding: var(--spacing-4);
         text-align: center;
-        border-bottom: 3px solid var(--border-color-1);
+        border-bottom: var(--border-width-thick) solid var(--border-color-2);
     }
 
     .sort-threads {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--spacing-3) var(--spacing-4);
+        padding: var(--spacing-3) var(--spacing-2);
         font-size: var(--font-size-small);
-        color: var(--alt-font-color-2);
-        background: var(--background-3);
+        color: var(--invert-font-color);
+        background: var(--major-title-background);
         border-radius: var(--border-radius);
 
         @include bp-small {
-            padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) 40px);
+            padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-7));
         }
 
         &--alt {
+            color: var(--alt-font-color-2);
             background: none;
             border-bottom: var(--border-width-base) solid var(--border-color-1);
             border-radius: 0;
         }
 
         &__link {
+            display: inline-block;
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--border-radius);
 
             &:link,
             &:visited {
-                color: var(--alt-font-color-1);
+                color: var(--invert-font-color);
             }
 
             &:hover {
-                color: var(--link-hover-color);
+                background: var(--primary-color-shade-1);
+                color: var(--invert-font-color);
                 text-decoration: none;
             }
         }
@@ -54,19 +59,32 @@
 
             a:link,
             a:visited {
-                color: var(--alt-font-color-1);
+                color: var(--invert-font-color);
             }
 
             a:hover,
             a:active {
-                color: var(--link-hover-color);
+                color: var(--invert-font-color);
             }
         }
 
         &__column {
 
+            &--primary :first-child .sort-threads__link {
+                
+                @include bp-small {
+                    margin-#{$left}: calc(-1 * var(--spacing-3));
+                }
+            }
+
             &--latest {
 
+                @include bp-small {
+                    .sort-threads__link:first-child {
+                        margin-#{$left}: calc(-1 * var(--spacing-3));
+                    }
+                }
+                
                 @include bp-small-max {
                     flex: 1 0 40%;
                     margin-#{$right}: var(--spacing-3);
@@ -144,7 +162,7 @@
         @include bp-small {
             flex-direction: row;
             align-items: center;
-            padding-#{$left}: 40px;
+            padding-#{$left}: var(--spacing-7);
         }
 
         &__column {
@@ -184,16 +202,17 @@
         }
 
         a.thread__status {
-            display: inline-block;
-            margin-top: 1px;
-            margin-#{$left}: 6px;
             font-size: var(--font-size-smaller);
             color: var(--status-new-icon-color);
-            vertical-align: top;
 
             @include bp-small {
-                float: $left;
-                margin-#{$left}: -25px;
+                position: absolute;
+                top: var(--spacing-5);
+                #{$left}: var(--spacing-3);
+            }
+
+            @include bp-small-max {
+                margin-#{$left}: var(--spacing-2);
             }
         }
 
@@ -211,6 +230,8 @@
         }
 
         &--announcement {
+            padding-top: var(--spacing-5);
+            padding-bottom: var(--spacing-5);
 
             .thread__title,
             .thread__author {
@@ -222,11 +243,14 @@
             }
 
             .thread__status {
-                float: $left;
-                margin-#{$left}: -42px;
+                position: absolute;
+                top: var(--spacing-5);
+                #{$left}: var(--spacing-6);
+                font-size: var(--font-size-small);
+                color: var(--alt-font-color-2);
 
                 @include bp-small {
-                    margin-#{$left}: -28px;
+                    #{$left}: var(--spacing-3);
                 }
             }
         }
@@ -248,14 +272,11 @@
             }
         }
 
-        &__message {
-            margin-top: 3px;
-            font-size: var(--font-size-small);
-        }
-
+        &__message,
         &__notification {
-            margin: side-values(3px 0 0 0);
+            margin: side-values(var(--spacing-2) 0 0 0);
             font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-1);
         }
 
         &__icons {
@@ -281,7 +302,7 @@
             }
 
             &--sticky {
-                color: var(--secondary-color);
+                color: var(--alt-font-color-1);
             }
         }
 

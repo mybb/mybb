@@ -107,7 +107,7 @@ textarea {
     .page-header {
         padding-bottom: 0;
         margin-bottom: var(--spacing-6);
-        border-bottom: var(--border-width-thick) solid var(--border-color-3);
+        border-bottom: var(--border-width-page-header) solid var(--primary-color);
 
         .page-description {
             margin: side-values(0 0 var(--spacing-4) 0);
