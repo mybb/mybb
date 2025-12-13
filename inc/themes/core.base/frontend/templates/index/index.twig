@@ -16,7 +16,7 @@
                     <a href="online.php">{{ lang.whos_online }}</a>
                 </h3>
                 <p class="board-statistics__body board-statistics__body--active-note">{{ lang.online_note }}</p>
-                <p class="board-statistics__body board-statistics__body--members">
+                <p class="board-statistics__body board-statistics__body--users">
                     {% set has_bot = false %}
                     {% for bot in bots %}
                         {{ bot }}{% if not loop.last %}{{ lang.comma }}{% endif %}
@@ -33,12 +33,11 @@
                     {% endfor %}
                 </p>
                 {% if mybb.settings.showgroupslegend and groups %}
-                <hr>
-                <p class="board-statistics__body board-statistics__body--groups">
-                {% for group in groups %}
-                    {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
-                {% endfor %}
-                </p>
+                    <p class="board-statistics__body board-statistics__body--groups">
+                    {% for group in groups %}
+                        {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
+                    {% endfor %}
+                    </p>
                 {% endif %}                
             </div>
         {% endif %}
