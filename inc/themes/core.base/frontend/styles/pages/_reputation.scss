@@ -63,7 +63,7 @@
 .reputation-rating {
     padding: side-values(0 0 var(--spacing-3) 0);
     margin-bottom: var(--spacing-4);
-    line-height: 1.4;
+    line-height: var(--line-height-small);
     border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);
 
