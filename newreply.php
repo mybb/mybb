@@ -881,7 +881,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$newreply['postoptions'] = array('signature' => false, 'disablesmilies' => false);
-	$newreply['subscriptionmethod'] = array('dont' => false, 'none' => false, 'email' => false, 'pm' => false);
 
 	// Set up the post options.
 	if(!empty($mybb->input['previewpost']) || $reply_errors != '')
@@ -898,8 +897,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['disablesmilies'] = true;
 		}
 
-		$subscription_method = get_subscription_method($tid, $postoptions);
-        $newreply['subscriptionmethod'][$subscription_method] = true;
+		$newreply['subscriptionmethod'] = get_subscription_method($tid, $postoptions);
 		$newreply['subject'] = $mybb->input['subject'];
 	}
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
@@ -917,8 +915,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['disablesmilies'] = true;
 		}
 
-		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
-        $newreply['subscriptionmethod'][$subscription_method] = true;
+		$newreply['subscriptionmethod'] = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
@@ -928,10 +925,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['signature'] = true;
 		}
 
-		$subscription_method = get_subscription_method($tid);
-        $newreply['subscriptionmethod'][$subscription_method] = true;
+		$newreply['subscriptionmethod'] = get_subscription_method($tid);
 	}
-	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 
 	$posticons = '';
 

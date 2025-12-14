@@ -2,6 +2,7 @@
     display: inline-block;
     padding: var(--spacing-1) var(--spacing-3);
     font-size: var(--font-size-small);
+    font-weight: normal;
     color: var(--alt-font-color-1);
     text-transform: uppercase;
     background: var(--background-3);
@@ -32,7 +33,7 @@
 
     &--thread-status {
         margin-#{$left}: var(--spacing-2);
-        font-size: var(--font-size-smaller);
+        font-size: var(--font-size-smallest);
     }
 
     &--post-status {
