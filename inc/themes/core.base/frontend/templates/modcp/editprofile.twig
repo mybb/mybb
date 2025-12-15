@@ -196,7 +196,7 @@
                             {% if user.suspendsigtime %}
                                 <p class="field__value">
                                     {% if user.suspendsigtime == 0 %}
-                                        {{ lang.suspendsignature_perm }}
+                                        {{ lang.suspendsignature_perm|raw }}
                                     {% else %}
                                         {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
                                     {% endif %}
@@ -239,7 +239,7 @@
                                 {% if user[opt.option] %}
                                     <p class="field__value">
                                         {% if user[opt.length] == 0 %}
-                                            {{ attribute(lang, opt.option ~ '_perm') }}
+                                            {{ attribute(lang, opt.option ~ '_perm')|raw }}
                                         {% else %}
                                             {{ trans(opt.option ~ '_for', user[opt.length]|my_date) }}
                                         {% endif %}
