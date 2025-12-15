@@ -3705,7 +3705,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					}
 				}
 
-				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
 				{
 					$toolbar['emoticon'] = ",emoticon";
 				}
@@ -3730,7 +3730,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
 							$emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
 						}
@@ -3878,7 +3878,7 @@ function build_clickable_smilies()
 
 	$clickablesmilies = '';
 
-	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertertot'])
 	{
 		if(!$smiliecount)
 		{

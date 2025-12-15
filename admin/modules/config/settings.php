@@ -2018,7 +2018,7 @@ function print_setting_peekers()
 		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage, #row_setting_posrep, #row_setting_neurep, #row_setting_negrep, #row_setting_postrep, #row_setting_multirep, #row_setting_maxreplength, #row_setting_minreplength"), 1, true)',
 		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings, #row_setting_canviewownwarning, #row_setting_maxwarningpoints, #row_setting_allowanonwarningpms"), 1, true)',
 		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml, #row_setting_pmsallowmycode, #row_setting_pmsallowsmilies, #row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode, #row_setting_pmquickreply, #row_setting_pmfloodsecs, #row_setting_showpmip, #row_setting_maxpmquotedepth"), 1, true)',
-		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
+		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchascore"), /(8)/, false)',
