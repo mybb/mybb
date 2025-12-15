@@ -193,7 +193,7 @@
                             <label><input type="checkbox" name="suspendsignature" value="1"{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %} checked{% endif %} class="checkbox" onclick="toggleAction();" /> {{ lang.suspend_signature }}</label>
                         </p>
                         <div class="field__block" id="suspend_action">
-                            {% if user.suspendsigtime %}
+                            {% if user.suspendsignature %}
                                 <p class="field__value">
                                     {% if user.suspendsigtime == 0 %}
                                         {{ lang.suspendsignature_perm|raw }}
