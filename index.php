@@ -65,7 +65,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			}
 		}
 	}
-	
+
 	$groups = [];
 	if($mybb->settings['showgroupslegend'] != 0)
 	{
@@ -133,13 +133,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					++$anoncount;
 				}
 
-				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
-				{
-
-					// Properly format the username and assign the template.
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-				}
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user;
 			}
@@ -295,14 +288,9 @@ if($mybb->settings['showbirthdays'] != 0)
 					$birthdays[$key]['age'] = $year - $bday['2'];
 				}
 
-				$birthdays[$key]['username'] = format_name(htmlspecialchars_uni($bdayuser['username']), $bdayuser['usergroup'], $bdayuser['displaygroup']);
-				$birthdays[$key]['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
 				++$bdaycount;
-
 			}
-
 		}
-
 	}
 }
 
@@ -314,14 +302,7 @@ if($mybb->settings['showindexstats'] != 0)
 	$stats = $cache->read('stats');
 
 	// Check who's the newest member.
-	if(!$stats['lastusername'])
-	{
-		$newestmember = $lang->nobody;;
-	}
-	else
-	{
-		$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
-	}
+	$newestmember = !$stats['lastusername'] ? 0 : $stats['lastuid'];
 
 	// Format the stats language.
 	$lang->stats_posts_threads = $lang->sprintf($lang->stats_posts_threads, my_number_format($stats['numposts']), my_number_format($stats['numthreads']));
@@ -337,12 +318,6 @@ if($mybb->settings['showindexstats'] != 0)
 		$mostonline['time'] = $time;
 		$cache->update('mostonline', $mostonline);
 	}
-	$recordcount = $mostonline['numusers'];
-	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
-	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
-
-	// Then format that language string.
-	$lang->stats_mostonline = $lang->sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 }
 
 // Load the stats cache.
@@ -425,5 +400,7 @@ output_page(\MyBB\View\template('index/index.twig', [
 	'users' => $doneusers,
 	'bots' => $donebots,
 	'birthdays' => $birthdays,
-	'hiddencount' => $hiddencount
+	'hiddencount' => $hiddencount,
+	'newestmember' => $newestmember,
+	'mostonline' => $mostonline
 ]));

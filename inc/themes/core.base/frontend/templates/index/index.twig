@@ -28,8 +28,10 @@
                             {{ lang.comma }}
                         {% endif %}
 
-                        {{ user.profilelink|raw }}{% if loop.last != true %}{{ lang.comma }} {% endif %}
-                        {% if user.invisible == 1 and (mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid) %}*{% endif %}
+                        {% if user.invisible == 0 or mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid %}
+                        <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}
+                        {% if loop.last != true %}{{ lang.comma }} {% endif %}
+                        {% endif %}
                     {% endfor %}
                 </p>
                 {% if mybb.settings.showgroupslegend and groups %}
@@ -39,7 +41,7 @@
                     {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
                 {% endfor %}
                 </p>
-                {% endif %}                
+                {% endif %}
             </div>
         {% endif %}
         {% if birthdays or hiddencount %}
@@ -51,7 +53,7 @@
                 <p class="board-statistics__body">
                     {% apply spaceless %}
                         {% for user in birthdays %}
-                            {{ user.profilelink|raw }}{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                            <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}<a/>{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
                         {% endfor %}
                     {% endapply %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
                 </p>
@@ -66,8 +68,14 @@
                 <p class="board-statistics__body">
                     {{ lang.stats_posts_threads }}<br />
                     {{ lang.stats_numusers }}<br />
-                    {{ lang.stats_newestuser|raw }}<br />
-                    {{ lang.stats_mostonline|raw }}
+                    {{ lang.stats_newestuser }},
+                    {% if newestmember == 0 %}
+                        {{ lang.nobody }}
+                    {% else %}
+                        <a href="{{ get_profile_link(newestmember) }}">{{ newestmember|format_name }}</a>
+                    {% endif %}
+                    <br />
+                    {{ trans('stats_mostonline', mostonline.numusers|my_number_format, mostonline.time|my_date(format='normal') )}}
                 </p>
             </div>
         {% endif %}
