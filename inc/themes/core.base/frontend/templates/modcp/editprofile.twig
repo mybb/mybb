@@ -210,7 +210,13 @@
                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="suspendsignature_period">
                                         {% for key, value in periods %}
-                                            <option value="{{ key }}"{% if key == mybb.input.suspendsignature_period %} selected{% endif %}>{{ value }}</option>
+                                            <option value="{{ key }}"
+                                                {% if key == mybb.input.suspendsignature_period ?? (user.suspendsignature ? '' : 'never') %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ value }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -246,7 +252,13 @@
                                         {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="{{ opt.select_option }}_period">
                                             {% for key, value in periods %}
-                                                <option value="{{ key }}"{% if key == mybb.input[opt.select_option ~ '_period'] %} selected{% endif %}>{{ value }}</option>
+                                                <option value="{{ key }}"
+                                                    {% if key == mybb.input[opt.select_option ~ '_period'] ?? (user[opt.option] ? '' : 'never') %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    {{ value }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>

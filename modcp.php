@@ -2650,6 +2650,7 @@ if($mybb->input['action'] == "editprofile")
 	);
 
 	$periods = array(
+		"" => $lang->no_change,
 		"hours" => $lang->expire_hours,
 		"days" => $lang->expire_days,
 		"weeks" => $lang->expire_weeks,
