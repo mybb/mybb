@@ -301,13 +301,9 @@ if($mybb->settings['showindexstats'] != 0)
 	// First, load the stats cache.
 	$stats = $cache->read('stats');
 
-	// Check who's the newest member.
-	$newestmember = !$stats['lastusername'] ? 0 : $stats['lastuid'];
-
 	// Format the stats language.
 	$lang->stats_posts_threads = $lang->sprintf($lang->stats_posts_threads, my_number_format($stats['numposts']), my_number_format($stats['numthreads']));
 	$lang->stats_numusers = $lang->sprintf($lang->stats_numusers, my_number_format($stats['numusers']));
-	$lang->stats_newestuser = $lang->sprintf($lang->stats_newestuser, $newestmember);
 
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
@@ -401,6 +397,6 @@ output_page(\MyBB\View\template('index/index.twig', [
 	'bots' => $donebots,
 	'birthdays' => $birthdays,
 	'hiddencount' => $hiddencount,
-	'newestmember' => $newestmember,
+	'stats' => $stats,
 	'mostonline' => $mostonline
 ]));

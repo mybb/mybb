@@ -69,10 +69,10 @@
                     {{ lang.stats_posts_threads }}<br />
                     {{ lang.stats_numusers }}<br />
                     {{ lang.stats_newestuser }},
-                    {% if newestmember == 0 %}
-                        {{ lang.nobody }}
+                    {% if stats.lastuid ?? 0 %}
+                        <a href="{{ get_profile_link(stats.lastuid) }}">{{ stats.lastuid|format_name }}</a>
                     {% else %}
-                        <a href="{{ get_profile_link(newestmember) }}">{{ newestmember|format_name }}</a>
+                        {{ lang.nobody }}
                     {% endif %}
                     <br />
                     {{ trans('stats_mostonline', mostonline.numusers|my_number_format, mostonline.time|my_date(format='normal') )}}
