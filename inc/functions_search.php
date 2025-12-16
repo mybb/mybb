@@ -849,6 +849,8 @@ function helpdocument_perform_search_mysql($search)
 			$keywords_exp = explode("\"", $keywords);
 			$inquote = false;
 
+			$boolean = '';
+
 			foreach($keywords_exp as $phrase)
 			{
 				// If we're not in a double quoted section
@@ -892,8 +894,6 @@ function helpdocument_perform_search_mysql($search)
 						// Otherwise check the length of the word as it is a normal search term
 						else
 						{
-							$boolean = isset($boolean) ? $boolean : ' AND ';
-
 							$word = trim($word);
 							// Word is too short - show error message
 							if(my_strlen($word) < $mybb->settings['minsearchword'])
@@ -910,14 +910,14 @@ function helpdocument_perform_search_mysql($search)
 							{
 								$document_lookin .= " $boolean {$dfield} LIKE '%{$word}%'";
 							}
+
+							$boolean = 'AND';
 						}
 					}
 				}
 				// In the middle of a quote (phrase)
 				else
 				{
-					$boolean = isset($boolean) ? $boolean : ' AND ';
-
 					$phrase = str_replace(array("+", "-", "*"), '', trim($phrase));
 					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 					{
@@ -930,6 +930,8 @@ function helpdocument_perform_search_mysql($search)
 					{
 						$document_lookin .= " $boolean {$dfield} LIKE '%{$phrase}%'";
 					}
+
+					$boolean = 'AND';
 				}
 
 				// Check to see if we have any search terms and not a malformed SQL string
