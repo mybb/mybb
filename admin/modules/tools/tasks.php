@@ -675,7 +675,7 @@ if($mybb->input['action'] == "logs")
 	$pagination = draw_admin_pagination($current_page, $per_page, $log_count, "index.php?module=tools-tasks&amp;action=logs&amp;page={page}");
 
 	$query = $db->query("
-		SELECT l.*, t.title
+		SELECT l.*, t.title, t.file
 		FROM ".TABLE_PREFIX."tasklog l
 		LEFT JOIN ".TABLE_PREFIX."tasks t ON (t.tid=l.tid)
 		ORDER BY l.dateline DESC
@@ -685,6 +685,15 @@ if($mybb->input['action'] == "logs")
 	{
 		$log_entry['title'] = htmlspecialchars_uni($log_entry['title']);
 		$log_entry['data'] = htmlspecialchars_uni($log_entry['data']);
+
+		if(!empty($log_entry['file']))
+		{
+			$lang_var = "task_{$log_entry['file']}_title";
+			if(isset($lang->$lang_var))
+			{
+				$log_entry['title'] = $lang->$lang_var;
+			}
+		}
 
 		$date = my_date('relative', $log_entry['dateline']);
 		$table->construct_cell("<a href=\"index.php?module=tools-tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
