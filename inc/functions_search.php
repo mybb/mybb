@@ -849,6 +849,8 @@ function helpdocument_perform_search_mysql($search)
 			$keywords_exp = explode("\"", $keywords);
 			$inquote = false;
 
+			$boolean = '';
+
 			foreach($keywords_exp as $phrase)
 			{
 				// If we're not in a double quoted section
@@ -908,6 +910,8 @@ function helpdocument_perform_search_mysql($search)
 							{
 								$document_lookin .= " $boolean {$dfield} LIKE '%{$word}%'";
 							}
+
+							$boolean = 'AND';
 						}
 					}
 				}
@@ -926,6 +930,8 @@ function helpdocument_perform_search_mysql($search)
 					{
 						$document_lookin .= " $boolean {$dfield} LIKE '%{$phrase}%'";
 					}
+
+					$boolean = 'AND';
 				}
 
 				// Check to see if we have any search terms and not a malformed SQL string
