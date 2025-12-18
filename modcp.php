@@ -1713,10 +1713,6 @@ if($mybb->input['action'] == "do_modqueue")
 			{
 				$posts_to_approve[] = $post['pid'];
 			}
-			elseif($action == "delete" && $mybb->settings['soft_delete'] != 1)
-			{
-				$moderation->delete_post($post['pid']);
-			}
 			elseif($action == "delete")
 			{
 				$posts_to_delete[] = $post['pid'];
@@ -1736,6 +1732,11 @@ if($mybb->input['action'] == "do_modqueue")
 			}
 			else
 			{
+				foreach($posts_to_delete as $post)
+				{
+					$moderation->delete_post($post);
+				}
+
 				log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_delete_posts);
 			}
 		}
