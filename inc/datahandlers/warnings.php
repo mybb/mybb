@@ -312,7 +312,7 @@ class WarningsHandler extends DataHandler
 	*/
 	function expire_warnings()
 	{
-		global $db;
+		global $db, $plugins;
 
 		$users = array();
 
@@ -339,6 +339,7 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
+		$plugins->run_hooks("datahandler_warnings_expire_warnings", $this);
 		foreach($users as $uid => $warningpoints)
 		{
 			if($warningpoints < 0)
@@ -362,7 +363,7 @@ class WarningsHandler extends DataHandler
 	*/
 	function update_user($method='insert')
 	{
-		global $db, $mybb, $lang, $cache, $groupscache;
+		global $db, $mybb, $lang, $cache, $groupscache, $plugins;
 
 		if($mybb->settings['maxwarningpoints'] < 1)
 		{
@@ -662,6 +663,7 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
+		$plugins->run_hooks('datahandler_warnings_update_user', $this);
 		// Save updated details
 		$db->update_query("users", $this->updated_user, "uid='{$user['uid']}'");
 
@@ -694,6 +696,8 @@ class WarningsHandler extends DataHandler
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])
 		);
+
+		$plugins->run_hooks("datahandler_warnings_before_insert_warning", $this);
 
 		$this->write_warning_data['wid'] = $db->insert_query("warnings", $this->write_warning_data);
 
