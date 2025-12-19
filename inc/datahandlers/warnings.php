@@ -56,6 +56,20 @@ class WarningsHandler extends DataHandler
 	public $friendly_action = '';
 
 	/**
+	 * The list of warnings that are due to expire.
+	 *
+	 * @var array
+	 */
+	public array $expiring_warnings = array();
+
+	/**
+	 * The list of users affected by expired warnings and their updated warning points.
+	 *
+	 * @var array
+	 */
+	public array $affected_users = array();
+
+	/**
 	* Validate a warning user assets.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -314,8 +328,6 @@ class WarningsHandler extends DataHandler
 	{
 		global $db, $plugins;
 
-		$users = array();
-
 		$query = $db->query("
 			SELECT w.wid, w.uid, w.points, u.warningpoints
 			FROM ".TABLE_PREFIX."warnings w
@@ -324,23 +336,31 @@ class WarningsHandler extends DataHandler
 		");
 		while($warning = $db->fetch_array($query))
 		{
+			$this->expiring_warnings[$warning['wid']] = $warning;
+		}
+
+		$plugins->run_hooks("datahandler_warnings_before_expire_warnings", $this);
+
+		foreach ($this->expiring_warnings as $warning)
+		{
 			$updated_warning = array(
 				"expired" => 1
 			);
 			$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 
-			if(array_key_exists($warning['uid'], $users))
+			if(array_key_exists($warning['uid'], $this->affected_users))
 			{
-				$users[$warning['uid']] -= $warning['points'];
+				$this->affected_users[$warning['uid']] -= $warning['points'];
 			}
 			else
 			{
-				$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
+				$this->affected_users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
 			}
 		}
 
-		$plugins->run_hooks("datahandler_warnings_expire_warnings", $this);
-		foreach($users as $uid => $warningpoints)
+		$plugins->run_hooks("datahandler_warnings_after_expire_warnings", $this);
+
+		foreach($this->affected_users as $uid => $warningpoints)
 		{
 			if($warningpoints < 0)
 			{
