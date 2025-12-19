@@ -287,7 +287,6 @@ function build_postbit($post, $post_type=0)
 	if((isset($mybb->user['showavatars']) && $mybb->user['showavatars'] != 0) || $mybb->user['uid'] == 0)
 	{
 		$post['showavatar'] = true;
-		$post['useravatar'] = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 	}
 	
 	if($post['userusername'])
