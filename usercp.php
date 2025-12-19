@@ -2026,8 +2026,6 @@ if($mybb->input['action'] == "avatar")
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 	}
 
-	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
-
 	if($mybb->settings['maxavatardims'] != "")
 	{
 		list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
@@ -2044,7 +2042,6 @@ if($mybb->input['action'] == "avatar")
 
 	output_page(\MyBB\View\template('usercp/avatar.twig', [
 		'error' => $error,
-		'useravatar' => $useravatar,
 		'extranotes' => $extranotes
 	]));
 }
@@ -3490,8 +3487,6 @@ if(!$mybb->input['action'])
 
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$mybb->user['regdate'] = my_date('relative', $mybb->user['regdate']);
-
-	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 
 	// Make reputations row
 	$reputation_link = '';
