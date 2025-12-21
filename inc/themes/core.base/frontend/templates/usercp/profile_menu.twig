@@ -5,12 +5,14 @@
             {{ lang.nav_profile }}
         </a>
     </li>
-    <li class="page-tabs__item{% if mybb.input.action == 'avatar' %} page-tabs__item--active{% endif %}">
-        <a href="usercp.php?action=avatar" class="page-tabs__link">
-            {{ include('partials/icon.twig', {icon: 'image', class: ''}, with_context = false) }}
-            {{ lang.nav_avatar }}
-        </a>
-    </li>
+    {% if not mybb.user.suspendavatar %}
+        <li class="page-tabs__item{% if mybb.input.action == 'avatar' %} page-tabs__item--active{% endif %}">
+            <a href="usercp.php?action=avatar" class="page-tabs__link">
+                {{ include('partials/icon.twig', {icon: 'image', class: ''}, with_context = false) }}
+                {{ lang.nav_avatar }}
+            </a>
+        </li>
+    {% endif %}
     {# TO DO: need to check if user can change signature #}
         <li class="page-tabs__item{% if mybb.input.action == 'editsig' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=editsig" class="page-tabs__link">

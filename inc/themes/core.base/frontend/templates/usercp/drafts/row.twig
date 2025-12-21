@@ -3,13 +3,13 @@
         <h3 class="draft__subject"><a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a></h3>
         <p class="draft__location">
             {% if draft.type == 'post' %}
-                {{ lang.thread }}: <a href="{{ draft.threadlink|raw }}">{{ draft.threadsubject }}</a>
+                {{ lang.thread }}: <a href="{{ get_thread_link(draft.tid) }}">{{ draft.threadsubject }}</a>
             {% else %}
-                {{ lang.forum }}: <a href="{{ draft.forumlink|raw }}">{{ draft.forumname }}</a>
+                {{ lang.forum }}: <a href="{{ get_forum_link(draft.fid) }}">{{ draft.forumname }}</a>
             {% endif %}
         </p>
         <p class="draft__date">
-            {{ draft.savedate|raw }} {# TODO: Format dates as a Twig function, rather than using |raw for HTML... #}
+            {{ draft.dateline|my_date }}
         </p>
     </div>
     <div class="draft__button">

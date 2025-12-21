@@ -122,7 +122,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getAttachedAssets(string $type, bool $inserting = false): array
     {
-        return $this->view->getAttachedAssets(
+        return $this->view->assetManager->getAttachedAssets(
             ResourceType::from($type),
             $inserting,
         );
@@ -145,9 +145,6 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
-        if (!empty($theme['color'])) {
-            $stylesheetScripts[] = $theme['color'];
-        }
 
         $stylesheetActions = array("global");
         if (!empty($this->mybb->input['action'])) {

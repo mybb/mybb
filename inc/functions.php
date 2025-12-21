@@ -116,6 +116,7 @@ function output_page($contents)
 	$contents = str_replace("<debugstuff>", "", $contents);
 
 	$contents = \MyBB\app(\MyBB\View\Runtime\Runtime::class)
+		->assetManager
 		->insertDeferredAttachedAssets($contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
@@ -2846,9 +2847,44 @@ function update_stats($changes = array(), $force = false)
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{
-		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 1));
+		$banned_groups = [];
+		$conditions = [];
+
+		$query = $db->simple_select("usergroups", "gid", "isbannedgroup = 1");
+		while($group = $db->fetch_array($query))
+		{
+			$banned_groups[] = (int)$group['gid'];
+		}
+
+		if(!empty($banned_groups))
+		{
+			$conditions[] = "u.usergroup NOT IN (" . implode(',', $banned_groups) . ")";
+			foreach($banned_groups as $gid)
+			{
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						$conditions[] = "',' || u.additionalgroups || ',' NOT LIKE '%,{$gid},%'";
+						break;
+					default:
+						$conditions[] = "CONCAT(',', u.additionalgroups, ',') NOT LIKE '%,{$gid},%'";
+						break;
+				}
+			}
+		}
+
+		$where = empty($conditions) ? '1=1' : implode(' AND ', $conditions);
+		$query = $db->query("
+			SELECT u.uid, u.username
+			FROM ".TABLE_PREFIX."users u
+			WHERE {$where}
+			ORDER BY u.regdate DESC
+			LIMIT 1
+		");
+
 		$lastmember = $db->fetch_array($query);
-		$new_stats['lastuid'] = $lastmember['uid'];
+		$new_stats['lastuid'] = (int)$lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'] = htmlspecialchars_uni($lastmember['username']);
 	}
 
@@ -3704,7 +3740,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					}
 				}
 
-				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
 				{
 					$toolbar['emoticon'] = ",emoticon";
 				}
@@ -3729,7 +3765,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
 							$emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
 						}
@@ -3877,7 +3913,7 @@ function build_clickable_smilies()
 
 	$clickablesmilies = '';
 
-	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertertot'])
 	{
 		if(!$smiliecount)
 		{
@@ -5148,8 +5184,8 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  *
  * @param string $name The name of the menu
  * @param int $selected The ID of the selected theme
- * @param int $tid The ID of the parent theme to select from
- * @param string $depth The current selection depth
+ * @param int $tid The ID of the parent theme to select from (deprecated)
+ * @param string $depth The current selection depth (deprecated)
  * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
  * @param boolean $footer Whether or not theme select is in the footer (true if it is)
  * @param boolean $count_override Whether or not to override output based on theme count (true to override)
@@ -5157,18 +5193,14 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  */
 function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $usergroup_override = false, $footer = false, $count_override = false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $num_themes, $themeselect_options;
+	global $db, $tcache, $lang, $num_themes, $themeselect_options;
 
-	if($tid == 0)
+	$num_themes = 0;
+	$themeselect_options = [];
+
+	if(!isset($lang->use_default))
 	{
-		$tid = 1;
-		$num_themes = 0;
-		$themeselect_options = [];
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
+		$lang->use_default = $lang->lang_select_default;
 	}
 
 	if(!is_array($tcache))
@@ -5177,35 +5209,24 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
+			$tcache[$theme['tid']] = $theme;
 		}
 	}
 
-	if(is_array($tcache[$tid]))
+	if(is_array($tcache))
 	{
-		foreach($tcache[$tid] as $theme)
+		foreach($tcache as $theme)
 		{
 			// Show theme if allowed, or if override is on
 			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
-
-				if($theme['pid'] != 0)
-				{
-					$theme['depth'] = $depth;
-					$themeselect_options[] = $theme;
-					++$num_themes;
-					$depthit = $depth."--";
-				}
-
-				if(array_key_exists($theme['tid'], $tcache))
-				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
-				}
+				$themeselect_options[] = $theme;
+				++$num_themes;
 			}
 		}
 	}
 
-	if($tid == 1 && ($num_themes > 1 || $count_override == true))
+	if($num_themes > 1 || $count_override == true)
 	{
 		return \MyBB\View\template('@frontend/misc/themeselect.twig', [
 			'footer' => $footer,
@@ -5232,7 +5253,7 @@ function get_theme($tid)
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+		$query = $db->simple_select('themes', 'tid, name, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{

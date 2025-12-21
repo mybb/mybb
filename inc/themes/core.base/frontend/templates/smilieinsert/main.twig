@@ -3,7 +3,6 @@
         <h3 class="smilie-inserter__title">{{ lang.smilieinsert }}</h3>
         <div class="smilie-inserter__grid">
             {% for smilie in smilies %}
-                {# TO DO: REMOVE mybb.settings.smilieinsertercols SETTING #}
                 <div class="smilie-inserter__smilie">{% include '@parser/mycodes/smilie.twig' %}</div>
             {% endfor %}
         </div>

@@ -244,13 +244,29 @@
                     {% for post in threadedbits %}
                         {% if post.bitactive %}
                             <div class="threaded-mode__post threaded-mode__post--active" style="margin-left: {{ post.indentsize }}px;">
-                                <span class="threaded-mode__date">{{ post.postdate|raw }}</span>
-                                <span class="threaded-mode__author">{{ lang.by }} {{ post.profilelink|raw }}</span>
+                                <span class="threaded-mode__date">{{ post.dateline|my_date }}</span>
+                                <span class="threaded-mode__author">
+                                    {{ lang.by }}
+                                    {% if post.uid > 0 %}
+                                        <a href="{{ get_profile_link(post.uid) }}">{{ post.uid|format_name }}</a>
+                                    {% else %}
+                                        {{ post.username|default(lang.guest) }}
+                                    {% endif %}
+                                </span>
                             </div>
                         {% else %}
                             <div class="threaded-mode__post" style="margin-left: {{ post.indentsize }}px;">
-                                <span class="threaded-mode__date"><a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.postdate|raw }}</a></span>
-                                <span class="threaded-mode__author">{{ lang.by }} {{ post.profilelink|raw }}</span>
+                                <span class="threaded-mode__date">
+                                    <a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.dateline|my_date }}</a>
+                                </span>
+                                <span class="threaded-mode__author">
+                                    {{ lang.by }}
+                                    {% if post.uid > 0 %}
+                                        <a href="{{ get_profile_link(post.uid) }}">{{ post.uid|format_name }}</a>
+                                    {% else %}
+                                        {{ post.username|default(lang.guest) }}
+                                    {% endif %}
+                                </span>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -395,14 +411,21 @@
                                         {% if similar_thread.threadprefix %}
                                             <span class="tag tag--thread-prefix tag--thread-prefix-{{ similar_thread.prefix }}">{{ similar_thread.threadprefix|raw }}</span>
                                         {% endif %}
-                                        <a href="{{ similar_thread.threadlink|raw }}">{{ similar_thread.subject }}</a>
+                                        <a href="{{ get_thread_link(similar_thread.tid) }}">{{ similar_thread.subject }}</a>
                                         <span class="thread__icons">
                                             {% if similar_thread.hasicon %}
                                                 <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
                                             {% endif %}
                                         </span>
                                     </h3>
-                                    <p class="thread__author">{{ lang.by }} {{ similar_thread.profilelink|raw }}</p>
+                                    <p class="thread__author">
+                                        {{ lang.by }}
+                                        {% if similar_thread.uid > 0 %}
+                                            <a href="{{ get_profile_link(similar_thread.uid) }}">{{ similar_thread.uid|format_name }}</a>
+                                        {% else %}
+                                            {{ similar_thread.threadusername|default(lang.guest) }}
+                                        {% endif %}
+                                    </p>
                                 </div>
                                 <div class="thread__column thread__column--replies">
                                     <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
@@ -414,9 +437,13 @@
                                     <p class="thread__latest-post">
                                         <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
                                         <span class="thread__latest-post__author">
-                                            {{ similar_thread.lastposterlink|raw }}
+                                        {% if similar_thread.lastposteruid > 0 %}
+                                            <a href="{{ get_profile_link(similar_thread.lastposteruid) }}">{{ similar_thread.lastposteruid|format_name }}</a>
+                                        {% else %}
+                                            {{ similar_thread.lastposter|default(lang.guest) }}
+                                        {% endif %}
                                         </span>
-                                        <a href="{{ similar_thread.lastpostlink|raw }}" class="thread__latest-post__date">{{ similar_thread.lastpostdate|raw }}</a>
+                                        <a href="{{ get_thread_link(similar_thread.tid, 0, 'lastpost') }}" class="thread__latest-post__date">{{ similar_thread.lastpost|my_date }}</a>
                                     </p>
                                 </div>
                             </div>
@@ -461,7 +488,7 @@
                 <div class="container container--small container--users-browsing">
                     {{ lang.users_browsing_thread }}
                     {% for user in onlinemembers %}
-                        <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                        <a href="{{ get_profile_link(user.uid) }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user|format_name }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
                     {% endfor %}
                     {% if thread.inviscount and thread.onlinemembers %}
                         {{ lang.comma }}

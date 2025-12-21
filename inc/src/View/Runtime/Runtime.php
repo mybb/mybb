@@ -16,17 +16,16 @@ use MyBB\View\Viewlet\Decorator\Hierarchy\HierarchicalViewlet;
 use MyBB\View\Viewlet\Decorator\PublishableViewlet;
 use MyBB\View\Viewlet\Decorator\ViewletDecorator;
 use MyBB\View\Viewlet\ViewletInterface;
-use SplObjectStorage;
 
 /**
  * Environment information and operations related to interface handling.
  */
 class Runtime
 {
-    use AssetManagementTrait;
     use NamespacesTrait;
 
     public readonly ViewletInterface $viewlet;
+    public readonly AssetManager $assetManager;
 
     private readonly array $globalThemeArray;
 
@@ -41,12 +40,19 @@ class Runtime
     {
         $this->viewlet = $this->getDecoratedViewlet();
 
-        /* @see AssetManagementTrait */
-        $this->assetProperties = new SplObjectStorage();
+        $this->assetManager = new AssetManager($this->viewlet);
 
         if ($this->optimization->getDirective('publication.all')) {
             $this->viewlet->publishAssets();
         }
+    }
+
+    /**
+     * Sets the environment information used in interface handling.
+     */
+    public function setContext(array $context): void
+    {
+        $this->assetManager->setContext($context);
     }
 
     /**

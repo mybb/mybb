@@ -15,10 +15,14 @@ class Theme
         public ?int $id,
         public ThemeExtension $package,
         public string $name,
-        public string $properties = 'a:0:{}',
-        public string $stylesheets = 'a:0:{}',
+        public array $properties = [],
+        public array $stylesheets = [],
         public string $allowedgroups = 'all',
-    ) {}
+    ) {
+        $this->properties['templateset'] ??= 0;
+        $this->properties['editortheme'] ??= 'mybb.css';
+        $this->properties['disporder'] ??= [];
+    }
 
     public function allowedForUser(array|int $user): bool
     {
@@ -36,8 +40,8 @@ class Theme
         $array = [
             'package' => $this->package->getPackageName(),
             'name' => $this->name,
-            'properties' => $this->properties,
-            'stylesheets' => $this->stylesheets,
+            'properties' => my_serialize($this->properties),
+            'stylesheets' => my_serialize($this->stylesheets),
             'allowedgroups' => $this->allowedgroups,
         ];
 

@@ -71,7 +71,7 @@ function asset(
     }
 
     if ($return) {
-        return $view->getAssetForInsertion(
+        return $view->assetManager->getAssetForInsertion(
             locator: $locatorObject,
             properties: [
                 'attributes' => $attributes,
@@ -79,7 +79,7 @@ function asset(
             type: $typeObject,
         );
     } else {
-        $view->attachAsset(
+        $view->assetManager->attachAsset(
             locator: $locatorObject,
             properties: [
                 'attributes' => $attributes,

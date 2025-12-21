@@ -155,6 +155,8 @@ Replaces `Anvil::push()` with `Anvil::fall()`.
 
 When applicable, include additional background information, research, compatibility impact, related work, considerations, and other helpful details.
 
+Generated content (from LLMs, AI assistants, or similar tools) must be [reviewed and disclosed](https://community.mybb.com/thread-244656.html).
+
 ### Review
 Submitted code is reviewed by core developers and contributors.
 
