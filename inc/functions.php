@@ -3753,6 +3753,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 
 					$i = 0;
 
+					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
+
 					foreach($smiliecache as $smilie)
 					{
 						$finds = explode("\n", $smilie['find']);
