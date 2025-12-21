@@ -1,0 +1,11 @@
+/**
+ * Appearance mode selector in footer
+ */
+.appearance-mode {
+    display: inline-block;
+    margin-#{$right}: 6px;
+
+    .select-field {
+        margin-#{$right}: 0;
+    }
+}
