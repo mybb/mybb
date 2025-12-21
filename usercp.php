@@ -951,6 +951,7 @@ if($mybb->input['action'] == "subscriptions")
 		}
 	}
 
+	$threads = [];
 	if(!empty($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
@@ -998,9 +999,6 @@ if($mybb->input['action'] == "subscriptions")
 		}
 
 		$threadprefixes = build_prefixes();
-
-		$threads = [];
-
 		$forums_cache = cache_forums();
 
 		// Now we can build our subscription list
