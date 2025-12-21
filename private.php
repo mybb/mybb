@@ -743,6 +743,7 @@ if($mybb->input['action'] == "send")
 
 	// Preview
 	$sendpm['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['preview']))
 	{
 		$sendpm['preview'] = true;
