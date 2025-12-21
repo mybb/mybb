@@ -51,7 +51,7 @@ foreach($foldersexploded as $key => $fid_and_name)
 		$folder['defaultname'] = get_pm_folder_name($folder['id']);
 	}
 
-	if($mybb->input['action'] == "empty")
+	if($mybb->get_input('action') === "empty")
 	{
 		$unread_cond2 = '';
 		if($folderinfo[0] == 1)
