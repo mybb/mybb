@@ -647,7 +647,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 }
 
 // Check if this user has unacknowledged warnings
-$warnings_count = (int)($mybb->user['unacknowledgedwarnings'] ?? 0);
+$warnings_count = $mybb->user['uid'] ? (int)$mybb->user['unacknowledgedwarnings'] : 0;
 if($warnings_count > 0)
 {
 	$headerMessages['warningsnotice']['id'] = 'warning_notice';
