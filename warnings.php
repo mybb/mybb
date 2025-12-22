@@ -645,6 +645,7 @@ if($mybb->input['action'] == "view")
 		}
 	}
 
+	$revoked_user = '';
 	if(!$warning['daterevoked'])
 	{
 		if(!isset($warn_errors))
