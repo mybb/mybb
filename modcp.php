@@ -3040,6 +3040,7 @@ if($mybb->input['action'] == "ipsearch")
 
 	$ipsearch['results'] = false;
 	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
+	$multipage = "";
 	if($mybb->input['ipaddress'])
 	{
 		$ipsearch['results'] = true;
