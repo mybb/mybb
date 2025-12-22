@@ -8,10 +8,10 @@
     {{ forums|raw }}
 
     {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) or mybb.settings.showindexstats or (mybb.settings.showbirthdays and birthdays|length > 0) %}
-    <section class="board-statistics">
+    <section class="block board-statistics">
         {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) %}
             <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
+                <h3 class="title title--board-statistics board-statistics__title">
                     {{ include('partials/icon.twig', {icon: 'users', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
                     <a href="online.php">{{ lang.whos_online }}</a>
                 </h3>
@@ -45,7 +45,7 @@
         {% endif %}
         {% if birthdays or hiddencount %}
             <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
+                <h3 class="title title--board-statistics board-statistics__title">
                     {{ include('partials/icon.twig', {icon: 'birthday-cake', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
                     {{ lang.todays_birthdays }}
                 </h3>
@@ -60,7 +60,7 @@
         {% endif %}
         {% if mybb.settings.showindexstats %}
             <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
+                <h3 class="title title--board-statistics board-statistics__title">
                     {{ include('partials/icon.twig', {icon: 'chart-bar', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
                     <a href="stats.php">{{ lang.boardstats }}</a>
                 </h3>
@@ -80,7 +80,7 @@
         {% endif %}
     </section>
     {% endif %}
-    <div class="page-controls">
+    <div class="page-controls page-controls--compact">
         <div class="page-buttons">
             {% if mybb.user.uid != 0 %}
                 <a href="member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="button button--basic">

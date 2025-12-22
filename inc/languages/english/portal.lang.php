@@ -31,7 +31,7 @@ $l['guest_welcome_registration'] = "You have to <a href=\"{1}\">register</a> bef
 $l['username'] = "Username";
 $l['password'] = "Password";
 $l['login'] = "Login!";
-$l['member_welcome_lastvisit'] = "Last visit:";
+$l['member_welcome_lastvisit'] = "Last visit";
 $l['since_then'] = "Since then, there have been:";
 $l['new_announcements'] = "{1} new announcements";
 $l['new_announcement'] = "1 new announcement";

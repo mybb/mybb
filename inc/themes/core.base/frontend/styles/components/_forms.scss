@@ -1,11 +1,7 @@
 .form {
-    margin-bottom: var(--spacing-7);
-    border: var(--border-width-base) solid var(--border-color-1);
-    border-radius: var(--border-radius);
-
+    
     &--alt {
         background-color: var(--background-2);
-        border: none;
     }
 
     &--modal {
@@ -30,14 +26,13 @@
     }
 
     &__submit {
+        @extend .block__footer;
         padding: var(--spacing-4) 0;
-        text-align: center;
-        background: var(--background-1);
-        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
 
-        &:first-child {
-            border-radius: var(--border-radius);
-        }
+        // TODO: confirm this isn't needed anywhere
+        // &:first-child {
+        //     border-radius: var(--border-radius);
+        // }
     }
 }
 
@@ -48,4 +43,8 @@
     .button {
         margin: var(--spacing-1);
     }
+}
+
+.compact-form {
+    line-height: 0;
 }

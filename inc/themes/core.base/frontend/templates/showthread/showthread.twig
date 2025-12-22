@@ -161,7 +161,7 @@
                 </section>
             {% endif %}
         {% endif %}
-        <div class="page-controls page-controls--top">
+        <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 {% if modpermissions.canmanagethreads and thread.notes %}
                     <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}" class="button button--basic button--full-width">
@@ -211,7 +211,7 @@
             {{ posts|raw }}
         </section>
 
-        <div class="page-controls page-controls--bottom">
+        <div class="page-controls page-controls--compact">
             <div class="thread-pagination thread-pagination--bottom">
                 {{ multipage|raw }}
             </div>
@@ -337,7 +337,7 @@
                     {% endif %}
                     {{ captcha|raw }}
                     <div class="post__foot">
-                        <button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
+                        <button type="submit" class="button button--full-width" tabindex="2" accesskey="s" id="quick_reply_submit">
                             {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.post_reply }}</span>
                         </button>
@@ -356,53 +356,70 @@
             </div>
         {% endif %}
 
-        <footer class="page-footer">
-            <div class="row row--simple-columns thread-actions">
-                {% if forumpermissions.cansearch %}
-                <div class="thread-search inline-form">
-                    <form action="search.php" method="post">
-                        <input type="hidden" name="action" value="thread" />
-                        <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                        <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
-                        <button type="submit" class="button button--inline">
-                            {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.search_thread }}</span>
-                        </button>
-                    </form>
-                </div>
-                {% endif %}
-                <div class="thread-nav">
-                    <a href="{{ thread.next_oldest_link|raw }}" class="button button--basic">
-                        {{ include('partials/icon.twig', {icon: 'angle-double-left', class: 'button__icon'}, with_context = false) }}
-                        <span class="button__text">{{ lang.next_oldest }}</span>
-                    </a>
-                    <a href="{{ thread.next_newest_link|raw }}" class="button button--basic">
-                        <span class="button__text">{{ lang.next_newest }}</span>
-                        {{ include('partials/icon.twig', {icon: 'angle-double-right', class: 'button__icon button__icon--after'}, with_context = false) }}
-                    </a>
-                </div>
+        <div class="page-controls">
+            <div class="page-buttons thread-nav">
+                <a href="{{ thread.next_oldest_link|raw }}" class="button button--basic">
+                    {{ include('partials/icon.twig', {icon: 'angle-double-left', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.next_oldest }}</span>
+                </a>
+                <a href="{{ thread.next_newest_link|raw }}" class="button button--basic">
+                    <span class="button__text">{{ lang.next_newest }}</span>
+                    {{ include('partials/icon.twig', {icon: 'angle-double-right', class: 'button__icon button__icon--after'}, with_context = false) }}
+                </a>
             </div>
+        </div>
 
-            {% if modpermissions.ismod and thread.showmodoptions %}
-                {% include 'showthread/moderation.twig' %}
-            {% endif %}
+        <div class="page-controls page-controls--border-top">
+            <div class="page-buttons">
+                {% if thread.showthreaded %}
+                    <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'th-list', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.linear }}</span>
+                    </a>
+                {% else %}
+                    <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'list', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.threaded }}</span>
+                    </a>
+                {% endif %}
+                <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
+                    {{ include('partials/icon.twig', {icon: 'print', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.view_printable }}</span>
+                </a>
+                {% if mybb.usergroup.cansendemail %}
+                    <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'share', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.send_thread }}</span>
+                    </a>
+                {% endif %}
+                {% if thread.addpoll %}
+                    <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.add_poll_to_thread }}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
 
-            {% if mybb.settings.showsimilarthreads and thread.similarthreads %}
-                <br>
-                <section class="block">
-                    <h1 class="title title--major">{{ lang.similar_threads }}</h1>
-                    <div class="thread-list thread-list--compact thread-list--no-footer">
-                        <div class="sort-threads sort-threads--alt">
-                            <div class="sort-threads__column sort-threads__column--primary">
-                                {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
-                            </div>
-                            <div class="sort-threads__column sort-threads__column--replies">
-                                {{ lang.replies }}
-                            </div>
-                            <div class="sort-threads__column sort-threads__column--latest">
-                                {{ lang.lastpost }}
-                            </div>
+        {% if modpermissions.ismod and thread.showmodoptions and thread.showinlinemodoptions %}
+            {% include 'showthread/inline_moderation.twig' %}
+        {% endif %}
+
+        {% if mybb.settings.showsimilarthreads and thread.similarthreads %}
+            <section class="block">
+                <h1 class="title title--major">{{ lang.similar_threads }}</h1>
+                <div class="thread-list thread-list--compact thread-list--no-footer">
+                    <div class="sort-results sort-results--alt">
+                        <div class="sort-results__column sort-results__column--primary">
+                            {{ lang.thread }}<span class="sort-results__author"> &mdash; {{ lang.author }}</span>
                         </div>
+                        <div class="sort-results__column sort-results__column--replies">
+                            {{ lang.replies }}
+                        </div>
+                        <div class="sort-results__column sort-results__column--latest">
+                            {{ lang.lastpost }}
+                        </div>
+                    </div>
 
                         {% for similar_thread in similarthreads %}
                             <div class="row row--thread thread {{ thread.class }}">
@@ -485,7 +502,7 @@
             </div>
 
             {% if mybb.settings.browsingthisthread %}
-                <div class="container container--small container--users-browsing">
+                <div class="container container--users-browsing">
                     {{ lang.users_browsing_thread }}
                     {% for user in onlinemembers %}
                         <a href="{{ get_profile_link(user.uid) }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user|format_name }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
@@ -505,16 +522,28 @@
                 </div>
             {% endif %}
 
-            {# Forum jump menu #}
-            {{ forumjump|raw }}
-        </footer>
-	<script type="text/javascript">
-		var thread_deleted = "{{ thread_deleted }}";
-		if(thread_deleted == "1")
-		{
-			$("#quick_reply_form, .new_reply_button, .thread_tools").hide();
-			$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
-		}
-	</script>
+        {# Forum jump menu #}
+        {{ forumjump|raw }}
+        {# {% if forumpermissions.cansearch %}
+            <div class="thread-search inline-form">
+                <form action="search.php" method="post">
+                    <input type="hidden" name="action" value="thread" />
+                    <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                    <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
+                    <button type="submit" class="button button--inline">
+                        {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.search_thread }}</span>
+                    </button>
+                </form>
+            </div>
+            {% endif %} #}
+        <script type="text/javascript">
+            var thread_deleted = "{{ thread_deleted }}";
+            if(thread_deleted == "1")
+            {
+                $("#quick_reply_form, .new_reply_button, .thread_tools").hide();
+                $("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+            }
+        </script>
     </div>
 {% endblock body %}

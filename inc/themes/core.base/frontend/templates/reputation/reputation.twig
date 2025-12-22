@@ -16,7 +16,7 @@
             <h1 class="title title--page">{{ trans('reputation_report', user.username) }}</h1>
         </header>
         {% if user.show_add_reputation %}
-            <div class="page-controls page-controls--top">
+            <div class="page-controls page-controls--compact">
                 <div class="page-buttons">
                     <a href="javascript:void(0)" onclick="MyBB.reputation({{ user.uid }}); return false;" class="button button--full-width">
                         {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
@@ -93,7 +93,7 @@
                     <div class="alert alert--no-results">{{ lang.no_reputation_votes }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
+            <div class="block__footer footer-actions">
                 <form action="reputation.php" method="get">
                     <input type="hidden" name="uid" value="{{ user.uid }}" />
                     <div class="select-field">

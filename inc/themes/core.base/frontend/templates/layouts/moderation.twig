@@ -2,9 +2,8 @@
 
 {% block body %}
 
-{% block moderationHeader %}{% endblock moderationHeader %}
-
 <nav class="section-menu">
+    <h1 class="section-menu__title">{{ lang.welcome_modcp }}</h1>
     <ul class="section-menu__links sidebar-navigation">
         <li class="section-menu__item section-menu__item--home{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
             <a href="modcp.php" class="section-menu__link">
@@ -88,6 +87,8 @@
 </nav>
 
 <div class="page-content page-content--menu">
+    {% block moderationHeader %}{% endblock moderationHeader %}
+
     {% block moderationBody %}{% endblock moderationBody %}
 </div>
 

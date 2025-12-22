@@ -11,18 +11,15 @@
 {% endblock messengerHeader %}
 
 {% block messengerBody %}
-
-    {{ unread_multipage|raw }}
-
     <section class="block message-list">
         <form action="private.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.unread_messages }}</h1>
-            <div class="sort-messages sort-messages--alt sort-messages--no-avatar">
-                <div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-                <div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
-                <div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            <div class="column-headings column-headings--minor column-headings--no-avatar">
+                <div class="column-headings__column column-headings__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
+                <div class="column-headings__column column-headings__column--date">{{ lang.datesent }}</div>
+                <div class="column-headings__column column-headings__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
             </div>
             <div class="message-list__container">
                 {% for unreadmessage in unreadmessages %}
@@ -42,33 +39,31 @@
                 {% endfor %}
             </div>
             {% if unreadmessages %}
-                <div class="sort-results">
-                    <button type="submit" class="button" name="stoptrackingunread" value="stop">
+                <div class="block__footer block-actions">
+                    <span class="block-actions__text">{{ lang.with_selected }}</span>
+                    <button type="submit" class="button button--inline block-actions__button" name="stoptrackingunread" value="stop">
                         {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.stop_tracking }}</span>
                     </button>
-                    <span class="sort-results__text">{{ lang.or }}</span>
-                    <button type="submit" class="button" name="cancel" value="cancel">
+                    <button type="submit" class="button button--inline block-actions__button" name="cancel" value="cancel">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.delete }}</span>
                     </button>
-                    <span class="sort-results__text">{{ lang.selected_messages }}</span>
                 </div>
             {% endif %}
         </form>
     </section>
-
-    {{ read_multipage|raw }}
+    {{ unread_multipage|raw }}
 
     <section class="block message-list">
         <form action="private.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.read_messages }}</h1>
-            <div class="sort-messages sort-messages--alt sort-messages--no-avatar">
-                <div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-                <div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
-                <div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            <div class="column-headings column-headings--minor column-headings--no-avatar">
+                <div class="column-headings__column column-headings__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
+                <div class="column-headings__column column-headings__column--date">{{ lang.datesent }}</div>
+                <div class="column-headings__column column-headings__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
             </div>
             <div class="message-list__container">
                 {% for readmessage in readmessages %}
@@ -87,20 +82,28 @@
                     <div class="alert alert--no-results">{{ lang.no_readmessages }}</div>
                 {% endfor %}
                 {% if readmessages %}
-                    <div class="sort-results">
-                        <button type="submit" class="button button--inline" name="stoptracking" value="stop">
+                    <div class="block__footer block-actions">
+                        <span class="block-actions__text">{{ lang.with_selected }}</span>
+                        <button type="submit" class="button button--inline block-actions__button" name="stoptracking" value="stop">
                             {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.stop_tracking }}</span>
                         </button>
-                        <span class="sort-results__text">{{ lang.selected_messages }} {{ lang.or }}</span>
-                        <a href="private.php?action=stopalltracking&amp;my_post_key={{ mybb.post_code }}" class="button button--inline">
-                            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.stop_tracking_all }}</span>
-                        </a>
                     </div>
                 {% endif %}
             </table>
         </form>
     </section>
+    {% if readmessages %}
+        <div class="page-controls page-controls--compact">
+            {{ read_multipage|raw }}
+            <div class="page-buttons">
+                <a href="private.php?action=stopalltracking&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--danger">
+                    {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.stop_tracking_all }}</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    
 
 {% endblock messengerBody %}

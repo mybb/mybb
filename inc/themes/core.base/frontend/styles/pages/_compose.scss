@@ -106,7 +106,7 @@
 }
 
 #multiquote_unloaded {
-    @include container;
+    @extend .container;
     margin-top: var(--spacing-3);
     font-size: var(--font-size-small);
 }
@@ -126,7 +126,7 @@
 .quick-reply {
 
     &__options {
-        @include container;
+        @extend .container;
         display: none;
         margin: side-values(var(--spacing-2) var(--spacing-4) var(--spacing-4) var(--spacing-4));
         font-size: var(--font-size-small);

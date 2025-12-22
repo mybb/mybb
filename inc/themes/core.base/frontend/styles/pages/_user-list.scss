@@ -4,28 +4,26 @@
     flex-wrap: wrap;
     align-items: stretch;
     justify-content: space-between;
-    margin-bottom: var(--spacing-6);
 
     @include bp-medium {
         flex-direction: row;
     }
 
-    &--has-title {
-        padding-top: var(--spacing-5);
-    }
-
-    &--has-footer {
-        margin-bottom: 0;
+    &--has-container {
+        padding: side-values(var(--spacing-4) var(--spacing-4) 0 var(--spacing-4));
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &__user {
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: var(--spacing-4);
+        padding: var(--spacing-4) var(--spacing-5);
         margin: side-values(0 0 var(--spacing-5) 0);
+        background: var(--background-default);
         border: var(--border-width-base) solid var(--border-color-1);
         border-radius: var(--border-radius);
+        @include box-shadow;
 
         @include bp-medium {
             width: 49%;
@@ -47,7 +45,7 @@
     &__checkbox {
         position: absolute;
         top: var(--spacing-3);
-        right: var(--spacing-4);
+        right: var(--spacing-5);
     }
 
     &__username {
@@ -116,14 +114,6 @@
 
 .list--user {
     font-size: var(--font-size-smaller);
-}
-
-.user-alphabet {
-
-    &__letter {
-        padding: var(--spacing-2);
-        margin-#{$right}: var(--spacing-2);
-    }
 }
 
 .team-badge {

@@ -9,13 +9,18 @@
 }
 
 .calendar {
+    background: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-1);
+    border-radius: var(--border-radius);
+    @include box-shadow;
 
     &__days-of-week {
         display: flex;
         padding: var(--spacing-3) var(--spacing-4);
         margin-bottom: var(--spacing-4);
-        background: var(--background-1);
-        border-radius: var(--border-radius);
+        background: var(--background-2);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
+        border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
 
         @include bp-large-max {
             display: none;

@@ -12,7 +12,7 @@ html, button, input, select, textarea {
 body {
     margin: 0;
     font: var(--font-size-base)/var(--line-height-base) var(--font-stack);
-    background: var(--background-default);
+    background: var(--content-background);
 }
 
 input, select, textarea, button {
@@ -104,6 +104,10 @@ textarea {
         }
     }
 
+   .page-content--menu .page-header {
+        margin-bottom: var(--spacing-5);
+    }
+
     .page-header {
         padding-bottom: 0;
         margin-bottom: var(--spacing-6);
@@ -117,8 +121,7 @@ textarea {
     }
 
     .page-footer {
-        clear: both;
-        border-top: var(--border-width-thick) solid var(--border-color-3);
+        // clear: both;
     }
 
     .page-sidebar {

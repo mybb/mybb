@@ -1,4 +1,4 @@
-<section class="block collapse {% if collapsed['cat__' ~ forum.fid ~ '_e'] %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="cat__{{ forum.fid }}">
+<section class="block block--forum-list collapse {% if collapsed['cat__' ~ forum.fid ~ '_e'] %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="cat__{{ forum.fid }}">
     <div class="title title--major title--nested">
         <h2 class="title__name"><a href="{{ forum.url }}">{{ forum.name }}</a></h2>
         {% if forum.description %}

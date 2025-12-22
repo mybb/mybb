@@ -67,74 +67,6 @@
     }
 }
 
-.sort-messages {
-    position: relative;
-    padding: var(--spacing-3) var(--spacing-4);
-    font-size: var(--font-size-small);
-    color: var(--alt-font-color-2);
-    background: var(--background-3);
-    border-radius: var(--border-radius);
-
-    @include bp-small {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) 70px);
-
-        &--no-avatar {
-            padding-#{$left}: var(--spacing-3);
-        }
-    }
-
-    &--alt {
-        background: none;
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
-        border-radius: 0;
-    }
-
-    &__link {
-
-        &:link,
-        &:visited {
-            color: var(--alt-font-color-1);
-        }
-
-        &:hover {
-            color: var(--link-hover-color);
-            text-decoration: none;
-        }
-    }
-
-    &__column {
-
-        &--primary {
-
-            @include bp-small {
-                width: 67%;
-            }
-        }
-
-        &--date {
-
-            @include bp-small {
-                width: 28%;
-                text-align: $right;
-            }
-        }
-
-        &--checkbox {
-            width: 5%;
-            text-align: $right;
-
-            @include bp-small-max {
-                position: absolute;
-                top: var(--spacing-4);
-                right: var(--spacing-4);
-            }
-        }
-    }
-}
-
 .message-list {
 
     &__actions {
@@ -160,10 +92,6 @@
         @include bp-small {
             flex-direction: row;
             align-items: center;
-        }
-
-        &:last-child {
-            border-bottom: 0;
         }
 
         &--new_pm {

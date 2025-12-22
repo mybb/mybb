@@ -1,5 +1,9 @@
 .latest-threads {
 
+    &__item.list__item {
+        padding: var(--spacing-3) var(--spacing-2);
+    }
+
     &__title {
         margin: 0;
         font-size: var(--font-size-regular);

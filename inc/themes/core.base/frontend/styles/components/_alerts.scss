@@ -7,8 +7,10 @@
     margin-top: var(--spacing-4);
     margin-bottom: var(--spacing-5);
     font-size: var(--font-size-small);
-    background-color: var(--background-1);
+    background: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);
+    @include box-shadow;
 
     &__message {
         flex-grow: 1;
@@ -17,8 +19,9 @@
     }
 
     &__icon {
-        margin-top: var(--spacing-2);
+        margin-top: var(--spacing-1);
         margin-#{$right}: var(--spacing-4);
+        font-size: var(--font-size-large);
         color: var(--alt-font-color-1);
     }
 
@@ -53,13 +56,12 @@
     }
 
     &--danger {
-        color: var(--invert-font-color);
-        background-color: var(--danger-color);
+        border-top: var(--border-width-page-header) solid var(--danger-color);
 
         :link,
         :visited,
         .alert__icon {
-            color: var(--invert-font-color);
+            color: var(--danger-color);
         }
     }
 
@@ -75,13 +77,12 @@
     }
 
     &--success {
-        color: var(--invert-font-color);
-        background-color: var(--success-color);
+        border-top: var(--border-width-page-header) solid var(--success-color);
 
         :link,
         :visited,
         .alert__icon {
-            color: var(--invert-font-color);
+            color: var(--success-color);
         }
     }
 
@@ -95,13 +96,21 @@
         color: var(--alt-font-color-1);
         text-align: center;
         background: none;
+        // border: none;
 
         &.alert--no-results-container {
-            background: var(--background-1);
+            background: var(--background-2);
+            box-shadow: none;
         }
     }
 
     &--aligned-block {
         text-align: $left;
     }
+}
+
+.block .alert--no-results {
+    border: 0;
+    border-bottom: var(--border-width-base) solid var(--border-color-1);
+    border-radius: 0;
 }

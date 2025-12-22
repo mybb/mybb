@@ -22,7 +22,9 @@
                 <section class="block block--sidebar">
                     <h2 class="title title--sidebar">{{ lang.welcome }}</h2>
                     <ul class="list list--divided list--stats">
-                        <li class="list__item">{{ lang.member_welcome_lastvisit }} {{ portal.lastvisit|raw }}
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.member_welcome_lastvisit }}</span>
+                            <span class="list__value">{{ portal.lastvisit|my_date(format='normal') }}</span>
                         <li class="list__item">{{ lang.new_announcements }}</li>
                         <li class="list__item">{{ lang.new_threads }}</li>
                         <li class="list__item">{{ lang.new_posts }}</li>

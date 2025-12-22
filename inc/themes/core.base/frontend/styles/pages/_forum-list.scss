@@ -1,5 +1,6 @@
 .forum {
-    padding: var(--spacing-4);
+    position: relative;
+    padding-#{$left}: var(--spacing-8);
 
     @include bp-medium {
         display: flex;
@@ -7,16 +8,12 @@
         align-items: top;
         justify-content: space-between;
     }
-
-    &__info {
-        box-sizing: border-box;
-        padding: side-values(var(--spacing-2) 0 var(--spacing-2) var(--spacing-7));
-    }
-
+    
     &__status {
-        float: $left;
-        margin-top: 0;
-        margin-#{$left}: calc(-1 * var(--spacing-7));
+        position: absolute;
+        top: var(--spacing-4);
+        #{$left}: var(--spacing-4);
+        font-size: var(--font-size-regular);
         color: var(--alt-font-color-3);
 
         &.forum__status--on {
@@ -102,7 +99,6 @@
         box-sizing: border-box;
         padding: var(--spacing-3) var(--spacing-4);
         margin-top: var(--spacing-3);
-        margin-#{$left}: var(--spacing-6);
         background: var(--background-1);
         border-radius: var(--border-radius);
 
@@ -141,6 +137,10 @@
     &.forum--highlight {
         background-color: var(--status-highlight-background-color);
         border-color: var(--status-highlight-border-color);
+    }
+
+    &:last-child {
+        border-bottom: none;
     }
 }
 

@@ -14,7 +14,7 @@
 }
 
 .editor_control_bar {
-    @include container;
+    @extend .container;
     display: none;
     margin: var(--spacing-2);
     font-size: var(--font-size-small);
@@ -57,7 +57,7 @@
         margin: side-values(0 0 var(--spacing-5) 0);
         background: var(--background-default);
         border: var(--border-width-base) solid var(--border-color-3);
-        border-top: 4px solid var(--primary-color);
+        border-top: var(--border-width-page-header) solid var(--primary-color);
 
         @include bp-small {
             margin-#{$left}: $avatar-margin-small;

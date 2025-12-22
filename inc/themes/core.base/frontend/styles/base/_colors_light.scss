@@ -11,15 +11,15 @@ $scheme: 'light';
 @include set-color-property(invert-color, #fff, $scheme);
 
 // Set shades (used for text, backgrounds, and borders)
-@include set-color-property(shade-1, #222, $scheme);
-@include set-color-property(shade-2, #666, $scheme);
-@include set-color-property(shade-3, #999, $scheme);
-@include set-color-property(shade-4, #ccc, $scheme);
-@include set-color-property(shade-5, #dfdfdf, $scheme);
-@include set-color-property(shade-6, #e3e3e3, $scheme);
-@include set-color-property(shade-7, #eee, $scheme);
+@include set-color-property(shade-1, #282b2c, $scheme);
+@include set-color-property(shade-2, #616465, $scheme);
+@include set-color-property(shade-3, #929495, $scheme);
+@include set-color-property(shade-4, #babbbc, $scheme);
+@include set-color-property(shade-5, #d7d8d9, $scheme);
+@include set-color-property(shade-6, #e1e2e2, $scheme);
+@include set-color-property(shade-7, #ebecec, $scheme);
 @include set-color-property(shade-8, #f2f2f2, $scheme);
-@include set-color-property(shade-9, #f7f7f7, $scheme);
+@include set-color-property(shade-9, #f9f9f9, $scheme);
 @include set-color-property(shade-10, #fff, $scheme);
 
 // Primary font colors
@@ -41,10 +41,11 @@ $scheme: 'light';
 
 // Background colors
 @include set-color-property(background-default, shade-10, $scheme, true);
+@include set-color-property(content-background, shade-9, $scheme, true);
 @include set-color-property(header-background, #393D3F, $scheme);
 @include set-color-property(header-background-shade-1, #2e3132, $scheme);
-@include set-color-property(user-bar-background, background-2, $scheme, true);
-@include set-color-property(user-bar-background-shade-1, border-color-1, $scheme, true);
+@include set-color-property(user-bar-background, shade-6, $scheme, true);
+@include set-color-property(user-bar-background-shade-1, shade-7, $scheme, true);
 @include set-color-property(major-title-background, primary-color, $scheme, true);
 
 @include set-color-property(background-1, shade-9, $scheme, true);
@@ -55,14 +56,14 @@ $scheme: 'light';
 // Border colors
 @include set-color-property(major-title-border, primary-color-shade-1, $scheme, true);
 
-@include set-color-property(border-color-1, shade-5, $scheme, true);
+@include set-color-property(border-color-1, shade-6, $scheme, true);
 @include set-color-property(border-color-2, shade-4, $scheme, true);
 @include set-color-property(border-color-3, shade-7, $scheme, true);
 @include set-color-property(border-color-4, shade-2, $scheme, true);
 
 // Status colors
 @include set-color-property(status-new-icon-color, #444, $scheme);
-@include set-color-property(status-highlight-background-color, background-1, $scheme, true);
+@include set-color-property(status-highlight-background-color, #ebf6fe, $scheme);
 @include set-color-property(status-highlight-border-color, #afd9fa, $scheme);
 @include set-color-property(status-deleted-background-color, #ece3fa, $scheme);
 @include set-color-property(status-deleted-border-color, #864ddf, $scheme);

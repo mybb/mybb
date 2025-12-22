@@ -11,6 +11,20 @@
 {% endblock messengerHeader %}
 
 {% block messengerBody %}
+    {% if mybb.user.totalpms %}
+        <div class="page-controls page-controls--compact">
+            <div class="page-buttons">
+                <a href="private.php?action=empty" class="button button--secondary">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.empty_folders2 }}</span>
+                </a>
+                <a href="private.php?action=export" class="button button--secondary">
+                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.export_messages2 }}</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">

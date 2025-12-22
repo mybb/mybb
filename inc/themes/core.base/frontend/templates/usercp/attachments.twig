@@ -15,7 +15,7 @@
     <form action="usercp.php" method="post" name="attachmentsmanager">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <section class="block">
-            <div class="container container--small container--adjacent">
+            <div class="block__header">
                 <div class="select-all">
                     <input type="checkbox" name="allbox" class="checkbox checkall" />
                 </div>
@@ -28,7 +28,7 @@
                 {% endfor %}
             </div>
             {% if attachments %}
-                <div class="sort-results">
+                <div class="block__footer">
                     <input type="hidden" name="action" value="do_attachments" />
                     <button type="submit" class="button">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}

@@ -6,6 +6,10 @@
     color: rgba(255,255,255,$transparency);
 }
 
+@mixin box-shadow {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+}
+
 @mixin transform($transform) {
     -webkit-transform: $transform;
     -moz-transform: $transform;
@@ -50,29 +54,6 @@
         &__icon {
             font-size: #{$icon-size}px;
         }
-    }
-}
-
-@mixin container {
-    padding: var(--spacing-4);
-    margin-bottom: var(--spacing-6);
-    background: var(--background-1);
-    border-radius: var(--border-radius);
-
-    &--small {
-        padding: var(--spacing-3) var(--spacing-4);
-        font-size: var(--font-size-small);
-    }
-
-    &--adjacent {
-        margin-bottom: 0;
-    }
-
-    &--modal {
-        padding: var(--spacing-3) var(--spacing-6);
-        margin: side-values(calc(-1 * var(--spacing-3)) calc(-1 * var(--spacing-5)) 0 calc(-1 * var(--spacing-5)));
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
-        border-radius: 0;
     }
 }
 

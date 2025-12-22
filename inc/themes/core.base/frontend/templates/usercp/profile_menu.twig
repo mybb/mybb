@@ -1,14 +1,14 @@
 <ul class="page-tabs">
     <li class="page-tabs__item{% if mybb.input.action == 'profile' %} page-tabs__item--active{% endif %}">
         <a href="usercp.php?action=profile" class="page-tabs__link">
-            {{ include('partials/icon.twig', {icon: 'user', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'user', class: 'page-tabs__icon'}, with_context = false) }}
             {{ lang.nav_profile }}
         </a>
     </li>
     {% if not mybb.user.suspendavatar %}
         <li class="page-tabs__item{% if mybb.input.action == 'avatar' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=avatar" class="page-tabs__link">
-                {{ include('partials/icon.twig', {icon: 'image', class: ''}, with_context = false) }}
+                {{ include('partials/icon.twig', {icon: 'image', class: 'page-tabs__icon'}, with_context = false) }}
                 {{ lang.nav_avatar }}
             </a>
         </li>
@@ -16,7 +16,7 @@
     {# TO DO: need to check if user can change signature #}
         <li class="page-tabs__item{% if mybb.input.action == 'editsig' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=editsig" class="page-tabs__link">
-                {{ include('partials/icon.twig', {icon: 'edit', class: ''}, with_context = false) }}
+                {{ include('partials/icon.twig', {icon: 'edit', class: 'page-tabs__icon'}, with_context = false) }}
                 {{ lang.nav_editsig }}
             </a>
         </li>
@@ -24,20 +24,20 @@
     {% if mybb.usergroup.canchangename %}
         <li class="page-tabs__item{% if mybb.input.action == 'changename' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=changename" class="page-tabs__link">
-                {{ include('partials/icon.twig', {icon: 'user-circle', class: ''}, with_context = false) }}
+                {{ include('partials/icon.twig', {icon: 'user-circle', class: 'page-tabs__icon'}, with_context = false) }}
                 {{ lang.nav_changename }}
             </a>
         </li>
     {% endif %}
     <li class="page-tabs__item{% if mybb.input.action == 'email' %} page-tabs__item--active{% endif %}">
         <a href="usercp.php?action=email" class="page-tabs__link">
-            {{ include('partials/icon.twig', {icon: 'at', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'at', class: 'page-tabs__icon'}, with_context = false) }}
             {{ lang.nav_email }}
         </a>
     </li>
     <li class="page-tabs__item{% if mybb.input.action == 'password' %} page-tabs__item--active{% endif %}">
         <a href="usercp.php?action=password" class="page-tabs__link">
-            {{ include('partials/icon.twig', {icon: 'key', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'key', class: 'page-tabs__icon'}, with_context = false) }}
             {{ lang.nav_password }}
         </a>
     </li>

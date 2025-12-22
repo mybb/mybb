@@ -1,5 +1,6 @@
 .user-bar {
     background: var(--user-bar-background);
+    box-shadow: inset 0 3px 3px rgba(0,0,0,0.03), inset 0 -3px 3px rgba(0,0,0,0.03);
 
     &__wrapper {
         position: relative;
@@ -37,11 +38,11 @@
         &:link,
         &:visited {
             color: var(--alt-font-color-1);
-            border-radius: var(--border-radius);
         }
 
         &:hover {
-            color: var(--link-hover-color);
+            // color: var(--link-hover-color);
+            background: var(--user-bar-background-shade-1);
             text-decoration: none;
             cursor: pointer;
         }
@@ -94,11 +95,16 @@
     &__dropdown {
         position: absolute;
         display: none;
-        padding: side-values(0 var(--spacing-4) var(--spacing-3) var(--spacing-4));
+        min-width: 250px;
+        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
         font-size: var(--font-size-small);
-        background: var(--user-bar-background);
+        background: var(--user-bar-background-shade-1);
         border-bottom: var(--border-width-thick) solid var(--border-color-1);
         border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
+        // box-shadow:
+        //     0 3px 6px rgba(0, 0, 0, 0.05),
+        //     3px 0 6px rgba(0, 0, 0, 0.05),
+        //     -3px 0 6px rgba(0, 0, 0, 0.05);
 
         .avatar-profile-link {
             float: $right;
@@ -125,6 +131,7 @@
 }
 
 #show-user-dropdown:checked ~ .user-bar__item--active-user {
+    background: var(--user-bar-background-shade-1);
 
     .user-bar__dropdown {
         display: block;

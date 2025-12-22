@@ -55,7 +55,7 @@
                 <section class="section section--form">
                     <h2 class="title title--section">{{ lang.search_options }}</h2>
                     <div class="section__container">
-                        <div class="row row--form field">
+                        <div class="row row--form field multi-field">
                             <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="findthreadst">
@@ -63,7 +63,6 @@
                                     <option value="2">{{ lang.threads_at_most }}</option>
                                 </select>
                             </div>
-                            &nbsp;
                             <input type="text" class="textbox textbox--small" name="numreplies" size="2" maxlength="4" />
                             {{ lang.replies2 }}
                         </div>

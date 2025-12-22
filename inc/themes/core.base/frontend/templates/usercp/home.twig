@@ -51,14 +51,14 @@
         <section class="block">
             <h1 class="title title--major title">{{ lang.new_thread_subscriptions }}</h1>
             <div class="thread-list thread-list--compact">
-            <div class="sort-threads sort-threads--alt">
-                <div class="sort-threads__column sort-threads__column--primary">
-                    {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+            <div class="column-headings column-headings--minor">
+                <div class="column-headings__column column-headings__column--primary">
+                    {{ lang.thread }}<span class="column-headings__author"> &mdash; {{ lang.author }}</span>
                 </div>
-                <div class="sort-threads__column sort-threads__column--replies">
+                <div class="column-headings__column column-headings__column--replies">
                     {{ lang.replies }}
                 </div>
-                <div class="sort-threads__column sort-threads__column--latest">
+                <div class="column-headings__column column-headings__column--latest">
                     {{ lang.lastpost }}
                 </div>
             </div>
@@ -117,14 +117,14 @@
         <section class="block">
             <h1 class="title title--major">{{ lang.latest_threads }}</h1>
             <div class="thread-list thread-list--compact">
-                <div class="sort-threads sort-threads--alt">
-                    <div class="sort-threads__column sort-threads__column--primary">
-                        {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+                <div class="column-headings column-headings--minor">
+                    <div class="column-headings__column column-headings__column--primary">
+                        {{ lang.thread }}<span class="column-headings__author"> &mdash; {{ lang.author }}</span>
                     </div>
-                    <div class="sort-threads__column sort-threads__column--replies">
+                    <div class="column-headings__column column-headings__column--replies">
                         {{ lang.replies }}
                     </div>
-                    <div class="sort-threads__column sort-threads__column--latest">
+                    <div class="column-headings__column column-headings__column--latest">
                         {{ lang.lastpost }}
                     </div>
                 </div>
@@ -169,10 +169,10 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="block__footer-link">
-                <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}">
-                    {{ include('partials/icon.twig', {icon: 'comments', class: 'icon'}, with_context = false) }}
-                    {{ lang.find_all_threads }}
+            <div class="block__footer">
+                <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}" class="button button--inline button--basic">
+                    {{ include('partials/icon.twig', {icon: 'comments', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.find_all_threads }}</span>
                 </a>
             </div>
         </section>

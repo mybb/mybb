@@ -224,3 +224,19 @@
         color: var(--alt-font-color-1);
     }
 }
+
+.security-log {
+
+    .row__primary,
+    .row__secondary {
+
+        @include bp-small {
+            width: 45%;
+        }
+    }
+
+    &__date {
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
+    }
+}

@@ -18,18 +18,18 @@
     <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_subscriptions" />
-        <div class="thread-list thread-list--compact">
-            <div class="sort-threads">
-                <div class="sort-threads__column sort-threads__column--primary">
+        <div class="block block--thread-list thread-list thread-list--compact">
+            <div class="column-headings column-headings--minor">
+                <div class="column-headings__column column-headings__column--primary">
                     {{ lang.thread }}
                 </div>
-                <div class="sort-threads__column sort-threads__column--replies">
+                <div class="column-headings__column column-headings__column--replies">
                     {{ lang.replies }}
                 </div>
-                <div class="sort-threads__column sort-threads__column--latest">
+                <div class="column-headings__column column-headings__column--latest">
                     {{ lang.lastpost }}
                 </div>
-                <div class="sort-threads__column sort-threads__column--checkbox">
+                <div class="column-headings__column column-headings__column--checkbox">
                     <input name="allbox" title="{{ lang.selectall }}" type="checkbox" class="checkbox checkall" value="1" />
                 </div>
             </div>
@@ -40,8 +40,8 @@
                     <div class="alert alert--no-results alert--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <h3 class="sort-results__title">{{ lang.with_selected }}</h3>
+            <div class="block__footer block-actions">
+                <h3 class="block-actions__title">{{ lang.with_selected }}</h3>
                 <div class="select-field">
                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="do" id="do">
@@ -55,13 +55,13 @@
             </div>
         </div>
         <div class="page-controls">
+            {{ multipage|raw }}
             <div class="page-buttons">
-                <a href="usercp.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button">
+                <a href="usercp.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--danger">
                     {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.remove_all_subscriptions }}</span>
                 </a>
             </div>
         </div>
-        {{ multipage|raw }}
     </form>
 {% endblock accountBody %}

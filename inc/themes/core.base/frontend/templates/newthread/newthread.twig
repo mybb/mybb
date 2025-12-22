@@ -45,7 +45,7 @@
         {% endif %}
         <form action="newthread.php?fid={{ forum.fid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--compose compose">
+            <div class="block block--form form form--compose compose">
                 <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 {% if newthread.showpollbox %}
                     <input type="checkbox" class="compose__checkbox" id="show-post-poll">
@@ -193,14 +193,14 @@
                 {% if newthread.showattachments %}
                     {% include 'misc/attachments.twig' %}
                 {% endif %}
-            </div>
-            <div class="form__submit">
-                <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
-                    {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.post_thread }}</span>
-                </button>
-            </div>
 
+                <div class="form__submit">
+                    <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
+                        {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.post_thread }}</span>
+                    </button>
+                </div>
+            </div>
             <input type="hidden" name="action" value="do_newthread" />
             <input type="hidden" name="posthash" value="{{ newthread.posthash }}" />
             <input type="hidden" name="attachmentaid" value="" />

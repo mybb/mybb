@@ -16,7 +16,7 @@
         <input type="hidden" name="page" value="{{ report.page }}" />
         <input type="hidden" name="action" value="do_reports" />
         <section class="block">
-            <div class="container container--small container--adjacent">
+            <div class="block__header">
                 <div class="select-all">
                     <input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" />
                 </div>
@@ -36,7 +36,7 @@
                     <div class="alert alert--no-results">{{ lang.no_reports }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
+            <div class="block__footer block-actions">
                 <button type="submit" class="button" name="reportsubmit">
                     {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text" id="inline_read">{{ lang.mark_read }} ({{ report.inlinecount }})</span>

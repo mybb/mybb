@@ -136,7 +136,7 @@ $l['you_forwarded'] = "You forwarded this message {1}";
 $l['select_from_buddies'] = "Select from Buddies";
 $l['no_readmessages'] = "You currently do not have any read messages being tracked.";
 $l['no_unreadmessages'] = "You currently do not have any unread messages being tracked.";
-$l['stop_tracking_all'] = "Stop Tracking all messages";
+$l['stop_tracking_all'] = "Stop Tracking All Read Messages";
 
 $l['enter_keywords'] = "Enter Keywords...";
 $l['advanced_search'] = "Advanced Search";

@@ -12,9 +12,19 @@ $post-spacing: 25px;
     background-color: var(--background-default);
     border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);
+    @include box-shadow;
 
     @include bp-small {
         margin-#{$left}: $avatar-margin-small;
+        min-height: 40px;
+
+        @include bp-small {
+            min-height: 70px;
+        }
+
+        @include bp-medium {
+            min-height: 100px;
+        }
     }
 
     @include bp-medium {
@@ -114,6 +124,8 @@ $post-spacing: 25px;
     .avatar-profile-link {
         float: $left;
         margin: side-values(5px 10px 0 0);
+        border-radius: var(--border-radius);
+        @include box-shadow;
         @include avatar(40);
 
         @include bp-small {
@@ -182,11 +194,12 @@ $post-spacing: 25px;
     }
 
     &__foot {
-        padding: var(--spacing-2) var(--spacing-4);
+        padding: side-values(var(--spacing-2) var(--spacing-4) var(--spacing-3) var(--spacing-4));
         margin: 0;
         list-style: none;
         background: var(--background-1);
-        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
+        border-top: var(--border-width-base) solid var(--border-color-3);
+        border-radius: corner-values(0 0 calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)));
 
         &--controls {
             display: flex;

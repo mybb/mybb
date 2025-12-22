@@ -14,9 +14,8 @@
 
 {% block accountBody %}
 
-    <section class="block block--form">
+    <section class="block block--form form">
         <h2 class="title title--major title--form">{{ lang.edit_buddy_list }}</h2>
-        <div class="form">
             <form action="usercp.php" method="post" id="buddy" onsubmit="return UserCP.addBuddy('buddy');">
                 <input type="hidden" name="action" value="do_editlists" />
                 <input type="hidden" name="manage" value="buddy" />
@@ -99,95 +98,92 @@
                     </div>
                 </div>
             </form>
-        </div>
     </section>
 
 
-    <section class="block block--form ">
+    <section class="block block--form form">
         <h2 class="title title--major title--form">{{ lang.edit_ignore_list }}</h2>
-        <div class="form">
-            <form action="usercp.php" method="post" id="ignored" onsubmit="return UserCP.addBuddy('ignored');">
-                <input type="hidden" name="action" value="do_editlists" />
-                <input type="hidden" name="manage" value="ignored" />
-                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <form action="usercp.php" method="post" id="ignored" onsubmit="return UserCP.addBuddy('ignored');">
+            <input type="hidden" name="action" value="do_editlists" />
+            <input type="hidden" name="manage" value="ignored" />
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
 
-                <div class="section section--form">
-                    <h3 class="title title--section">{{ lang.add_ignored_users }}</h3>
-                    <div class="section__container">
-                        <div class="row row--form field">
-                            <h4 class="field__name">{{ lang.username_or_usernames }}</h4>
-                            <p class="field__description">{{ lang.add_ignored_users_desc }}</p>
-                            <div class="inline-text-field">
-                                <div class="inline-text-field__field">
-                                    <input type="text" name="add_username" id="ignored_add_username" class="textbox" />
-                                </div>
-                                <button type="submit" class="button button--inline inline-text-field__button" id="ignored_submit">
-                                    {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
-                                    <span class="button__text">{{ lang.ignore_users }}</span>
-                                </button>
+            <div class="section section--form">
+                <h3 class="title title--section">{{ lang.add_ignored_users }}</h3>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h4 class="field__name">{{ lang.username_or_usernames }}</h4>
+                        <p class="field__description">{{ lang.add_ignored_users_desc }}</p>
+                        <div class="inline-text-field">
+                            <div class="inline-text-field__field">
+                                <input type="text" name="add_username" id="ignored_add_username" class="textbox" />
                             </div>
-                        </div>
-                    </div>
-                    {# TO DO: fix autocomplete (breaks layout) #}
-                    {#
-                    <script type="text/javascript">
-                        <!--
-                        if(use_xmlhttprequest == "1")
-                        {
-                            MyBB.select2();
-                            $("#ignored_add_username").select2({
-                                placeholder: "{{ lang.search_user }}",
-                                minimumInputLength: 2,
-                                maximumSelectionSize: 5,
-                                multiple: true,
-                                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                                    url: "xmlhttp.php?action=get_users",
-                                    dataType: 'json',
-                                    data: function (term, page) {
-                                        return {
-                                            query: term, // search term
-                                        };
-                                    },
-                                    results: function (data, page) { // parse the results into the format expected by Select2.
-                                        // since we are using custom formatting functions we do not need to alter remote JSON data
-                                        return {results: data};
-                                    }
-                                },
-                                initSelection: function(element, callback) {
-                                    var query = $(element).val();
-                                    if (query !== "") {
-                                        var newqueries = [];
-                                        exp_queries = query.split(",");
-                                        $.each(exp_queries, function(index, value ){
-                                            if(value.replace(/\s/g, '') != "")
-                                            {
-                                                var newquery = {
-                                                    id: value.replace(/,\s?/g, ", "),
-                                                    text: value.replace(/,\s?/g, ", ")
-                                                };
-                                                newqueries.push(newquery);
-                                            }
-                                        });
-                                        callback(newqueries);
-                                    }
-                                },
-                            });
-                        }
-                        // -->
-                    </script>#}
-                </div>
-                <div class="section section--form" id="ignored_container">
-                    <h3 class="title title--section">{{ lang.current_ignored_users }}</h3>
-                    <div class="section__container">
-                        <div class="row row--form">
-                            <ul id="ignore_list" class="buddy-ignore-list">
-                                {% include 'usercp/editlists/ignore_list.twig' %}
-                            </ul>
+                            <button type="submit" class="button button--inline inline-text-field__button" id="ignored_submit">
+                                {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.ignore_users }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+                {# TO DO: fix autocomplete (breaks layout) #}
+                {#
+                <script type="text/javascript">
+                    <!--
+                    if(use_xmlhttprequest == "1")
+                    {
+                        MyBB.select2();
+                        $("#ignored_add_username").select2({
+                            placeholder: "{{ lang.search_user }}",
+                            minimumInputLength: 2,
+                            maximumSelectionSize: 5,
+                            multiple: true,
+                            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                                url: "xmlhttp.php?action=get_users",
+                                dataType: 'json',
+                                data: function (term, page) {
+                                    return {
+                                        query: term, // search term
+                                    };
+                                },
+                                results: function (data, page) { // parse the results into the format expected by Select2.
+                                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                                    return {results: data};
+                                }
+                            },
+                            initSelection: function(element, callback) {
+                                var query = $(element).val();
+                                if (query !== "") {
+                                    var newqueries = [];
+                                    exp_queries = query.split(",");
+                                    $.each(exp_queries, function(index, value ){
+                                        if(value.replace(/\s/g, '') != "")
+                                        {
+                                            var newquery = {
+                                                id: value.replace(/,\s?/g, ", "),
+                                                text: value.replace(/,\s?/g, ", ")
+                                            };
+                                            newqueries.push(newquery);
+                                        }
+                                    });
+                                    callback(newqueries);
+                                }
+                            },
+                        });
+                    }
+                    // -->
+                </script>#}
+            </div>
+            <div class="section section--form" id="ignored_container">
+                <h3 class="title title--section">{{ lang.current_ignored_users }}</h3>
+                <div class="section__container">
+                    <div class="row row--form">
+                        <ul id="ignore_list" class="buddy-ignore-list">
+                            {% include 'usercp/editlists/ignore_list.twig' %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
     </section>
 
     <div class="simple-columns">

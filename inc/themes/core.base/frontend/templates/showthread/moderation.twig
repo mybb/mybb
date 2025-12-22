@@ -1,10 +1,10 @@
-<div class="row thread-moderation page-tools">
-    <div class="page-tools__item thread-moderation__thread">
-        <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
-            <input type="hidden" name="modtype" value="thread" />
-            <input type="hidden" name="tid" value="{{ thread.tid }}" />
-            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <h2 class="title title--legend">{{ lang.moderation_options }}</h2>
+<div class="container thread-moderation">
+    <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
+        <input type="hidden" name="modtype" value="thread" />
+        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <div class="multi-field">
+            <h2 class="title title--legend multi-field__text">{{ lang.moderation_options }}</h2>
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="action" id="moderator_options_selector">
@@ -62,71 +62,6 @@
                 {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.go }}</span>
             </button>
-        </form>
-    </div>
-    {% if thread.showinlinemodoptions %}
-        <div class="page-tools__item thread-moderation__inline">
-            {{ asset('jscripts/inline_moderation.js', static=true) }}
-            <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
-                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                <input type="hidden" name="modtype" value="inlinepost" />
-                <h2 class="title title--legend">{{ lang.inline_post_moderation }}</h2>
-                <div class="select-field">
-                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                    <select name="action" id="inlinemoderation_options_selector">
-                        <option value="" style="display: none;" selected="selected">{{ lang.select_a_tool }}</option>
-                        {% if thread.showstandardposttools %}
-                            <optgroup label="{{ lang.standard_mod_tools }}">
-                                {% if modpermissions.cansoftdeleteposts %}
-                                    <option value="multisoftdeleteposts">{{ lang.inline_soft_delete_posts }}</option>
-                                {% endif %}
-                                {% if modpermissions.canrestoreposts %}
-                                    <option value="multirestoreposts">{{ lang.inline_restore_posts }}</option>
-                                {% endif %}
-                                {% if modpermissions.candeleteposts %}
-                                    <option value="multideleteposts">{{ lang.inline_delete_posts }}</option>
-                                {% endif %}
-                                {% if modpermissions.canmanagethreads %}
-                                    <option value="multimergeposts">{{ lang.inline_merge_posts }}</option>
-                                    <option value="multisplitposts">{{ lang.inline_split_posts }}</option>
-                                    <option value="multimoveposts">{{ lang.inline_move_posts }}</option>
-                                {% endif %}
-                                {% if modpermissions.canapproveunapproveposts %}
-                                    <option value="multiapproveposts">{{ lang.inline_approve_posts }}</option>
-                                    <option value="multiunapproveposts">{{ lang.inline_unapprove_posts }}</option>
-                                {% endif %}
-                            </optgroup>
-                        {% endif %}
-                        {% if thread.showcustomposttools %}
-                            <optgroup label="{{ lang.custom_mod_tools }}">
-                                {% for tool in thread.customposttools %}
-                                    <option value="{{ tool.tid }}">{{ tool.name }}</option>
-                                {% endfor %}
-                            </optgroup>
-                        {% endif %}
-                    </select>
-                </div>
-                <button type="submit" name="go" class="button button--inline">
-                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text" id="inline_go">{{ lang.go }} ({{ thread.inlinecount }})</span>
-                </button>
-                <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
-                    {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.clear }}</span>
-                </button>
-            </form>
-            <script type="text/javascript">
-            <!--
-                var go_text = "{{ lang.inline_go }}";
-                var all_text = "{{ thread.threadcount }}";
-                var inlineType = "thread";
-                var inlineId = {{ thread.tid }};
-
-                lang.select_tool = "{{ lang.inline_no_tool_selected }}";
-                lang.selected_nil = "{{ lang.inline_no_post_selected }}";
-            // -->
-            </script>
         </div>
-    {% endif %}
+    </form>
 </div>

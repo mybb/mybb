@@ -1,7 +1,5 @@
 
 .board-statistics {
-    border: var(--border-width-base) solid var(--border-color-1);
-    border-radius: var(--border-radius);
 
     &__section {
         position: relative;
@@ -13,16 +11,17 @@
         }
     }
 
-    &__title {
+    &__title.title {
         padding: side-values(0 0 var(--spacing-2) 0);
         margin: 0;
-        font-family: var(--heading-font-stack);
+        font-size: var(--font-size-large);
     }
 
     &__icon {
         position: absolute;
-        left: var(--spacing-5);
+        #{$left}: var(--spacing-4);
         margin-top: var(--spacing-2);
+        font-size: var(--font-size-regular);
         color: var(--alt-font-color-2);
     }
 

@@ -47,7 +47,7 @@
         {% endif %}
         <form action="newreply.php?tid={{ thread.tid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--compose compose">
+            <div class="block block--form form form--compose compose">
                 <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 <input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newreply.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
                 <section class="section section--form compose__primary-section">
@@ -201,7 +201,7 @@
                     </div>
                 {% endfor %}
                 {% if newreply.showmore %}
-                    <div class="block__footer-link">{{ lang.thread_review_more|raw }}</div>
+                    <div class="block__footer">{{ lang.thread_review_more|raw }}</div>
                 {% endif %}
             </section>
         {% endif %}

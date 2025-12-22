@@ -29,10 +29,7 @@
                 <div class="section__container">
                     <div class="row row--form field">
                         <h3 class="field__name">{{ lang.forum }}</h3>
-                        <div class="select-field">
-                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                            {{ forum_select|raw }}
-                        </div>
+                        {{ forum_select|raw }}
                     </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="from_moderator">{{ lang.from_moderator }}</label></h3>

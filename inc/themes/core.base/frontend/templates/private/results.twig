@@ -25,7 +25,7 @@
                 <span class="button__text">{{ lang.advanced_search }}</span>
             </a>
         </div>
-        <section class="message-list">
+        <section class="block message-list">
             <h2 class="visually-hidden">{{ lang.pm_search_results }}</h2>
             <div class="sort-messages sort-messages--no-avatar">
                 <div class="sort-messages__column sort-messages__column--primary">
@@ -45,25 +45,28 @@
                     <div class="alert alert--no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <button type="submit" class="button button--inline" name="moveto" value="move">
-                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.move_to }}</span>
-                </button>
-                <div class="select-field">
-                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                    <select name="fid">
-                        {% for folder in folders %}
-                            <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
-                        {% endfor %}
-                    </select>
+            <div class="block__footer block-actions">
+                <span class="block-actions__text">{{ lang.with_selected }}</span>
+                <div class="block-actions__action-group">
+                    <button type="submit" class="button button--inline block-actions__button" name="moveto" value="move">
+                        {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.move_to }}</span>
+                    </button>
+                    <div class="select-field">
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                        <select name="fid">
+                            {% for folder in folders %}
+                                <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <span class="sort-results__text">{{ lang.or }}</span>
-                <button type="submit" class="button button--inline" name="delete" value="delete">
-                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.delete }}</span>
-                </button>
-                <span class="sort-results__text">{{ lang.selected_messages }}</span>
+                <div class="block-actions__action-group">
+                    <button type="submit" class="button button--inline block-actions__button" name="delete" value="delete">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.delete }}</span>
+                    </button>
+                </div>
             </div>
         </section>
         <input type="hidden" name="action" value="do_stuff" />

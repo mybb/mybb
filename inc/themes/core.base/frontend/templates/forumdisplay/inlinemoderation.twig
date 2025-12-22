@@ -1,4 +1,4 @@
-<div class="inline-moderation page-tools__item">
+<div class="inline-moderation {% if inlinecount != "0" %}inline-moderation--sticky{% endif %}">
     {% set standardTools %}
         {% if modpermissions.canopenclosethreads %}
             <option value="multiopenthreads">{{ lang.open_threads }}</option>
@@ -27,11 +27,11 @@
     {% endset %}
     {% if standardTools|trim or customTools %}
         {{ asset('jscripts/inline_moderation.js', static=true) }}
-        <form id="inlinemoderation_options" action="moderation.php" method="post">
+        <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
+        <form id="inlinemoderation_options" action="moderation.php" method="post" class="compact-form">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
             <input type="hidden" name="modtype" value="inlinethread" />
-            <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="action" id="inlinemoderation_options_selector">

@@ -74,39 +74,41 @@
                 </div>
                 <div class="row row--form field">
                     <h3 class="field__name">{{ lang.end_date }}</h3>
-                    <div class="option-field">
-                        <input type="radio" class="option-field__input" name="endtime_type" id="endtime_type_date" value="1"{% if (mybb.input.endtime_type != 2 and errors) or (errors is empty and announcement.endtime_type == 1) %} checked{% endif %} />
+                    <div class="option-field hidden-field">
+                        <input type="radio" class="option-field__input hidden-field__input" name="endtime_type" id="endtime_type_date" value="1"{% if (mybb.input.endtime_type != 2 and errors) or (errors is empty and announcement.endtime_type == 1) %} checked{% endif %} />
                         <h4 class="option-field__name option-field__name--light"><label for="endtime_type_date">{{ lang.end_date_option }}</label></h4>
-                        <div class="date-field option-field__field">
-                            <div class="date-field__item">
-                                <h4 class="date-field__name"><label for="endtime_day">{{ lang.day }}</label></h4>
-                                <div class="select-field">
-                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                    <select name="endtime_day" id="endtime_day">
-                                        {% for day in 1..31 %}
-                                            <option value="{{ day }}"{% if mybb.input.endtime_day == day %} selected{% endif %}>{{ day }}</option>
-                                        {% endfor %}
-                                    </select>
+                        <div class="hidden-field__hidden">
+                            <div class="date-field option-field__field">
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name"><label for="endtime_day">{{ lang.day }}</label></h4>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                        <select name="endtime_day" id="endtime_day">
+                                            {% for day in 1..31 %}
+                                                <option value="{{ day }}"{% if mybb.input.endtime_day == day %} selected{% endif %}>{{ day }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="date-field__item">
-                                <h4 class="date-field__name"><label for="endtime_month">{{ lang.month }}</label></h4>
-                                <div class="select-field">
-                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                    <select name="endtime_month" id="endtime_month">
-                                        {% for month in 1..12 %}
-                                            <option value="{{ month }}"{% if dates.end.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
-                                        {% endfor %}
-                                    </select>
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name"><label for="endtime_month">{{ lang.month }}</label></h4>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                        <select name="endtime_month" id="endtime_month">
+                                            {% for month in 1..12 %}
+                                                <option value="{{ month }}"{% if dates.end.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="date-field__item">
-                                <h4 class="date-field__name"><label for="endtime_year">{{ lang.year }}</label></h4>
-                                <input type="text" name="endtime_year" id="endtime_year" value="{{ dates.end.year }}" size="4" maxlength="4" class="textbox textbox--small" />
-                            </div>
-                            <div class="date-field__item">
-                                <h4 class="date-field__name"><label for="endtime_time">{{ lang.time }}</label></h4>
-                                <input type="text" name="endtime_time" id="endtime_time" value="{{ dates.end.time }}" size="10" class="textbox textbox--medium" />
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name"><label for="endtime_year">{{ lang.year }}</label></h4>
+                                    <input type="text" name="endtime_year" id="endtime_year" value="{{ dates.end.year }}" size="4" maxlength="4" class="textbox textbox--small" />
+                                </div>
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name"><label for="endtime_time">{{ lang.time }}</label></h4>
+                                    <input type="text" name="endtime_time" id="endtime_time" value="{{ dates.end.time }}" size="10" class="textbox textbox--medium" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,47 +127,33 @@
 						{{ smilieinserter|raw }}
 					</div>
 				</div>
-                {% if mybb.settings.announcementshtml %}
+            </div>
+            <div class="section section--form">
+                <h2 class="title title--section">{{ lang.options }}</h2>
+                <div class="section__container">
                     <div class="row row--form field">
-                    	<h3 class="field__name">{{ lang.allow_html }}</h3>
-                    	<div class="segmented-control">
-                    		<span class="segmented-control__option">
-                    			<input type="radio" class="radio segmented-control__input" name="allowhtml" id="allowhtml_1" value="1"{% if announcement.allowhtml %} checked{% endif %} />
-                    			<label class="segmented-control__button" for="allowhtml_1">{{ lang.yes }}</label>
-                    		</span>
-                    		<span class="segmented-control__option">
-                    			<input type="radio" class="radio segmented-control__input" name="allowhtml" id="allowhtml_0" value="0" {% if announcement.allowhtml == 0 %} checked{% endif %} />
-                    			<label class="segmented-control__button" for="allowhtml_0">{{ lang.no }}</label>
-                    		</span>
-                    	</div>
+                        {% if mybb.settings.announcementshtml %}
+                            <p class="option-field option-field--compact">
+                                <label>
+                                    <input type="checkbox" class="checkbox" name="allowhtml" id="allowhtml_1" value="1"{% if announcement.allowhtml %} checked="checked"{% endif %} />
+                                    {{ lang.allow_html }}
+                                </label>
+                            </p>
+                        {% endif %}
+                        <p class="option-field option-field--compact">
+                            <label>
+                                <input type="checkbox" class="checkbox" name="allowmycode" id="allowmycode_1" value="1"{% if announcement.allowmycode %} checked="checked"{% endif %} />
+                                {{ lang.allow_mycode }}
+                            </label>
+                        </p>
+                        <p class="option-field option-field--compact">
+                            <label>
+                                <input type="checkbox" class="checkbox" name="allowsmilies" id="allowsmilies_1" value="1"{% if announcement.allowsmilies %} checked="checked"{% endif %} />
+                                {{ lang.allow_smilies }}
+                            </label>
+                        </p>
                     </div>
-                {% endif %}
-                <div class="row row--form field">
-					<h3 class="field__name">{{ lang.allow_mycode }}</h3>
-					<div class="segmented-control">
-						<span class="segmented-control__option">
-							<input type="radio" class="radio segmented-control__input" name="allowmycode" id="allowmycode_1" value="1"{% if announcement.allowmycode %} checked{% endif %} />
-							<label class="segmented-control__button" for="allowmycode_1">{{ lang.yes }}</label>
-						</span>
-						<span class="segmented-control__option">
-							<input type="radio" class="radio segmented-control__input" name="allowmycode" id="allowmycode_0" value="0"{% if announcement.allowmycode == 0 %} checked{% endif %} />
-							<label class="segmented-control__button" for="allowmycode_0">{{ lang.no }}</label>
-						</span>
-					</div>
-				</div>
-                <div class="row row--form field">
-					<h3 class="field__name">{{ lang.allow_smilies }}</h3>
-					<div class="segmented-control">
-						<span class="segmented-control__option">
-							<input type="radio" class="radio segmented-control__input" name="allowsmilies" id="allowsmilies_1" value="1"{% if announcement.allowsmilies %} checked{% endif %} />
-							<label class="segmented-control__button" for="allowsmilies_1">{{ lang.yes }}</label>
-						</span>
-						<span class="segmented-control__option">
-							<input type="radio" class="radio segmented-control__input" name="allowsmilies" id="allowsmilies_0" value="0" {% if announcement.allowsmilies == 0 %} checked{% endif %} />
-							<label class="segmented-control__button" for="allowsmilies_0">{{ lang.no }}</label>
-						</span>
-					</div>
-				</div>
+                </div>
             </div>
             <div class="form__submit">
 				<button type="submit" class="button button--medium">

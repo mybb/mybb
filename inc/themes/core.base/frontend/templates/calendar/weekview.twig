@@ -9,7 +9,7 @@
         <h1 class="title title--page">{{ lang.weekly_overview }}</h1>
         <p class="page-description">{{ calendar.friendly_week_from }} {{ lang.through }} {{ calendar.friendly_week_to }}</p>
     </header>
-    <div class="page-controls page-controls--top">
+    <div class="page-controls page-controls--compact">
         <div class="calendar-nav">
             {% if calendar.prev_week_link %}
                 <a href="{{ calendar.prev_week_link|raw }}" class="button button--basic">

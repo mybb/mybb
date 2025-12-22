@@ -22,7 +22,8 @@
         margin-top: var(--spacing-4);
         margin-bottom: var(--spacing-4);
         clear: both;
-        background: var(--background-2);
+        background: var(--background-3);
+        box-shadow: inset 0 3px 3px rgba(0,0,0,0.03), inset 0 -3px 3px rgba(0,0,0,0.03);
     }
 
     // MyBB Powered By wrapper
@@ -97,10 +98,5 @@
     // Icon accompanying link (contained within <a>)
     &__icon {
         margin-#{$right}: var(--spacing-2);
-    }
-
-    // Link text (contained within <a>)
-    &__text {
-        // unused
     }
 }

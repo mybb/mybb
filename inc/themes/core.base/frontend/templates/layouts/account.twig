@@ -2,9 +2,8 @@
 
 {% block body %}
 
-{% block accountHeader %}{% endblock accountHeader %}
-
 <nav class="section-menu">
+    <h1 class="section-menu__title">{{ lang.welcome_usercp }}</h1>
     <ul class="section-menu__links sidebar-navigation">
         <li class="section-menu__item section-menu__item--dashboard{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
              <a href="usercp.php" class="section-menu__link">
@@ -66,6 +65,7 @@
 </nav>
 
 <div class="page-content page-content--menu">
+    {% block accountHeader %}{% endblock accountHeader %}
     {% block accountBody %}{% endblock accountBody %}
 </div>
 

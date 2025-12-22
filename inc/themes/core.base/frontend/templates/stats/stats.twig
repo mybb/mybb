@@ -11,8 +11,8 @@
 
     {# list threads needs some polish#}
     <div class="page-content page-content--sidebar">
-        <h2 class="title title--major">{{ lang.most_replied_threads }}</h2>
         <section class="block">
+            <h1 class="title title--major">{{ lang.most_replied_threads }}</h1>
             {% for thread in most_replied_to_threads %}
                 <div class="row row--simple-columns">
                     <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>
@@ -21,8 +21,8 @@
             {% endfor %}
         </section>
 
-        <h2 class="title title--major">{{ lang.most_viewed_threads }}</h2>
         <section class="block">
+            <h1 class="title title--major">{{ lang.most_viewed_threads }}</h1>
             {% for thread in most_viewed_threads %}
                 <div class="row row--simple-columns">
                     <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>

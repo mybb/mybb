@@ -57,7 +57,7 @@
         {% endif %}
         <form id="editpost" action="editpost.php?pid={{ editpost.pid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--compose compose">
+            <div class="block block--form form form--compose compose">
                 <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 {% if editpost.showpollbox %}
                     <input type="checkbox" class="compose__checkbox" id="show-post-poll">

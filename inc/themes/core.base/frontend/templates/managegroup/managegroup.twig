@@ -35,7 +35,7 @@
             <input type="hidden" name="action" value="do_manageusers" />
             <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
             <h1 class="title title--major">{{ trans('members_of', usergroup.title) }}</h1>
-            <div class="user-list user-list--has-title user-list--has-footer">
+            <div class="user-list user-list--has-container">
                 {% for user in users %}
                     <div class="user-list__user">
                         {% if groupleader.canmanagemembers %}
@@ -74,7 +74,7 @@
                 {% endfor %}
             </div>
             {% if groupleader.canmanagemembers %}
-                <div class="sort-results">
+                <div class="block__footer">
                     <button type="submit" class="button">
                         {{ include('partials/icon.twig', {icon: 'user-minus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.remove_selected }}</span>
