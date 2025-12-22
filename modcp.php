@@ -40,6 +40,7 @@ $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tfli
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
 $numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
+$counters = $attachment = $thread = $post = 0;
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
