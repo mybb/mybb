@@ -16,6 +16,15 @@
                 </div>
             {% endif %}
         {% endif %}
+        {% if warning.requiresacknowledgement %}
+            <div class="warning-log__acknowledgement">
+                {% if warning.acknowledged %}
+                    <span class="warning-log__acknowledgement-required tag tag--good">{{ lang.acknowledged }}</span>
+                {% else %}
+                    <span class="warning-log__acknowledgement-required tag tag--bad">{{ lang.not_acknowledged }}</span>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
     <div class="row__secondary">
         <div class="warning-log__details">

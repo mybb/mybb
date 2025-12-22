@@ -143,6 +143,7 @@
     &__issued-date,
     &__expiry-date,
     &__revoked-date,
+    &__acknowledgement,
     &__post {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-2);
@@ -150,6 +151,10 @@
 
     &__expiry-date--expired {
         color: var(--moderate-color);
+    }
+
+    &__acknowledgement--bad {
+        color: $danger-color;
     }
 
     &__details {

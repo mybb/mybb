@@ -233,7 +233,6 @@ $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";
 $l['warning'] = "Warning";
 $l['date_issued'] = "Date Issued";
-$l['expires'] = "Expires";
 $l['expiry_date'] = "Expiry Date";
 $l['issued_date'] = "Issued Date";
 $l['issued_by'] = "Issued by";

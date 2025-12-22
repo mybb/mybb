@@ -1,0 +1,68 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ lang.warning_log }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.warning_log }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <section class="block">
+        {% for warning in warning_list %}
+            <div class="row row--simple-columns warning-log">
+                <div class="row__primary">
+                    <div class="warning-log__warning">{{ warning.title }} ({{ warning.points }})</div>
+                    {% if warning.daterevoked %}
+                        <div class="warning-log__revoked-date"><span class="warning-log__revoked">{{ lang.warning_revoked }}:</span> {{ warning.revoked_date|raw }}</div>
+                    {% else %}
+                        {% if warning.expired %}
+                            <div class="warning-log__expiry-date warning-log__expiry-date--expired">
+                                {{ warning.expire_date }}
+                            </div>
+                        {% else %}
+                            <div class="warning-log__expiry-date">
+                                {{ lang.expires }}:
+                                {{ warning.expire_date }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if warning.requiresacknowledgement %}
+                        <div class="warning-log__acknowledgement">
+                            {{ lang.acknowledged }}:
+                            {% if warning.acknowledged %}
+                                <span class="warning-log__acknowledgement-date">{{ warning.acknowledged|my_date }}</span>
+                            {% else %}
+                                <span class="warning-log__acknowledgement--bad">{{ lang.no }}</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="row__secondary">
+                    {% if warning.requiresacknowledgement and not warning.acknowledged and not warning.daterevoked %}
+                        <form action="usercp.php" method="post" name="input">
+                            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                            <input type="hidden" name="action" value="do_acknowledge" />
+                            <input type="hidden" name="wid" value="{{ warning.wid }}" />
+                            <div class="warning-log__details">
+                                <button class="button button--medium" type="submit">
+                                    {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.acknowledge }}</span>
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
+                    <div class="warning-log__issued_by">{{ lang.issued_by }} <a href="{{ get_profile_link(warning.issuedby) }}">{{ warning.issuedby|format_name }}</a></div>
+                    <div class="warning-log__issued-date">{{ warning.issued_date }}</div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="alert alert--no-results alert--no-results-container">{{ lang.no_warning_logs }}</div>
+        {% endfor %}
+    </section>
+    {{ multipage|raw }}
+{% endblock accountBody %}

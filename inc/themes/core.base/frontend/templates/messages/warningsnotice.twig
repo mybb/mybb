@@ -1,0 +1,6 @@
+{% extends 'messages/base.twig' %}
+
+{% block message_before %}
+    {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
+{% endblock message_before %}
+

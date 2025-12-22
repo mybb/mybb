@@ -16,6 +16,19 @@
     <div class="page-content">
         <header class="page-header">
             <span class="tag tag--float {{ tag }}">{{ warning.status }}</span>
+            {% if warning.requiresacknowledgement %}
+                {% if warning.acknowledged %}
+                    <span class="tag tag--float tag--good">
+                        {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
+                        {{ lang.acknowledged }}
+                    </span>
+                {% else %}
+                    <span class="tag tag--float  tag--bad">
+                        {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'button__icon'}, with_context = false) }}
+                        {{ lang.not_acknowledged }}
+                    </span>
+                {% endif %}
+            {% endif %}
             <h1 class="title title--page">{{ lang.warning_details }}</h1>
         </header>
         <div class="block block--container">
@@ -50,6 +63,16 @@
                     <span class="list__field">{{ lang.details_warning_note }}</span>
                     <span class="list__value">{{ warning.notes|nl2br }}</span>
                 </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.acknowledgement_required }}</span>
+                    <span class="list__value">{{ warning.requiresacknowledgement ? lang.yes : lang.no }}</span>
+                </li>
+                {% if warning.requiresacknowledgement %}
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.acknowledgement_date }}</span>
+                        <span class="list__value">{{ warning.acknowledged ? warning.acknowledged|my_date : lang.na }}</span>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         {% if warning.daterevoked %}

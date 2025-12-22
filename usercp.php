@@ -130,6 +130,9 @@ switch($mybb->input['action'])
 	case "attachments":
 		add_breadcrumb($lang->ucp_nav_attachments);
 		break;
+	case "warninglog":
+		add_breadcrumb($lang->ucp_nav_warninglog);
+		break;
 	case "securitylog":
 		add_breadcrumb($lang->ucp_nav_securitylog);
 		break;
@@ -3352,6 +3355,83 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	redirect("usercp.php?action=attachments", $lang->attachments_deleted);
 }
 
+
+if($mybb->input['action'] == "warninglog")
+{
+    if(empty($mybb->user['warningpoints']))
+    {
+        error_no_permission();
+    }
+
+	$plugins->run_hooks('usercp_warninglog_start');
+
+	// Pagination
+	$query = "
+		SELECT COUNT(w.wid) AS count
+		FROM " . TABLE_PREFIX . "warnings w
+		WHERE w.uid = {$mybb->user['uid']}
+	";
+	$result = $db->query($query);
+	$total_warnings = (int)$db->fetch_field($result, 'count');
+
+	// Pagination settings
+	$per_page = 10;
+	$page = max(1, $mybb->get_input('page', MyBB::INPUT_INT));
+	$total_pages = max(1, ceil($total_warnings / $per_page));
+	$page = min($page, $total_pages);
+	$start = ($page - 1) * $per_page;
+
+	$url = 'usercp.php?action=warninglog';
+	$multipage = multipage($total_warnings, $per_page, $page, $url);
+
+	$warning_list = [];
+	$query = "
+        SELECT
+            w.wid, w.title as custom_title, w.points, w.dateline, w.issuedby, w.expires, w.expired, w.daterevoked, w.revokedby,
+			w.requiresacknowledgement, w.acknowledged,
+            t.title
+        FROM ".TABLE_PREFIX."warnings w
+            LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (w.tid=t.tid)
+        WHERE w.uid = {$mybb->user['uid']}
+        ORDER BY w.dateline DESC
+        LIMIT {$start}, {$per_page}
+    ";
+
+	$result = $db->query($query);
+	while($row = $db->fetch_array($result))
+	{
+		$warning_list[] = array_merge(
+			$row,
+			[
+				'issued_date' => my_date('normal', $row['dateline']),
+				'revoked_date' => $row['daterevoked'] > 0
+					? my_date('relative', $row['daterevoked'])
+					: $row['daterevoked'],
+				'title' => !empty($row['title'])
+					? $row['title']
+					: $row['custom_title'],
+				'points' => $row['points'] > 0
+					? '+' . $row['points']
+					: $row['points'],
+				'expire_date' => $row['expired']
+					? $lang->already_expired
+					: (
+						$row['expires'] > 0
+							? nice_time($row['expires'] - TIME_NOW)
+							: $lang->never
+					),
+			]
+		);
+	}
+
+	$plugins->run_hooks('usercp_warninglog_end');
+
+	output_page(\MyBB\View\template('usercp/warninglog.twig', [
+		'multipage' => $multipage,
+		'warning_list' => $warning_list,
+	]));
+}
+
 if($mybb->input['action'] == "securitylog")
 {
 	// Pagination
@@ -3454,6 +3534,37 @@ if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 	$db->update_query("users", array('notepad' => $db->escape_string($mybb->get_input('notepad'))), "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks('usercp_do_notepad_end');
 	redirect("usercp.php", $lang->redirect_notepadupdated);
+}
+
+// Acknowledge a warning
+if($mybb->input['action'] === "do_acknowledge" && $mybb->request_method === "post")
+{
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	require_once MYBB_ROOT.'inc/functions_warnings.php';
+	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+	$warningshandler = new WarningsHandler('update');
+
+	$warning = $warningshandler->get($mybb->get_input('wid', MyBB::INPUT_INT));
+	$warningshandler->set_data($warning);
+
+	if(!$warning || (int)$warning['uid'] !== $mybb->user['uid'])
+	{
+		error($lang->warning_invalid);
+	}
+
+	if((int)$warning['acknowledged'])
+	{
+		error($lang->warning_already_acknowledged);
+	}
+
+	if(empty($warning['requiresacknowledgement']))
+	{
+		error($lang->warning_acknowledgement_not_required);
+	}
+
+	$warningshandler->acknowledge_warning();
+	redirect("usercp.php", $lang->warning_acknowledgement_success);
 }
 
 if(!$mybb->input['action'])

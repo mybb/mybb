@@ -2960,6 +2960,7 @@ if($mybb->input['action'] == "warninglogs")
 	$sql = "
         SELECT
             w.wid, w.title as custom_title, w.points, w.dateline, w.issuedby, w.expires, w.expired, w.daterevoked, w.revokedby,
+			w.requiresacknowledgement, w.acknowledged,
             t.title,
             u.uid, u.username, u.usergroup, u.displaygroup,
             i.uid as mod_uid, i.username as mod_username, i.usergroup as mod_usergroup, i.displaygroup as mod_displaygroup
