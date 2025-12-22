@@ -3041,6 +3041,7 @@ if($mybb->input['action'] == "ipsearch")
 	$ipsearch['results'] = false;
 	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
 	$multipage = "";
+	$ipresults = [];
 	if($mybb->input['ipaddress'])
 	{
 		$ipsearch['results'] = true;
@@ -3230,7 +3231,6 @@ if($mybb->input['action'] == "ipsearch")
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
 
 		$post_limit = $perpage;
-		$ipresults = [];
 		if(isset($mybb->input['search_users']) && $user_results && $start <= $user_results)
 		{
 			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
