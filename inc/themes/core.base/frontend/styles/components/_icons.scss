@@ -1,23 +1,23 @@
 .icon {
 
     &--primary {
-        color: $primary-color;
+        color: var(--primary-color);
     }
 
     &--secondary {
-        color: $secondary-color;
+        color: var(--secondary-color);
     }
 
     &--subdued {
-        color: $alt-font-color-3;
+        color: var(--alt-font-color-3);
     }
 
     &--link:hover {
-        color: $secondary-color;
+        color: var(--secondary-color);
     }
 
     &--small {
-        margin: 3px;
-        font-size: 0.8em;
+        margin: var(--spacing-1);
+        font-size: var(--font-size-smaller);
     }
 }

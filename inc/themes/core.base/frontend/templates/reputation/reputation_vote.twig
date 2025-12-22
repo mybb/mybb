@@ -1,4 +1,11 @@
-<div class="reputation-rating {{ reputation_vote.status_class }}" id="rid{{ reputation_vote.rid }}">
+{% if reputation_vote.vote_reputation < 0 %}
+    {% set reputation_vote_class = 'negative' %}
+{% elseif reputation_vote.vote_reputation == 0 %}
+    {% set reputation_vote_class = 'neutral' %}
+{% else %}
+    {% set reputation_vote_class = 'positive' %}
+{% endif %}
+<div class="reputation-rating reputation-rating--{{ reputation_vote_class }}" id="rid{{ reputation_vote.rid }}">
     <div class="reputation-rating__meta">
         {{ reputation_vote.username|raw }}
         <span class="reputation-rating__user-rep">{{ reputation_vote.user_reputation|raw }}</span>
@@ -15,7 +22,7 @@
         </span>
     </div>
     <div class="reputation-rating__comment">
-        <strong class="{{ reputation_vote.vote_type_class }}">{{ reputation_vote.vote_type }} ({{ reputation_vote.vote_reputation }}):</strong> {{ reputation_vote.comments|raw }}
+        <strong class="reputation-rating__rating reputation-rating__rating--{{ reputation_vote_class }}">{{ reputation_vote.vote_type }} ({{ reputation_vote.vote_reputation }}):</strong> {{ reputation_vote.comments|raw }}
     </div>
     <div class="reputation-rating__controls">
         {% if report_link %}

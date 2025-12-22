@@ -1,10 +1,10 @@
 .form {
-    margin-bottom: 40px;
-    border: 1px solid $border-1;
-    border-radius: 4px;
+    margin-bottom: var(--spacing-7);
+    border: var(--border-width-base) solid var(--border-color-1);
+    border-radius: var(--border-radius);
 
     &--alt {
-        background-color: $background-2;
+        background-color: var(--background-2);
         border: none;
     }
 
@@ -17,8 +17,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 12px;
-        margin-bottom: 30px;
+        padding: var(--spacing-5) var(--spacing-4);
+        margin-bottom: var(--spacing-7);
 
         .form__submit {
             background: none;
@@ -26,17 +26,17 @@
     }
 
     .buttons {
-        margin: -5px;
+        margin: calc(-1 * var(--spacing-1));
     }
 
     &__submit {
-        padding: 10px 0;
+        padding: var(--spacing-4) 0;
         text-align: center;
-        background: $background-1;
-        border-radius: corner-values(0 0 $radius $radius);
+        background: var(--background-1);
+        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
 
         &:first-child {
-            border-radius: $radius;
+            border-radius: var(--border-radius);
         }
     }
 }
@@ -46,6 +46,6 @@
     .textbox,
     .select-field,
     .button {
-        margin: 3px;
+        margin: var(--spacing-1);
     }
 }

@@ -1,7 +1,10 @@
-/**
- * Global forum search in header
- */
+// Global forum search in forum header
 .global-search {
+    width: 100%;
+
+    @include bp-medium {
+        width: 35%;
+    }
 
     // Hidden checkbox to show/hide on mobile
     &__checkbox {
@@ -11,16 +14,22 @@
     // Search button, close button on mobile
     &__mobile-search-button,
     &__mobile-search-close-button {
+        position: absolute;
+        top: var(--spacing-4);
+        right: 0;
         display: none; // hidden by default
-        float: $right;
-        padding: 12px 8px;
-        margin-#{$right}: 0px;
-        font-size: 1.2em;
-        color: $alt-font-color-1;
+        padding: 0 var(--spacing-3);
+        margin-#{$right}: 0;
+        font-size: var(--font-size-large);
+        color: var(--alt-font-color-1);
 
         &:hover {
-            color: $secondary-color;
+            color: var(--secondary-color);
             cursor: pointer;
+        }
+
+        @include bp-small-max {
+            top: var(--spacing-3);
         }
     }
 
@@ -36,21 +45,19 @@
         box-sizing: border-box;
         display: none;
         width: auto;
-        padding: side-values(2px 0 2px 8px);
-        margin: side-values(0 0 10px 0);
-        clear: both;
+        padding: side-values(var(--spacing-1) 0 var(--spacing-1)) var(--spacing-3);
         cursor: text;
-        background: $background-default;
-        border: 1px solid $border-1;
-        border-radius: 4px;
+        background: var(--background-default);
+        border: var(--border-width-base) solid var(--border-color-1);
+        border-radius: var(--border-radius);
 
         @include bp-medium {
             display: block;
-            float: $right;
-            width: 35%;
-            margin-top: 6px;
-            margin-bottom: 6px;
             clear: none;
+        }
+
+        @include bp-medium-max {
+            margin-bottom: var(--spacing-3);
         }
     }
 
@@ -67,10 +74,10 @@
         box-sizing: border-box;
         flex-grow: 1;
         min-width: 0;
-        padding: 4px;
+        padding: var(--spacing-2);
         margin: 0;
-        font-size: 16px;
-        background-color: $background-default;
+        font-size: var(--font-size-regular);
+        background-color: var(--background-default);
         border: 0;
         outline: 0;
     }
@@ -79,7 +86,7 @@
     &__controls {
         box-sizing: border-box;
         flex-shrink: 0;
-        padding-#{$right}: 8px;
+        padding-#{$right}: var(--spacing-3);
         text-align: $right;
     }
 
@@ -87,36 +94,31 @@
     &__submit,
     &__advanced {
         display: inline-block;
-        height: 24px;
-        padding: 2px 0;
+        padding: var(--spacing-1) 0;
         margin: side-values(0 0 0 6px);
-        font-size: 16px;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-regular);
+        color: var(--alt-font-color-2);
         cursor: pointer;
         background: none;
         border: 0;
 
         &:link,
         &:visited {
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
         }
 
         &:hover {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
     }
 }
 
-/**
- * Do not show mobile search button if it has already been clicked
- */
+// Do not show mobile search button if it has already been clicked
 #show-mobile-search:checked ~ .global-search__mobile-search-button {
     display: none;
 }
 
-/**
- * Instead, show the close search button
- */
+// Instead, show the close search button
 #show-mobile-search:checked ~ .global-search__mobile-search-close-button {
 
     @include bp-medium-max {
@@ -124,9 +126,7 @@
     }
 }
 
-/**
- * Show the search box if the mobile search button has been clicked
- */
+// Show the search box if the mobile search button has been clicked
 #show-mobile-search:checked ~ .global-search__container {
     display: block;
 }

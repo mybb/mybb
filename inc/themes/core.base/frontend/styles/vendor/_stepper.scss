@@ -12,10 +12,10 @@
     overflow: hidden;
     position: relative;
     width: 130px;
-    border: 1px solid $border-1;
+    border: 1px solid var(--border-color-1);
 
     .stepper-input {
-        background: $background-default;
+        background: var(--background-default);
         border: 0;
         font-size: 0.9em;
         margin: 0;
@@ -50,24 +50,24 @@
         width: 35px;
         text-align: center;
         z-index: 50;
-        color: $background-default;
+        color: var(--background-default);
 
         &:before {
             font-size: 14px;
             margin: side-values(0 10px 0 10px);
             font-family: "FontAwesome";
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         &:hover {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         &:active {
-            background: $button-hover;
+            background: var(--button-hover-color);
 
             &:before {
-                color: $invert-font-color;
+                color: var(--invert-font-color);
             }
         }
     }
@@ -76,7 +76,7 @@
         float: $right;
         top: 0;
         #{$right}: 0;
-        border-#{$left}: 1px solid $border-1;
+        border-#{$left}: 1px solid var(--border-color-1);
 
         &:before {
             content: "\f067";
@@ -87,7 +87,7 @@
         float: $left;
         top: 0;
         #{$left}: 0;
-        border-#{$right}: 1px solid $border-1;
+        border-#{$right}: 1px solid var(--border-color-1);
 
         &:before {
             content: "\f068";
@@ -96,14 +96,14 @@
 
     &.disabled {
         .stepper-input {
-            background: $background-default;
-            border-color: $border-1;
-            color: $alt-font-color-3;
+            background: var(--background-default);
+            border-color: var(--border-color-1);
+            color: var(--alt-font-color-3);
         }
 
         .stepper-arrow {
-            background: $background-default;
-            border-color: $border-1;
+            background: var(--background-default);
+            border-color: var(--border-color-1);
             cursor: default;
         }
     }

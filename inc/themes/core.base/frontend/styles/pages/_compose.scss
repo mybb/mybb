@@ -5,7 +5,7 @@
         padding-bottom: 0;
 
         &--padding {
-            padding-bottom: 20px;
+            padding-bottom: var(--spacing-6);
         }
     }
 
@@ -50,10 +50,10 @@
     }
 
     &__option-buttons {
-        margin-top: 5px;
+        margin-top: var(--spacing-2);
 
         .button {
-            margin: side-values(0 5px 0 0);
+            margin: side-values(0 var(--spacing-2) 0 0);
         }
     }
 
@@ -67,18 +67,18 @@
 }
 
 .smilie-inserter {
-    padding: 10px;
+    padding: var(--spacing-3);
     text-align: center;
-    background: $background-1;
-    border-radius: $radius;
+    background: var(--background-1);
+    border-radius: var(--border-radius);
 
     &__title {
-        padding-bottom: 5px;
-        margin: side-values(0 0 10px 0);
-        font-size: 0.9em;
+        padding-bottom: var(--spacing-3);
+        margin: side-values(0 0 var(--spacing-3) 0);
+        font-size: var(--font-size-small);
         font-weight: normal;
-        color: $alt-font-color-1;
-        border-bottom: 1px solid $border-1;
+        color: var(--alt-font-color-1);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &__grid {
@@ -90,7 +90,7 @@
     &__smilie {
         box-sizing: border-box;
         width: 25%;
-        padding: 5px;
+        padding: var(--spacing-2);
 
         img {
             cursor: pointer;
@@ -98,17 +98,17 @@
     }
 
     &__more {
-        margin-top: 10px;
-        padding-top: 5px;
-        font-size: 0.9em;
-        border-top: 1px solid $border-1;
+        margin-top: var(--spacing-3);
+        padding-top: var(--spacing-3);
+        font-size: var(--font-size-small);
+        border-top: var(--border-width-base) solid var(--border-color-1);
     }
 }
 
 #multiquote_unloaded {
     @include container;
-    margin-top: 8px;
-    font-size: 0.9em;
+    margin-top: var(--spacing-3);
+    font-size: var(--font-size-small);
 }
 
 #show-post-options:checked ~ .compose__hidden-section--options,
@@ -120,7 +120,7 @@
 #show-post-options:checked ~ .compose__primary-section .compose__option-button--options,
 #show-post-poll:checked ~ .compose__primary-section .compose__option-button--poll,
 #show-attachments:checked ~ .compose__primary-section .compose__option-button--attachments {
-    color: $link-hover;
+    color: var(--link-hover-color);
 }
 
 .quick-reply {
@@ -128,17 +128,17 @@
     &__options {
         @include container;
         display: none;
-        margin: side-values(5px 12px 12px 12px);
-        font-size: 0.9em;
+        margin: side-values(var(--spacing-2) var(--spacing-4) var(--spacing-4) var(--spacing-4));
+        font-size: var(--font-size-small);
     }
 
     &__option {
-        margin-#{$right}: 12px;
+        margin-#{$right}: var(--spacing-4);
         cursor: pointer;
     }
 
     &__checkbox {
-        margin-#{$right}: 4px;
+        margin-#{$right}: var(--spacing-2);
     }
 
     textarea {
@@ -155,7 +155,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px 12px;
+    padding: var(--spacing-3) var(--spacing-4);
 
     @include bp-medium {
         flex-direction: row;
@@ -163,14 +163,14 @@
     }
 
     &__details {
-        padding-#{$left}: 30px;
-        font-size: 0.9em;
-        line-height: 1.4;
+        padding-#{$left}: var(--spacing-7);
+        font-size: var(--font-size-small);
+        line-height: var(--line-height-small);
     }
 
     &__icon {
         float: $left;
-        margin-#{$left}: -26px;
+        margin-#{$left}: calc(-1 * var(--spacing-7));
     }
 
     &__file-name {
@@ -178,8 +178,8 @@
     }
 
     &__file-size {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
     }
 
     &__buttons {

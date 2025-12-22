@@ -1,0 +1,81 @@
+// MyBB core light theme 
+
+// Set scheme name
+$scheme: 'light';
+
+// Set primary theme colors
+@include set-color-property(primary-color, #007fd0, $scheme);
+@include set-color-property(primary-color-shade-1, #0066a6, $scheme);
+@include set-color-property(secondary-color, #ff7500, $scheme);
+@include set-color-property(secondary-color-shade-1, #cc5e00, $scheme);
+@include set-color-property(invert-color, #fff, $scheme);
+
+// Set shades (used for text, backgrounds, and borders)
+@include set-color-property(shade-1, #222, $scheme);
+@include set-color-property(shade-2, #666, $scheme);
+@include set-color-property(shade-3, #999, $scheme);
+@include set-color-property(shade-4, #ccc, $scheme);
+@include set-color-property(shade-5, #dfdfdf, $scheme);
+@include set-color-property(shade-6, #e3e3e3, $scheme);
+@include set-color-property(shade-7, #eee, $scheme);
+@include set-color-property(shade-8, #f2f2f2, $scheme);
+@include set-color-property(shade-9, #f7f7f7, $scheme);
+@include set-color-property(shade-10, #fff, $scheme);
+
+// Primary font colors
+@include set-color-property(font-color, shade-1, $scheme, true);
+@include set-color-property(invert-font-color, invert-color, $scheme, true);
+
+// Secondary font colors
+@include set-color-property(alt-font-color-1, shade-2, $scheme, true);
+@include set-color-property(alt-font-color-2, shade-3, $scheme, true);
+@include set-color-property(alt-font-color-3, shade-4, $scheme, true);
+
+// Link colors
+@include set-color-property(link-default-color, primary-color, $scheme, true);
+@include set-color-property(link-hover-color, secondary-color, $scheme, true);
+
+// Button colors
+@include set-color-property(button-default-color, primary-color, $scheme, true);
+@include set-color-property(button-hover-color, secondary-color, $scheme, true);
+
+// Background colors
+@include set-color-property(background-default, shade-10, $scheme, true);
+@include set-color-property(header-background, #393D3F, $scheme);
+@include set-color-property(header-background-shade-1, #2e3132, $scheme);
+@include set-color-property(user-bar-background, background-2, $scheme, true);
+@include set-color-property(user-bar-background-shade-1, border-color-1, $scheme, true);
+@include set-color-property(major-title-background, primary-color, $scheme, true);
+
+@include set-color-property(background-1, shade-9, $scheme, true);
+@include set-color-property(background-2, shade-8, $scheme, true);
+@include set-color-property(background-3, shade-7, $scheme, true);
+@include set-color-property(background-4, shade-4, $scheme, true);
+
+// Border colors
+@include set-color-property(major-title-border, primary-color-shade-1, $scheme, true);
+
+@include set-color-property(border-color-1, shade-5, $scheme, true);
+@include set-color-property(border-color-2, shade-4, $scheme, true);
+@include set-color-property(border-color-3, shade-7, $scheme, true);
+@include set-color-property(border-color-4, shade-2, $scheme, true);
+
+// Status colors
+@include set-color-property(status-new-icon-color, #444, $scheme);
+@include set-color-property(status-highlight-background-color, background-1, $scheme, true);
+@include set-color-property(status-highlight-border-color, #afd9fa, $scheme);
+@include set-color-property(status-deleted-background-color, #ece3fa, $scheme);
+@include set-color-property(status-deleted-border-color, #864ddf, $scheme);
+@include set-color-property(status-deleted-font-color, status-deleted-border-color, $scheme, true);
+@include set-color-property(status-pending-background-color, #fbe3e4, $scheme);
+@include set-color-property(status-pending-border-color, #eb5257, $scheme);
+@include set-color-property(status-pending-font-color, status-pending-border-color, $scheme, true);
+@include set-color-property(status-unread-color, status-pending-border-color, $scheme, true);
+
+// Success / danger colors
+@include set-color-property(success-color, #68c000, $scheme);
+@include set-color-property(success-color-shade-1, #5dac00, $scheme);
+@include set-color-property(moderate-color, #d7611e, $scheme);
+@include set-color-property(moderate-color-shade-1, #c1571b, $scheme);
+@include set-color-property(danger-color, #eb5257, $scheme);
+@include set-color-property(danger-color-shade-1, #d3494e, $scheme);
