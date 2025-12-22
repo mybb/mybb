@@ -3390,6 +3390,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 		}
 	}
 
+	$forum_link = "";
 	if($addselect)
 	{
 		if($showextras != 0)
