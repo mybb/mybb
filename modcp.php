@@ -805,6 +805,7 @@ if($mybb->input['action'] == "modlogs")
 		}
 	}
 
+	$multipage = "";
 	if($postcount > $perpage)
 	{
 		$multipage = multipage($postcount, $perpage, $page, $page_url);
