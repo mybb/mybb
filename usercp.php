@@ -4081,7 +4081,6 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks('usercp_end');
 
 	output_page(\MyBB\View\template('usercp/home.twig', [
-		'useravatar' => $useravatar,
 		'username' => $username,
 		'groupscache' => $groupscache,
 		'reputation_link' => $reputation_link,
