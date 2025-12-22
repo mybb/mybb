@@ -3533,6 +3533,7 @@ if($mybb->input['action'] === "do_acknowledge" && $mybb->request_method === "pos
 {
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	require_once MYBB_ROOT.'inc/functions_warnings.php';
 	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
 	$warningshandler = new WarningsHandler('update');
 
