@@ -28,7 +28,7 @@
             {# Go to unread link #}
             {% if thread.unreadpost and thread.moved == 0 %}
                 <a href="{{ thread.newpostlink }}" class="thread__status">
-                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'circle', class: 'fa-fw', title: lang.goto_first_unread}, with_context = false) }}
                 </a>
             {% endif %}
 
@@ -93,12 +93,14 @@
     {% else %}
         <div class="thread__column thread__column--replies">
             <p class="thread__replies">
-                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
-                {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
-                    <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans('thread_unapproved_post_count', 1) : trans('thread_unapproved_posts_count', thread.unapprovedposts) }}">
-                        {{ thread.unapprovedposts|my_number_format }}
-                    </span>
-                {% endif %}
+                <span class="thread__count-container">
+                    <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
+                    {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
+                        <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans('thread_unapproved_post_count', 1) : trans('thread_unapproved_posts_count', thread.unapprovedposts) }}">
+                            {{ thread.unapprovedposts|my_number_format }}
+                        </span>
+                    {% endif %}
+                </span>
                 <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
             </p>
         </div>

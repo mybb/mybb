@@ -9,27 +9,24 @@
 
     &__block {
 
-        &--stats {
-        }
-
         &--counts {
 
             @include bp-medium-max {
-                padding-top: 20px;
-                margin-top: 20px;
-                border-top: 2px solid $border-1;
+                padding-top: var(--spacing-5);
+                margin-top: var(--spacing-5);
+                border-top: var(--border-width-thick) solid var(--border-color-1);
             }
         }
     }
 }
 
 .reputation-table {
-    font-size: 0.9em;
+    font-size: var(--font-size-small);
 
     &__row {
 
         .reputation-table__cell {
-            border-bottom: 1px solid $border-1;
+            border-bottom: var(--border-width-base) solid var(--border-color-1);
         }
 
         &--header {
@@ -46,10 +43,10 @@
     }
 
     &__cell {
-        padding: 4px 8px;
+        padding: var(--spacing-2) var(--spacing-3);
 
         &--legend {
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
             text-align: $right;
         }
 
@@ -60,63 +57,74 @@
 }
 
 .reputation-ratings {
-    margin-top: 10px;
+    margin-top: var(--spacing-3);
 }
 
 .reputation-rating {
-    padding: side-values(0 0 10px 0);
-    margin-bottom: 15px;
-    line-height: 1.4;
-    border: 1px solid $border-1;
-    border-radius: $radius;
+    padding: side-values(0 0 var(--spacing-3) 0);
+    margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-small);
+    border: var(--border-width-base) solid var(--border-color-1);
+    border-radius: var(--border-radius);
 
     &__meta {
-        padding: 10px 12px;
-        background: $background-1;
-        border-radius: corner-values($radius $radius 0 0);
+        padding: var(--spacing-3) var(--spacing-4);
+        background: var(--background-1);
+        border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
     }
 
     &__user-rep {
-        font-size: 0.8em;
+        font-size: var(--font-size-smaller);
     }
 
     &__date {
         display: block;
-        margin-top: 4px;
-        font-size: 0.8em;
-        color: $alt-font-color-1;
+        margin-top: var(--spacing-2);
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-1);
 
         @include bp-medium {
             float: $right;
-            margin-top: 2px;
+            margin-top: var(--spacing-1);
         }
     }
 
     &__link {
         display: block;
-        margin-top: 4px;
-        font-size: 0.8em;
-        color: $alt-font-color-2;
+        margin-top: var(--spacing-2);
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-2);
 
         a:link,
         a:visited {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         a:hover,
         a:active {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
             text-decoration: underline;
         }
     }
 
     &__comment {
-        padding: 12px;
+        padding: var(--spacing-4);
     }
 
     &__controls {
-        padding: 0 12px;
+        padding: 0 var(--spacing-4);
         text-align: $right;
+    }
+    
+    &__rating {
+
+        &--positive {
+            color: var(--success-color);
+        }
+
+        &--negative {
+            color: var(--danger-color);
+        }
     }
 
 }

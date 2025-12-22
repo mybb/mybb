@@ -765,6 +765,13 @@ if($mybb->input['action'] == "edit")
 					"time" => "suspm_time",
 					"update_field" => "suspendpm",
 					"update_length" => "suspendpmtime"
+				),
+				5 => array(
+					"action" => "suspendavatar",
+					"period" => "suspendavatar_period",
+					"time" => "suspendavatar_time",
+					"update_field" => "suspendavatar",
+					"update_length" => "suspendavatartime"
 				)
 			);
 
@@ -821,6 +828,14 @@ if($mybb->input['action'] == "edit")
 							{
 								$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 							}
+						}
+						// If suspending the avatar privilege, remove existing avatar
+						if($option['action'] === "suspendavatar")
+						{
+							$extra_user_updates["avatar"] = "";
+							$extra_user_updates["avatardimensions"] = "";
+							$extra_user_updates["avatartype"] = "";
+							remove_avatars($user["uid"]);
 						}
 					}
 				}
@@ -1765,6 +1780,46 @@ EOF;
 	$suspm_div = '<div id="suspm">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspm_time", $mybb->get_input('suspm_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$suspm_options.'</div>';
 	$form_container->output_row($form->generate_check_box("suspendpm", 1, $lang->suspend_pm, array("id" => "suspendpm", "onclick" => "toggleBox('suspm');", "checked" => $mybb->get_input('suspendpm'))), $lang->suspend_pm_info, $suspm_div);
 
+	// Suspend avatar
+	// Generate check box
+	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->input['suspendavatar_period'], array('id' => 'suspendavatar_period'));
+
+	// Do we have any existing suspensions here?
+	$existing_info = '';
+	if($user['suspendavatar'] || ($mybb->get_input('suspendavatar') && !empty($errors)))
+	{
+		$mybb->input['suspendavatar'] = 1;
+		if($user['suspendavatartime'] != 0)
+		{
+			$remaining = $user['suspendavatartime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $expired, $color);
+		}
+		else
+		{
+			$existing_info = $lang->suspended_perm;
+		}
+	}
+
+	// Generate content div
+	$suspend_avatar_div = '<div id="suspend_avatar">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspendavatar_time", $mybb->get_input('suspendavatar_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$suspendavatar_options.'</div>';
+	$form_container->output_row($form->generate_check_box("suspendavatar", 1, $lang->suspend_avatar, array("id" => "suspendavatar", "onclick" => "toggleBox('suspendavatar');", "checked" => $mybb->get_input('suspendavatar'))), $lang->suspend_avatar_info, $suspend_avatar_div);
+
 	$form_container->end();
 	$plugins->run_hooks("admin_user_users_edit_moderator_options");
 	echo "</div>\n";
@@ -1823,6 +1878,20 @@ function toggleBox(action)
 			$("#suspm").hide();
 		}
 	}
+	else if(action == "suspendavatar")
+	{
+		$("#suspendavatar").attr("checked", false);
+		$("#suspend_avatar").hide();
+
+		if($("#suspendavatar").is(":checked") == true)
+		{
+			$("#suspend_avatar").show();
+		}
+		else if($("#suspendavatar").is(":checked") == false)
+		{
+			$("#suspend_avatar").hide();
+		}
+	}
 }
 
 if($("#moderateposting").is(":checked") == false)
@@ -1842,7 +1911,7 @@ else
 {
 	$("#suspost").show();
 }
-	
+
 if($("#suspendpm").is(":checked") == false)
 {
 	$("#suspm").hide();
@@ -1850,6 +1919,15 @@ if($("#suspendpm").is(":checked") == false)
 else
 {
 	$("#suspm").show();
+}
+
+if($("#suspendavatar").is(":checked") == false)
+{
+	$("#suspend_avatar").hide();
+}
+else
+{
+	$("#suspend_avatar").show();
 }
 
 // -->

@@ -954,6 +954,7 @@ if($mybb->input['action'] == "subscriptions")
 		}
 	}
 
+	$threads = [];
 	if(!empty($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
@@ -1001,9 +1002,6 @@ if($mybb->input['action'] == "subscriptions")
 		}
 
 		$threadprefixes = build_prefixes();
-
-		$threads = [];
-
 		$forums_cache = cache_forums();
 
 		// Now we can build our subscription list
@@ -1830,6 +1828,11 @@ if($mybb->input['action'] == 'editsig')
 
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
+	if((int)$mybb->user['suspendavatar'] === 1)
+	{
+		error($lang->avatar_suspended);
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2008,6 +2011,14 @@ if($mybb->input['action'] == "avatar")
 	$avatarurl = '';
 	$extranotes = [];
 
+	$suspend_avatar = (int)$mybb->user['suspendavatar'];
+	$suspend_avatar_time = (int)$mybb->user['suspendavatartime'];
+
+	if($suspend_avatar === 1 && ($suspend_avatar_time == 0 || $suspend_avatar_time > 0 && $suspend_avatar_time > TIME_NOW))
+	{
+		error($lang->avatar_suspended);
+	}
+
 	if($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath']))
 	{
 		$extranotes[] = $lang->already_uploaded_avatar;
@@ -2017,8 +2028,6 @@ if($mybb->input['action'] == "avatar")
 		$extranotes[] = $lang->using_remote_avatar;
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 	}
-
-	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
@@ -2036,7 +2045,6 @@ if($mybb->input['action'] == "avatar")
 
 	output_page(\MyBB\View\template('usercp/avatar.twig', [
 		'error' => $error,
-		'useravatar' => $useravatar,
 		'extranotes' => $extranotes
 	]));
 }
@@ -3590,8 +3598,6 @@ if(!$mybb->input['action'])
 
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$mybb->user['regdate'] = my_date('relative', $mybb->user['regdate']);
-
-	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 
 	// Make reputations row
 	$reputation_link = '';

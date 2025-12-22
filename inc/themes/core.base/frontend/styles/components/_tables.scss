@@ -2,20 +2,20 @@
     width: 100%;
 
     &.table--bordered {
-        border-radius: 5px;
+        border-radius: var(--border-radius);
         border-collapse: separate;
 
         td {
-            border-bottom: 1px solid $border-1;
+            border-bottom: var(--border-width-base) solid var(--border-color-1);
         }
     }
 
     td, th {
-        padding: 10px;
+        padding: var(--spacing-3);
     }
 
     thead {
-        color: $invert-font-color;
-        background: $primary-color;
+        color: var(--invert-font-color);
+        background: var(--primary-color);
     }
 }

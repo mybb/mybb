@@ -3,13 +3,13 @@
 
     .collapse__toggle {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: var(--spacing-4);
+        right: var(--spacing-4);
     }
 
     .collapse__icon {
-        padding: 7px 5px;
-        font-size: 0.7rem;
+        padding: var(--spacing-2);
+        font-size: var(--font-size-smallest);
         cursor: pointer;
         opacity: 0.8;
 

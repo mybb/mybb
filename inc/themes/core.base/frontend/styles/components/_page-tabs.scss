@@ -1,39 +1,39 @@
 .page-tabs {
-    padding: side-values(8px 8px 0 8px);
-    margin: side-values(0 0 20px 0);
+    padding: side-values(var(--spacing-3) var(--spacing-3) 0 var(--spacing-3));
+    margin: side-values(0 0 var(--spacing-5) 0);
     list-style: none;
-    background: $background-1;
-    border-radius: 4px;
+    background: var(--background-1);
+    border-radius: var(--border-radius);
 
     &__item {
         display: inline-block;
-        margin: side-values(0 8px 8px 0);
+        margin: side-values(0 var(--spacing-3) var(--spacing-3) 0);
 
         &--active {
 
             .page-tabs__link {
                 font-weight: bold;
-                color: $invert-font-color;
+                color: var(--invert-font-color);
                 text-decoration: none;
-                background: $button-default;
+                background: var(--button-default-color);
             }
         }
     }
 
     &__link {
         display: inline-block;
-        padding: 4px 8px;
-        background: $background-1;
-        border-radius: 3px;
+        padding: var(--spacing-2) var(--spacing-3);
+        background: var(--background-1);
+        border-radius: var(--border-radius);
 
         &:hover {
-            color: $invert-font-color;
+            color: var(--invert-font-color);
             text-decoration: none;
-            background: $link-hover;
+            background: var(--link-hover-color);
         }
     }
 
     &__icon {
-        margin-#{$right}: 4px;
+        margin-#{$right}: var(--spacing-2);
     }
 }

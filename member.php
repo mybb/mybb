@@ -2017,10 +2017,6 @@ if($mybb->input['action'] == "profile")
 	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile);
 
-	$memprofile['useravatar'] = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
-	$memprofile['avatar_image'] = $memprofile['useravatar']['image'];
-	$memprofile['avatar_width_height'] = $memprofile['useravatar']['width_height'];
-
 	$memprofile['hascontacts'] = false;
 	$memprofile['showwebsite'] = false;
 	if(my_validate_url($memprofile['website']) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)

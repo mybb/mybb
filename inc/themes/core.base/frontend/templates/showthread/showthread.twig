@@ -244,7 +244,7 @@
                     {% for post in threadedbits %}
                         {% if post.bitactive %}
                             <div class="threaded-mode__post threaded-mode__post--active" style="margin-left: {{ post.indentsize }}px;">
-                                <span class="threaded-mode__date">{{ post.postdate }}</span>
+                                <span class="threaded-mode__date">{{ post.dateline|my_date }}</span>
                                 <span class="threaded-mode__author">
                                     {{ lang.by }}
                                     {% if post.uid > 0 %}
@@ -256,14 +256,16 @@
                             </div>
                         {% else %}
                             <div class="threaded-mode__post" style="margin-left: {{ post.indentsize }}px;">
-                                <span class="threaded-mode__date"><a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.postdate }}</a></span>
+                                <span class="threaded-mode__date">
+                                    <a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.dateline|my_date }}</a>
+                                </span>
                                 <span class="threaded-mode__author">
                                     {{ lang.by }}
                                     {% if post.uid > 0 %}
                                         <a href="{{ get_profile_link(post.uid) }}">{{ post.uid|format_name }}</a>
                                     {% else %}
                                         {{ post.username|default(lang.guest) }}
-                                    {% endif %}                                    
+                                    {% endif %}
                                 </span>
                             </div>
                         {% endif %}

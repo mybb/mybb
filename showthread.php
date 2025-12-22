@@ -1405,7 +1405,6 @@ function buildtree($replyto = 0, $indent = 0)
 	{
 		foreach($tree[$replyto] as $key => $post)
 		{
-			$post['postdate'] = my_date('relative', $post['dateline']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 
 			if(!$post['subject'])

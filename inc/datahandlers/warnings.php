@@ -56,6 +56,20 @@ class WarningsHandler extends DataHandler
 	public $friendly_action = '';
 
 	/**
+	 * The list of warnings that are due to expire.
+	 *
+	 * @var array
+	 */
+	public array $expiring_warnings = array();
+
+	/**
+	 * The list of users affected by expired warnings and their updated warning points.
+	 *
+	 * @var array
+	 */
+	public array $affected_users = array();
+
+	/**
 	* Validate a warning user assets.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -312,9 +326,7 @@ class WarningsHandler extends DataHandler
 	*/
 	function expire_warnings()
 	{
-		global $db;
-
-		$users = array();
+		global $db, $plugins;
 
 		$query = $db->query("
 			SELECT w.wid, w.uid, w.points, u.warningpoints
@@ -324,22 +336,31 @@ class WarningsHandler extends DataHandler
 		");
 		while($warning = $db->fetch_array($query))
 		{
+			$this->expiring_warnings[$warning['wid']] = $warning;
+		}
+
+		$plugins->run_hooks("datahandler_warnings_before_expire_warnings", $this);
+
+		foreach ($this->expiring_warnings as $warning)
+		{
 			$updated_warning = array(
 				"expired" => 1
 			);
 			$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 
-			if(array_key_exists($warning['uid'], $users))
+			if(array_key_exists($warning['uid'], $this->affected_users))
 			{
-				$users[$warning['uid']] -= $warning['points'];
+				$this->affected_users[$warning['uid']] -= $warning['points'];
 			}
 			else
 			{
-				$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
+				$this->affected_users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
 			}
 		}
 
-		foreach($users as $uid => $warningpoints)
+		$plugins->run_hooks("datahandler_warnings_after_expire_warnings", $this);
+
+		foreach($this->affected_users as $uid => $warningpoints)
 		{
 			if($warningpoints < 0)
 			{
@@ -362,7 +383,7 @@ class WarningsHandler extends DataHandler
 	*/
 	function update_user($method='insert')
 	{
-		global $db, $mybb, $lang, $cache, $groupscache;
+		global $db, $mybb, $lang, $cache, $groupscache, $plugins;
 
 		if($mybb->settings['maxwarningpoints'] < 1)
 		{
@@ -667,6 +688,7 @@ class WarningsHandler extends DataHandler
 		$result = $db->fetch_array($query);
 		$this->updated_user['unacknowledgedwarnings'] = (int)$result['count'];
 
+		$plugins->run_hooks('datahandler_warnings_update_user', $this);
 		// Save updated details
 		$db->update_query("users", $this->updated_user, "uid='{$user['uid']}'");
 
@@ -700,6 +722,8 @@ class WarningsHandler extends DataHandler
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])
 		);
+
+		$plugins->run_hooks("datahandler_warnings_before_insert_warning", $this);
 
 		$this->write_warning_data['wid'] = $db->insert_query("warnings", $this->write_warning_data);
 

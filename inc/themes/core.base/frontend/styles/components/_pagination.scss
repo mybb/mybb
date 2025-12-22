@@ -1,45 +1,45 @@
 
 .pagination {
     padding: 0;
-    margin: 15px 0;
-    font-size: 0.9em;
+    margin: var(--spacing-5) 0;
+    font-size: var(--font-size-small);
     text-align: center;
     list-style: none;
 
     &__pages {
-        margin-#{$right}: 8px;
-        color: $alt-font-color-1;
+        margin-#{$right}: var(--spacing-3);
+        color: var(--alt-font-color-1);
     }
 
     &__page {
         display: inline-block;
-        padding: 1px 8px;
-        margin-#{$right}: 4px;
-        background: $background-1;
-        border-radius: $radius;
+        padding: var(--spacing-1) var(--spacing-3);
+        margin-#{$right}: var(--spacing-2);
+        background: var(--background-1);
+        border-radius: var(--border-radius);
 
         &:hover {
-            color: $invert-font-color;
+            color: var(--invert-font-color);
             text-decoration: none;
-            background: $link-hover;
+            background: var(--link-hover-color);
         }
 
         &--active {
-            background: $button-default;
-            color: $invert-font-color;
+            background: var(--button-default-color);
+            color: var(--invert-font-color);
 
             &:hover {
-                background: $button-default;
+                background: var(--button-default-color);
             }
         }
     }
 
     &__icon {
-        font-size: 0.8em;
+        font-size: var(--font-size-smaller);
     }
 
     @include bp-medium {
-        margin: side-values(10px 0 20px 0);
+        margin: side-values(var(--spacing-3) 0 var(--spacing-5) 0);
         text-align: $left;
     }
 }

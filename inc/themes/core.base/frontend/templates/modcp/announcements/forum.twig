@@ -28,7 +28,7 @@
                 {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.edit }}</span>
             </a>
-            <a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}" class="button button--secondary button--small">
+            <a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}" class="button button--secondary button--danger button--small">
                 {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.delete }}</span>
             </a>

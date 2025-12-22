@@ -9,9 +9,9 @@ $post-spacing: 25px;
 
 .post {
     margin-bottom: $post-spacing;
-    background-color: $background-default;
-    border: 1px solid $border-1;
-    border-radius: $radius;
+    background-color: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-1);
+    border-radius: var(--border-radius);
 
     @include bp-small {
         margin-#{$left}: $avatar-margin-small;
@@ -26,12 +26,12 @@ $post-spacing: 25px;
     }
 
     &__meta {
-        padding: side-values(12px 18px 4px 18px);
+        padding: side-values(var(--spacing-4) var(--spacing-5) var(--spacing-1) var(--spacing-5));
     }
 
     &__author {
         margin: 0;
-        font-size: 1em;
+        font-size: var(--font-size-regular);
 
         @include bp-small {
             display: inline-block;
@@ -40,66 +40,66 @@ $post-spacing: 25px;
 
     &__date,
     &__topic {
-        font-size: 0.8em;
-        color: $alt-font-color-1;
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-1);
 
         &:link,
         &:visited {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         @include bp-small {
-            margin: side-values(0 0 0 10px);
+            margin: side-values(0 0 0 var(--spacing-3));
         }
     }
 
     &__edit-log {
-        margin-#{$left}: 4px;
-        font-size: 0.8em;
+        margin-#{$left}: var(--spacing-2);
+        font-size: var(--font-size-smaller);
 
         &:link,
         &:visited {
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
         }
 
         &:hover {
-            color: $link-hover;
+            color: var(--link-hover-color);
         }
     }
 
     &__edit-reason {
-        color: $alt-font-color-1;
-        margin-#{$left}: 4px;
-        font-size: 0.8em;
+        color: var(--alt-font-color-1);
+        margin-#{$left}: var(--spacing-2);
+        font-size: var(--font-size-smaller);
     }
 
     &__ip-address {
         float: $right;
-        font-size: 0.8em;
+        font-size: var(--font-size-smaller);
 
         &:link,
         &:visited {
-            color: $alt-font-color-2;
+            color: var(--alt-font-color-2);
         }
 
         &:hover {
-            color: $link-hover;
+            color: var(--link-hover-color);
         }
     }
 
     &__messenger-meta {
-        padding: side-values(0 0 5px 0);
-        font-size: 0.9em;
-        color: $alt-font-color-1;
-        border-bottom: 1px solid $border-3;
+        padding: side-values(0 0 var(--spacing-2) 0);
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
+        border-bottom: var(--border-width-base) solid var(--border-color-3);
     }
 
     &__inline-mod {
         float: $right;
-        margin: side-values(-20px 0 0 10px);
+        margin: side-values(-20px 0 0 var(--spacing-3));
 
         @include bp-small {
-            margin-top: 7px;
+            margin-top: var(--spacing-3);
         }
     }
 
@@ -129,44 +129,44 @@ $post-spacing: 25px;
     }
 
     &__body {
-        padding: side-values(8px 18px 16px 18px);
+        padding: side-values(var(--spacing-3) var(--spacing-5) var(--spacing-5) var(--spacing-5));
 
         img {
             max-width: 100%;
         }
 
         &--message {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
     }
 
     .quote,
     .codeblock,
     blockquote {
-        padding: 10px 18px;
-        margin: 5px 0;
-        font-size: 0.9rem;
-        background: $background-1;
-        border-radius: $radius;
+        padding: var(--spacing-3) var(--spacing-5);
+        margin: var(--spacing-2) 0;
+        font-size: var(--font-size-small);
+        background: var(--background-1);
+        border-radius: var(--border-radius);
 
         .quote,
         .codeblock,
         blockquote {
-            border: 1px solid $border-1;
+            border: var(--border-width-base) solid var(--border-color-1);
         }
 
         &__cite,
         &__title,
         cite {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: var(--spacing-2);
             font-style: normal;
             font-weight: normal;
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
 
         &__jump {
-            margin-#{$left}: 3px;
+            margin-#{$left}: var(--spacing-2);
         }
 
         &__date {
@@ -175,18 +175,18 @@ $post-spacing: 25px;
     }
 
     &__signature {
-        padding: side-values(6px 0 0 0);
-        margin-top: 20px;
-        font-size: 0.8em;
-        border-top: 1px dotted $border-2;
+        padding-top: var(--spacing-3);
+        margin-top: var(--spacing-5);
+        font-size: var(--font-size-smaller);
+        border-top: 1px dotted var(--border-color-2);
     }
 
     &__foot {
-        padding: 6px 12px;
+        padding: var(--spacing-2) var(--spacing-4);
         margin: 0;
         list-style: none;
-        background: $background-1;
-        border-radius: corner-values(0 0 $radius $radius);
+        background: var(--background-1);
+        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
 
         &--controls {
             display: flex;
@@ -198,7 +198,7 @@ $post-spacing: 25px;
     &--soft-deleted,
     &--awaiting-approval {
         margin: side-values(-1px -1px ($post-spacing - 1) -1px);
-        border-width: 2px;
+        border-width: var(--border-width-thick);
 
         @include bp-small {
             margin-#{$left}: $avatar-margin-small - 1;
@@ -210,24 +210,24 @@ $post-spacing: 25px;
     }
 
     &--highlight {
-        border-color: $secondary-color;
+        border-color: var(--secondary-color);
     }
 
     &--deleted {
-        border-color: $status-deleted-border;
+        border-color: var(--status-deleted-border-color);
     }
 
     &--awaiting-approval {
-        border-color: $status-pending-border;
+        border-color: var(--status-pending-border-color);
     }
 
     &--message {
-        background: $background-1;
+        background: var(--background-1);
         border: none;
 
         &__button {
             display: none;
-            margin: side-values(5px -5px 0 -5px);
+            margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-2)) 0 calc(-1 * var(--spacing-2)));
         }
     }
 
@@ -256,7 +256,7 @@ $post-spacing: 25px;
         }
 
         .post__meta {
-            padding-bottom: 2px;
+            padding-bottom: var(--spacing-1);
         }
 
         .post__body,
@@ -268,27 +268,27 @@ $post-spacing: 25px;
 
 .user-status {
     display: inline-block;
-    margin-#{$left}: 2px;
-    font-size: 10px;
+    margin-#{$left}: var(--spacing-1);
+    font-size: var(--font-size-smallest);
     vertical-align: middle;
 
     &--offline {
-        color: $alt-font-color-3;
+        color: var(--alt-font-color-3);
     }
 
     &--online {
-        color: $success-color;
+        color: var(--success-color);
 
         .user-status__link {
-            color: $success-color;
+            color: var(--success-color);
         }
     }
 
     &--away {
-        color: $danger-color;
+        color: var(--danger-color);
 
         .user-status__link {
-            color: $danger-color;
+            color: var(--danger-color);
         }
     }
 }

@@ -12,7 +12,7 @@
         flex-wrap: wrap;
         justify-content: space-between;
         padding: 0;
-        margin: side-values(0 0 15px 0);
+        margin: side-values(0 0 var(--spacing-5) 0);
         list-style: none;
 
         @include bp-medium {
@@ -22,19 +22,19 @@
 
     &__item {
         width: 49%;
-        margin-bottom: 8px;
+        margin-bottom: var(--spacing-3);
 
         @include bp-medium {
             width: 100%;
-            margin-bottom: 4px;
+            margin-bottom: var(--spacing-2);
         }
 
         &--active {
 
             .section-menu__link {
-                color: $invert-font-color;
-                background-color: $primary-color;
-                border-color: $primary-color;
+                color: var(--invert-font-color);
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
             }
         }
     }
@@ -44,13 +44,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding: side-values(12px 8px 8px 8px);
-        background: $background-1;
-        border-radius: 3px;
+        padding: side-values(var(--spacing-4) var(--spacing-3) var(--spacing-3) var(--spacing-3));
+        background: var(--background-1);
+        border-radius: var(--border-radius);
 
         @include bp-medium {
             flex-direction: row;
-            padding: 2px 8px;
+            padding: var(--spacing-1) var(--spacing-3);
         }
 
         &:link,
@@ -59,20 +59,20 @@
         }
 
         &:hover {
-            color: $invert-font-color;
-            background-color: $button-hover;
-            border-color: $button-hover;
+            color: var(--invert-font-color);
+            background-color: var(--button-hover-color);
+            border-color: var(--button-hover-color);
         }
     }
 
     &__icon {
-        margin-bottom: 5px;
-        font-size: 1.5em;
+        margin-bottom: var(--spacing-2);
+        font-size: var(--font-size-larger);
 
         @include bp-medium {
-            margin-#{$right}: 8px;
+            margin-#{$right}: var(--spacing-3);
             margin-bottom: 0;
-            font-size: 1em;
+            font-size: var(--font-size-regular);
         }
     }
 

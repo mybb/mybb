@@ -3,34 +3,34 @@
     &__header {
         @include clearfix();
         position: relative;
-        margin-bottom: 20px;
+        margin-bottom: var(--spacing-6);
 
         .avatar {
             float: $left;
             width: 100px;
             height: 100px;
-            margin-#{$right}: 16px;
-            margin-bottom: 16px;
+            margin-#{$right}: var(--spacing-5);
+            margin-bottom: var(--spacing-5);
         }
     }
 
     .page-controls {
-        margin-top: -10px;
+        margin-top: calc(-1 * var(--spacing-4));
 
         @include bp-medium-max {
-            margin-#{$left}: -5px;
-            margin-#{$right}: -5px;
+            margin-#{$left}: calc(-1 * var(--spacing-2));
+            margin-#{$right}: calc(-1 * var(--spacing-2));
         }
     }
 
     &__username,
     &__usertitle {
-        margin: 5px 0;
+        margin: var(--spacing-2) 0;
     }
 }
 
 .profile-field {
-    font-size: 0.9em;
+    font-size: var(--font-size-small);
 
     &__name {
         padding: 0;

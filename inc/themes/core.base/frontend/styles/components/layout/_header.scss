@@ -2,12 +2,12 @@
  * Global page header
  */
 .header {
-    background: $dark-background-1;
+    background: var(--header-background);
 
     @include bp-medium {
         display: flex;
         flex-direction: row;
-        height: $header-height;
+        height: var(--header-height);
     }
 
     // Page title
@@ -24,7 +24,7 @@
         .logo {
             display: flex;
             align-items: center;
-            height: $header-height;
+            height: var(--header-height);
             margin-#{$right}: 50px;
 
             @include bp-medium {
@@ -40,13 +40,13 @@
         top: 0;
         right: 0;
         display: block;
-        padding: 26px 8px;
+        padding: 26px var(--spacing-3); // TODO: Adjust button padding based on header height
         cursor: pointer;
 
         // Button icon
         &__icon {
-            color: $invert-font-color;
-            font-size: 24px;
+            color: var(--invert-font-color);
+            font-size: 24px; // TODO: Adjust button size based on header height
         }
 
         // Hide if hidden
@@ -102,8 +102,8 @@
         @include bp-medium-max {
             flex-wrap: wrap;
             margin: 0 -6%;
-            background: $dark-background-2;
-            border-bottom: 1px solid $dark-border-3;
+            background: var(--header-background);
+            border-bottom: var(--border-width-base) solid var(--border-color-4);
         }
     }
 
@@ -116,18 +116,18 @@
             box-sizing: border-box;
             width: 100%;
             text-align: left;
-            border-top: 1px solid $dark-border-3;
+            border-top: var(--border-width-base) solid var(--border-color-4);
         }
 
         // Active menu item
         &--active {
-            color: $invert-font-color;
-            background: $primary-color;
+            color: var(--invert-font-color);
+            background: var(--primary-color);
 
             .main-menu__link {
 
                 &:hover {
-                    background: $primary-color;
+                    background: var(--primary-color);
                 }
             }
         }
@@ -140,39 +140,33 @@
         align-items: center;
         justify-content: center;
         height: 100%;
-        padding: 0 20px;
+        padding: 0 var(--spacing-5);
         margin: 0;
-        font-size: 1.1em;
+        font-size: var(--font-size-regular);
         font-weight: 300;
-        transition: background $transition-speed ease;
+        transition: background var(--transition-speed) ease;
 
         @include bp-medium-max {
             justify-content: flex-start;
-            padding: 8px 20px;
-            font-size: 1rem;
+            padding: var(--spacing-3) var(--spacing-6);
             text-align: left;
         }
 
         &:link,
         &:visited {
-            color: $invert-font-color;
+            color: var(--invert-font-color);
             text-decoration: none;
         }
 
         &:hover {
-            background: rgba($dark-background-3, 0.6);
+            background: var(--header-background-shade-1);
         }
     }
 
     // Link icon (contained within <a>)
     &__icon {
-        margin-#{$right}: 8px;
-        color: $alt-font-color-2;
-    }
-
-    // Link text (contained within <a>)
-    &__text {
-        // unused
+        margin-#{$right}: var(--spacing-3);
+        color: var(--alt-font-color-2);
     }
 }
 

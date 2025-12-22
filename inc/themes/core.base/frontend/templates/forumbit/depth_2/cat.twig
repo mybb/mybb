@@ -1,7 +1,7 @@
 <div class="row row--forum forum forum--{{ lightbulb.folder }}">
     <div class="forum__info">
         <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
-        {% if lightbulb.folder == 'offlock' %}
+        {% if forum.open == 0 %}
             {{ include('partials/icon.twig', {icon: 'lock', class: ''}, with_context = false) }}
         {% elseif forum.linkto != '' %}
             {{ include('partials/icon.twig', {icon: 'link', class: ''}, with_context = false) }}

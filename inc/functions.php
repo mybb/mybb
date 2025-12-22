@@ -3390,6 +3390,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 		}
 	}
 
+	$forum_link = "";
 	if($addselect)
 	{
 		if($showextras != 0)
@@ -3752,6 +3753,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					reset($smiliecache);
 
 					$i = 0;
+
+					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
 
 					foreach($smiliecache as $smilie)
 					{
@@ -5184,8 +5187,8 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  *
  * @param string $name The name of the menu
  * @param int $selected The ID of the selected theme
- * @param int $tid The ID of the parent theme to select from
- * @param string $depth The current selection depth
+ * @param int $tid The ID of the parent theme to select from (deprecated)
+ * @param string $depth The current selection depth (deprecated)
  * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
  * @param boolean $footer Whether or not theme select is in the footer (true if it is)
  * @param boolean $count_override Whether or not to override output based on theme count (true to override)
@@ -5193,18 +5196,14 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  */
 function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $usergroup_override = false, $footer = false, $count_override = false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $num_themes, $themeselect_options;
+	global $db, $tcache, $lang, $num_themes, $themeselect_options;
 
-	if($tid == 0)
+	$num_themes = 0;
+	$themeselect_options = [];
+
+	if(!isset($lang->use_default))
 	{
-		$tid = 1;
-		$num_themes = 0;
-		$themeselect_options = [];
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
+		$lang->use_default = $lang->lang_select_default;
 	}
 
 	if(!is_array($tcache))
@@ -5213,35 +5212,24 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
+			$tcache[$theme['tid']] = $theme;
 		}
 	}
 
-	if(is_array($tcache[$tid]))
+	if(is_array($tcache))
 	{
-		foreach($tcache[$tid] as $theme)
+		foreach($tcache as $theme)
 		{
 			// Show theme if allowed, or if override is on
 			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
-
-				if($theme['pid'] != 0)
-				{
-					$theme['depth'] = $depth;
-					$themeselect_options[] = $theme;
-					++$num_themes;
-					$depthit = $depth."--";
-				}
-
-				if(array_key_exists($theme['tid'], $tcache))
-				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
-				}
+				$themeselect_options[] = $theme;
+				++$num_themes;
 			}
 		}
 	}
 
-	if($tid == 1 && ($num_themes > 1 || $count_override == true))
+	if($num_themes > 1 || $count_override == true)
 	{
 		return \MyBB\View\template('@frontend/misc/themeselect.twig', [
 			'footer' => $footer,
@@ -5268,7 +5256,7 @@ function get_theme($tid)
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+		$query = $db->simple_select('themes', 'tid, name, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{

@@ -114,6 +114,8 @@ $l['sig_preview'] = "Signature Preview";
 $l['sig_suspended'] = "Your ability to add a signature has been suspended.";
 $l['sig_suspended_posts'] = "You must have at least {1} posts before adding a signature.";
 
+$l['avatar_suspended'] = "Your ability to add an avatar has been suspended.";
+
 $l['change_email'] = "Change Email Address";
 $l['new_email'] = "New Email Address";
 $l['confirm_email'] = "Confirm Email Address";

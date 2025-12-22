@@ -40,6 +40,19 @@ $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tfli
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
 $numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
+$attachment = $thread = $post = 0;
+
+$counters = [
+	'announcements' => 0,
+	'modqueue' => [
+		'threads' => 0,
+		'posts' => 0,
+		'attachments' => 0
+	],
+	'reportedposts' => 0,
+	'modlogs' => 0
+];
+
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
@@ -54,16 +67,6 @@ if($mybb->usergroup['issupermod'] != 1)
 	}
 	$moderated_forums = array_unique($moderated_forums);
 
-	$counters = [
-		'announcements' => 0,
-		'modqueue' => [
-			'threads' => 0,
-			'posts' => 0,
-			'attachments' => 0
-		],
-		'reportedposts' => 0,
-		'modlogs' => 0
-	];
 	foreach($moderated_forums as $moderated_forum)
 	{
 		// For Announcements
@@ -802,6 +805,7 @@ if($mybb->input['action'] == "modlogs")
 		}
 	}
 
+	$multipage = "";
 	if($postcount > $perpage)
 	{
 		$multipage = multipage($postcount, $perpage, $page, $page_url);
@@ -1713,10 +1717,6 @@ if($mybb->input['action'] == "do_modqueue")
 			{
 				$posts_to_approve[] = $post['pid'];
 			}
-			elseif($action == "delete" && $mybb->settings['soft_delete'] != 1)
-			{
-				$moderation->delete_post($post['pid']);
-			}
 			elseif($action == "delete")
 			{
 				$posts_to_delete[] = $post['pid'];
@@ -1736,6 +1736,11 @@ if($mybb->input['action'] == "do_modqueue")
 			}
 			else
 			{
+				foreach($posts_to_delete as $post)
+				{
+					$moderation->delete_post($post);
+				}
+
 				log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_delete_posts);
 			}
 		}
@@ -2296,7 +2301,7 @@ if($mybb->input['action'] == "do_editprofile")
 			remove_avatars($user['uid']);
 		}
 
-		// Moderator "Options" (suspend signature, suspend/moderate posting, suspend private messaging)
+		// Moderator "Options" (suspend signature, suspend avatar, suspend/moderate posting, suspend private messaging)
 		$modoptions = array(
 			1 => array(
 				"action" => "suspendsignature", // The moderator action we're performing
@@ -2325,7 +2330,14 @@ if($mybb->input['action'] == "do_editprofile")
 				"time" => "suspm_time",
 				"update_field" => "suspendpm",
 				"update_length" => "suspendpmtime"
-			)
+			),
+			5 => array(
+				"action" => "suspendavatar",
+				"period" => "suspendavatar_period",
+				"time" => "suspendavatar_time",
+				"update_field" => "suspendavatar",
+				"update_length" => "suspendavatartime",
+			),
 		);
 
 		require_once MYBB_ROOT."inc/functions_warnings.php";
@@ -2383,6 +2395,15 @@ if($mybb->input['action'] == "do_editprofile")
 						{
 							$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 						}
+					}
+
+					// If suspending the avatar privilege, remove existing avatar
+					if($option['action'] === "suspendavatar")
+					{
+						$extra_user_updates["avatar"] = "";
+						$extra_user_updates["avatardimensions"] = "";
+						$extra_user_updates["avatartype"] = "";
+						remove_avatars($user["uid"]);
 					}
 				}
 			}
@@ -2614,7 +2635,18 @@ if($mybb->input['action'] == "editprofile")
 				"title" => "suspend_pm",
 				"length" => "suspend_length"
 			]
-		)
+		),
+		array(
+			"action" => "suspendavatar",
+			"option" => "suspendavatar",
+			"time" => "suspendavatar_time",
+			"length" => "suspendavatartime",
+			"select_option" => "suspendavatar",
+			"lang" => [
+				"title" => "suspend_avatar",
+				"length" => "suspend_length"
+			]
+		),
 	);
 
 	$periods = array(
@@ -3009,6 +3041,8 @@ if($mybb->input['action'] == "ipsearch")
 
 	$ipsearch['results'] = false;
 	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
+	$multipage = "";
+	$ipresults = [];
 	if($mybb->input['ipaddress'])
 	{
 		$ipsearch['results'] = true;
@@ -3198,7 +3232,6 @@ if($mybb->input['action'] == "ipsearch")
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
 
 		$post_limit = $perpage;
-		$ipresults = [];
 		if(isset($mybb->input['search_users']) && $user_results && $start <= $user_results)
 		{
 			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
