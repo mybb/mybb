@@ -3390,6 +3390,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 		}
 	}
 
+	$forum_link = "";
 	if($addselect)
 	{
 		if($showextras != 0)
@@ -3752,6 +3753,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					reset($smiliecache);
 
 					$i = 0;
+
+					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
 
 					foreach($smiliecache as $smilie)
 					{

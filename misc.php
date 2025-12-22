@@ -511,9 +511,9 @@ elseif($mybb->input['action'] == "buddypopup")
 
 	// Load Buddies
 	$buddies['showlist'] = false;
+	$buddys = array('online' => [], 'offline' => []);
 	if($mybb->user['buddylist'] != "")
 	{
-		$buddys = array('online' => [], 'offline' => []);
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));

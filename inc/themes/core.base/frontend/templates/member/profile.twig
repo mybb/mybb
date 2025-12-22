@@ -7,9 +7,7 @@
 {% block body %}
     <div class="profile">
         <header class="page-header profile__header">
-            {% if memprofile.useravatar %}
-                <img src="{{ memprofile.avatar_image }}" alt="" {{ memprofile.avatar_width_height }} class="avatar" />
-            {% endif %}
+            {{ render_avatar(url=memprofile.avatar, alt=memprofile.username, class='avatar--large') }}
             <h1 class="profile__username">{{ memprofile.formattedname|raw }}</h1>
             <p class="profile__usertitle">{{ memprofile.user_title }}</p>
             {% if memprofile.groupimage %}

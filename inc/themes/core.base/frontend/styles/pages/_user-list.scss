@@ -45,7 +45,7 @@
     &__checkbox {
         position: absolute;
         top: var(--spacing-3);
-        right: var(--spacing-5);
+        #{$right}: var(--spacing-5);
     }
 
     &__username {

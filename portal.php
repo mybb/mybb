@@ -592,10 +592,6 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$announcement['icon_name'] = $icon['name'];
 			}
 
-			$announcement['useravatar'] = format_avatar($announcement['avatar'], $announcement['avatardimensions']);
-			$announcement['avatar_image'] = $announcement['useravatar']['image'];
-			$announcement['avatar_width_height'] = $announcement['useravatar']['width_height'];
-
 			$announcement['date'] = my_date('relative', $announcement['dateline']);
 
 			$plugins->run_hooks("portal_announcement");

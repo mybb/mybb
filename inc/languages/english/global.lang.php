@@ -431,6 +431,7 @@ $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
 $l['quickrestore_confirm'] = "Are you sure you want to restore this post?";
 $l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from {1} titled <a href=\"{2}/private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
 $l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from {2} titled <a href=\"{3}/private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>";
+$l['unacknowledged_warnings_notice'] = "<strong>You have {1} unacknowledged warning(s).</strong> Please check your <strong><a href=\"usercp.php?action=warninglog\">control panel</a></strong> for more information.";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
@@ -626,4 +627,8 @@ $l['expcol_collapse'] = '[-]';
 $l['expcol_expand'] = '[+]';
 
 $l['use_default'] = "Use Default";
+
+$l['expires'] = "Expires";
+$l['acknowledged'] = "Acknowledged";
+$l['not_acknowledged'] = "Not acknowledged";$l['with_selected'] = "With Selected:";
 $l['with_selected'] = "With Selected:";

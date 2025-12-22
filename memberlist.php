@@ -416,11 +416,6 @@ else
 			$user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
 		}
 
-		// Show avatar
-		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
-		$user['avatar_image'] = $useravatar['image'];
-		$user['avatar_width_height'] = $useravatar['width_height'];
-
 		$last_seen = max(array($user['lastactive'], $user['lastvisit']));
 		if(empty($last_seen))
 		{
