@@ -711,6 +711,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	// If we're previewing a post then generate the preview.
 	$newthread['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
