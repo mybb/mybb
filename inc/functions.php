@@ -1582,11 +1582,11 @@ function usergroup_displaygroup($gid)
 	}
 
 	$displaygroup = array();
-	$group = $groupscache[$gid];
+	$group = $groupscache[$gid] ?? [];
 
 	foreach($displaygroupfields as $field)
 	{
-		$displaygroup[$field] = $group[$field];
+		$displaygroup[$field] = $group[$field] ?? null;
 	}
 
 	return $displaygroup;
