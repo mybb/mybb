@@ -754,10 +754,20 @@ if(!$mybb->input['action'])
 	$task_cache = $cache->read("tasks");
 	$nextrun = $task_cache['nextrun'];
 
+	$lang->load('tools_tasks');
 	$query = $db->simple_select("tasks", "*", "nextrun >= '{$nextrun}' AND enabled='1'", array("order_by" => "nextrun", "order_dir" => "asc", 'limit' => 3));
 	while($task = $db->fetch_array($query))
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);
+		if(!empty($task['file']))
+		{
+			$lang_var = "task_{$task['file']}_title";
+			if(isset($lang->$lang_var))
+			{
+				$task['title'] = $lang->$lang_var;
+			}
+		}
+
 		$next_run = my_date('normal', $task['nextrun'], "", 2);
 		$table->construct_cell("<strong>{$task['title']}</strong>");
 		$table->construct_cell($next_run, array("class" => "align_center"));

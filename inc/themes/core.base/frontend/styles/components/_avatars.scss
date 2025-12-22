@@ -19,7 +19,7 @@
 }
 
 .avatar {
-    border-radius: $radius;
+    border-radius: var(--border-radius);
 
     &--smallest {
         @include avatar-size(40);
@@ -45,15 +45,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: $background-3;
+        background: var(--background-3);
     }
 
     &__icon {
-        color: $alt-font-color-3;
+        color: var(--alt-font-color-3);
     }
 
     &__image {
-        border-radius: $radius;
+        border-radius: var(--border-radius);
         height: 100%;
         width: 100%;
     }

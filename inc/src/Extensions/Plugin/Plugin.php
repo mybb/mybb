@@ -31,7 +31,6 @@ class Plugin extends Extension implements ViewExtensionInterface
 
     public const VIEWLET_DIRECT_NAMESPACE = true;
 
-
     /**
      * @throws ExtensionException if the Extension package name is invalid.
      */

@@ -116,6 +116,7 @@ function output_page($contents)
 	$contents = str_replace("<debugstuff>", "", $contents);
 
 	$contents = \MyBB\app(\MyBB\View\Runtime\Runtime::class)
+		->assetManager
 		->insertDeferredAttachedAssets($contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
@@ -2846,9 +2847,44 @@ function update_stats($changes = array(), $force = false)
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{
-		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 1));
+		$banned_groups = [];
+		$conditions = [];
+
+		$query = $db->simple_select("usergroups", "gid", "isbannedgroup = 1");
+		while($group = $db->fetch_array($query))
+		{
+			$banned_groups[] = (int)$group['gid'];
+		}
+
+		if(!empty($banned_groups))
+		{
+			$conditions[] = "u.usergroup NOT IN (" . implode(',', $banned_groups) . ")";
+			foreach($banned_groups as $gid)
+			{
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						$conditions[] = "',' || u.additionalgroups || ',' NOT LIKE '%,{$gid},%'";
+						break;
+					default:
+						$conditions[] = "CONCAT(',', u.additionalgroups, ',') NOT LIKE '%,{$gid},%'";
+						break;
+				}
+			}
+		}
+
+		$where = empty($conditions) ? '1=1' : implode(' AND ', $conditions);
+		$query = $db->query("
+			SELECT u.uid, u.username
+			FROM ".TABLE_PREFIX."users u
+			WHERE {$where}
+			ORDER BY u.regdate DESC
+			LIMIT 1
+		");
+
 		$lastmember = $db->fetch_array($query);
-		$new_stats['lastuid'] = $lastmember['uid'];
+		$new_stats['lastuid'] = (int)$lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'] = htmlspecialchars_uni($lastmember['username']);
 	}
 
@@ -3354,6 +3390,7 @@ function build_forum_jump($pid = 0, $selitem = 0, $addselect = 1, $depth = "", $
 		}
 	}
 
+	$forum_link = "";
 	if($addselect)
 	{
 		if($showextras != 0)
@@ -3704,7 +3741,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					}
 				}
 
-				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
 				{
 					$toolbar['emoticon'] = ",emoticon";
 				}
@@ -3716,6 +3753,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					reset($smiliecache);
 
 					$i = 0;
+
+					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
 
 					foreach($smiliecache as $smilie)
 					{
@@ -3729,7 +3768,7 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
 							$emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
 						}
@@ -3877,7 +3916,7 @@ function build_clickable_smilies()
 
 	$clickablesmilies = '';
 
-	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertertot'])
 	{
 		if(!$smiliecount)
 		{
@@ -5148,8 +5187,8 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  *
  * @param string $name The name of the menu
  * @param int $selected The ID of the selected theme
- * @param int $tid The ID of the parent theme to select from
- * @param string $depth The current selection depth
+ * @param int $tid The ID of the parent theme to select from (deprecated)
+ * @param string $depth The current selection depth (deprecated)
  * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
  * @param boolean $footer Whether or not theme select is in the footer (true if it is)
  * @param boolean $count_override Whether or not to override output based on theme count (true to override)
@@ -5157,18 +5196,14 @@ function get_current_location($fields = false, $ignore = array(), $quick = false
  */
 function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $usergroup_override = false, $footer = false, $count_override = false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $num_themes, $themeselect_options;
+	global $db, $tcache, $lang, $num_themes, $themeselect_options;
 
-	if($tid == 0)
+	$num_themes = 0;
+	$themeselect_options = [];
+
+	if(!isset($lang->use_default))
 	{
-		$tid = 1;
-		$num_themes = 0;
-		$themeselect_options = [];
-
-		if(!isset($lang->use_default))
-		{
-			$lang->use_default = $lang->lang_select_default;
-		}
+		$lang->use_default = $lang->lang_select_default;
 	}
 
 	if(!is_array($tcache))
@@ -5177,35 +5212,24 @@ function build_theme_select($name, $selected = -1, $tid = 0, $depth = "", $userg
 
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
+			$tcache[$theme['tid']] = $theme;
 		}
 	}
 
-	if(is_array($tcache[$tid]))
+	if(is_array($tcache))
 	{
-		foreach($tcache[$tid] as $theme)
+		foreach($tcache as $theme)
 		{
 			// Show theme if allowed, or if override is on
 			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
-
-				if($theme['pid'] != 0)
-				{
-					$theme['depth'] = $depth;
-					$themeselect_options[] = $theme;
-					++$num_themes;
-					$depthit = $depth."--";
-				}
-
-				if(array_key_exists($theme['tid'], $tcache))
-				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
-				}
+				$themeselect_options[] = $theme;
+				++$num_themes;
 			}
 		}
 	}
 
-	if($tid == 1 && ($num_themes > 1 || $count_override == true))
+	if($num_themes > 1 || $count_override == true)
 	{
 		return \MyBB\View\template('@frontend/misc/themeselect.twig', [
 			'footer' => $footer,
@@ -5232,7 +5256,7 @@ function get_theme($tid)
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+		$query = $db->simple_select('themes', 'tid, name, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5916,10 +5940,14 @@ function get_event_date($event)
  * @param int $uid The user id of the profile.
  * @return string The url to the profile.
  */
-function get_profile_link($uid = 0)
+function get_profile_link(int $uid = 0) : string
 {
-	$link = str_replace("{uid}", $uid, PROFILE_URL);
-	return htmlspecialchars_uni($link);
+	$link = PROFILE_URL;
+	$replacements = [
+		'{uid}' => urlencode($uid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -5928,10 +5956,14 @@ function get_profile_link($uid = 0)
  * @param int $aid The announement id of the announcement.
  * @return string The url to the announcement.
  */
-function get_announcement_link($aid = 0)
+function get_announcement_link(int $aid = 0) : string
 {
-	$link = str_replace("{aid}", $aid, ANNOUNCEMENT_URL);
-	return htmlspecialchars_uni($link);
+	$link = ANNOUNCEMENT_URL;
+	$replacements = [
+		'{aid}' => urlencode($aid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -5981,19 +6013,20 @@ function build_profile_link($username = "", $uid = 0, $target = "", $onclick = "
  * @param int $page (Optional) The page number of the forum.
  * @return string The url to the forum.
  */
-function get_forum_link($fid, $page = 0)
+function get_forum_link(int $fid, int $page = 0) : string
 {
-	if($page > 0)
+	$link = FORUM_URL;
+	$replacements = [
+		'{fid}' => urlencode($fid),
+	];
+
+    if($page > 0)
 	{
-		$link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-		$link = str_replace("{page}", $page, $link);
-		return htmlspecialchars_uni($link);
-	}
-	else
-	{
-		$link = str_replace("{fid}", $fid, FORUM_URL);
-		return htmlspecialchars_uni($link);
-	}
+        $link = FORUM_URL_PAGED;
+        $replacements['{page}'] = urlencode($page);
+    }
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6004,37 +6037,26 @@ function get_forum_link($fid, $page = 0)
  * @param string $action (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
-function get_thread_link($tid, $page = 0, $action = '')
+function get_thread_link(int $tid, int $page = 0, string $action = '') : string
 {
-	if($page > 1)
+	$link = THREAD_URL;
+	$replacements = [
+		'{tid}' => urlencode($tid),
+	];
+
+	if($action)
 	{
-		if($action)
-		{
-			$link = THREAD_URL_ACTION;
-			$link = str_replace("{action}", $action, $link);
-		}
-		else
-		{
-			$link = THREAD_URL_PAGED;
-		}
-		$link = str_replace("{tid}", $tid, $link);
-		$link = str_replace("{page}", $page, $link);
-		return htmlspecialchars_uni($link);
+		$link = THREAD_URL_ACTION;
+		$replacements['{action}'] = urlencode($action);
 	}
-	else
+
+	if($page > 1 && empty($action))
 	{
-		if($action)
-		{
-			$link = THREAD_URL_ACTION;
-			$link = str_replace("{action}", $action, $link);
-		}
-		else
-		{
-			$link = THREAD_URL;
-		}
-		$link = str_replace("{tid}", $tid, $link);
-		return htmlspecialchars_uni($link);
+		$link = THREAD_URL_PAGED;
+		$replacements['{page}'] = urlencode($page);
 	}
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6044,19 +6066,20 @@ function get_thread_link($tid, $page = 0, $action = '')
  * @param int $tid The thread id of the post.
  * @return string The url to the post.
  */
-function get_post_link($pid, $tid = 0)
+function get_post_link(int $pid, int $tid = 0) : string
 {
-	if($tid > 0)
+	$link = POST_URL;
+	$replacements = [
+		'{pid}' => urlencode($pid),
+	];
+
+    if($tid > 0)
 	{
-		$link = str_replace("{tid}", $tid, THREAD_URL_POST);
-		$link = str_replace("{pid}", $pid, $link);
-		return htmlspecialchars_uni($link);
-	}
-	else
-	{
-		$link = str_replace("{pid}", $pid, POST_URL);
-		return htmlspecialchars_uni($link);
-	}
+        $link = THREAD_URL_POST;
+        $replacements['{tid}'] = urlencode($tid);
+    }
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6065,10 +6088,14 @@ function get_post_link($pid, $tid = 0)
  * @param int $eid The event ID of the event
  * @return string The URL of the event
  */
-function get_event_link($eid)
+function get_event_link(int $eid) : string
 {
-	$link = str_replace("{eid}", $eid, EVENT_URL);
-	return htmlspecialchars_uni($link);
+	$link = EVENT_URL;
+	$replacements = [
+		'{eid}' => urlencode($eid),
+	];
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6080,31 +6107,28 @@ function get_event_link($eid)
  * @param int $day The day (optional)
  * @return string The URL of the calendar
  */
-function get_calendar_link($calendar, $year = 0, $month = 0, $day = 0)
+function get_calendar_link(int $calendar, int $year = 0, int $month = 0, int $day = 0)
 {
+	$link = CALENDAR_URL;
+	$replacements = [
+		'{calendar}' => urlencode($calendar),
+	];
+
 	if($day > 0)
 	{
-		$link = str_replace("{month}", $month, CALENDAR_URL_DAY);
-		$link = str_replace("{year}", $year, $link);
-		$link = str_replace("{day}", $day, $link);
-		$link = str_replace("{calendar}", $calendar, $link);
-		return htmlspecialchars_uni($link);
+		$link = CALENDAR_URL_DAY;
+		$replacements['{month}'] = urlencode($month);
+		$replacements['{day}'] = urlencode($day);
+		$replacements['{year}'] = urlencode($year);
 	}
 	elseif($month > 0)
 	{
-		$link = str_replace("{month}", $month, CALENDAR_URL_MONTH);
-		$link = str_replace("{year}", $year, $link);
-		$link = str_replace("{calendar}", $calendar, $link);
-		return htmlspecialchars_uni($link);
+		$link = CALENDAR_URL_MONTH;
+		$replacements['{month}'] = urlencode($month);
+		$replacements['{year}'] = urlencode($year);
 	}
-	/* Not implemented
-    elseif ($year > 0) {
-    }*/
-	else
-	{
-		$link = str_replace("{calendar}", $calendar, CALENDAR_URL);
-		return htmlspecialchars_uni($link);
-	}
+
+	return strtr($link, $replacements);
 }
 
 /**
@@ -6114,15 +6138,16 @@ function get_calendar_link($calendar, $year = 0, $month = 0, $day = 0)
  * @param int $week The week
  * @return string The URL of the calendar
  */
-function get_calendar_week_link($calendar, $week)
+function get_calendar_week_link(int $calendar, int $week) : string
 {
-	if($week < 0)
-	{
-		$week = str_replace('-', "n", $week);
-	}
-	$link = str_replace("{week}", $week, CALENDAR_URL_WEEK);
-	$link = str_replace("{calendar}", $calendar, $link);
-	return htmlspecialchars_uni($link);
+    $week = $week < 0 ? 'n' . abs($week) : (string)$week;
+	$link = CALENDAR_URL_WEEK;
+    $replacements = [
+        '{calendar}' => urlencode($calendar),
+        '{week}' => urlencode($week),
+    ];
+
+    return strtr($link, $replacements);
 }
 
 /**
@@ -8437,7 +8462,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	$ip_address = my_inet_pton($ip_address);
 
 	$insert_array = array(
-		'username' => $db->escape_string($username),
+		'username' => $db->escape_string(my_substr($username, 0, 120)),
 		'email' => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline' => (int)TIME_NOW,

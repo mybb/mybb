@@ -3,7 +3,7 @@
     &__legend {
 
         .smilie-list__name {
-            margin-#{$left}: 64px;
+            margin-#{$left}: var(--spacing-7);
         }
     }
 
@@ -16,7 +16,7 @@
 
         .smilie-list__name {
             flex: 1 0 auto;
-            margin-#{$left}: 14px;
+            margin-#{$left}: var(--spacing-4);
         }
 
         .smilie-list__replace {
@@ -24,7 +24,7 @@
             text-align: $right;
 
             &--no-name {
-                margin-#{$left}: 14px;
+                margin-#{$left}: var(--spacing-4);
                 text-align: $left;
             }
         }

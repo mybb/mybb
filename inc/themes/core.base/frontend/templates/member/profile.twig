@@ -7,9 +7,7 @@
 {% block body %}
     <div class="profile">
         <header class="page-header profile__header">
-            {% if memprofile.useravatar %}
-                <img src="{{ memprofile.avatar_image }}" alt="" {{ memprofile.avatar_width_height }} class="avatar" />
-            {% endif %}
+            {{ render_avatar(url=memprofile.avatar, alt=memprofile.username, class='avatar--large') }}
             <h1 class="profile__username">{{ memprofile.formattedname|raw }}</h1>
             <p class="profile__usertitle">{{ memprofile.user_title }}</p>
             {% if memprofile.groupimage %}
@@ -180,10 +178,12 @@
                         {% endif %}
                     </div>
                 {% endif %}
+                {% if memprofile.showtimespentonline or memprofile.uid == mybb.user.uid or mybb.usergroup.cancp %}
                 <div class="row row--profile-field profile-field">
                     <h4 class="profile-field__name">{{ lang.timeonline }}</h4>
                     <p class="profile-field__value">{{ memprofile.time_online }}</p>
                 </div>
+                {% endif %}
                 <div class="row row--profile-field profile-field">
                     <h4 class="profile-field__name">{{ lang.postbit_status }}</h4>
                     <p class="profile-field__value">

@@ -1,7 +1,7 @@
 <form action="{{ mybb.settings.bburl }}/search.php" id="search" class="global-search">
     <input type="checkbox" id="show-mobile-search" class="global-search__checkbox">
-    <label for="show-mobile-search" class="global-search__mobile-search-button">{{ include('partials/icon.twig', {icon: 'search'}, with_context = false) }}</label>
-    <label for="show-mobile-search" class="global-search__mobile-search-close-button">{{ include('partials/icon.twig', {icon: 'times-circle'}, with_context = false) }}</label>
+    <label for="show-mobile-search" class="global-search__mobile-search-button">{{ include('partials/icon.twig', {icon: 'search fa-fw'}, with_context = false) }}</label>
+    <label for="show-mobile-search" class="global-search__mobile-search-close-button">{{ include('partials/icon.twig', {icon: 'times-circle fa-fw'}, with_context = false) }}</label>
     <input type="hidden" name="action" value="do_search" />
     <input type="hidden" name="postthread" value="1" />
     <div class="global-search__container">
@@ -14,7 +14,8 @@
                 </button>
                 <a href="{{ mybb.settings.bburl }}/search.php" class="global-search__advanced" title="{{ lang.advanced_search }}">
                     {{ include('partials/icon.twig', {icon: 'cog'}, with_context = false) }}
-                    <span class="visually-hidden">{{ lang.advanced_search }}</span></a>
+                    <span class="visually-hidden">{{ lang.advanced_search }}</span>
+                </a>
             </span>
         </label>
     </div>

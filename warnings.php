@@ -74,7 +74,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		'custom_reason' => $mybb->get_input('custom_reason'),
 		'custom_points' => $mybb->get_input('custom_points', MyBB::INPUT_INT),
 		'expires' => $mybb->get_input('expires', MyBB::INPUT_INT),
-		'expires_period' => $mybb->get_input('expires_period')
+		'expires_period' => $mybb->get_input('expires_period'),
+		'requiresacknowledgement' => $mybb->get_input('requiresacknowledgement', MyBB::INPUT_INT)
 	);
 
 	// Is this warning being given for a post?
@@ -331,6 +332,7 @@ if($mybb->input['action'] == "warn")
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_add_warning);
 
@@ -580,11 +582,13 @@ if($mybb->input['action'] == "view")
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	if(!empty($user['uid']))
 	{
+		add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
 	}
 	else
 	{
+		add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 		add_breadcrumb($lang->nav_profile);
 		add_breadcrumb($lang->nav_warning_log);
 	}
@@ -692,6 +696,7 @@ if(!$mybb->input['action'])
 
 	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+	add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 

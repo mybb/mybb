@@ -193,24 +193,24 @@
                             <label><input type="checkbox" name="suspendsignature" value="1"{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %} checked{% endif %} class="checkbox" onclick="toggleAction();" /> {{ lang.suspend_signature }}</label>
                         </p>
                         <div class="field__block" id="suspend_action">
-                            {% if user.suspensiontime %}
+                            {% if user.suspendsigtime %}
                                 <p class="field__value">
-                                    {% if user.suspensiontime == 0 %}
+                                    {% if user.suspendsigtime == 0 %}
                                         {{ lang.suspendsignature_perm }}
                                     {% else %}
-                                        {{ trans('suspendsignature_for', user.suspensiontime|my_date) }}
+                                        {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
                                     {% endif %}
                                 </p>
                             {% endif %}
                             <div class="field__block">
                                 {{ lang.suspost_length }}
                                 &nbsp;
-                                <input type="text" name="suspost_time" value="{{ mybb.input.action_time }}" class="textbox textbox--small" />
+                                <input type="text" name="suspendsignature_time" value="{{ mybb.input.suspendsignature_time }}" class="textbox textbox--small" />
                                 <div class="select-field">
                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                    <select name="suspost_period">
+                                    <select name="suspendsignature_period">
                                         {% for key, value in periods %}
-                                            <option value="{{ key }}"{% if key == mybb.input.action_period %} selected{% endif %}>{{ value }}</option>
+                                            <option value="{{ key }}"{% if key == mybb.input.suspendsignature_period %} selected{% endif %}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -274,6 +274,8 @@
         <!--
             var mod_posts = '{% if user.moderateposts or (mybb.input.moderateposting and errors) %}1{% else %}0{% endif %}';
             var susp_posts = '{% if user.suspendposting or (mybb.input.suspendposting and errors) %}1{% else %}0{% endif %}';
+            var susp_pms = '{% if user.suspendpm or (mybb.input.suspendpm and errors) %}1{% else %}0{% endif %}';
+            var susp_avatar = '{% if user.suspendavatar or (mybb.input.suspendavatar and errors) %}1{% else %}0{% endif %}';
             var sig_checked = '{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %}1{% else %}0{% endif %}';
             if(mod_posts == 0)
             {
@@ -283,6 +285,16 @@
             if(susp_posts == 0)
             {
                 $("#susposts_action").hide();
+            }
+
+            if(susp_pms == 0)
+            {
+                $("#suspms_action").hide();
+            }
+
+            if(susp_avatar == 0)
+            {
+                $("#suspendavatars_action").hide();
             }
 
             if(sig_checked == 0)
@@ -319,6 +331,30 @@
                     } else {
                         $("#suspost").attr("checked", true);
                         $("#susposts_action").show();
+                    }
+                }
+
+                if(action == "suspms")
+                {
+                    if($("#suspm").prop("checked") == false)
+                    {
+                        $("#suspm").attr("checked", false);
+                        $("#suspms_action").hide();
+                    } else {
+                        $("#suspm").attr("checked", true);
+                        $("#suspms_action").show();
+                    }
+                }
+
+                if(action == "suspendavatars")
+                {
+                    if($("#suspendavatar").prop("checked") == false)
+                    {
+                        $("#suspendavatar").attr("checked", false);
+                        $("#suspendavatars_action").hide();
+                    } else {
+                        $("#suspendavatar").attr("checked", true);
+                        $("#suspendavatars_action").show();
                     }
                 }
             }

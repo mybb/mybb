@@ -2169,19 +2169,10 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="smilieinsertercols">
-			<title>No. of Smilie Cols to Show</title>
-			<description><![CDATA[Enter the number of columns you wish to show on the clickable smilie inserter.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
-			<settingvalue><![CDATA[4]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="allowbasicmycode">
 			<title>Allow Basic MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
-			<disporder>6</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2189,7 +2180,7 @@ min=1]]></optionscode>
 		<setting name="allowcolormycode">
 			<title>Allow Color MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Color MyCode.]]></description>
-			<disporder>7</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2197,7 +2188,7 @@ min=1]]></optionscode>
 		<setting name="allowsizemycode">
 			<title>Allow Size MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Size MyCode]]></description>
-			<disporder>8</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2205,7 +2196,7 @@ min=1]]></optionscode>
 		<setting name="allowfontmycode">
 			<title>Allow Font MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Font MyCode.]]></description>
-			<disporder>9</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2213,7 +2204,7 @@ min=1]]></optionscode>
 		<setting name="allowlinkmycode">
 			<title>Allow Link MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the URL MyCode.]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2221,7 +2212,7 @@ min=1]]></optionscode>
 		<setting name="allowautourl">
 			<title>Automatically Parse URLs Into Links</title>
 			<description><![CDATA[Setting this to Yes will parse URLs as links.]]></description>
-			<disporder>11</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2229,7 +2220,7 @@ min=1]]></optionscode>
 		<setting name="allowemailmycode">
 			<title>Allow Email MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Email MyCode.]]></description>
-			<disporder>12</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2237,7 +2228,7 @@ min=1]]></optionscode>
 		<setting name="allowalignmycode">
 			<title>Allow Alignment MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Align MyCode.]]></description>
-			<disporder>13</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2245,7 +2236,7 @@ min=1]]></optionscode>
 		<setting name="allowlistmycode">
 			<title>Allow List MyCode</title>
 			<description><![CDATA[Setting this to Yes allows users to use the List MyCode.]]></description>
-			<disporder>14</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2253,7 +2244,7 @@ min=1]]></optionscode>
 		<setting name="allowcodemycode">
 			<title>Allow Code MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the Code and PHP MyCodes.]]></description>
-			<disporder>15</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2261,7 +2252,7 @@ min=1]]></optionscode>
 		<setting name="allowsymbolmycode">
 			<title>Allow Symbol MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
-			<disporder>16</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2269,7 +2260,7 @@ min=1]]></optionscode>
 		<setting name="allowmemycode">
 			<title>Allow Me MyCodes</title>
 			<description><![CDATA[Setting this to Yes allows users to use the /me and /slap MyCodes.]]></description>
-			<disporder>17</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2277,7 +2268,7 @@ min=1]]></optionscode>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted images to guests. If No, a link will be shown instead.]]></description>
-			<disporder>18</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2285,7 +2276,7 @@ min=1]]></optionscode>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
 			<description><![CDATA[Setting this to Yes will parse posted videos to guests. If No, a link will be shown instead.]]></description>
-			<disporder>19</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

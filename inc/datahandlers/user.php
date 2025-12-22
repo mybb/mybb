@@ -662,6 +662,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'pmnotice', 1);
 		$this->verify_yesno_option($options, 'pmnotify', 1);
 		$this->verify_yesno_option($options, 'invisible', 0);
+		$this->verify_yesno_option($options, 'showtimespentonline', 1);
 		$this->verify_yesno_option($options, 'showimages', 1);
 		$this->verify_yesno_option($options, 'showvideos', 1);
 		$this->verify_yesno_option($options, 'showsigs', 1);
@@ -1167,6 +1168,7 @@ class UserDataHandler extends DataHandler
 			"tpp" => (int)$user['options']['tpp'],
 			"ppp" => (int)$user['options']['ppp'],
 			"invisible" => (int)$user['options']['invisible'],
+			"showtimespentonline" => (int)$user['options']['showtimespentonline'],
 			"style" => (int)$user['style'],
 			"timezone" => $db->escape_string($user['timezone']),
 			"dstcorrection" => (int)$user['options']['dstcorrection'],

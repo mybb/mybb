@@ -38,8 +38,8 @@
     max-width: 400px;
     text-align: left;
     vertical-align: middle;
-    background: $background-default;
-    border-radius: $radius + 1;
+    background: var(--background-default);
+    border-radius: calc(var(--border-radius) + 1px);
     box-shadow: 0 0 4px #000;
 
 
@@ -64,18 +64,18 @@
         width: 26px;
         height: 26px;
         font-size: 16px;
-        line-height: 1.4;
-        color: $invert-font-color;
+        line-height: var(--line-height-small);
+        color: var(--invert-font-color);
         text-align: center;
         text-decoration: none;
         vertical-align: middle;
-        background: $dark-background-1;
-        border: 2px solid $invert-font-color;
+        background: var(--header-background);
+        border: 2px solid var(--invert-font-color);
         border-radius: 15px;
         box-shadow: 0 1px 4px #000;
 
         &:hover {
-            background: $danger-color;
+            background: var(--danger-color);
         }
 
         &__text {

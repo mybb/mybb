@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace MyBB\View\Runtime;
 
+use InvalidArgumentException;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Exception as ViewException;
-use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\Locator;
+use MyBB\View\Locator\StaticLocator;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\ResourceType;
+use MyBB\View\Viewlet\Decorator\CompositeViewlet;
+use MyBB\View\Viewlet\Decorator\PublishableViewlet;
+use MyBB\View\Viewlet\ViewletInterface;
 use SplObjectStorage;
 
 use function MyBB\View\template;
 
-trait AssetManagementTrait
+/**
+ * Manages the attaching and insertion of Assets using the given Viewlet.
+ */
+class AssetManager
 {
     /**
      * Types that can be attached for managed insertion into the DOM.
@@ -80,6 +87,22 @@ trait AssetManagementTrait
      * Whether attached Asset information has been populated from Viewlet declarations.
      */
     private bool $attachedAssetsPopulatedFromViewlet = false;
+
+    /**
+     * @param ViewletInterface & CompositeViewlet & PublishableViewlet $viewlet
+     */
+    public function __construct(
+        private readonly ViewletInterface $viewlet,
+    ) {
+        if (
+            !CompositeViewlet::decorates($viewlet) ||
+            !PublishableViewlet::decorates($viewlet)
+        ) {
+            throw new InvalidArgumentException('CompositeViewlet, PublishableViewlet required for `' . static::class . '`');
+        }
+
+        $this->assetProperties = new SplObjectStorage();
+    }
 
     /**
      * Whether the given Asset attaching conditions are satisfied in the given context.

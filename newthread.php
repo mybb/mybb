@@ -643,7 +643,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$newthread['postoptions'] = array('signature' => false, 'disablesmilies' => false);
-	$newthread['subscriptionmethod'] = array('dont' => false, 'none' => false, 'email' => false, 'pm' => false);
 	$newthread['postpollchecked'] = false;
 
 	// Check the various post options if we're
@@ -665,8 +664,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$newthread['postoptions']['disablesmilies'] = true;
 		}
 
-		$subscription_method = get_subscription_method($tid, $postoptions);
-		$newthread['subscriptionmethod'][$subscription_method] = true;
+		$newthread['subscriptionmethod'] = get_subscription_method($tid, $postoptions);
 
 		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
 		{
@@ -696,8 +694,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		$newthread['numpolloptions'] = 2;
 
-		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
-		$newthread['subscriptionmethod'][$subscription_method] = true;
+		$newthread['subscriptionmethod'] = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 	}
 	else
 	{
@@ -707,8 +704,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$newthread['postoptions']['signature'] = true;
 		}
 
-		$subscription_method = get_subscription_method($tid); // Fresh thread, let the function set the appropriate method
-		$newthread['subscriptionmethod'][$subscription_method] = true;
+		$newthread['subscriptionmethod'] = get_subscription_method($tid); // Fresh thread, let the function set the appropriate method
 
 		$newthread['numpolloptions'] = 2;
 	}

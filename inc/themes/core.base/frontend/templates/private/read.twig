@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    {% if mybb.settings.pmquickreply and mybb.user.showquickreply and mybb.usergroup.cansendpms and pm.fromid != 0 and pm.folder != 3 %}
+    {% if mybb.settings.pmquickreply and mybb.user.showquickreply and mybb.usergroup.cansendpms and pm.fromid != 0 and pm.folder != 3 and mybb.user.suspendpm == 0 %}
         <div class="post post--reply post--quick-reply compose compose--quick-reply quick-reply" id="post-reply">
             <form action="private.php" method="post" name="input">
                 <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />

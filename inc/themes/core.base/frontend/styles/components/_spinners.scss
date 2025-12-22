@@ -2,9 +2,9 @@
 
     &__icon {
         display: block;
-        margin: side-values(10px auto 25px auto);
-        font-size: 1.4em;
-        color: $alt-font-color-1;
+        margin: side-values(var(--spacing-4) auto var(--spacing-6) auto);
+        font-size: var(--font-size-larger);
+        color: var(--alt-font-color-1);
 
         .fa-spin {
             display: block;

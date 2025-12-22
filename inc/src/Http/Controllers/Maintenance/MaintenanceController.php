@@ -77,7 +77,7 @@ class MaintenanceController
     {
         $results = null;
 
-        $latestVersionDetails = \MyBB\Maintenance\getLatestVersionDetails();
+        $latestVersionDetails = \MyBB\Maintenance\fetchLatestVersionDetails();
 
         if (isset($latestVersionDetails['latest_version'])) {
             $results = [

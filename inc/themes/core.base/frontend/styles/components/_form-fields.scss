@@ -2,29 +2,28 @@
 
     &__name {
         padding: 0;
-        margin: side-values(0 0 5px 0);
-        font-size: 1em;
+        margin: side-values(0 0 var(--spacing-2) 0);
+        font-size: var(--font-size-regular);
     }
 
     &__description {
-        margin: side-values(-4px 0 4px 0);
-        font-size: 0.8em;
-        line-height: 1.4;
-        color: $alt-font-color-1;
+        margin: side-values(0 0 var(--spacing-3) 0);
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-1);
 
         &--below {
-            margin-top: 8px;
+            margin-top: var(--spacing-3);
             margin-bottom: 0;
         }
     }
 
     &__value {
         margin: 0;
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
     }
 
     &__block {
-        margin-top: 5px;
+        margin-top: var(--spacing-2);
     }
 
     label {
@@ -33,9 +32,9 @@
 }
 
 .option-field {
-    padding: side-values(0 0 0 30px);
-    margin-top: 5px;
-    margin-bottom: 10px;
+    padding: side-values(0 0 0 var(--spacing-7));
+    margin-top: var(--spacing-2);
+    margin-bottom: var(--spacing-4);
 
     &:last-child,
     &--single {
@@ -46,12 +45,12 @@
     input[type="radio"],
     input[type="checkbox"] {
         float: $left;
-        margin: side-values(4px 0 0 -26px);
+        margin: side-values(var(--spacing-2) 0 0 calc(-1 * var(--spacing-7)));
     }
 
     &__name {
         margin: 0;
-        font-size: 1em;
+        font-size: var(--font-size-regular);
 
         &--inline {
             display: inline-block;
@@ -64,16 +63,15 @@
 
     &__description {
         @extend .field__description;
-        margin-top: 1px;
 
         &--inline {
             display: inline-block;
-            margin-#{$left}: 3px;
+            margin-#{$left}: var(--spacing-2);
         }
     }
 
     &__field {
-        margin-top: 5px;
+        margin-top: var(--spacing-2);
     }
 
     label {
@@ -81,15 +79,15 @@
     }
 
     &--compact {
-        padding: side-values(0 0 0 30px);
-        margin: 8px 0;
-        font-size: 0.9em;
+        padding: side-values(0 0 0 var(--spacing-7));
+        margin: var(--spacing-3) 0;
+        font-size: var(--font-size-small);
 
         .option-field__input,
         input[type="checkbox"],
         input[type="radio"] {
             float: $left;
-            margin: side-values(4px 0 0 -26px);
+            margin: side-values(var(--spacing-2) 0 0 calc(-1 * var(--spacing-7)));
         }
 
         &:last-child {
@@ -100,12 +98,12 @@
 
 .textbox {
     box-sizing: border-box;
-    padding: 5px 6px;
+    padding: var(--spacing-2) var(--spacing-3);
     width: 100%;
-    font-size: 16px;
-    background-color: $background-default;
-    border: 1px solid $border-2;
-    border-radius: 4px;
+    font-size: var(--font-size-regular);
+    background-color: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-2);
+    border-radius: var(--border-radius);
     outline: 0;
     -webkit-appearance: none;
        -moz-appearance: none;
@@ -113,31 +111,31 @@
 
     &--short {
         width: 60px;
-        font: 12px $font-stack;
+        font: var(--font-size-smaller) var(--font-stack);
     }
 
     &--small {
         width: 60px;
-        margin-#{$right}: 6px;
+        margin-#{$right}: var(--spacing-3);
     }
 
     &--medium {
         width: 100px;
-        margin-#{$right}: 6px;
+        margin-#{$right}: var(--spacing-3);
     }
 
     &--large {
         width: 250px;
-        margin-#{$right}: 6px;
+        margin-#{$right}: var(--spacing-3);
     }
 
     &--subject {
-        font-size: 1.4em;
+        font-size: var(--font-size-larger);
     }
 
     &--inline {
-        margin-#{$left}: 6px;
-        margin-#{$right}: 6px;
+        margin-#{$left}: var(--spacing-3);
+        margin-#{$right}: var(--spacing-3);
     }
 
     &--no-margin {
@@ -150,8 +148,8 @@ select {
     &[multiple="multiple"] {
         width: 100%;
         height: 200px;
-        border: 1px solid $border-2;
-        border-radius: $radius;
+        border: var(--border-width-base) solid var(--border-color-2);
+        border-radius: var(--border-radius);
 
         &:focus {
             outline: none;
@@ -165,17 +163,17 @@ select {
     width: auto;
     max-width: 100%;
     padding: 0;
-    margin: side-value(0 6px 0 0);
+    margin: side-value(0 var(--spacing-3) 0 0);
     overflow: hidden;
-    background-color: $background-default;
-    border: 1px solid $border-2;
-    border-radius: $radius;
+    background-color: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-2);
+    border-radius: var(--border-radius);
 
     select {
         position: relative;
         z-index: 100;
         max-width: 100%;
-        padding: side-values(5px 30px 5px 8px);
+        padding: side-values(var(--spacing-2) var(--spacing-7) var(--spacing-2) var(--spacing-3));
         background-color: transparent;
         background-image: none;
         border: none;
@@ -191,19 +189,19 @@ select {
 
     &__icon {
         position: absolute;
-        top: 9px;
-        #{$right}: 8px;
+        top: var(--spacing-3);
+        #{$right}: var(--spacing-3);
         z-index: 1;
-        color: $alt-font-color-2;
-        font-size: 14px;
+        color: var(--alt-font-color-2);
+        font-size: var(--font-size-small);
     }
 
     &--subject {
-        padding: 4px 0;
-        margin-bottom: 10px;
+        padding: var(--spacing-2) 0;
+        margin-bottom: var(--spacing-4);
 
         .select-field__icon {
-            top: 13px;
+            top: var(--spacing-4);
         }
 
         @include bp-small {
@@ -215,16 +213,16 @@ select {
         padding: 0;
 
         .select-field__icon {
-            top: 6px;
+            top: var(--spacing-2);
         }
 
         select {
-            font-size: 12px;
+            font-size: var(--font-size-smaller);
         }
     }
 
     &--inline {
-        margin-#{$left}: 6px;
+        margin-#{$left}: var(--spacing-2);
     }
 }
 
@@ -232,39 +230,38 @@ select {
 input {
 
     &.error {
-        border-color: $danger-color;
+        border-color: var(--danger-color);
     }
 
     &.valid {
-        border-color: $success-color;
+        border-color: var(--success-color);
     }
 }
 
 // registration form error message
 label.error {
-	color: $danger-color;
-	font-size: 0.8em;
-	padding: 3px 0 0 0;
+	color: var(--danger-color);
+	font-size: var(--font-size-smaller);
+	padding: var(--spacing-2) 0 0 0;
 	display: block;
 }
 
 textarea {
-    background-color: $background-default;
-    border: 1px solid $border-2;
-    padding: 6px;
+    background-color: var(--background-default);
+    border: var(--border-width-base) solid var(--border-color-2);
+    padding: var(--spacing-2);
     width: 100%;
-    // font-size: 0.9em;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     outline: 0;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     box-sizing: border-box;
 }
 
 .file-wrapper {
-    background: $background-1;
-    padding: 12px;
-    border-radius: $radius;
-    margin-bottom: 5px;
+    background: var(--background-1);
+    padding: var(--spacing-4);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-2);
 }
 
 .confirm-field {
@@ -276,7 +273,7 @@ textarea {
     }
 
     &__field {
-        margin-bottom: 8px;
+        margin-bottom: var(--spacing-3);
 
         @include bp-medium {
             width: 49%;
@@ -286,10 +283,10 @@ textarea {
 }
 
 .segmented-control {
-    border: 1px solid $border-2;
-    font-size: 0.8em;
+    border: var(--border-width-base) solid var(--border-color-2);
+    font-size: var(--font-size-smaller);
     display: inline-block;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     vertical-align: top;
 
     &--block:before {
@@ -303,18 +300,18 @@ textarea {
 
     &__button {
         display: block;
-        padding: 7px 8px;
+        padding: calc(var(--spacing-3) - var(--border-width-base)) var(--spacing-3);
         margin: 0;
-        border-#{$left}: 1px solid $border-2;
-        border-#{$right}: 1px solid transparent;
+        border-#{$left}: var(--border-width-base) solid var(--border-color-2);
+        border-#{$right}: var(--border-width-base) solid transparent;
         position: relative;
         z-index: 10;
         cursor: pointer;
     }
 
     &__icon {
-        color: $alt-font-color-2;
-        margin-#{$right}: 4px;
+        color: var(--alt-font-color-2);
+        margin-#{$right}: var(--spacing-2);
     }
 
     &__input {
@@ -322,34 +319,34 @@ textarea {
         visibility: hidden;
 
         &:checked + .segmented-control__button {
-            background: $button-default;
-            color: $invert-font-color;
-            margin: -1px;
-            padding: 7px 9px;
-            border: 1px solid $button-default;
+            background: var(--button-default-color);
+            color: var(--invert-font-color);
+            margin: calc(-1 * var(--border-width-base));
+            padding: calc(var(--spacing-3) - var(--border-width-base)) calc(var(--spacing-3) + var(--border-width-base));
+            border: var(--border-width-base) solid var(--button-default-color);
             z-index: 15;
 
             .segmented-control__icon {
-                color: $invert-font-color;
+                color: var(--invert-font-color);
             }
         }
     }
 
     :first-child .segmented-control__button {
-        border-#{$left}: 1px solid transparent;
-        border-radius: corner-values($radius 0 0 $radius);
+        border-#{$left}: var(--border-width-base) solid transparent;
+        border-radius: corner-values(var(--border-radius) 0 0 var(--border-radius));
     }
 
     :last-child .segmented-control__button {
-        border-radius: corner-values(0 $radius $radius 0);
+        border-radius: corner-values(0 var(--border-radius) var(--border-radius) 0);
     }
 
     &--buttons {
         border: none;
-        margin-bottom: -4px;
+        margin-bottom: calc(-1 * var(--spacing-2));
 
         .segmented-control__button {
-            background: $background-1;
+            background: var(--background-1);
         }
 
         .segmented-control__button,
@@ -358,41 +355,41 @@ textarea {
         :last-child .segmented-control__button
         {
             border: none;
-            border-radius: $radius;
-            padding: 7px 8px;
-            margin: side-values(0 4px 4px 0);
+            border-radius: var(--border-radius);
+            padding: calc(--var(--spacing-3) - var(--border-width-base)) var(--spacing-3);
+            margin: side-values(0 var(--spacing-2) var(--spacing-2) 0);
         }
     }
 
     &--alt {
 
         .segmented-control__input:checked + .segmented-control__button {
-            background-color: $background-4;
-            border-color: $background-4;
-            color: $font-color;
+            background-color: var(--background-4);
+            border-color: var(--background-4);
+            color: var(--font-color);
         }
     }
 }
 
 .select-control {
-    font-size: 0.8em;
+    font-size: var(--font-size-smaller);
 
     &__option {
         display: block;
-        margin: side-values(0 0 5px 0);
+        margin: side-values(0 0 var(--spacing-2) 0);
         padding: 0;
     }
 
     &__button {
         display: block;
-        padding: 3px 8px;
-        margin: side-values(5px 10px 0 0);
-        background: $background-1;
+        padding: var(--spacing-2) var(--spacing-3);
+        margin: side-values(var(--spacing-2) var(--spacing-4) 0 0);
+        background: var(--background-1);
         cursor: pointer;
-        border-radius: 4px;
+        border-radius: var(--border-radius);
 
         &.icon:before {
-            @include black-transparency(0.4);
+            @include black-transparency(0.4); // TODO: assign color here?
         }
     }
 
@@ -401,10 +398,10 @@ textarea {
         visibility: hidden;
 
         &:checked + .select-control__button {
-            background: $background-4;
+            background: var(--background-4);
 
             &.icon:before {
-                @include black-transparency(0.6);
+                @include black-transparency(0.6); // TODO: assign color here?
             }
         }
     }
@@ -414,21 +411,21 @@ textarea {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    background: $background-1;
-    padding: side-values(12px 12px 4px 12px);
-    border-radius: $radius;
+    background: var(--background-1);
+    padding: side-values(var(--spacing-4) var(--spacing-4) var(--spacing-2) var(--spacing-4));
+    border-radius: var(--border-radius);
 
     &__item {
-        margin-bottom: 8px;
-        margin-#{$right}: 8px;
+        margin-bottom: var(--spacing-3);
+        margin-#{$right}: var(--spacing-3);
     }
 
     &__name {
         display: block;
         font-weight: normal;
-        font-size: 0.9em;
-        color: $alt-font-color-1;
-        margin: side-values(0 0 3px 0);
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
+        margin: side-values(0 0 var(--spacing-2) 0);
         padding: 0;
     }
 
@@ -446,13 +443,13 @@ textarea {
     }
 
     &__field {
-        margin-bottom: 10px;
+        margin-bottom: var(--spacing-4);
         flex-grow: 1;
         width: auto;
 
         @include bp-medium {
             margin-bottom: 0;
-            margin-#{$right}: 5px;
+            margin-#{$right}: var(--spacing-2);
         }
     }
 

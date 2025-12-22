@@ -51,7 +51,7 @@ foreach($foldersexploded as $key => $fid_and_name)
 		$folder['defaultname'] = get_pm_folder_name($folder['id']);
 	}
 
-	if($mybb->input['action'] == "empty")
+	if($mybb->get_input('action') === "empty")
 	{
 		$unread_cond2 = '';
 		if($folderinfo[0] == 1)
@@ -555,6 +555,17 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
+	if((int)$mybb->user['suspendpm'] === 1)
+	{
+		$suspendpmtype = $lang->error_suspend_pm_permanent;
+		if($mybb->user['suspendpmtime'])
+		{
+			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
+		}
+		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
+		error($lang->error_suspend_pm);
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
@@ -667,6 +678,17 @@ if($mybb->input['action'] == "send")
 		error_no_permission();
 	}
 
+	if((int)$mybb->user['suspendpm'] === 1)
+	{
+		$suspendpmtype = $lang->error_suspend_pm_permanent;
+		if($mybb->user['suspendpmtime'])
+		{
+			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
+		}
+		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
+		error($lang->error_suspend_pm);
+	}
+
 	$plugins->run_hooks("private_send_start");
 
 	$smilieinserter = $codebuttons = '';
@@ -721,6 +743,7 @@ if($mybb->input['action'] == "send")
 
 	// Preview
 	$sendpm['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['preview']))
 	{
 		$sendpm['preview'] = true;

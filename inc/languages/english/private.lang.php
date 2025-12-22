@@ -202,3 +202,8 @@ $l['quickreply_signature'] = "Signature";
 $l['quickreply_disable_smilies'] = "Disable Smilies";
 $l['quickreply_save_copy'] = "Save a Copy";
 $l['quickreply_read_receipt'] = "Request Read Receipt";
+
+$l['error_suspend_pm'] = "Your ability to send and receive private messages is currently suspended {1}.<br />
+Suspension Date: {2}";
+$l['error_suspend_pm_temporal'] = "until {1}";
+$l['error_suspend_pm_permanent'] = "permanently";

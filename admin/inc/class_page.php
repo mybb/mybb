@@ -930,7 +930,7 @@ EOF;
 		$emoticons_enabled = "false";
 		if($smilies)
 		{
-			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertertot'])
 			{
 				$emoticon = ",emoticon";
 			}
@@ -981,7 +981,7 @@ EOF;
 						$image = $mybb->settings['bburl']."/".$image;
 					}
 
-					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 					{
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}

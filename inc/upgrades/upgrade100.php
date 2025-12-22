@@ -54,8 +54,12 @@ function upgrade100_dbchanges()
             'package' => 'core.base',
             'name' => 'Base',
             'def' => '1',
-            'properties' => 'a:0:{}',
-            'stylesheets' => 'a:0:{}',
+            'properties' => my_serialize([
+                'templateset' => 0,
+                'editortheme' => 'mybb.css',
+                'disporder' => [],
+            ]),
+            'stylesheets' => my_serialize([]),
             'allowedgroups' => 'all',
         ]);
 
@@ -80,6 +84,26 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
+            }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
+            }
+
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "smallint NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "smallint NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
             // Update moved threads
@@ -117,6 +141,26 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
+            }
+
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0'");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
+            }
 
             // Update moved threads
             $db->query("
@@ -151,6 +195,26 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
             }
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
+            }
+
+            // Add new suspension columns
+            if (!$db->field_exists("suspendavatar", "users")) {
+                $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
+            }
+
+            if (!$db->field_exists("suspendavatartime", "users")) {
+                $db->add_column("users", "suspendavatartime", "int unsigned NOT NULL default '0' AFTER suspendavatar");
+            }
+
+            if (!$db->field_exists("suspendpm", "users")) {
+                $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendavatartime");
+            }
+
+            if (!$db->field_exists("suspendpmtime", "users")) {
+                $db->add_column("users", "suspendpmtime", "int unsigned NOT NULL default '0' AFTER suspendpm");
+            }
 
             // Update moved threads
             $db->query("
@@ -182,6 +246,7 @@ function upgrade100_dbchanges()
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
+    $db->delete_query("settings", "name='smilieinsertercols'");
 
     // Remove deprecated profile fields
     $db->delete_query("profilefields", "name='Skype'");
@@ -410,6 +475,38 @@ function upgrade100_check_constraints()
                 ");
             }
         }
+    }
+}
+
+function upgrade100_warnings_acknowledgements()
+{
+    global $db;
+
+    switch($db->type)
+    {
+        case 'pgsql':
+        case 'sqlite':
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+            }
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
+            }
+            break;
+        default:
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
+            }
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
+            }
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
+            }
+            break;
     }
 }
 

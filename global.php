@@ -312,79 +312,7 @@ $view->setContext([
 
 $view->setMainNamespace('frontend');
 
-
-$theme = $repository->getArray($theme_model);
-
-$theme = @array_merge((array)$theme, (array)my_unserialize($theme['properties']));
-
-// Are we linking to a remote theme server?
-if(my_validate_url($theme['imgdir']))
-{
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(!empty($mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
-}
-else
-{
-	$img_directory = $theme['imgdir'];
-
-	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-	{
-		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
-	}
-
-	if(!@is_dir($img_directory))
-	{
-		$theme['imgdir'] = 'images';
-	}
-
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
-
-	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
-	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
-}
-
-// Theme logo - is it a relative URL to the forum root? Append bburl
-if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
-{
-	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
-}
-
-// TODO initialize theme properties from package & load set values from DB
-$theme['editortheme'] = 'mybb.css';
-
+$theme = $view->getGlobalThemeArray();
 
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
@@ -716,6 +644,15 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	}
 	$headerMessages['pmnotice']['id'] = 'pm_notice';
 	$headerMessages['pmnotice']['class'] = 'pm_alert';
+}
+
+// Check if this user has unacknowledged warnings
+$warnings_count = (int)$mybb->user['unacknowledgedwarnings'];
+if($warnings_count > 0)
+{
+	$headerMessages['warningsnotice']['id'] = 'warning_notice';
+	$headerMessages['warningsnotice']['class'] = 'alert--danger';
+	$headerMessages['warningsnotice']['message'] = $lang->sprintf($lang->unacknowledged_warnings_notice, $warnings_count);
 }
 
 if(isset($mybb->user['avatartype']) && ($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])

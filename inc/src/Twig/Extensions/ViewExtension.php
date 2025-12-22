@@ -51,7 +51,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
     {
         return array_merge(
             [
-                'theme' => $GLOBALS['theme'],
+                'theme' => $this->view->getGlobalThemeArray(),
                 'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
             ],
         );
@@ -122,7 +122,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getAttachedAssets(string $type, bool $inserting = false): array
     {
-        return $this->view->getAttachedAssets(
+        return $this->view->assetManager->getAttachedAssets(
             ResourceType::from($type),
             $inserting,
         );
@@ -136,7 +136,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
     public function getLegacyStyles(): \Generator
     {
         // TODO: Optimise this function - it looks like it can be improved at a glance
-        $theme = $GLOBALS['theme'];
+        $theme = $this->view->getGlobalThemeArray();
 
         $alreadyLoaded = [];
 
@@ -145,9 +145,6 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
         }
 
         $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
-        if (!empty($theme['color'])) {
-            $stylesheetScripts[] = $theme['color'];
-        }
 
         $stylesheetActions = array("global");
         if (!empty($this->mybb->input['action'])) {

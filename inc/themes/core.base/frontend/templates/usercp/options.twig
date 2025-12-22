@@ -22,6 +22,7 @@
                 <div class="section__container">
                     <div class="row row--form field">
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if user.invisible %} checked{% endif %} /> {{ lang.invisible_mode }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showtimespentonline" id="showtimespentonline" value="1"{% if user.showtimespentonline %} checked{% endif %} /> {{ lang.show_time_spent_online }}</label></p>
                     </div>
                 </div>
             </section>
@@ -183,9 +184,9 @@
                         <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="threadmode" id="threadmode">
-                                <option value="">{{ lang.use_default }}</option>
+                                <option value=""{% if user.threadmode == '' %} selected{% endif %}>{{ lang.use_default }}</option>
                                 <option value="linear"{% if user.threadmode == 'linear' %} selected{% endif %}>{{ lang.linear }}</option>
-                                <option value="threaded"{% if user.threadmode != 'linear' %} selected{% endif %}>{{ lang.threaded }}</option>
+                                <option value="threaded"{% if user.threadmode == 'threaded' %} selected{% endif %}>{{ lang.threaded }}</option>
                             </select>
                         </div>
                     </div>
@@ -200,11 +201,14 @@
                     </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="sourceeditor">{{ lang.editor_mode }}</label></h3>
-                        <select name="sourceeditor" id="sourceeditor">
-                            <option value="0" {% if user.sourceeditor == 0 %} selected{% endif %}>{{ lang.use_default }}</option>
-                            <option value="1" {% if user.sourceeditor == 1 %} selected{% endif %}>{{ lang.editor_mode_source }}</option>
-                            <option value="2" {% if user.sourceeditor == 2 %} selected{% endif %}>{{ lang.editor_mode_wysiwyg }}</option>
-                        </select>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                            <select name="sourceeditor" id="sourceeditor">
+                                <option value="0" {% if user.sourceeditor == 0 %} selected{% endif %}>{{ lang.use_default }}</option>
+                                <option value="1" {% if user.sourceeditor == 1 %} selected{% endif %}>{{ lang.editor_mode_source }}</option>
+                                <option value="2" {% if user.sourceeditor == 2 %} selected{% endif %}>{{ lang.editor_mode_wysiwyg }}</option>
+                            </select>
+                        </div>
                     </div>
                     {% if stylelist %}
                         <div class="row row--form field">

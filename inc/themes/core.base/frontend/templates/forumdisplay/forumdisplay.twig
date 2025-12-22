@@ -36,7 +36,7 @@
                     {% for moderator in moderators.users %}
                         <a href="{{ moderator.profilelink|raw }}">{{ moderator.username|raw }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
                     {% endfor %}
-                    {% if moderators.groups %}{{ lang.comma }} {% endif %}
+                    {% if moderators.users and moderators.groups %}{{ lang.comma }} {% endif %}
                     {% for moderator in moderators.groups %}
                         {{ moderator.title }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
                     {% endfor %}
@@ -104,26 +104,24 @@
                 {# Sorting #}
                 {% set ascDesc %}
                     <span class="sort-threads__order">
-                        <a href="{{ sorting.url }}&amp;sortby={{ sorting.by }}&amp;order={{ sorting.oppsortnext }}">
-                            {% if sorting.oppsortnext == 'asc' %}
-                                {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: sorting.oppsort}, with_context = false) }}
-                            {% else %}
-                                {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: sorting.oppsort}, with_context = false) }}
-                            {% endif %}
-                        </a>
+                        {% if sorting.oppsortnext == 'desc' %}
+                            {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: sorting.oppsort}, with_context = false) }}
+                        {% else %}
+                            {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: sorting.oppsort}, with_context = false) }}
+                        {% endif %}
                     </span>
                 {% endset %}
 
             	<div class="sort-threads">
             		<div class="sort-threads__column sort-threads__column--primary">
-            			<a href="{{ sorting.url }}&amp;sortby=subject&amp;order=asc" class="sort-threads__link">{{ lang.thread }}</a> {% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %}
-                        <span class="sort-threads__author"> &mdash; <a href="{{ sorting.url }}&amp;sortby=starter&amp;order=asc" class="sort-threads__link">{{ lang.author }}</a> {% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}</span>
+            			<span class="sort-threads__subject"><a href="{{ sorting.url }}&amp;sortby=subject&amp;order={% if sorting.by == 'subject' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-threads__link sort-threads__link--subject">{{ lang.thread }}{% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %}</a></span>
+                        <span class="sort-threads__author">&mdash; <a href="{{ sorting.url }}&amp;sortby=starter&amp;order={% if sorting.by == 'starter' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-threads__link sort-threads__link--author">{{ lang.author }}{% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}</a></span>
             		</div>
             		<div class="sort-threads__column sort-threads__column--replies">
-            			<a href="{{ sorting.url }}&amp;sortby=replies&amp;order=desc" class="sort-threads__link">{{ lang.replies }}</a> {% if sorting.by == 'replies' %}{{ ascDesc }}{% endif %}
+            			<a href="{{ sorting.url }}&amp;sortby=replies&amp;order={% if sorting.by == 'replies' %}{{ sorting.oppsortnext }}{% else %}desc{% endif %}" class="sort-threads__link sort-threads__link--replies">{{ lang.replies }}{% if sorting.by == 'replies' %}{{ ascDesc }}{% endif %}</a>
             		</div>
             		<div class="sort-threads__column sort-threads__column--latest">
-            			<a href="{{ sorting.url }}&amp;sortby=lastpost&amp;order=desc" class="sort-threads__link">{{ lang.lastpost }}</a> {% if sorting.by == 'lastpost' %}{{ ascDesc }}{% endif %}
+            			<a href="{{ sorting.url }}&amp;sortby=lastpost&amp;order={% if sorting.by == 'lastpost' %}{{ sorting.oppsortnext }}{% else %}desc{% endif %}" class="sort-threads__link sort-threads__link--latest">{{ lang.lastpost }}{% if sorting.by == 'lastpost' %}{{ ascDesc }}{% endif %}</a>
             		</div>
                     {% if modpermissions.ismod %}
                         <span class="sort-threads__column sort-threads__column--checkbox">

@@ -34,13 +34,12 @@ if($mybb->input['action'] == "version_check")
 {
 	$plugins->run_hooks("admin_home_version_check_start");
 
-	$current_version = rawurlencode($mybb->version_code);
-
 	$updated_cache = array(
 		"last_check" => TIME_NOW
 	);
 
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	// Check for the latest version
+	$contents = \MyBB\Maintenance\fetchLatestVersionDetails();
 
 	if(!$contents)
 	{
@@ -54,13 +53,8 @@ if($mybb->input['action'] == "version_check")
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
 
-	$contents = trim($contents);
-
-	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
-
-	$latest_code = (int)$tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
+	$latest_code = (int)$contents['version_code'];
+	$latest_version = "<strong>".htmlspecialchars_uni($contents['latest_version'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
@@ -97,31 +91,15 @@ if($mybb->input['action'] == "version_check")
 		}
 	}
 
-	require_once MYBB_ROOT."inc/class_feedparser.php";
+	// Check for the latest news
+	$news = \MyBB\Maintenance\fetchLatestNews();
 
-	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
-
-	$updated_cache['news'] = array();
-
-	if($feed_parser->error == '')
+	if($news !== null)
 	{
-		require_once MYBB_ROOT . '/inc/class_parser.php';
-		$post_parser = new postParser();
+		$updated_cache['news'] = $news;
 
-		foreach($feed_parser->items as $item)
+		foreach($news as $item)
 		{
-			if(!isset($updated_cache['news'][2]))
-			{
-				$updated_cache['news'][] = array(
-					'title' => $item['title'],
-					'description' => $item['description'],
-					'link' => $item['link'],
-					'author' => $item['author'],
-					'dateline' => $item['date_timestamp'],
-				);
-			}
-
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
@@ -138,7 +116,7 @@ if($mybb->input['action'] == "version_check")
 	}
 	else
 	{
-		$table->construct_cell("{$lang->error_fetch_news} <!-- error code: {$feed_parser->error} -->");
+		$table->construct_cell($lang->error_fetch_news);
 		$table->construct_row();
 	}
 

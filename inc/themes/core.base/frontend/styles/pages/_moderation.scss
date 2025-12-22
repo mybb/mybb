@@ -9,17 +9,17 @@
 
     &__title {
         margin: 0;
-        font-size: 1em;
+        font-size: var(--font-size-regular);
     }
 
     &__count {
         margin: 0;
-        color: $alt-font-color-1;
+        color: var(--alt-font-color-1);
     }
 
     &__latest {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -30,7 +30,7 @@
     }
 
     &__latest-title {
-        color: $alt-font-color-1;
+        color: var(--alt-font-color-1);
 
         &:after {
             content: ":";
@@ -39,31 +39,31 @@
 }
 
 .ban-duration {
-    margin-#{$left}: 4px;
-    font-size: 0.9em;
-    color: $alt-font-color-1;
+    margin-#{$left}: var(--spacing-2);
+    font-size: var(--font-size-small);
+    color: var(--alt-font-color-1);
 
     &--imminent {
         font-weight: bold;
-        color: $danger-color;
+        color: var(--danger-color);
     }
 
     &--high {
-        color: $danger-color;
+        color: var(--danger-color);
     }
 
     &--moderate {
-        color: $moderate-color;
+        color: var(--moderate-color);
     }
 
     &--low {
-        color: $success-color;
+        color: var(--success-color);
     }
 }
 
 .icon--announcement {
-    margin-#{$right}: 8px;
-    font-size: 0.8em;
+    margin-#{$right}: var(--spacing-3);
+    font-size: var(--font-size-smaller);
     vertical-align: middle;
 }
 
@@ -78,20 +78,20 @@
     }
 
     &__reason {
-        font-size: 0.9em;
-        color: $alt-font-color-1;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
     }
 
     &__count {
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
     }
 
     &__last-reporter {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
 
         a {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
     }
 
@@ -111,12 +111,12 @@
     }
 
     &__date {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
     }
 
     .list--mod-log {
-        line-height: 1.4em;
+        line-height: var(--line-height-small);
     }
 
 }
@@ -132,24 +132,29 @@
     }
 
     &__warning {
-        font-size: 0.9em;
+        font-size: var(--font-size-small);
     }
 
     &__issued_by {
-        font-size: 0.9em;
-        color: $alt-font-color-1;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
     }
 
     &__issued-date,
     &__expiry-date,
     &__revoked-date,
+    &__acknowledgement,
     &__post {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
     }
 
     &__expiry-date--expired {
-        color: $moderate-color;
+        color: var(--moderate-color);
+    }
+
+    &__acknowledgement--bad {
+        color: $danger-color;
     }
 
     &__details {
@@ -161,14 +166,14 @@
     }
 
     &__revoked {
-        color: $moderate-color;
+        color: var(--moderate-color);
     }
 }
 
 .mod-queue {
 
     &__mass-controls {
-        padding: 5px 0;
+        padding: var(--spacing-2) 0;
         text-align: center;
     }
 
@@ -183,7 +188,7 @@
     }
 
     &__header-section {
-        margin-bottom: 8px;
+        margin-bottom: var(--spacing-3);
 
         @include bp-medium {
             margin: 0;
@@ -192,9 +197,9 @@
 
     &__subject {
         margin: 0;
-        font-size: 1em;
+        font-size: var(--font-size-regular);
         font-weight: normal;
-        color: $alt-font-color-1;
+        color: var(--alt-font-color-1);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -204,11 +209,11 @@
     &__date,
     &__forum,
     &__post {
-        font-size: 0.9em;
-        color: $alt-font-color-2;
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-2);
 
         a {
-            color: $alt-font-color-1;
+            color: var(--alt-font-color-1);
         }
     }
 
@@ -218,7 +223,7 @@
     }
 
     &__author {
-        margin-top: 3px;
+        margin-top: var(--spacing-2);
 
         &:after {
             content: ",";
@@ -226,19 +231,19 @@
     }
 
     &__message {
-        margin-top: 3px;
-        font-size: 0.9em;
+        margin-top: var(--spacing-2);
+        font-size: var(--font-size-small);
     }
 }
 
 .warning-level {
     position: relative;
     box-sizing: border-box;
-    height: 24px;
-    margin: 8px 0;
+    height: var(--spacing-6);
+    margin: var(--spacing-3) 0;
     clear: both;
-    background: $background-1;
-    border-radius: 4px;
+    background: var(--background-1);
+    border-radius: var(--border-radius);
 
     &__bar {
         position: absolute;
@@ -247,14 +252,14 @@
         bottom: 0;
         z-index: 1;
         box-sizing: border-box;
-        border-radius: 3px;
+        border-radius: var(--border-radius);
 
         &--current {
-            background: $major-heading-background;
+            background: var(--primary-color);
         }
 
         &--total {
-            background: $background-4;
+            background: var(--background-4);
         }
     }
 }

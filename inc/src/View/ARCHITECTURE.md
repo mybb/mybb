@@ -394,8 +394,8 @@ The application has:
   - **Metadata**: can access all metadata assigned to an Asset
   - **Content**: can query the Asset content (stored in a separate file)
 - _🚥 Control_:
-  - **HTML**: controls the HTML representing the Asset in the DOM
   - **Path**: controls the path referenced in the DOM
+  - **HTML**: controls the HTML representing the Asset in the DOM
   - **Placement**: controls where in the DOM the Asset is inserted
 
 <br>
@@ -547,10 +547,14 @@ Stage | Data | Sources | Building Cost | Validation Target | Validation Cost
 -|-|-|-|-|-
 **Ancestry** | Source Viewlets | Extension manifests | 🟢 Low | Extension manifest stamp | 🟢 Low
 **Resolution** | Entity Properties | Property files | 🟢 Low | Ancestry; Property file stamps | 🟢 Low
-**Resolution** | Entities | Property files, Entity files | 🟨 Medium | Ancestry; Property file stamps | 🟨 Medium
+**Resolution** | Entities | Property files, Entity files | 🟨 Medium | Ancestry; Property file stamps | 🟢 Low
 **Generation** | Assets | Resources | 🔺 High | Entity Properties; Resources | 🟨 Medium
 **Generation** | Templates | Resources | 🔺 High | Resources | 🟨 Medium
 **Execution** | Template opcode | Templates | 🟨 Medium | Twig cache; _Opcache-dependent_ | 🟨 Medium
+
+- **🟢 Low** cost is associated with processing a limited number of metadata or checksums.
+- **🟨 Medium** cost is associated with processing an extended number of entities, metadata, or checksums.
+- **🔺 High** cost is associated with complex processing.
 
 ### Cache Validation
 Generated content is refreshed using metadata of entities depended upon (bottom-to-top). File modification times or checksums are used as _stamps_, validated according to the configured [`Optimization`](Optimization.php) level. Higher levels offer better performance.

@@ -10,7 +10,7 @@ $l['lastvisit_never'] = "Never";
 $l['lastvisit_hidden'] = "(Hidden)";
 
 $l['search_button'] = 'Search';
-$l['toplinks_memberlist'] = "Member List";
+$l['toplinks_memberlist'] = "Members";
 $l['toplinks_search'] = "Search";
 $l['toplinks_calendar'] = "Calendar";
 $l['toplinks_portal'] = "Portal";
@@ -20,6 +20,8 @@ $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_markread'] = "Mark all forums read";
 $l['bottomlinks_help'] = "Help";
+
+$l['nav_memberlist'] = "Members";
 
 $l['welcome_usercp'] = "My Account";
 $l['welcome_modcp'] = "Moderation";
@@ -429,6 +431,7 @@ $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
 $l['quickrestore_confirm'] = "Are you sure you want to restore this post?";
 $l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from {1} titled <a href=\"{2}/private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
 $l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from {2} titled <a href=\"{3}/private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>";
+$l['unacknowledged_warnings_notice'] = "<strong>You have {1} unacknowledged warning(s).</strong> Please check your <strong><a href=\"usercp.php?action=warninglog\">control panel</a></strong> for more information.";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
@@ -624,3 +627,7 @@ $l['expcol_collapse'] = '[-]';
 $l['expcol_expand'] = '[+]';
 
 $l['use_default'] = "Use Default";
+
+$l['expires'] = "Expires";
+$l['acknowledged'] = "Acknowledged";
+$l['not_acknowledged'] = "Not acknowledged";

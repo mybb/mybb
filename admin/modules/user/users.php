@@ -563,6 +563,7 @@ if($mybb->input['action'] == "edit")
 			"hideemail" => $mybb->get_input('hideemail'),
 			"subscriptionmethod" => $mybb->get_input('subscriptionmethod'),
 			"invisible" => $mybb->get_input('invisible'),
+			"showtimespentonline" => $mybb->get_input('showtimespentonline'),
 			"dstcorrection" => $mybb->get_input('dstcorrection'),
 			"threadmode" => $mybb->get_input('threadmode'),
 			"classicpostbit" => $mybb->get_input('classicpostbit'),
@@ -735,7 +736,7 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 
-			// Moderator "Options" (suspend signature, suspend/moderate posting)
+			// Moderator "Options" (suspend signature, suspend/moderate posting, suspend private messaging)
 			$moderator_options = array(
 				1 => array(
 					"action" => "suspendsignature", // The moderator action we're performing
@@ -757,6 +758,20 @@ if($mybb->input['action'] == "edit")
 					"time" => "suspost_time",
 					"update_field" => "suspendposting",
 					"update_length" => "suspensiontime"
+				),
+				4 => array(
+					"action" => "suspendpm",
+					"period" => "suspm_period",
+					"time" => "suspm_time",
+					"update_field" => "suspendpm",
+					"update_length" => "suspendpmtime"
+				),
+				5 => array(
+					"action" => "suspendavatar",
+					"period" => "suspendavatar_period",
+					"time" => "suspendavatar_time",
+					"update_field" => "suspendavatar",
+					"update_length" => "suspendavatartime"
 				)
 			);
 
@@ -783,8 +798,7 @@ if($mybb->input['action'] == "edit")
 						$string = $option['action']."_error";
 						$errors[] = $lang->$string;
 					}
-
-					if(!is_array($errors))
+					else
 					{
 						$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
@@ -814,6 +828,14 @@ if($mybb->input['action'] == "edit")
 							{
 								$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 							}
+						}
+						// If suspending the avatar privilege, remove existing avatar
+						if($option['action'] === "suspendavatar")
+						{
+							$extra_user_updates["avatar"] = "";
+							$extra_user_updates["avatardimensions"] = "";
+							$extra_user_updates["avatartype"] = "";
+							remove_avatars($user["uid"]);
 						}
 					}
 				}
@@ -1278,6 +1300,7 @@ EOF;
 	$form_container = new FormContainer($lang->account_settings.': '.htmlspecialchars_uni($user['username']));
 	$login_options = array(
 		$form->generate_check_box("invisible", 1, $lang->hide_from_whos_online, array("checked" => $mybb->get_input('invisible'))),
+		$form->generate_check_box("showtimespentonline", 1, $lang->show_time_spent_online, array("checked" => $mybb->get_input('showtimespentonline'))),
 	);
 	$form_container->output_row($lang->login_cookies_privacy, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
 
@@ -1718,6 +1741,84 @@ EOF;
 	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, htmlspecialchars_uni($user['username']));
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->get_input('suspendposting'))), $lang->suspend_posts_info, $suspost_div);
 
+	// Suspend private messages
+	// Generate check box
+	$suspm_options = $form->generate_select_box('suspm_period', $periods, $mybb->get_input('suspm_period'), array('id' => 'suspm_period'));
+
+	// Do we have an existing private messaging suspension?
+	if($user['suspendpm'] || ($mybb->get_input('suspendpm') && !empty($errors)))
+	{
+		$mybb->input['suspendpm'] = 1;
+		if($user['suspendpmtime'] == 0 || $mybb->get_input('suspm_period') == "never")
+		{
+			$existing_info = $lang->suspended_perm;
+		}
+		else
+		{
+			$remaining = $user['suspendpmtime'] - TIME_NOW;
+			$suspm_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspm_date, $color);
+		}
+	}
+
+	$lang->suspend_pm_info = $lang->sprintf($lang->suspend_pm_info, htmlspecialchars_uni($user['username']));
+	$suspm_div = '<div id="suspm">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspm_time", $mybb->get_input('suspm_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$suspm_options.'</div>';
+	$form_container->output_row($form->generate_check_box("suspendpm", 1, $lang->suspend_pm, array("id" => "suspendpm", "onclick" => "toggleBox('suspm');", "checked" => $mybb->get_input('suspendpm'))), $lang->suspend_pm_info, $suspm_div);
+
+	// Suspend avatar
+	// Generate check box
+	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->input['suspendavatar_period'], array('id' => 'suspendavatar_period'));
+
+	// Do we have any existing suspensions here?
+	$existing_info = '';
+	if($user['suspendavatar'] || ($mybb->get_input('suspendavatar') && !empty($errors)))
+	{
+		$mybb->input['suspendavatar'] = 1;
+		if($user['suspendavatartime'] != 0)
+		{
+			$remaining = $user['suspendavatartime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $expired, $color);
+		}
+		else
+		{
+			$existing_info = $lang->suspended_perm;
+		}
+	}
+
+	// Generate content div
+	$suspend_avatar_div = '<div id="suspend_avatar">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspendavatar_time", $mybb->get_input('suspendavatar_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$suspendavatar_options.'</div>';
+	$form_container->output_row($form->generate_check_box("suspendavatar", 1, $lang->suspend_avatar, array("id" => "suspendavatar", "onclick" => "toggleBox('suspendavatar');", "checked" => $mybb->get_input('suspendavatar'))), $lang->suspend_avatar_info, $suspend_avatar_div);
 
 	$form_container->end();
 	$plugins->run_hooks("admin_user_users_edit_moderator_options");
@@ -1763,6 +1864,34 @@ function toggleBox(action)
 			$("#suspost").hide();
 		}
 	}
+	else if(action == "suspm")
+	{
+		$("#suspendpm").attr("checked", false);
+		$("#suspm").hide();
+
+		if($("#suspendpm").is(":checked") == true)
+		{
+			$("#suspm").show();
+		}
+		else if($("#suspendpm").is(":checked") == false)
+		{
+			$("#suspm").hide();
+		}
+	}
+	else if(action == "suspendavatar")
+	{
+		$("#suspendavatar").attr("checked", false);
+		$("#suspend_avatar").hide();
+
+		if($("#suspendavatar").is(":checked") == true)
+		{
+			$("#suspend_avatar").show();
+		}
+		else if($("#suspendavatar").is(":checked") == false)
+		{
+			$("#suspend_avatar").hide();
+		}
+	}
 }
 
 if($("#moderateposting").is(":checked") == false)
@@ -1781,6 +1910,24 @@ if($("#suspendposting").is(":checked") == false)
 else
 {
 	$("#suspost").show();
+}
+
+if($("#suspendpm").is(":checked") == false)
+{
+	$("#suspm").hide();
+}
+else
+{
+	$("#suspm").show();
+}
+
+if($("#suspendavatar").is(":checked") == false)
+{
+	$("#suspend_avatar").hide();
+}
+else
+{
+	$("#suspend_avatar").show();
 }
 
 // -->
