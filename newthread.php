@@ -900,14 +900,14 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$newthread['showcloseoption'] = false;
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
+		if(is_moderator($fid, "canopenclosethreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showcloseoption'] = true;
 		}
 
 		$newthread['showstickoption'] = false;
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
+		if(is_moderator($fid, "canstickunstickthreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showstickoption'] = true;
