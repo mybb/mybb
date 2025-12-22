@@ -857,13 +857,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$newreply['multiquote_quote'] = $lang->multiquote_external_quote;
 				}
 			}
-
-			if(is_array($newreply['quoted_ids']) && count($newreply['quoted_ids']) > 0)
-			{
-				$newreply['quoted_ids'] = implode("|", $newreply['quoted_ids']);
-			}
 		}
 	}
+
+	$newreply['quoted_ids'] = is_array($newreply['quoted_ids']) ? implode("|", $newreply['quoted_ids']) : '';
 
 	if(isset($mybb->input['quoted_ids']))
 	{
@@ -957,6 +954,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	// Preview a post that was written.
 	$newreply['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
@@ -1483,7 +1481,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		'attachments' => $attachments,
 		'posts' => $posts,
 		'captcha' => $captcha,
-		'prefixselect' => $prefixselect,
 		'posticons' => $posticons,
         'post_javascript' => $post_javascript,
 	]));
