@@ -3333,7 +3333,7 @@ if($mybb->input['action'] == "ipsearch")
 
 					if(empty($ipaddress['subject']))
 					{
-						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+						$ipaddress['subject'] = $ipaddress['threadsubject'];
 					}
 
 					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
