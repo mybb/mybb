@@ -252,7 +252,7 @@ class CustomModeration extends Moderation
 
 					if(empty($post_options['splitpostsreplysubject']))
 					{
-						$new_subject = 'RE: '.$new_thread_subject;
+						$new_subject = $new_thread_subject;
 					}
 					else
 					{
@@ -458,7 +458,7 @@ class CustomModeration extends Moderation
 
 					if(empty($thread_options['replysubject']))
 					{
-						$new_subject = 'RE: '.$thread['subject'];
+						$new_subject = $thread['subject'];
 					}
 					else
 					{

@@ -815,16 +815,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					// If this post was the post for which a quote button was clicked, set the subject
 					if($replyto == $quoted_post['pid'])
 					{
-						$newreply['subject'] = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
-						// Subject too long? Shorten it to avoid error message
-						if(my_strlen($newreply['subject']) > 85)
-						{
-							$newreply['subject'] = my_substr($newreply['subject'], 0, 82).'...';
-						}
-
-						$newreply['subject'] = "RE: ".$newreply['subject'];
+						$newreply['subject'] = $quoted_post['subject'];
 					}
-
 					$newreply['message'] .= parse_quoted_message($quoted_post);
 					$newreply['quoted_ids'][] = $quoted_post['pid'];
 				}
@@ -942,13 +934,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else
 		{
 			$newreply['subject'] = $thread_subject;
-			// Subject too long? Shorten it to avoid error message
-			if(my_strlen($newreply['subject']) > 85)
-			{
-				$newreply['subject'] = my_substr($newreply['subject'], 0, 82).'...';
-			}
-
-			$newreply['subject'] = "RE: ".$newreply['subject'];
 		}
 	}
 
