@@ -469,38 +469,6 @@
                 </section>
             {% endif %}
 
-            <div class="page-controls">
-                <div class="page-buttons">
-                    {% if thread.showthreaded %}
-                        <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'th-list', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.linear }}</span>
-                        </a>
-                    {% else %}
-                        <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'list', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.threaded }}</span>
-                        </a>
-                    {% endif %}
-                    <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
-                        {{ include('partials/icon.twig', {icon: 'print', class: 'button__icon'}, with_context = false) }}
-                        <span class="button__text">{{ lang.view_printable }}</span>
-                    </a>
-                    {% if mybb.usergroup.cansendemail %}
-                        <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'share', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.send_thread }}</span>
-                        </a>
-                    {% endif %}
-                    {% if thread.addpoll %}
-                        <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.add_poll_to_thread }}</span>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-
             {% if mybb.settings.browsingthisthread %}
                 <div class="container container--users-browsing">
                     {{ lang.users_browsing_thread }}

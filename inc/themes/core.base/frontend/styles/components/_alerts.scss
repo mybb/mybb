@@ -4,8 +4,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     padding: var(--spacing-4);
-    margin-top: var(--spacing-4);
-    margin-bottom: var(--spacing-5);
+    margin-bottom: var(--spacing-6);
     font-size: var(--font-size-small);
     background: var(--background-default);
     border: var(--border-width-base) solid var(--border-color-1);
@@ -66,9 +65,9 @@
     }
 
     &--pending {
+        border-top: var(--border-width-page-header) solid var(--status-pending-border-color);
         color: var(--status-pending-font-color);
-        background-color: var(--status-pending-background-color);
-
+        
         :link,
         :visited,
         .alert__icon {

@@ -27,8 +27,8 @@
     {% endset %}
     {% if standardTools|trim or customTools %}
         {{ asset('jscripts/inline_moderation.js', static=true) }}
-        <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
-        <form id="inlinemoderation_options" action="moderation.php" method="post" class="compact-form">
+        <h2 class="title title--legend inline-moderation__title">{{ lang.inline_thread_moderation }}</h2>
+        <form id="inlinemoderation_options" action="moderation.php" method="post" class="compact-form multi-field">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
             <input type="hidden" name="modtype" value="inlinethread" />
@@ -51,11 +51,11 @@
                     {% endif %}
                 </select>
             </div>
-            <button type="submit" name="go" class="button button--inline">
+            <button type="submit" name="go" class="button button--inline multi-field__button">
                 {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text" id="inline_go">{{ lang.go }} ({{ inlinecount }})</span>
             </button>
-            <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
+            <button type="button" class="button button--secondary button--inline multi-field__button" onclick="inlineModeration.clearChecked();">
                 {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.clear }}</span>
             </button>

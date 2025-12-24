@@ -3,7 +3,15 @@
 {% block body %}
 
 <nav class="section-menu">
-    <h1 class="section-menu__title">{{ lang.welcome_modcp }}</h1>
+    <input type="checkbox" id="show-section-menu" class="section-menu__checkbox">
+    <h1 class="section-menu__title">
+        <label for="show-section-menu" class="section-menu__toggle">
+            {{ include('partials/icon.twig', {icon: 'bars', class: 'section-menu__menu-icon fa-fw'}, with_context = false) }}
+            {{ lang.welcome_modcp }}
+            {{ include('partials/icon.twig', {icon: 'minus', class: 'section-menu__collapse fa-fw'}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__expand fa-fw'}, with_context = false) }}
+        </label>
+    </h1>
     <ul class="section-menu__links sidebar-navigation">
         <li class="section-menu__item section-menu__item--home{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
             <a href="modcp.php" class="section-menu__link">

@@ -51,7 +51,7 @@
         {# Author avatar #}
         {% if post.showavatar %}
             <a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link">
-                {{ render_avatar(url=post.avatar, alt=post.username, class='avatar--large') }}
+                {{ render_avatar(url=post.avatar, alt=post.username) }}
             </a>
         {% endif %}
 

@@ -13,15 +13,17 @@
         {% else %}
             <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link"><span class="breadcrumb__text">{{ crumb.name }}</span></a>
             {% if crumb.multipage is defined and not empty %}
-                <span class="breadcrumb__multipage-link pagination_breadcrumb_link" id="breadcrumb_multipage">
-                    {{ include('partials/icon.twig', {icon: 'caret-down', class: 'breadcrumb__caret'}, with_context = false) }}
-                </span>
                 {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
                     {% set perPage = 20 %}
                 {% else %}
                     {% set perPage = mybb.settings.threadsperpage %}
                 {% endif %}
-
+                {% if crumb.multipage.num_threads > perPage %}
+                    <span class="breadcrumb__multipage-link pagination_breadcrumb_link" id="breadcrumb_multipage">
+                        {{ include('partials/icon.twig', {icon: 'caret-down', class: 'breadcrumb__caret'}, with_context = false) }}
+                    </span>
+                {% endif %}
+                
                 {{ multi_page(crumb.multipage.num_threads, perPage,
                     crumb.multipage.current_page, crumb.multipage.url, true) }}
             {% endif %}
