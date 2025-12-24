@@ -32,7 +32,7 @@
                             <p class="message__username">{{ unreadmessage.profilelink|raw }}</p>
                         </div>
                         <div class="message__column message__column--date message__date">{{ unreadmessage.senddate|raw }}</div>
-                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
+                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="alert alert--no-results">{{ lang.no_unreadmessages }}</div>
@@ -76,7 +76,7 @@
                             <p class="message__username">{{ readmessage.profilelink|raw }}</p>
                         </div>
                         <div class="message__column message__column--date message__date">{{ readmessage.readdate|raw }}</div>
-                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
+                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="alert alert--no-results">{{ lang.no_readmessages }}</div>

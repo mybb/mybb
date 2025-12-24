@@ -37,11 +37,11 @@
                 {% endfor %}
             </div>
             <div class="block__footer block-actions">
-                <button type="submit" class="button" name="reportsubmit">
+                <button type="submit" class="button block-actions__button" name="reportsubmit">
                     {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text" id="inline_read">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
                 </button>
-                <a href="modcp.php?action=allreports" class="button button--secondary">
+                <a href="modcp.php?action=allreports" class="button button--secondary block-actions__button">
                     {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.view_all_reports }}</span>
                 </a>

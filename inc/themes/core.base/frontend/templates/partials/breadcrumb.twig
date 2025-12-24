@@ -1,16 +1,5 @@
 <div class="breadcrumb">
     {% for crumb in breadcrumbs %}
-        {% if crumb.multipage is defined and not empty %}
-            {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
-                {% set perPage = 20 %}
-            {% else %}
-                {% set perPage = mybb.settings.threadsperpage %}
-            {% endif %}
-
-            {{ multi_page(crumb.multipage.num_threads, mybb.settings.threadsperpage,
-                crumb.multipage.current_page, crumb.multipage.url, true) }}
-        {% endif %}
-
         {# Separator #}
         {% if loop.first != true and loop.last != true %}
             {# Not used #}
@@ -20,12 +9,23 @@
 
         {# Breadcrumb bit #}
         {% if loop.last %}
-            <span class="active visually-hidden">{{ crumb.name }}</span>
+            <span class="breadcrumb__active">{{ crumb.name }}</span>
         {% else %}
-            <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link">
-                <span class="breadcrumb__text">{{ crumb.name }}</span>
-                {{ include('partials/icon.twig', {icon: 'chevron-right', class: 'breadcrumb__separator'}, with_context = false) }}
-            </a>
+            <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link"><span class="breadcrumb__text">{{ crumb.name }}</span></a>
+            {% if crumb.multipage is defined and not empty %}
+                <span class="breadcrumb__multipage-link pagination_breadcrumb_link" id="breadcrumb_multipage">
+                    {{ include('partials/icon.twig', {icon: 'caret-down', class: 'breadcrumb__caret'}, with_context = false) }}
+                </span>
+                {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
+                    {% set perPage = 20 %}
+                {% else %}
+                    {% set perPage = mybb.settings.threadsperpage %}
+                {% endif %}
+
+                {{ multi_page(crumb.multipage.num_threads, perPage,
+                    crumb.multipage.current_page, crumb.multipage.url, true) }}
+            {% endif %}
+            {{ include('partials/icon.twig', {icon: 'chevron-right', class: 'breadcrumb__separator'}, with_context = false) }}
         {% endif %}
     {% endfor %}
 </div>

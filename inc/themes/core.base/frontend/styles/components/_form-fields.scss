@@ -33,25 +33,10 @@
 
 .multi-field {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-2);
-
-    &__text,
-    &__text.title {
-        margin-#{$right}: var(--spacing-2);
-        margin-#{$left}: var(--spacing-2);
-    }
-
-    &--short {
-        flex-direction: row;
-        align-items: center;
-    }
-
-    @include bp-small {
-        flex-direction: row;
-        align-items: center;
-    }
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-3);
 }
 
 .option-field {
@@ -139,17 +124,14 @@
 
     &--small {
         width: 60px;
-        // margin-#{$right}: var(--spacing-3);
     }
 
     &--medium {
         width: 100px;
-        // margin-#{$right}: var(--spacing-3);
     }
 
     &--large {
         width: 250px;
-        // margin-#{$right}: var(--spacing-3);
     }
 
     &--subject {
@@ -380,7 +362,7 @@ textarea {
         {
             border: none;
             border-radius: var(--border-radius);
-            padding: calc(--var(--spacing-3) - var(--border-width-base)) var(--spacing-3);
+            padding: var(--spacing-3);
             margin: side-values(0 var(--spacing-2) var(--spacing-2) 0);
         }
     }

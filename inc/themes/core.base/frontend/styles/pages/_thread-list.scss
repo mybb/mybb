@@ -102,14 +102,9 @@
             }
         }
 
-        &--selected {
-            background-color: var(--status-highlight-background-color);
-            border-color: var(--status-highlight-border-color);
-        }
-
         // TODO: change class in code to thread--selected
         &.trow_selected {
-            @extend .thread--selected;
+            @extend .row--selected;
         }
 
         a.thread__status {

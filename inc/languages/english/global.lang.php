@@ -630,5 +630,5 @@ $l['use_default'] = "Use Default";
 
 $l['expires'] = "Expires";
 $l['acknowledged'] = "Acknowledged";
-$l['not_acknowledged'] = "Not acknowledged";$l['with_selected'] = "With Selected:";
+$l['not_acknowledged'] = "Not acknowledged";
 $l['with_selected'] = "With Selected:";

@@ -37,6 +37,15 @@
         }
     }
 
+    &--selected {
+        background-color: var(--status-highlight-background-color);
+        border-color: var(--status-highlight-border-color);
+    }
+
+    &:has(.checkbox--select-row:checked) {
+        @extend .row--selected;
+    }
+
     &__secondary {
 
         @include bp-small-max {

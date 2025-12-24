@@ -24,4 +24,20 @@
     &__separator {
         margin: 0 var(--spacing-3);
     }
+
+    &__caret {
+        display: inline-block;
+        padding: side-values(0 var(--spacing-1) 0 var(--spacing-2));
+        font-size: var(--font-size-regular);
+        color: var(--link-default-color);
+
+        &:hover {
+            cursor: pointer;
+            color: var(--link-hover-color);
+        }
+    }
+
+    &__active {
+        @include visually-hidden;
+    }
 }

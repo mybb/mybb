@@ -58,50 +58,50 @@
         </div>
 
         {% if results.show_inline_moderation %}
+        <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="tid" value="0" />
+            <input type="hidden" name="searchid" value="{{ results.sid }}" />
+            <input type="hidden" name="modtype" value="inlinepost" />
             <div class="block__footer block-actions">
                 <h3 class="block-actions__title">{{ lang.inline_thread_moderation }}</h3>
                 {{ asset('jscripts/inline_moderation.js', static=true) }}
-                <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
-                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                    <input type="hidden" name="tid" value="0" />
-                    <input type="hidden" name="searchid" value="{{ results.sid }}" />
-                    <input type="hidden" name="modtype" value="inlinepost" />
-                    <div class="select-field">
-                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                        <select name="action">
-                            <optgroup label="{{ lang.standard_mod_tools }}">
-                                <option value="multisoftdeleteposts">{{ lang.inline_soft_delete_posts }}</option>
-                                <option value="multirestoreposts">{{ lang.inline_restore_posts }}</option>
-                                <option value="multideleteposts">{{ lang.inline_delete_posts }}</option>
-                                <option value="multimergeposts">{{ lang.inline_merge_posts }}</option>
-                                <option value="multisplitposts">{{ lang.inline_split_posts }}</option>
-                                <option value="multimoveposts">{{ lang.inline_move_posts }}</option>
-                                <option value="multiapproveposts">{{ lang.inline_approve_posts }}</option>
-                                <option value="multiunapproveposts">{{ lang.inline_unapprove_posts }}</option>
+                <div class="select-field">
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                    <select name="action">
+                        <optgroup label="{{ lang.standard_mod_tools }}">
+                            <option value="multisoftdeleteposts">{{ lang.inline_soft_delete_posts }}</option>
+                            <option value="multirestoreposts">{{ lang.inline_restore_posts }}</option>
+                            <option value="multideleteposts">{{ lang.inline_delete_posts }}</option>
+                            <option value="multimergeposts">{{ lang.inline_merge_posts }}</option>
+                            <option value="multisplitposts">{{ lang.inline_split_posts }}</option>
+                            <option value="multimoveposts">{{ lang.inline_move_posts }}</option>
+                            <option value="multiapproveposts">{{ lang.inline_approve_posts }}</option>
+                            <option value="multiunapproveposts">{{ lang.inline_unapprove_posts }}</option>
+                        </optgroup>
+                        {% if results.show_inline_moderation %}
+                            <optgroup label="{{ lang.custom_mod_tools }}">
+                                {% for tool in results.customposttools %}
+                                    <option value="{{ tool.tid }}">{{ tool.name }}</option>
+                                {% endfor %}
                             </optgroup>
-                            {% if results.show_inline_moderation %}
-                                <optgroup label="{{ lang.custom_mod_tools }}">
-                                    {% for tool in results.customposttools %}
-                                        <option value="{{ tool.tid }}">{{ tool.name }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                            {% endif %}
-                        </select>
-                    </div>
-                    <input type="submit" class="button button--inline" name="go" value="{{ lang.inline_go }} ({{ results.inlinecount }})" id="inline_go" /> {# TO DO: Change to button with icon (JS for counter must be fixed first) #}
-                    <input type="button" onclick="inlineModeration.clearChecked();" value="{{ lang.clear }}" class="button button--secondary button--inline" />
-                    <input type="hidden" name="url" value="{{ results.return_url }}" />
-                    <input type="hidden" name="inlinetype" value="search" />
-                </form>
-                <script type="text/javascript">
-                <!--
-                    var go_text = "{{ lang.inline_go }}";
-                    var all_text = "{{ results.postcount }}";
-                    var inlineType = "search";
-                    var inlineId = '{{ results.sid }}';
-                // -->
-                </script>
+                        {% endif %}
+                    </select>
+                </div>
+                <input type="submit" class="button button--inline" name="go" value="{{ lang.inline_go }} ({{ results.inlinecount }})" id="inline_go" /> {# TO DO: Change to button with icon (JS for counter must be fixed first) #}
+                <input type="button" onclick="inlineModeration.clearChecked();" value="{{ lang.clear }}" class="button button--secondary button--inline" />
             </div>
+            <input type="hidden" name="url" value="{{ results.return_url }}" />
+            <input type="hidden" name="inlinetype" value="search" />
+            </form>
+            <script type="text/javascript">
+            <!--
+                var go_text = "{{ lang.inline_go }}";
+                var all_text = "{{ results.postcount }}";
+                var inlineType = "search";
+                var inlineId = '{{ results.sid }}';
+            // -->
+            </script>
         {% endif %}
     </section>
 

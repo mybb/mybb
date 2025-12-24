@@ -58,14 +58,14 @@
                 {% endfor %}
             </div>
             {% if results.show_inline_moderation %}
-                <div class="block__footer block-action">
-                    <h3 class="block-actions__title">{{ lang.inline_thread_moderation }}</h3>
-                    {{ asset('jscripts/inline_moderation.js', static=true) }}
-                    <form action="moderation.php" method="post">
-                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                        <input type="hidden" name="fid" value="0" />
-                        <input type="hidden" name="searchid" value="{{ results.sid }}" />
-                        <input type="hidden" name="modtype" value="inlinethread" />
+                <form action="moderation.php" method="post">
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <input type="hidden" name="fid" value="0" />
+                    <input type="hidden" name="searchid" value="{{ results.sid }}" />
+                    <input type="hidden" name="modtype" value="inlinethread" />
+                    <div class="block__footer block-actions">
+                        <h3 class="block-actions__title">{{ lang.inline_thread_moderation }}</h3>
+                        {{ asset('jscripts/inline_moderation.js', static=true) }}
                         <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="action">
@@ -92,18 +92,18 @@
                         </div>
                         <input type="submit" class="button button--inline" name="go" value="{{ lang.inline_go }} ({{ results.inlinecount }})" id="inline_go" /> {# TO DO: Change to button with icon (JS for counter must be fixed first) #}
                         <input type="button" onclick="inlineModeration.clearChecked();" value="{{ lang.clear }}" class="button button--secondary button--inline" />
-                        <input type="hidden" name="url" value="{{ results.return_url }}" />
-                        <input type="hidden" name="inlinetype" value="search" />
-                    </form>
-                    <script type="text/javascript">
-                    <!--
-                        var go_text = "{{ lang.inline_go }}";
-                        var all_text = "{{ results.threadcount }}";
-                        var inlineType = "search";
-                        var inlineId = '{{ results.sid }}';
-                    // -->
-                    </script>
-                </div>
+                    </div>
+                    <input type="hidden" name="url" value="{{ results.return_url }}" />
+                    <input type="hidden" name="inlinetype" value="search" />
+                </form>
+                <script type="text/javascript">
+                <!--
+                    var go_text = "{{ lang.inline_go }}";
+                    var all_text = "{{ results.threadcount }}";
+                    var inlineType = "search";
+                    var inlineId = '{{ results.sid }}';
+                // -->
+                </script>
             {% endif %}
         </section>
 

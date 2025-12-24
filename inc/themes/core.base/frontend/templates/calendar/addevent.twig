@@ -245,12 +245,12 @@
                                     </div>
                                     <div class="section section--inline repeats_type" id="repeats_type_4">
                                         <div class="row row--form field">
-                                            <div class="option-field option-field--compact">
+                                            <div class="option-field option-field--compact multi-field">
                                                 <label><input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" {% if select.repeats_4_type.1 %} checked="checked"{% endif %} /> {{ lang.repeats_on_day }}</label>
                                                 <input type="text" class="textbox textbox--short textbox--inline" name="repeats_4_day" value="{{ select.repeats_4_day }}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {{ lang.of_every }}
                                                 <input type="text" class="textbox textbox--short textbox--inline" name="repeats_4_months" value="{{ select.repeats_4_months }}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {{ lang.month_or_months }}
                                             </div>
-                                            <div class="option-field option-field--compact">
+                                            <div class="option-field option-field--compact multi-field">
                                                 <label><input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" {% if select.repeats_4_type.2 %} checked="checked"{% endif %} />{{ lang.repeats_on_the }}</label>
                                                 <div class="select-field select-field--short select-field--inline">
                                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
@@ -281,7 +281,7 @@
                                     </div>
                                     <div class="section section--inline repeats_type" id="repeats_type_5">
                                         <div class="row row--form field">
-                                            <div class="option-field option-field--compact"><label>
+                                            <div class="option-field option-field--compact multi-field"><label>
                                                 <input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" {% if select.repeats_5_type.1 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on }}</label>
                                                 <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
@@ -296,7 +296,7 @@
                                                 {{ lang.every }}
                                                 <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_years" value="{{ select.repeats_5_years }}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {{ lang.year_or_years }}
                                             </div>
-                                            <div class="option-field option-field--compact"><label>
+                                            <div class="option-field option-field--compact multi-field"><label>
                                                 <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" {% if select.repeats_5_type.2 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_the }}</label>
                                                 <div class="select-field select-field--short select-field--inline">

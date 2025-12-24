@@ -26,7 +26,12 @@
 
         &--active {
             background: var(--button-default-color);
-            color: var(--invert-font-color);
+
+            &,
+            &:link,
+            &:visited {
+                color: var(--invert-font-color);
+            }
 
             &:hover {
                 background: var(--button-default-color);
@@ -36,6 +41,14 @@
 
     &__icon {
         font-size: var(--font-size-smaller);
+    }
+
+    &--breadcrumb {
+        padding: var(--spacing-3) var(--spacing-4);
+        background: var(--background-default);
+        border: var(--border-width-base) solid var(--border-color-1);
+        border-radius: var(--border-radius);
+        @include box-shadow;
     }
 
     @include bp-medium {

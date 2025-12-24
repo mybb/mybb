@@ -201,10 +201,10 @@
                 {% endif %}
 
                 {# Threadlist footer #}
-                <div class="block__footer footer-actions">
-                    <form action="forumdisplay.php" method="get" class="compact-form">
+                <form action="forumdisplay.php" method="get" class="compact-form"></form>
+                    <div class="block__footer block-actions">
                         <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
-                        <h3 class="footer-actions__title visually-hidden">{{ lang.sort_threads }}</h3>
+                        <h3 class="block-actions__title visually-hidden">{{ lang.sort_threads }}</h3>
                         <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="sortby">
@@ -233,12 +233,12 @@
                             </select>
                         </div>
                         {{ prefixselect|raw }}
-                        <button type="submit" class="button button--inline">
+                        <button type="submit" class="button button--inline block-actions__button">
                             {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.sort_threads }}</span>
                         </button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </section>
 
             <div class="page-controls page-controls--compact">

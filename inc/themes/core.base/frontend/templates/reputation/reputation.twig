@@ -93,9 +93,9 @@
                     <div class="alert alert--no-results">{{ lang.no_reputation_votes }}</div>
                 {% endfor %}
             </div>
-            <div class="block__footer footer-actions">
-                <form action="reputation.php" method="get">
-                    <input type="hidden" name="uid" value="{{ user.uid }}" />
+            <form action="reputation.php" method="get">
+                <input type="hidden" name="uid" value="{{ user.uid }}" />
+                <div class="block__footer block-actions">
                     <div class="select-field">
                         {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="show">
@@ -112,12 +112,12 @@
                             <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
                         </select>
                     </div>
-                    <button type="submit" class="button button--inline">
+                    <button type="submit" class="button button--inline block-actions__button">
                         {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.sort_ratings }}</span>
                     </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </section>
         {{ multipage|raw }}
     </div>

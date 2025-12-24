@@ -28,6 +28,15 @@
         @include bp-medium {
             width: 49%;
         }
+
+        &--selected {
+            background-color: var(--status-highlight-background-color);
+            border-color: var(--status-highlight-border-color);
+        }
+
+        &:has(.checkbox--select-user:checked) {
+            @extend .user-list__user--selected;
+        }
     }
 
     &--single-column {

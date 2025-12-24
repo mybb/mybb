@@ -1,5 +1,5 @@
 {% if breadcrumb %}
-    <div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
+    <div id="breadcrumb_multipage_popup" class="pagination pagination--breadcrumb pagination_breadcrumb breadcrumb__multipage" style="display: none;">
 {% else %}
     <div class="pagination">
 {% endif %}
@@ -11,7 +11,7 @@
         </a>
     {% endif %}
     {% if multipage.from > 1 %}
-        <a href="{{ multipage.start_page_url|raw }}" class="pagination__page pagination__page--first">1</a> {{ lang.multipage_link_start }}
+        <a href="{{ multipage.start_page_url|raw }}" class="pagination__page pagination__page--first">1</a> {{ lang.multipage_link_start|raw }}
     {% endif %}
     {% for pages in multipage.pages %}
         {% if pages.num == page %}
@@ -25,7 +25,7 @@
         {% endif %}
     {% endfor %}
     {% if multipage.to < multipage.total_pages %}
-        {{ lang.multipage_link_end }} <a href="{{ multipage.end_page_url|raw }}" class="pagination__page pagination__page--last">{{ multipage.total_pages }}</a>
+        {{ lang.multipage_link_end|raw }} <a href="{{ multipage.end_page_url|raw }}" class="pagination__page pagination__page--last">{{ multipage.total_pages }}</a>
     {% endif %}
     {% if page < multipage.total_pages %}
         <a href="{{ multipage.next_page_url|raw }}" class="pagination__page pagination__page--next">
@@ -43,7 +43,7 @@
                 </button>
             </form>
         </div>
-        <a href="javascript:void(0)" class="go_page" title="{{ lang.multipage_jump }}">{{ include('partials/icon.twig', {icon: 'chevron-down', class: 'pagination__icon', title: lang.multipage_jump}, with_context = false) }}</a>&nbsp;
+        <a href="javascript:void(0)" class="go_page" title="{{ lang.multipage_jump }}">{{ include('partials/icon.twig', {icon: 'chevron-down', class: 'pagination__icon', title: lang.multipage_jump}, with_context = false) }}</a>
         <script type="text/javascript">
             var go_page = 'go_page_' + $(".go_page").length;
             $(".go_page").last().attr('id', go_page);
