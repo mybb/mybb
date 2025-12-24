@@ -62,19 +62,19 @@
                 <div class="poll block">
                     <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
                     {% if poll.alreadyvoted %}
-                        <div class="poll__row poll__row--information">{{ lang.already_voted }}</div>
+                        <div class="row row--poll-information poll__row poll__row--information">{{ lang.already_voted }}</div>
                     {% elseif poll.nopermission %}
-                        <div class="poll__row poll__row--information">
+                        <div class="row row--poll-information poll__row poll__row--information">
                             {{ lang.no_voting_permission }}
                         </div>
                     {% else %}
-                        <div class="poll__row poll__row--information">
+                        <div class="row row--poll-information poll__row poll__row--information">
                             {{ lang.poll_closed }}
                         </div>
                     {% endif %}
                     <div class="poll__options">
                         {% for option in poll.polloptions %}
-                            <div class="poll__row">
+                            <div class="row row--poll-option poll__row">
                                 <div class="poll__option">
                                     {{ option.option|raw }}
                                     {% if option.votestar == '*' %}
@@ -88,28 +88,30 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="poll__vote">
-                        <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
-                            {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.show_results }}</span>
-                        </a>
-                        {% if modpermissions.canmanagepolls %}
-                            <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
-                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
-                                <span class="button__text">{{ lang.edit_poll }}</span>
+                    <div class="block__footer block-actions poll__vote">
+                        <div class="block-actions__group">
+                            <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary block-actions__button">
+                                {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.show_results }}</span>
                             </a>
-                        {% endif %}
-                        {% if poll.alreadyvoted and mybb.usergroup.canundovotes %}
-                            <a href="polls.php?action=do_undovote&amp;pid={{ poll.pid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary">
-                                {{ include('partials/icon.twig', {icon: 'undo', class: 'button__icon'}, with_context = false) }}
-                                <span class="button__text">{{ lang.undo_vote }}</span>
-                            </a>
-                        {% endif %}
-                        <span class="poll__total">
+                            {% if modpermissions.canmanagepolls %}
+                                <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary block-actions__button">
+                                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.edit_poll }}</span>
+                                </a>
+                            {% endif %}
+                            {% if poll.alreadyvoted and mybb.usergroup.canundovotes %}
+                                <a href="polls.php?action=do_undovote&amp;pid={{ poll.pid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary block-actions__button">
+                                    {{ include('partials/icon.twig', {icon: 'undo', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.undo_vote }}</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="block-actions__group poll__total">
                             {{ lang.total_votes }}
                             {{ poll.totalvotes }}
                             ({{ poll.totpercent }})
-                        </span>
+                        </div>
                     </div>
                 </div>
 
@@ -122,40 +124,44 @@
                         <input type="hidden" name="pid" value="{{ poll.pid }}" />
                         <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
                         {% if poll.timeout %}
-                            <div class="poll__row poll__row--information">{{ trans('poll_closes', poll.dateformat, poll.expiretime) }}</div>
+                            <div class="row row--poll poll__row poll__row--information">{{ trans('poll_closes', poll.dateformat, poll.expiretime) }}</div>
                         {% endif %}
 
                         {% if poll.public %}
-                            <div class="poll__row poll__row--information">{{ lang.public_note|raw }}</div>
+                            <div class="row row--poll poll__row poll__row--information">{{ lang.public_note|raw }}</div>
                         {% endif %}
                         <div class="poll__options">
                             {% for option in poll.polloptions %}
                                 {% if poll.multiple %}
-                                    <div class="poll__row poll__row--cast-vote">
+                                    <div class="row row--poll poll__row poll__row--cast-vote">
                                         <label><input type="checkbox" class="checkbox poll__input" name="option[{{ option.number }}]" id="option_{{ option.number }}" value="1" /> {{ option.option|raw }}</label>
                                     </div>
                                 {% else %}
-                                    <div class="poll__row poll__row--cast-vote">
+                                    <div class="row row--poll poll__row poll__row--cast-vote">
                                         <label><input type="radio" class="radio poll__input" name="option" id="option_{{ option.number }}" value="{{ option.number }}" /> {{ option.option|raw }}</label>
                                     </div>
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        <div class="poll__vote">
-                            <button type="submit" class="button">
-                                {{ include('partials/icon.twig', {icon: 'check-square', class: 'button__icon'}, with_context = false) }}
-                                <span class="button__text">{{ lang.vote }}</span>
-                            </button>
-                            <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
-                                {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
-                                <span class="button__text">{{ lang.show_results }}</span>
-                            </a>
-                            {% if modpermissions.canmanagepolls %}
-                                <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
-                                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
-                                    <span class="button__text">{{ lang.edit_poll }}</span>
+                        <div class="block__footer block-actions poll__vote">
+                            <div class="block-actions__group">
+                                <button type="submit" class="button block-actions__button">
+                                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.vote }}</span>
+                                </button>
+                            </div>
+                            <div class="block-actions__group">
+                                <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary block-actions__button">
+                                    {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.show_results }}</span>
                                 </a>
-                            {% endif %}
+                                {% if modpermissions.canmanagepolls %}
+                                    <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary block-actions__button">
+                                        {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                        <span class="button__text">{{ lang.edit_poll }}</span>
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
                     </form>
                 </section>

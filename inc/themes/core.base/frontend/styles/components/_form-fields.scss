@@ -150,6 +150,10 @@
     &--no-margin {
         margin: 0;
     }
+
+    &--extra-space {
+        margin-bottom: var(--spacing-3);
+    }
 }
 
 select {

@@ -67,9 +67,9 @@
                     <div class="alert alert--no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
-            <div class="block__footer block-actions">
+            <div class="block__footer block-actions block-actions--extra-space">
                 <span class="block-actions__text">{{ lang.with_selected }}</span>
-                <div class="block-actions__action-group">
+                <div class="block-actions__group block-actions__group--separator">
                     <button type="submit" class="button button--inline block-actions__button" name="moveto" value="move">
                         {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.move_to }}</span>
@@ -85,7 +85,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="block-actions__action-group">
+                <div class="block-actions__group block-actions__group--separator">
                     <button type="submit" class="button button--inline block-actions__button" name="delete" value="delete">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.delete }}</span>

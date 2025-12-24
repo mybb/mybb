@@ -82,15 +82,17 @@
                         {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.markforum_read }}</span>
                     </a>
-                    <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--half-width">
-                        {% if subAction == 'add' %}
-                            {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.subscribe_forum }}</span>
-                        {% else %}
-                            {{ include('partials/icon.twig', {icon: 'minus', class: 'button__icon'}, with_context = false) }}
-                            <span class="button__text">{{ lang.unsubscribe_forum }}</span>
-                        {% endif %}
-                    </a>
+                    {% if mybb.user.uid %}
+                        <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--half-width">
+                            {% if subAction == 'add' %}
+                                {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.subscribe_forum }}</span>
+                            {% else %}
+                                {{ include('partials/icon.twig', {icon: 'minus', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.unsubscribe_forum }}</span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
                     {% if foruminfo.password %}
                         <a href="misc.php?action=clearpass&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--full-width">
                             {{ include('partials/icon.twig', {icon: 'key', class: 'button__icon'}, with_context = false) }}
@@ -202,7 +204,7 @@
 
                 {# Threadlist footer #}
                 <form action="forumdisplay.php" method="get" class="compact-form"></form>
-                    <div class="block__footer block-actions">
+                    <div class="block__footer block-actions block-actions--extra-space">
                         <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
                         <h3 class="block-actions__title visually-hidden">{{ lang.sort_threads }}</h3>
                         <div class="select-field">

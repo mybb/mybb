@@ -57,7 +57,7 @@
                         {% for option in optionbits %}
                             <div class="row row--form field">
                                 <h3 class="field__name"><label for="options_{{ option.id }}">{{ lang.option }} {{ option.id }}</label></h3>
-                                <input type="text" class="textbox" name="options[{{ option.id }}]" id="options_{{ option.id }}" value="{{ option.value }}" />
+                                <input type="text" class="textbox textbox--extra-space" name="options[{{ option.id }}]" id="options_{{ option.id }}" value="{{ option.value }}" />
                                 <div class="field__block multi-field">
                                     <input type="text" class="textbox textbox--small" name="votes[{{ option.id }}]" value="{{ option.votes }}" />
                                     {{ lang.votes }}

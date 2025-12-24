@@ -1,27 +1,10 @@
-.add-poll {
-
-    .poll-option {
-        padding-#{$right}: var(--spacing-6);
-    }
-
-    .remove-option {
-        float: #{$right};
-        margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-6)) 0 0);
-        color: var(--danger-color);
-    }
-}
-
 .poll {
     margin-bottom: var(--spacing-6);
-
-    &__question {
-
-    }
 
     &__tag {
         display: inline-block;
         float: $right;
-        padding: 0 var(--spacing-3);
+        padding: var(--spacing-2) var(--spacing-3);
         margin-#{$right}: calc(-1 * var(--spacing-2));
         font-size: var(--font-size-smallest);
         font-weight: normal;
@@ -35,8 +18,8 @@
     }
 
     &__row {
-        padding: var(--spacing-3) var(--spacing-4);
-        border-bottom: var(--border-width-base) solid var(--border-color-3);
+        padding-top: var(--spacing-3);
+        padding-bottom: var(--spacing-3);
 
         &--cast-vote {
             padding: 0;
@@ -56,10 +39,6 @@
         &--information {
             font-size: var(--font-size-small);
             color: var(--alt-font-color-1);
-        }
-
-        &:last-child {
-            border-bottom: none;
         }
     }
 
@@ -99,41 +78,21 @@
         font-size: var(--font-size-small);
     }
 
-    &__vote {
-        padding: var(--spacing-3) var(--spacing-4);
-        background: var(--background-2);
-        border-radius: var(--border-radius);
-        @include clearfix();
-    }
-
-    &__total {
-        float: $right;
-        margin: side-values(var(--spacing-3) 0 var(--spacing-3) var(--spacing-3));
-    }
-
-    // TODO: confirm this styling is needed or if template needs updated
-    &__end-date {
-        padding: var(--spacing-2) var(--spacing-5) 0 var(--spacing-5);
+    &__users {
         font-size: var(--font-size-small);
-        color: var(--alt-font-color-1);
+    }
 
-        i {
-            margin-right: 5px;
-            color: var(--alt-font-color-2);
+    &__vote {
+        justify-content: space-between;
+
+        @include bp-medium-max {
+            flex-direction: column;
         }
     }
 
-    // TODO: confirm this styling is needed or if template needs updated
-    &__closed {
-        display: inline-block;
-        padding: var(--spacing-2) var(--spacing-4);
-        margin: var(--spacing-2);
-        color: var(--invert-font-color);
-        background: var(--danger-color);
-        border-radius: var(--border-radius);
-
-        i {
-            margin-right: 2px;
+    &__total {
+        @include bp-medium-max {
+            order: -1;
         }
     }
 }

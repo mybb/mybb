@@ -40,7 +40,7 @@
                     <div class="alert alert--no-results alert--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
                 {% endfor %}
             </div>
-            <div class="block__footer block-actions">
+            <div class="block__footer block-actions block-actions--extra-space">
                 <h3 class="block-actions__title">{{ lang.with_selected }}</h3>
                 <div class="select-field">
                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}

@@ -45,7 +45,7 @@
     }
 
     &__footer {
-        padding: var(--spacing-4);
+        padding: var(--spacing-3) var(--spacing-5);
         text-align: center;
         background: var(--background-2);
         border-radius: corner-values(0 0 calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)));
@@ -102,6 +102,11 @@
     align-items: center;
     gap: var(--spacing-3);
 
+    &--extra-space {
+        padding-top: var(--spacing-4);
+        padding-bottom: var(--spacing-4);
+    }
+
     &__title {
         display: inline-block;
         padding: 0;
@@ -121,14 +126,17 @@
         margin-#{$right}: var(--spacing-2);
     }
 
-    &__action-group {
-        padding-#{$right}: var(--spacing-4);
-        padding-#{$left}: var(--spacing-2);
+    &__group {
         line-height: 1;
-        border-#{$right}: var(--border-width-base) solid var(--border-color-2);
 
-        &:last-child {
-            border-#{$right}: none;
+        &--separator {
+            padding-#{$right}: var(--spacing-4);
+            padding-#{$left}: var(--spacing-2);
+            border-#{$right}: var(--border-width-base) solid var(--border-color-2);
+
+            &:last-child {
+                border-#{$right}: none;
+            }
         }
     }
 }
