@@ -3525,6 +3525,8 @@ function format_name($username, $usergroup, $displaygroup = 0)
  * @param string $dimensions Dimensions of the avatar, width x height (e.g. 44|44)
  * @param string $max_dimensions The maximum dimensions of the formatted avatar
  * @return array Information for the formatted avatar
+ *
+ * @deprecated Use the render_avatar Twig function instead.
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 {

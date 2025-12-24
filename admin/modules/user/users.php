@@ -1048,8 +1048,7 @@ EOF;
 	{
 		if(!my_validate_url($user['avatar']))
 		{
-			$avatar = format_avatar($user['avatar'], $user['avatardimensions']);
-			$user['avatar'] = $avatar['image'];
+			$user['avatar'] = htmlspecialchars_uni($mybb->get_asset_url($user['avatar']));
 		}
 	}
 	else
@@ -3938,9 +3937,26 @@ function build_users_view($view)
 				$max_dimensions = '34x34';
 			}
 
-			$avatar = format_avatar($user['avatar'], $user['avatardimensions'], $max_dimensions);
+			if(empty($user['avatar']))
+			{
+				$user['avatar'] = $mybb->settings['useravatar'];
 
-			$user['view']['avatar'] = "<img src=\"".$avatar['image']."\" alt=\"\" {$avatar['width_height']} />";
+				$user['avatardimensions'] = $mybb->settings['useravatardims'];
+			}
+
+			$avatar_url = htmlspecialchars_uni($mybb->get_asset_url($user['avatar']));
+			$dimensions = '';
+
+			if(!empty($user['avatardimensions']))
+			{
+				list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
+				list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
+				require_once MYBB_ROOT."inc/functions_image.php";
+				$scaled = scale_image($width, $height, $max_width, $max_height);
+				$dimensions = " width=\"{$scaled['width']}\" height=\"{$scaled['height']}\"";
+			}
+
+			$user['view']['avatar'] = "<img src=\"{$avatar_url}\" alt=\"\"{$dimensions} />";
 
 			// Convert IP's to readable
 			$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
