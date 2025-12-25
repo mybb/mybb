@@ -24,7 +24,7 @@
     &:link,
     &:visited {
         color: var(--button-theme-color-text);
-        background-color: var(--button-theme-color-background);
+        background: var(--button-theme-color-background);
         border-color: var(--button-theme-color-border);
     }
 
@@ -33,8 +33,15 @@
         text-decoration: none;
         outline: none;
         color: var(--button-theme-color-text-hover);
-        background-color: var(--button-theme-color-hover);
+        background: var(--button-theme-color-hover);
         border-color: var(--button-theme-color-border-hover);
+    }
+
+    &--no-click:hover {
+        cursor: default;
+        color: var(--button-theme-color-text);
+        background: var(--button-theme-color-background);
+        border-color: var(--button-theme-color-border);
     }
 
     &__icon {

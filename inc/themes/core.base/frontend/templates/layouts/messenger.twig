@@ -25,8 +25,10 @@
         {% for folder in folders %}
             <li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{{ folder.id }} {% if mybb.input.fid == folder.id or (mybb.input.fid == '' and mybb.input.action == '' and folder.id == 0) %} section-menu__item--active{% endif %}{% if folder.id > 0 %}section-menu__item--sub-item{% endif %}">
                 <a href="private.php?fid={{ folder.id }}" class="section-menu__link">
-                    {% if folder.id == 1 %}
+                    {% if folder.id == 0 %}
                         {{ include('partials/icon.twig', {icon: 'inbox', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% elseif folder.id == 1 %}
+                        {{ include('partials/icon.twig', {icon: 'envelope', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
                     {% elseif folder.id == 2 %}
                         {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
                     {% elseif folder.id == 3 %}

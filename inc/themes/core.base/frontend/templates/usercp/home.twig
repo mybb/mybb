@@ -86,14 +86,14 @@
                         </div>
                         <div class="thread__column thread__column--replies">
                             <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
-                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
+                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
                                 <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
                             </p>
                         </div>
                         <div class="thread__column thread__column--latest">
                             <p class="thread__latest-post">
                                 <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
-                                <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                                <a href="{# {{ get_profile_link(thread.lastposteruid) }} #}" class="avatar-profile-link">
                                     {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
                                 </a>
                                 <span class="thread__latest-post__author">
@@ -105,10 +105,10 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="block__footer-link">
-                <a href="usercp.php?action=subscriptions">
-                    {{ include('partials/icon.twig', {icon: 'plus-square', class: 'icon'}, with_context = false) }}
-                    {{ lang.view_all_subscriptions }}
+            <div class="block__footer">
+                <a href="usercp.php?action=subscriptions" class="button button--basic button--inline">
+                    {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.view_all_subscriptions }}</span>
                 </a>
             </div>
         </section>

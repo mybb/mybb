@@ -30,7 +30,7 @@
         </div>
         <div class="post__body post__body--message post_body" id="deleted_post{{ post.pid }}">
             {{ post.deleted_message }}
-            <div class="post--message__button" id="show_deleted_link_{{ post.pid }}">
+            <div class="post__message-button" id="show_deleted_link_{{ post.pid }}">
                 <a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button">
                     {{ include('partials/icon.twig', {icon: 'eye', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.postbit_show_ignored_post }}</span>

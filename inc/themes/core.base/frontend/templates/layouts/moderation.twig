@@ -68,7 +68,7 @@
         {% if mybb.usergroup.canbanusers %}
             <li class="section-menu__item section-menu__item--banning{% if mybb.input.action == 'banning' or mybb.input.action == 'banuser' %} section-menu__item--active{% endif %}">
                 <a href="modcp.php?action=banning" class="section-menu__link">
-                    {{ include('partials/icon.twig', {icon: 'ban', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'gavel', class: 'section-menu__icon fa-fw'}, with_context = false) }}
                     <span class="section-menu__text">{{ lang.mcp_nav_banning }}</span>
                 </a>
             </li>

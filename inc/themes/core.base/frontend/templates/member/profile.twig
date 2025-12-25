@@ -245,7 +245,7 @@
                         <div class="row">
                             {% if memprofile.showeditprofile %}
                                 <a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}#usernotes" class="button button--inline button--basic">
-                                    {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                                    {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.edit_usernotes }}</span>
                                 </a>
                                 <a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
@@ -278,10 +278,11 @@
                                 <span class="button__text">{{ lang.admin_edit_in_acp }}</span>
                             </a>
                             <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
-                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                {{ include('partials/icon.twig', {icon: 'gavel', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.admin_edit_ban_in_acp }}</span>
                             </a>
                             <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;action=lift&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                {{ include('partials/icon.twig', {icon: 'gavel', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.admin_lift_ban_in_acp }}</span>
                             </a>
                         {% else %}

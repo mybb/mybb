@@ -1,32 +1,28 @@
 .user-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     align-items: stretch;
     justify-content: space-between;
-
-    @include bp-medium {
-        flex-direction: row;
-    }
+    gap: var(--spacing-5);
 
     &--has-container {
-        padding: side-values(var(--spacing-4) var(--spacing-4) 0 var(--spacing-4));
+        padding: var(--spacing-4);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &__user {
         position: relative;
         box-sizing: border-box;
-        width: 100%;
+        flex-basis: 100%;
         padding: var(--spacing-4) var(--spacing-5);
-        margin: side-values(0 0 var(--spacing-5) 0);
         background: var(--background-default);
         border: var(--border-width-base) solid var(--border-color-1);
         border-radius: var(--border-radius);
         @include box-shadow;
 
         @include bp-medium {
-            width: 49%;
+            flex-basis: calc(50% - calc(var(--spacing-5) / 2));
         }
 
         &--selected {

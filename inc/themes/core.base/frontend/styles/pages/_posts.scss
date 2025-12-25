@@ -190,7 +190,7 @@ $post-spacing: 25px;
         padding-top: var(--spacing-3);
         margin-top: var(--spacing-5);
         font-size: var(--font-size-smaller);
-        border-top: 1px dotted var(--border-color-2);
+        border-top: var(--border-width-base) solid var(--border-color-3);
     }
 
     &__foot {
@@ -236,12 +236,13 @@ $post-spacing: 25px;
 
     &--message {
         background: var(--background-1);
-        border: none;
 
-        &__button {
-            display: none;
-            margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-2)) 0 calc(-1 * var(--spacing-2)));
-        }
+        
+    }
+
+    &__message-button {
+        display: none;
+        margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-2)) 0 calc(-1 * var(--spacing-2)));
     }
 
     // TODO: change classes in code

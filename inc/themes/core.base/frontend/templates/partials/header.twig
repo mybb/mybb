@@ -39,7 +39,7 @@
                     {% if mybb.settings.enablecalendar and mybb.usergroup.canviewcalendar %}
                         <li class="main-menu__item">
                             <a href="{{ mybb.settings.bburl }}/calendar.php" class="main-menu__link">
-                                {{ include('partials/icon.twig', {icon: 'calendar-alt', class: 'main-menu__icon fa-fw'}, with_context = false) }}
+                                {{ include('partials/icon.twig', {icon: 'calendar', class: 'main-menu__icon fa-fw'}, with_context = false) }}
                                 <span class="main-menu__text">{{ lang.toplinks_calendar }}</span>
                             </a>
                         </li>
