@@ -29,8 +29,7 @@
                         {% endif %}
 
                         {% if user.invisible == 0 or mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid %}
-                        <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}
-                        {% if loop.last != true %}{{ lang.comma }} {% endif %}
+                            <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}{% if loop.last != true %}{{ lang.comma }}{% endif %}
                         {% endif %}
                     {% endfor %}
                 </p>
