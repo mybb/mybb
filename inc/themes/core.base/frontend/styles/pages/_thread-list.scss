@@ -341,3 +341,7 @@
         }
     }
 }
+
+.thread-prefix {
+    margin-#{$right}: var(--spacing-2);
+}

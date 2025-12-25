@@ -10,7 +10,7 @@
 
     &--float {
         float: $right;
-        margin-#{$left}: 3px;
+        margin-#{$left}: var(--spacing-2);
     }
 
     &--good {
@@ -26,10 +26,6 @@
     &--bad {
         color: var(--invert-font-color);
         background-color: var(--danger-color);
-    }
-
-    &--thread-prefix {
-        margin-#{$right}: var(--spacing-2);
     }
 
     &--thread-status {

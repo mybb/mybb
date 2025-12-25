@@ -8,7 +8,7 @@
         <h3 class="thread__title">
             {# Thread prefix #}
             {% if thread.threadprefix %}
-                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+                <span class="thread-prefix thread-prefix--prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
             {% endif %}
 
             {# Thread title #}

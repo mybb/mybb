@@ -14,6 +14,7 @@
         @include bp-medium {
             display: flex;
             align-items: center;
+            gap: var(--spacing-4);
         }
 
         .select-field {

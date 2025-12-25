@@ -4,7 +4,7 @@
     <div class="thread__column thread__column--primary">
         <h3 class="thread__title {{ new_class }}">
             {% if thread.threadprefix %}
-                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+                <span class="thread-prefix thread-prefix--prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
             {% endif %}
             <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
             {% if thread.lastread and thread.lastpost > thread.lastread %}
