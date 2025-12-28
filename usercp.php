@@ -2686,10 +2686,6 @@ if($mybb->input['action'] == 'editlists')
 
 				while($request = $db->fetch_array($query))
 				{
-					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']),
-						(int)$request['touid']);
-					$request['date'] = my_date('relative', $request['date']);
-
 					$sent_rows[] = $request;
 				}
 
@@ -2721,9 +2717,6 @@ if($mybb->input['action'] == 'editlists')
 
 	while($request = $db->fetch_array($query))
 	{
-		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
-		$request['date'] = my_date('relative', $request['date']);
-
 		$received_rows[] = $request;
 	}
 
@@ -2736,9 +2729,6 @@ if($mybb->input['action'] == 'editlists')
 
 	while($request = $db->fetch_array($query))
 	{
-		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-		$request['date'] = my_date('relative', $request['date']);
-
 		$sent_rows[] = $request;
 	}
 
@@ -3487,7 +3477,7 @@ if($mybb->input['action'] == "securitylog")
 	}
 
     $multipage = $multipage ?? '';
-    
+
 	$securitylog = [];
 	$query = $db->query("
         SELECT *
