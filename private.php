@@ -2119,7 +2119,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Cache users in multiple recipients for sent & drafts folder
-	if($folder == 2 || $folder == 3)
+	if($fid == 2 || $fid == 3)
 	{
 		if($sortfield == "username")
 		{
@@ -2136,7 +2136,7 @@ if(!$mybb->input['action'])
                     SELECT pm.recipients
                     FROM ".TABLE_PREFIX."privatemessages pm
                     LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-                    WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
+                    WHERE pm.folder='{$fid}' AND pm.uid='{$mybb->user['uid']}'
                     ORDER BY {$u}{$sortfield} {$sortordernow}
                     LIMIT {$start}, {$perpage}"
 		);
@@ -2167,7 +2167,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	if($folder == 2 || $folder == 3)
+	if($fid == 2 || $fid == 3)
 	{
 		if($sortfield == "username")
 		{
@@ -2228,7 +2228,7 @@ if(!$mybb->input['action'])
 			}
 
 			$message['multiplerecipients'] = false;
-			if($folder == 2 || $folder == 3)
+			if($fid == 2 || $fid == 3)
 			{
 				// Sent Items or Drafts Folder Check
 				$recipients = my_unserialize($message['recipients']);
