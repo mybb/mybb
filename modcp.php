@@ -2650,6 +2650,7 @@ if($mybb->input['action'] == "editprofile")
 	);
 
 	$periods = array(
+		"" => $lang->no_change,
 		"hours" => $lang->expire_hours,
 		"days" => $lang->expire_days,
 		"weeks" => $lang->expire_weeks,
@@ -3332,7 +3333,7 @@ if($mybb->input['action'] == "ipsearch")
 
 					if(empty($ipaddress['subject']))
 					{
-						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+						$ipaddress['subject'] = $ipaddress['threadsubject'];
 					}
 
 					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);

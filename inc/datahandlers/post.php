@@ -115,6 +115,13 @@ class PostDataHandler extends DataHandler
 	public $first_post = false;
 
 	/**
+	 * Maximum length for subjects
+	 *
+	 * @var int
+	 */
+	public $max_subject_length = 120;
+
+	/**
 	 * Verifies the author of a post and fetches the username if necessary.
 	 *
 	 * @return boolean True if the author information is valid, false if invalid.
@@ -188,7 +195,7 @@ class PostDataHandler extends DataHandler
 			elseif(my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
-				$subject = "RE: ".$thread['subject'];
+				$subject = $thread['subject'];
 			}
 		}
 
@@ -198,7 +205,7 @@ class PostDataHandler extends DataHandler
 			if(my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
-				$subject = "RE: ".$thread['subject'];
+				$subject = $thread['subject'];
 			}
 		}
 
@@ -212,21 +219,10 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		// If post is reply and begins with "RE: ", remove 4 from subject length.
-		$subject_length = my_strlen($subject);
-		if($this->action == "post")
-		{
-			$position_re = my_strpos($subject, "RE: ");
-			if($position_re !== false && $position_re == 0)
-			{
-				$subject_length = $subject_length - 4;
-			}
-		}
-
-		if($subject_length > 85)
+		if(my_strlen($subject) > $this->max_subject_length)
 		{
 			// Subject is too long
-			$this->set_error('subject_too_long', my_strlen($subject));
+			$this->set_error('subject_too_long', [my_number_format($this->max_subject_length), my_strlen($subject)]);
 			return false;
 		}
 

@@ -79,12 +79,6 @@ if($thread['prefix'] != 0)
 }
 
 $thread['reply_subject'] = $parser->parse_badwords($thread['subject']);
-// Subject too long? Shorten it to avoid error message
-if(my_strlen($thread['reply_subject']) > 85)
-{
-	$thread['reply_subject'] = my_substr($thread['reply_subject'], 0, 82).'...';
-}
-
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 

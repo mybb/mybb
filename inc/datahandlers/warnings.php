@@ -684,9 +684,7 @@ class WarningsHandler extends DataHandler
 		}
 
 		// Update the user's unacknowledged warnings count
-		$query = $db->simple_select("warnings", "COUNT(wid) AS count", "uid={$user['uid']} AND requiresacknowledgement=1 AND acknowledged=0 and daterevoked=0");
-		$result = $db->fetch_array($query);
-		$this->updated_user['unacknowledgedwarnings'] = (int)$result['count'];
+		$this->update_unacknowledged_warnings_count($user['uid']);
 
 		$plugins->run_hooks('datahandler_warnings_update_user', $this);
 		// Save updated details
@@ -768,6 +766,24 @@ class WarningsHandler extends DataHandler
 	}
 
 	/**
+	 * Updates the unacknowledged warnings count
+	 *
+	 * @param int $uid The user to be updated
+	 *
+	 * @return int Unacknowledged warnings count
+	 */
+	function update_unacknowledged_warnings_count(int $uid) : int
+	{
+		global $db;
+
+		$query = $db->simple_select("warnings", "COUNT(wid) AS count", "uid={$uid} AND requiresacknowledgement=1 AND acknowledged=0 and daterevoked=0");
+		$result = $db->fetch_array($query);
+		$db->update_query("users", ['unacknowledgedwarnings' => (int)$result['count']], "uid={$uid}");
+
+		return (int)$result['count'];
+	}
+
+	/**
 	 * Acknowledges a warning
 	 *
 	 */
@@ -782,6 +798,7 @@ class WarningsHandler extends DataHandler
 
 		$plugins->run_hooks("datahandler_warnings_acknowledge_warning", $this);
 
-		$this->update_user();
+		// Update the user's unacknowledged warnings count
+		$this->update_unacknowledged_warnings_count($warning['uid']);
 	}
 }

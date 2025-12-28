@@ -193,10 +193,10 @@
                             <label><input type="checkbox" name="suspendsignature" value="1"{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %} checked{% endif %} class="checkbox" onclick="toggleAction();" /> {{ lang.suspend_signature }}</label>
                         </p>
                         <div class="field__block" id="suspend_action">
-                            {% if user.suspendsigtime %}
+                            {% if user.suspendsignature %}
                                 <p class="field__value">
                                     {% if user.suspendsigtime == 0 %}
-                                        {{ lang.suspendsignature_perm }}
+                                        {{ lang.suspendsignature_perm|raw }}
                                     {% else %}
                                         {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
                                     {% endif %}
@@ -210,7 +210,13 @@
                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="suspendsignature_period">
                                         {% for key, value in periods %}
-                                            <option value="{{ key }}"{% if key == mybb.input.suspendsignature_period %} selected{% endif %}>{{ value }}</option>
+                                            <option value="{{ key }}"
+                                                {% if key == mybb.input.suspendsignature_period ?? (user.suspendsignature ? '' : 'never') %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ value }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -233,7 +239,7 @@
                                 {% if user[opt.option] %}
                                     <p class="field__value">
                                         {% if user[opt.length] == 0 %}
-                                            {{ attribute(lang, opt.option ~ '_perm') }}
+                                            {{ attribute(lang, opt.option ~ '_perm')|raw }}
                                         {% else %}
                                             {{ trans(opt.option ~ '_for', user[opt.length]|my_date) }}
                                         {% endif %}
@@ -246,7 +252,13 @@
                                         {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="{{ opt.select_option }}_period">
                                             {% for key, value in periods %}
-                                                <option value="{{ key }}"{% if key == mybb.input[opt.select_option ~ '_period'] %} selected{% endif %}>{{ value }}</option>
+                                                <option value="{{ key }}"
+                                                    {% if key == mybb.input[opt.select_option ~ '_period'] ?? (user[opt.option] ? '' : 'never') %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    {{ value }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>

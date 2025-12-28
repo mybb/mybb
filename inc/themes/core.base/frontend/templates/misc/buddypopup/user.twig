@@ -1,6 +1,6 @@
 <div class="user-list__user">
     <a href="{{ get_profile_link(buddy.uid) }}" class="avatar-profile-link">
-        {{ render_avatar(url=buddy.avatar.image, alt=buddy.username, class='avatar--smallest') }}
+        {{ render_avatar(url=buddy.avatar, alt=buddy.username, class='avatar--smallest') }}
     </a>
     {% if buddy.show_pm %}
         <a href="private.php?action=send&amp;uid={{ buddy.uid }}" target="_blank" onclick="window.opener.location.href=this.href; return false;" class="user-list__shortcut" title="{{ lang.pm_buddy }}">

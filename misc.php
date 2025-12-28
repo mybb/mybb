@@ -533,8 +533,6 @@ elseif($mybb->input['action'] == "buddypopup")
 				$buddy['last_active'] = my_date('relative', $buddy['lastactive']);
 			}
 
-			$buddy['avatar'] = format_avatar($buddy['avatar'], $buddy['avatardimensions'], '44x44');
-
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				$buddys['online'][] = $buddy;

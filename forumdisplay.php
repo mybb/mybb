@@ -944,7 +944,7 @@ if(!empty($threadCache) && is_array($threadCache))
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 		// Determine the folder
-		$thread['folder'] = [];
+		$thread['folder'] = ['value' => '', 'label' => ''];
 		if(isset($thread['doticon']))
 		{
 			$thread['folder']['value'] = "dot_";

@@ -815,16 +815,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					// If this post was the post for which a quote button was clicked, set the subject
 					if($replyto == $quoted_post['pid'])
 					{
-						$newreply['subject'] = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
-						// Subject too long? Shorten it to avoid error message
-						if(my_strlen($newreply['subject']) > 85)
-						{
-							$newreply['subject'] = my_substr($newreply['subject'], 0, 82).'...';
-						}
-
-						$newreply['subject'] = "RE: ".$newreply['subject'];
+						$newreply['subject'] = $quoted_post['subject'];
 					}
-
 					$newreply['message'] .= parse_quoted_message($quoted_post);
 					$newreply['quoted_ids'][] = $quoted_post['pid'];
 				}
@@ -857,13 +849,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$newreply['multiquote_quote'] = $lang->multiquote_external_quote;
 				}
 			}
-
-			if(is_array($newreply['quoted_ids']) && count($newreply['quoted_ids']) > 0)
-			{
-				$newreply['quoted_ids'] = implode("|", $newreply['quoted_ids']);
-			}
 		}
 	}
+
+	$newreply['quoted_ids'] = is_array($newreply['quoted_ids']) ? implode("|", $newreply['quoted_ids']) : '';
 
 	if(isset($mybb->input['quoted_ids']))
 	{
@@ -945,18 +934,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else
 		{
 			$newreply['subject'] = $thread_subject;
-			// Subject too long? Shorten it to avoid error message
-			if(my_strlen($newreply['subject']) > 85)
-			{
-				$newreply['subject'] = my_substr($newreply['subject'], 0, 82).'...';
-			}
-
-			$newreply['subject'] = "RE: ".$newreply['subject'];
 		}
 	}
 
 	// Preview a post that was written.
 	$newreply['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
@@ -1483,7 +1466,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		'attachments' => $attachments,
 		'posts' => $posts,
 		'captcha' => $captcha,
-		'prefixselect' => $prefixselect,
 		'posticons' => $posticons,
         'post_javascript' => $post_javascript,
 	]));

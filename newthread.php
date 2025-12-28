@@ -711,6 +711,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	// If we're previewing a post then generate the preview.
 	$newthread['preview'] = false;
+	$postbit = '';
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
@@ -900,14 +901,14 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 
 		$newthread['showcloseoption'] = false;
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
+		if(is_moderator($fid, "canopenclosethreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showcloseoption'] = true;
 		}
 
 		$newthread['showstickoption'] = false;
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
+		if(is_moderator($fid, "canstickunstickthreads"))
 		{
 			$newthread['showmodoptions'] = true;
 			$newthread['showstickoption'] = true;

@@ -154,7 +154,7 @@
     }
 
     &__acknowledgement--bad {
-        color: $danger-color;
+        color: var(--danger-color);
     }
 
     &__details {
