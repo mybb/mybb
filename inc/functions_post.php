@@ -1020,7 +1020,7 @@ function build_postbit($post, $post_type=0)
  */
 function get_post_attachments($id, &$post)
 {
-	global $attachcache, $mybb, $forumpermissions, $lang;
+	global $attachcache, $mybb, $attachtypes, $forumpermissions, $lang;
 
 	$attached = [
 		'validationcount' => 0
@@ -1037,17 +1037,25 @@ function get_post_attachments($id, &$post)
 		return [];
 	}
 
+	if(!$attachtypes)
+	{
+		$attachtypes = $mybb->cache->read("attachtypes");
+	}
+
 	foreach($attachcache[$id] as $aid => $attachment) {
 		if(!$attachment['visible']) {
 			$attached['validationcount']++;
 			continue;
 		}
 
-		$ext = get_extension($attachment['filename']);
-		$isImage = in_array($ext, ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
+		$attachment['extension'] = get_extension($attachment['filename']);
+
+		$attachment['attach_type_id'] = $attachtypes[$attachment['extension']]['atid'] ?? 0;
+
+		$isImage = in_array($attachment['extension'], ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
 
 		$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-		$attachment['icon'] = get_attachment_icon($ext);
+		$attachment['icon'] = get_attachment_icon($attachment['extension']);
 		$attachment['downloads'] = my_number_format($attachment['downloads']);
 
 		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $post['dateline']);
