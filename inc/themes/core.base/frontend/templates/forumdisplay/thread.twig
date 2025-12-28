@@ -13,7 +13,7 @@
 
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
-                <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
+                <a href="{{ get_thread_link(thread.tid) }}">{{ thread.subject }}</a>
             </span>
 
             {# Deleted thread #}
@@ -83,10 +83,18 @@
                 {% for page in 1..pagesStop %}
                     <a href="{{ get_thread_link(thread.tid, page) }}" class="thread__page-link">{{ page }}</a>
                 {% endfor %}
-                {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
+                {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ get_thread_link(thread.tid) }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
             </span>
         {% endif %}
-        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ thread.start_datetime|raw }}</p>
+        <p class="thread__author">
+            {{ lang.by }}
+            {% if thread.uid > 0 %}
+                <a href="{{ get_profile_link(thread.uid) }}">{{ thread.uid|format_name }}</a>
+            {% else %}
+                {{ thread.threadusername ?? lang.guest }}
+            {% endif %}
+            {{ thread.dateline|my_date }}
+        </p>
     </div>
     {% if thread.moved %}
         <div class="thread__column thread__column--replies">&nbsp;</div>
@@ -113,12 +121,12 @@
             </a>
             <span class="thread__latest-post__author">
                 {% if thread.lastposteruid > 0 %}
-                    {{ thread.lastposter|raw }}
+                    <a href="{{ get_profile_link(thread.lastposteruid) }}">{{ thread.lastposteruid|format_name }}</a>
                 {% else %}
-                    {{ lang.guest }}
+                    {{ thread.lastposter ?? lang.guest }}
                 {% endif %}
             </span>
-            <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
+            <a href="{{ get_thread_link(thread.tid, 0, 'lastpost') }}" class="thread__latest-post__date">{{ thread.lastpost|my_date }}</a>
         </p>
     </div>
     {% include 'forumdisplay/thread_modbit.twig' %}
