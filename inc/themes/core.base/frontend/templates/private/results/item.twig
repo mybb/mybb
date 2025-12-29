@@ -13,6 +13,40 @@
                 <span class="thread__deny-receipt">[<a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a>]</span>
             {% endif %}
         </h3>
+        <p class="message__username">
+            {% if message.folder == 2 or message.folder == 3 %}
+                <span class="message__label message__label--to">{{ lang.to }}</span>
+            {% else %}
+                <span class="message__label message__label--from">{{ lang.from }}</span>
+            {% endif %}
+            {# TO DO: Multiple recipients dropdown #}
+            {% if message.multiplerecipients %}
+                <em><a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients }}</a></em>
+                <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
+                    <div class="tcat"><strong>{{ lang.to }}</strong></div>
+                    {% for user in messages.tousers %}
+                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                    {% endfor %}
+                    {% if message.bbcusers %}
+                        <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
+                    {% endif %}
+                    {% for user in messages.bbcusers %}
+                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                    {% endfor %}
+                </div>
+                <script type="text/javascript">
+                <!--
+                    $("#private_message_{{ message.pmid }}").popupMenu();
+                // -->
+                </script>
+            {% else %}
+                {{ message.username|raw }}
+            {% endif %}
+        </p>
+        <p class="message__folder">
+            <span class="message__label message__label--in">{{ lang.in }}</span>
+            <a href="private.php?fid={{ message.folder }}">{{ message.foldername }}</a>
+        </p>
     </div>
     <div class="thread__icons">
         {% if message.hasicon %}
