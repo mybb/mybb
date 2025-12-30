@@ -306,3 +306,9 @@ $post-spacing: 25px;
         }
     }
 }
+
+.highlight {
+    padding-top: var(--spacing-1);
+    padding-bottom: var(--spacing-1);
+    background: var(--text-highlight-color);
+}

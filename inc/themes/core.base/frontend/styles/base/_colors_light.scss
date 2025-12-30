@@ -31,6 +31,9 @@ $scheme: 'light';
 @include set-color-property(alt-font-color-2, shade-3, $scheme, true);
 @include set-color-property(alt-font-color-3, shade-4, $scheme, true);
 
+// Text highlight color
+@include set-color-property(text-highlight-color, #ffff62, $scheme);
+
 // Link colors
 @include set-color-property(link-default-color, primary-color, $scheme, true);
 @include set-color-property(link-hover-color, secondary-color, $scheme, true);
