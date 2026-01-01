@@ -46,10 +46,11 @@
         display: none;
         width: auto;
         padding: side-values(var(--spacing-1) 0 var(--spacing-1)) var(--spacing-3);
+        margin: var(--border-width-base);
         cursor: text;
         background: var(--background-default);
-        border: var(--border-width-base) solid var(--border-color-1);
         border-radius: var(--border-radius);
+        box-shadow: 0 0 3px rgba(0,0,0,0.06);
 
         @include bp-medium {
             display: block;

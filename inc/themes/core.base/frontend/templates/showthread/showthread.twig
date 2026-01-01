@@ -90,7 +90,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="block__footer block-actions poll__vote">
+                    <div class="block__footer block-actions block-actions--groups poll__vote">
                         <div class="block-actions__group">
                             <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary block-actions__button">
                                 {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
@@ -145,7 +145,7 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        <div class="block__footer block-actions poll__vote">
+                        <div class="block__footer block-actions block-actions--groups poll__vote">
                             <div class="block-actions__group">
                                 <button type="submit" class="button block-actions__button">
                                     {{ include('partials/icon.twig', {icon: 'check-square', class: 'button__icon'}, with_context = false) }}

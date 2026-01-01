@@ -16,6 +16,15 @@
         border-bottom: var(--border-width-thick) solid var(--border-color-2);
     }
 
+    .column-headings,
+    .thread {
+        padding-#{$left}: 60px;
+
+        @include bp-small {
+            padding-#{$left}: var(--spacing-8);
+        }
+    }
+
     // Column widths
     .column-headings__column,
     .thread__column {
@@ -67,16 +76,11 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: space-between;
-        padding-#{$left}: 66px;
-
-        // &:last-child {
-        //     border-bottom: none;
-        // }
+        // padding-#{$left}: 66px;
 
         @include bp-small {
             flex-direction: row;
             align-items: center;
-            padding-#{$left}: var(--spacing-8);
         }
 
         &__column {

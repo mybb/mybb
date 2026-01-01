@@ -67,8 +67,8 @@
                     <div class="alert alert--no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
-            <div class="block__footer block-actions block-actions--extra-space">
-                <span class="block-actions__text">{{ lang.with_selected }}</span>
+            <div class="block__footer block-actions block-actions--extra-space block-actions--groups">
+                <span class="block-actions__title">{{ lang.with_selected }}</span>
                 <div class="block-actions__group block-actions__group--separator">
                     <button type="submit" class="button button--inline block-actions__button" name="moveto" value="move">
                         {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
@@ -112,23 +112,5 @@
             </div>
         {% endapply %}
     {% endif %}
-
-    <div class="page-controls">
-        <div class="page-buttons">
-            <a href="private.php?action=folders" class="button button--basic button--inline">
-                {{ include('partials/icon.twig', {icon: 'folder-open', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.manage_folders }}</span>
-            </a>
-            {% if mybb.user.totalpms %}
-                <a href="private.php?action=empty" class="button button--basic button--inline">
-                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.empty_folders2 }}</span>
-                </a>
-                <a href="private.php?action=export" class="button button--basic button--inline">
-                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.export_messages2 }}</span>
-                </a>
-            {% endif %}
-        </div>
     </div>
 {% endblock messengerBody %}

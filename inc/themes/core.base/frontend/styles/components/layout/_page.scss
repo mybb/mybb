@@ -76,30 +76,32 @@ textarea {
 .main {
     padding: side-values(var(--spacing-6) 0 var(--spacing-4) 0);
 
-    @include bp-medium {
+    .page-columns {
+        display: flex;
+        flex-direction: column;
 
-        .page-content {
+        @include bp-medium {
+            flex-direction: row;
+            gap: 3%;
+        }
+    }
 
-            &--sidebar {
-                float: $left;
-                width: 62%;
-            }
+    .page-content {
+        flex: 1;
 
-            &--centered {
-                float: none;
+        &--centered {
+
+            @include bp-medium {
                 width: 60%;
                 margin: auto auto;
             }
-
-            &--menu {
-                float: $left;
-                width: 75%;
-            }
         }
+    }
 
-        .page-sidebar {
-            float: $right;
-            width: 35%;
+    .page-sidebar {
+
+        @include bp-medium {
+            flex: 0 0 35%;
             margin-top: 0;
         }
     }

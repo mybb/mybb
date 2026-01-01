@@ -1,9 +1,8 @@
 .section-menu {
 
     @include bp-medium {
-        float: $left;
-        width: 22%;
-        margin-#{$right}: 3%;
+        flex: 0 0 22%;
+        min-width: 200px;
     }
 
     &__title {

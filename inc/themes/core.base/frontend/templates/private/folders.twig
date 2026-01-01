@@ -18,10 +18,6 @@
                     {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.empty_folders2 }}</span>
                 </a>
-                <a href="private.php?action=export" class="button button--secondary">
-                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.export_messages2 }}</span>
-                </a>
             </div>
         </div>
     {% endif %}

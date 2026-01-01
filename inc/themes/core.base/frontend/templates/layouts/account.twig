@@ -1,88 +1,89 @@
 {% extends 'layouts/master.twig' %}
 
 {% block body %}
-
-<nav class="section-menu">
-    <input type="checkbox" id="show-section-menu" class="section-menu__checkbox">
-    <h1 class="section-menu__title">
-        <label for="show-section-menu" class="section-menu__toggle">
-            {{ include('partials/icon.twig', {icon: 'bars', class: 'section-menu__menu-icon fa-fw'}, with_context = false) }}
-            {{ lang.welcome_usercp }}
-            {{ include('partials/icon.twig', {icon: 'minus', class: 'section-menu__collapse fa-fw'}, with_context = false) }}
-            {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__expand fa-fw'}, with_context = false) }}
-        </label>
-    </h1>
-    <ul class="section-menu__links sidebar-navigation">
-        <li class="section-menu__item section-menu__item--dashboard{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
-             <a href="usercp.php" class="section-menu__link">
-                 {{ include('partials/icon.twig', {icon: 'tachometer-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                 <span class="section-menu__text">{{ lang.nav_dashboard }}</span>
-             </a>
-        </li>
-        <li class="section-menu__item section-menu__item--profile{% if mybb.input.action == 'profile' or mybb.input.action == 'avatar' or mybb.input.action == 'editsig' or mybb.input.action == 'changename' or mybb.input.action == 'email' or mybb.input.action == 'password' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=profile" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'user', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_profile }}</span>
-            </a>
-        </li>
-        <li class="section-menu__item section-menu__item--preferences{% if mybb.input.action == 'options' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=options" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'sliders-h', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_options }}</span>
-            </a>
-        </li>
-        <li class="section-menu__item section-menu__item--groups{% if mybb.input.action == 'usergroups' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=usergroups" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'users', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_groups }}</span>
-            </a>
-        </li>
-        <li class="section-menu__item section-menu__item--buddy-ignore{% if mybb.input.action == 'editlists' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=editlists" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'heart', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_editlists }}</span>
-            </a>
-        </li>
-        {% if mybb.settings.enableattachments %}
-        <li class="section-menu__item section-menu__item--attachments{% if mybb.input.action == 'attachments' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=attachments" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'paperclip', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_attachments }}</span>
-            </a>
-        </li>
-        {% endif %}
-        <li class="section-menu__item section-menu__item--drafts{% if mybb.input.action == 'drafts' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=drafts" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'file', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_drafts }}</span>
-            </a>
-        </li>
-        <li class="section-menu__item section-menu__item--subscriptions{% if mybb.input.action == 'subscriptions' or mybb.input.action == 'forumsubscriptions' or mybb.input.action == 'addsubscription' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=subscriptions" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_subscriptions }}</span>
-            </a>
-        </li>
-        {% if mybb.user.warningpoints %}
-            <li class="section-menu__item section-menu__item--warninglog{% if mybb.input.action == 'warninglog' %} section-menu__item--active{% endif %}">
-                <a href="usercp.php?action=warninglog" class="section-menu__link">
-                    {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                    <span class="section-menu__text">{{ lang.nav_warninglog }}</span>
+<div class="page-columns">
+    <nav class="section-menu">
+        <input type="checkbox" id="show-section-menu" class="section-menu__checkbox">
+        <h1 class="section-menu__title">
+            <label for="show-section-menu" class="section-menu__toggle">
+                {{ include('partials/icon.twig', {icon: 'bars', class: 'section-menu__menu-icon fa-fw'}, with_context = false) }}
+                {{ lang.welcome_usercp }}
+                {{ include('partials/icon.twig', {icon: 'minus', class: 'section-menu__collapse fa-fw'}, with_context = false) }}
+                {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__expand fa-fw'}, with_context = false) }}
+            </label>
+        </h1>
+        <ul class="section-menu__links sidebar-navigation">
+            <li class="section-menu__item section-menu__item--dashboard{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'tachometer-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_dashboard }}</span>
                 </a>
             </li>
-        {% endif %}
-        <li class="section-menu__item section-menu__item--securitylog{% if mybb.input.action == 'securitylog' %} section-menu__item--active{% endif %}">
-            <a href="usercp.php?action=securitylog" class="section-menu__link">
-                {{ include('partials/icon.twig', {icon: 'file-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.nav_securitylog }}</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+            <li class="section-menu__item section-menu__item--profile{% if mybb.input.action == 'profile' or mybb.input.action == 'avatar' or mybb.input.action == 'editsig' or mybb.input.action == 'changename' or mybb.input.action == 'email' or mybb.input.action == 'password' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=profile" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'user', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_profile }}</span>
+                </a>
+            </li>
+            <li class="section-menu__item section-menu__item--preferences{% if mybb.input.action == 'options' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=options" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'sliders-h', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_options }}</span>
+                </a>
+            </li>
+            <li class="section-menu__item section-menu__item--groups{% if mybb.input.action == 'usergroups' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=usergroups" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'users', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_groups }}</span>
+                </a>
+            </li>
+            <li class="section-menu__item section-menu__item--buddy-ignore{% if mybb.input.action == 'editlists' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=editlists" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'heart', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_editlists }}</span>
+                </a>
+            </li>
+            {% if mybb.settings.enableattachments %}
+            <li class="section-menu__item section-menu__item--attachments{% if mybb.input.action == 'attachments' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=attachments" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'paperclip', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_attachments }}</span>
+                </a>
+            </li>
+            {% endif %}
+            <li class="section-menu__item section-menu__item--drafts{% if mybb.input.action == 'drafts' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=drafts" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'file', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_drafts }}</span>
+                </a>
+            </li>
+            <li class="section-menu__item section-menu__item--subscriptions{% if mybb.input.action == 'subscriptions' or mybb.input.action == 'forumsubscriptions' or mybb.input.action == 'addsubscription' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=subscriptions" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_subscriptions }}</span>
+                </a>
+            </li>
+            {% if mybb.user.warningpoints %}
+                <li class="section-menu__item section-menu__item--warninglog{% if mybb.input.action == 'warninglog' %} section-menu__item--active{% endif %}">
+                    <a href="usercp.php?action=warninglog" class="section-menu__link">
+                        {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                        <span class="section-menu__text">{{ lang.nav_warninglog }}</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="section-menu__item section-menu__item--securitylog{% if mybb.input.action == 'securitylog' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=securitylog" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'file-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_securitylog }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-<div class="page-content page-content--menu">
-    {% block accountHeader %}{% endblock accountHeader %}
-    {% block accountBody %}{% endblock accountBody %}
+    <div class="page-content page-content--menu">
+        {% block accountHeader %}{% endblock accountHeader %}
+        {% block accountBody %}{% endblock accountBody %}
+    </div>
 </div>
 
 {% endblock body %}

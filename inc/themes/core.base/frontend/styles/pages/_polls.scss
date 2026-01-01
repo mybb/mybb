@@ -84,10 +84,6 @@
 
     &__vote {
         justify-content: space-between;
-
-        @include bp-medium-max {
-            flex-direction: column;
-        }
     }
 
     &__total {

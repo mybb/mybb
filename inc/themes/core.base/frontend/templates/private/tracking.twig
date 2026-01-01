@@ -40,7 +40,7 @@
             </div>
             {% if unreadmessages %}
                 <div class="block__footer block-actions block-actions--extra-space">
-                    <span class="block-actions__text">{{ lang.with_selected }}</span>
+                    <span class="block-actions__title">{{ lang.with_selected }}</span>
                     <button type="submit" class="button button--inline block-actions__button" name="stoptrackingunread" value="stop">
                         {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.stop_tracking }}</span>
@@ -83,7 +83,7 @@
                 {% endfor %}
                 {% if readmessages %}
                     <div class="block__footer block-actions block-actions--extra-space">
-                        <span class="block-actions__text">{{ lang.with_selected }}</span>
+                        <span class="block-actions__title">{{ lang.with_selected }}</span>
                         <button type="submit" class="button button--inline block-actions__button" name="stoptracking" value="stop">
                             {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.stop_tracking }}</span>
