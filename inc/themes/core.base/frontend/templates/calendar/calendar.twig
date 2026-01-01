@@ -55,7 +55,7 @@
                             </a>
                         </div>
                         {% for day in week.days %}
-                            <div class="calendar__day {{ day.day_class }}">
+                            <div class="calendar__day calendar__day--{{ day.day_class }}">
                                 <span class="calendar__day-of-week">{{ weekday_headers[i] }}</span>
                                 <h2 class="calendar__day-heading"><a href="{{ day.day_link|raw }}" class="calendar__day-link"><span class="calendar__month">{{ day.month }}</span> {{ day.day }}</a></h2>
                                 {% if day.bday_count > 0 %}
@@ -65,7 +65,7 @@
                                     <p class="calendar__event"><a href="{{ calendar.link }}" class="calendar__event-link calendar__event-link--multiple">{{ day.total_events }} {{ day.event_lang }} {{ include('partials/icon.twig', {icon: 'calendar', class: 'calendar__event-icon'}, with_context = false) }}</a></p>
                                 {% else %}
                                     {% for event in day.events %}
-                                        <p class="calendar__event {{ event.event_class }}"><a href="{{ event.eventlink|raw }}" title="{{ event.fullname }}" class="calendar__event-link">{{ event.name }}</a></p>
+                                        <p class="calendar__event event {{ event.event_class }}"><a href="{{ event.eventlink|raw }}" title="{{ event.fullname }}" class="calendar__event-link">{{ event.name }}</a></p>
                                     {% endfor %}
                                 {% endif %}
                             </div>

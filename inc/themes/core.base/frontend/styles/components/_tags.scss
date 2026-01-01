@@ -37,7 +37,8 @@
         margin-bottom: var(--spacing-3);
     }
 
-    &--deleted {
+    &--deleted,
+    &--private {
         color: var(--status-deleted-font-color);
         background-color: var(--status-deleted-background-color);
     }

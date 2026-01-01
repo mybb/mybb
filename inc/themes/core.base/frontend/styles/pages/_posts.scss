@@ -1,14 +1,13 @@
 // these values are used to change border width with post status styles
 $avatar-margin-small: 80px;
 $avatar-margin-medium: 110px;
-$post-spacing: 25px;
 
 .post-list {
     clear: both;
 }
 
 .post {
-    margin-bottom: $post-spacing;
+    margin-bottom: var(--spacing-6);
     background-color: var(--background-default);
     border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);
@@ -210,7 +209,11 @@ $post-spacing: 25px;
     &--highlight,
     &--soft-deleted,
     &--awaiting-approval {
-        margin: side-values(-1px -1px ($post-spacing - 1) -1px);
+        margin: side-values(
+            calc(var(--border-width-base) - var(--border-width-thick))
+            calc(var(--border-width-base) - var(--border-width-thick))
+            calc(var(--spacing-6) - calc(var(--border-width-thick) - var(--border-width-base)))
+            calc(var(--border-width-base) - var(--border-width-thick)));
         border-width: var(--border-width-thick);
 
         @include bp-small {
@@ -235,9 +238,7 @@ $post-spacing: 25px;
     }
 
     &--message {
-        background: var(--background-1);
-
-        
+        background: var(--background-1);        
     }
 
     &__message-button {
