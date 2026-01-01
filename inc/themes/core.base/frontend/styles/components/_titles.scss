@@ -120,7 +120,6 @@
     }
 
     &--legend {
-        margin-bottom: var(--spacing-4);
         font-size: var(--font-size-regular);
         font-weight: normal;
         color: var(--alt-font-color-1);
@@ -129,8 +128,10 @@
             content: ":";
         }
 
-        @include bp-medium {
-            margin-bottom: 0;
+        @include bp-medium-max {
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-smaller);
+            text-transform: uppercase;
         }
     }
 }

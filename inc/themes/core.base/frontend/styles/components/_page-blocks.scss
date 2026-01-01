@@ -223,6 +223,20 @@
             align-items: center;
         }
     }
+
+    &--jump-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        @include bp-medium {
+            flex-direction: row;
+            align-items: center;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4) var(--spacing-5);
+        }
+    }
 }
 
 .page-controls {

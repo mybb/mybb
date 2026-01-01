@@ -9,11 +9,7 @@
 }
 
 .calendar {
-    background: var(--background-default);
-    border: var(--border-width-base) solid var(--border-color-1);
-    border-radius: var(--border-radius);
-    @include box-shadow;
-
+    
     &__days-of-week {
         display: flex;
         padding: var(--spacing-3) var(--spacing-4);
