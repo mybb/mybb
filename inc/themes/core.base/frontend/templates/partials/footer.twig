@@ -3,6 +3,7 @@
     </div>
     <footer class="footer">
         <div class="wrapper wrapper--footer">
+            {{ build_breadcrumb_navigation('breadcrumb--footer') }}
             <div class="footer__selectors">
                 {% if mybb.settings.footer.langselect.options is iterable and mybb.settings.footer.langselect.options|length > 1 %}
                     <div class="language">
