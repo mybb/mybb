@@ -1,4 +1,4 @@
-<div class="row row--form field uploaded-attachment" id="attachment_{{ attachment.aid }}">
+<div class="row uploaded-attachment" id="attachment_{{ attachment.aid }}">
     <div class="uploaded-attachment__details">
         <span class="uploaded-attachment__icon">{{ attachment.icon|raw }}</span>
         <span class="uploaded-attachment__file-name">
@@ -24,7 +24,7 @@
                 </button>
             {% endif %}
         {% endif %}
-        <button type="submit" class="button button--secondary button--small" name="rem_{{ attachment.aid }}" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
+        <button type="submit" class="button button--danger button--secondary button--small" name="rem_{{ attachment.aid }}" value="rem" onclick="return Post.removeAttachment({{ attachment.aid }});">
             {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.remove_attachment }}</span>
         </button>

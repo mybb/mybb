@@ -2,6 +2,7 @@ var Post = {
 	init: function () {
 		$(function () {
 			Post.fileInput = $("input[name='attachments[]']");
+			Post.attachmentsList = $(".upload-attachments__attachments");
 			Post.dropZone = $('#dropzone');
 			Post.dropZone.find('div').text(lang.drop_files);
 			Post.form = Post.fileInput.parents('form');
@@ -40,7 +41,6 @@ var Post = {
 			});
 
 			Post.fileInput.parents().eq(1).hide();
-			Post.dropZone.parents().eq(1).show();
 
 			// prevent SCEditor from inserting [img] with data URI
 			var $message = document.querySelector('#message');
@@ -285,12 +285,12 @@ var Post = {
 							if ($('#attachment_' + message[0]).length) {
 								$('#attachment_' + message[0]).remove();
 							}
-							Post.fileInput.parents().eq(2).append(data.template
+							Post.attachmentsList.append(data.template
 								.replace(/\{1\}/g, message[0])
 								.replace('{2}', message[1])
 								.replace('{3}', message[2])
-								.replace('{4}', message[3]))
-								.find('strong').text(data.usage);
+								.replace('{4}', message[3]));
+							Post.fileInput.parents().eq(2).find('strong').text(data.usage);
 						});
 					}
 

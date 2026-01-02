@@ -1,8 +1,8 @@
 .jGrowl {
   z-index: 9999;
-  color: #fff;
-  font-size: 12px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--font-color);
+  font-size: var(--font-size-small);
+  font-family: var(--font-stack);
   position: fixed;
 }
 .jGrowl.top-left {
@@ -31,19 +31,18 @@
   margin-left: auto;
   margin-right: auto;
 }
-.jGrowl-notification {
-  background-color: #000;
-  opacity: 0.9;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+.jGrowl-notification,
+.jGrowl-notification.alert {
+  background: var(--background-1);
   zoom: 1;
   width: 250px;
-  padding: 10px;
-  margin: 10px;
-  text-align: left;
+  padding: var(--spacing-4);
+  margin: var(--spacing-4);
+  text-align: $left;
   display: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   min-height: 40px;
+  @include box-shadow;
 }
 .jGrowl-notification .ui-state-highlight,
 .jGrowl-notification .ui-widget-content .ui-state-highlight,
@@ -54,30 +53,27 @@
 }
 .jGrowl-notification .jGrowl-header {
   font-weight: bold;
-  font-size: .85em;
+  font-size: var(--font-size-small);
 }
 .jGrowl-notification .jGrowl-close {
   background-color: transparent;
   color: inherit;
   border: none;
   z-index: 99;
-  float: right;
+  float: $right;
   font-weight: bold;
-  font-size: 1em;
+  font-size: var(--font-size-regular);
   cursor: pointer;
 }
 .jGrowl-closer {
   background-color: #000;
-  opacity: 0.9;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
   zoom: 1;
   width: 250px;
-  padding: 10px;
-  margin: 10px;
-  text-align: left;
+  padding: var(--spacing-4);
+  margin: var(--spacing-4);
+  text-align: $left;
   display: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding-top: 4px;
   padding-bottom: 4px;
   cursor: pointer;
@@ -92,6 +88,19 @@
   background: #000;
   color: #fff;
 }
+
+.jGrowl .jGrowl-notification.jgrowl_success {
+    background: var(--success-color);
+    border: var(--border-width-base) solid var(--success-color-shade-1);
+    color: var(--invert-font-color);
+}
+
+.jGrowl .jGrowl-notification.jgrowl_error {
+    background: var(--danger-color);
+    border: var(--border-width-base) solid var(--danger-color-shade-1);
+    color: var(--invert-font-color);
+}
+
 /** Hide jGrowl when printing **/
 @media print {
   .jGrowl {

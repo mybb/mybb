@@ -153,11 +153,12 @@ $avatar-margin-medium: 110px;
 
     .quote,
     .codeblock,
-    blockquote {
-        padding: var(--spacing-3) var(--spacing-5);
+    blockquote,
+    .attachments {
+        padding: var(--spacing-4) var(--spacing-5);
         margin: var(--spacing-2) 0;
         font-size: var(--font-size-small);
-        background: var(--background-1);
+        background: var(--background-2);
         border-radius: var(--border-radius);
 
         .quote,
@@ -170,9 +171,10 @@ $avatar-margin-medium: 110px;
         &__title,
         cite {
             display: block;
+            margin-top: 0;
             margin-bottom: var(--spacing-2);
             font-style: normal;
-            font-weight: normal;
+            font-weight: var(--font-weight-semibold);
             color: var(--alt-font-color-1);
         }
 
@@ -182,6 +184,39 @@ $avatar-margin-medium: 110px;
 
         &__date {
             float: $right;
+            font-size: var(--font-size-smaller);
+            font-weight: var(--font-weight-normal);
+        }
+    }
+
+    .attachments {
+        margin-top: var(--spacing-6);
+
+        &__subtitle {
+            margin: 0;
+            font-size: var(--font-size-smaller);
+            font-weight: var(--font-weight-medium);
+        }
+    }
+
+    .attachment {
+        margin: var(--spacing-3) 0;
+
+        &--image {
+            box-sizing: border-box;
+            padding: var(--spacing-2);
+            background: var(--background-default);
+            border: var(--border-width-base) solid var(--border-color-1);
+        }
+
+        &__icon {
+            margin-#{$right}: var(--spacing-3);
+        }
+
+        &__data {
+            margin-#{$left}: var(--spacing-3);
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-1);
         }
     }
 

@@ -152,6 +152,31 @@
     display: block;
 }
 
+.upload-attachments {
+
+    &__drop-zone {
+        padding: var(--spacing-8) 0;
+        margin: 0;
+        color: var(--alt-font-color-1);
+        text-align: center;
+        cursor: pointer;
+        border: var(--border-width-thick) dashed var(--border-color-1);
+        border-radius: var(--border-radius);
+    }
+
+    &__pointer-events {
+        pointer-events: none;
+    }
+
+    &__upload-bar {
+        height: var(--spacing-4);
+        width: 0%;
+        margin-top: var(--spacing-4);
+        margin-bottom: calc(-1 * var(--spacing-4));
+        background: var(--primary-color);
+    }
+}
+
 .uploaded-attachment {
     display: flex;
     flex-direction: column;
@@ -181,9 +206,5 @@
     &__file-size {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-2);
-    }
-
-    &__buttons {
-
     }
 }

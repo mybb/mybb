@@ -64,13 +64,13 @@
                 <div class="poll block">
                     <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
                     {% if poll.alreadyvoted %}
-                        <div class="row row--poll-information poll__row poll__row--information">{{ lang.already_voted }}</div>
+                        <div class="row row--information poll__row poll__row--information">{{ lang.already_voted }}</div>
                     {% elseif poll.nopermission %}
-                        <div class="row row--poll-information poll__row poll__row--information">
+                        <div class="row row--information poll__row poll__row--information">
                             {{ lang.no_voting_permission }}
                         </div>
                     {% else %}
-                        <div class="row row--poll-information poll__row poll__row--information">
+                        <div class="row row--information poll__row poll__row--information">
                             {{ lang.poll_closed }}
                         </div>
                     {% endif %}

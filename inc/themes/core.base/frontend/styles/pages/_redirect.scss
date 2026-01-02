@@ -6,7 +6,7 @@
         margin: 0;
         font-family: var(--heading-font-stack);
         font-size: var(--font-size-larger);
-        font-weight: bold;
+        font-weight: var(--font-weight-semibold);
     }
 
     &__message {

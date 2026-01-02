@@ -3,7 +3,7 @@
     margin: 0;
     font-family: var(--heading-font-stack);
     font-size: var(--font-size-larger);
-    font-weight: bold;
+    font-weight: var(--font-weight-semibold);
 
     &--page {
         margin-bottom: var(--spacing-4);
@@ -72,7 +72,7 @@
             margin: 0;
             font-family: var(--heading-font-stack);
             font-size: var(--font-size-large);
-            font-weight: bold;
+            font-weight: var(--font-weight-semibold);
         }
 
         .title__description {

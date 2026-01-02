@@ -1,16 +1,12 @@
-<section class="section section--form compose__hidden-section compose__hidden-section--attachments">
+<section class="section section--form compose__hidden-section compose__hidden-section--attachments upload-attachments">
     <h2 class="title title--section">{{ lang.attachments }}</h2>
     <div class="section__container">
-        <div class="row row--form field">
-            <p class="field__description">{{ lang.attach_quota }} {{ lang.attach_usage|raw }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></p>
+        <div class="row row--form row--information field upload-attachments__quota">{{ lang.attach_quota }} {{ lang.attach_usage|raw }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></div>
+        <div class="upload-attachments__attachments">
+            {% for attachment in attachments %}
+                {{ include('misc/attachments_attachment.twig') }}
+            {% endfor %}
         </div>
-        <div id="upload_bar" style="background: #0066A2; height: 5px; width: 0%;"></div>
-        <div id="dropzone" style="padding: 50px 0; margin: 5px 10px 10px; cursor: pointer; border: 2px dashed #CCC; text-align: center;">
-            <div style="pointer-events: none;"></div>
-        </div>
-        {% for attachment in attachments %}
-            {{ include('misc/attachments_attachment.twig') }}
-        {% endfor %}
         {% if composepost.showattachoptions %}
         <div class="row row--form field">
             <h3 class="field__name">{{ lang.new_attachment }}</h3>
@@ -31,5 +27,11 @@
             {% endif %}
         </div>
         {% endif %}
+        <div class="row row--form field">
+            <div id="dropzone" class="upload-attachments__drop-zone">
+                <div class="upload-attachments__pointer-events"></div>
+            </div>
+            <div id="upload_bar" class="upload-attachments__upload-bar"></div>
+        </div>
     </div>
 </section>

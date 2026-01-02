@@ -17,6 +17,11 @@
         }
     }
 
+    &--information {
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
+    }
+
     &--no-border {
         border-bottom: none;
     }
