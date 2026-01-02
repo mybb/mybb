@@ -64,7 +64,7 @@
     color: var(--alt-font-color-1);
 
     &--imminent {
-        font-weight: bold;
+        font-weight: var(--font-weight-bold);
         color: var(--danger-color);
     }
 
@@ -218,7 +218,7 @@
     &__subject {
         margin: 0;
         font-size: var(--font-size-regular);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
         overflow: hidden;
         text-overflow: ellipsis;

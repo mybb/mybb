@@ -83,7 +83,7 @@
 
             .calendar__day-heading {
                 font-size: var(--font-size-large);
-                font-weight: normal;
+                font-weight: var(--font-weight-normal);
             }
 
             .calendar__day-link {
@@ -105,7 +105,7 @@
 
         .calendar__month {
             font-size: var(--font-size-small);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
         }
     }
 

@@ -7,7 +7,7 @@
         padding: var(--spacing-2) var(--spacing-3);
         margin-#{$right}: calc(-1 * var(--spacing-2));
         font-size: var(--font-size-smallest);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         text-transform: uppercase;
         border: var(--border-width-base) solid var(--invert-color);
         border-radius: var(--border-radius);

@@ -8,7 +8,7 @@
     &--page {
         margin-bottom: var(--spacing-4);
         font-size: var(--font-size-largest);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         line-height: var(--line-height-small);
     }
 
@@ -65,7 +65,7 @@
     &--nested {
         font-family: var(--font-stack);
         font-size: var(--font-size-regular);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
 
         .title__name {
             padding: 0;
@@ -108,7 +108,7 @@
     &--row {
         margin: 0;
         font-size: var(--font-size-large);
-        font-weight: bold;
+        font-weight: var(--font-weight-bold);
     }
 
     &--container {
@@ -121,7 +121,7 @@
 
     &--legend {
         font-size: var(--font-size-regular);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
 
         &:after {

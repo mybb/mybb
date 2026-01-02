@@ -52,7 +52,7 @@
   color: #fff;
 }
 .jGrowl-notification .jGrowl-header {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   font-size: var(--font-size-small);
 }
 .jGrowl-notification .jGrowl-close {
@@ -61,7 +61,7 @@
   border: none;
   z-index: 99;
   float: $right;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   font-size: var(--font-size-regular);
   cursor: pointer;
 }
@@ -78,7 +78,7 @@
   padding-bottom: 4px;
   cursor: pointer;
   font-size: .9em;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   text-align: center;
 }
 .jGrowl-closer .ui-state-highlight,

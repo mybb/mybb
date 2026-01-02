@@ -130,13 +130,13 @@
         &__title {
             margin: 0;
             font-size: var(--font-size-regular);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
         }
 
         &--unread {
 
             .thread__title {
-                font-weight: bold;
+                font-weight: var(--font-weight-bold);
             }
         }
 
@@ -271,7 +271,7 @@
             padding: var(--spacing-1) var(--spacing-2);
             margin-#{$left}: var(--spacing-2);
             font-size: var(--font-size-smallest);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
             color: var(--status-pending-font-color);
             text-decoration: none;
             background: var(--status-pending-background-color);

@@ -82,7 +82,7 @@
         padding: var(--spacing-1) var(--spacing-2);
         margin: side-values(0 0 0 var(--spacing-2));
         font-size: var(--font-size-smallest);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--invert-font-color);
         background: var(--status-unread-color);
         border-radius: calc(var(--border-radius) / 2);
@@ -116,7 +116,7 @@
         padding: var(--spacing-3) var(--spacing-2);
         margin: 0;
         overflow: hidden;
-        font-weight: bold;
+        font-weight: var(--font-weight-bold);
         font-size: var(--font-size-large);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
 

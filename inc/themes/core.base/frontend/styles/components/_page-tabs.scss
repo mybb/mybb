@@ -13,7 +13,7 @@
         &--active {
 
             .page-tabs__link {
-                font-weight: bold;
+                font-weight: var(--font-weight-bold);
                 color: var(--invert-font-color);
                 text-decoration: none;
                 background: var(--header-background);

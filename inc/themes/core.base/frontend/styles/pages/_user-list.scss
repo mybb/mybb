@@ -63,7 +63,7 @@
     &__user-info {
         margin-#{$left}: var(--spacing-3);
         font-size: var(--font-size-smaller);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-2);
     }
 
@@ -74,7 +74,7 @@
     &__user-title {
         margin: 0;
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
     }
 
     &__data {

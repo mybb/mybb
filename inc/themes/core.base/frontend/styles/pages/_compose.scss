@@ -77,7 +77,7 @@
         padding-bottom: var(--spacing-3);
         margin: side-values(0 0 var(--spacing-3) 0);
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
     }

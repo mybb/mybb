@@ -97,7 +97,7 @@
         &--new_pm {
 
             .message__subject {
-                font-weight: bold;
+                font-weight: var(--font-weight-bold);
             }
         }
 
@@ -149,7 +149,7 @@
         &__subject {
             margin: 0;
             font-size: var(--font-size-regular);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
         }
 
         &__username,
@@ -176,7 +176,7 @@
         &__deny-receipt {
             margin-#{$left}: var(--spacing-3);
             font-size: var(--font-size-smaller);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
             color: var(--alt-font-color-2);
 
             a:link,

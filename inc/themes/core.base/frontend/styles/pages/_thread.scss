@@ -7,7 +7,7 @@
     &__title {
         margin: side-values(0 0 var(--spacing-2) 0);
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
 
         @include bp-medium {
@@ -84,7 +84,7 @@
         &--active {
 
             .threaded-mode__date {
-                font-weight: bold;
+                font-weight: var(--font-weight-bold);
             }
         }
     }

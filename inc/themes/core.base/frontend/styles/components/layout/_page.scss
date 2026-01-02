@@ -15,6 +15,10 @@ body {
     background: var(--content-background);
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
+}
+
 input, select, textarea, button {
     font: var(--font-size-base) var(--font-stack);
 }

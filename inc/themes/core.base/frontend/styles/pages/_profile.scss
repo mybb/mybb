@@ -35,7 +35,7 @@
     &__name {
         padding: 0;
         margin: 0;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 
     &__value {

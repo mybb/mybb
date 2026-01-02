@@ -10,7 +10,7 @@
         margin: side-values(var(--spacing-4) 0 var(--spacing-5) 0);
         font-family: var(--heading-font-stack);
         font-size: var(--font-size-larger);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         border-bottom: var(--border-width-page-header) solid var(--border-color-1);
     }
 
