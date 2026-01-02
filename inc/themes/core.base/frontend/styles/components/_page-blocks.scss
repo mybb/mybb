@@ -251,17 +251,17 @@
 .page-controls {
     display: flex;
     flex-direction: column;
-    align-content: center;
     justify-content: space-between;
+    gap: var(--spacing-4);
     margin-top: var(--spacing-2);
     margin-bottom: var(--spacing-6);
 
     &--compact {
-        margin-top: calc(-1 * var(--spacing-4));
-        margin-bottom: var(--spacing-4);
+        margin-top: calc(-1 * var(--spacing-3));
+        margin-bottom: var(--spacing-5);
 
         .pagination {
-            margin-bottom: 0;
+            margin: 0;
         }
     }
 
@@ -271,6 +271,7 @@
 
     @include bp-medium {
         flex-direction: row;
+        align-items: center;
 
         .page-buttons {
             order: 2;

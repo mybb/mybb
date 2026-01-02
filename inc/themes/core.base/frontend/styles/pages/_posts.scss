@@ -149,6 +149,30 @@ $avatar-margin-medium: 110px;
         &--message {
             color: var(--alt-font-color-1);
         }
+        
+        // Quick edit reason
+        .editreason {
+            margin-top: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            font-size: var(--font-size-small);
+            color: var(--alt-font-color-1);
+            
+            label {
+                cursor: pointer;
+            }
+        }
+
+        // Quick edit submit button
+        button[type="submit"] {
+            @extend .button, .button--inline;
+            margin-#{$left}: 0;
+        }
+
+        // Quick edit cancel button
+        button[type="cancel"] {
+            @extend .button, .button--inline, .button--secondary, .button--danger;
+            margin-#{$left}: var(--spacing-4);
+        }
     }
 
     .quote,

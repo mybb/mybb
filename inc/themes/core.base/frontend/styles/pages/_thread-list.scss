@@ -131,6 +131,11 @@
             margin: 0;
             font-size: var(--font-size-regular);
             font-weight: var(--font-weight-normal);
+
+            .subject_editable input {
+                @extend .textbox;
+                box-sizing: content-box;
+            }
         }
 
         &--unread {
