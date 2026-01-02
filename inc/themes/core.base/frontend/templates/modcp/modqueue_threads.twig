@@ -23,7 +23,7 @@
                 {% include 'modcp/modqueue/thread.twig' %}
             {% else %}
                 {% set results = false %}
-                <div class="alert alert--no-results">{{ lang.mod_queue_threads_empty }}</div>
+                <div class="row row--no-results no-results">{{ lang.mod_queue_threads_empty }}</div>
             {% endfor %}
             {% if results %}
                 <div class="row mod-queue__mass-controls">

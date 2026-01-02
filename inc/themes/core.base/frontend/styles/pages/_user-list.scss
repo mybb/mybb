@@ -99,9 +99,11 @@
     }
 
     &--compact {
+        padding-top: var(--spacing-4);
 
         .user-list__user {
             padding: var(--spacing-3);
+            flex-basis: 100%;
 
             .avatar-profile-link {
                 margin-#{$right}: var(--spacing-4);
@@ -109,11 +111,6 @@
         }
 
         .user-list__username {
-            font-size: var(--font-size-regular);
-        }
-
-        .alert--no-results {
-            padding: var(--spacing-4) 0;
             font-size: var(--font-size-regular);
         }
     }

@@ -15,7 +15,7 @@
         {% for logitem in modlogs %}
             {% include 'modcp/modlogs/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results alert--no-results-container">{{ lang.error_no_results }}</div>
+            <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
         {% endfor %}
     </section>
     {% if multipage %}

@@ -37,9 +37,7 @@
         {% for event in events %}
             {% include 'calendar/event_row.twig' %}
         {% else %}
-            <section class="block">
-                <div class="alert alert--no-results alert--no-results-container">{{ lang.no_events }}</div>
-            </section>
+            <div class="container container--no-results no-results">{{ lang.no_events }}</div>
         {% endfor %}
         <footer class="page-footer">
             {% include 'calendar/calendar_select.twig' %}

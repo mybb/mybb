@@ -84,32 +84,27 @@
             color: var(--success-color);
         }
     }
+}
 
-    &--no-results {
+.no-results {
+    text-align: center;
+    font-size: var(--font-size-large);
+    color: var(--alt-font-color-1);
+
+    &,
+    &.container--no-results,
+    &.row--no-results {
         box-sizing: border-box;
-        display: block;
         width: 100%;
         padding: var(--spacing-7) var(--spacing-6);
-        margin: 0;
-        font-size: var(--font-size-large);
-        color: var(--alt-font-color-1);
-        text-align: center;
-        background: none;
-        // border: none;
-
-        &.alert--no-results-container {
-            background: var(--background-2);
-            box-shadow: none;
-        }
     }
 
     &--aligned-block {
         text-align: $left;
     }
-}
 
-.block .alert--no-results {
-    border: 0;
-    border-bottom: var(--border-width-base) solid var(--border-color-1);
-    border-radius: 0;
+    &--compact {
+        padding: var(--spacing-4) 0;
+        font-size: var(--font-size-regular);
+    }
 }

@@ -79,7 +79,7 @@
             {% for logitem in modlogs %}
                 {% include 'modcp/modlogs/item.twig' %}
             {% else %}
-                <div class="alert alert--no-results">{{ lang.error_no_results }}</div>
+                <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
             {% endfor %}
         </section>
     {% endif %}
@@ -89,7 +89,7 @@
         {% for banned in bannedusers %}
             {% include 'modcp/banning/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results">{{ lang.no_banned_soon }}</div>
+            <div class="row row--no-results no-results">{{ lang.no_banned_soon }}</div>
         {% endfor %}
     </section>
 

@@ -90,7 +90,7 @@
                 {% for reputation_vote in reputation_votes %}
                     {% include 'reputation/reputation_vote.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_reputation_votes }}</div>
+                    <div class="no-results">{{ lang.no_reputation_votes }}</div>
                 {% endfor %}
             </div>
             <form action="reputation.php" method="get">

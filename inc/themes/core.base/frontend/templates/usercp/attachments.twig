@@ -24,7 +24,7 @@
                 {% for attachment in attachments %}
                     {% include 'usercp/attachments/row.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_attachments }}</div>
+                    <div class="no-results">{{ lang.no_attachments }}</div>
                 {% endfor %}
             </div>
             {% if attachments %}

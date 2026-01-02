@@ -35,7 +35,7 @@
                         <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_unreadmessages }}</div>
+                    <div class="no-results">{{ lang.no_unreadmessages }}</div>
                 {% endfor %}
             </div>
             {% if unreadmessages %}
@@ -79,7 +79,7 @@
                         <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_readmessages }}</div>
+                    <div class="no-results">{{ lang.no_readmessages }}</div>
                 {% endfor %}
                 {% if readmessages %}
                     <div class="block__footer block-actions block-actions--extra-space">

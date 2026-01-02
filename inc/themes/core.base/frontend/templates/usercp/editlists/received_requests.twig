@@ -3,6 +3,6 @@
     {% for request in receivedRequests %}
         {% include 'usercp/editlists/received_request_row.twig' %}
     {% else %}
-        <div class="alert alert--no-results">{{ lang.no_requests }}</div>
+        <div class="no-results">{{ lang.no_requests }}</div>
     {% endfor %}
 </section>

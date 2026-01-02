@@ -48,7 +48,7 @@
                     <div class="row__secondary">{{ ipaddress.ip }}</div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.error_no_results }}</div>
+                <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
             {% endfor %}
         </section>
         {{ multipage|raw }}

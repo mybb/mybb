@@ -154,7 +154,7 @@
 
                 {# Threads – errors #}
                 {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
-                    <div class="alert alert--no-results">
+                    <div class="row row--no-results no-results">
                         {% if fpermissions.canviewthreads != 1 %}
                             {{ lang.nopermission }}
                         {% elseif threadcount is empty %}
@@ -192,7 +192,7 @@
 
                         {# No threads #}
                         {% else %}
-                            <div class="alert alert--no-results">{{ lang.nothreads }}</div>
+                            <div class="row row--no-results no-results">{{ lang.nothreads }}</div>
                         {% endfor %}
 
                         {# Close sticky or normal thread section #}

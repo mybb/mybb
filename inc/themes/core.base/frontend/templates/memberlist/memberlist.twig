@@ -33,7 +33,7 @@
             {% for user in users %}
                 {% include 'memberlist/memberlist_row.twig' %}
             {% else %}
-            <div class="alert alert--no-results">{{ lang.error_no_members|raw }}</div>
+            <div class="container container--no-results no-results">{{ lang.error_no_members|raw }}</div>
             {% endfor %}
         </div>
         <div class="page-controls">

@@ -23,7 +23,7 @@
                 {% for draft in drafts %}
                     {% include 'usercp/drafts/row.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_drafts|raw }}</div>
+                    <div class="row row--no-results no-results no-results--aligned-block">{{ lang.no_drafts|raw }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer">

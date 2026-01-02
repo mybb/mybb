@@ -64,7 +64,7 @@
                 {% for message in messagelist %}
                     {% include 'private/private/item.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.nomessages }}</div>
+                    <div class="no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer block-actions block-actions--extra-space block-actions--groups">

@@ -37,7 +37,7 @@
                 {% for thread in threads %}
                     {% include 'usercp/subscribed_threads/row.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
+                    <div class="row row--no-results no-results no-results--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer block-actions block-actions--extra-space">

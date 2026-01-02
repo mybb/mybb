@@ -149,6 +149,11 @@ $avatar-margin-medium: 110px;
         &--message {
             color: var(--alt-font-color-1);
         }
+
+        textarea {
+            box-sizing: border-box;
+            width: 100% !important;
+        }
         
         // Quick edit reason
         .editreason {

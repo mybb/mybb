@@ -19,7 +19,7 @@
         {% for forum in forums %}
             {% include 'usercp/subscribed_forums/row.twig' %}
         {% else %}
-            <div class="alert alert--no-results alert--aligned-block">
+            <div class="no-results no-results--aligned-block">
                 {{ lang.no_forum_subscriptions|raw }}
             </div>
         {% endfor %}

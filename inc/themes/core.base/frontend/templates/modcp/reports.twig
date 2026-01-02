@@ -33,7 +33,7 @@
                 {% for report in reports %}
                     {% include 'modcp/reports/item.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_reports }}</div>
+                    <div class="no-results">{{ lang.no_reports }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer block-actions">

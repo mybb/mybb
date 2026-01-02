@@ -48,7 +48,7 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_global_announcements }}</div>
+                <div class="row row--no-results no-results">{{ lang.no_global_announcements }}</div>
             {% endfor %}
         </section>
     {% endif %}
@@ -58,7 +58,7 @@
         {% if forumAnnouncements %}
             {{ forumAnnouncements|raw }}
         {% else %}
-            <div class="alert alert--no-results">{{ lang.no_forum_announcements }}</div>
+            <div class="row row--no-results no-results">{{ lang.no_forum_announcements }}</div>
         {% endif %}
     </section>
 {% endblock moderationBody %}

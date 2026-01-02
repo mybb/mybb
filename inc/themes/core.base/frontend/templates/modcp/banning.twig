@@ -23,7 +23,7 @@
         {% for banned in bannedusers %}
             {% include 'modcp/banning/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results alert--no-results-container">{{ lang.no_banned }}</div>
+            <div class="container container--no-results no-results">{{ lang.no_banned }}</div>
         {% endfor %}
     </div>
     {{ multipage|raw }}
