@@ -3,7 +3,9 @@
     </div>
     <footer class="footer">
         <div class="wrapper wrapper--footer">
-            {{ build_breadcrumb_navigation('breadcrumb--footer') }}
+            {% if constant("THIS_SCRIPT") != "index.php" %}
+                {{ build_breadcrumb_navigation('breadcrumb--footer') }}
+            {% endif %}
             <div class="footer__selectors">
                 {% if mybb.settings.footer.langselect.options is iterable and mybb.settings.footer.langselect.options|length > 1 %}
                     <div class="language">
