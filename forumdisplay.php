@@ -1122,6 +1122,7 @@ output_page(\MyBB\View\template('forumdisplay/forumdisplay.twig', [
 	'usersBrowsingCounter' => $usersBrowsingCounter,
 	'iconCache' => $icon_cache,
 	'sorting' => $sorting,
+	'datecut' => $datecut,
 	'customTools' => $customTools,
 	'hasModTools' => $hasModTools
 ]));

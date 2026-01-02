@@ -106,7 +106,7 @@
                 {# Sorting #}
                 {% set ascDesc %}
                     <span class="sort-results__order">
-                        {% if sorting.oppsortnext == 'desc' %}
+                        {% if sorting.sortordernow == 'asc' %}
                             {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: sorting.oppsort}, with_context = false) }}
                         {% else %}
                             {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: sorting.oppsort}, with_context = false) }}
@@ -203,15 +203,19 @@
                 {% endif %}
 
                 {# Threadlist footer #}
-                <form action="forumdisplay.php" method="get" class="compact-form"></form>
-                    <div class="block__footer block-actions block-actions--extra-space">
+                <details class="block__footer block-actions block-actions--collapsible"{% if mybb.input.datecut %} open{% endif %}>
+                    <summary class="block-actions__summary button button--basic button--inline">
+                        {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.sort_filter }}</span>
+                    </summary>
+                    <form action="forumdisplay.php" method="get" class="block-actions__details compact-form multi-field multi-field--centered">
                         <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
                         <h3 class="block-actions__title visually-hidden">{{ lang.sort_threads }}</h3>
                         <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="sortby">
                                 {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
-                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
+                                    <option value="{{ field }}"{% if sorting.by == field %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -219,19 +223,19 @@
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="order">
                                 {% for field in ['asc', 'desc'] %}
-                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
+                                    <option value="{{ field }}"{% if sorting.sortordernow == field %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="datecut">
-                                <option value="1"{% if mybb.input.datecut == 1 %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
+                                <option value="1"{% if datecut == 1 %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
                                 {% for field in [5, 10, 20, 50, 75, 100] %}
-                                    <option value="{{ field }}"{% if mybb.input.datecut == field %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
+                                    <option value="{{ field }}"{% if datecut == field %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
                                 {% endfor %}
-                                <option value="365"{% if mybb.input.datecut == 365 %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
-                                <option value="9999"{% if mybb.input.datecut == 9999 or mybb.input.datecut == '' %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
+                                <option value="365"{% if datecut == 365 %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
+                                <option value="9999"{% if datecut == 9999 or datecut == '' %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
                             </select>
                         </div>
                         {{ prefixselect|raw }}
@@ -239,8 +243,8 @@
                             {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.sort_threads }}</span>
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </details>
             </section>
 
             <div class="page-controls page-controls--compact">

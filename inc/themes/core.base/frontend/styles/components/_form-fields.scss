@@ -41,6 +41,10 @@
     &__button {
         margin: 0;
     }
+
+    &--centered {
+        justify-content: center;
+    }
 }
 
 .option-field {

@@ -25,6 +25,7 @@ $l['subscribe_forum'] = "Subscribe";
 $l['unsubscribe_forum'] = "Unsubscribe";
 $l['clear_stored_password'] = "Clear Password";
 $l['sort_threads'] = "Sort Threads";
+$l['sort_filter'] = "Sort and Filter Options";
 $l['sort_by_subject'] = "Sort by: Subject";
 $l['sort_by_lastpost'] = "Sort by: Last Post";
 $l['sort_by_starter'] = "Sort by: Author";

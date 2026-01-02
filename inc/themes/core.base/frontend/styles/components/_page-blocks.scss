@@ -114,6 +114,15 @@
         }
     }
 
+    &--collapsible {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    &__details {
+        padding: side-values(var(--spacing-3) 0 var(--spacing-2) 0);
+    }
+
     &__title {
         display: inline-block;
         padding: 0;
