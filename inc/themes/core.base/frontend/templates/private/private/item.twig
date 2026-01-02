@@ -1,7 +1,7 @@
 <div class="row row--thread thread thread--message thread--{{ message.msgstatus }} {% if message.msgstatus == 'new_pm' %}thread--unread{% endif %}">
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(message.uid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=message.avatar, alt=message.username_raw, class='avatar--smallest') }}
+        <a href="{{ get_profile_link(message.tofromuid ?? message.uid) }}" class="avatar-profile-link">
+            {{ render_avatar(url=message.tofromavatar, alt=message.tofromusername, class='avatar--smallest') }}
         </a>
     </div>
     <div class="thread__title">
@@ -23,13 +23,17 @@
                 <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
                     <div class="tcat"><strong>{{ lang.to }}</strong></div>
                     {% for user in message.tousers %}
-                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                        <div class="popup_item_container">
+                            <a href="{{ get_profile_link(user.uid) }}" class="popup_item">{{ user|format_name }}</a>
+                        </div>
                     {% endfor %}
                     {% if message.bbcusers %}
                         <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
                     {% endif %}
                     {% for user in message.bbcusers %}
-                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                        <div class="popup_item_container">
+                            <a href="{{ get_profile_link(user.uid) }}" class="popup_item">{{ user|format_name }}</a>
+                        </div>
                     {% endfor %}
                 </div>
                 <script type="text/javascript">
@@ -38,7 +42,11 @@
                 // -->
                 </script>
             {% else %}
-                {{ message.username|raw }}
+                {% if message.tofromuid > 0 %}
+                    <a href="{{ get_profile_link(message.tofromuid) }}">{{ message.tofromuid|format_name }}</a>
+                {% else %}
+                    {{ message.tofromusername }}
+                {% endif %}
             {% endif %}
         </p>
     </div>
