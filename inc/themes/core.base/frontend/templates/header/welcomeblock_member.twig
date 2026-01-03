@@ -11,7 +11,6 @@
             <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
                 {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, class='my-avatar avatar--medium')}}
             </a>
-            <p class="user-bar__username">{{ mybb.user.username }}</p>
             <ul class="account-links">
                 {% if mybb.usergroup.canusercp %}
                     <li class="account-links__item">
@@ -43,6 +42,20 @@
                         <span class="account-links__text">{{ lang.welcome_open_buddy_list }}</span>
                     </a>
                 </li>
+                {% if mybb.usergroup.cansearch %}
+                    <li class="account-links__item account-links__item--new-posts">
+                        <a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="account-links__link">
+                            {{ include('partials/icon.twig', {icon: 'comments', class: 'account-links__icon fa-fw'}, with_context = false) }}
+                            <span class="account-links__text">{{ lang.welcome_newposts }}</span>
+                        </a>
+                    </li>
+                    <li class="account-links__item account-links__item--todays-posts">
+                        <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="account-links__link">
+                            {{ include('partials/icon.twig', {icon: 'calendar', class: 'account-links__icon fa-fw'}, with_context = false) }}
+                            <span class="account-links__text">{{ lang.welcome_todaysposts }}</span>
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="account-links__item">
                      <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="account-links__link">
                          {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
@@ -53,8 +66,8 @@
         </div>
     </li>
     {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
-        <li class="user-bar__item user-bar__item--messages">
-            <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link" title="{{ lang.welcome_pms }}">
+        <li class="user-bar__item user-bar__item--messenger">
+            <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link">
                 {{ include('partials/icon.twig', {icon: 'envelope', class: 'user-bar__icon fa-fw'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_pms }}</span>
                 {% if mybb.user.pms_unread > 0 %}
@@ -65,13 +78,13 @@
     {% endif %}
     {% if mybb.usergroup.cansearch %}
         <li class="user-bar__item user-bar__item--new-posts">
-            <a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="user-bar__link" title="{{ lang.welcome_newposts }}">
+            <a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="user-bar__link">
                 {{ include('partials/icon.twig', {icon: 'comments', class: 'user-bar__icon fa-fw'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_newposts }}</span>
             </a>
         </li>
         <li class="user-bar__item user-bar__item--todays-posts">
-            <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{{ lang.welcome_todaysposts }}">
+            <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link">
                 {{ include('partials/icon.twig', {icon: 'calendar', class: 'user-bar__icon fa-fw'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_todaysposts }}</span>
             </a>

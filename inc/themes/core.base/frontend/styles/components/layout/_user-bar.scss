@@ -20,6 +20,24 @@
     &__item {
         display: flex;
         margin: 0;
+
+        &--new-posts,
+        &--todays-posts {
+            
+            @include bp-large-max {
+                display: none;
+            }
+        }
+
+        &--messenger {
+
+            @include bp-small-max {
+
+                .user-bar__text {
+                    display: none;
+                }
+            }
+        }
     }
 
     &__link {
@@ -48,19 +66,7 @@
     }
 
     &__text {
-        display: none;
         padding: 0 var(--spacing-1);
-
-        @include bp-large {
-            display: inline-block;
-        }
-
-        &--username {
-
-            @include bp-small {
-                display: inline-block;
-            }
-        }
     }
 
     &__caret {
@@ -104,18 +110,6 @@
             margin: side-values(var(--spacing-3) 0 0 var(--spacing-7));
         }
     }
-
-    &__username {
-        padding: var(--spacing-3) var(--spacing-2);
-        margin: 0;
-        font-weight: var(--font-weight-bold);
-        font-size: var(--font-size-large);
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
-
-        @include bp-small {
-            display: none;
-        }
-    }
 }
 
 .wrapper--user-bar {
@@ -154,8 +148,12 @@
         padding: 0;
         margin: 0;
 
-        &:last-child {
-            border-bottom: 0;
+        &--new-posts,
+        &--todays-posts {
+            
+            @include bp-large {
+                display: none;
+            }
         }
     }
 
