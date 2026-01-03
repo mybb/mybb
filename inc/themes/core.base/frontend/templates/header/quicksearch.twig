@@ -1,34 +1,35 @@
-<form action="{{ mybb.settings.bburl }}/search.php" id="search" class="global-search">
-    <input type="checkbox" id="show-mobile-search" class="global-search__checkbox">
-    <label for="show-mobile-search" class="global-search__mobile-search-button">{{ include('partials/icon.twig', {icon: 'search fa-fw'}, with_context = false) }}</label>
-    <label for="show-mobile-search" class="global-search__mobile-search-close-button">{{ include('partials/icon.twig', {icon: 'times-circle fa-fw'}, with_context = false) }}</label>
-    {% if constant("THIS_SCRIPT") == "showthread.php" and thread %}
-        <input type="hidden" name="action" value="thread" />
-        <input type="hidden" name="tid" value="{{ thread.tid }}" />
-        {% set search_placeholder = lang.search_thread %}
-    {% elseif constant("THIS_SCRIPT") == "forumdisplay.php" and foruminfo %}
-        <input type="hidden" name="action" value="do_search" />
-        <input type="hidden" name="forums[]" value="{{ foruminfo.fid }}" />
-        <input type="hidden" name="postthread" value="1" />
-        {% set search_placeholder = lang.search_forum %}
-    {% else %}
-        <input type="hidden" name="action" value="do_search" />
-        <input type="hidden" name="postthread" value="1" />
-        {% set search_placeholder = lang.toplinks_search %}
-    {% endif %}
-    <div class="global-search__container">
-        <label class="global-search__label">
-            <input type="text" name="keywords" placeholder="{{ search_placeholder }}" value="" class="global-search__field" />
-            <span class="global-search__controls">
-                <button type="submit" class="global-search__submit">
-                    {{ include('partials/icon.twig', {icon: 'search'}, with_context = false) }}
-                    <span class="visually-hidden">{{ lang.search_button }}</span>
-                </button>
-                <a href="{{ mybb.settings.bburl }}/search.php" class="global-search__advanced" title="{{ lang.advanced_search }}">
-                    {{ include('partials/icon.twig', {icon: 'cog'}, with_context = false) }}
-                    <span class="visually-hidden">{{ lang.advanced_search }}</span>
-                </a>
-            </span>
-        </label>
-    </div>
-</form>
+{% if mybb.usergroup.cansearch %}
+    <input type="checkbox" id="show-mobile-search" class="mobile-search-checkbox">
+    <label for="show-mobile-search" class="mobile-search-button">{{ include('partials/icon.twig', {icon: 'search fa-fw'}, with_context = false) }}</label>
+    <form action="{{ mybb.settings.bburl }}/search.php" id="search" class="quick-search">
+        {% if constant("THIS_SCRIPT") == "showthread.php" and thread %}
+            <input type="hidden" name="action" value="thread" />
+            <input type="hidden" name="tid" value="{{ thread.tid }}" />
+            {% set search_placeholder = lang.search_thread %}
+        {% elseif constant("THIS_SCRIPT") == "forumdisplay.php" and foruminfo %}
+            <input type="hidden" name="action" value="do_search" />
+            <input type="hidden" name="forums[]" value="{{ foruminfo.fid }}" />
+            <input type="hidden" name="postthread" value="1" />
+            {% set search_placeholder = lang.search_forum %}
+        {% else %}
+            <input type="hidden" name="action" value="do_search" />
+            <input type="hidden" name="postthread" value="1" />
+            {% set search_placeholder = lang.toplinks_search %}
+        {% endif %}
+        <div class="quick-search__container">
+            <label class="quick-search__label">
+                <input type="text" name="keywords" placeholder="{{ search_placeholder }}" value="" class="quick-search__field" />
+                <span class="quick-search__controls">
+                    <button type="submit" class="quick-search__submit">
+                        {{ include('partials/icon.twig', {icon: 'search'}, with_context = false) }}
+                        <span class="visually-hidden">{{ lang.search_button }}</span>
+                    </button>
+                    <a href="{{ mybb.settings.bburl }}/search.php" class="quick-search__advanced" title="{{ lang.advanced_search }}">
+                        {{ include('partials/icon.twig', {icon: 'cog'}, with_context = false) }}
+                        <span class="visually-hidden">{{ lang.advanced_search }}</span>
+                    </a>
+                </span>
+            </label>
+        </div>
+    </form>
+{% endif %}

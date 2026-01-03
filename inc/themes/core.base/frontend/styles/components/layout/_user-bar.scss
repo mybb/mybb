@@ -5,24 +5,20 @@
     &__wrapper {
         position: relative;
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-
-        @include bp-medium {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     &__links {
+        display: flex;
         padding: 0;
         margin: 0;
         list-style: none;
     }
 
     &__item {
-        display: inline-block;
+        display: flex;
         margin: 0;
     }
 
@@ -31,8 +27,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        padding: var(--spacing-4);
+        padding: var(--spacing-4) var(--spacing-3);
 
         &,
         &:link,
@@ -41,7 +36,6 @@
         }
 
         &:hover {
-            // color: var(--link-hover-color);
             background: var(--user-bar-background-shade-1);
             text-decoration: none;
             cursor: pointer;
@@ -49,7 +43,7 @@
     }
 
     &__icon {
-        margin-#{$right}: var(--spacing-2);
+        margin: 0 var(--spacing-2);
         font-size: var(--font-size-large);
     }
 
@@ -80,7 +74,7 @@
 
     &__unread-count {
         padding: var(--spacing-1) var(--spacing-2);
-        margin: side-values(0 0 0 var(--spacing-2));
+        margin: 0 var(--spacing-2);
         font-size: var(--font-size-smallest);
         font-weight: var(--font-weight-normal);
         color: var(--invert-font-color);
@@ -94,6 +88,7 @@
 
     &__dropdown {
         position: absolute;
+        top: 100%;
         display: none;
         min-width: 250px;
         padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
@@ -101,10 +96,8 @@
         background: var(--user-bar-background-shade-1);
         border-bottom: var(--border-width-thick) solid var(--border-color-1);
         border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
-        // box-shadow:
-        //     0 3px 6px rgba(0, 0, 0, 0.05),
-        //     3px 0 6px rgba(0, 0, 0, 0.05),
-        //     -3px 0 6px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.05);
+        clip-path: inset(side-values(0px -10px -10px -10px));
 
         .avatar-profile-link {
             float: $right;
@@ -115,7 +108,6 @@
     &__username {
         padding: var(--spacing-3) var(--spacing-2);
         margin: 0;
-        overflow: hidden;
         font-weight: var(--font-weight-bold);
         font-size: var(--font-size-large);
         border-bottom: var(--border-width-base) solid var(--border-color-1);

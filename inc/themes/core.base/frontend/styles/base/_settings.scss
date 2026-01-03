@@ -30,7 +30,6 @@ $bp-large: 1140px;
     --spacing-7: 32px;
     --spacing-8: 40px;
 
-    // Height of the forum header
-    // Automatically adjusts sizing of elements within the header to fit
-    --header-height: 75px; // TODO: complete scaling of items in header based on this height
+    // Height of the forum header (default 75px, recommended between 50px - 100px)
+    --header-height: 75px;
 }

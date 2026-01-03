@@ -43,7 +43,7 @@
                         <span class="account-links__text">{{ lang.welcome_open_buddy_list }}</span>
                     </a>
                 </li>
-                 <li class="account-links__item">
+                <li class="account-links__item">
                      <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="account-links__link">
                          {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
                          <span class="account-links__text">{{ lang.welcome_logout }}</span>
@@ -54,7 +54,7 @@
     </li>
     {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
         <li class="user-bar__item user-bar__item--messages">
-            <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link">
+            <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link" title="{{ lang.welcome_pms }}">
                 {{ include('partials/icon.twig', {icon: 'envelope', class: 'user-bar__icon fa-fw'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_pms }}</span>
                 {% if mybb.user.pms_unread > 0 %}
@@ -71,7 +71,7 @@
             </a>
         </li>
         <li class="user-bar__item user-bar__item--todays-posts">
-            <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{{ lang.welcome_newposts }}">
+            <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{{ lang.welcome_todaysposts }}">
                 {{ include('partials/icon.twig', {icon: 'calendar', class: 'user-bar__icon fa-fw'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_todaysposts }}</span>
             </a>

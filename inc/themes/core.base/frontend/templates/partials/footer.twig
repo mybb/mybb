@@ -8,7 +8,7 @@
             {% endif %}
             <div class="footer__selectors">
                 {% if mybb.settings.footer.langselect.options is iterable and mybb.settings.footer.langselect.options|length > 1 %}
-                    <div class="language">
+                    <div class="language compact-form multi-field">
                         <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% for name, field in mybb.input %}
@@ -27,13 +27,13 @@
                                     </optgroup>
                                 </select>
                             </div>
-                            <input type="submit" class="button" value="{{ lang.go }}" />
+                            <input type="submit" class="button button--inline" value="{{ lang.go }}" />
                         </form>
                     </div>
                 {% endif %}
 
                 {% if mybb.settings.footer.themeselect is iterable and mybb.settings.footer.themeselect|length > 1 %}
-                    <div class="theme">
+                    <div class="theme compact-form multi-field">
                         <form method="post" action="{{ mybb.settings.footer.themeselect.current_url.location }}" id="theme_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% if mybb.settings.footer.themeselect.options %}
@@ -47,7 +47,7 @@
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 {{ mybb.settings.footer.themeselect.options|raw }}
                             </div>
-                            <input type="submit" class="button" value="{{ lang.go }}" />
+                            <input type="submit" class="button button--inline" value="{{ lang.go }}" />
                         </form>
                     </div>
                 {% endif %}

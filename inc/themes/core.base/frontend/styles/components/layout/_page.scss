@@ -64,8 +64,8 @@ textarea {
 }
 
 .wrapper {
-    width: 90%;
-    margin: 0 5%;
+    width: 94%;
+    margin: 0 3%;
 
     &--main {
         @include clearfix();
@@ -124,10 +124,6 @@ textarea {
             font-size: var(--font-size-small);
             color: var(--alt-font-color-1);
         }
-    }
-
-    .page-footer {
-        // clear: both;
     }
 
     .page-sidebar {

@@ -1,23 +1,12 @@
-/**
- * Global page header
- */
+// Global page header
 .header {
     background: var(--header-background);
-
-    @include bp-medium {
-        display: flex;
-        flex-direction: row;
-        height: var(--header-height);
-    }
+    min-height: var(--header-height);
 
     // Page title
     &__title {
         height: 100%;
         margin: 0;
-
-        @include bp-medium {
-            float: $left;
-        }
 
         // Logo wrapper
         // For styling of logo , see _logo.scss
@@ -26,65 +15,22 @@
             align-items: center;
             height: var(--header-height);
             margin-#{$right}: 50px;
-
-            @include bp-medium {
-                height: 100%;
-            }
         }
-    }
-
-    // Menu and close menu buttons on small screens
-    .menu-button,
-    .menu-close-button {
-        position: absolute;
-        top: 0;
-        right: 0;
-        display: block;
-        padding: 26px var(--spacing-3); // TODO: Adjust button padding based on header height
-        cursor: pointer;
-
-        // Button icon
-        &__icon {
-            color: var(--invert-font-color);
-            font-size: 24px; // TODO: Adjust button size based on header height
-        }
-
-        // Hide if hidden
-        &--hide {
-            display: none;
-        }
-
-        @include bp-medium {
-            display: none;
-        }
-    }
-
-    // Hidden checkbox for show/hide of menu on small screens
-    &__checkbox {
-        display: none;
     }
 }
 
-/**
- * Page wrapper (header)
- */
+// Page wrapper (header)
 .wrapper--header {
-    position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
-
-    @include bp-medium {
-        flex-direction: row;
-    }
 }
 
-/**
- * Main navigation menu
- */
+// Main navigation menu
 .main-menu {
     flex-grow: 1;
-    height: 100%;
 
     @include bp-medium-max {
         display: none;
@@ -94,7 +40,6 @@
     &__links {
         display: flex;
         justify-content: flex-end;
-        height: 100%;
         padding: 0;
         margin: 0;
         list-style: none;
@@ -109,7 +54,6 @@
 
     // Link item (<li>)
     &__item {
-        $module: &;
         flex-shrink: 0;
 
         @include bp-medium-max {
@@ -121,14 +65,12 @@
 
         // Active menu item
         &--active {
-            color: var(--invert-font-color);
-            background: var(--primary-color);
-
-            .main-menu__link {
-
-                &:hover {
-                    background: var(--primary-color);
-                }
+            
+            &,
+            .main-menu__icon,
+            .main-menu__link:hover {
+                color: var(--invert-font-color);
+                background: var(--primary-color);
             }
         }
     }
@@ -138,18 +80,17 @@
         box-sizing: border-box;
         display: flex;
         align-items: center;
-        justify-content: center;
-        height: 100%;
-        padding: 0 var(--spacing-5);
+        justify-content: flex-start;
+        padding: var(--spacing-3) var(--spacing-7);
         margin: 0;
         font-size: var(--font-size-regular);
         font-weight: var(--font-weight-light);
         transition: background var(--transition-speed) ease;
-
-        @include bp-medium-max {
-            justify-content: flex-start;
-            padding: var(--spacing-3) var(--spacing-6);
-            text-align: left;
+        
+        @include bp-medium {   
+            justify-content: center;
+            height: var(--header-height);
+            padding: 0 var(--spacing-5);
         }
 
         &:link,
@@ -170,11 +111,27 @@
     }
 }
 
-/**
- * Show menu links if mobile menu button has been clicked
- */
-#show-mobile-menu:checked ~ .main-menu {
+// Hidden checkbox for show/hide of menu on small screens
+.menu-checkbox {
+    display: none;
+}
 
+// Menu button on small screens
+.menu-button {
+    display: none;
+    padding: 0 var(--spacing-4);
+    font-size: var(--font-size-larger);
+    color: var(--invert-font-color);
+    cursor: pointer;
+
+    @include bp-medium-max {
+        display: block;
+    }
+}
+
+// Show menu links if mobile menu button has been clicked
+#show-mobile-menu:checked ~ .main-menu {
+    
     @include bp-medium-max {
         display: block;
     }
