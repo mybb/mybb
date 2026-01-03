@@ -69,7 +69,7 @@
                             </script>
                             {% for type in types %}
                                 <div class="option-field">
-                                    <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_{{ type.tid }}" value="{{ type.tid }}" {{ type_checked.tid }} onclick="checkType();" />
+                                    <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_{{ type.tid }}" value="{{ type.tid }}" {{ type_checked[type.tid] }} onclick="checkType();" />
                                     <h4 class="option-field__name"><label for="type_input_{{ type.tid }}">{{ type.title }} {{ trans('warning_points', type.points) }}</label></h4>
                                     <div id="type_{{ type.tid }}" class="types section section--inline">
                                         <div class="row row--form field">
