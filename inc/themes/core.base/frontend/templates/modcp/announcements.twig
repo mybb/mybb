@@ -13,7 +13,7 @@
 {% block moderationBody %}
     {# Global announcements #}
     {% if mybb.usergroup.issupermod %}
-        <div class="page-controls">
+        <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 <a href="modcp.php?action=new_announcement&amp;fid=-1" class="button button--medium button--full-width">
                     {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}

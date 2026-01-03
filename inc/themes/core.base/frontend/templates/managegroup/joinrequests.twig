@@ -32,14 +32,14 @@
                                     </span>
                                     <span class="segmented-control__option">
                                         <input type="radio" class="radio radio_accept segmented-control__input" name="request[{{ user.uid }}]" id="request_accept_{{ user.uid }}" value="accept" />
-                                        <label class="segmented-control__button" for="request_accept_{{ user.uid }}">
+                                        <label class="segmented-control__button segmented-control__button--success" for="request_accept_{{ user.uid }}">
                                             {{ include('partials/icon.twig', {icon: 'check', class: 'segmented-control__icon'}, with_context = false) }}
                                             <span class="segmented-control__text">{{ lang.accept }}</span>
                                         </label>
                                     </span>
                                     <span class="segmented-control__option">
                                         <input type="radio" class="radio radio_decline segmented-control__input" name="request[{{ user.uid }}]" id="request_decline_{{ user.uid }}" value="decline" />
-                                        <label class="segmented-control__button" for="request_decline_{{ user.uid }}">
+                                        <label class="segmented-control__button segmented-control__button--danger" for="request_decline_{{ user.uid }}">
                                             {{ include('partials/icon.twig', {icon: 'times', class: 'segmented-control__icon'}, with_context = false) }}
                                             <span class="segmented-control__text">{{ lang.decline }}</span>
                                         </label>

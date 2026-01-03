@@ -1,4 +1,5 @@
 .field {
+    font-size: var(--font-size-small);
 
     &__name {
         padding: 0;
@@ -19,11 +20,10 @@
 
     &__value {
         margin: 0;
-        font-size: var(--font-size-small);
     }
 
     &__block {
-        margin-top: var(--spacing-2);
+        margin-top: var(--spacing-3);
     }
 
     label {
@@ -37,20 +37,12 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--spacing-3);
-
-    &__button {
-        margin: 0;
-    }
-
-    &--centered {
-        justify-content: center;
-    }
 }
 
 .option-field {
     padding: side-values(0 0 0 var(--spacing-7));
     margin-top: var(--spacing-2);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-5);
 
     &:last-child,
     &--single {
@@ -86,10 +78,6 @@
         }
     }
 
-    &__field {
-        margin-top: var(--spacing-2);
-    }
-
     label {
         cursor: pointer;
     }
@@ -114,10 +102,10 @@
 
 .textbox {
     box-sizing: border-box;
-    padding: var(--spacing-2) var(--spacing-3);
     width: 100%;
+    padding: var(--spacing-2) var(--spacing-3);
     font-size: var(--font-size-regular);
-    background-color: var(--background-default);
+    background: var(--background-default);
     border: var(--border-width-base) solid var(--border-color-2);
     border-radius: var(--border-radius);
     outline: 0;
@@ -149,14 +137,6 @@
     &--inline {
         margin-#{$left}: var(--spacing-3);
         margin-#{$right}: var(--spacing-3);
-    }
-
-    &--no-margin {
-        margin: 0;
-    }
-
-    &--extra-space {
-        margin-bottom: var(--spacing-3);
     }
 }
 
@@ -283,19 +263,20 @@ textarea {
 }
 
 .confirm-field {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: var(--spacing-4);
 
     @include bp-medium {
-        display: flex;
-        justify-content: space-between;
         flex-direction: row;
     }
 
     &__field {
-        margin-bottom: var(--spacing-3);
+        flex-basis: 100%;
 
         @include bp-medium {
-            width: 49%;
-            margin-bottom: 0;
+            flex-basis: calc(50% - calc(var(--spacing-4) / 2));
         }
     }
 }
@@ -306,10 +287,6 @@ textarea {
     display: inline-block;
     border-radius: var(--border-radius);
     vertical-align: top;
-
-    &--block:before {
-        content: "\A";
-    }
 
     &__option {
         display: inline-block;
@@ -343,6 +320,16 @@ textarea {
             padding: calc(var(--spacing-3) - var(--border-width-base)) calc(var(--spacing-3) + var(--border-width-base));
             border: var(--border-width-base) solid var(--button-default-color);
             z-index: 15;
+
+            &--success {
+                background: var(--success-color);
+                border-color: var(--success-color);
+            }
+
+            &--danger {
+                background: var(--danger-color);
+                border-color: var(--danger-color);
+            }
 
             .segmented-control__icon {
                 color: var(--invert-font-color);
@@ -389,54 +376,14 @@ textarea {
     }
 }
 
-.select-control {
-    font-size: var(--font-size-smaller);
-
-    &__option {
-        display: block;
-        margin: side-values(0 0 var(--spacing-2) 0);
-        padding: 0;
-    }
-
-    &__button {
-        display: block;
-        padding: var(--spacing-2) var(--spacing-3);
-        margin: side-values(var(--spacing-2) var(--spacing-4) 0 0);
-        background: var(--background-1);
-        cursor: pointer;
-        border-radius: var(--border-radius);
-
-        &.icon:before {
-            @include black-transparency(0.4); // TODO: assign color here?
-        }
-    }
-
-    &__input {
-        position: absolute;
-        visibility: hidden;
-
-        &:checked + .select-control__button {
-            background: var(--background-4);
-
-            &.icon:before {
-                @include black-transparency(0.6); // TODO: assign color here?
-            }
-        }
-    }
-}
-
 .date-field {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
     background: var(--background-1);
-    padding: side-values(var(--spacing-4) var(--spacing-4) var(--spacing-2) var(--spacing-4));
     border-radius: var(--border-radius);
-
-    &__item {
-        margin-bottom: var(--spacing-3);
-        margin-#{$right}: var(--spacing-3);
-    }
 
     &__name {
         display: block;
@@ -446,29 +393,20 @@ textarea {
         margin: side-values(0 0 var(--spacing-2) 0);
         padding: 0;
     }
-
-    .select-field {
-        margin-#{$right}: 0;
-    }
 }
 
 .inline-text-field {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-3);
 
     @include bp-medium {
         flex-direction: row;
     }
 
     &__field {
-        margin-bottom: var(--spacing-4);
         flex-grow: 1;
         width: auto;
-
-        @include bp-medium {
-            margin-bottom: 0;
-            margin-#{$right}: var(--spacing-2);
-        }
     }
 
     &__button {

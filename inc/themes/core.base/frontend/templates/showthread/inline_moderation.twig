@@ -40,11 +40,11 @@
                 {% endif %}
             </select>
         </div>
-        <button type="submit" name="go" class="button button--inline multi-field__button">
+        <button type="submit" name="go" class="button button--inline">
             {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
             <span class="button__text" id="inline_go">{{ lang.go }} ({{ thread.inlinecount }})</span>
         </button>
-        <button type="button" class="button button--secondary button--inline multi-field__button" onclick="inlineModeration.clearChecked();">
+        <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
             {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.clear }}</span>
         </button>

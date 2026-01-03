@@ -77,8 +77,8 @@ $scheme: 'light';
 @include set-color-property(status-unread-color, status-pending-border-color, $scheme, true);
 
 // Success / danger colors
-@include set-color-property(success-color, #68c000, $scheme);
-@include set-color-property(success-color-shade-1, #5dac00, $scheme);
+@include set-color-property(success-color, #5ead00, $scheme);
+@include set-color-property(success-color-shade-1, #4e9000, $scheme);
 @include set-color-property(moderate-color, #d7611e, $scheme);
 @include set-color-property(moderate-color-shade-1, #c1571b, $scheme);
 @include set-color-property(danger-color, #eb5257, $scheme);

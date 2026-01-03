@@ -31,11 +31,11 @@
                         {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_ignored }}</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_delete">
+                    <a href="javascript:void(0)" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic button--danger mass_delete">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_deletion }}</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_approve">
+                    <a href="javascript:void(0)" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic button--success mass_approve">
                         {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_approved }}</span>
                     </a>

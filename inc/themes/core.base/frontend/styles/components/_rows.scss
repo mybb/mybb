@@ -17,6 +17,15 @@
         }
     }
 
+    &--compact {
+        padding-top: var(--spacing-2);
+        padding-bottom: var(--spacing-2);
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
     &--information {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-1);

@@ -11,7 +11,7 @@
         </header>
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--alt form--delete">
+            <div class="container form form--alt form--delete">
                 <div class="option-field option-field--single">
                     <input type="checkbox" class="checkbox" name="delete" id="deletepoll" value="1" tabindex="9" />
                     <h3 class="option-field__name"><label for="deletepoll">{{ lang.delete_q }}</label></h3>
@@ -57,7 +57,7 @@
                         {% for option in optionbits %}
                             <div class="row row--form field">
                                 <h3 class="field__name"><label for="options_{{ option.id }}">{{ lang.option }} {{ option.id }}</label></h3>
-                                <input type="text" class="textbox textbox--extra-space" name="options[{{ option.id }}]" id="options_{{ option.id }}" value="{{ option.value }}" />
+                                <input type="text" class="textbox" name="options[{{ option.id }}]" id="options_{{ option.id }}" value="{{ option.value }}" />
                                 <div class="field__block multi-field">
                                     <input type="text" class="textbox textbox--small" name="votes[{{ option.id }}]" value="{{ option.votes }}" />
                                     {{ lang.votes }}

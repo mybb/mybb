@@ -71,6 +71,18 @@
         --button-theme-color-border-hover: var(--background-default);
     }
 
+    &--basic {
+        --button-theme-color-background: transparent;
+        --button-theme-color-text: var(--alt-font-color-1);
+        --button-theme-color-border: transparent;
+        --button-theme-color-hover: transparent;
+        --button-theme-color-text-hover: var(--link-hover-color);
+        
+        padding: var(--spacing-3);
+        margin: 0 var(--spacing-2);
+        box-shadow: none;
+    }
+
     &--danger {
         --button-theme-color-background: var(--background-default);
         --button-theme-color-text: var(--danger-color);
@@ -85,6 +97,15 @@
         --button-theme-color-hover: var(--danger-color);
         --button-theme-color-text-hover: var(--invert-font-color);
         --button-theme-color-border-hover: var(--danger-color);
+    }
+
+    &--danger.button--basic {
+        --button-theme-color-background: transparent;
+        --button-theme-color-text: var(--alt-font-color-1);
+        --button-theme-color-border: transparent;
+        --button-theme-color-hover: transparent;
+        --button-theme-color-text-hover: var(--danger-color);
+        --button-theme-color-border-hover: transparent;
     }
 
     &--success {
@@ -103,16 +124,13 @@
         --button-theme-color-border-hover: var(--success-color);
     }
 
-    &--basic {
+    &--success.button--basic {
         --button-theme-color-background: transparent;
         --button-theme-color-text: var(--alt-font-color-1);
         --button-theme-color-border: transparent;
         --button-theme-color-hover: transparent;
-        --button-theme-color-text-hover: var(--link-hover-color);
-        
-        padding: var(--spacing-3);
-        margin: 0 var(--spacing-2);
-        box-shadow: none;
+        --button-theme-color-text-hover: var(--success-color);
+        --button-theme-color-border-hover: transparent;
     }
 
     &--inline {

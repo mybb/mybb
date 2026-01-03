@@ -192,19 +192,20 @@
                         <p class="option-field option-field--compact">
                             <label><input type="checkbox" name="suspendsignature" value="1"{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %} checked{% endif %} class="checkbox" onclick="toggleAction();" /> {{ lang.suspend_signature }}</label>
                         </p>
-                        <div class="field__block" id="suspend_action">
+                        <div class="section section--inline" id="suspend_action">
                             {% if user.suspendsigtime %}
-                                <p class="field__value">
-                                    {% if user.suspendsigtime == 0 %}
-                                        {{ lang.suspendsignature_perm }}
-                                    {% else %}
-                                        {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
-                                    {% endif %}
-                                </p>
+                                <div class="row row--form field">
+                                    <p class="field__value">
+                                        {% if user.suspendsigtime == 0 %}
+                                            {{ lang.suspendsignature_perm }}
+                                        {% else %}
+                                            {{ trans('suspendsignature_for', user.suspendsigtime|my_date) }}
+                                        {% endif %}
+                                    </p>
+                                </div>
                             {% endif %}
-                            <div class="field__block">
+                            <div class="row row--form field multi-field">
                                 {{ lang.suspost_length }}
-                                &nbsp;
                                 <input type="text" name="suspendsignature_time" value="{{ mybb.input.suspendsignature_time }}" class="textbox textbox--small" />
                                 <div class="select-field">
                                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
@@ -222,24 +223,26 @@
             <section class="section section--form">
                 <h2 class="title title--section">{{ lang.moderation }}</h2>
                 <div class="section__container">
-                    {% for opt in modOptions %}
-                        <div class="row row--form field">
+                    <div class="row row--form field">
+                        {% for opt in modOptions %}
                             <p class="option-field option-field--compact">
                                 <label>
                                     <input type="checkbox" name="{{ opt.action }}" value="1"{% if user[opt.option] or (mybb.input[opt.action] and errors) %} checked{% endif %} class="checkbox" onclick="toggleSuspend('{{ opt.select_option }}s');" id="{{ opt.select_option }}" /> {{ attribute(lang, opt.lang.title) }}
                                 </label>
                             </p>
-                            <div class="field__block" id="{{ opt.select_option }}s_action">
+                            <div class="section section--inline" id="{{ opt.select_option }}s_action">
                                 {% if user[opt.option] %}
-                                    <p class="field__value">
-                                        {% if user[opt.length] == 0 %}
-                                            {{ attribute(lang, opt.option ~ '_perm') }}
-                                        {% else %}
-                                            {{ trans(opt.option ~ '_for', user[opt.length]|my_date) }}
-                                        {% endif %}
-                                    </p>
+                                    <div class="row row--form field">
+                                        <p class="field__value">
+                                            {% if user[opt.length] == 0 %}
+                                                {{ attribute(lang, opt.option ~ '_perm') }}
+                                            {% else %}
+                                                {{ trans(opt.option ~ '_for', user[opt.length]|my_date) }}
+                                            {% endif %}
+                                        </p>
+                                    </div>
                                 {% endif %}
-                                <div class="field__block">
+                                <div class="row row--form field multi-field">
                                     {{ attribute(lang, opt.lang.length) }}&nbsp;
                                     <input type="text" name="{{ opt.time }}" value="{{ mybb.input[opt.time] }}" class="textbox textbox--small" />
                                     <div class="select-field">
@@ -252,8 +255,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="usernotes">{{ lang.mod_notes }}</label></h3>
                         <textarea name="usernotes" id="usernotes" rows="10" cols="70">{{ user.usernotes }}</textarea>

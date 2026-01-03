@@ -17,14 +17,14 @@
                 </span>
                 <span class="segmented-control__option">
                     <input type="radio" class="radio radio_delete segmented-control__input" name="posts[{{ post.pid }}]" id="post_delete_{{ post.pid }}" value="delete" />
-                    <label class="segmented-control__button" for="post_delete_{{ post.pid }}">
+                    <label class="segmented-control__button segmented-control__button--danger" for="post_delete_{{ post.pid }}">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'segmented-control__icon'}, with_context = false) }}
                         <span class="segmented-control__text">{{ lang.delete }}</span>
                     </label>
                 </span>
                 <span class="segmented-control__option">
                     <input type="radio" class="radio radio_approve segmented-control__input" name="posts[{{ post.pid }}]" id="post_approve_{{ post.pid }}" value="approve" />
-                    <label class="segmented-control__button" for="post_approve_{{ post.pid }}">
+                    <label class="segmented-control__button segmented-control__button--success" for="post_approve_{{ post.pid }}">
                         {{ include('partials/icon.twig', {icon: 'check', class: 'segmented-control__icon'}, with_context = false) }}
                         <span class="segmented-control__text">{{ lang.approve }}</span>
                     </label>
