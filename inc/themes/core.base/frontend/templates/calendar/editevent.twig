@@ -12,7 +12,7 @@
         {{ event_errors|raw }}
         <form action="calendar.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--alt form--delete">
+            <div class="container form form--delete">
                 <div class="option-field option-field--single">
                     <input type="checkbox" class="checkbox" name="delete" id="deleteevent" value="1" tabindex="9" />
                     <h3 class="option-field__name"><label for="deleteevent">{{ lang.delete_q }}</label></h3>
@@ -365,7 +365,7 @@
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="private" value="1"{% if select.privatecheck %} checked="checked"{% endif %} /> {{ lang.private_option|raw }}</label></p>
                     </div>
                 </section>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.edit_event }}</span>

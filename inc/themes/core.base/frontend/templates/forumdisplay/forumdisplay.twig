@@ -208,7 +208,7 @@
                         {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.sort_filter }}</span>
                     </summary>
-                    <form action="forumdisplay.php" method="get" class="block-actions__details compact-form multi-field">
+                    <form action="forumdisplay.php" method="get" class="block-actions__details form form--compact multi-field">
                         <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
                         <h3 class="block-actions__title visually-hidden">{{ lang.sort_threads }}</h3>
                         <div class="select-field">

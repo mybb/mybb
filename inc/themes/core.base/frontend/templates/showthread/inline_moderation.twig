@@ -1,7 +1,7 @@
 <div class="container container--jump-form inline-moderation">
     {{ asset('jscripts/inline_moderation.js', static=true) }}
     <h2 class="title title--legend inline-moderation__title">{{ lang.inline_post_moderation }}</h2>
-    <form action="moderation.php" method="post" class="compact-form multi-field" id="inlinemoderation_options">
+    <form action="moderation.php" method="post" class="form form--compact multi-field" id="inlinemoderation_options">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="tid" value="{{ thread.tid }}" />
         <input type="hidden" name="modtype" value="inlinepost" />

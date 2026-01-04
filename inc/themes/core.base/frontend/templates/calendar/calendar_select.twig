@@ -1,7 +1,7 @@
 <form action="calendar.php" method="post">
     <div class="container container--jump-form">
         <h2 class="title title--legend">{{ lang.jump_month }}</h2>
-        <div class="compact-form multi-field">
+        <div class="form form--compact multi-field">
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="month">
@@ -41,7 +41,7 @@
     {% if calendar_jump %}
         <div class="container container--jump-form">
             <h2 class="title title--legend">{{ lang.jump_to_calendar }}</h2>
-            <div class="compact-form multi-field">
+            <div class="form form--compact multi-field">
                 <div class="select-field">
                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="calendar">

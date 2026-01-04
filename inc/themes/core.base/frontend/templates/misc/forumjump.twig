@@ -1,7 +1,7 @@
 {% if showextras %}
     <div class="container container--jump-form">
         <h2 class="title title--legend">{{ lang.forumjump }}</h2>
-        <form action="forumdisplay.php" method="get" class="compact-form multi-field">
+        <form action="forumdisplay.php" method="get" class="form form--compact multi-field">
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="{{ name }}" class="forumjump">

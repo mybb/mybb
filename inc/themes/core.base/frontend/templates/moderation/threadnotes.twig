@@ -19,7 +19,7 @@
                         <textarea name="threadnotes" cols="80" rows="10" tabindex="1">{{ thread.notes }}</textarea>
                     </div>
                 </div>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium" tabindex="2">
                         {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.update_notes }}</span>

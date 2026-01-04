@@ -1,8 +1,4 @@
 .form {
-    
-    &--alt {
-        background-color: var(--background-2);
-    }
 
     &--modal {
         margin-bottom: 0;
@@ -11,40 +7,29 @@
 
     &--delete {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: space-between;
         padding: var(--spacing-5) var(--spacing-4);
         margin-bottom: var(--spacing-7);
 
+        @include bp-small {
+            align-items: center;
+            flex-direction: row;
+            gap: var(--spacing-4);
+        }
+
+        .option-field {
+            flex-grow: 1;
+        }
+
         .form__submit {
-            background: none;
+            flex-shrink: 0;
+            align-self: center;
         }
     }
 
-    .buttons {
-        margin: calc(-1 * var(--spacing-1));
+    &--compact {
+        line-height: 0;
     }
-
-    &__submit {
-        @extend .block__footer;
-        padding: var(--spacing-4) 0;
-
-        // TODO: confirm this isn't needed anywhere
-        // &:first-child {
-        //     border-radius: var(--border-radius);
-        // }
-    }
-}
-
-.inline-form {
-
-    .textbox,
-    .select-field,
-    .button {
-        margin: var(--spacing-1);
-    }
-}
-
-.compact-form {
-    line-height: 0;
 }

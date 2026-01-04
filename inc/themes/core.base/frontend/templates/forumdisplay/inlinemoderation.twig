@@ -28,7 +28,7 @@
     {% if standardTools|trim or customTools %}
         {{ asset('jscripts/inline_moderation.js', static=true) }}
         <h2 class="title title--legend inline-moderation__title">{{ lang.inline_thread_moderation }}</h2>
-        <form id="inlinemoderation_options" action="moderation.php" method="post" class="compact-form multi-field">
+        <form id="inlinemoderation_options" action="moderation.php" method="post" class="form form--compact multi-field">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
             <input type="hidden" name="modtype" value="inlinethread" />

@@ -49,6 +49,10 @@
         text-align: center;
         background: var(--background-2);
         border-radius: corner-values(0 0 calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)));
+
+        &:first-child {
+            border-radius: calc(var(--border-radius) - var(--border-width-base));
+        }
     }
 
     &--container {
@@ -298,38 +302,6 @@
 
         &__item {
             width: 48%;
-        }
-    }
-}
-
-
-.page-tools {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    @include bp-large {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    &__item {
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
-
-        @extend .inline-form;
-
-        &:first-child {
-            margin-bottom: var(--spacing-5);
-
-            @include bp-large {
-                margin-bottom: 0;
-            }
-        }
-
-        @include bp-large {
-            width: auto;
         }
     }
 }
