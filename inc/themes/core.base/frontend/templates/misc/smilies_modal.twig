@@ -3,11 +3,11 @@
         <h1 class="title title--modal">{{ lang.smilies_listing }}</h1>
         <div class="modal__content">
             <div class="block__content smilie-list">
-                <div class="row">{{ lang.click_to_add }}</div>
+                <div class="row row--information">{{ lang.click_to_add }}</div>
                 {% for smilie in smilies %}
-                    <div class="row row--simple-columns smilie-list__item">
+                    <div class="row smilie-list__item">
                         <div class="smilie-list__smilie"><img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }} smilie_pointer" onclick="MyBBEditor.insertText(' {{ smilie.smilie_insert }} ');" /></div>
-                        <div class="row__primary smilie-list__replace smilie-list__replace--no-name">{{ smilie.find }}</div>
+                        <div class="smilie-list__replace smilie-list__replace--no-name">{{ smilie.find }}</div>
                     </div>
                 {% else %}
                     <div class="row row--no-results no-results">{{ lang.no_smilies }}</div>

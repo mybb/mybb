@@ -39,7 +39,7 @@
                     <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
                 </section>
             {% else %}
-            <section class="container">
+            <section class="container container--forum-rules forum-rules">
                 <h4 class="title title--container">{{ forum.rulestitle }}</h4>
                 <div class="scaleimages">{{ forum.rules|raw }}</div>
             </section>

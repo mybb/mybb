@@ -42,7 +42,7 @@
 
         {# Thread moderator notes #}
         {% if modpermissions.ismod and thread.notes %}
-        <section class="container">
+        <section class="container container--thread-notes thread-notes">
             <h4 class="title title--container">{{ lang.thread_notes }}</h4>
             {% if thread.notes|length > 200 %}
                 {{ thread.notes|slice(0, 200)|nl2br }}...
@@ -126,11 +126,11 @@
                         <input type="hidden" name="pid" value="{{ poll.pid }}" />
                         <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
                         {% if poll.timeout %}
-                            <div class="row row--poll poll__row poll__row--information">{{ trans('poll_closes', poll.dateformat, poll.expiretime) }}</div>
+                            <div class="row row--poll row--information poll__row poll__row--information">{{ trans('poll_closes', poll.dateformat, poll.expiretime) }}</div>
                         {% endif %}
 
                         {% if poll.public %}
-                            <div class="row row--poll poll__row poll__row--information">{{ lang.public_note|raw }}</div>
+                            <div class="row row--poll row--information poll__row poll__row--information">{{ lang.public_note|raw }}</div>
                         {% endif %}
                         <div class="poll__options">
                             {% for option in poll.polloptions %}

@@ -11,15 +11,16 @@
         </header>
 
         <section class="block smilie-list">
-            <div class="container container--adjacent container--simple-columns smilie-list__legend">
-                <div class="container__primary smilie-list__name">{{ lang.name }}</div>
-                <div class="container__secondary smilie-list__replace">{{ lang.abbreviation }}</div>
+            <div class="column-headings column-headings--minor smilie-list__legend">
+                <div class="column-headings__column smilie-list__smilie">&nbsp;</div>
+                <div class="column-headings__column smilie-list__name">{{ lang.name }}</div>
+                <div class="column-headings__column smilie-list__replace">{{ lang.abbreviation }}</div>
             </div>
             {% for smilie in smilies %}
-                <div class="row row--simple-columns smilie-list__item">
+                <div class="row smilie-list__item">
                     <div class="smilie-list__smilie"><img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }}" /></div>
-                    <div class="row__primary smilie-list__name">{{ smilie.name }}</div>
-                    <div class="row__secondary smilie-list__replace">{{ smilie.find|nl2br }}</div>
+                    <div class="smilie-list__name">{{ smilie.name }}</div>
+                    <div class="smilie-list__replace">{{ smilie.find|nl2br }}</div>
                 </div>
             {% else %}
                 <div class="row row--no-results no-results">{{ lang.no_smilies }}</div>

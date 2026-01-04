@@ -1,29 +1,3 @@
-.account {
-
-    .page-header {
-        margin-bottom: var(--spacing-6);
-    }
-
-    .section-menu__item--messenger-compose,
-    .section-menu__item--messenger-folder,
-    .section-menu__item--messenger-tracking,
-    .section-menu__item--messenger-edit-folders {
-        display: none;
-    }
-
-    // these probably won't be necessary with twig -- just add --active class directly
-    &--dashboard .section-menu__item--dashboard,
-    &--profile .section-menu__item--profile,
-    &--preferences .section-menu__item--preferences,
-    &--groups .section-menu__item--groups,
-    &--buddy-ignore .section-menu__item--buddy-ignore,
-    &--attachments .section-menu__item--attachments,
-    &--drafts .section-menu__item--drafts,
-    &--subscriptions .section-menu__item--subscriptions {
-        @extend .section-menu__item--active;
-    }
-}
-
 .change-avatar {
 
     .avatar-container {
@@ -97,18 +71,6 @@
         &:hover {
             color: var(--danger-color);
         }
-    }
-
-    &__delete-icon {
-
-    }
-
-    &__username {
-
-    }
-
-    &__user-status {
-
     }
 }
 

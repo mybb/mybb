@@ -32,12 +32,7 @@
     }
 
     &--no-border {
-        border-bottom: none;
-    }
-
-    &--form.row--border-top {
-        padding-top: var(--spacing-4);
-        border-top: var(--border-width-base) solid var(--border-color-1);
+        border: none;
     }
 
     &--simple-columns {

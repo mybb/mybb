@@ -14,18 +14,9 @@
         }
     }
 
-    .page-controls {
-        margin-top: calc(-1 * var(--spacing-4));
-
-        @include bp-medium-max {
-            margin-#{$left}: calc(-1 * var(--spacing-2));
-            margin-#{$right}: calc(-1 * var(--spacing-2));
-        }
-    }
-
     &__username,
     &__usertitle {
-        margin: var(--spacing-2) 0;
+        margin: var(--spacing-1) 0;
     }
 }
 

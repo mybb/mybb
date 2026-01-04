@@ -46,7 +46,7 @@
 
         {# Forum rules #}
         {% if foruminfo.rulestype and foruminfo.rules %}
-            <section class="container container--forum-rules">
+            <section class="container container--forum-rules forum-rules">
                 {% if foruminfo.rulestype == 2 %}
                     <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
                 {% else %}

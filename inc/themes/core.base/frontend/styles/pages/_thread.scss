@@ -55,14 +55,6 @@
     }
 }
 
-.thread-actions {
-    flex-direction: column;
-
-    @include bp-medium {
-        flex-direction: row;
-    }
-}
-
 .thread-nav {
     display: flex;
     align-items: center;

@@ -8,7 +8,7 @@
     <div class="profile">
         <header class="page-header profile__header">
             {{ render_avatar(url=memprofile.avatar, alt=memprofile.username, class='avatar--large') }}
-            <h1 class="profile__username">{{ memprofile.formattedname|raw }}</h1>
+            <h1 class="title title--page profile__username">{{ memprofile.formattedname|raw }}</h1>
             <p class="profile__usertitle">{{ memprofile.user_title }}</p>
             {% if memprofile.groupimage %}
                 <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
@@ -21,7 +21,7 @@
                 {% endapply %}
             {% endif %}
         </header>
-        <div class="page-controls">
+        <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 {% if memprofile.showoptions %}
                     {% if memprofile.showbuddy %}
@@ -71,8 +71,20 @@
                 {% if memprofile.away %}
                     <section class="container container--away-note">
                         <h3 class="title title--container">{{ trans('away_note', memprofile.username) }}</h3>
-                        <p>{{ lang.away_reason }} {{ memprofile.awayreason }}</p>
-                        <p>{{ lang.away_since }} {{ memprofile.awaydate }} &mdash; {{ lang.away_returns }} {{ memprofile.returndate }}</p>
+                        <ul class="list list--divided list--stats">
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.away_reason }}</span>
+                                <span class="list__value">{{ memprofile.awayreason }}</span>
+                            </li>
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.away_since }}</span>
+                                <span class="list__value">{{ memprofile.awaydate }}</span>
+                            </li>
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.away_returns }}</span>
+                                <span class="list__value">{{ memprofile.returndate }}</span>
+                            </li>
+                        </ul>
                     </section>
                 {% endif %}
                 {% if memprofile.banned %}
