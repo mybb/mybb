@@ -1343,10 +1343,23 @@ EOF;
 		$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
+	$timezone_select_options = build_timezone_select('timezone', $mybb->get_input('timezone'));
+	$timezone_options = [];
+	$selected_timezone = null;
+
+	foreach($timezone_select_options as $timezone)
+	{
+		$timezone_options[(string)$timezone['timezone']] = $timezone['label'];
+		if($timezone['selected'])
+		{
+			$selected_timezone = (string)$timezone['timezone'];
+		}
+	}
+
 	$date_options = array(
 		"<label for=\"dateformat\">{$lang->date_format}:</label><br />".$form->generate_select_box("dateformat", $date_format_options, $mybb->get_input('dateformat'), array('id' => 'dateformat')),
 		"<label for=\"dateformat\">{$lang->time_format}:</label><br />".$form->generate_select_box("timeformat", $time_format_options, $mybb->get_input('timeformat'), array('id' => 'timeformat')),
-		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->get_input('timezone')),
+		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".$form->generate_select_box('timezone', $timezone_options, $selected_timezone, array('id' => 'timezone')),
 		"<label for=\"dstcorrection\">{$lang->daylight_savings_time_correction}:</label><br />".$form->generate_select_box("dstcorrection", array(2 => $lang->automatically_detect, 1 => $lang->always_use_dst_correction, 0 => $lang->never_use_dst_correction), $mybb->get_input('dstcorrection'), array('id' => 'dstcorrection'))
 	);
 
