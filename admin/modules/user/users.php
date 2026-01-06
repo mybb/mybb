@@ -373,7 +373,8 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
-        'contact_required'  => array(),
+		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -950,6 +951,8 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -4508,6 +4511,7 @@ function user_search_conditions($input, &$form)
 
 	$profile_fields = array(
 		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
