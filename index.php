@@ -386,7 +386,7 @@ if($mybb->settings['subforumsindex'] != 0)
 }
 
 $forum_list = build_forumbits();
-$forums = $forum_list['forum_list'];
+$forums = $forum_list['forum_list'] ?? '';
 
 $plugins->run_hooks('index_end');
 
