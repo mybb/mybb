@@ -188,17 +188,47 @@
 }
 
 .security-log {
+    $module: &;
 
     .row__primary,
-    .row__secondary {
+    .column-headings__column--primary {
+        flex-basis: 70%;
+    }
 
-        @include bp-small {
-            width: 45%;
+    &__info {
+
+        &--activity {
+
+            @include bp-large {
+                flex-basis: 60%;
+            }
+        }
+
+        &--date {
+
+            @include bp-large {
+                flex-basis: 40%;
+                text-align: center;
+            }
+        }
+
+        &--ip {
+
+            @include bp-large {
+                flex-basis: 30%;
+                text-align: center;
+            }
         }
     }
 
-    &__date {
-        font-size: var(--font-size-small);
-        color: var(--alt-font-color-2);
+    &.row {
+
+        #{$module}__info--date {
+
+            @include bp-large-max {
+                font-size: var(--font-size-small);
+                color: var(--alt-font-color-2);
+            }
+        }
     }
 }

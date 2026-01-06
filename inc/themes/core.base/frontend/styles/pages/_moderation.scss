@@ -18,14 +18,22 @@
     }
 }
 
-.awaiting-moderation {
+.awaiting-moderation,
+.report,
+.mod-log,
+.warning-log {
+    gap: var(--spacing-4);
 
-    &__type {
+    .row__primary,
+    .row__secondary {
 
-        @include bp-medium {
-            width: 45%;
+        @include bp-small {
+            width: calc(50% - var(--spacing-4)/2);
         }
     }
+}
+
+.awaiting-moderation {
 
     &__title {
         margin: 0;
@@ -40,13 +48,6 @@
     &__latest {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-2);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        @include bp-medium {
-            width: 45%;
-        }
     }
 
     &__latest-title {
@@ -89,14 +90,6 @@
 
 .report {
 
-    .row__primary,
-    .row__secondary {
-
-        @include bp-small {
-            width: 45%;
-        }
-    }
-
     &__reason {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-1);
@@ -122,14 +115,6 @@
 
 .mod-log {
 
-    .row__primary,
-    .row__secondary {
-
-        @include bp-small {
-            width: 45%;
-        }
-    }
-
     &__date {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-2);
@@ -142,14 +127,6 @@
 }
 
 .warning-log {
-
-    .row__primary,
-    .row__secondary {
-
-        @include bp-small {
-            width: 45%;
-        }
-    }
 
     &__warning {
         font-size: var(--font-size-small);
@@ -202,16 +179,17 @@
         flex-direction: column;
         justify-content: space-between;
 
-        @include bp-medium {
+        @include bp-large {
             flex-direction: row;
         }
     }
 
-    &__header-section {
-        margin-bottom: var(--spacing-3);
+    &__controls {
+        flex-shrink: 0;
+        margin: var(--spacing-3) 0;
 
-        @include bp-medium {
-            margin: 0;
+        @include bp-large {
+            margin: side-values(0 0 0 var(--spacing-3));
         }
     }
 
@@ -220,9 +198,6 @@
         font-size: var(--font-size-regular);
         font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
     &__author,

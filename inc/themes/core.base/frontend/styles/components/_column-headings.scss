@@ -3,12 +3,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-3) var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
     font-size: var(--font-size-small);
-
-    @include bp-small {
-        padding: var(--spacing-3) var(--spacing-5);
-    }
 
     &--major {
         margin: side-values(calc(-1 * var(--border-width-base)) calc(-1 * var(--border-width-base)) 0 calc(-1 * var(--border-width-base)));
@@ -55,6 +51,17 @@
                 text-align: $right;
             }
         }
+
+        &--sub-columns {
+            display: flex;
+        }
+    }
+
+    &__separator {
+
+        @include bp-large {
+            display: none;
+        }
     }
 
     // Hide sort by author link on small screens
@@ -98,6 +105,10 @@
             color: var(--invert-font-color);
         }
     }
+}
+
+.select-all {
+    margin-#{$left}: auto;
 }
 
 .threaad-list .column-headings {

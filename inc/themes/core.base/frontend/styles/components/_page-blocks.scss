@@ -6,29 +6,8 @@
     border-radius: var(--border-radius);
     @include box-shadow;
 
-    &__header {
-        padding: var(--spacing-3) calc(var(--spacing-5) + var(--border-width-base));
-        margin: side-values(calc(-1 * var(--border-width-base)) calc(-1 * var(--border-width-base)) 0 calc(-1 * var(--border-width-base)));
-        color: var(--invert-font-color);
-        background: var(--major-title-background);
-        border: 0;
-        border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
-
-        &--simple-columns {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            @include bp-small {
-                flex-direction: row;
-                align-items: center;
-            }
-        }
-    }
-
     &.collapse--collapsed {
 
-        .block__header,
         .title--major {
             margin: calc(-1 * var(--border-width-base));
             border-radius: var(--border-radius);
@@ -164,11 +143,6 @@
     }
 }
 
-.select-all {
-    text-align: $right;
-}
-
-
 .section {
     @include clearfix();
     padding: var(--spacing-4) var(--spacing-3);
@@ -295,13 +269,14 @@
 
 @include bp-large {
 
-    .simple-columns {
+    .block-columns {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        gap: var(--spacing-4);
 
         &__item {
-            width: 48%;
+            flex-basis: calc(50% - var(--spacing-4));
         }
     }
 }

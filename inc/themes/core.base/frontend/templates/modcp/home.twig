@@ -25,7 +25,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if thread.link %}
-                            <a href="{{ thread.link }}" title="{{ thread.fullsubject }}"><strong>{{ thread.subject }}</strong></a><br />
+                            <a href="{{ thread.link }}" title="{{ thread.fullsubject }}">{{ thread.subject }}</a><br />
                             {{ thread.date }} {{ lang.by }} {{ thread.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}
@@ -43,7 +43,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if post.link %}
-                            <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}"><strong>{{ post.subject }}</strong></a><br />
+                            <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}">{{ post.subject }}</a><br />
                             {{ post.date }} {{ lang.by }} {{ post.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}
@@ -61,7 +61,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if attachment.link %}
-                            <a href="{{ attachment.link }}#pid{{ attachment.pid }}"><strong>{{ attachment.filename }}</strong></a><br />
+                            <a href="{{ attachment.link }}#pid{{ attachment.pid }}">{{ attachment.filename }}</a><br />
                             {{ attachment.date }} {{ lang.by }} {{ attachment.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}

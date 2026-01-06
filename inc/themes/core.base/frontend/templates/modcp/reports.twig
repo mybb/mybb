@@ -16,7 +16,7 @@
         <input type="hidden" name="page" value="{{ report.page }}" />
         <input type="hidden" name="action" value="do_reports" />
         <section class="block">
-            <div class="block__header">
+            <div class="column-headings column-headings--major">
                 <div class="select-all">
                     <input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" />
                 </div>
@@ -33,7 +33,7 @@
                 {% for report in reports %}
                     {% include 'modcp/reports/item.twig' %}
                 {% else %}
-                    <div class="no-results">{{ lang.no_reports }}</div>
+                    <div class="row row--no-results no-results">{{ lang.no_reports }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer block-actions">

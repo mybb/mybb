@@ -121,7 +121,7 @@
                             </p>
                         </div>
                         {% if mybb.usergroup.cansearch %}
-                            <div class="row__secondary">
+                            <div class="row__controls">
                                 <a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}" class="button button--basic">
                                     {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.find_posts }}</span>
@@ -137,7 +137,7 @@
                             </p>
                         </div>
                         {% if mybb.usergroup.cansearch %}
-                            <div class="row__secondary">
+                            <div class="row__controls">
                                 <a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}" class="button button--basic">
                                     {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.find_threads }}</span>
@@ -153,7 +153,7 @@
                                     <a href="reputation.php?uid={{ memprofile.uid }}"{{ memprofile.reputation|raw }}</a>
                                 </p>
                             </div>
-                            <div class="row__secondary">
+                            <div class="row__controls">
                                 <a href="reputation.php?uid={{ memprofile.uid }}" class="button button--basic">
                                     {{ include('partials/icon.twig', {icon: 'info-circle', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.reputation_details }}</span>
@@ -182,7 +182,7 @@
                                 </p>
                             </div>
                             {% if memprofile.warn_user %}
-                                <div class="row__secondary">
+                                <div class="row__controls">
                                     <a href="warnings.php?action=warn&amp;uid={{ memprofile.uid }}" class="button button--basic">
                                         {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'button__icon'}, with_context = false) }}
                                         <span class="button__text">{{ lang.warn }}</span>

@@ -55,6 +55,18 @@
         @extend .row--selected;
     }
 
+    &__primary {
+
+        &--sub-columns {
+            display: flex;
+            flex-direction: column;
+
+            @include bp-large {
+                flex-direction: row;
+            }
+        }
+    }
+
     &__secondary {
 
         @include bp-small-max {
