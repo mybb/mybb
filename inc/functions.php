@@ -1667,7 +1667,7 @@ function forum_permissions($fid = 0, $uid = 0, $gid = 0)
 				$cached_forum_permissions[$gid][$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
 			}
 		}
-		return $cached_forum_permissions[$gid];
+		return $cached_forum_permissions[$gid] ?? [];
 	}
 }
 
