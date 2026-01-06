@@ -4506,6 +4506,7 @@ function user_search_conditions($input, &$form)
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+		'contact_required' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
