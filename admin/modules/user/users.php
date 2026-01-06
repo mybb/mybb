@@ -373,6 +373,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+        'contact_required'  => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -1782,7 +1783,7 @@ EOF;
 
 	// Suspend avatar
 	// Generate check box
-	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->input['suspendavatar_period'], array('id' => 'suspendavatar_period'));
+	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->get_input('suspendavatar_period'), array('id' => 'suspendavatar_period'));
 
 	// Do we have any existing suspensions here?
 	$existing_info = '';
