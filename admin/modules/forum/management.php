@@ -572,7 +572,7 @@ if($mybb->input['action'] == "permissions")
 		}
 	}
 
-	if($mybb->input['ajax'] != 1)
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) !== 1)
 	{
 		$sub_tabs = array();
 
@@ -760,14 +760,14 @@ $(function() {
 			$hidefields = array('canonlyviewownthreads', 'canonlyreplyownthreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canviewdeletetionnotice');
 		}
 		$hidefields[] = 'canratethreads'; // deprecated: Thread rating feature is deprecated since 1.9.0
-		
+
 		$groups = $plugins->run_hooks("admin_forum_management_permission_groups", $groups);
 
 		foreach($hidefields as $field)
 		{
 			unset($groups[$field]);
 		}
-		
+
 		$tabs = array();
 		foreach(array_unique(array_values($groups)) as $group)
 		{
@@ -775,7 +775,7 @@ $(function() {
 			$tabs[$group] = $lang->$lang_group;
 		}
 
-		if($mybb->input['ajax'] == 1)
+		if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 		{
 			$page->output_tab_control($tabs, false, "tabs2");
 		}
@@ -817,7 +817,7 @@ $(function() {
 			echo "</div>";
 		}
 
-		if($mybb->input['ajax'] == 1)
+		if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 		{
 			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close(); return false;'));
 			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'savePermissions'));
@@ -835,7 +835,7 @@ $(function() {
 		}
 	}
 
-	if($mybb->input['ajax'] != 1)
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) != 1)
 	{
 		$page->output_footer();
 	}
