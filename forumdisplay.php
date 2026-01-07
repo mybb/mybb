@@ -1065,6 +1065,8 @@ if($mybb->user['uid'])
 	}
 }
 
+$prefixselect = '';
+
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {
