@@ -40,7 +40,7 @@
                         {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
                     {% endfor %}
                     </p>
-                {% endif %}                
+                {% endif %}
             </div>
         {% endif %}
         {% if birthdays or hiddencount %}
@@ -52,7 +52,7 @@
                 <p class="board-statistics__body">
                     {% apply spaceless %}
                         {% for user in birthdays %}
-                            <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}<a/>{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                            <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
                         {% endfor %}
                     {% endapply %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
                 </p>
