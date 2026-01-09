@@ -316,8 +316,9 @@ function acp_recount_referrals()
 
 /**
  * Recount thread ratings
+ *
+ * @deprecated 1.9.0 Thread rating feature is deprecated
  */
-#[\Deprecated(message: "Thread rating feature is deprecated", since: "1.9.0")]
 function acp_recount_thread_ratings()
 {
 	global $db, $mybb, $lang;
