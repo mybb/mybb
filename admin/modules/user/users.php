@@ -4599,8 +4599,9 @@ $("#username").select2({
 /**
  * @param int $source_uid
  * @param int $destination_uid
+ *
+ * @deprecated 1.9.0 Thread rating feature is deprecated
  */
-#[\Deprecated(message: "Thread rating feature is deprecated", since: "1.9.0")]
 function merge_thread_ratings($source_uid, $destination_uid)
 {
 	global $db;
