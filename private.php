@@ -761,8 +761,8 @@ if($mybb->input['action'] == "send")
 		$post['message'] = $mybb->get_input('message');
 		$post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
 		$post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
-		$post['to'] = $to;
-		$post['bcc'] = $bcc;
+		$post['to'] = $sendpm['to'];
+		$post['bcc'] = $sendpm['bcc'];
 		if(!isset($options['disablesmilies']))
 		{
 			$options['disablesmilies'] = 0;
