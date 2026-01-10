@@ -51,7 +51,7 @@
                     <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
                 {% else %}
                     <h4 class="title title--container">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</h4>
-                    {{ foruminfo.rules }}
+                    {{ foruminfo.rules|raw }}
                 {% endif %}
             </section>
         {% endif %}
