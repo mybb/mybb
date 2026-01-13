@@ -7,9 +7,6 @@
     &__title {
         margin: 0;
         font-size: var(--font-size-regular);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
     &__forum,

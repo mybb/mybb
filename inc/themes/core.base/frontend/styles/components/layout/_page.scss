@@ -81,17 +81,34 @@ textarea {
     padding: side-values(var(--spacing-6) 0 var(--spacing-4) 0);
 
     .page-columns {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-7);
 
-        @include bp-medium {
-            flex-direction: row;
-            gap: 3%;
+        &--menu {
+            grid-template-areas:
+                "menu"
+                "content";
+
+            @include bp-medium {
+                grid-template-columns: minmax(200px, 1fr) 4fr;
+                grid-template-areas: "menu content";
+            }
+        }
+
+        &--sidebar {
+            grid-template-areas:
+                "content"
+                "sidebar";
+
+            @include bp-medium {
+                grid-template-columns: 2fr 1fr;
+                grid-template-areas: "content sidebar";
+            }
         }
     }
 
     .page-content {
-        flex: 1;
+        grid-area: content;
 
         &--centered {
 
@@ -103,14 +120,10 @@ textarea {
     }
 
     .page-sidebar {
-
-        @include bp-medium {
-            flex: 0 0 35%;
-            margin-top: 0;
-        }
+        grid-area: sidebar;
     }
 
-   .page-content--menu .page-header {
+    .page-content--menu .page-header {
         margin-bottom: var(--spacing-5);
     }
 
@@ -124,10 +137,5 @@ textarea {
             font-size: var(--font-size-small);
             color: var(--alt-font-color-1);
         }
-    }
-
-    .page-sidebar {
-        padding-bottom: var(--spacing-4);
-        font-size: var(--font-size-small);
     }
 }

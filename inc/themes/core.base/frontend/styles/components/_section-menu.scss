@@ -1,9 +1,5 @@
 .section-menu {
-
-    @include bp-medium {
-        flex: 0 0 22%;
-        min-width: 200px;
-    }
+    grid-area: menu;
 
     &__title {
         padding: var(--spacing-3) 0;
