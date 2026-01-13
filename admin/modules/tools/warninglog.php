@@ -193,6 +193,18 @@ if($mybb->input['action'] == "view")
 	$table->construct_cell("<strong>{$lang->expires}</strong><br /><br />{$expires}", array('width' => '50%'));
 	$table->construct_row();
 
+	if(!empty($warning['requiresacknowledgement']))
+	{
+		$acknowledgement_text = $lang->not_acknowledged;
+		if(!empty($warning['acknowledged']))
+		{
+			$acknowledgement_text = my_date('relative', $warning['acknowledged']);
+		}
+
+		$table->construct_cell("<strong>{$lang->acknowledgement_date}</strong><br /><br />{$acknowledgement_text}", array('colspan' => 2));
+		$table->construct_row();
+	}
+
 	$table->construct_cell("<strong>{$lang->warning_note}</strong><br /><br />{$notes}", array('colspan' => 2));
 	$table->construct_row();
 
@@ -290,6 +302,19 @@ if(!$mybb->input['action'])
 		$search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
 	}
+
+	if(isset($mybb->input['filter']['acknowledged']))
+	{
+		$acknowledged = (string)$mybb->input['filter']['acknowledged'];
+		if($acknowledged === '1')
+		{
+			$where_sql .= " AND w.acknowledged > 0";
+		}
+		else if($acknowledged === '0')
+		{
+			$where_sql .= " AND w.acknowledged = 0";
+		}
+	}
 	$sortbysel = array();
 	$sortby_input = '';
 	if(!empty($mybb->input['filter']['sortby']))
@@ -374,6 +399,7 @@ if(!$mybb->input['action'])
 	$sql = "
 		SELECT
 			w.wid, w.title as custom_title, w.points, w.dateline, w.issuedby, w.expires, w.expired, w.daterevoked, w.revokedby,
+			w.requiresacknowledgement, w.acknowledged,
 			t.title,
 			u.uid, u.username, u.usergroup, u.displaygroup,
 			i.uid as mod_uid, i.username as mod_username, i.usergroup as mod_usergroup, i.displaygroup as mod_displaygroup
@@ -395,6 +421,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->date_issued, array("class" => "align_center", 'width' => '20%'));
 	$table->construct_header($lang->expires, array("class" => "align_center", 'width' => '20%'));
 	$table->construct_header($lang->issued_by, array("class" => "align_center", 'width' => '15%'));
+	$table->construct_header($lang->acknowledged, array("class" => "align_center", 'width' => '10%'));
 	$table->construct_header($lang->options, array("class" => "align_center", 'width' => '5%'));
 
 	while($row = $db->fetch_array($query))
@@ -448,13 +475,25 @@ if(!$mybb->input['action'])
 		$table->construct_cell($issued_date, array("class" => "align_center"));
 		$table->construct_cell($expire_date.$revoked_text, array("class" => "align_center"));
 		$table->construct_cell($mod_username_link);
+
+		$acknowledgement_text = '-';
+		if(!empty($row['requiresacknowledgement']))
+		{
+			$acknowledgement_text = $lang->not_acknowledged;
+			if(!empty($row['acknowledged']))
+			{
+				$acknowledgement_text = my_date('relative', $row['acknowledged']);
+			}
+		}
+
+		$table->construct_cell($acknowledgement_text, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=tools-warninglog&amp;action=view&amp;wid={$row['wid']}\">{$lang->view}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_warning_logs, array("colspan" => "6"));
+		$table->construct_cell($lang->no_warning_logs, array("colspan" => "7"));
 		$table->construct_row();
 	}
 
@@ -480,7 +519,7 @@ if(!$mybb->input['action'])
 
 	$user_filters = array();
 	$input_filters = $mybb->get_input('filter', MyBB::INPUT_ARRAY);
-	foreach(array('username', 'mod_username', 'reason', 'sortby') as $key)
+	foreach(array('username', 'mod_username', 'reason', 'sortby', 'acknowledged') as $key)
 	{
 		if(isset($input_filters[$key]))
 		{
@@ -497,6 +536,8 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $user_filters['username'], array('id' => 'filter_username')), 'filter_username');
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $user_filters['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $user_filters['reason'], array('id' => 'filter_reason')), 'filter_reason');
+	$acknowledgement_options = array('' => 'All', '1' => $lang->acknowledged, '0' => $lang->not_acknowledged);
+	$form_container->output_row($lang->acknowledged, "", $form->generate_select_box('filter[acknowledged]', $acknowledgement_options, $user_filters['acknowledged'], array('id' => 'filter_acknowledged')), 'filter_acknowledged');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $user_filters['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page', 'min' => 1)), 'filter_per_page');
 
