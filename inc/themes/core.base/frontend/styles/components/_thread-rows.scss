@@ -1,0 +1,290 @@
+.thread-list {
+    
+    .thread {
+
+        // Thread subject
+        &__subject {
+            display: inline-block;
+            margin: 0;
+            font-size: var(--font-size-regular);
+            font-weight: var(--font-weight-normal);
+
+            // Inline thread subject edit field
+            .subject_editable input {
+                @extend .textbox;
+                box-sizing: content-box;
+                width: 100%;
+            }
+        }
+
+        // Hide other items in the thread title block when thread title is being edited
+        &:has(input[name="value"]) {
+
+            .thread__subject {
+                display: block;
+            }
+            
+            .thread__prefix,
+            .thread__status,
+            .thread__icons {
+                display: none;
+            }
+        }
+
+        // Threads with unread posts
+        &--unread {
+
+            .thread__subject {
+                font-weight: var(--font-weight-bold);
+            }
+        }
+
+        // Thread prefix
+        &__prefix {
+            margin-#{$right}: var(--spacing-2);
+
+            // Tag used in thread prefix style
+            .tag {
+                font-size: var(--font-size-smallest);
+            }
+        }
+
+        &__deny-receipt {
+            margin-#{$left}: var(--spacing-3);
+            font-size: var(--font-size-smaller);
+            font-weight: var(--font-weight-normal);
+            color: var(--alt-font-color-2);
+
+            a:link,
+            a:visited {
+                color: var(--alt-font-color-1);
+            }
+        }
+
+        // Thread author (or forum for subscriptions list)
+        &__author,
+        &__forum,
+        &__notification {
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-2);
+            vertical-align: top;
+
+            a:link,
+            a:visited,
+            .thread__notification-method {
+                color: var(--alt-font-color-1);
+            }
+        }
+
+        &__overflow {
+
+            @include bp-large-max {
+                display: inline-block;
+                max-width: var(--text-overflow-max-width);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                vertical-align: top;
+            }
+        }
+
+        &__notification-legend {
+            @include visually-hidden;
+        }
+
+        // Search posts message
+        &__message {
+            margin-top: var(--spacing-3);
+            padding: var(--spacing-3);
+            background: var(--background-1);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-smaller);
+        }
+
+        // Thread icons
+        &__icons {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-3);
+        }
+
+        // Individual thread icon
+        &__icon {
+
+            &--sticky {
+                color: var(--danger-color);
+            }
+
+            &--closed,
+            &--moved,
+            &--poll {
+                color: var(--alt-font-color-1);
+            }
+        }
+
+        // Pagination (links to last 3 pages)
+        &__pages {
+            margin-top: var(--spacing-1);
+            font-size: var(--font-size-smallest);
+            text-align: $right;
+        }
+
+        // Pages text
+        &__page-legend {
+            @include visually-hidden;
+        }
+
+        // Individual page link
+        &__page-link {
+            display: inline-block;
+            padding: var(--spacing-1) var(--spacing-3);
+            margin: 0 var(--spacing-1);
+            background: var(--background-2);
+            border-radius: var(--border-radius-small);
+            text-decoration: none;
+
+            &:hover,
+            &:active {
+                background: var(--button-hover-color);
+                color: var(--invert-font-color);
+            }
+        }
+
+        // Thread reply and view counts
+        &__count {
+            font-size: var(--font-size-smaller);
+
+            &--replies {
+                color: var(--alt-font-color-2);
+
+                @include bp-large {
+                    font-size: var(--font-size-small);
+                }
+            }
+
+            &--views {
+                color: var(--alt-font-color-3);
+            }
+        }
+
+        // Reply and views legend
+        &__legend {
+            text-transform: lowercase;
+        }
+
+        // Replies count
+        a.thread__reply-count {
+            color: var(--alt-font-color-1);
+        }
+
+        // Unapproved replies count
+        &__unapproved-replies {
+            padding: var(--spacing-1) var(--spacing-2);
+            margin-#{$left}: var(--spacing-2);
+            font-size: var(--font-size-smallest);
+            font-weight: var(--font-weight-normal);
+            color: var(--status-pending-font-color);
+            text-decoration: none;
+            background: var(--status-pending-background-color);
+            border-radius: var(--border-radius-small);
+        }
+
+        // Specific styles for message row {
+        &--message {
+
+            .thread__icons {
+                font-size: var(--font-size-regular);
+                color: var(--alt-font-color-2);
+            }
+
+            .thread__icon {
+                
+                &--new-message {
+                    color: var(--primary-color);
+                }
+            }
+        }
+
+        // Message / announcement date
+        &__date {
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-1);
+
+            @include bp-large {
+                font-size: var(--font-size-small);
+            }
+        }
+    }
+}
+
+// Jump to latest post / announcement icon
+@mixin thread-jump($bp: null) {
+    margin-#{$left}: var(--spacing-2);
+    font-size: var(--font-size-smaller);
+    color: var(--status-new-icon-color);
+
+    @if $bp {
+        @include bp($bp) {
+            position: absolute;
+            top: var(--spacing-4);
+            #{$left}: var(--spacing-4);
+            margin-#{$left}: 0;
+            font-size: var(--font-size-regular);
+        }
+    }
+}
+
+// Last post information
+@mixin latest-post($bp) {
+    font-size: var(--font-size-small);
+    vertical-align: top;
+
+    &__text {
+        display: inline;
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-2);
+        vertical-align: top;
+
+        @include bp($bp) {
+            @include visually-hidden;
+        }
+    }
+
+    &__author {
+        display: inline-block;
+        max-width: var(--text-overflow-max-width);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        font-size: var(--font-size-smaller);
+
+        @include bp-max($bp) {
+
+            a:link,
+            a:visited {
+                color: var(--alt-font-color-1);
+            }
+        }
+
+        @include bp($bp) {
+            display: block;
+            font-size: var(--font-size-small);
+            width: var(--latest-column-width);
+        }
+    }
+
+    &__date {
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-2);
+        vertical-align: top;
+
+        @include bp($bp) {
+            display: block;
+            color: var(--alt-font-color-1);
+        }
+    }
+}

@@ -1,3 +1,15 @@
+@mixin bp($bp) {
+    @media only screen and (min-width: $bp) {
+        @content;
+    }
+}
+
+@mixin bp-max($bp) {
+    @media only screen and (max-width: $bp - 1) {
+        @content;
+    }
+}
+
 @mixin bp-large {
     @media only screen and (min-width: $bp-large) {
         @content;

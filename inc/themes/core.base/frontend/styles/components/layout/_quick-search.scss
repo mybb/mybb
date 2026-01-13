@@ -116,6 +116,7 @@
 
     @include bp-medium-max {
         display: block;
+        z-index: 100;
     }
 }
 

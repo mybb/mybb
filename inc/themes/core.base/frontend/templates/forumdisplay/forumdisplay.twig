@@ -51,7 +51,7 @@
                     <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
                 {% else %}
                     <h4 class="title title--container">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</h4>
-                    {{ foruminfo.rules }}
+                    {{ foruminfo.rules|raw }}
                 {% endif %}
             </section>
         {% endif %}
@@ -102,7 +102,7 @@
                 </div>
                 {{ multipage|raw }}
             </div>
-            <section class="block block--thread-list thread-list">
+            <section class="block block--thread-list">
                 {# Sorting #}
                 {% set ascDesc %}
                     <span class="sort-results__order">
@@ -114,21 +114,24 @@
                     </span>
                 {% endset %}
 
-            	<div class="column-headings column-headings--major sort-results">
-            		<div class="column-headings__column column-headings__column--primary">
-            			<span class="sort-results__subject"><a href="{{ sorting.url }}&amp;sortby=subject&amp;order={% if sorting.by == 'subject' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--subject">{{ lang.thread }}{% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %}</a></span>
-                        <span class="sort-results__author">&mdash; <a href="{{ sorting.url }}&amp;sortby=starter&amp;order={% if sorting.by == 'starter' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--author">{{ lang.author }}{% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}</a></span>
-            		</div>
-            		<div class="column-headings__column column-headings__column--replies">
+            	<div class="column-headings column-headings--major column-headings--thread-list sort-results thread thread--default">
+            		<div class="column-headings__column thread__title">
+                        <a href="{{ sorting.url }}&amp;sortby=subject&amp;order={% if sorting.by == 'subject' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--title">{{ lang.thread }}{% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %}</a>
+                    </div>
+                    {# <div class="column-headings__separator">&mdash;</div> #}
+                    <div class="column-headings__column thread__author">
+                        <a href="{{ sorting.url }}&amp;sortby=starter&amp;order={% if sorting.by == 'starter' %}{{ sorting.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--author">{{ lang.author }}{% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}</a>
+                    </div>
+            		<div class="column-headings__column thread__replies">
             			<a href="{{ sorting.url }}&amp;sortby=replies&amp;order={% if sorting.by == 'replies' %}{{ sorting.oppsortnext }}{% else %}desc{% endif %}" class="sort-results__link sort-results__link--replies">{{ lang.replies }}{% if sorting.by == 'replies' %}{{ ascDesc }}{% endif %}</a>
             		</div>
-            		<div class="column-headings__column column-headings__column--latest">
+            		<div class="column-headings__column thread__latest">
             			<a href="{{ sorting.url }}&amp;sortby=lastpost&amp;order={% if sorting.by == 'lastpost' %}{{ sorting.oppsortnext }}{% else %}desc{% endif %}" class="sort-results__link sort-results__link--latest">{{ lang.lastpost }}{% if sorting.by == 'lastpost' %}{{ ascDesc }}{% endif %}</a>
             		</div>
                     {% if modpermissions.ismod %}
-                        <span class="column-headings__column column-headings__column--checkbox">
+                        <div class="column-headings__column thread__checkbox">
                             <input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" />
-                        </span>
+                        </div>
                     {% endif %}
             	</div>
 
@@ -144,7 +147,7 @@
 
                 {# Announcements #}
                 {% if announcements %}
-                    <div class="thread-list__announcements">
+                    <div class="thread-list thread-list--announcements">
                         <h2 class="visually-hidden">{{ lang.forum_announcements }}</h2>
                         {% for announcement in announcements %}
                             {% include 'forumdisplay/announcement.twig' %}
@@ -162,33 +165,33 @@
                         {% endif %}
                     </div>
                 {% else %}
-                    <div class="thread-list__container">
-                        {% for thread in threadCache %}
-                            {# Sticky thread separator #}
-                            {% if thread.sticky and stickySepAdded != true %}
-                                <div class="thread-list__sticky-threads">
-                                    <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
-                                {% set stickySepAdded = true %}
+                    
+                {% for thread in threadCache %}
+                    {# Sticky thread separator #}
+                    {% if thread.sticky and stickySepAdded != true %}
+                        <div class="thread-list thread-list--sticky-threads">
+                            <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
+                        {% set stickySepAdded = true %}
 
-                            {# Normal thread separator #}
-                            {% elseif not thread.sticky and normalSepAdded != true %}
-                                {# Close sticky section if open #}
-                                {% if stickySepAdded %}
-                                    </div>
-                                {% endif %}
+                    {# Normal thread separator #}
+                    {% elseif not thread.sticky and normalSepAdded != true %}
+                        {# Close sticky section if open #}
+                        {% if stickySepAdded %}
+                            </div>
+                        {% endif %}
 
-                                {# Begin normal thread section #}
-                                <div class="thread-list__normal-threads">
-                                    <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
-                                {% set normalSepAdded = true %}
-                            {% endif %}
+                        {# Begin normal thread section #}
+                        <div class="thread-list thread-list--normal-threads">
+                            <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
+                        {% set normalSepAdded = true %}
+                    {% endif %}
 
                             {# Threads – no errors #}
-                            {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
-                                {% include 'forumdisplay/thread_deleted.twig' %}
-                            {% else %}
-                                {% include 'forumdisplay/thread.twig' %}
-                            {% endif %}
+                        {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
+                            {% include 'forumdisplay/thread_deleted.twig' %}
+                        {% else %}
+                            {% include 'forumdisplay/thread.twig' %}
+                        {% endif %}
 
                         {# No threads #}
                         {% else %}

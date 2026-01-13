@@ -1,8 +1,12 @@
 .row {
     position: relative;
-    padding: var(--spacing-4) var(--spacing-5);
+    padding: var(--spacing-4);
     line-height: var(--line-height-small);
     border-bottom: var(--border-width-base) solid var(--border-color-1);
+
+    @include bp-medium {
+        padding: var(--spacing-4) var(--spacing-5);
+    }
 
     &--form {
         padding: var(--spacing-5) var(--spacing-4);

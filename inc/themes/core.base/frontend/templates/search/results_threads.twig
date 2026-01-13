@@ -10,7 +10,7 @@
             <h1 class="title title--page">{{ lang.search_results }}</h1>
         </header>
         <div class="page-controls page-controls--compact">{{ multipage|raw }}</div>
-        <section class="block block--thread-list thread-list">
+        <section class="block block--thread-list">
             {% set ascDesc %}
                 <span class="sort-results__order">
                     {% if results.oppsort == 'desc' %}
@@ -20,28 +20,26 @@
                     {% endif %}
                 </span>
             {% endset %}
-            <div class="column-headings column-headings--major sort-results">
-                <div class="column-headings__column column-headings__column--primary">
-                    <span class="sort-results__subject">
-                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=subject&amp;order={% if results.orderarrow.subject %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--subject">{{ lang.thread }}{% if results.orderarrow.subject %}{{ ascDesc }}{% endif %}</a>
-                    </span>
-                    <span class="sort-results__author"> &mdash;
-                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order={% if results.orderarrow.starter %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--author">{{ lang.author }}{% if results.orderarrow.starter %}{{ ascDesc }}{% endif %}</a>
-                    </span>
-                    <span class="sort-results__forum"> &mdash;
-                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order={% if results.orderarrow.forum %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--forum">{{ lang.forum }}{% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}</a>
-                    </span>
+            <div class="column-headings column-headings--major column-headings--thread-list sort-results thread thread--search-threads">
+                <div class="column-headings__column thread__title">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=subject&amp;order={% if results.orderarrow.subject %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--subject">{{ lang.thread }}{% if results.orderarrow.subject %}{{ ascDesc }}{% endif %}</a>
                 </div>
-                <div class="column-headings__column column-headings__column--replies">
+                <div class="column-headings__column thread__author">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order={% if results.orderarrow.starter %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--author">{{ lang.author }}{% if results.orderarrow.starter %}{{ ascDesc }}{% endif %}</a>
+                </div>
+                <div class="column-headings__column thread__forum">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order={% if results.orderarrow.forum %}{{ results.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--forum">{{ lang.forum }}{% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}</a>
+                </div>
+                <div class="column-headings__column thread__replies">
                     <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=replies&amp;order={% if results.orderarrow.replies %}{{ results.oppsortnext }}{% else %}desc{% endif %}" class="sort-results__link sort-results__link--replies">{{ lang.replies }}{% if results.orderarrow.replies %}{{ ascDesc }}{% endif %}</a>
                 </div>
-                <div class="column-headings__column column-headings__column--latest">
+                <div class="column-headings__column thread__latest">
                     <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=lastpost&amp;order={% if results.orderarrow.lastpost %}{{ results.oppsortnext }}{% else %}desc{% endif %}" class="sort-results__link sort-results__link--latest">{{ lang.lastpost }}{% if results.orderarrow.lastpost %}{{ ascDesc }}{% endif %}</a>
                 </div>
                 {% if results.show_inline_moderation %}
-                    <span class="column-headings__column column-headings__column--checkbox">
+                    <div class="column-headings__column thread__checkbox">
                         <input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this);" />
-                    </span>
+                    </div>
                 {% endif %}
             </div>
             {% if results.show_inline_moderation %}
@@ -52,7 +50,7 @@
                     {{ lang.all_selected|raw }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection|raw }}</a>
                 </div>
             {% endif %}
-            <div class="thread-list__container">
+            <div class="thread-list thread-list--search-threads">
                 {% for thread in threads %}
                     {% include 'search/results_threads_row.twig' %}
                 {% endfor %}

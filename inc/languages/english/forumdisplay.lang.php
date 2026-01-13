@@ -15,6 +15,7 @@ $l['author'] = "Author";
 $l['replies'] = "Replies";
 $l['reply'] = "Reply";
 $l['views'] = "Views";
+$l['view'] = "View";
 $l['lastpost'] = "Last Post";
 $l['prefix'] = "Prefix:";
 $l['prefix_all'] = "Prefix: Any/No Prefix";

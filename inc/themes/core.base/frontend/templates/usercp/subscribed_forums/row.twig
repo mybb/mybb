@@ -10,14 +10,16 @@
             {% endif %}
         </span>
         <h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
-        <a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={{ forum.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small">
-            {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-            <span class="button__text">{{ lang.unsubscribe }}</span>
-        </a>
-        <a href="newthread.php?fid={{ forum.fid }}" class="button button--secondary button--small">
-            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
-            <span class="button__text">{{ lang.new_thread }}</span>
-        </a>
+        <div class="forum__buttons">
+            <a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={{ forum.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small">
+                {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.unsubscribe }}</span>
+            </a>
+            <a href="newthread.php?fid={{ forum.fid }}" class="button button--secondary button--small">
+                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.new_thread }}</span>
+            </a>
+        </div>
     </div>
     {% if forum.lastpost == 0 %}
         {% include 'forumbit/depth_2/last_post_never.twig' %}

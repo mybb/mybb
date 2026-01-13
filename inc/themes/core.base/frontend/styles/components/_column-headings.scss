@@ -3,8 +3,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-3) var(--spacing-5);
+    padding: var(--spacing-3) var(--spacing-4);
     font-size: var(--font-size-small);
+
+    @include bp-medium {
+        padding: var(--spacing-3) var(--spacing-5);
+    }
 
     &--major {
         margin: side-values(calc(-1 * var(--border-width-base)) calc(-1 * var(--border-width-base)) 0 calc(-1 * var(--border-width-base)));
@@ -26,50 +30,6 @@
 
     &--first {
         border-radius: corner-values(calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)) 0 0);
-    }
-
-    &__column {
-
-        &--primary :first-child .sort-results__link {
-            
-            @include bp-small {
-                margin-#{$left}: calc(-1 * var(--spacing-3));
-            }
-        }
-
-        &--latest {
-
-            @include bp-small {
-                .sort-results__link:first-child {
-                    margin-#{$left}: calc(-1 * var(--spacing-3));
-                }
-            }
-            
-            @include bp-small-max {
-                flex: 1 0 40%;
-                margin-#{$right}: var(--spacing-3);
-                text-align: $right;
-            }
-        }
-
-        &--sub-columns {
-            display: flex;
-        }
-    }
-
-    &__separator {
-
-        @include bp-large {
-            display: none;
-        }
-    }
-
-    // Hide sort by author link on small screens
-    &__author {
-
-        @include bp-medium-max {
-            display: none;
-        }
     }
 }
 
@@ -109,13 +69,6 @@
 
 .select-all {
     margin-#{$left}: auto;
-}
-
-.threaad-list .column-headings {
-
-    @include bp-small {
-        padding: side-values(var(--spacing-3) var(--spacing-5) var(--spacing-3) var(--spacing-8));
-    }
 }
 
 .message-list .column-headings {

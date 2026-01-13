@@ -66,6 +66,10 @@
         }
     }
 
+    &__buttons {
+        padding: side-values(var(--spacing-3) 0 0 0);
+    }
+
     &__stat {
         display: none;
     }

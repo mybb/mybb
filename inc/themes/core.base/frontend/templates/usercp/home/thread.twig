@@ -1,0 +1,40 @@
+{# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
+<div class="row row--thread thread thread--subscription thread--compact {{ thread.class }}">
+    <div class="thread__title">
+        {% if thread.displayprefix %}
+            <span class="thread__prefix thread-prefix thread-prefix--prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
+        {% endif %}
+        <h3 class="thread__subject {{ new_class }}">
+            <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
+        </h3>
+        {% if thread.lastread and thread.lastpost > thread.lastread %}
+            <a href="{{ thread.newpostlink }}" class="thread__jump">
+                {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+            </a>
+        {% endif %}
+    </div>
+    <div class="thread__icons">
+        {{ icon }}
+    </div>
+    <div class="thread__author">{{ lang.by }} <span class="thread__overflow">{{ thread.author|raw }}</span></div>
+    <div class="thread__replies thread__count thread__count--replies">
+        <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
+        <span class="thread__legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+    </div>
+    <div class="thread__views thread__count thread__count--views">
+        {{ thread.views }}
+        <span class="thread__legend">{% if thread.views == 1 %}{{ lang.view }}{% else %}{{ lang.views }}{% endif %}</span>
+    </div>
+    <div class="thread__avatar">
+        <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
+        </a>
+    </div>
+    <div class="thread__latest latest-post">
+        <span class="latest-post__text">{{ lang.lastpost_by }}</span>
+        <span class="latest-post__author">
+            {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
+        </span>
+        <a href="{{ thread.lastpostlink }}" class="latest-post__date">{{ thread.lastpostdate|raw }}</a>
+    </div>
+</div>

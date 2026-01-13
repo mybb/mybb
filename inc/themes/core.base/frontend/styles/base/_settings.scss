@@ -7,6 +7,7 @@ $bp-large: 1140px;
 :root {
     // Used for rounded corners throughout theme. Set to 0 to disable rounded corners.
     --border-radius: 6px;
+    --border-radius-small: 4px;
 
     // Used for most borders
     --border-width-base: 1px;
