@@ -536,7 +536,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $user_filters['username'], array('id' => 'filter_username')), 'filter_username');
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $user_filters['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $user_filters['reason'], array('id' => 'filter_reason')), 'filter_reason');
-	$acknowledgement_options = array('' => 'All', '1' => $lang->acknowledged, '0' => $lang->not_acknowledged);
+	$acknowledgement_options = array('' => $lang->filter_all, '1' => $lang->acknowledged, '0' => $lang->not_acknowledged);
 	$form_container->output_row($lang->acknowledged, "", $form->generate_select_box('filter[acknowledged]', $acknowledgement_options, $user_filters['acknowledged'], array('id' => 'filter_acknowledged')), 'filter_acknowledged');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $user_filters['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page', 'min' => 1)), 'filter_per_page');

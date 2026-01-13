@@ -20,6 +20,7 @@ $l['filter_warning_logs'] = "Filter Warning Logs";
 $l['filter_warned_user'] = "Warned user:";
 $l['filter_issued_by'] = "Warning issued by:";
 $l['filter_reason'] = "Reason contains:";
+$l['filter_all'] = "All warnings";
 $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['view'] = "View";
