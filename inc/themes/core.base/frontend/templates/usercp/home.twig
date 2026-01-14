@@ -12,10 +12,12 @@
 
 {% block accountBody %}
     <section class="block block--container account-dashboard">
-        <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=mybb.user.avatar, alt=mybb.user.username, class='avatar--large') }}
-        </a>
-        <ul class="list list--divided list--stats">
+        <div class="account-dashboard__avatar">
+            <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=mybb.user.avatar, alt=mybb.user.username, class='avatar--large') }}
+            </a>
+        </div>
+        <ul class="account-dashboard__stats list list--divided list--stats">
             <li class="list__item title">{{ username|raw }}</li>
             <li class="list__item">
                 <span class="list__field">{{ lang.postnum }}</span>

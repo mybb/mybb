@@ -15,13 +15,11 @@
 }
 
 .account-dashboard {
-    padding: side-values(var(--spacing-5) var(--spacing-5) var(--spacing-5) 136px);
-    @include clearfix();
+    display: flex;
+    gap: var(--spacing-5);
+    padding: var(--spacing-5);
 
     .avatar-profile-link {
-        display: block;
-        float: $left;
-        margin: side-values(0 0 0 -120px);
         @include avatar(100);
     }
 }

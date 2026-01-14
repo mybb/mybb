@@ -42,17 +42,29 @@
     &--simple-columns {
         display: grid;
         gap: var(--spacing-3) var(--spacing-5);
-        grid-template-columns: 1fr min-content;
         grid-template-areas:
-            "primary check"
-            "secondary secondary";
+                "primary"
+                "secondary";
 
         @include bp-small {
-            grid-template-columns: 1fr auto min-content;
+            grid-template-columns: 1fr auto;
             grid-template-areas:
-                "primary secondary check";
+                "primary secondary";
             justify-content: space-between;
             align-items: center;
+        }
+
+        &:has(.row__checkbox) {
+            grid-template-columns: 1fr min-content;
+            grid-template-areas:
+                "primary check"
+                "secondary secondary";
+
+            @include bp-small {
+                grid-template-columns: 1fr auto min-content;
+                grid-template-areas:
+                    "primary secondary check";
+            }
         }
     }
 

@@ -1,16 +1,13 @@
 .profile {
 
-    &__header {
-        @include clearfix();
-        position: relative;
+    &__header.page-header {
+        display: flex;
+        gap: var(--spacing-5);
+        padding-bottom: var(--spacing-5);
         margin-bottom: var(--spacing-6);
 
-        .avatar {
-            float: $left;
-            width: 100px;
-            height: 100px;
-            margin-#{$right}: var(--spacing-5);
-            margin-bottom: var(--spacing-5);
+        .avatar-profile-link {
+            @include avatar(100);
         }
     }
 

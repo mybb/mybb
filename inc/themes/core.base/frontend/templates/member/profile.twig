@@ -7,19 +7,23 @@
 {% block body %}
     <div class="profile">
         <header class="page-header profile__header">
-            {{ render_avatar(url=memprofile.avatar, alt=memprofile.username, class='avatar--large') }}
-            <h1 class="title title--page profile__username">{{ memprofile.formattedname|raw }}</h1>
-            <p class="profile__usertitle">{{ memprofile.user_title }}</p>
-            {% if memprofile.groupimage %}
-                <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
-            {% endif %}
-            {% if memprofile.starimage and memprofile.stars %}
-                {% apply spaceless %}
-                    {% for star in range(1, memprofile.stars) %}
-                        <img src="{{ memprofile.starimage }}" border="0" alt="*" />
-                    {% endfor %}
-                {% endapply %}
-            {% endif %}
+            <div class="profile__avatar">
+                {{ render_avatar(url=memprofile.avatar, alt=memprofile.username, class='avatar--large') }}
+            </div>
+            <div class="profile__user-block">
+                <h1 class="title title--page profile__username">{{ memprofile.formattedname|raw }}</h1>
+                <p class="profile__usertitle">{{ memprofile.user_title }}</p>
+                {% if memprofile.groupimage %}
+                    <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
+                {% endif %}
+                {% if memprofile.starimage and memprofile.stars %}
+                    {% apply spaceless %}
+                        {% for star in range(1, memprofile.stars) %}
+                            <img src="{{ memprofile.starimage }}" border="0" alt="*" />
+                        {% endfor %}
+                    {% endapply %}
+                {% endif %}
+            </div>
         </header>
         <div class="page-controls page-controls--compact">
             <div class="page-buttons">
