@@ -40,12 +40,18 @@
     }
 
     &--simple-columns {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-5);
+        grid-template-columns: 1fr min-content;
+        grid-template-areas:
+            "primary check"
+            "secondary secondary";
 
         @include bp-small {
-            flex-direction: row;
+            grid-template-columns: 1fr auto min-content;
+            grid-template-areas:
+                "primary secondary check";
+            justify-content: space-between;
             align-items: center;
         }
     }
@@ -60,46 +66,29 @@
     }
 
     &__primary {
-
-        &--sub-columns {
-            display: flex;
-            flex-direction: column;
-
-            @include bp-large {
-                flex-direction: row;
-            }
-        }
+        grid-area: primary;
     }
 
     &__secondary {
+        grid-area: secondary;
 
         @include bp-small-max {
             padding: side-values(var(--spacing-3) var(--spacing-4));
-            margin-top: var(--spacing-3);
             background: var(--background-1);
             border-radius: var(--border-radius);
         }
     }
 
     &__controls {
-        flex-shrink: 0;
-
-        @include bp-small-max {
-            margin-top: var(--spacing-2);
-        }
+        grid-area: secondary;
+    }
+    
+    &__checkbox {
+        grid-area: check;
+        align-self: self-start;
 
         @include bp-small {
-            margin-#{$left}: var(--spacing-4);
-        }
-    }
-
-    &__select-control {
-
-        @include bp-small-max {
-            position: absolute;
-            top: var(--spacing-4);
-            right: var(--spacing-4);
-            float: $right;
+            align-self: center;
         }
     }
 

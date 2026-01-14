@@ -31,6 +31,13 @@
     &--first {
         border-radius: corner-values(calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)) 0 0);
     }
+
+    &--simple-columns {
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-5);
+        grid-template-areas:
+            "primary secondary";
+    }
 }
 
 .sort-results {

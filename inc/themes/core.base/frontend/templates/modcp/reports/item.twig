@@ -29,7 +29,7 @@
             <span class="report__last-report-date">{{ report.lastreport_date|my_date }}</span>
         </div>
     </div>
-    <div class="row__select-control">
+    <div class="row__checkbox">
         <input type="checkbox" class="checkbox checkbox--select-row" name="reports[]" id="reports_{{ report.rid }}" value="{{ report.rid }}"{% if report.checked %} checked="checked"{% endif %} />
     </div>
 </div>

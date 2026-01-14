@@ -1,5 +1,5 @@
 <div class="row row--simple-columns draft">
-    <div class="draft__info">
+    <div class="row__primary">
         <h3 class="draft__subject"><a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a></h3>
         <p class="draft__location">
             {% if draft.type == 'post' %}
@@ -12,11 +12,13 @@
             {{ draft.dateline|my_date }}
         </p>
     </div>
-    <div class="draft__button">
+    <div class="row__controls">
         <a href="{{ draft.editurl|raw }}" class="button button--small">
             {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.edit_draft }}</span>
         </a>
+    </div>
+    <div class="row__checkbox">
         <input type="checkbox" class="checkbox checkbox--select-row" name="deletedraft[{{ draft.id }}]" value="{{ draft.type }}" />
     </div>
 </div>

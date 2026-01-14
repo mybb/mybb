@@ -22,14 +22,9 @@
 .report,
 .mod-log,
 .warning-log {
-    gap: var(--spacing-4);
-
-    .row__primary,
-    .row__secondary {
-
-        @include bp-small {
-            width: calc(50% - var(--spacing-4)/2);
-        }
+    
+    @include bp-small {
+        grid-template-columns: 1fr 1fr min-content;
     }
 }
 

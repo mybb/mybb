@@ -88,23 +88,21 @@
 }
 
 .attachment {
+    grid-template-columns: var(--spacing-5) 1fr min-content;
+    grid-template-areas:
+        "icon primary check"
+        "icon secondary secondary";
 
-    &__icon {
-
-        @include bp-small-max {
-            position: absolute;
-            top: var(--spacing-4);
-            right: var(--spacing-7);
-            float: $right;
-        }
+    @include bp-small {
+        grid-template-columns: var(--spacing-5) 1fr 1fr min-content;
+        grid-template-areas: 
+            "icon primary secondary check";
     }
 
-    &__file,
-    &__post {
-
-        @include bp-medium {
-            width: 45%;
-        }
+    &__icon {
+        grid-area: icon;
+        justify-self: center;
+        align-self: self-start;
     }
 
     &__file-name {
@@ -188,47 +186,51 @@
 }
 
 .security-log {
-    $module: &;
+    gap: var(--spacing-1) var(--spacing-5);
 
-    .row__primary,
-    .column-headings__column--primary {
-        flex-basis: 70%;
+    &--column-headings {
+        grid-template-columns: auto auto 1fr;
+        grid-template-areas: "activity date ip";
     }
 
-    &__info {
+    &--row {
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas: 
+            "activity ip"
+            "date ip";
 
-        &--activity {
-
-            @include bp-large {
-                flex-basis: 60%;
-            }
-        }
-
-        &--date {
-
-            @include bp-large {
-                flex-basis: 40%;
-                text-align: center;
-            }
-        }
-
-        &--ip {
-
-            @include bp-large {
-                flex-basis: 30%;
-                text-align: center;
-            }
-        }
-    }
-
-    &.row {
-
-        #{$module}__info--date {
+        .security-log__date {
 
             @include bp-large-max {
                 font-size: var(--font-size-small);
                 color: var(--alt-font-color-2);
             }
+        }
+    }
+
+    @include bp-large {
+        grid-template-columns: 4fr 3fr 3fr;
+        grid-template-areas: "activity date ip";
+    }
+
+    &__activity {
+        grid-area: activity;
+    }
+
+    &__date {
+        grid-area: date;
+
+        @include bp-large {
+            justify-self: center;
+        }
+    }
+
+    &__ip {
+        grid-area: ip;
+        justify-self: self-end;
+
+        @include bp-large {
+            justify-self: center;
         }
     }
 }
