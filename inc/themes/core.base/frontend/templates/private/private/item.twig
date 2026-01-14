@@ -26,9 +26,9 @@
     </div>
     <div class="thread__author">
         {% if message.folder == 2 or message.folder == 3 %}
-            <span class="message__label message__label--to">{{ lang.to }}</span>
+            <span class="thread__label thread__label--to">{{ lang.to }}</span>
         {% else %}
-            <span class="message__label message__label--from">{{ lang.from }}</span>
+            <span class="thread__label thread__label--from">{{ lang.from }}</span>
         {% endif %}
         {# TO DO: Multiple recipients dropdown #}
         {% if message.multiplerecipients %}
@@ -55,8 +55,7 @@
         {% endif %}
     </div>
     <div class="thread__date">
-        <span class="visually-hidden">{{ lang.date_sent }}</span>
-        {{ message.senddate|raw }}
+        <span class="visually-hidden">{{ lang.date_sent }}</span> {{ message.senddate|raw }}
     </div>
     <div class="thread__checkbox">
         <input type="checkbox" class="checkbox checkbox--select-row" name="check[{{ message.pmid }}]" value="1" />

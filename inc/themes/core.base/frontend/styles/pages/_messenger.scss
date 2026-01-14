@@ -13,6 +13,10 @@
                 margin-bottom: var(--spacing-3);
                 width: 100%;
             }
+
+            @include bp-small {
+                margin-#{$right}: var(--spacing-3);
+            }
         }
 
         .button {

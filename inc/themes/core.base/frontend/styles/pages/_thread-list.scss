@@ -50,6 +50,10 @@
         grid-area: message;
     }
 
+    &__folder {
+        grid-area: folder;
+    }
+
     &__pages {
         grid-area: pages;
     }
@@ -373,6 +377,7 @@
             grid-template-areas: 
                 "avatar title icons check"
                 "avatar author icons check"
+                "avatar folder icons check"
                 "avatar latest icons check";
             
             @include bp-medium {
@@ -380,20 +385,19 @@
                 grid-template-areas: 
                     "avatar title title icons check"
                     "avatar author latest icons check"
+                    "avatar folder folder icons check";
             }
 
             @include bp-large {
                 grid-template-columns: var(--avatar-width) 1fr auto var(--latest-column-width) min-content;
                 grid-template-areas: 
                     "avatar title icons latest check"
-                    "avatar author icons latest check";
+                    "avatar author icons latest check"
+                    "avatar folder icons latest check";
             }
 
             .thread__avatar {
-
-                @include bp-large-max {
-                    align-self: self-start;
-                }
+                align-self: self-start;
             }
         }
 

@@ -64,6 +64,7 @@
         // Thread author (or forum for subscriptions list)
         &__author,
         &__forum,
+        &__folder,
         &__notification {
             font-size: var(--font-size-smaller);
             color: var(--alt-font-color-2);

@@ -11,28 +11,33 @@
 {% endblock messengerHeader %}
 
 {% block messengerBody %}
-    <section class="block message-list">
+    <section class="block block--thread-list">
         <form action="private.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.unread_messages }}</h1>
-            <div class="column-headings column-headings--minor column-headings--no-avatar">
-                <div class="column-headings__column column-headings__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-                <div class="column-headings__column column-headings__column--date">{{ lang.datesent }}</div>
-                <div class="column-headings__column column-headings__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            <div class="column-headings column-headings--minor column-headings--thread-list thread thread--message">
+                <div class="column-headings__column thread__title">{{ lang.message_title }}</div>
+                <div class="column-headings__column thread__author">{{ lang.sentto }}</div>
+                <div class="column-headings__column thread__date">{{ lang.datesent }}</div>
+                <div class="column-headings__column thread__checkbox">
+                    <input type="checkbox" class="checkbox checkall" name="allbox" />
+                </div>
             </div>
-            <div class="message-list__container">
+            <div class="thread-list thread-list--messages">
                 {% for unreadmessage in unreadmessages %}
-                    <div class="row row--message message">
-                        <div class="message__column message__column--primary">
+                    <div class="row row--thread thread thread--message">
+                        <div class="thread__avatar">
                             <a href="{{ get_profile_link(unreadmessage.toid) }}" class="avatar-profile-link">
                                 {{ render_avatar(url=unreadmessage.to_avatar, alt=unreadmessage.tousername, class='avatar--smallest' ) }}
                             </a>
-                            <h3 class="message__subject">{{ unreadmessage.subject }}</h3>
-                            <p class="message__username">{{ unreadmessage.profilelink|raw }}</p>
                         </div>
-                        <div class="message__column message__column--date message__date">{{ unreadmessage.senddate|raw }}</div>
-                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
+                        <div class="thread__title">
+                            <h3 class="thread__subject">{{ unreadmessage.subject }}</h3>
+                        </div>
+                        <div class="thread__author">{{ unreadmessage.profilelink|raw }}</div>
+                        <div class="thread__date">{{ unreadmessage.senddate|raw }}</div>
+                        <div class="thread__checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="no-results">{{ lang.no_unreadmessages }}</div>
@@ -55,28 +60,33 @@
     </section>
     {{ unread_multipage|raw }}
 
-    <section class="block message-list">
+    <section class="block block--thread-list">
         <form action="private.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.read_messages }}</h1>
-            <div class="column-headings column-headings--minor column-headings--no-avatar">
-                <div class="column-headings__column column-headings__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-                <div class="column-headings__column column-headings__column--date">{{ lang.datesent }}</div>
-                <div class="column-headings__column column-headings__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            <div class="column-headings column-headings--minor column-headings--thread-list thread thread--message">
+                <div class="column-headings__column thread__title">{{ lang.message_title }}</div>
+                <div class="column-headings__column thread__author">{{ lang.sentto }}</div>
+                <div class="column-headings__column thread__date">{{ lang.datesent }}</div>
+                <div class="column-headings__column thread__checkbox">
+                    <input type="checkbox" class="checkbox checkall" name="allbox" />
+                </div>
             </div>
-            <div class="message-list__container">
+            <div class="thread-list thread-list--messages">
                 {% for readmessage in readmessages %}
-                    <div class="row row--message message">
-                        <div class="message__column message__column--primary">
+                    <div class="row row--thread thread thread--message">
+                        <div class="thread__avatar">
                             <a href="{{ get_profile_link(readmessage.toid) }}" class="avatar-profile-link">
                                 {{ render_avatar(url=readmessage.to_avatar, alt=readmessage.tousername, class='avatar--smallest' ) }}
                             </a>
-                            <h3 class="message__subject">{{ readmessage.subject }}</h3>
-                            <p class="message__username">{{ readmessage.profilelink|raw }}</p>
                         </div>
-                        <div class="message__column message__column--date message__date">{{ readmessage.readdate|raw }}</div>
-                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
+                        <div class="thread__title">
+                            <h3 class="thread__subject">{{ readmessage.subject }}</h3>
+                        </div>
+                        <div class="thread__author">{{ readmessage.profilelink|raw }}</div>
+                        <div class="thread__date">{{ readmessage.readdate|raw }}</div>
+                        <div class="thread__checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="no-results">{{ lang.no_readmessages }}</div>

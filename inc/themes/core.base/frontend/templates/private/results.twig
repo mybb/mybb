@@ -25,24 +25,21 @@
                 <span class="button__text">{{ lang.advanced_search }}</span>
             </a>
         </div>
-        <section class="block message-list">
+        <section class="block block--thread-list">
             <h2 class="visually-hidden">{{ lang.pm_search_results }}</h2>
-            <div class="sort-messages sort-messages--no-avatar">
-                <div class="sort-messages__column sort-messages__column--primary">
-                    {{ lang.message }} &mdash; {{ lang.sender }} &mdash; {{ lang.folder }}
-                </div>
-                <div class="sort-messages__column sort-messages__column--date">
-                    {{ lang.date_sent }}
-                </div>
-                <div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all">
+            <div class="column-headings column-headings--major column-headings--thread-list thread thread--message">
+                <div class="column-headings__column thread__title">{{ lang.message_title }}</div>
+                <div class="column-headings__column thread__author">{{ lang.sender }}</div>
+                <div class="column-headings__column thread__date">{{ lang.date_sent }}</div>
+                <div class="column-headings__column thread__checkbox">
                     <input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" />
                 </div>
             </div>
-            <div class="message-list__container">
+            <div class="thread-list thread-list--messages">
                 {% for message in messagelist %}
                     {% include 'private/results/item.twig' %}
                 {% else %}
-                    <div class="no-results">{{ lang.nomessages }}</div>
+                    <div class="row row--no-results no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
             <div class="block__footer block-actions block-actions--extra-space block-actions--groups">
