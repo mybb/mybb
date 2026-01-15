@@ -46,7 +46,6 @@ $l['theme_core_package'] = "Built-in Package";
 $l['theme_original_package'] = "Imported Package";
 $l['theme_board_package'] = "Custom Package";
 $l['num_users'] = "# Users";
-$l['edit_theme'] = "Edit Theme";
 $l['delete_theme'] = "Delete Theme";
 $l['set_as_default'] = "Set as Default";
 $l['default_theme'] = "Default Theme";
@@ -179,4 +178,3 @@ $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert th
 $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
 
 $l['saving'] = 'Saving&hellip;';
-
