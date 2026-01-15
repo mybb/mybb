@@ -343,5 +343,3 @@ $l['you_cannot_moderate_threads'] = "You do not have sufficient permission to mo
 $l['you_cannot_moderate_posts'] = "You do not have sufficient permission to moderate posts.";
 $l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
 $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
-
-$l['post'] = 'Post';
