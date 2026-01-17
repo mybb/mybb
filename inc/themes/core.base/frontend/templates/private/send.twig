@@ -26,7 +26,7 @@
         {{ send_errors|raw }}
         <div class="block block--form form form--compose compose">
             <input type="checkbox" class="compose__checkbox" id="show-post-options">
-            <section class="section section--form compose__recipients">
+            <section class="section section--form section--has-title compose__recipients">
                 <h2 class="title title--section">
                     {{ lang.compose_to }}
                     <script type="text/javascript">
@@ -97,7 +97,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form compose__hidden-section compose__hidden-section--options">
+            <section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
                 <h2 class="title title--section">{{ lang.compose_options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">

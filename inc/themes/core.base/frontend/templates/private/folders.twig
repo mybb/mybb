@@ -24,7 +24,7 @@
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.existing_folders }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
@@ -38,7 +38,7 @@
                     {% endfor %}
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.new_folders }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">{{ lang.add_folders_note }}</div>

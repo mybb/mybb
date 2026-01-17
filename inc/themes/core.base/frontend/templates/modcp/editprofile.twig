@@ -14,7 +14,7 @@
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.profile_required }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -26,7 +26,7 @@
                     {% endfor %}
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.profile_optional }}</h2>
                 <div class="section__container">
                     {# Remove avatar #}
@@ -78,7 +78,7 @@
                 </div>
             </section>
             {% if customFields %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.additional_information }}</h2>
                     <div class="section__container">
                         {% for field in customFields %}
@@ -87,7 +87,7 @@
                     </div>
                 </section>
             {% endif %}
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.custom_usertitle }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -113,7 +113,7 @@
                 </div>
             </section>
             {% if contactFields %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.additional_contact_details }}</h2>
                     <div class="section__container">
                         {% for field in contactFields %}
@@ -123,7 +123,7 @@
                 </section>
             {% endif %}
             {% if mybb.settings.allowaway %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.away_information }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -180,7 +180,7 @@
                     </div>
                 </section>
             {% endif %}
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.signature }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -220,7 +220,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.moderation }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">

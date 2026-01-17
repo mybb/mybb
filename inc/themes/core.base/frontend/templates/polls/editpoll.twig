@@ -30,7 +30,7 @@
         <form action="polls.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="block block--form form">
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_details }}</h2>
                     <div class="section__container">
                         {{ loginbox|raw }}
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_options }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -66,7 +66,7 @@
                         {% endfor %}
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_settings }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">

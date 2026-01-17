@@ -96,6 +96,8 @@
         position: absolute;
         top: 100%;
         display: none;
+        gap: var(--spacing-5);
+        justify-content: space-between;
         min-width: 250px;
         padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
         font-size: var(--font-size-small);
@@ -104,11 +106,10 @@
         border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
         box-shadow: 0 3px 3px rgba(0, 0, 0, 0.05);
         clip-path: inset(side-values(0px -10px -10px -10px));
+    }
 
-        .avatar-profile-link {
-            float: $right;
-            margin: side-values(var(--spacing-3) 0 0 var(--spacing-7));
-        }
+    &__avatar {
+        padding-top: var(--spacing-2);
     }
 }
 
@@ -120,7 +121,7 @@
     background: var(--user-bar-background-shade-1);
 
     .user-bar__dropdown {
-        display: block;
+        display: flex;
         z-index: 100;
     }
 
@@ -144,7 +145,6 @@
 
     &__item {
         display: block;
-        float: none;
         padding: 0;
         margin: 0;
 
@@ -159,7 +159,6 @@
 
     &__link {
         display: block;
-        float: none;
         padding: var(--spacing-2);
         margin: 0;
         

@@ -115,7 +115,7 @@
 #show-post-options:checked ~ .compose__hidden-section--options,
 #show-post-poll:checked ~ .compose__hidden-section--poll,
 #show-attachments:checked ~ .compose__hidden-section--attachments {
-    display: block;
+    display: grid;
 }
 
 #show-post-options:checked ~ .compose__primary-section .compose__option-button--options,
@@ -178,25 +178,30 @@
 }
 
 .uploaded-attachment {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    gap: var(--spacing-3) var(--spacing-4);
     align-items: center;
+    grid-template-columns: var(--spacing-5) auto;
+    grid-template-areas:
+        "icon details"
+        "buttons buttons";
     padding: var(--spacing-3) var(--spacing-4);
 
-    @include bp-medium {
-        flex-direction: row;
-        justify-content: space-between;
+    @include bp-large {
+        grid-template-columns: var(--spacing-5) 1fr auto;
+        grid-template-areas:
+            "icon details buttons";
     }
 
     &__details {
-        padding-#{$left}: var(--spacing-7);
+        grid-area: details;
         font-size: var(--font-size-small);
         line-height: var(--line-height-small);
     }
 
     &__icon {
-        float: $left;
-        margin-#{$left}: calc(-1 * var(--spacing-7));
+        grid-area: icon;
+        align-self: self-start;
     }
 
     &__file-name {
@@ -206,5 +211,16 @@
     &__file-size {
         font-size: var(--font-size-small);
         color: var(--alt-font-color-2);
+    }
+
+    &__buttons {
+        grid-area: buttons;
+
+        .button {
+            
+            @include bp-large-max {
+                margin-bottom: var(--spacing-3);
+            }
+        }
     }
 }

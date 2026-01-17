@@ -68,31 +68,55 @@
     }
 
     &__meta {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "user user-rep"
+            "date date";
+        gap: var(--spacing-2) var(--spacing-3);
+        align-items: center;
         padding: var(--spacing-3) var(--spacing-4);
         background: var(--background-1);
         border-bottom: var(--border-width-base) solid var(--border-color-3);
         border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
+
+        @include bp-medium {
+            grid-template-columns: auto 1fr auto;
+            grid-template-areas:
+                "user user-rep date";
+        }
+
+        &:has(.reputation-rating__link) {
+            grid-template-areas:
+                "user user-rep"
+                "link link"
+                "date date";
+
+            @include bp-medium {
+                grid-template-areas:
+                    "user user-rep date"
+                    "link link link";
+            }
+        }
+    }
+
+    &__user {
+        grid-area: user;
     }
 
     &__user-rep {
+        grid-area: user-rep;
         font-size: var(--font-size-smaller);
     }
 
     &__date {
-        display: block;
-        margin-top: var(--spacing-2);
+        grid-area: date;
         font-size: var(--font-size-smaller);
         color: var(--alt-font-color-1);
-
-        @include bp-medium {
-            float: $right;
-            margin-top: var(--spacing-1);
-        }
     }
 
     &__link {
-        display: block;
-        margin-top: var(--spacing-2);
+        grid-area: link;
         font-size: var(--font-size-smaller);
         color: var(--alt-font-color-2);
 
@@ -104,7 +128,6 @@
         a:hover,
         a:active {
             color: var(--alt-font-color-1);
-            text-decoration: underline;
         }
     }
 

@@ -7,6 +7,7 @@
         font-size: var(--font-size-small);
         line-height: var(--line-height-large);
         list-style: none;
+        overflow-wrap: anywhere;
 
         .list__field {
             margin-#{$right}: var(--spacing-2);

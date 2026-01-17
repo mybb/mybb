@@ -7,7 +7,7 @@
         <h1 class="section-menu__title">
             <label for="show-section-menu" class="section-menu__toggle">
                 {{ include('partials/icon.twig', {icon: 'bars', class: 'section-menu__menu-icon fa-fw'}, with_context = false) }}
-                {{ lang.welcome_usercp }}
+                <span class="section-menu__title-text">{{ lang.welcome_usercp }}</span>
                 {{ include('partials/icon.twig', {icon: 'minus', class: 'section-menu__collapse fa-fw'}, with_context = false) }}
                 {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__expand fa-fw'}, with_context = false) }}
             </label>

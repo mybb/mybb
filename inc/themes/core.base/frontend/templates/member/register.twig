@@ -14,7 +14,7 @@
             <input type="text" class="hidden" value="true" name="regcheck2" />
             {{ regerrors|raw }}
             <div class="block block--form form">
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.account_details }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -65,7 +65,7 @@
                 </section>
 
                 {% if registration.showrequiredfields %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.required_info }}</h2>
                         <div class="section__container">
                             {% for field in requiredfields %}
@@ -76,7 +76,7 @@
                 {% endif %}
 
                 {% if registration.showcustomfields %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.additional_info }}</h2>
                         <div class="section__container">
                             {% for field in customfields %}
@@ -87,7 +87,7 @@
                 {% endif %}
 
                 {% if registration.showcontactfields %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.contact_info }}</h2>
                         <div class="section__container">
                             {% for field in contactfields %}
@@ -98,7 +98,7 @@
                 {% endif %}
 
                 {% if registration.showreferrer %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.referrer }}</h2>
                         <div class="section__container">
                             <div class="row row--form field">
@@ -147,7 +147,7 @@
                     </script>
                 {% endif %}
 
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.account_prefs }}</h2>
                     <div class="section__container">
                         {# Remove the `hidden` class from each of the following rows to show them on registration page #}
@@ -217,7 +217,7 @@
                 {{ registration.regimage|raw }}
 
                 {% if registration.showquestion %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.security_question }}</h2>
                         <div class="section__container">
                             <div class="row row--form field">

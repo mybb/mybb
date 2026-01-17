@@ -12,7 +12,7 @@
         <form action="search.php">
             <input type="hidden" name="action" value="do_search" />
             <div class="block block--form form">
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section"><label for="keywords">{{ lang.search_keyword }}</label></h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section"><label for="author">{{ lang.search_username }}</label></h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_forums }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -52,7 +52,7 @@
                         </select>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_options }}</h2>
                     <div class="section__container">
                         <div class="row row--form field multi-field">
@@ -149,7 +149,7 @@
                     </div>
                 </section>
                 {% if search.ismoderator %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section"><label for="visible">{{ lang.mod_options }}</label></h2>
                         <div class="section__container">
                             <div class="select-field">

@@ -13,14 +13,16 @@
     &__toggle {
         cursor: text;
 
-        @include bp-medium-max {
-            display: block;
+        @include bp-medium-max {    
+            display: flex;
+            gap: var(--spacing-3);
+            justify-content: flex-start;
+            align-items: center;
             cursor: pointer;
         }
     }
 
     &__menu-icon {
-        margin-#{$right}: var(--spacing-2);
         font-size: var(--font-size-large);
         color: var(--alt-font-color-2);
 
@@ -29,11 +31,13 @@
         }
     }
 
+    &__title-text {
+        flex-grow: 1;
+    }
+
     &__collapse,
     &__expand {
         display: none;
-        float: $right;
-        margin-top: var(--spacing-3);
         font-size: var(--font-size-large);
         color: var(--alt-font-color-3);
     }

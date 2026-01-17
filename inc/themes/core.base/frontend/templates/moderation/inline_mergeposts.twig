@@ -13,7 +13,7 @@
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <section class="block block--form form">
-                <div class="section section--form">
+                <div class="section section--form section--has-title">
                     <h3 class="title title--section">{{ lang.merge_options }}</h3>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="section section--form">
+                <div class="section section--form section--has-title">
                     <h3 class="title title--section">{{ lang.posts_to_merge }}</h3>
                     <div class="section__container">
                         {% for post in postlist %}

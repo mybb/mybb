@@ -79,6 +79,7 @@
     }
 
     &--section {
+        grid-area: title;
         padding: var(--spacing-3) var(--spacing-4);
         margin: side-values(0 0 var(--spacing-4) 0);
         font-family: var(--heading-font-stack);
@@ -87,9 +88,7 @@
         border-radius: var(--border-radius);
 
         @include bp-medium {
-            float: $left;
-            width: 20%;
-            padding: side-values(0 0 0 var(--spacing-4));
+            padding: side-values(0 0 0 var(--spacing-3));
             margin: 0;
             text-align: $right;
             background: none;

@@ -1,6 +1,6 @@
 <div class="row uploaded-attachment" id="attachment_{{ attachment.aid }}">
+    <div class="uploaded-attachment__icon">{{ attachment.icon|raw }}</div>
     <div class="uploaded-attachment__details">
-        <span class="uploaded-attachment__icon">{{ attachment.icon|raw }}</span>
         <span class="uploaded-attachment__file-name">
             {% if attachment.visible %}
                 {{ attachment.filename }}

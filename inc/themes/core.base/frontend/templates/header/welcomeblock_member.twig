@@ -8,9 +8,6 @@
             {{ include('partials/icon.twig', {icon: 'chevron-up', class: 'user-bar__caret user-bar__caret--up fa-fw'}, with_context = false) }}
         </label>
         <div class="user-bar__dropdown">
-            <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
-                {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, class='my-avatar avatar--medium')}}
-            </a>
             <ul class="account-links">
                 {% if mybb.usergroup.canusercp %}
                     <li class="account-links__item">
@@ -63,6 +60,11 @@
                     </a>
                 </li>
             </ul>
+            <div class="user-bar__avatar">
+                <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
+                    {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, class='my-avatar avatar--medium')}}
+                </a>
+            </div>
         </div>
     </li>
     {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}

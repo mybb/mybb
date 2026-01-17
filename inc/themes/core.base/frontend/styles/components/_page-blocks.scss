@@ -144,7 +144,6 @@
 }
 
 .section {
-    @include clearfix();
     padding: var(--spacing-4) var(--spacing-3);
     border-bottom: var(--border-width-base) solid var(--border-color-1);
 
@@ -156,18 +155,29 @@
         padding: var(--spacing-4) var(--spacing-3);
     }
 
+    &--has-title {
+        display: grid;
+        grid-template-areas:
+            "title"
+            "content";
+
+        @include bp-medium {
+            gap: var(--spacing-6);
+            grid-template-columns: 1fr 3.5fr;
+            grid-template-areas:
+                "title content";
+        }
+    }
+
     &:last-child {
         border-bottom: 0;
     }
 
     &__container {
+        grid-area: content;
 
         @include bp-medium {
-            float: $left;
-            box-sizing: border-box;
-            width: 74%;
-            padding: side-values(0 0 0 var(--spacing-6));
-            margin: side-values(0 0 0 3%);
+            padding: side-values(0 var(--spacing-5) 0 var(--spacing-6));
             border-#{$left}: var(--border-width-base) solid var(--border-color-3);
         }
     }
