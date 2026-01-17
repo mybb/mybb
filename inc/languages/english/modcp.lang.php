@@ -273,6 +273,7 @@ $l['suspendposting_error'] = "You selected to suspend this user's posts, but did
 $l['suspendpm_error'] = "You selected to suspend this user's private messaging, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendmoderate_error'] = "You've selected to suspend and moderate the user's posts. Please select only one type of moderation.";
 
+$l['no_change'] = "No change";
 $l['expire_hours'] = "hour(s)";
 $l['expire_days'] = "day(s)";
 $l['expire_weeks'] = "week(s)";
@@ -343,5 +344,3 @@ $l['you_cannot_moderate_threads'] = "You do not have sufficient permission to mo
 $l['you_cannot_moderate_posts'] = "You do not have sufficient permission to moderate posts.";
 $l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
 $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
-
-$l['post'] = 'Post';

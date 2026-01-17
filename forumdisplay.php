@@ -877,21 +877,6 @@ if(!empty($threadCache) && is_array($threadCache))
 		}
 
 		$thread['author'] = $thread['uid'];
-		if(!$thread['username'])
-		{
-			if(!$thread['threadusername'])
-			{
-				$thread['username'] = $thread['profilelink'] = $lang->guest;
-			}
-			else
-			{
-				$thread['username'] = $thread['profilelink'] = $thread['threadusername'];
-			}
-		}
-		else
-		{
-			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
-		}
 
 		// If this thread has a prefix, insert a space between prefix and subject
 		$thread['threadprefix'] = $threadprefix = '';
@@ -940,11 +925,8 @@ if(!empty($threadCache) && is_array($threadCache))
 			$thread['tid'] = $thread['moved'];
 		}
 
-		$thread['threadlink'] = get_thread_link($thread['tid']);
-		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-
 		// Determine the folder
-		$thread['folder'] = [];
+		$thread['folder'] = ['value' => '', 'label' => ''];
 		if(isset($thread['doticon']))
 		{
 			$thread['folder']['value'] = "dot_";
@@ -1011,15 +993,7 @@ if(!empty($threadCache) && is_array($threadCache))
 			$thread['inlineEditClass'] = "subject_editable";
 		}
 
-		$thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
-
 		$thread['last_poster_name'] = $thread['lastposter'];
-
-		if($thread['lastposteruid'] > 0)
-		{
-			$thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
-		}
-
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
@@ -1030,7 +1004,6 @@ if(!empty($threadCache) && is_array($threadCache))
 
 		$plugins->run_hooks('forumdisplay_thread_end');
 
-		$thread['start_datetime'] = my_date('relative', $thread['dateline']);
 
 		$threadCache[$k] = $thread;
 	}
@@ -1091,6 +1064,8 @@ if($mybb->user['uid'])
 		$subAction = 'remove';
 	}
 }
+
+$prefixselect = '';
 
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")

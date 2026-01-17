@@ -12,7 +12,7 @@
         <h3 class="thread__subject">
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
-                <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
+                <a href="{{ get_thread_link(thread.tid) }}">{{ thread.subject }}</a>
             </span>                
         </h3>
         {# Deleted thread #}
@@ -74,7 +74,17 @@
             {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
         {% endif %}
     </div>
-    <div class="thread__author">{{ lang.by }} <span class="thread__overflow">{{ thread.profilelink|raw }}</span> {{ thread.start_datetime|raw }}</div>
+    <div class="thread__author">
+        {{ lang.by }}
+        <span class="thread__overflow">
+            {% if thread.uid > 0 %}
+                <a href="{{ get_profile_link(thread.uid) }}">{{ thread.uid|format_name }}</a>
+            {% else %}
+                {{ thread.threadusername ?? lang.guest }}
+            {% endif %}
+        </span>
+        {{ thread.dateline|my_date }}
+    </div>
     {% if thread.posts > mybb.settings.postsperpage %}
         <div class="thread__pages">
             <span class="thread__page-legend">{{ lang.pages }}</span>
@@ -109,12 +119,12 @@
         <span class="latest-post__text">{{ lang.lastpost_by }}</span>
         <span class="latest-post__author">
             {% if thread.lastposteruid > 0 %}
-                {{ thread.lastposter|raw }}
+                <a href="{{ get_profile_link(thread.lastposteruid) }}">{{ thread.lastposteruid|format_name }}</a>
             {% else %}
-                {{ lang.guest }}
+                {{ thread.lastposter ?? lang.guest }}
             {% endif %}
         </span>
-        <a href="{{ thread.lastpostlink }}" class="latest-post__date">{{ thread.lastpostdate|raw }}</a>
+        <a href="{{ get_thread_link(thread.tid, 0, 'lastpost') }}" class="latest-post__date">{{ thread.lastpost|my_date }}</a>
     </div>
 
     {% include 'forumdisplay/thread_modbit.twig' %}

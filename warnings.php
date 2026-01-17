@@ -193,6 +193,9 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_user);
 	}
 
+	$warnings = [];
+	$post = null;
+
 	// Giving a warning for a specific post
 	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
@@ -217,8 +220,6 @@ if($mybb->input['action'] == "warn")
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post['link'] = get_post_link($post['pid']);
-
-		$warnings = [];
 
 		// Fetch any existing warnings issued for this post
 		$query = $db->query("
@@ -645,14 +646,14 @@ if($mybb->input['action'] == "view")
 		}
 	}
 
-	if(!$warning['daterevoked'])
+	$revoked_user = '';
+
+	if(!isset($warn_errors))
 	{
-		if(!isset($warn_errors))
-		{
-			$warn_errors = '';
-		}
+		$warn_errors = '';
 	}
-	else
+
+	if($warning['daterevoked'])
 	{
 		$warning['daterevoked'] = my_date('relative', $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);

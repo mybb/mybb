@@ -1,7 +1,9 @@
 <div class="row row--simple-columns buddy-request">
     <div class="buddy-request__info">
-        <h3 class="buddy-request__username">{{ request.username|raw }}</h3>
-        <span class="buddy-request__date">{{ request.date|raw }}</span>
+        <h3 class="buddy-request__username">
+            <a href="{{ get_profile_link(request.uid) }}">{{ request.uid|format_name }}</a>
+        </h3>
+        <span class="buddy-request__date">{{ request.date|my_date }}</span>
     </div>
     <div class="buddy-request__buttons">
         <a href="{{ mybb.settings.bburl }}/usercp.php?action=acceptrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--success">

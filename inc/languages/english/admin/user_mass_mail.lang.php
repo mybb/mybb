@@ -67,7 +67,6 @@ $l['step_four'] = "Step 4";
 $l['delivery_method'] = "Delivery Method";
 $l['private_message'] = "Private Message";
 $l['email'] = "Email";
-$l['subject'] = "Subject";
 $l['message'] = "Message";
 $l['text_based'] = "Text Based";
 $l['preview'] = "Preview";
@@ -118,4 +117,3 @@ $l['success_mass_mail_resent'] = "The mass mailing has been copied successfully.
 $l['success_mass_mail_canceled'] = "The mass mailing delivery has been canceled successfully.";
 
 $l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass mailing?";
-
