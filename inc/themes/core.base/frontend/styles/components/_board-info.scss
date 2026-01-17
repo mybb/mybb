@@ -1,0 +1,77 @@
+
+.board-info {
+
+    &__section {
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-5);
+        align-items: center;
+        grid-template-columns: min-content 1fr;
+        grid-template-areas:
+            "icon title"
+            ". content";
+    }
+
+    &__title.title {
+        grid-area: title;
+        margin: 0;
+        font-size: var(--font-size-large);
+    }
+
+    &__icon {
+        grid-area: icon;
+        text-align: center;
+        font-size: var(--font-size-regular);
+        color: var(--alt-font-color-2);
+    }
+
+    &__content {
+        grid-area: content;
+        font-size: var(--font-size-small);
+    }
+
+    &__body {
+        margin: 0;
+        color: var(--alt-font-color-1);
+
+        &--users {
+            margin-top: var(--spacing-3);
+        }
+
+        &--groups {
+            margin-top: var(--spacing-3);
+            padding: var(--spacing-3) var(--spacing-4);
+            font-size: var(--font-size-smaller);
+            background: var(--background-1);
+            border-radius: var(--border-radius);
+        }
+    }
+}
+
+.board-stats {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: var(--spacing-3) var(--spacing-6);
+    margin: 0;
+    padding: var(--spacing-2) 0;
+
+    @include bp-small {
+        flex-direction: row;
+    }
+
+    &__field {
+        display: inline-block;
+        margin-#{$right}: var(--spacing-2);
+        color: var(--alt-font-color-2);
+
+        &:after {
+            content: ":";
+        }
+    }
+
+    &__value {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+}

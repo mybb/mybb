@@ -1,24 +1,77 @@
 .forum {
-    position: relative;
-    padding-#{$left}: var(--spacing-8);
+    --stats-column-width: 140px;
+    --avatar-width: 40px;
+    --latest-column-width: auto;
+    --text-overflow-max-width: 240px;
+
+    display: grid;
+    gap: var(--spacing-1) var(--spacing-5);
+    grid-template-columns: min-content 1fr;
+    grid-template-areas:
+        "status info"
+        "status stats"
+        "latest latest";
 
     @include bp-medium {
-        display: flex;
-        flex-direction: row;
-        align-items: top;
-        justify-content: space-between;
+        --latest-column-width: 300px;
+        --text-overflow-max-width: calc(var(--latest-column-width) - var(--avatar-width) - var(--spacing-6));
+
+        grid-template-columns: min-content 1fr var(--latest-column-width);
+        grid-template-areas:
+            "status info latest"
+            "status stats latest";
+    }
+
+    @include bp-large {
+        grid-template-columns: min-content 1fr var(--stats-column-width) var(--latest-column-width);
+        grid-template-areas:
+            "status info stats latest";
+    }
+
+    &.forum--offlink {
+        grid-template-columns: min-content 1fr;
+        grid-template-areas:
+            "status info";
     }
     
     &__status {
-        position: absolute;
-        top: var(--spacing-4);
-        #{$left}: var(--spacing-4);
+        grid-area: status;
         font-size: var(--font-size-regular);
         color: var(--alt-font-color-3);
+        text-align: center;
 
         &.forum__status--on {
             color: var(--status-new-icon-color);
         }
+    }
+
+    &__info {
+        grid-area: info;
+    }
+
+    &__threads {
+        grid-area: threads;
+    }
+
+    &__posts {
+        grid-area: posts;
+    }
+
+    &__stats {
+        grid-area: stats;
+        display: flex;
+        gap: var(--spacing-4) var(--spacing-6);
+        flex-direction: row;
+        padding: var(--spacing-2) 0;
+
+        @include bp-large {
+            flex-direction: column;
+        }
+    }
+
+    &__stat {
+        font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-2);
     }
 
     &__title {
@@ -45,7 +98,7 @@
 
     &__subforums {
         padding: 0;
-        margin: side-values(var(--spacing-3) 0 0 0);
+        margin: var(--spacing-3) 0;
         font-size: var(--font-size-smaller);
         color: var(--alt-font-color-1);
         list-style: none;
@@ -70,21 +123,11 @@
         padding: side-values(var(--spacing-3) 0 0 0);
     }
 
-    &__stat {
-        display: none;
-    }
-
-    &__count-legend {
-        display: block;
-        font-size: var(--font-size-smallest);
-        color: var(--alt-font-color-3);
+    &__legend {
         text-transform: lowercase;
     }
 
     &__count {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         color: var(--alt-font-color-1);
     }
 
@@ -100,41 +143,61 @@
     }
 
     &__latest {
-        box-sizing: border-box;
-        padding: var(--spacing-3) var(--spacing-4);
-        margin-top: var(--spacing-3);
-        background: var(--background-1);
-        border-radius: var(--border-radius);
+        grid-area: latest;
 
         &--never {
-            padding-#{$left}: var(--spacing-4);
-        }
 
-        .avatar-profile-link {
-            float: $right;
+            @include bp-medium {
+                padding: var(--spacing-5) 0;
+            }
         }
     }
 
-    &__subject {
-        display: block;
-        padding: 0;
-        margin: 0;
-        font-size: var(--font-size-small);
-        font-weight: var(--font-weight-normal);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    &__date,
-    &__author {
-        display: block;
-        margin: 0;
-        font-size: var(--font-size-smaller);
+    .latest-post {
+        display: flex;
+        gap: var(--spacing-4);
+        justify-content: flex-start;
+        align-items: center;
         color: var(--alt-font-color-2);
+        overflow: hidden;
 
-        a {
-            color: var(--alt-font-color-1);
+        @include bp-medium-max {
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            padding: var(--spacing-3) var(--spacing-4);
+            margin-top: var(--spacing-3);
+            background: var(--background-1);
+            border-radius: var(--border-radius);
+        }
+
+        &--never {
+            flex-direction: row;
+        }
+
+        &__subject {
+            display: block;
+            max-width: var(--text-overflow-max-width);
+            padding: 0;
+            margin: 0;
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-normal);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        &__date,
+        &__author {
+            display: block;
+            max-width: var(--text-overflow-max-width);
+            font-size: var(--font-size-smaller);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            a {
+                color: var(--alt-font-color-1);
+            }
         }
     }
 
@@ -145,64 +208,5 @@
 
     &:last-child {
         border-bottom: none;
-    }
-}
-
-.forum-list--full-width {
-
-    @include bp-medium {
-
-        .forum {
-            flex-direction: row;
-
-            &__info {
-                flex: 1 0 40%;
-            }
-
-            &__stat {
-                display: block;
-                flex: 0 0 6%;
-                min-width: 90px;
-                padding: var(--spacing-3) 0;
-                text-align: center;
-            }
-
-            &__latest {
-                box-sizing: border-box;
-                flex: 0 0 28%;
-                min-width: 220px;
-                max-width: 280px;
-                padding: side-values(0 0 0 62px);
-                margin: side-values(0 0 0 20px);
-                background: transparent;
-
-                .avatar-profile-link {
-                    float: $left;
-                    margin: side-values(4px 0 0 -62px);
-                }
-
-                &--never {
-                    padding: 20px 0;
-                }
-            }
-
-            &--offlink {
-
-                .forum__info {
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
-
-.block--container {
-
-    .forum-list {
-        padding: 0 var(--spacing-3);
-
-        .forum:last-child {
-            border-bottom: 0;
-        }
     }
 }

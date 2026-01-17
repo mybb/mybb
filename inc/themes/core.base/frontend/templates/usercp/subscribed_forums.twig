@@ -14,8 +14,8 @@
 
     {% include 'usercp/subscribed_menu.twig' %}
 
-    <section class="block block--container">
-        <div class="forum-list forum-list--full-width">
+    <section class="block block--forum-list">
+        <div class="forum-list">
         {% for forum in forums %}
             {% include 'usercp/subscribed_forums/row.twig' %}
         {% else %}
