@@ -17,8 +17,8 @@
             <h1 class="title title--page">{{ trans('post_reply_to', thread.subject) }}</h1>
         </header>
         {% if newreply.preview %}
-            <section class="block block--container">
-                <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+            <section class="post-preview">
+                <h1 class="title title--separation title--basic">{{ lang.post_preview }}</h1>
                 <div id="posts_container">
                     <div id="posts">
                         {{ postbit|raw }}
