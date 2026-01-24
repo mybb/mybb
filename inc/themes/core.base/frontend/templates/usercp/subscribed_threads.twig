@@ -18,30 +18,24 @@
     <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_subscriptions" />
-        <div class="thread-list thread-list--compact">
-            <div class="sort-threads">
-                <div class="sort-threads__column sort-threads__column--primary">
-                    {{ lang.thread }}
-                </div>
-                <div class="sort-threads__column sort-threads__column--replies">
-                    {{ lang.replies }}
-                </div>
-                <div class="sort-threads__column sort-threads__column--latest">
-                    {{ lang.lastpost }}
-                </div>
-                <div class="sort-threads__column sort-threads__column--checkbox">
+        <div class="block block--thread-list">
+            <div class="column-headings column-headings--minor column-headings--thread-list thread thread--compact">
+                <div class="column-headings__column thread__title">{{ lang.thread }}</div>
+                <div class="column-headings__column thread__replies">{{ lang.replies }}</div>
+                <div class="column-headings__column thread__latest">{{ lang.lastpost }}</div>
+                <div class="column-headings__column thread__checkbox">
                     <input name="allbox" title="{{ lang.selectall }}" type="checkbox" class="checkbox checkall" value="1" />
                 </div>
             </div>
-            <div class="thread-list__container">
+            <div class="thread-list thread-list--compact">
                 {% for thread in threads %}
                     {% include 'usercp/subscribed_threads/row.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
+                    <div class="row row--no-results no-results no-results--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <h3 class="sort-results__title">{{ lang.with_selected }}</h3>
+            <div class="block__footer block-actions block-actions--extra-space">
+                <h3 class="block-actions__title">{{ lang.with_selected }}</h3>
                 <div class="select-field">
                     {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="do" id="do">
@@ -51,17 +45,17 @@
                         <option value="pm_notification">{{ lang.update_pm_notification }}</option>
                     </select>
                 </div>
-                <input type="submit" class="button button--inline" value="{{ lang.go }}" />
+                <input type="submit" class="button button--inline block-actions__button" value="{{ lang.go }}" />
             </div>
         </div>
         <div class="page-controls">
+            {{ multipage|raw }}
             <div class="page-buttons">
-                <a href="usercp.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button">
+                <a href="usercp.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--danger">
                     {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.remove_all_subscriptions }}</span>
                 </a>
             </div>
         </div>
-        {{ multipage|raw }}
     </form>
 {% endblock accountBody %}

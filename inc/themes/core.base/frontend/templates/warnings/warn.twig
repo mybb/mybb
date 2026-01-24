@@ -24,7 +24,7 @@
             <input type="hidden" name="action" value="do_warn" />
             <input type="hidden" name="uid" value="{{ user.uid }}" />
             <div class="block block--form form">
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.warn_user }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -101,16 +101,18 @@
                                         </div>
                                         <div class="row row--form field">
                                             <h5 class="field__name"><label for="custom_expires">{{ lang.expires }}</label></h5>
-                                            <input type="text" class="textbox textbox--small" name="expires" size="2" value="{{ type_checked.expires }}" />
-                                            <div class="select-field">
-                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                                <select name="expires_period">
-                                                    <option value="hours" {{ type_checked.hours }}>{{ lang.hour_or_hours }}</option>
-                                                    <option value="days" {{ type_checked.days }}>{{ lang.day_or_days }}</option>
-                                                    <option value="weeks" {{ type_checked.weeks }}>{{ lang.week_or_weeks }}</option>
-                                                    <option value="months" {{ type_checked.months }}>{{ lang.month_or_months }}</option>
-                                                    <option value="never" {{ type_checked.never }}>{{ lang.never }}</option>
-                                                </select>
+                                            <div class="multi-field">
+                                                <input type="text" class="textbox textbox--small" name="expires" size="2" value="{{ type_checked.expires }}" />
+                                                <div class="select-field">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="expires_period">
+                                                        <option value="hours" {{ type_checked.hours }}>{{ lang.hour_or_hours }}</option>
+                                                        <option value="days" {{ type_checked.days }}>{{ lang.day_or_days }}</option>
+                                                        <option value="weeks" {{ type_checked.weeks }}>{{ lang.week_or_weeks }}</option>
+                                                        <option value="months" {{ type_checked.months }}>{{ lang.month_or_months }}</option>
+                                                        <option value="never" {{ type_checked.never }}>{{ lang.never }}</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -124,73 +126,67 @@
                         </div>
                     </div>
                 </section>
-                {% if pm.haspermission == true %}
-                    <section class="section section--form">
-                        <h2 class="title title--section">{{ lang.send_pm }}</h2>
-                        <div class="section__container">
-                            <div class="row row--form row--no-border field">
-                                <p class="option-field option-field--compact">
-                                    <label><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {{ type_checked.send_pm_checked }} /> {{ lang.send_user_warning_pm }}</label>
-                                </p>
-                            </div>
-                            <script type="text/javascript">
-                            // <!--
-                                function togglePM()
-                                {
-                                    if($('#send_pm').prop('checked') == true)
-                                    {
-                                        $('#pm_input').show();
-                                        $('#pm_smilie_insert').show();
-                                    }
-                                    else
-                                    {
-                                        $('#pm_input').hide();
-                                    }
-                                }
-                            // -->
-                            </script>
-
-                            <div id="pm_input">
-                                <div class="row row--form row--border-top field">
-                                    <h3 class="field__name"><label for="pm_subject">{{ lang.send_pm_subject }}</label></h3>
-                                    <input type="text" class="textbox" name="pm_subject" size="40" maxlength="85" value="{{ type_checked.pm_subject }}" />
-                                </div>
-                                <div class="row row--form {% if mybb.settings.allowanonwarningpms == false %}row--no-border{% endif %} field">
-                                    <h3 class="field__name"><label for="message">{{ lang.send_pm_message }}</label></h3>
-                                    <textarea name="pm_message" id="message" rows="20" cols="70">{{ type_checked.message }}</textarea>
-                                    {{ pm.codebuttons|raw }}
-                                </div>
-                                {% if mybb.settings.allowanonwarningpms %}
-                                    <div class="row row--form field">
-                                        <h3 class="field__name">{{ lang.send_pm_options }}</h3>
-                                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pm_anonymous" value="1"{{ pm.anonymous_checked }} />&nbsp;{{ lang.send_pm_options_anonymous|raw }}</label></p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <script type="text/javascript">
-                            <!--
-                            $(function() {
-                                togglePM();
-                            });
-                            // -->
-                            </script>
-                        </div>
-                    </section>
-                {% endif %}
-                <section class="section section--form">
-                    <h2 class="title title--section">{{ lang.require_acknowledgement }}</h2>
+                <section class="section section--form section--has-title">
+                    <h2 class="title title--section">{{ lang.options }}</h2>
                     <div class="section__container">
-                        <div class="row row--form row--no-border field">
-                            <p class="option-field option-field--compact">
-                                <label>
-                                    <input type="checkbox" class="checkbox" value="1" name="requiresacknowledgement" id="requiresacknowledgement" checked="checked" style="vertical-align: middle;" />
-                                    {{ lang.require_acknowledgement_description }}
-                                </label>
-                            </p>
+                        <div class="row row--form field">
+                            <div class="option-field">
+                                <input type="checkbox" class="checkbox" value="1" name="requiresacknowledgement" id="requiresacknowledgement" checked="checked" />
+                                <h3 class="option-field__name"><label for="requiresacknowledgement">{{ lang.require_acknowledgement }}</label></h3>
+                                <p class="option-field__description"><label for="requiresacknowledgement">{{ lang.require_acknowledgement_description }}</label></p>
+                            </div>
+                            {% if pm.haspermission == true %}
+                                <div class="option-field option-field--single">
+                                    <input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" {{ type_checked.send_pm_checked }} />
+                                    <h3 class="option-field__name"><label for="send_pm">{{ lang.send_pm }}</label></h3>
+                                    <p class="option-field__description"><label for="send_pm">{{ lang.send_user_warning_pm }}</label></p>
+                                </div>
+                            
+                                <script type="text/javascript">
+                                // <!--
+                                    function togglePM()
+                                    {
+                                        if($('#send_pm').prop('checked') == true)
+                                        {
+                                            $('#pm_input').show();
+                                            $('#pm_smilie_insert').show();
+                                        }
+                                        else
+                                        {
+                                            $('#pm_input').hide();
+                                        }
+                                    }
+                                // -->
+                                </script>
+                                <div class="section section--inline" id="pm_input">
+                                    <div class="row row--form field">
+                                        <h3 class="field__name"><label for="pm_subject">{{ lang.send_pm_subject }}</label></h3>
+                                        <input type="text" class="textbox" name="pm_subject" size="40" maxlength="85" value="{{ type_checked.pm_subject }}" />
+                                    </div>
+                                    <div class="row row--form {% if mybb.settings.allowanonwarningpms == false %}row--no-border{% endif %} field">
+                                        <h3 class="field__name"><label for="message">{{ lang.send_pm_message }}</label></h3>
+                                        <textarea name="pm_message" id="message" rows="20" cols="70">{{ type_checked.message }}</textarea>
+                                        {{ pm.codebuttons|raw }}
+                                    </div>
+                                    {% if mybb.settings.allowanonwarningpms %}
+                                        <div class="row row--form field">
+                                            <h3 class="field__name">{{ lang.send_pm_options }}</h3>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pm_anonymous" value="1"{{ pm.anonymous_checked }} />&nbsp;{{ lang.send_pm_options_anonymous|raw }}</label></p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <script type="text/javascript">
+                                <!--
+                                $(function() {
+                                    togglePM();
+                                });
+                                // -->
+                                </script>
+                            {% endif %}
                         </div>
                     </div>
                 </section>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medimu">
                         {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.warn_user }}</span>

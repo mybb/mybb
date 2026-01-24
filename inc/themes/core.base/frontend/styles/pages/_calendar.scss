@@ -10,12 +10,17 @@
 
 .calendar {
 
+    &__today {
+        background: var(--background-2);
+    }
+    
     &__days-of-week {
         display: flex;
         padding: var(--spacing-3) var(--spacing-4);
         margin-bottom: var(--spacing-4);
-        background: var(--background-1);
-        border-radius: var(--border-radius);
+        background: var(--background-2);
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
+        border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
 
         @include bp-large-max {
             display: none;
@@ -63,28 +68,27 @@
     }
 
     &__day {
-        padding: var(--spacing-6) var(--spacing-4);
+        padding: var(--spacing-5) var(--spacing-4);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
 
         &:last-child {
             border-bottom: 0;
         }
 
-        // TODO : Change class in calendar.php
-        &.trow1 {
+        &--today {
+            @extend .calendar__today;
+        }
+
+        &--other-month {
 
             .calendar__day-heading {
                 font-size: var(--font-size-large);
-                font-weight: normal;
+                font-weight: var(--font-weight-normal);
             }
 
             .calendar__day-link {
                 color: var(--alt-font-color-1);
             }
-        }
-
-        &.trow_sep {
-            background: var(--background-2);
         }
     }
 
@@ -101,7 +105,7 @@
 
         .calendar__month {
             font-size: var(--font-size-small);
-            font-weight: normal;
+            font-weight: var(--font-weight-normal);
         }
     }
 
@@ -157,7 +161,7 @@
                 min-height: 120px;
                 padding: var(--spacing-3) var(--spacing-4);
                 border-bottom: 0;
-                border-#{$left}: 1px solid var(--border-color-1);
+                border-#{$left}: var(--border-width-base) solid var(--border-color-1);
             }
 
             .calendar__day-of-week {
@@ -177,7 +181,41 @@
 
         .calendar__week {
             padding: 0;
-            margin-bottom: var(--spacing-6);
+        }
+    }
+}
+
+.event {
+
+    &--hidden {
+        .calendar__event-link {
+            background: var(--status-pending-background-color);
+            color: var(--status-pending-font-color);
+
+            &:hover {
+                background: var(--status-pending-border-color);
+                color: var(--invert-font-color);
+            }
+        }
+
+        .post {
+            margin-top: calc(var(--border-width-base) - var(--border-width-thick));
+            margin-#{$right}: calc(var(--border-width-base) - var(--border-width-thick));
+            margin-#{$left}: calc(var(--border-width-base) - var(--border-width-thick));
+            border-color: var(--status-pending-border-color);
+            border-width: var(--border-width-thick);
+        }
+    }
+
+    &--private {
+        .calendar__event-link {
+            background: var(--status-deleted-background-color);
+            color: var(--status-deleted-font-color);
+
+            &:hover {
+                background: var(--status-deleted-border-color);
+                color: var(--invert-font-color);
+            }
         }
     }
 }
@@ -186,7 +224,7 @@
 
     &__days-of-week {
         display: flex;
-        padding: var(--spacing-1) 0;
+        padding: var(--spacing-2) 0;
         border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
@@ -208,7 +246,7 @@
 
     &__week-shortcut {
         width: 20px;
-        padding: var(--spacing-1) var(--spacing-2);
+        padding: var(--spacing-3) var(--spacing-2);
         text-align: center;
 
         .button {
@@ -227,11 +265,10 @@
 
     &__day {
         flex: 1 1 14%;
-        padding: var(--spacing-1) 0;
+        padding: var(--spacing-3) 0;
         text-align: center;
 
-        // TODO: change class in calendar.php
-        &.trow1 {
+        &--other-month {
 
             &,
             .mini-calendar__day-link {
@@ -239,7 +276,7 @@
             }
         }
 
-        &.trow_sep {
+        &--today {
             background: var(--background-2);
         }
     }

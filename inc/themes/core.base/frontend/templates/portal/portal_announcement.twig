@@ -1,8 +1,8 @@
-<section class="block">
-    <h1 class="title title--major title--separation">
+<section class="portal-announcement">
+    <h1 class="title title--separation title--basic portal-announcement__title">
         <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ announcement.subject }}</a>
     </h1>
-    <div class="post">
+    <div class="post portal-announcement__post">
         <div class="post__meta">
             <a href="{{ get_profile_link(announcement.uid )}}" class="avatar-profile-link">
                 {{ render_avatar(url=announcement.avatar, alt=announcement.username) }}

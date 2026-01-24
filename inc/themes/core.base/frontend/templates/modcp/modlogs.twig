@@ -15,7 +15,7 @@
         {% for logitem in modlogs %}
             {% include 'modcp/modlogs/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results alert--no-results-container">{{ lang.error_no_results }}</div>
+            <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
         {% endfor %}
     </section>
     {% if multipage %}
@@ -24,15 +24,12 @@
 
     <form action="modcp.php?action=modlogs" method="post">
         <section class="block block--form form">
-            <div class="section section--form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.filter_modlogs }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
                         <h3 class="field__name">{{ lang.forum }}</h3>
-                        <div class="select-field">
-                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                            {{ forum_select|raw }}
-                        </div>
+                        {{ forum_select|raw }}
                     </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="from_moderator">{{ lang.from_moderator }}</label></h3>
@@ -49,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section section--form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.sort_by }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -81,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium">
                     {{ include('partials/icon.twig', {icon: 'filter', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.filter_logs }}</span>

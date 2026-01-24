@@ -35,12 +35,12 @@
             <input type="hidden" name="action" value="do_manageusers" />
             <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
             <h1 class="title title--major">{{ trans('members_of', usergroup.title) }}</h1>
-            <div class="user-list user-list--has-title user-list--has-footer">
+            <div class="user-list user-list--has-container">
                 {% for user in users %}
                     <div class="user-list__user">
                         {% if groupleader.canmanagemembers %}
                             <span class="user-list__checkbox">
-                                <input type="checkbox" class="checkbox" name="removeuser[{{ user.uid }}]" value="{{ user.uid }}"{{ user.disabled }} />
+                                <input type="checkbox" class="checkbox checkbox--select-user" name="removeuser[{{ user.uid }}]" value="{{ user.uid }}"{{ user.disabled }} />
                             </span>
                         {% endif %}
                         <h2 class="user-list__username">{{ user.profilelink|raw }} <span class="user-list__user-info">{{ user.leader }}</span></h2>
@@ -70,11 +70,11 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_users }}</div>
+                    <div class="no-results">{{ lang.no_users }}</div>
                 {% endfor %}
             </div>
             {% if groupleader.canmanagemembers %}
-                <div class="sort-results">
+                <div class="block__footer">
                     <button type="submit" class="button">
                         {{ include('partials/icon.twig', {icon: 'user-minus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.remove_selected }}</span>
@@ -89,7 +89,7 @@
         <input type="hidden" name="action" value="do_add" />
         <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
         <section class="block block--form form">
-            <div class="section section--form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ trans('add_member', usergroup.title) }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium">
                     {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.add_member_submit }}</span>
@@ -151,7 +151,7 @@
             <input type="hidden" name="action" value="do_invite" />
             <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
             <section class="block block--form form">
-                <div class="section section--form">
+                <div class="section section--form section--has-title">
                     <h2 class="title title--section">{{ trans('invite_member', usergroup.title) }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -160,7 +160,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.invite_member_submit }}</span>

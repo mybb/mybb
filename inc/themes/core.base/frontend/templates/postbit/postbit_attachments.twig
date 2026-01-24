@@ -3,7 +3,7 @@
 
 	{% if attached.thumbs %}
 		{% set tcount = 0 %}
-		<span class="smalltext"><strong>{{ lang.postbit_attachments_thumbnails }}</strong></span><br />
+		<h5 class="attachments__subtitle">{{ lang.postbit_attachments_thumbnails }}</h5>
 		{% for thumb in attached.thumbs %}
 			{% include 'postbit/postbit_attached_thumbnail.twig' %}
 			{% if tcount == 5 %}
@@ -14,7 +14,7 @@
 	{% endif %}
 
 	{% if attached.images %}
-		<span class="smalltext"><strong>{{ lang.postbit_attachments_images }}</strong></span><br />
+		<h5 class="attachments__subtitle">{{ lang.postbit_attachments_images }}</h5>
 		{% for image in attached.images %}
 			{% include 'postbit/postbit_attached_image.twig' %}
 		{% endfor %}

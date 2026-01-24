@@ -1,34 +1,39 @@
 .user-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     align-items: stretch;
     justify-content: space-between;
+    gap: var(--spacing-5);
     margin-bottom: var(--spacing-6);
 
-    @include bp-medium {
-        flex-direction: row;
-    }
-
-    &--has-title {
-        padding-top: var(--spacing-5);
-    }
-
-    &--has-footer {
+    &--has-container {
+        padding: var(--spacing-4);
         margin-bottom: 0;
+        border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &__user {
         position: relative;
         box-sizing: border-box;
-        width: 100%;
-        padding: var(--spacing-4);
-        margin: side-values(0 0 var(--spacing-5) 0);
+        flex-basis: 100%;
+        padding: var(--spacing-4) var(--spacing-5);
+        background: var(--background-default);
         border: var(--border-width-base) solid var(--border-color-1);
         border-radius: var(--border-radius);
+        @include box-shadow;
 
         @include bp-medium {
-            width: 49%;
+            flex-basis: calc(50% - calc(var(--spacing-5) / 2));
+        }
+
+        &--selected {
+            background-color: var(--status-highlight-background-color);
+            border-color: var(--status-highlight-border-color);
+        }
+
+        &:has(.checkbox--select-user:checked) {
+            @extend .user-list__user--selected;
         }
     }
 
@@ -47,7 +52,7 @@
     &__checkbox {
         position: absolute;
         top: var(--spacing-3);
-        right: var(--spacing-4);
+        #{$right}: var(--spacing-5);
     }
 
     &__username {
@@ -58,7 +63,7 @@
     &__user-info {
         margin-#{$left}: var(--spacing-3);
         font-size: var(--font-size-smaller);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-2);
     }
 
@@ -69,7 +74,7 @@
     &__user-title {
         margin: 0;
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
     }
 
     &__data {
@@ -94,9 +99,11 @@
     }
 
     &--compact {
+        padding-top: var(--spacing-4);
 
         .user-list__user {
             padding: var(--spacing-3);
+            flex-basis: 100%;
 
             .avatar-profile-link {
                 margin-#{$right}: var(--spacing-4);
@@ -106,24 +113,11 @@
         .user-list__username {
             font-size: var(--font-size-regular);
         }
-
-        .alert--no-results {
-            padding: var(--spacing-4) 0;
-            font-size: var(--font-size-regular);
-        }
     }
 }
 
 .list--user {
     font-size: var(--font-size-smaller);
-}
-
-.user-alphabet {
-
-    &__letter {
-        padding: var(--spacing-2);
-        margin-#{$right}: var(--spacing-2);
-    }
 }
 
 .team-badge {

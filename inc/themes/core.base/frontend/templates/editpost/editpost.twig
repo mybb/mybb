@@ -17,8 +17,8 @@
             <h1 class="title title--page">{{ lang.edit_post }}</h1>
         </header>
         {% if editpost.preview %}
-        <section class="block block--container">
-            <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+        <section class="post-preview">
+            <h1 class="title title--separation title--basic">{{ lang.post_preview }}</h1>
             <div id="posts_container">
                 <div id="posts">
                     {{ postbit|raw }}
@@ -36,7 +36,7 @@
         {% if editpost.showdelete %}
             <form action="editpost.php" method="post" name="editpost">
                 <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                <div class="form form--alt form--delete">
+                <div class="container form form--delete">
                     <div class="option-field option-field--single">
                         <input type="checkbox" class="checkbox" name="delete" id="deletepost" value="1" tabindex="9" />
                         <h3 class="option-field__name"><label for="deletepost">{{ lang.delete_q }}</label></h3>
@@ -57,7 +57,7 @@
         {% endif %}
         <form id="editpost" action="editpost.php?pid={{ editpost.pid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--compose compose">
+            <div class="block block--form form form--compose compose">
                 <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 {% if editpost.showpollbox %}
                     <input type="checkbox" class="compose__checkbox" id="show-post-poll">
@@ -116,7 +116,7 @@
                                 </label>
                             {% endif %}
                             <button type="submit" name="previewpost" value="preview" class="button button--basic">
-                                {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                                {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.preview_post }}</span>
                             </button>
                         </div>
@@ -131,7 +131,7 @@
                 </section>
 
                 {% if editpost.showpostoptions %}
-                    <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                    <section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
                         <h2 class="title title--section">{{ lang.post_options }}</h2>
                         <div class="section__container">
                             <div class="row row--form field">
@@ -166,7 +166,7 @@
                     {% include 'misc/attachments.twig' %}
                 {% endif %}
 
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--big" name="submitbutton" tabindex="3" accesskey="s">
                         {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.update_post }}</span>

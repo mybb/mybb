@@ -132,6 +132,8 @@ $l['last'] = "Last";
 $l['all_day'] = "All Day";
 $l['starts'] = "Starts ";
 $l['finishes'] = "Finishes ";
+$l['unapproved_event'] = "This event is awaiting approval";
+$l['private_event'] = "Only you can see this event";
 
 $l['error_incorrectday'] = "The day you have entered does not appear to exist. Please go back and try again.";
 $l['error_invalidevent'] = "The event you specified is either invalid or doesn't exist.";

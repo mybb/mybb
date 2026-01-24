@@ -159,6 +159,7 @@ var inlineModeration = {
 			{
 				thread.addClass('trow_selected');
 			}
+			$('.inline-moderation').addClass('inline-moderation--sticky');
 		}
 		else
 		{
@@ -226,6 +227,7 @@ var inlineModeration = {
 			$(this).removeClass('inline_selected');
 		});
 
+		$('.inline-moderation').removeClass('inline-moderation--sticky');
 		$('#inline_go').html(go_text+' (0)');
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');

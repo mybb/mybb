@@ -12,25 +12,22 @@
 
 {% block accountBody %}
     <section class="block">
+        <div class="column-headings column-headings--major column-headings--simple-columns security-log security-log--column-headings">
+            <div class="security-log__activity">{{ lang.security_log_activity }}</div>
+            <div class="security-log__date">{{ lang.date }}</div>
+            <div class="security-log__ip">{{ lang.security_log_ip }}</div>
+        </div>
         <div class="results">
             {% for security_log in securitylog %}
-                <div class="row row--simple-columns security-log">
-                    <div class="row__primary security__log">
-                        <div class="security__date">{{ security_log.date|raw }}</div>
-                    </div>
-                    <div class="row__secondary security__type">
-                        <div class="security__type-information">
-                            {{ security_log.information }}
-                        </div>
-                    </div>
-                    <div class="security__ip">
-                        {{ security_log.ipaddress }}
-                    </div>
+                <div class="row row--simple-columns security-log security-log--row">
+                    <div class="security-log__activity">{{ security_log.information }}</div>
+                    <div class="security-log__date">{{ security_log.date|raw }}</div>
+                    <div class="security-log__ip">{{ security_log.ipaddress }}</div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_security_logs }}</div>
+                <div class="no-results">{{ lang.no_security_logs }}</div>
             {% endfor %}
         </div>
-        </section>
+    </section>
     {{ multipage|raw }}
 {% endblock %}

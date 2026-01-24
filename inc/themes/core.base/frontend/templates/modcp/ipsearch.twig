@@ -48,7 +48,7 @@
                     <div class="row__secondary">{{ ipaddress.ip }}</div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.error_no_results }}</div>
+                <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
             {% endfor %}
         </section>
         {{ multipage|raw }}
@@ -56,7 +56,7 @@
 
     <form action="modcp.php?action=ipsearch" method="post">
         <section class="block block--form form">
-            <div class="section section--form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.ipaddress_search }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section section--form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium">
                 {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.find }}</span>

@@ -1,14 +1,14 @@
 <div class="row row--forum forum forum--{{ lightbulb.folder }}">
-    <div class="forum__info">
-        <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
+     <div class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
         {% if forum.open == 0 %}
-            {{ include('partials/icon.twig', {icon: 'lock', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'lock', class: 'fa-fw'}, with_context = false) }}
         {% elseif forum.linkto != '' %}
-            {{ include('partials/icon.twig', {icon: 'link', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'link', class: 'fa-fw'}, with_context = false) }}
         {% else %}
-            {{ include('partials/icon.twig', {icon: 'circle', class: ''}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'circle', class: 'fa-fw'}, with_context = false) }}
         {% endif %}
-        </span>
+    </div>
+    <div class="forum__info">
         <h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
         {% if forum.description %}
             <p class="forum__description">{{ forum.description|raw }}</p>
@@ -17,9 +17,18 @@
         {% include 'forumbit/subforums.twig' %}
     </div>
     {% if forum.linkto == '' and (forum.password == '' or lightbulb.folder != 'offlock') %}
-    <div class="forum__stat forum__stat--thread-count">
-        <span class="forum__count forum__count--threads">
-            {{ forum.fthreads }}
+    <div class="forum__stats">
+        <div class="forum__threads forum__stat forum__stat--threads">
+            <span class="forum__count forum__count--threads">
+                {{ forum.fthreads }}
+            </span>
+            <span class="forum__legend">
+                {% if forum.fthreads == 1 %}
+                    {{ lang.forum_count_thread }}
+                {% else %}
+                    {{ lang.forum_count_threads }}
+                {% endif %}
+            </span>
             {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
                 {% apply spaceless %}
                     <span class="forum__unapproved-count forum__unapproved-count--threads" title="
@@ -30,18 +39,18 @@
                     {% endif %}">{{ forum.unapprovedthreads }}</span>
                 {% endapply %}
             {% endif %}
-        </span>
-        <span class="forum__count-legend">
-            {% if forum.fthreads == 1 %}
-                {{ lang.forum_count_thread }}
-            {% else %}
-                {{ lang.forum_count_threads }}
-            {% endif %}
-        </span>
-    </div>
-    <div class="forum__stat forum__stat--post-count">
-        <span class="forum__count forum__count--posts">
-            {{ forum.fposts }}
+        </div>
+        <div class="forum__posts forum__stat forum__stat--posts">
+            <span class="forum__count forum__count--posts">
+                {{ forum.fposts }}
+            </span>
+            <span class="forum__legend">
+                {% if forum.fposts == 1 %}
+                    {{ lang.forum_count_post }}
+                {% else %}
+                    {{ lang.forum_count_posts }}
+                {% endif %}
+            </span>
             {% if forum.showunapproved and forum.unapprovedposts > 0 %}
                 {% apply spaceless %}
                     <span class="forum__unapproved-count forum__unapproved-count--posts" title="
@@ -52,14 +61,7 @@
                     {% endif %}">{{ forum.unapprovedposts }}</span>
                 {% endapply %}
             {% endif %}
-        </span>
-        <span class="forum__count-legend">
-            {% if forum.fposts == 1 %}
-                {{ lang.forum_count_post }}
-            {% else %}
-                {{ lang.forum_count_posts }}
-            {% endif %}
-        </span>
+        </div>
     </div>
     {% endif %}
     {% if forum.password == '' or lightbulb.folder != 'offlock' %}

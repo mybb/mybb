@@ -301,10 +301,6 @@ if($mybb->settings['showindexstats'] != 0)
 	// First, load the stats cache.
 	$stats = $cache->read('stats');
 
-	// Format the stats language.
-	$lang->stats_posts_threads = $lang->sprintf($lang->stats_posts_threads, my_number_format($stats['numposts']), my_number_format($stats['numthreads']));
-	$lang->stats_numusers = $lang->sprintf($lang->stats_numusers, my_number_format($stats['numusers']));
-
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read('mostonline');
 	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])

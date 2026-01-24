@@ -3,45 +3,42 @@
     margin: 0;
     font-family: var(--heading-font-stack);
     font-size: var(--font-size-larger);
-    font-weight: bold;
+    font-weight: var(--font-weight-semibold);
 
     &--page {
         margin-bottom: var(--spacing-4);
         font-size: var(--font-size-largest);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         line-height: var(--line-height-small);
     }
 
-    &--block {
+    &--basic {
         border-bottom: var(--border-width-base) solid var(--border-color-1);
+        font-size: var(--font-size-larger);
     }
 
     &--sidebar,
     &--minor {
-        padding-top: var(--spacing-2);
-        padding-bottom: var(--spacing-3);
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
+        @extend .title--basic;
+        padding: side-values(var(--spacing-2) var(--spacing-2) var(--spacing-3) var(--spacing-2));
+        font-size: var(--font-size-large);
     }
 
     &--major,
     &--modal {
         padding: var(--spacing-3) var(--spacing-4);
-        margin-bottom: 0;
+        margin: side-values(calc(-1 * var(--border-width-base)) calc(-1 * var(--border-width-base)) 0 calc(-1 * var(--border-width-base)));
         font-size: var(--font-size-large);
         color: var(--invert-font-color);
         background: var(--major-title-background);
         border: 0;
-        border-radius: var(--border-radius);
+        border-radius: corner-values(var(--border-radius) var(--border-radius) 0 0);
 
         a:link,
         a:visited,
         a:hover {
             color: var(--invert-font-color);
         }
-    }
-
-    &--form {
-        margin-bottom: var(--spacing-4);
     }
 
     &--modal {
@@ -64,14 +61,14 @@
     &--nested {
         font-family: var(--font-stack);
         font-size: var(--font-size-regular);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
 
         .title__name {
             padding: 0;
             margin: 0;
             font-family: var(--heading-font-stack);
             font-size: var(--font-size-large);
-            font-weight: bold;
+            font-weight: var(--font-weight-semibold);
         }
 
         .title__description {
@@ -82,6 +79,7 @@
     }
 
     &--section {
+        grid-area: title;
         padding: var(--spacing-3) var(--spacing-4);
         margin: side-values(0 0 var(--spacing-4) 0);
         font-family: var(--heading-font-stack);
@@ -90,9 +88,7 @@
         border-radius: var(--border-radius);
 
         @include bp-medium {
-            float: $left;
-            width: 20%;
-            padding: 0;
+            padding: side-values(0 0 0 var(--spacing-3));
             margin: 0;
             text-align: $right;
             background: none;
@@ -106,22 +102,31 @@
 
     &--row {
         margin: 0;
-        font-size: var(--font-size-larger);
-        font-weight: bold;
+        font-size: var(--font-size-large);
+        font-weight: var(--font-weight-bold);
     }
 
     &--container {
         padding-bottom: var(--spacing-2);
         margin-top: 0;
         margin-bottom: var(--spacing-4);
-        font-size: var(--font-size-larger);
+        font-size: var(--font-size-large);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
 
     &--legend {
-        margin-bottom: var(--spacing-4);
         font-size: var(--font-size-regular);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
+
+        &:after {
+            content: ":";
+        }
+
+        @include bp-medium-max {
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-smaller);
+            text-transform: uppercase;
+        }
     }
 }

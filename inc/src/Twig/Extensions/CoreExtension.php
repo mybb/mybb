@@ -376,6 +376,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
      * Build the breadcrumb navigation.
      *
      * @param \Twig\Environment $twig Twig environment to use to render the breadcrumb template.
+     * @param string|null $class An optional CSS class or list of CSS classes to apply to the breacrumb container.
      *
      * @return string The formatted breadcrumb navigation trail.
      *
@@ -383,10 +384,15 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function buildBreadcrumbNavigation(Environment $twig): string
-    {
+    public function buildBreadcrumbNavigation(
+        Environment $twig,
+        ?string $class = ''
+    ): string {
+        $class = trim($class);
+
         return $twig->render('partials/breadcrumb.twig', [
             'breadcrumbs' => $this->breadcrumbManager,
+            'class' => $class,
         ]);
     }
 

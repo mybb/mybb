@@ -10,21 +10,23 @@
             <h1 class="title title--page">{{ lang.search_member_list }}</h1>
         </header>
         <form method="post" action="memberlist.php">
-            <div class="form">
-                <section class="section section--form">
+            <div class="block block--form form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_criteria }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
-                            <div class="select-field">
-                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                                <select name="username_match">
-                                    <option value="begins">{{ lang.begins_with }}</option>
-                                    <option value="contains">{{ lang.username_contains }}</option>
-                                    <option value="exact">{{ lang.username_exact }}</option>
-                                </select>
+                            <div class="multi-field">
+                                <div class="select-field">
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                    <select name="username_match">
+                                        <option value="begins">{{ lang.begins_with }}</option>
+                                        <option value="contains">{{ lang.username_contains }}</option>
+                                        <option value="exact">{{ lang.username_exact }}</option>
+                                    </select>
+                                </div>
+                                <input type="text" class="" name="username" id="username" />
                             </div>
-                            <input type="text" class="" name="username" id="username" />
                         </div>
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="website">{{ lang.search_website }}</label></h3>
@@ -38,7 +40,7 @@
                         {% endfor %}
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_options }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -69,11 +71,11 @@
                         </div>
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="perpage">{{ lang.per_page }}</label></h3>
-                            <input type="text" class="textbox" size="4" name="perpage" id="perpage" value="15" />
+                            <input type="text" class="textbox textbox--small" size="4" name="perpage" id="perpage" value="15" />
                         </div>
                     </div>
                 </section>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.search }}</span>

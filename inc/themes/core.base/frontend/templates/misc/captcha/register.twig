@@ -1,6 +1,6 @@
 {# NoCAPTCHA #}
 {% if type == 4 %}
-<section class="section section--form">
+<section class="section section--form section--has-title">
     <h2 class="title title--section">{{ lang.human_verification }}</h2>
     <div class="section__container">
         <div class="row row--form field">
@@ -33,7 +33,7 @@
     </script>
 {# hCaptcha #}
 {% elseif type == 6 %}
-<section class="section section--form" id="captcha_trow">
+<section class="section section--form section--has-title" id="captcha_trow">
     <h2 class="title title--section">{{ lang.human_verification }}</h2>
     <div class="section__container">
         <div class="row row--form field">
@@ -64,7 +64,7 @@
      </script>
 {# CFTurnstile #}
 {% elseif type == 9 %}
-    <section class="section section--form" id="captcha_trow">
+    <section class="section section--form section--has-title" id="captcha_trow">
         <h2 class="title title--section">{{ lang.human_verification }}</h2>
         <div class="section__container">
             <div class="row row--form field">
@@ -75,7 +75,7 @@
     </section>
 {# MyBB Captcha #}
 {% else %}
-    <section class="section section--form">
+    <section class="section section--form section--has-title">
         <h2 class="title title--section">{{ lang.image_verification }}</h2>
         <div class="section__container">
             <div class="row row--form field">

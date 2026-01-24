@@ -2,7 +2,7 @@
     display: inline-block;
     padding: var(--spacing-1) var(--spacing-3);
     font-size: var(--font-size-small);
-    font-weight: normal;
+    font-weight: var(--font-weight-normal);
     color: var(--alt-font-color-1);
     text-transform: uppercase;
     background: var(--background-3);
@@ -10,7 +10,7 @@
 
     &--float {
         float: $right;
-        margin-#{$left}: 3px;
+        margin-#{$left}: var(--spacing-2);
     }
 
     &--good {
@@ -28,10 +28,6 @@
         background-color: var(--danger-color);
     }
 
-    &--thread-prefix {
-        margin-#{$right}: var(--spacing-2);
-    }
-
     &--thread-status {
         margin-#{$left}: var(--spacing-2);
         font-size: var(--font-size-smallest);
@@ -41,7 +37,8 @@
         margin-bottom: var(--spacing-3);
     }
 
-    &--deleted {
+    &--deleted,
+    &--private {
         color: var(--status-deleted-font-color);
         background-color: var(--status-deleted-background-color);
     }

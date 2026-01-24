@@ -11,7 +11,7 @@
         </header>
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--alt form--delete">
+            <div class="container form form--delete">
                 <div class="option-field option-field--single">
                     <input type="checkbox" class="checkbox" name="delete" id="deletepoll" value="1" tabindex="9" />
                     <h3 class="option-field__name"><label for="deletepoll">{{ lang.delete_q }}</label></h3>
@@ -29,8 +29,8 @@
         </form>
         <form action="polls.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form">
-                <section class="section section--form">
+            <div class="block block--form form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_details }}</h2>
                     <div class="section__container">
                         {{ loginbox|raw }}
@@ -41,11 +41,14 @@
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="numoptions">{{ lang.num_options }}</label></h3>
                             <p class="field__description">{{ lang.max_options }} {{ mybb.settings.maxpolloptions }}</p>
-                            <input type="text" class="textbox textbox--small" name="numoptions" id="numoptions" size="10" value="{{ select.numoptions }}" />&nbsp;<input type="submit" class="button button--inline" name="updateoptions" value="{{ lang.update_options }}" />
+                            <div class="multi-field">
+                                <input type="text" class="textbox textbox--small" name="numoptions" id="numoptions" size="10" value="{{ select.numoptions }}" />
+                                <input type="submit" class="button button--inline" name="updateoptions" value="{{ lang.update_options }}" />
+                            </div>
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_options }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -55,7 +58,7 @@
                             <div class="row row--form field">
                                 <h3 class="field__name"><label for="options_{{ option.id }}">{{ lang.option }} {{ option.id }}</label></h3>
                                 <input type="text" class="textbox" name="options[{{ option.id }}]" id="options_{{ option.id }}" value="{{ option.value }}" />
-                                <div class="field__block">
+                                <div class="field__block multi-field">
                                     <input type="text" class="textbox textbox--small" name="votes[{{ option.id }}]" value="{{ option.votes }}" />
                                     {{ lang.votes }}
                                 </div>
@@ -63,7 +66,7 @@
                         {% endfor %}
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.poll_settings }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -93,11 +96,13 @@
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="timeout">{{ lang.poll_timeout }}</label></h3>
                             <p class="field__description">{{ lang.timeout_note }}</p>
-                            <input type="text" class="textbox textbox--small" name="timeout" id="timeout" value="{{ select.timeout }}" /> {{ lang.days_after }} {{ poll.polldate }}
+                            <div class="multi-field">
+                                <input type="text" class="textbox textbox--small" name="timeout" id="timeout" value="{{ select.timeout }}" /> {{ lang.days_after }} {{ poll.polldate }}
+                            </div>
                         </div>
                     </div>
                 </section>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--big" name="submit">
                         {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.update_poll }}</span>

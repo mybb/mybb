@@ -1,32 +1,29 @@
 .smilie-list {
+    --smilie-column-width: 50px;
+    --smilie-info-column-width: calc(50% - calc(var(--smilie-column-width) + calc(2 * var(--spacing-4))));
 
-    &__legend {
-
-        .smilie-list__name {
-            margin-#{$left}: var(--spacing-7);
-        }
+    &__legend,
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-4);
+    }
+        
+    &__smilie {
+        flex: 0 0 var(--smilie-column-width);
+        min-width: var(--smilie-column-width);
+        text-align: center;
     }
 
-    &__item {
-        .smilie-list__smilie {
-            flex: 0 0 50px;
-            min-width: 50px;
-            text-align: center;
-        }
+    &__name {
+        flex: 1 0 var(--smilie-info-column-width);
+    }
 
-        .smilie-list__name {
-            flex: 1 0 auto;
-            margin-#{$left}: var(--spacing-4);
-        }
+    &__replace {
+        flex: 1 0 var(--smilie-info-column-width);
 
-        .smilie-list__replace {
-            flex: 1 0 auto;
-            text-align: $right;
-
-            &--no-name {
-                margin-#{$left}: var(--spacing-4);
-                text-align: $left;
-            }
+        &--no-name {
+            flex-basis: auto;
         }
     }
 }

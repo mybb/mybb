@@ -36,7 +36,7 @@
                     </div>
                 </section>
                 {{ captcha|raw }}
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium" tabindex="3">
                         {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.send_email }}</span>

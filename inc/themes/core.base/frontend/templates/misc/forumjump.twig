@@ -1,7 +1,7 @@
 {% if showextras %}
-    <section class="container">
-        <form action="forumdisplay.php" method="get">
-            <h2 class="title title--container">{{ lang.forumjump }}</h2>
+    <div class="container container--jump-form">
+        <h2 class="title title--legend">{{ lang.forumjump }}</h2>
+        <form action="forumdisplay.php" method="get" class="form form--compact multi-field">
             <div class="select-field">
                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="{{ name }}" class="forumjump">
@@ -18,21 +18,21 @@
                 <span class="button__text">{{ lang.go }}</span>
             </button>
         </form>
-        <script type="text/javascript">
-            $(".forumjump").on('change', function() {
-                var option = $(this).val();
+    </div>
+    <script type="text/javascript">
+        $(".forumjump").on('change', function() {
+            var option = $(this).val();
 
-                if(option < 0)
-                {
-                    window.location = 'forumdisplay.php?fid='+option;
-                }
-                else
-                {
-                    window.location = {{ forum_link }};
-                }
-            });
-        </script>
-    </section>
+            if(option < 0)
+            {
+                window.location = 'forumdisplay.php?fid='+option;
+            }
+            else
+            {
+                window.location = {{ forum_link }};
+            }
+        });
+    </script>
 {% else %}
     <div class="select-field">
         {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}

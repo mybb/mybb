@@ -5,13 +5,17 @@
     }
 
     &__search {
-        padding-bottom: var(--spacing-4);
+        padding-bottom: var(--spacing-5);
 
         .textbox--large {
 
             @include bp-small-max {
                 margin-bottom: var(--spacing-3);
                 width: 100%;
+            }
+
+            @include bp-small {
+                margin-#{$right}: var(--spacing-3);
             }
         }
 
@@ -67,214 +71,12 @@
     }
 }
 
-.sort-messages {
-    position: relative;
-    padding: var(--spacing-3) var(--spacing-4);
-    font-size: var(--font-size-small);
-    color: var(--alt-font-color-2);
-    background: var(--background-3);
-    border-radius: var(--border-radius);
-
-    @include bp-small {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) 70px);
-
-        &--no-avatar {
-            padding-#{$left}: var(--spacing-3);
-        }
-    }
-
-    &--alt {
-        background: none;
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
-        border-radius: 0;
-    }
-
-    &__link {
-
-        &:link,
-        &:visited {
-            color: var(--alt-font-color-1);
-        }
-
-        &:hover {
-            color: var(--link-hover-color);
-            text-decoration: none;
-        }
-    }
-
-    &__column {
-
-        &--primary {
-
-            @include bp-small {
-                width: 67%;
-            }
-        }
-
-        &--date {
-
-            @include bp-small {
-                width: 28%;
-                text-align: $right;
-            }
-        }
-
-        &--checkbox {
-            width: 5%;
-            text-align: $right;
-
-            @include bp-small-max {
-                position: absolute;
-                top: var(--spacing-4);
-                right: var(--spacing-4);
-            }
-        }
-    }
-}
-
 .message-list {
 
     &__actions {
         padding: var(--spacing-4);
         text-align: center;
         border-bottom: var(--border-width-base) solid var(--border-color-2);
-    }
-
-    .messages__sort-arrow {
-        display: inline-block;
-        padding: 0 var(--spacing-3);
-
-    }
-
-    .message {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        padding-#{$left}: 66px;
-
-        @include bp-small {
-            flex-direction: row;
-            align-items: center;
-        }
-
-        &:last-child {
-            border-bottom: 0;
-        }
-
-        &--new_pm {
-
-            .message__subject {
-                font-weight: bold;
-            }
-        }
-
-        &--no-avatar {
-            padding-#{$left}: var(--spacing-4);
-    	}
-
-        .avatar-profile-link {
-            float: $left;
-            margin: side-values(var(--spacing-1) 0 0 -52px);
-    	}
-
-        &__column {
-
-            &--primary {
-                width: 67%;
-            }
-
-            &--date {
-                width: 28%;
-                text-align: $right;
-            }
-
-            &--checkbox {
-                width: 5%;
-                text-align: center;
-            }
-
-            &--primary,
-            &--date {
-
-                @include bp-small-max {
-                    width: 100%;
-                    text-align: $left;
-                }
-            }
-
-            &--checkbox {
-                text-align: $right;
-
-                @include bp-small-max {
-                    position: absolute;
-                    top: var(--spacing-4);
-                    right: var(--spacing-4);
-                }
-            }
-        }
-
-        &__subject {
-            margin: 0;
-            font-size: var(--font-size-regular);
-            font-weight: normal;
-        }
-
-        &__username,
-        &__folder {
-            margin: 0;
-            font-size: var(--font-size-smaller);
-            color: var(--alt-font-color-2);
-
-            a:link,
-            a:visited {
-                color: var(--alt-font-color-1);
-            }
-
-            @include bp-small {
-                display: inline-block;
-            }
-        }
-
-        &__message {
-            margin: side-values(var(--spacing-3) 0 0 0);
-            font-size: var(--font-size-small);
-        }
-
-        &__deny-receipt {
-            margin-#{$left}: var(--spacing-3);
-            font-size: var(--font-size-smaller);
-            font-weight: normal;
-            color: var(--alt-font-color-2);
-
-            a:link,
-            a:visited {
-                color: var(--alt-font-color-1);
-            }
-    	}
-
-        &__icons {
-            float: $right;
-            margin-#{$left}: var(--spacing-5);
-            color: var(--alt-font-color-2);
-        }
-
-        &__icon {
-            margin-#{$left}: var(--spacing-1);
-
-            &--new_pm {
-                color: var(--primary-color);
-            }
-        }
-
-        &__date {
-            font-size: var(--font-size-small);
-            color: var(--alt-font-color-2);
-        }
     }
 }
 

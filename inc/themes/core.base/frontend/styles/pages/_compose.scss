@@ -14,6 +14,7 @@
         @include bp-medium {
             display: flex;
             align-items: center;
+            gap: var(--spacing-4);
         }
 
         .select-field {
@@ -76,7 +77,7 @@
         padding-bottom: var(--spacing-3);
         margin: side-values(0 0 var(--spacing-3) 0);
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
         border-bottom: var(--border-width-base) solid var(--border-color-1);
     }
@@ -106,7 +107,7 @@
 }
 
 #multiquote_unloaded {
-    @include container;
+    @extend .container;
     margin-top: var(--spacing-3);
     font-size: var(--font-size-small);
 }
@@ -114,7 +115,7 @@
 #show-post-options:checked ~ .compose__hidden-section--options,
 #show-post-poll:checked ~ .compose__hidden-section--poll,
 #show-attachments:checked ~ .compose__hidden-section--attachments {
-    display: block;
+    display: grid;
 }
 
 #show-post-options:checked ~ .compose__primary-section .compose__option-button--options,
@@ -126,7 +127,7 @@
 .quick-reply {
 
     &__options {
-        @include container;
+        @extend .container;
         display: none;
         margin: side-values(var(--spacing-2) var(--spacing-4) var(--spacing-4) var(--spacing-4));
         font-size: var(--font-size-small);
@@ -151,26 +152,56 @@
     display: block;
 }
 
+.upload-attachments {
+
+    &__drop-zone {
+        padding: var(--spacing-8) 0;
+        margin: 0;
+        color: var(--alt-font-color-1);
+        text-align: center;
+        cursor: pointer;
+        border: var(--border-width-thick) dashed var(--border-color-1);
+        border-radius: var(--border-radius);
+    }
+
+    &__pointer-events {
+        pointer-events: none;
+    }
+
+    &__upload-bar {
+        height: var(--spacing-4);
+        width: 0%;
+        margin-top: var(--spacing-4);
+        margin-bottom: calc(-1 * var(--spacing-4));
+        background: var(--primary-color);
+    }
+}
+
 .uploaded-attachment {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    gap: var(--spacing-3) var(--spacing-4);
     align-items: center;
+    grid-template-columns: var(--spacing-5) auto;
+    grid-template-areas:
+        "icon details"
+        "buttons buttons";
     padding: var(--spacing-3) var(--spacing-4);
 
-    @include bp-medium {
-        flex-direction: row;
-        justify-content: space-between;
+    @include bp-large {
+        grid-template-columns: var(--spacing-5) 1fr auto;
+        grid-template-areas:
+            "icon details buttons";
     }
 
     &__details {
-        padding-#{$left}: var(--spacing-7);
+        grid-area: details;
         font-size: var(--font-size-small);
         line-height: var(--line-height-small);
     }
 
     &__icon {
-        float: $left;
-        margin-#{$left}: calc(-1 * var(--spacing-7));
+        grid-area: icon;
+        align-self: self-start;
     }
 
     &__file-name {
@@ -183,6 +214,13 @@
     }
 
     &__buttons {
+        grid-area: buttons;
 
+        .button {
+            
+            @include bp-large-max {
+                margin-bottom: var(--spacing-3);
+            }
+        }
     }
 }

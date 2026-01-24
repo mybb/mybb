@@ -1,9 +1,7 @@
-/**
- * Global page footer
- */
+// Global page footer
 .footer {
 
-    // Language and theme quick-selectors
+    // Language and theme quick-selectors container
     &__selectors {
         margin-top: var(--spacing-6);
     }
@@ -16,28 +14,23 @@
         color: var(--alt-font-color-1);
     }
 
-    // Footer links
+    // Footer links container
     &__navigation {
         padding: var(--spacing-4) 0;
-        margin-top: var(--spacing-4);
-        margin-bottom: var(--spacing-4);
+        margin: var(--spacing-4) 0;
         clear: both;
-        background: var(--background-2);
+        background: var(--background-3);
+        box-shadow: inset 0 3px 3px rgba(0,0,0,0.03), inset 0 -3px 3px rgba(0,0,0,0.03);
     }
 
-    // MyBB Powered By wrapper
+    // MyBB Powered By container
     &__copyright {
         text-align: center;
     }
 }
 
-/**
- * MyBB Powered By statement
- */
+// MyBB Powered By statement
 .powered-by {
-    padding: 0 0 var(--spacing-4) 0;
-    margin: 0;
-    clear: both;
     font-size: var(--font-size-smaller);
     color: var(--alt-font-color-2);
 
@@ -47,16 +40,7 @@
     }
 }
 
-/**
- * Page wrapper (footer)
- */
-.wrapper--footer {
-    position: relative;
-}
-
-/**
- * Footer link menu
- */
+// Footer link menu
 .footer-menu {
     font-size: var(--font-size-small);
 
@@ -97,10 +81,5 @@
     // Icon accompanying link (contained within <a>)
     &__icon {
         margin-#{$right}: var(--spacing-2);
-    }
-
-    // Link text (contained within <a>)
-    &__text {
-        // unused
     }
 }

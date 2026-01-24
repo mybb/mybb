@@ -15,7 +15,7 @@
         {% for report in allreports %}
             {% include 'modcp/allreports/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results alert--no-results-container">{{ lang.no_reports }}</div>
+            <div class="row row--no-results no-results">{{ lang.no_reports }}</div>
         {% endfor %}
     </section>
     {{ multipage|raw }}

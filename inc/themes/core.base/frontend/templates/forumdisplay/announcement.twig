@@ -1,18 +1,11 @@
-<div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
-    <div class="thread__column thread__column--primary">
-        <span class="thread__status thread__status--announcement">
-            {{ include('partials/icon.twig', {icon: 'bullhorn', class: ''}, with_context = false) }}
-        </span>
-        <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
-        <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
+<div class="row row--thread row--announcement thread thread--default thread--announcement thread--{{ folder }}">
+    {# <div class="thread__column thread__column--primary"> #}
+    <div class="thread__jump thread__jump--announcement">
+        {{ include('partials/icon.twig', {icon: 'bullhorn', class: ''}, with_context = false) }}
     </div>
-    <div class="thread__column thread__column--replies">&nbsp;</div>
-    <div class="thread__column thread__column--latest">
-        <p class="thread__latest-post">
-            <a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
-        </p>
+    <div class="thread__title">
+        <h3 class="thread__subject"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
+        <div class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</div>
+        <div class="thread__date">{{ announcement.postdate }}</div>
     </div>
-    {% if modpermissions.ismod %}
-        <span class="thread__column thread__column--checkbox"></span>
-    {% endif %}
 </div>

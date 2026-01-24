@@ -9,9 +9,11 @@
         <header class="page-header">
             <h1 class="title title--page">{{ online_today|raw }}</h1>
         </header>
-        <div class="page-controls">
-            {{ multipage|raw }}
-        </div>
+        {% if multipage is not empty %}
+            <div class="page-controls">
+                {{ multipage|raw }}
+            </div>
+        {% endif %}
         <div class="user-list">
             {% for user in online_today_users %}
                 <div class="user-list__user">
@@ -25,8 +27,10 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="page-controls">
-            {{ multipage|raw }}
-        </div>
+        {% if multipage is not empty %}
+            <div class="page-controls">
+                {{ multipage|raw }}
+            </div>
+        {% endif %}
     </div>
 {% endblock body %}

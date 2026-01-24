@@ -1,12 +1,4 @@
 .form {
-    margin-bottom: var(--spacing-7);
-    border: var(--border-width-base) solid var(--border-color-1);
-    border-radius: var(--border-radius);
-
-    &--alt {
-        background-color: var(--background-2);
-        border: none;
-    }
 
     &--modal {
         margin-bottom: 0;
@@ -15,37 +7,29 @@
 
     &--delete {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: space-between;
         padding: var(--spacing-5) var(--spacing-4);
         margin-bottom: var(--spacing-7);
 
+        @include bp-small {
+            align-items: center;
+            flex-direction: row;
+            gap: var(--spacing-4);
+        }
+
+        .option-field {
+            flex-grow: 1;
+        }
+
         .form__submit {
-            background: none;
+            flex-shrink: 0;
+            align-self: center;
         }
     }
 
-    .buttons {
-        margin: calc(-1 * var(--spacing-1));
-    }
-
-    &__submit {
-        padding: var(--spacing-4) 0;
-        text-align: center;
-        background: var(--background-1);
-        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
-
-        &:first-child {
-            border-radius: var(--border-radius);
-        }
-    }
-}
-
-.inline-form {
-
-    .textbox,
-    .select-field,
-    .button {
-        margin: var(--spacing-1);
+    &--compact {
+        line-height: 0;
     }
 }

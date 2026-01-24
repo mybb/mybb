@@ -16,7 +16,7 @@
             <h1 class="title title--page">{{ trans('reputation_report', user.username) }}</h1>
         </header>
         {% if user.show_add_reputation %}
-            <div class="page-controls page-controls--top">
+            <div class="page-controls page-controls--compact">
                 <div class="page-buttons">
                     <a href="javascript:void(0)" onclick="MyBB.reputation({{ user.uid }}); return false;" class="button button--full-width">
                         {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
@@ -86,16 +86,16 @@
         </section>
         <section class="block">
             <h1 class="title title--major">{{ lang.comments }}</h1>
-            <div class="reputation-ratings">
+            <div class="reputation-ratings block__body">
                 {% for reputation_vote in reputation_votes %}
                     {% include 'reputation/reputation_vote.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_reputation_votes }}</div>
+                    <div class="no-results">{{ lang.no_reputation_votes }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <form action="reputation.php" method="get">
-                    <input type="hidden" name="uid" value="{{ user.uid }}" />
+            <form action="reputation.php" method="get">
+                <input type="hidden" name="uid" value="{{ user.uid }}" />
+                <div class="block__footer block-actions block-actions--extra-space">
                     <div class="select-field">
                         {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="show">
@@ -112,12 +112,12 @@
                             <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
                         </select>
                     </div>
-                    <button type="submit" class="button button--inline">
+                    <button type="submit" class="button button--inline block-actions__button">
                         {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.sort_ratings }}</span>
                     </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </section>
         {{ multipage|raw }}
     </div>

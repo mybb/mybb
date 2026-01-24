@@ -26,6 +26,7 @@
         font-family: var(--logo-font-stack);
         font-size: calc(0.45 * var(--header-height));
         font-style: italic;
+        font-weight: var(--font-weight-semibold);
         color: var(--invert-font-color);
         text-indent: var(--spacing-3);
     }

@@ -289,6 +289,7 @@ $l['active_announcement'] = "Active Announcement";
 $l['active'] = "Active";
 $l['expired'] = "Expired";
 $l['edit'] = "Edit";
+$l['add'] = "Add";
 $l['add_announcement'] = "Add Announcement";
 $l['edit_announcement'] = "Edit Announcement";
 $l['no_forum_announcements'] = "There are currently no forum announcements on your board.";

@@ -17,7 +17,7 @@
         {{ errors|raw }}
 
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.login_cookies_privacy }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.messaging_notification }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.date_time_options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.forum_display_options }}</h2>
                 <div class="section__container">
                     {% if mybb.settings.usertppoptions %}
@@ -152,7 +152,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.thread_view_options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -192,7 +192,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.other_options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -236,7 +236,7 @@
                     {% endif %}
                 </div>
             </section>
-            <div class="form__submit">
+            <div class="block__footer">
                 <input type="hidden" name="action" value="do_options" />
                 <button type="submit" class="button button--medium" name="regsubmit">
                     {{ include('partials/icon.twig', {icon: 'sliders-h', class: 'button__icon'}, with_context = false) }}

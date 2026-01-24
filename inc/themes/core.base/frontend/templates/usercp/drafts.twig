@@ -14,7 +14,7 @@
     <form action="usercp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <section class="block">
-            <div class="container container--small container--adjacent">
+            <div class="column-headings column-headings--major">
                 <div class="select-all">
                     <input type="checkbox" name="allbox" class="checkbox checkall" />
                 </div>
@@ -23,10 +23,10 @@
                 {% for draft in drafts %}
                     {% include 'usercp/drafts/row.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_drafts|raw }}</div>
+                    <div class="row row--no-results no-results no-results--aligned-block">{{ lang.no_drafts|raw }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
+            <div class="block__footer">
                 <input type="hidden" name="action" value="do_drafts" />
                 <button type="submit" name="draftman" class="button"{% if not deleteDraftsEnabled %} disabled{% endif %}>
                     {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}

@@ -12,10 +12,12 @@
 
 {% block accountBody %}
     <section class="block block--container account-dashboard">
-        <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=mybb.user.avatar, alt=mybb.user.username, class='avatar--large') }}
-        </a>
-        <ul class="list list--divided list--stats">
+        <div class="account-dashboard__avatar">
+            <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=mybb.user.avatar, alt=mybb.user.username, class='avatar--large') }}
+            </a>
+        </div>
+        <ul class="account-dashboard__stats list list--divided list--stats">
             <li class="list__item title">{{ username|raw }}</li>
             <li class="list__item">
                 <span class="list__field">{{ lang.postnum }}</span>
@@ -50,65 +52,23 @@
     </section>
     {# Latest subscribed #}
     {% if latestsubscriptions %}
-        <section class="block">
+        <section class="block block--thread-list">
             <h1 class="title title--major title">{{ lang.new_thread_subscriptions }}</h1>
-            <div class="thread-list thread-list--compact">
-            <div class="sort-threads sort-threads--alt">
-                <div class="sort-threads__column sort-threads__column--primary">
-                    {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
-                </div>
-                <div class="sort-threads__column sort-threads__column--replies">
-                    {{ lang.replies }}
-                </div>
-                <div class="sort-threads__column sort-threads__column--latest">
-                    {{ lang.lastpost }}
-                </div>
+            <div class="column-headings column-headings--minor column-headings--thread-list thread thread--compact">
+                <div class="column-headings__column thread__title">{{ lang.thread }}</div>
+                <div class="column-headings__column thread__author">{{ lang.author }}</div>
+                <div class="column-headings__column thread__replies">{{ lang.replies }}</div>
+                <div class="column-headings__column thread__latest">{{ lang.lastpost }}</div>
             </div>
+            <div class="thread-list thread-list--compact">
                 {% for thread in latestsubscriptions %}
-                    {# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
-                    <div class="row row--thread thread {{ thread.class }}">
-                        <div class="thread__column thread__column--primary">
-                            <h3 class="thread__title {{ new_class }}">
-                                {% if thread.displayprefix %}
-                                    <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
-                                {% endif %}
-                                <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
-                                {% if thread.lastread and thread.lastpost > thread.lastread %}
-                                    <a href="{{ thread.newpostlink }}" class="thread__status">
-                                        {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
-                                    </a>
-                                {% endif %}
-                                <span class="thread__icons">
-                                    {{ icon }}
-                                </span>
-                            </h3>
-                            <p class="thread__author">{{ lang.by }} {{ thread.author|raw }}</p>
-                        </div>
-                        <div class="thread__column thread__column--replies">
-                            <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
-                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
-                                <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
-                            </p>
-                        </div>
-                        <div class="thread__column thread__column--latest">
-                            <p class="thread__latest-post">
-                                <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
-                                <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
-                                    {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
-                                </a>
-                                <span class="thread__latest-post__author">
-                                    {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
-                                </span>
-                                <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'usercp/home/thread.twig' %}
                 {% endfor %}
             </div>
-            <div class="block__footer-link">
-                <a href="usercp.php?action=subscriptions">
-                    {{ include('partials/icon.twig', {icon: 'plus-square', class: 'icon'}, with_context = false) }}
-                    {{ lang.view_all_subscriptions }}
+            <div class="block__footer">
+                <a href="usercp.php?action=subscriptions" class="button button--basic button--inline">
+                    {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.view_all_subscriptions }}</span>
                 </a>
             </div>
         </section>
@@ -116,65 +76,23 @@
 
     {# Latest threads #}
     {% if latestthreads %}
-        <section class="block">
+        <section class="block block--thread-list">
             <h1 class="title title--major">{{ lang.latest_threads }}</h1>
-            <div class="thread-list thread-list--compact">
-                <div class="sort-threads sort-threads--alt">
-                    <div class="sort-threads__column sort-threads__column--primary">
-                        {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
-                    </div>
-                    <div class="sort-threads__column sort-threads__column--replies">
-                        {{ lang.replies }}
-                    </div>
-                    <div class="sort-threads__column sort-threads__column--latest">
-                        {{ lang.lastpost }}
-                    </div>
-                </div>
+            <div class="column-headings column-headings--minor column-headings--thread-list thread thread--compact">
+                <div class="column-headings__column thread__title">{{ lang.thread }}</div>
+                <div class="column-headings__column thread__author">{{ lang.author }}</div>
+                <div class="column-headings__column thread__replies">{{ lang.replies }}</div>
+                <div class="column-headings__column thread__latest">{{ lang.lastpost }}</div>
+            </div>
+            <div class="thread-list">
                 {% for thread in latestthreads %}
-                    {# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
-                    <div class="row row--thread thread {{ thread.class }}">
-                        <div class="thread__column thread__column--primary">
-                            <h3 class="thread__title {{ new_class }}">
-                                {% if thread.displayprefix %}
-                                    <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
-                                {% endif %}
-                                <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
-                                {% if thread.lastread and thread.lastpost > thread.lastread %}
-                                    <a href="{{ thread.newpostlink }}" class="thread__status">
-                                        {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
-                                    </a>
-                                {% endif %}
-                                <span class="thread__icons">
-                                    {{ icon }}
-                                </span>
-                            </h3>
-                            <p class="thread__author">{{ lang.by }} {{ thread.author|raw }}</p>
-                        </div>
-                        <div class="thread__column thread__column--replies">
-                            <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
-                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
-                                <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
-                            </p>
-                        </div>
-                        <div class="thread__column thread__column--latest">
-                            <p class="thread__latest-post">
-                                <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
-                                <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
-                                    {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
-                                </a>
-                                <span class="thread__latest-post__author">
-                                    {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
-                                </span>
-                                <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'usercp/home/thread.twig' %}
                 {% endfor %}
             </div>
-            <div class="block__footer-link">
-                <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}">
-                    {{ include('partials/icon.twig', {icon: 'comments', class: 'icon'}, with_context = false) }}
-                    {{ lang.find_all_threads }}
+            <div class="block__footer">
+                <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}" class="button button--inline button--basic">
+                    {{ include('partials/icon.twig', {icon: 'comments', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.find_all_threads }}</span>
                 </a>
             </div>
         </section>
@@ -237,7 +155,7 @@
                     <textarea name="notepad" cols="1" rows="10" id="notepad" class="usercp_notepad">{{ mybb.user.notepad }}</textarea>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <input type="hidden" name="action" value="do_notepad" />
                 <button type="submit" class="button" name="submit">
                     {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
