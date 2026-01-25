@@ -156,53 +156,46 @@
                 {% endif %}
 
                 {# Threads – errors #}
-                {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
+                {% if fpermissions.canviewthreads != 1 or threadcount == 0 %}
                     <div class="row row--no-results no-results">
                         {% if fpermissions.canviewthreads != 1 %}
                             {{ lang.nopermission }}
-                        {% elseif threadcount is empty %}
+                        {% else %}
                             {{ lang.nothreads }}
                         {% endif %}
                     </div>
                 {% else %}
-                    
-                {% for thread in threadCache %}
-                    {# Sticky thread separator #}
-                    {% if thread.sticky and stickySepAdded != true %}
-                        <div class="thread-list thread-list--sticky-threads">
+                    {% for thread in threadCache %}
+                        {# Sticky thread separator #}
+                        {% if thread.sticky and stickySepAdded != true %}
+                            <div class="thread-list thread-list--sticky-threads">
                             <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
-                        {% set stickySepAdded = true %}
+                            {% set stickySepAdded = true %}
 
-                    {# Normal thread separator #}
-                    {% elseif not thread.sticky and normalSepAdded != true %}
-                        {# Close sticky section if open #}
-                        {% if stickySepAdded %}
-                            </div>
+                            {# Normal thread separator #}
+                        {% elseif not thread.sticky and normalSepAdded != true %}
+                            {# Close sticky section if open #}
+                            {% if stickySepAdded %}
+                                </div>
+                            {% endif %}
+
+                            {# Begin normal thread section #}
+                            <div class="thread-list thread-list--normal-threads">
+                            <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
+                            {% set normalSepAdded = true %}
                         {% endif %}
 
-                        {# Begin normal thread section #}
-                        <div class="thread-list thread-list--normal-threads">
-                            <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
-                        {% set normalSepAdded = true %}
-                    {% endif %}
-
-                            {# Threads – no errors #}
+                        {# Threads – no errors #}
                         {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
                             {% include 'forumdisplay/thread_deleted.twig' %}
                         {% else %}
                             {% include 'forumdisplay/thread.twig' %}
                         {% endif %}
-
-                        {# No threads #}
-                        {% else %}
-                            <div class="row row--no-results no-results">{{ lang.nothreads }}</div>
-                        {% endfor %}
-
-                        {# Close sticky or normal thread section #}
-                        {% if stickySepAdded or normalSepAdded %}
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
+                    {# Close sticky or normal thread section #}
+                    {% if stickySepAdded or normalSepAdded %}
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 {# Threadlist footer #}
@@ -278,7 +271,7 @@
                     </form>
                 </div>
             {% endif %} #}
-                
+
             {# Users browsing #}
             {% if mybb.settings.browsingthisforum %}
                 <div class="container container--users-browsing">{{ lang.users_browsing_forum }}
