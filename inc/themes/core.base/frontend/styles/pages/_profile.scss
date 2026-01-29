@@ -1,31 +1,19 @@
 .profile {
 
-    &__header {
-        @include clearfix();
-        position: relative;
+    &__header.page-header {
+        display: flex;
+        gap: var(--spacing-5);
+        padding-bottom: var(--spacing-5);
         margin-bottom: var(--spacing-6);
 
-        .avatar {
-            float: $left;
-            width: 100px;
-            height: 100px;
-            margin-#{$right}: var(--spacing-5);
-            margin-bottom: var(--spacing-5);
-        }
-    }
-
-    .page-controls {
-        margin-top: calc(-1 * var(--spacing-4));
-
-        @include bp-medium-max {
-            margin-#{$left}: calc(-1 * var(--spacing-2));
-            margin-#{$right}: calc(-1 * var(--spacing-2));
+        .avatar-profile-link {
+            @include avatar(100);
         }
     }
 
     &__username,
     &__usertitle {
-        margin: var(--spacing-2) 0;
+        margin: var(--spacing-1) 0;
     }
 }
 
@@ -35,7 +23,7 @@
     &__name {
         padding: 0;
         margin: 0;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 
     &__value {

@@ -19,7 +19,7 @@
         {{ errors|raw }}
 
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.change_email }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.password_confirmation }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </section>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium" name="submit">
                     {{ include('partials/icon.twig', {icon: 'at', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.update_email }}</span>

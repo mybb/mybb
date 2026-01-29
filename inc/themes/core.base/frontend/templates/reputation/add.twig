@@ -54,7 +54,7 @@
                                 <input type="text" class="textbox" name="comments" id="comments" size="35" maxlength="250" value="{{ existing_reputation.comments }}" />
                             </div>
                         </div>
-                        <div class="form__submit">
+                        <div class="block__footer">
                             <button type="submit" class="button button--medium">
                                 {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{% if existing_reputation.uid %}{{ lang.update_vote }}{% else %}{{ lang.add_vote }}{% endif %}</span>

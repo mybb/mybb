@@ -33,74 +33,64 @@
                 <span class="button__text">{{ lang.advanced_search }}</span>
             </a>
         </div>
-        <section class="message-list">
+        <section class="block block--thread-list">
             <h2 class="visually-hidden">{{ private.foldername }}</h2>
             {% set ascDesc %}
-                <span class="sort-threads__order">
-                    <a href="private.php?fid={{ private.folder }}&amp;sortby={{ sortby }}&amp;order={{ private.oppsortnext }}" class="sort-messages__link">
-                        {% if private.oppsortnext == 'asc' %}
+                <span class="sort-results__order">
+                    {# <a href="private.php?fid={{ private.folder }}&amp;sortby={{ sortby }}&amp;order={{ private.oppsortnext }}" class="sort-results__link"> #}
+                        {% if private.oppsortnext == 'desc' %}
                             {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: private.oppsort}, with_context = false) }}
                         {% else %}
                             {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: private.oppsort}, with_context = false) }}
                         {% endif %}
-                    </a>
+                    {# </a> #}
                 </span>
             {% endset %}
-            <div class="sort-messages">
-                <div class="sort-messages__column sort-messages__column--primary">
-                    <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order=asc" class="sort-messages__link">{{ lang.message_title }}</a>
-                    {% if private.orderarrow.subject %}
-                        {% set sortby = 'subject' %}
-                        {{ ascDesc }}
-                        <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order={{ private.oppsortnext }}" class="sort-messages__link">{{ private.oppsort }}</a>
-                    {% endif %}
-                    <span class="sort-messages__username">
-                        &mdash; <a href="private.php?fid={{ private.folder }}&amp;sortby=username&amp;order=asc" class="sort-messages__link">{{ private.sender }}</a>
-                        {% if private.orderarrow.username %}
-                            {% set sortby = 'username' %}
-                            {{ ascDesc }}
-                        {% endif %}
-                    </span>
+            <div class="column-headings column-headings--major column-headings--thread-list sort-results thread thread--message">
+                <div class="column-headings__column thread__title">
+                    <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order={% if private.orderarrow.subject %}{{ private.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--title">{{ lang.message_title }}{% if private.orderarrow.subject %}{{ ascDesc }}{% endif %}</a>
                 </div>
-                <div class="sort-messages__column sort-messages__column--date">
-                    <a href="private.php?fid={{ private.folder }}&amp;sortby=dateline&amp;order=desc" class="sort-messages__link">{{ lang.date_sent }}</a>
-                    {% if private.orderarrow.dateline %}
-                        {% set sortby = 'dateline' %}
-                        {{ ascDesc }}
-                    {% endif %}
+                <div class="column-headings__column thread__author">
+                    <a href="private.php?fid={{ private.folder }}&amp;sortby=username&amp;order={% if private.orderarrow.username %}{{ private.oppsortnext }}{% else %}asc{% endif %}" class="sort-results__link sort-results__link--author">{{ private.sender }}{% if private.orderarrow.username %}{{ ascDesc }}{% endif %}</a>
                 </div>
-                <div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all">
+                <div class="column-headings__column thread__date">
+                    <a href="private.php?fid={{ private.folder }}&amp;sortby=dateline&amp;order={% if private.orderarrow.dateline %}{{ private.oppsortnext }}{% else %}desc{% endif %}" class="sort-results__link sort-results__link--date">{{ lang.date_sent }}{% if private.orderarrow.dateline %}{{ ascDesc }}{% endif %}</a>
+                </div>
+                <div class="column-headings__column thread__checkbox">
                     <input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" />
                 </div>
             </div>
-            <div class="message-list__container">
+            <div class="thread-list thread-list--messages">
                 {% for message in messagelist %}
                     {% include 'private/private/item.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.nomessages }}</div>
+                    <div class="row row--no-results no-results">{{ lang.nomessages }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <button type="submit" class="button button--inline" name="moveto" value="move">
-                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.move_to }}</span>
-                </button>
-                <div class="select-field">
-                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                    <select name="fid">
-                        {% for folder in folders %}
-                            {% if folder.id != 1 %}
-                            <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+            <div class="block__footer block-actions block-actions--extra-space block-actions--groups">
+                <span class="block-actions__title">{{ lang.with_selected }}</span>
+                <div class="block-actions__group block-actions__group--separator">
+                    <button type="submit" class="button button--inline block-actions__button" name="moveto" value="move">
+                        {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.move_to }}</span>
+                    </button>
+                    <div class="select-field">
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                        <select name="fid">
+                            {% for folder in folders %}
+                                {% if folder.id != 1 %}
+                                <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <span class="sort-results__text">{{ lang.or }}</span>
-                <button type="submit" class="button button--inline" name="delete" value="delete">
-                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.delete }}</span>
-                </button>
-                <span class="sort-results__text">{{ lang.selected_messages }}</span>
+                <div class="block-actions__group block-actions__group--separator">
+                    <button type="submit" class="button button--inline block-actions__button" name="delete" value="delete">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.delete }}</span>
+                    </button>
+                </div>
             </div>
         </section>
         <input type="hidden" name="action" value="do_stuff" />
@@ -122,23 +112,5 @@
             </div>
         {% endapply %}
     {% endif %}
-
-    <div class="page-controls">
-        <div class="page-buttons">
-            <a href="private.php?action=folders" class="button button--basic button--inline">
-                {{ include('partials/icon.twig', {icon: 'folder-open', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.manage_folders }}</span>
-            </a>
-            {% if mybb.user.totalpms %}
-                <a href="private.php?action=empty" class="button button--basic button--inline">
-                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.empty_folders2 }}</span>
-                </a>
-                <a href="private.php?action=export" class="button button--basic button--inline">
-                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.export_messages2 }}</span>
-                </a>
-            {% endif %}
-        </div>
     </div>
 {% endblock messengerBody %}

@@ -14,8 +14,8 @@
     <form action="private.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         {% if sendpm.preview %}
-            <section class="block block--container">
-                <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+            <section class="post-preview">
+                <h1 class="title title--separation title--basic">{{ lang.post_preview }}</h1>
                 <div id="posts_container">
                     <div id="posts">
                         {{ postbit|raw }}
@@ -24,9 +24,9 @@
             </section>
         {% endif %}
         {{ send_errors|raw }}
-        <div class="form form--compose compose">
+        <div class="block block--form form form--compose compose">
             <input type="checkbox" class="compose__checkbox" id="show-post-options">
-            <section class="section section--form compose__recipients">
+            <section class="section section--form section--has-title compose__recipients">
                 <h2 class="title title--section">
                     {{ lang.compose_to }}
                     <script type="text/javascript">
@@ -91,13 +91,13 @@
                             <span class="button__text">{{ lang.save_draft }}</span>
                         </button>
                         <button type="submit" name="preview" value="preview" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                            {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.preview }}</span>
                         </button>
                     </div>
                 </div>
             </section>
-            <section class="section section--form compose__hidden-section compose__hidden-section--options">
+            <section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
                 <h2 class="title title--section">{{ lang.compose_options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -110,7 +110,7 @@
                     </div>
                 </div>
             </section>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--big" name="submit" tabindex="4" accesskey="s">
                     {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.send_message }}</span>

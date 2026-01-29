@@ -373,6 +373,8 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -949,6 +951,8 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -1782,7 +1786,7 @@ EOF;
 
 	// Suspend avatar
 	// Generate check box
-	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->input['suspendavatar_period'], array('id' => 'suspendavatar_period'));
+	$suspendavatar_options = $form->generate_select_box('suspendavatar_period', $periods, $mybb->get_input('suspendavatar_period'), array('id' => 'suspendavatar_period'));
 
 	// Do we have any existing suspensions here?
 	$existing_info = '';
@@ -4506,6 +4510,8 @@ function user_search_conditions($input, &$form)
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 
 	$profile_fields = array(
+		'contact_required' => array(),
+		'contact_optional' => array(),
 		'required' => array(),
 		'optional' => array(),
 	);
@@ -4593,8 +4599,9 @@ $("#username").select2({
 /**
  * @param int $source_uid
  * @param int $destination_uid
+ *
+ * @deprecated 1.9.0 Thread rating feature is deprecated
  */
-#[\Deprecated(message: "Thread rating feature is deprecated", since: "1.9.0")]
 function merge_thread_ratings($source_uid, $destination_uid)
 {
 	global $db;

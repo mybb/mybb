@@ -4,6 +4,10 @@
     line-height: var(--line-height-small);
     border-bottom: var(--border-width-base) solid var(--border-color-1);
 
+    @include bp-medium {
+        padding: var(--spacing-4) var(--spacing-5);
+    }
+
     &--form {
         padding: var(--spacing-5) var(--spacing-4);
 
@@ -17,55 +21,86 @@
         }
     }
 
-    &--no-border {
-        border-bottom: none;
-    }
+    &--compact {
+        padding-top: var(--spacing-2);
+        padding-bottom: var(--spacing-2);
 
-    &--form.row--border-top {
-        padding-top: var(--spacing-4);
-        border-top: var(--border-width-base) solid var(--border-color-1);
-    }
-
-    &--simple-columns {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-        @include bp-small {
-            flex-direction: row;
-            align-items: center;
+        &:last-child {
+            padding-bottom: 0;
         }
     }
 
+    &--information {
+        font-size: var(--font-size-small);
+        color: var(--alt-font-color-1);
+    }
+
+    &--no-border {
+        border: none;
+    }
+
+    &--simple-columns {
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-5);
+        grid-template-areas:
+                "primary"
+                "secondary";
+
+        @include bp-small {
+            grid-template-columns: 1fr auto;
+            grid-template-areas:
+                "primary secondary";
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        &:has(.row__checkbox) {
+            grid-template-columns: 1fr min-content;
+            grid-template-areas:
+                "primary check"
+                "secondary secondary";
+
+            @include bp-small {
+                grid-template-columns: 1fr auto min-content;
+                grid-template-areas:
+                    "primary secondary check";
+            }
+        }
+    }
+
+    &--selected {
+        background-color: var(--status-highlight-background-color);
+        border-color: var(--status-highlight-border-color);
+    }
+
+    &:has(.checkbox--select-row:checked) {
+        @extend .row--selected;
+    }
+
+    &__primary {
+        grid-area: primary;
+    }
+
     &__secondary {
+        grid-area: secondary;
 
         @include bp-small-max {
             padding: side-values(var(--spacing-3) var(--spacing-4));
-            margin-top: var(--spacing-3);
             background: var(--background-1);
             border-radius: var(--border-radius);
         }
     }
 
     &__controls {
-        flex-shrink: 0;
-
-        @include bp-small-max {
-            margin-top: var(--spacing-2);
-        }
+        grid-area: secondary;
+    }
+    
+    &__checkbox {
+        grid-area: check;
+        align-self: self-start;
 
         @include bp-small {
-            margin-#{$left}: var(--spacing-4);
-        }
-    }
-
-    &__select-control {
-
-        @include bp-small-max {
-            position: absolute;
-            top: var(--spacing-4);
-            right: var(--spacing-4);
-            float: $right;
+            align-self: center;
         }
     }
 

@@ -1,12 +1,248 @@
-.thread-list {
+/*  Thread row styles and grid layout
 
-    &--no-footer {
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
+    Thread rows MUST have a modifier in addition to base .thread class
+    .thread--default         for the usual thread listing
+    .thread--search-posts    for post search results
+    .thread--search-threads  for thread search results
+    .thread--compact         for thread listing where there is a sidebar or menu
+    .thread--message         for message listing in private messenger
+*/
+
+// Establish the grid basics shared between column headings and thread rows
+.thread {
+    display: grid;
+    align-items: center;
+    --replies-column-width: 100px;
+    --avatar-width: 40px;
+    --latest-column-width: auto;
+    --text-overflow-max-width: 200px;
+
+    @include bp-medium {
+        --latest-column-width: 160px;
+        --text-overflow-max-width: 180px;   
+    }
+    
+    @include bp-large {
+        --latest-column-width: 200px;
     }
 
-    &__announcements,
-    &__sticky-threads {
+    &__title {
+        grid-area: title;
+    }
+
+    &__icons {
+        grid-area: icons;
+    }
+
+    &__author {
+        grid-area: author;
+    }
+
+    &__notification {
+        grid-area: author;
+    }
+
+    &__forum {
+        grid-area: forum;
+    }
+    
+    &__message {
+        grid-area: message;
+    }
+
+    &__folder {
+        grid-area: folder;
+    }
+
+    &__pages {
+        grid-area: pages;
+    }
+
+    &__replies {
+        grid-area: replies;
+    }
+
+    &__views {
+        display: none;
+        grid-area: views;
+
+        @include bp-large {
+            display: block;
+        }
+    }
+
+    &__avatar {
+        grid-area: avatar;
+    }
+
+    &__date,
+    &__latest {
+        grid-area: latest;
+    }
+
+    &__checkbox {
+        grid-area: check;
+        text-align: $right;
+    }
+}
+
+// Column heading styles and grid layout
+.column-headings--thread-list {
+    gap: var(--spacing-1) var(--spacing-4);
+
+    @include bp-medium {
+        gap: var(--spacing-1) var(--spacing-5);
+    }
+
+    .thread__latest {
+        text-align: $right;
+    }
+
+    &.thread--default,
+    &.thread--search-posts,
+    &.thread--search-threads {
+        grid-template-columns: auto auto 1fr min-content;
+        grid-template-areas: 
+            "title replies latest check";
+
+        @include bp-medium {
+            grid-template-columns: min-content auto 1fr calc(var(--avatar-width) + var(--spacing-5) + var(--latest-column-width)) min-content;
+            grid-template-areas: 
+                "title author replies latest check";
+            padding-#{$left}: var(--spacing-8);
+
+            .thread__latest {
+                text-align: $left;
+            }
+
+            .sort-results__link {
+                &--title,
+                &--latest {
+                    margin-#{$left}: calc(-1 * var(--spacing-3));
+                }
+            }
+        }
+
+        @include bp-large {
+            grid-template-columns: min-content 1fr var(--replies-column-width) calc(var(--avatar-width) + var(--spacing-5) + var(--latest-column-width)) min-content;
+
+            .sort-results__link--replies {
+                margin-#{$left}: calc(-1 * var(--spacing-3));
+            }
+        }
+
+        .thread__author,
+        .thread__forum,
+        .sort-results__link--author {
+            display: none;
+
+            @include bp-medium {
+                display: inline-block;
+            }
+        }
+    }
+
+    &.thread--search-posts {
+
+        @include bp-medium {
+            grid-template-areas: 
+            "title forum replies latest check";
+        }
+
+        .sort-results__link--author {
+            margin-#{$right}: var(--spacing-5);
+        }
+    }
+
+    &.thread--search-threads {
+
+        @include bp-medium {
+            grid-template-columns: min-content min-content auto 1fr calc(var(--avatar-width) + var(--spacing-5) + var(--latest-column-width)) min-content;
+            grid-template-areas:
+             "title author forum replies latest check";
+        }
+
+        @include bp-large {
+            grid-template-columns: min-content min-content 1fr var(--replies-column-width) calc(var(--avatar-width) + var(--spacing-5) + var(--latest-column-width)) min-content;
+        }
+    }
+
+    &.thread--compact,
+    &.thread--message {
+
+        .thread__latest {
+            text-align: $right;
+
+            @include bp-large {
+                text-align: $left;
+            }
+        }
+    }
+
+    &.thread--compact {
+        grid-template-columns: auto auto 1fr min-content;
+        grid-template-areas: 
+            "title replies latest check";
+
+        .thread__author {
+            display: none;
+        }        
+
+        @include bp-medium {
+            grid-template-columns: var(--avatar-width) auto auto 1fr min-content;
+            grid-template-areas: 
+                "avatar title replies latest check";
+        }
+
+        @include bp-large {
+            grid-template-columns: min-content 1fr var(--replies-column-width) calc(var(--avatar-width) + var(--spacing-5) + var(--latest-column-width)) min-content;
+            grid-template-areas: 
+                "title author replies latest check";
+            padding-#{$left}: var(--spacing-8);
+
+            .thread__author {
+                display: inline-block;
+            }
+        }
+    }
+
+    &.thread--message {
+        grid-template-columns: auto auto 1fr min-content;
+        grid-template-areas:
+            "title author latest check";
+
+        @include bp-medium {
+            grid-template-columns: var(--avatar-width) auto auto 1fr min-content;
+            grid-template-areas:
+            "avatar title author latest check";
+
+            .sort-results__link--title {
+                margin-#{$left}: calc(-1 * var(--spacing-3));
+            }
+        }
+
+        @include bp-large {
+            grid-template-columns: var(--avatar-width) auto 1fr var(--latest-column-width) min-content;
+            grid-template-areas:
+            "avatar title author latest check";
+
+            .sort-results__link--date {
+                margin-#{$left}: calc(-1 * var(--spacing-3));
+            }
+        }
+    }
+}
+
+// Thread list styles
+.thread-list {
+    
+    &--announcements,
+    &--sticky-threads {
         border-bottom: var(--border-width-thick) solid var(--border-color-2);
+
+        :last-child {
+            border-bottom: none;
+        }
     }
 
     &__select-all {
@@ -16,419 +252,221 @@
         border-bottom: var(--border-width-thick) solid var(--border-color-2);
     }
 
-    .sort-threads {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--spacing-3) var(--spacing-2);
-        font-size: var(--font-size-small);
-        color: var(--invert-font-color);
-        background: var(--major-title-background);
-        border-radius: var(--border-radius);
-
-        @include bp-small {
-            padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-7));
-        }
-
-        &--alt {
-            color: var(--alt-font-color-2);
-            background: none;
-            border-bottom: var(--border-width-base) solid var(--border-color-1);
-            border-radius: 0;
-        }
-
-        &__link {
-            display: inline-block;
-            padding: var(--spacing-1) var(--spacing-3);
-            border-radius: var(--border-radius);
-
-            &:link,
-            &:visited {
-                color: var(--invert-font-color);
-            }
-
-            &:hover {
-                background: var(--primary-color-shade-1);
-                color: var(--invert-font-color);
-                text-decoration: none;
-            }
-        }
-
-        &__order {
-            margin-#{$left}: var(--spacing-1);
-
-            a:link,
-            a:visited {
-                color: var(--invert-font-color);
-            }
-
-            a:hover,
-            a:active {
-                color: var(--invert-font-color);
-            }
-        }
-
-        &__column {
-
-            &--primary :first-child .sort-threads__link {
-                
-                @include bp-small {
-                    margin-#{$left}: calc(-1 * var(--spacing-3));
-                }
-            }
-
-            &--latest {
-
-                @include bp-small {
-                    .sort-threads__link:first-child {
-                        margin-#{$left}: calc(-1 * var(--spacing-3));
-                    }
-                }
-                
-                @include bp-small-max {
-                    flex: 1 0 40%;
-                    margin-#{$right}: var(--spacing-3);
-                    text-align: $right;
-                }
-            }
-        }
-
-        // Hide sort by author link on small screens
-        &__author {
-
-            @include bp-medium-max {
-                display: none;
-            }
-        }
-    }
-
-    // Column widths
-    .sort-threads__column,
-    .thread__column {
-        box-sizing: border-box;
-
-        &--primary {
-
-            @include bp-small {
-                flex: 1 1 50%;
-                padding-#{$right}: var(--spacing-4);
-            }
-        }
-
-        &--replies {
-            display: none;
-
-            @include bp-medium {
-                display: block;
-                flex: 0 0 10%;
-                min-width: 90px;
-                text-align: center;
-            }
-        }
-
-        &--latest {
-
-            @include bp-small {
-                flex: 0 0 28%;
-                min-width: 220px;
-                max-width: 280px;
-                padding-#{$left}: var(--spacing-4);
-            }
-        }
-
-        &--checkbox {
-            text-align: $right;
-
-            @include bp-small {
-                flex: 0 0 auto;
-                min-width: 20px;
-                text-align: center;
-            }
-        }
-    }
-
+    // Thread row styles and grid layout
     .thread {
         position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding-#{$left}: 66px;
+        display: grid;
+        gap: var(--spacing-1) var(--spacing-4);
 
-        &:last-child {
-            border-bottom: none;
+        @include bp-medium {
+            gap: var(--spacing-1) var(--spacing-5);
         }
 
-        @include bp-small {
-            flex-direction: row;
-            align-items: center;
-            padding-#{$left}: var(--spacing-7);
-        }
+        // Default grid layout
+        &--default {
+            grid-template-columns: var(--avatar-width) auto 1fr min-content;
+            grid-template-areas: 
+                "avatar title title check"
+                "avatar replies icons icons"
+                "avatar latest latest latest";
 
-        &__column {
-            // Column widths handled above
-
-            &--primary,
-            &--latest {
-                overflow: auto;
-                word-wrap: break-word;
-
-                @include bp-small-max {
-                    width: 100%; // width override for small screens
-                }
+            // Grid layout for medium screens
+            @include bp-medium {
+                grid-template-columns: auto 1fr auto var(--avatar-width) var(--latest-column-width) min-content;
+                grid-template-areas: 
+                    "title title icons avatar latest check"
+                    "author replies pages avatar latest check";
+                padding-#{$left}: var(--spacing-8);
             }
 
-            &--checkbox {
-
-                @include bp-small-max {
-                    position: absolute;
-                    top: var(--spacing-4);
-                    right: var(--spacing-4);
-                }
+            // Grid layout for lage screens
+            @include bp-large {
+                grid-template-columns: 1fr auto var(--replies-column-width) var(--avatar-width) var(--latest-column-width) min-content;
+                grid-template-areas:
+                    "title icons replies avatar latest check"
+                    "author pages views avatar latest check";
             }
         }
 
-        &--selected {
-            background-color: var(--status-highlight-background-color);
-        }
-
-        // TODO: change class in code to thread--selected
-        &.trow_selected {
-            @extend .thread--selected;
-        }
-
-        &--sticky:last-of-type {
-            border-bottom-width: 3px;
-        }
-
-        a.thread__status {
-            font-size: var(--font-size-smaller);
-            color: var(--status-new-icon-color);
-
-            @include bp-small {
-                position: absolute;
-                top: var(--spacing-5);
-                #{$left}: var(--spacing-3);
+        // Modified grid layout for post search results
+        &--search-posts {
+            grid-template-columns: var(--avatar-width) auto 1fr min-content;
+            grid-template-areas: 
+                "avatar title title check"
+                "avatar forum replies icons"
+                "avatar latest latest latest"
+                "message message message message";
+            
+            @include bp-medium {
+                grid-template-columns: auto 1fr auto var(--avatar-width) var(--latest-column-width) min-content;
+                grid-template-areas: 
+                    "title title icons avatar latest check"
+                    "forum replies pages avatar latest check"
+                    "message message message message message message";
+                padding-#{$left}: var(--spacing-8);
             }
 
-            @include bp-small-max {
-                margin-#{$left}: var(--spacing-2);
-            }
-        }
-
-        &__title {
-            margin: 0;
-            font-size: var(--font-size-regular);
-            font-weight: normal;
-        }
-
-        &--unread {
-
-            .thread__title {
-                font-weight: bold;
+            @include bp-large {
+                grid-template-columns: 1fr auto var(--replies-column-width) var(--avatar-width) var(--latest-column-width) min-content;
+                grid-template-areas:
+                    "title icons replies avatar latest check"
+                    "forum forum views avatar latest check"
+                    "message message message message message message";
             }
         }
 
-        &--announcement {
-            padding-top: var(--spacing-5);
-            padding-bottom: var(--spacing-5);
+        // Modified grid layout for thread search results (no changes from default)
+        &--search-threads {
+            @extend .thread--default;
+        }
 
-            .thread__title,
+        // Compact thread listing (used when there is a sidebar)
+        &--compact {
+            grid-template-columns: var(--avatar-width) auto 1fr min-content;
+            grid-template-areas: 
+                "avatar title title check"
+                "avatar replies icons icons"
+                "avatar latest latest latest"
+                "avatar author author author";
+
+            // Grid layout for medium screens
+            @include bp-medium {
+                grid-template-columns: var(--avatar-width) auto 1fr min-content;
+                grid-template-areas: 
+                    "avatar title title check"
+                    "avatar replies icons icons"
+                    "avatar latest latest latest"
+                    "avatar author author author";
+            }
+
+            @include bp-large {
+                grid-template-columns: 1fr auto var(--replies-column-width) var(--avatar-width) var(--latest-column-width) min-content;
+                grid-template-areas:
+                    "title icons replies avatar latest check"
+                    "author pages views avatar latest check";
+                padding-#{$left}: var(--spacing-8);
+            }
+
             .thread__author {
+                display: none;
+
+                @include bp-large {
+                    display: block;
+                }
+            }
+
+            a.thread__jump {
+                @include thread-jump($bp-large);
+            }
+
+            .thread__avatar {
+
+                @include bp-large-max {
+                    align-self: self-start;
+                }
+            }
+
+            .latest-post {
+                @include latest-post($bp-large);
+            }
+        }
+
+        // Modified grid layout for messages
+        &--message {
+            grid-template-columns: var(--avatar-width) auto 1fr min-content;
+            grid-template-areas: 
+                "avatar title icons check"
+                "avatar author icons check"
+                "avatar folder icons check"
+                "avatar latest icons check";
+            
+            @include bp-medium {
+                grid-template-columns: var(--avatar-width) auto 1fr auto min-content;
+                grid-template-areas: 
+                    "avatar title title icons check"
+                    "avatar author latest icons check"
+                    "avatar folder folder icons check";
+            }
+
+            @include bp-large {
+                grid-template-columns: var(--avatar-width) 1fr auto var(--latest-column-width) min-content;
+                grid-template-areas: 
+                    "avatar title icons latest check"
+                    "avatar author icons latest check"
+                    "avatar folder icons latest check";
+            }
+
+            .thread__avatar {
+                align-self: self-start;
+            }
+        }
+
+        // Specific styles for most rows
+        &--default,
+        &--search-posts,
+        &--search-threads {
+            
+            .thread__author,
+            .thread__pages {
+                display: none;
+
+                @include bp-medium {
+                    display: block;
+                }
+            }
+
+            a.thread__jump {
+                @include thread-jump($bp-medium);
+            }
+
+            .latest-post {
+                @include latest-post($bp-medium);
+            }
+
+            .thread__avatar {
+                
+                @include bp-medium-max {
+                    align-self: self-start;
+                }
+            }
+        }
+
+        // Specific styles for announcement rows
+        &--announcement {
+
+            .thread__subject {
                 display: block;
 
-                @include bp-small {
+                @include bp-medium {
                     display: inline-block;
                 }
             }
 
-            .thread__status {
+            .thread__author {
+                display: inline-block;
+                vertical-align: middle;
+
+                @include bp-medium {
+                    margin-#{$left}: var(--spacing-3);
+                }
+            }
+
+            .thread__date {
+                display: inline-block;
+                font-size: var(--font-size-smaller);
+                color: var(--alt-font-color-2);
+                vertical-align: middle;
+            }
+
+            .thread__jump {
                 position: absolute;
-                top: var(--spacing-5);
+                top: var(--spacing-4);
                 #{$left}: var(--spacing-6);
                 font-size: var(--font-size-small);
                 color: var(--alt-font-color-2);
 
-                @include bp-small {
-                    #{$left}: var(--spacing-3);
-                }
-            }
-        }
-
-        &__author,
-        &__forum {
-            display: none;
-            margin: side-values(3px 0 0 0);
-            font-size: var(--font-size-smaller);
-            color: var(--alt-font-color-2);
-
-            @include bp-small {
-                display: block;
-            }
-
-            a:link,
-            a:visited {
-                color: var(--alt-font-color-1);
-            }
-        }
-
-        &__message,
-        &__notification {
-            margin: side-values(var(--spacing-2) 0 0 0);
-            font-size: var(--font-size-smaller);
-            color: var(--alt-font-color-1);
-        }
-
-        &__icons {
-            display: block;
-            margin-top: var(--spacing-1);
-            margin-bottom: var(--spacing-1);
-            font-size: var(--font-size-smaller);
-            color: var(--alt-font-color-2);
-
-            @include bp-medium {
-                float: $right;
-                margin: side-values(0 0 0 var(--spacing-5));
-            }
-        }
-
-        &__icon {
-            display: inline-block;
-            margin-#{$right}: var(--spacing-1);
-
-            @include bp-medium {
-                margin-#{$right}: 0;
-                margin-#{$left}: var(--spacing-1);
-            }
-
-            &--sticky {
-                color: var(--alt-font-color-1);
-            }
-        }
-
-        &__pages {
-            margin-top: var(--spacing-1);
-            font-size: var(--font-size-smaller);
-
-            @include bp-medium {
-                float: $right;
-            }
-        }
-
-        &__page-legend {
-            margin-#{$right}: var(--spacing-1);
-            color: var(--alt-font-color-1);
-        }
-
-        &__page-link {
-            display: inline-block;
-            padding: var(--spacing-1) var(--spacing-2);
-            margin: 0 var(--spacing-1);
-            background: var(--background-2);
-            border-radius: calc(var(--border-radius) - 1px);
-            text-decoration: none;
-
-            &:hover,
-            &:active {
-                background: var(--button-hover-color);
-                color: var(--invert-font-color);
-            }
-        }
-
-        &__replies {
-            margin: 0;
-        }
-
-        &__reply-legend {
-            display: block;
-            font-size: var(--font-size-smallest);
-            color: var(--alt-font-color-3);
-            text-transform: lowercase;
-        }
-
-        &__count-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        &__reply-count {
-            color: var(--alt-font-color-1);
-        }
-
-        &__unapproved-replies {
-            padding: var(--spacing-1) var(--spacing-2);
-            margin-#{$left}: var(--spacing-2);
-            font-size: var(--font-size-smallest);
-            font-weight: normal;
-            color: var(--status-pending-font-color);
-            text-decoration: none;
-            background: var(--status-pending-background-color);
-            border-radius: calc(var(--border-radius) / 2);
-        }
-
-        &__latest-post {
-            display: inline-block;
-            margin: 0;
-
-            @include bp-small {
-                display: block;
-            }
-
-            .avatar-profile-link {
-                position: absolute;
-                top: var(--spacing-4);
-                left: var(--spacing-3);
-
-                @include bp-small {
-                    position: static;
-                    float: $left;
-                    display: inline-block;
-                    margin: side-values(0 var(--spacing-4) 0 0);
-                }
-            }
-
-            &__text {
-                display: inline;
-                font-size: var(--font-size-smaller);
-                color: var(--alt-font-color-2);
-
-                @include bp-small {
-                    @include visually-hidden;
-                }
-            }
-
-            &__author {
-                display: inline-block;
-                font-size: var(--font-size-smaller);
-
-                @include bp-small-max {
-
-                    a:link,
-                    a:visited {
-                        color: var(--alt-font-color-1);
-                    }
-                }
-
-                @include bp-small {
-                    display: block;
-                    font-size: var(--font-size-regular);
-                }
-            }
-
-            a.thread__latest-post__date {
-                display: block;
-                font-size: var(--font-size-smaller);
-                color: var(--alt-font-color-1);
-            }
-        }
-
-        &--moderator {
-
-            .thread__icons {
-
-                @include bp-small-max {
-                    margin-#{$right}: var(--spacing-6);
+                @include bp-medium {
+                    #{$left}: var(--spacing-4);
                 }
             }
         }

@@ -13,7 +13,7 @@
             <h1 class="title title--major poll__question">{{ poll.question }}</h1>
             <div class="poll__options">
                 {% for polloption in polloptions %}
-                    <div class="poll__row">
+                    <div class="row row--poll poll__row">
                        <div class="poll__option">
                            {{ polloption.option|raw }}
                            {% if polloption.votestar == '*' %}
@@ -33,7 +33,7 @@
                    </div>
                 {% endfor %}
             </div>
-            <div class="poll__vote">
+            <div class="block__footer poll__vote">
                 <span class="poll__total">
                     {{ lang.poll_total }}
                     {{ poll.numvotes }}

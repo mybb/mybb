@@ -193,6 +193,9 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_user);
 	}
 
+	$warnings = [];
+	$post = null;
+
 	// Giving a warning for a specific post
 	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
@@ -217,8 +220,6 @@ if($mybb->input['action'] == "warn")
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post['link'] = get_post_link($post['pid']);
-
-		$warnings = [];
 
 		// Fetch any existing warnings issued for this post
 		$query = $db->query("

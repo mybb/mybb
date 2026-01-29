@@ -56,7 +56,7 @@
                         <input type="text" class="textbox textbox--small" name="limit" id="rss_limit" value="{{ syndication.limit }}" size="3" /> {{ lang.syndication_threads_time }}
                     </div>
                 </div>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'rss-square', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.syndication_generate }}</span>

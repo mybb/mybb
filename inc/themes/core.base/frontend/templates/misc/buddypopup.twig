@@ -9,7 +9,7 @@
                         {% for buddy in buddys.online %}
                             {% include 'misc/buddypopup/user.twig' %}
                         {% else %}
-                            <div class="alert alert--no-results">{{ lang.online_none }}</div>
+                            <div class="no-results no-results--compact">{{ lang.online_none }}</div>
                         {% endfor %}
                     </div>
                     <h3 class="title title--minor">{{ lang.offline }}</h3>
@@ -17,12 +17,12 @@
                         {% for buddy in buddys.offline %}
                             {% include 'misc/buddypopup/user.twig' %}
                         {% else %}
-                            <div class="alert alert--no-results">{{ lang.offline_none }}</div>
+                            <div class="no-results no-results--compact">{{ lang.offline_none }}</div>
                         {% endfor %}
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_buddies }}</div>
+                <div class="no-results no-results--compact">{{ lang.no_buddies }}</div>
             {% endif %}
         </div>
     </section>

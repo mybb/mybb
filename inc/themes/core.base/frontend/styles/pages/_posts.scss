@@ -1,20 +1,29 @@
 // these values are used to change border width with post status styles
 $avatar-margin-small: 80px;
 $avatar-margin-medium: 110px;
-$post-spacing: 25px;
 
 .post-list {
     clear: both;
 }
 
 .post {
-    margin-bottom: $post-spacing;
+    margin-bottom: var(--spacing-6);
     background-color: var(--background-default);
     border: var(--border-width-base) solid var(--border-color-1);
     border-radius: var(--border-radius);
+    @include box-shadow;
 
     @include bp-small {
         margin-#{$left}: $avatar-margin-small;
+        min-height: 40px;
+
+        @include bp-small {
+            min-height: 70px;
+        }
+
+        @include bp-medium {
+            min-height: 100px;
+        }
     }
 
     @include bp-medium {
@@ -114,6 +123,8 @@ $post-spacing: 25px;
     .avatar-profile-link {
         float: $left;
         margin: side-values(5px 10px 0 0);
+        border-radius: var(--border-radius);
+        @include box-shadow;
         @include avatar(40);
 
         @include bp-small {
@@ -138,15 +149,45 @@ $post-spacing: 25px;
         &--message {
             color: var(--alt-font-color-1);
         }
+
+        textarea {
+            box-sizing: border-box;
+            width: 100% !important;
+        }
+        
+        // Quick edit reason
+        .editreason {
+            margin-top: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            font-size: var(--font-size-small);
+            color: var(--alt-font-color-1);
+            
+            label {
+                cursor: pointer;
+            }
+        }
+
+        // Quick edit submit button
+        button[type="submit"] {
+            @extend .button, .button--inline;
+            margin-#{$left}: 0;
+        }
+
+        // Quick edit cancel button
+        button[type="cancel"] {
+            @extend .button, .button--inline, .button--secondary, .button--danger;
+            margin-#{$left}: var(--spacing-4);
+        }
     }
 
     .quote,
     .codeblock,
-    blockquote {
-        padding: var(--spacing-3) var(--spacing-5);
+    blockquote,
+    .attachments {
+        padding: var(--spacing-4) var(--spacing-5);
         margin: var(--spacing-2) 0;
         font-size: var(--font-size-small);
-        background: var(--background-1);
+        background: var(--background-2);
         border-radius: var(--border-radius);
 
         .quote,
@@ -159,9 +200,10 @@ $post-spacing: 25px;
         &__title,
         cite {
             display: block;
+            margin-top: 0;
             margin-bottom: var(--spacing-2);
             font-style: normal;
-            font-weight: normal;
+            font-weight: var(--font-weight-semibold);
             color: var(--alt-font-color-1);
         }
 
@@ -171,6 +213,39 @@ $post-spacing: 25px;
 
         &__date {
             float: $right;
+            font-size: var(--font-size-smaller);
+            font-weight: var(--font-weight-normal);
+        }
+    }
+
+    .attachments {
+        margin-top: var(--spacing-6);
+
+        &__subtitle {
+            margin: 0;
+            font-size: var(--font-size-smaller);
+            font-weight: var(--font-weight-medium);
+        }
+    }
+
+    .attachment {
+        margin: var(--spacing-3) 0;
+
+        &--image {
+            box-sizing: border-box;
+            padding: var(--spacing-2);
+            background: var(--background-default);
+            border: var(--border-width-base) solid var(--border-color-1);
+        }
+
+        &__icon {
+            margin-#{$right}: var(--spacing-3);
+        }
+
+        &__data {
+            margin-#{$left}: var(--spacing-3);
+            font-size: var(--font-size-smaller);
+            color: var(--alt-font-color-1);
         }
     }
 
@@ -178,15 +253,16 @@ $post-spacing: 25px;
         padding-top: var(--spacing-3);
         margin-top: var(--spacing-5);
         font-size: var(--font-size-smaller);
-        border-top: 1px dotted var(--border-color-2);
+        border-top: var(--border-width-base) solid var(--border-color-3);
     }
 
     &__foot {
-        padding: var(--spacing-2) var(--spacing-4);
+        padding: side-values(var(--spacing-2) var(--spacing-4) var(--spacing-3) var(--spacing-4));
         margin: 0;
         list-style: none;
         background: var(--background-1);
-        border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
+        border-top: var(--border-width-base) solid var(--border-color-3);
+        border-radius: corner-values(0 0 calc(var(--border-radius) - var(--border-width-base)) calc(var(--border-radius) - var(--border-width-base)));
 
         &--controls {
             display: flex;
@@ -197,7 +273,11 @@ $post-spacing: 25px;
     &--highlight,
     &--soft-deleted,
     &--awaiting-approval {
-        margin: side-values(-1px -1px ($post-spacing - 1) -1px);
+        margin: side-values(
+            calc(var(--border-width-base) - var(--border-width-thick))
+            calc(var(--border-width-base) - var(--border-width-thick))
+            calc(var(--spacing-6) - calc(var(--border-width-thick) - var(--border-width-base)))
+            calc(var(--border-width-base) - var(--border-width-thick)));
         border-width: var(--border-width-thick);
 
         @include bp-small {
@@ -222,13 +302,12 @@ $post-spacing: 25px;
     }
 
     &--message {
-        background: var(--background-1);
-        border: none;
+        background: var(--background-1);        
+    }
 
-        &__button {
-            display: none;
-            margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-2)) 0 calc(-1 * var(--spacing-2)));
-        }
+    &__message-button {
+        display: none;
+        margin: side-values(var(--spacing-2) calc(-1 * var(--spacing-2)) 0 calc(-1 * var(--spacing-2)));
     }
 
     // TODO: change classes in code
@@ -291,4 +370,10 @@ $post-spacing: 25px;
             color: var(--danger-color);
         }
     }
+}
+
+.highlight {
+    padding-top: var(--spacing-1);
+    padding-bottom: var(--spacing-1);
+    background: var(--text-highlight-color);
 }

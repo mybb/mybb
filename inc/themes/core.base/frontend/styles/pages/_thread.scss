@@ -1,20 +1,5 @@
-.thread-pagination {
-
-    &--bottom {
-
-        @include bp-medium {
-            padding-#{$left}: 110px;
-        }
-
-        .pagination {
-            float: none;
-            margin-bottom: 0;
-        }
-    }
-}
-
 .editor_control_bar {
-    @include container;
+    @extend .container;
     display: none;
     margin: var(--spacing-2);
     font-size: var(--font-size-small);
@@ -22,7 +7,7 @@
     &__title {
         margin: side-values(0 0 var(--spacing-2) 0);
         font-size: var(--font-size-small);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--alt-font-color-1);
 
         @include bp-medium {
@@ -57,7 +42,7 @@
         margin: side-values(0 0 var(--spacing-5) 0);
         background: var(--background-default);
         border: var(--border-width-base) solid var(--border-color-3);
-        border-top: 4px solid var(--primary-color);
+        border-top: var(--border-width-page-header) solid var(--primary-color);
 
         @include bp-small {
             margin-#{$left}: $avatar-margin-small;
@@ -67,14 +52,6 @@
             flex-direction: row;
             margin-#{$left}: $avatar-margin-medium;
         }
-    }
-}
-
-.thread-actions {
-    flex-direction: column;
-
-    @include bp-medium {
-        flex-direction: row;
     }
 }
 
@@ -99,7 +76,7 @@
         &--active {
 
             .threaded-mode__date {
-                font-weight: bold;
+                font-weight: var(--font-weight-bold);
             }
         }
     }

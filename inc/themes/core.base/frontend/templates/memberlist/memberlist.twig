@@ -9,7 +9,7 @@
         <header class="page-header">
             <h1 class="title title--page">{{ lang.member_list }}</h1>
         </header>
-        <div class="page-controls page-controls--top">
+        <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 <a href="showteam.php" class="button button--secondary">
                     {{ include('partials/icon.twig', {icon: 'address-book', class: 'button__icon'}, with_context = false) }}
@@ -22,16 +22,18 @@
             </div>
             {{ multipage|raw }}
         </div>
-        <div class="container container--user-alphabet user-alphabet">
+        <ul class="page-tabs page-tabs--user-alphabet user-alphabet">
             {% for letter in 'A'..'Z' %}
-                <a href="memberlist.php?letter={{ letter }}" class="user-alphabet__letter">{{ letter }}</a>
+                <li class="page-tabs__item {% if letter == mybb.input.letter %}page-tabs__item--active{% endif %}">
+                    <a href="memberlist.php?letter={{ letter }}" class="page-tabs__link user-alphabet__letter">{{ letter }}</a>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
         <div class="user-list">
             {% for user in users %}
                 {% include 'memberlist/memberlist_row.twig' %}
             {% else %}
-            <div class="alert alert--no-results">{{ lang.error_no_members|raw }}</div>
+            <div class="container container--no-results no-results">{{ lang.error_no_members|raw }}</div>
             {% endfor %}
         </div>
         <div class="page-controls">
@@ -39,8 +41,8 @@
         </div>
 
         <form method="post" action="memberlist.php">
-            <section class="form" id="member-search">
-                <div class="section section--form">
+            <section class="block block--form form" id="member-search">
+                <div class="section section--form section--has-title">
                     <h3 class="title title--section">{{ lang.search_members }}</h3>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -53,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="section section--form">
+                <div class="section section--form section--has-title">
                     <h3 class="title title--section"><label for="sort">{{ lang.sort_by }}</label></h3>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -85,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button">
                         {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.search }}</span>

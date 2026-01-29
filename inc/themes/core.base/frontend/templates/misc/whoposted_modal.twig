@@ -1,19 +1,17 @@
 <div class="modal">
     <section class="block block--modal">
         <h1 class="title title--modal">{{ lang.total_posts }} {{ thread.numposts }}</h1>
-        <div class="modal__content">
-            <div class="block__content who-posted">
-                <div class="container container--modal container--adjacent container--simple-columns who-posted__legend">
-                    <div class="who-posted__username"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></div>
-                    <div class="who-posted__count"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ lang.num_posts }}</a></div>
-                </div>
-                {% for poster in whoposted %}
-                    <div class="row row--simple-columns who-posted__user">
-                        <div class="row__primary who-posted__username">{{ poster.profile_link|raw }}</div>
-                        <div class="row__secondary who-posted__count">{{ poster.posts }}</div>
-                    </div>
-                {% endfor %}
+        <div class="modal__content whoposted">
+            <div class="column-headings column-headings--minor who-posted__legend">
+                <div class="column-headings__column column-headings__column--primary who-posted__username"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></div>
+                <div class="column-headings__column column-headings__column--secondary who-posted__count"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ lang.num_posts }}</a></div>
             </div>
+            {% for poster in whoposted %}
+                <div class="row row--simple-columns who-posted__user">
+                    <div class="row__primary who-posted__username">{{ poster.profile_link|raw }}</div>
+                    <div class="row__secondary who-posted__count">{{ poster.posts }}</div>
+                </div>
+            {% endfor %}
         </div>
     </section>
 </div>

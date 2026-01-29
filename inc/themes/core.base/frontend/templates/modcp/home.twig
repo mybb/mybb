@@ -25,7 +25,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if thread.link %}
-                            <a href="{{ thread.link }}" title="{{ thread.fullsubject }}"><strong>{{ thread.subject }}</strong></a><br />
+                            <a href="{{ thread.link }}" title="{{ thread.fullsubject }}">{{ thread.subject }}</a><br />
                             {{ thread.date }} {{ lang.by }} {{ thread.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}
@@ -43,7 +43,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if post.link %}
-                            <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}"><strong>{{ post.subject }}</strong></a><br />
+                            <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}">{{ post.subject }}</a><br />
                             {{ post.date }} {{ lang.by }} {{ post.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}
@@ -61,7 +61,7 @@
                     <div class="row__secondary awaiting-moderation__latest">
                         <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
                         {% if attachment.link %}
-                            <a href="{{ attachment.link }}#pid{{ attachment.pid }}"><strong>{{ attachment.filename }}</strong></a><br />
+                            <a href="{{ attachment.link }}#pid{{ attachment.pid }}">{{ attachment.filename }}</a><br />
                             {{ attachment.date }} {{ lang.by }} {{ attachment.profilelink|raw }}
                         {% else %}
                             {{ lang.none }}
@@ -79,7 +79,7 @@
             {% for logitem in modlogs %}
                 {% include 'modcp/modlogs/item.twig' %}
             {% else %}
-                <div class="alert alert--no-results">{{ lang.error_no_results }}</div>
+                <div class="row row--no-results no-results">{{ lang.error_no_results }}</div>
             {% endfor %}
         </section>
     {% endif %}
@@ -89,7 +89,7 @@
         {% for banned in bannedusers %}
             {% include 'modcp/banning/item.twig' %}
         {% else %}
-            <div class="alert alert--no-results">{{ lang.no_banned_soon }}</div>
+            <div class="row row--no-results no-results">{{ lang.no_banned_soon }}</div>
         {% endfor %}
     </section>
 
@@ -104,7 +104,7 @@
                     <textarea name="modnotes" id="notepad" rows="10">{{ modnotes }}</textarea>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <input type="hidden" name="action" value="do_notepad" />
                 <button type="submit" class="button" name="submit">
                     {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}

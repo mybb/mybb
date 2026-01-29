@@ -1,27 +1,21 @@
 <div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{{ uid }}">
-		<table width="100%" border="0">
-			<tr>
-				<td class="thead" colspan="5"><strong>{{ lang.referrals }}</strong></td>
-			</tr>
-			<tr>
+	<section class="block block--modal referral_modal_{{ uid }}">
+		<h2 class="title title--modal">{{ lang.referrals }}</h2>
+		<div class="modal__content referrals">
 			{% if referral_count <= 0 %}
 				{{ lang.member_no_referrals }}
 			{% else %}
-				<table width="100%" border="0">
-					<tr>
-						<td><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
-						<td style="text-align: right;"><span class="smalltext"><strong>{{ lang.referral_date }}</strong></span></td>
-					</tr>
-					{% for referral in referrals %}
-						<tr style="width: 100%">
-						<td>{{ referral.username|raw }}</td>
-						<td style="width: 100%; text-align: right;">{{ referral.regdate|raw }}</td>
-						</tr>
-					{% endfor %}
-				</table>
+				<div class="column-headings column-headings--minor referrals__legend">
+					<div class="column-headings__column column-headings__column--primary referrals__username">{{ lang.username }}</div>
+					<div class="column-headings__column column-headings__column--secondary referrals__date">{{ lang.referral_date }}</div>
+				</div>
+				{% for referral in referrals %}
+					<div class="row row--simple-columns referrals__user">
+						<div class="row__primary referrals__username">{{ referral.username|raw }}</div>
+						<div class="row__secondary referrals__date">{{ referral.regdate|raw }}</div>
+					</div>
+				{% endfor %}
 			{% endif %}
-			</tr>
-		</table>
-	</div>
+		</div>
+	</section>
 </div>

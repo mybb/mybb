@@ -142,17 +142,17 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{
 				// Is the current day
-				$day_bit['day_class'] = "trow_sep";
+				$day_bit['day_class'] = "today";
 			}
 			else if($in_month == 0)
 			{
 				// Not in this month
-				$day_bit['day_class'] = "trow1";
+				$day_bit['day_class'] = "other-month";
 			}
 			else
 			{
 				// Just a normal day in this month
-				$day_bit['day_class'] = "trow2";
+				$day_bit['day_class'] = "this-month";
 			}
 
 			$day_bit['link'] = false;

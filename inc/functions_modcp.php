@@ -65,7 +65,7 @@ function fetch_forum_announcements($pid = 0, $depth = 1)
 		}
 	}
 
-	if(!is_array($forums_by_parent[$pid]))
+	if(!isset($forums_by_parent[$pid]) || !is_array($forums_by_parent[$pid]))
 	{
 		return;
 	}
@@ -234,7 +234,7 @@ function send_report($report, $report_type = 'post')
 	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
 	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report_reason);
 	$pm_recipients = array();
-	
+
 	while($mod = $db->fetch_array($query))
 	{
 		if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)

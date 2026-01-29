@@ -13,7 +13,7 @@
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <section class="block block--form form">
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.delete_threads }}</span>

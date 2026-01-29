@@ -1,5 +1,5 @@
-<section class="block">
-    <h1 class="title title--major title--separation">{{ event.name }}</h1>
+<section class="calendar-event event {{ event.event_class }}">
+    <h1 class="title title--separation title--basic">{{ event.name }}</h1>
     <div class="post post--no-avatar">
         <div class="post__meta">
             <h3 class="post__author">{{ event.profilelink|raw }}</h3>
@@ -17,7 +17,17 @@
                 {% endif %}
             </span>#}
         </div>
-        <div class="post__body scaleimages {{ event.event_class }}">
+        <div class="post__body scaleimages">
+            {% if event.visible == 0 or event.private == 1%}
+                <div class="post__status">
+                    {% if event.private == 1 %}
+                    <span class="tag tag--post-status tag--private">{{ lang.private_event }}</span>
+                    {% endif %}
+                    {% if event.visible == 0 %}
+                    <span class="tag tag--post-status tag--awaiting-approval">{{ lang.unapproved_event }}</span>
+                    {% endif %}
+                </div>
+            {% endif %}
             {{ event.description|raw }}
             {% if event.repeats %}
                 <div class="post__signature">{{ lang.repeats }} {{ event.repeats }}</div>

@@ -12,7 +12,11 @@ html, button, input, select, textarea {
 body {
     margin: 0;
     font: var(--font-size-base)/var(--line-height-base) var(--font-stack);
-    background: var(--background-default);
+    background: var(--content-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
 }
 
 input, select, textarea, button {
@@ -60,8 +64,8 @@ textarea {
 }
 
 .wrapper {
-    width: 90%;
-    margin: 0 5%;
+    width: 94%;
+    margin: 0 3%;
 
     &--main {
         @include clearfix();
@@ -76,32 +80,51 @@ textarea {
 .main {
     padding: side-values(var(--spacing-6) 0 var(--spacing-4) 0);
 
-    @include bp-medium {
+    .page-columns {
+        display: grid;
+        gap: var(--spacing-3) var(--spacing-7);
 
-        .page-content {
+        &--menu {
+            grid-template-areas:
+                "menu"
+                "content";
 
-            &--sidebar {
-                float: $left;
-                width: 62%;
+            @include bp-medium {
+                grid-template-columns: minmax(200px, 1fr) 4fr;
+                grid-template-areas: "menu content";
             }
+        }
 
-            &--centered {
-                float: none;
+        &--sidebar {
+            grid-template-areas:
+                "content"
+                "sidebar";
+
+            @include bp-medium {
+                grid-template-columns: 2fr 1fr;
+                grid-template-areas: "content sidebar";
+            }
+        }
+    }
+
+    .page-content {
+        grid-area: content;
+
+        &--centered {
+
+            @include bp-medium {
                 width: 60%;
                 margin: auto auto;
             }
-
-            &--menu {
-                float: $left;
-                width: 75%;
-            }
         }
+    }
 
-        .page-sidebar {
-            float: $right;
-            width: 35%;
-            margin-top: 0;
-        }
+    .page-sidebar {
+        grid-area: sidebar;
+    }
+
+    .page-content--menu .page-header {
+        margin-bottom: var(--spacing-5);
     }
 
     .page-header {
@@ -114,15 +137,5 @@ textarea {
             font-size: var(--font-size-small);
             color: var(--alt-font-color-1);
         }
-    }
-
-    .page-footer {
-        clear: both;
-        border-top: var(--border-width-thick) solid var(--border-color-3);
-    }
-
-    .page-sidebar {
-        padding-bottom: var(--spacing-4);
-        font-size: var(--font-size-small);
     }
 }

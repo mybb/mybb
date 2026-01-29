@@ -320,7 +320,7 @@ $l['postbit_button_forward'] = 'Forward';
 $l['postbit_button_delete_pm'] = 'Delete';
 $l['postbit_button_purgespammer'] = "Purge Spammer";
 
-$l['forumjump'] = "Forum Jump:";
+$l['forumjump'] = "Forum Jump";
 $l['forumjump_pms'] = "Private Messages";
 $l['forumjump_usercp'] = "User Control Panel";
 $l['forumjump_wol'] = "Who's Online";
@@ -631,3 +631,4 @@ $l['use_default'] = "Use Default";
 $l['expires'] = "Expires";
 $l['acknowledged'] = "Acknowledged";
 $l['not_acknowledged'] = "Not acknowledged";
+$l['with_selected'] = "With Selected:";

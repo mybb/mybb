@@ -101,7 +101,7 @@
                 <input type="hidden" name="wid" value="{{ warning.wid }}" />
 
                 <section class="block block--form form">
-                    <div class="section section--form">
+                    <div class="section section--form section--has-title">
                         <h2 class="title title--section">{{ lang.revoke_warning }}</h2>
                         <div class="section__container">
                             <div class="row row--form field">
@@ -111,7 +111,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form__submit">
+                    <div class="block__footer">
                         <button class="button button--medium" type="submit">
                             {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.revoke_warning }}</span>

@@ -1,4 +1,4 @@
-<section class="section section--form compose__hidden-section compose__hidden-section--options">
+<section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
     <h2 class="title title--section">{{ lang.thread_subscription_method }}</h2>
     <div class="section__container">
         <div class="row row--form field">
@@ -6,7 +6,8 @@
                 <label><input type="radio" name="postoptions[subscriptionmethod]"{% if composepost.subscriptionmethod not in ["none", "email", "pm"] %} checked="checked"{% endif %} value="" /> {{ lang.no_subscribe }}</label>
             </p>
             <p class="option-field option-field--compact">
-                <label><input type="radio" name="postoptions[subscriptionmethod]"{% if composepost.subscriptionmethod == "none" %} checked="checked"{% endif %} value="none" /> {{ lang.no_subscribe_notification }}</label></p>
+                <label><input type="radio" name="postoptions[subscriptionmethod]"{% if composepost.subscriptionmethod == "none" %} checked="checked"{% endif %} value="none" /> {{ lang.no_subscribe_notification }}</label>
+            </p>
             <p class="option-field option-field--compact">
                 <label><input type="radio" name="postoptions[subscriptionmethod]"{% if composepost.subscriptionmethod == "email" %} checked="checked"{% endif %} value="email" /> {{ lang.instant_email_subscribe }}</label>
             </p>

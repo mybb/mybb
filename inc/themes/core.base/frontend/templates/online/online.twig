@@ -13,23 +13,8 @@
         <header class="page-header">
             <h1 class="title title--page">{{ lang.users_online }}</h1>
         </header>
-        <div class="page-controls page-controls--top">
+        <div class="page-controls page-controls--compact">
             {{ multipage|raw }}
-        </div>
-        <div class="sort-results">
-            <span class="sort-results__text">{{ lang.sort_results }}</span>
-            <a href="online.php?sortby=username" class="button button--basic">
-                {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.on_username }}</span>
-            </a>
-            <a href="online.php?sortby=time" class="button button--basic">
-                {{ include('partials/icon.twig', {icon: 'clock', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.time }}</span>
-            </a>
-            <a href="online.php?sortby=location" class="button button--basic">
-                {{ include('partials/icon.twig', {icon: 'globe', class: 'button__icon'}, with_context = false) }}
-                <span class="button__text">{{ lang.location }}</span>
-            </a>
         </div>
         <div class="user-list">
             {% for user in online_users %}
@@ -61,7 +46,22 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="page-controls">
+        <div class="container block-actions">
+            <span class="block-actions__title">{{ lang.sort_results }}</span>
+            <a href="online.php?sortby=username" class="button button--basic">
+                {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.on_username }}</span>
+            </a>
+            <a href="online.php?sortby=time" class="button button--basic">
+                {{ include('partials/icon.twig', {icon: 'clock', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.time }}</span>
+            </a>
+            <a href="online.php?sortby=location" class="button button--basic">
+                {{ include('partials/icon.twig', {icon: 'globe', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.location }}</span>
+            </a>
+        </div>
+        <div class="page-controls page-controls--compact">
             {{ multipage|raw }}
             <div class="page-buttons">
                 <a href="online.php?action=today" class="button button--basic">
@@ -69,7 +69,7 @@
                     <span class="button__text">{{ lang.online_today }}</span>
                 </a>
                 <a href="online.php" class="button button--basic">
-                    {{ include('partials/icon.twig', {icon: 'sync', class: 'button__icon'}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.refresh_page }}</span>
                 </a>
             </div>

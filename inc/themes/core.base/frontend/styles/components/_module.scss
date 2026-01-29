@@ -1,15 +1,16 @@
 @import "layout/header";
 @import "layout/footer";
 @import "layout/page";
-@import "layout/global-search";
+@import "layout/quick-search";
 @import "layout/user-bar";
 @import "layout/logo";
 
 @import "alerts";
 @import "avatars";
-@import "board-statistics";
+@import "board-info";
 @import "breadcrumb";
 @import "buttons";
+@import "column-headings";
 @import "form-fields";
 @import "forms";
 @import "lists";
@@ -19,7 +20,6 @@
 @import "pagination";
 @import "rows";
 @import "section-menu";
-@import "sort-results";
 @import "spinners";
 @import "tables";
 @import "titles";
@@ -28,5 +28,6 @@
 @import "post-controls";
 @import "latest-threads";
 @import "tags";
+@import "thread-rows";
 @import "user-groups";
 @import "popups";

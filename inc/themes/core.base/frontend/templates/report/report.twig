@@ -20,7 +20,7 @@
                         {% endif %}
                     </div>
                     {% if report.has_errors == false %}
-                    <div class="form__submit">
+                    <div class="block__footer">
                         <button type="submit" class="button button--medium">
                             {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ report.title }}</span>

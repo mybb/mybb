@@ -466,7 +466,7 @@ if(!$mybb->input['action'])
 				foreach($groups as $group)
 				{
 					if($group == "") continue;
-					if($group_permissions[$group] != "")
+					if(!empty($group_permissions[$group]))
 					{
 						$perm_type = "group";
 						break;

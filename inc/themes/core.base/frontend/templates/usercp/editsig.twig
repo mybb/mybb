@@ -45,14 +45,14 @@
                     </div>
                 </div>
             </section>
-            <div class="form__submit">
+            <div class="block__footer">
                 <input type="hidden" name="action" value="do_editsig" />
                 <button type="submit" class="button button--medium" name="submit">
-                    {{ include('partials/icon.twig', {icon: 'bullseye', class: 'button__icon'}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.update_sig }}</span>
                 </button>
                 <button type="submit" class="button button--medium button--secondary" name="preview" value="preview">
-                    {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.preview }}</span>
                 </button>
             </div>

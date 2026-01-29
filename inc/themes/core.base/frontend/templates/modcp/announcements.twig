@@ -13,7 +13,7 @@
 {% block moderationBody %}
     {# Global announcements #}
     {% if mybb.usergroup.issupermod %}
-        <div class="page-controls">
+        <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 <a href="modcp.php?action=new_announcement&amp;fid=-1" class="button button--medium button--full-width">
                     {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_global_announcements }}</div>
+                <div class="row row--no-results no-results">{{ lang.no_global_announcements }}</div>
             {% endfor %}
         </section>
     {% endif %}
@@ -58,7 +58,7 @@
         {% if forumAnnouncements %}
             {{ forumAnnouncements|raw }}
         {% else %}
-            <div class="alert alert--no-results">{{ lang.no_forum_announcements }}</div>
+            <div class="row row--no-results no-results">{{ lang.no_forum_announcements }}</div>
         {% endif %}
     </section>
 {% endblock moderationBody %}

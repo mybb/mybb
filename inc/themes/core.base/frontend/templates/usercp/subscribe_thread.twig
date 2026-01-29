@@ -15,8 +15,8 @@
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_addsubscription" />
         <input type="hidden" name="tid" value="{{ thread.tid }}" />
-        <div class="form">
-            <div class="section section--form">
+        <div class="block block--form form">
+            <div class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.notification_method }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
                     {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.do_subscribe }}</span>

@@ -7,7 +7,7 @@
 {% endif %}
 <div class="reputation-rating reputation-rating--{{ reputation_vote_class }}" id="rid{{ reputation_vote.rid }}">
     <div class="reputation-rating__meta">
-        {{ reputation_vote.username|raw }}
+        <span class="reputation-rating__user">{{ reputation_vote.username|raw }}</span>
         <span class="reputation-rating__user-rep">{{ reputation_vote.user_reputation|raw }}</span>
         <span class="reputation-rating__date">{{ trans('last_updated', reputation_vote.last_updated) }}</span>
             {% if reputation_vote.pid %}

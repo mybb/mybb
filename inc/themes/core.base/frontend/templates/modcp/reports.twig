@@ -16,7 +16,7 @@
         <input type="hidden" name="page" value="{{ report.page }}" />
         <input type="hidden" name="action" value="do_reports" />
         <section class="block">
-            <div class="container container--small container--adjacent">
+            <div class="column-headings column-headings--major">
                 <div class="select-all">
                     <input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" />
                 </div>
@@ -33,15 +33,15 @@
                 {% for report in reports %}
                     {% include 'modcp/reports/item.twig' %}
                 {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_reports }}</div>
+                    <div class="row row--no-results no-results">{{ lang.no_reports }}</div>
                 {% endfor %}
             </div>
-            <div class="sort-results">
-                <button type="submit" class="button" name="reportsubmit">
+            <div class="block__footer block-actions">
+                <button type="submit" class="button block-actions__button" name="reportsubmit">
                     {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text" id="inline_read">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
                 </button>
-                <a href="modcp.php?action=allreports" class="button button--secondary">
+                <a href="modcp.php?action=allreports" class="button button--secondary block-actions__button">
                     {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.view_all_reports }}</span>
                 </a>

@@ -1,4 +1,4 @@
-<section class="block collapse {% if collapsed['cat__' ~ forum.fid ~ '_e'] %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="cat__{{ forum.fid }}">
+<section class="block block--forum-list collapse {% if collapsed['cat__' ~ forum.fid ~ '_e'] %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="cat__{{ forum.fid }}">
     <div class="title title--major title--nested">
         <h2 class="title__name"><a href="{{ forum.url }}">{{ forum.name }}</a></h2>
         {% if forum.description %}
@@ -9,7 +9,7 @@
             {{ include('partials/icon.twig', {icon: 'plus-square', class: 'collapse__icon collapse__icon--expand', title: lang.expcol_expand}, with_context = false) }}
         </span>
     </div>
-    <div class="forum-list forum-list--full-width collapse__content">
+    <div class="forum-list collapse__content">
         {{ sub_forums|raw }}
     </div>
 </section>

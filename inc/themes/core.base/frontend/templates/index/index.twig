@@ -8,79 +8,100 @@
     {{ forums|raw }}
 
     {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) or mybb.settings.showindexstats or (mybb.settings.showbirthdays and birthdays|length > 0) %}
-    <section class="board-statistics">
+    <section class="block board-info">
         {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) %}
-            <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
-                    {{ include('partials/icon.twig', {icon: 'users', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
-                    <a href="online.php">{{ lang.whos_online }}</a>
-                </h3>
-                <p class="board-statistics__body board-statistics__body--active-note">{{ lang.online_note }}</p>
-                <p class="board-statistics__body board-statistics__body--users">
-                    {% set has_bot = false %}
-                    {% for bot in bots %}
-                        {{ bot }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+            <div class="row board-info__section">
+                <div class="board-info__icon">
+                    {{ include('partials/icon.twig', {icon: 'users', class: 'fa-fw'}, with_context = false) }}
+                </div>
+                <h3 class="title title--board-info board-info__title"><a href="online.php">{{ lang.whos_online }}</a></h3>
+                <div class="board-info__content">
+                    <p class="board-info__body board-info__body--active-note">{{ lang.online_note }}</p>
+                    <p class="board-info__body board-info__body--users">
+                        {% set has_bot = false %}
+                        {% for bot in bots %}
+                            {{ bot }}{% if not loop.last %}{{ lang.comma }}{% endif %}
 
-                        {% set has_bot = true %}
-                    {% endfor %}
-                    {% for user in users %}
-                        {% if loop.first and has_bot %}
-                            {{ lang.comma }}
-                        {% endif %}
+                            {% set has_bot = true %}
+                        {% endfor %}
+                        {% for user in users %}
+                            {% if loop.first and has_bot %}
+                                {{ lang.comma }}
+                            {% endif %}
 
-                        {% if user.invisible == 0 or mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid %}
-                        <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}
-                        {% if loop.last != true %}{{ lang.comma }} {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </p>
-                {% if mybb.settings.showgroupslegend and groups %}
-                    <p class="board-statistics__body board-statistics__body--groups">
-                    {% for group in groups %}
-                        {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
-                    {% endfor %}
+                            {% if user.invisible == 0 or mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid %}
+                                <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}{% if loop.last != true %}{{ lang.comma }}{% endif %}
+                            {% endif %}
+                        {% endfor %}
                     </p>
-                {% endif %}                
+                    {% if mybb.settings.showgroupslegend and groups %}
+                        <p class="board-info__body board-info__body--groups">
+                        {% for group in groups %}
+                            {{ group.display|raw }}{% if not loop.last %} &bull; {% endif %}
+                        {% endfor %}
+                        </p>
+                    {% endif %}  
+                </div>              
             </div>
         {% endif %}
         {% if birthdays or hiddencount %}
-            <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
-                    {{ include('partials/icon.twig', {icon: 'birthday-cake', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
-                    {{ lang.todays_birthdays }}
-                </h3>
-                <p class="board-statistics__body">
-                    {% apply spaceless %}
-                        {% for user in birthdays %}
-                            <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}<a/>{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
-                        {% endfor %}
-                    {% endapply %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
-                </p>
+            <div class="row board-info__section">
+                <div class="board-info__icon">
+                    {{ include('partials/icon.twig', {icon: 'birthday-cake', class: 'fa-fw'}, with_context = false) }}
+                </div>
+                <h3 class="title title--board-info board-info__title">{{ lang.todays_birthdays }}</h3>
+                <div class="board-info__content">
+                    <p class="board-info__body">
+                        {% apply spaceless %}
+                            {% for user in birthdays %}
+                                <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                            {% endfor %}
+                        {% endapply %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
+                    </p>
+                </div>
             </div>
         {% endif %}
         {% if mybb.settings.showindexstats %}
-            <div class="board-statistics__section">
-                <h3 class="board-statistics__title">
-                    {{ include('partials/icon.twig', {icon: 'chart-bar', class: 'board-statistics__icon fa-fw'}, with_context = false) }}
-                    <a href="stats.php">{{ lang.boardstats }}</a>
-                </h3>
-                <p class="board-statistics__body">
-                    {{ lang.stats_posts_threads }}<br />
-                    {{ lang.stats_numusers }}<br />
-                    {{ lang.stats_newestuser }},
-                    {% if stats.lastuid ?? 0 %}
-                        <a href="{{ get_profile_link(stats.lastuid) }}">{{ stats.lastuid|format_name }}</a>
-                    {% else %}
-                        {{ lang.nobody }}
-                    {% endif %}
-                    <br />
-                    {{ trans('stats_mostonline', mostonline.numusers|my_number_format, mostonline.time|my_date(format='normal') )}}
-                </p>
+            <div class="row board-info__section">
+                <div class="board-info__icon">
+                    {{ include('partials/icon.twig', {icon: 'chart-bar', class: 'fa-fw'}, with_context = false) }}
+                </div>
+                <h3 class="title title--board-info board-info__title"><a href="stats.php">{{ lang.boardstats }}</a></h3>
+                <div class="board-info__content">
+                    <dl class="board-info__stats board-stats">
+                        <div class="board-stats__item">
+                            <dt class="board-stats__field">{{ lang.stats_posts }}</dt>
+                            <dd class="board-stats__value">{{ stats.numposts|my_number_format }}</dd>
+                        </div>
+                        <div class="board-stats__item">
+                            <dt class="board-stats__field">{{ lang.stats_threads }}</dt>
+                            <dd class="board-stats__value">{{ stats.numthreads|my_number_format }}</dd>
+                        </div>
+                        <div class="board-stats__item">
+                            <dt class="board-stats__field">{{ lang.stats_members }}</dt>
+                            <dd class="board-stats__value">{{ stats.numusers|my_number_format }}</dd>
+                        </div>
+                        <div class="board-stats__item">
+                            <dt class="board-stats__field">{{ lang.stats_newest_member }}</dt>
+                            <dd class="board-stats__value">
+                                {% if stats.lastuid ?? 0 %}
+                                    <a href="{{ get_profile_link(stats.lastuid) }}">{{ stats.lastuid|format_name }}</a>
+                                {% else %}
+                                    {{ lang.nobody }}
+                                {% endif %}
+                            </dd>
+                        </div>
+                        <div class="board-stats__item">
+                            <dt class="board-stats__field">{{ lang.stats_most_users_online }}</dt>
+                            <dd class="board-stats__value">{{ trans('stats_mostonline', mostonline.numusers|my_number_format, mostonline.time|my_date(format='normal') )}}</dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
         {% endif %}
     </section>
     {% endif %}
-    <div class="page-controls">
+    <div class="page-controls page-controls--compact">
         <div class="page-buttons">
             {% if mybb.user.uid != 0 %}
                 <a href="member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="button button--basic">

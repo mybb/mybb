@@ -12,7 +12,7 @@
         {% for usergroup in usergrouplist %}
             <section class="block">
                 <h1 class="title title--major">{{ usergroup.title }}</h1>
-                <div class="user-list user-list--has-title">
+                <div class="user-list user-list--has-container">
                     {% for user in usergroup.users %}
                         <div class="user-list__user">
                             <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">

@@ -17,8 +17,8 @@
             <h1 class="title title--page">{{ lang.post_new_thread }}</h1>
         </header>
         {% if newthread.preview %}
-        <section class="block block--container">
-            <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+        <section class="post-preview">
+            <h1 class="title title--separation title--basic">{{ lang.post_preview }}</h1>
             <div id="posts_container">
                 <div id="posts">
                     {{ postbit|raw }}
@@ -37,7 +37,7 @@
             {% if forum.rulestype == 2 %}
                 <section class="container"><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></section>
             {% else %}
-                <section class="container">
+                <section class="container container--forum-rules forum-rules">
                     <h4 class="title title--container">{{ forum.rulestitle }}</h4>
                     <div class="scaleimages">{{ forum.rules|raw }}</div>
                 </section>
@@ -45,7 +45,7 @@
         {% endif %}
         <form action="newthread.php?fid={{ forum.fid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <div class="form form--compose compose">
+            <div class="block block--form form form--compose compose">
                 <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 {% if newthread.showpollbox %}
                     <input type="checkbox" class="compose__checkbox" id="show-post-poll">
@@ -119,7 +119,7 @@
                                     {% endif %}
 
                                     <button type="submit" name="previewpost" value="preview" class="button button--basic">
-                                        {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                                        {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
                                         <span class="button__text">{{ lang.preview_post }}</span>
                                     </button>
                                 </div>
@@ -130,7 +130,7 @@
                 </section>
 
                 {% if newthread.showpostoptions %}
-                    <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                    <section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
                         <h2 class="title title--section">{{ lang.post_options }}</h2>
                         <div class="section__container">
                             <div class="row row--form field">
@@ -155,7 +155,7 @@
                     </section>
                 {% endif %}
                 {% if newthread.showmodoptions %}
-                    <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                    <section class="section section--form section--has-title compose__hidden-section compose__hidden-section--options">
                         <h2 class="title title--section">{{ lang.mod_options }}</h2>
                         <div class="section__container">
                               <div class="row row--form field">
@@ -193,14 +193,14 @@
                 {% if newthread.showattachments %}
                     {% include 'misc/attachments.twig' %}
                 {% endif %}
-            </div>
-            <div class="form__submit">
-                <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
-                    {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.post_thread }}</span>
-                </button>
-            </div>
 
+                <div class="block__footer">
+                    <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
+                        {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.post_thread }}</span>
+                    </button>
+                </div>
+            </div>
             <input type="hidden" name="action" value="do_newthread" />
             <input type="hidden" name="posthash" value="{{ newthread.posthash }}" />
             <input type="hidden" name="attachmentaid" value="" />

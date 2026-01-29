@@ -1,34 +1,31 @@
 {% set class %}{{ thread.bgcolor }} {{ thread.classType }}{% endset %}
 <div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %} {% if modpermissions.ismod %}thread--moderator{% endif %}">
-    <div class="thread__column thread__column--primary">
-        <h3 class="thread__title">
-            <span class="tag">{{ lang.deleted_thread }}</span>
-
-            {# Thread status icons #}
-            <span class="thread__icons">
-                {# Closed #}
-                {% if thread.closed and moved != true %}
-                    {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
-                {% endif %}
-
-                {# Sticky #}
-                {% if thread.sticky %}
-                    {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
-                {% endif %}
-
-                {# Moved #}
-                {% if moved %}
-                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
-                {% endif %}
-
-                {# Poll #}
-                {% if thread.poll %}
-                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
-                {% endif %}
-            </span>
+    <div class="thread__title">
+        <h3 class="thread__subject">
+            <span class="thread__status tag">{{ lang.deleted_thread }}</span>
         </h3>
     </div>
-    <div class="thread__column thread__column--replies">&nbsp;</div>
-    <div class="thread__column thread__column--latest">&nbsp;</div>
+    {# Thread status icons #}
+    <div class="thread__icons">
+        {# Closed #}
+        {% if thread.closed and moved != true %}
+            {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
+        {% endif %}
+
+        {# Sticky #}
+        {% if thread.sticky %}
+            {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
+        {% endif %}
+
+        {# Moved #}
+        {% if moved %}
+            {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
+        {% endif %}
+
+        {# Poll #}
+        {% if thread.poll %}
+            {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
+        {% endif %}
+    </div>
     {% include 'forumdisplay/thread_modbit.twig' %}
 </div>

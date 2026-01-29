@@ -11,10 +11,20 @@
 {% endblock messengerHeader %}
 
 {% block messengerBody %}
+    {% if mybb.user.totalpms %}
+        <div class="page-controls page-controls--compact">
+            <div class="page-buttons">
+                <a href="private.php?action=empty" class="button button--secondary">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.empty_folders2 }}</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.existing_folders }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
@@ -28,7 +38,7 @@
                     {% endfor %}
                 </div>
             </section>
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.new_folders }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">{{ lang.add_folders_note }}</div>
@@ -39,7 +49,7 @@
                     {% endfor %}
                 </div>
             </section>
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
                     {{ include('partials/icon.twig', {icon: 'folder-open', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.update_folders }}</span>

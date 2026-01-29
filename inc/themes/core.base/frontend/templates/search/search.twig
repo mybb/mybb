@@ -12,7 +12,7 @@
         <form action="search.php">
             <input type="hidden" name="action" value="do_search" />
             <div class="block block--form form">
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section"><label for="keywords">{{ lang.search_keyword }}</label></h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section"><label for="author">{{ lang.search_username }}</label></h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_forums }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -52,10 +52,10 @@
                         </select>
                     </div>
                 </section>
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.search_options }}</h2>
                     <div class="section__container">
-                        <div class="row row--form field">
+                        <div class="row row--form field multi-field">
                             <div class="select-field">
                             {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="findthreadst">
@@ -63,7 +63,6 @@
                                     <option value="2">{{ lang.threads_at_most }}</option>
                                 </select>
                             </div>
-                            &nbsp;
                             <input type="text" class="textbox textbox--small" name="numreplies" size="2" maxlength="4" />
                             {{ lang.replies2 }}
                         </div>
@@ -150,7 +149,7 @@
                     </div>
                 </section>
                 {% if search.ismoderator %}
-                    <section class="section section--form">
+                    <section class="section section--form section--has-title">
                         <h2 class="title title--section"><label for="visible">{{ lang.mod_options }}</label></h2>
                         <div class="section__container">
                             <div class="select-field">
@@ -165,7 +164,7 @@
                         </div>
                     </section>
                 {% endif %}
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--big" name="submit">
                         {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.search }}</span>

@@ -19,7 +19,7 @@
         {{ error|raw }}
 
         <div class="block block--form form">
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.current_avatar }}</h2>
                 <div class="section__container change-avatar">
                     <div class="row row--form field">
@@ -34,7 +34,7 @@
                 </div>
             </section>
             {% if mybb.usergroup.canuploadavatars or mybb.settings.allowremoteavatars %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.custom_avatar }}</h2>
                     <div class="section__container">
                         {% if mybb.usergroup.canuploadavatars %}
@@ -65,7 +65,7 @@
                     </div>
                 </section>
             {% endif %}
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium" name="submit">
                     {{ include('partials/icon.twig', {icon: 'image', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.change_avatar }}</span>

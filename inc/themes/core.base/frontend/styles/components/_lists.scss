@@ -7,6 +7,7 @@
         font-size: var(--font-size-small);
         line-height: var(--line-height-large);
         list-style: none;
+        overflow-wrap: anywhere;
 
         .list__field {
             margin-#{$right}: var(--spacing-2);
@@ -25,7 +26,7 @@
         list-style: none;
 
         .list__item {
-            padding: var(--spacing-2) 0;
+            padding: var(--spacing-2);
             border-bottom: var(--border-width-base) solid var(--border-color-3);
 
             &:last-child {

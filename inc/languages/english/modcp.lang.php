@@ -289,6 +289,7 @@ $l['active_announcement'] = "Active Announcement";
 $l['active'] = "Active";
 $l['expired'] = "Expired";
 $l['edit'] = "Edit";
+$l['add'] = "Add";
 $l['add_announcement'] = "Add Announcement";
 $l['edit_announcement'] = "Edit Announcement";
 $l['no_forum_announcements'] = "There are currently no forum announcements on your board.";
@@ -343,5 +344,3 @@ $l['you_cannot_moderate_threads'] = "You do not have sufficient permission to mo
 $l['you_cannot_moderate_posts'] = "You do not have sufficient permission to moderate posts.";
 $l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
 $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
-
-$l['post'] = 'Post';

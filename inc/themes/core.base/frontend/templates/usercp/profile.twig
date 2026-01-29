@@ -20,7 +20,7 @@
 
         <div class="block block--form form">
             {% if requiredFields %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.profile_required }}</h2>
                     <div class="section__container">
                         {% for field in requiredFields %}
@@ -31,7 +31,7 @@
             {% endif %}
 
             {% if mybb.usergroup.cancustomtitle %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.custom_usertitle }}</h2>
                     <div class="section__container">
                         {% if mybb.user.usertitle and mybb.user.usertitle != mybb.usergroup.usertitle %}
@@ -62,7 +62,7 @@
                 </section>
             {% endif %}
 
-            <section class="section section--form">
+            <section class="section section--form section--has-title">
                 <h2 class="title title--section">{{ lang.birthday }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
@@ -114,7 +114,7 @@
             </section>
 
             {% if contactFields %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.additional_contact_details }}</h2>
                     <div class="section__container">
                         {% for field in contactFields %}
@@ -125,7 +125,7 @@
             {% endif %}
 
             {% if customFields or mybb.usergroup.canchangewebsite %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.additional_information }}</h2>
                     <div class="section__container">
                         {% if mybb.usergroup.canchangewebsite %}
@@ -142,7 +142,7 @@
             {% endif %}
 
             {% if mybb.settings.allowaway %}
-                <section class="section section--form">
+                <section class="section section--form section--has-title">
                     <h2 class="title title--section">{{ lang.away_information }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
@@ -199,7 +199,7 @@
                     </div>
                 </section>
             {% endif %}
-            <div class="form__submit">
+            <div class="block__footer">
                 <button type="submit" class="button button--medium" name="regsubmit">
                     {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.update_profile }}</span>

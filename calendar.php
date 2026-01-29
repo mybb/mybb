@@ -1738,7 +1738,7 @@ if($mybb->input['action'] == "event")
 
 		if($event['visible'] == 0)
 		{
-			$event['event_class'] = " trow_shaded";
+			$event['event_class'] = " event--hidden";
 		}
 	}
 
@@ -2071,7 +2071,7 @@ if($mybb->input['action'] == "dayview")
 
 				if($event['visible'] == 0)
 				{
-					$event['event_class'] = " trow_shaded";
+					$event['event_class'] = " event--hidden";
 				}
 			}
 
@@ -2230,7 +2230,7 @@ if($mybb->input['action'] == "weekview")
 		// Special shading for today
 		if(gmdate("dnY", $weekday_date) == $today)
 		{
-			$day['day_shaded'] = ' trow_shaded';
+			$day['day_shaded'] = ' calendar__today';
 		}
 
 		$day['events'] = [];
@@ -2303,16 +2303,16 @@ if($mybb->input['action'] == "weekview")
 
 				if($event['private'] == 1)
 				{
-					$event['event_class'] = " private_event";
+					$event['event_class'] = " event--private";
 				}
 				else
 				{
-					$event['event_class'] = " public_event";
+					$event['event_class'] = " event--public";
 				}
 
 				if($event['visible'] == 0)
 				{
-					$event['event_class'] .= " trow_shaded";
+					$event['event_class'] .= " event--hidden";
 				}
 
 				$day['events'][] = $event;
@@ -2620,16 +2620,16 @@ if(!$mybb->input['action'])
 
 						if($event['private'] == 1)
 						{
-							$event['event_class'] = " private_event";
+							$event['event_class'] = " event--private";
 						}
 						else
 						{
-							$event['event_class'] = " public_event";
+							$event['event_class'] = " event--public";
 						}
 
 						if($event['visible'] == 0)
 						{
-							$event['event_class'] .= " trow_shaded";
+							$event['event_class'] .= " event--hidden";
 						}
 
 						$events[] = $event;
@@ -2662,17 +2662,17 @@ if(!$mybb->input['action'])
 			// Is the current day
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{
-				$day_bit['day_class'] = "trow_sep";
+				$day_bit['day_class'] = "today";
 			}
 			// Not in this month
 			else if($in_month == 0)
 			{
-				$day_bit['day_class'] = "trow1";
+				$day_bit['day_class'] = "other-month";
 			}
 			else
 			{
 				// Just a normal day in this month
-				$day_bit['day_class'] = "trow2";
+				$day_bit['day_class'] = "this-month";
 			}
 
 			$day_bit['day'] = $day;

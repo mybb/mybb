@@ -21,7 +21,7 @@
                         <input type="text" class="textbox" name="code" id="code" value="{{ activate.code }}" />
                     </div>
                 </section>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" name="regsubmit" class="button button--medium">
                         {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.activate_account }}</span>

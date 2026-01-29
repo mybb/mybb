@@ -32,6 +32,9 @@ $scheme: 'dark';
 @include set-color-property(alt-font-color-2, shade-3, $scheme, true);
 @include set-color-property(alt-font-color-3, shade-4, $scheme, true);
 
+// Text highlight color
+@include set-color-property(text-highlight-color, #5f5f1f, $scheme);
+
 // Link colors
 @include set-color-property(link-default-color, #eee, $scheme);
 @include set-color-property(link-hover-color, secondary-color, $scheme, true);
@@ -41,14 +44,15 @@ $scheme: 'dark';
 @include set-color-property(button-hover-color, secondary-color-shade-1, $scheme, true);
 
 // Background colors
-@include set-color-property(background-default, shade-10, $scheme, true);
+@include set-color-property(background-default, shade-9, $scheme, true);
+@include set-color-property(content-background, shade-10, $scheme, true);
 @include set-color-property(header-background, shade-7, $scheme, true);
 @include set-color-property(header-background-shade-1, shade-8, $scheme, true);
 @include set-color-property(user-bar-background, shade-9, $scheme, true);
 @include set-color-property(user-bar-background-shade-1, shade-10, $scheme, true);
 @include set-color-property(major-title-background, primary-color, $scheme, true);
 
-@include set-color-property(background-1, shade-9, $scheme, true);
+@include set-color-property(background-1, shade-10, $scheme, true);
 @include set-color-property(background-2, shade-8, $scheme, true);
 @include set-color-property(background-3, shade-7, $scheme, true);
 @include set-color-property(background-4, shade-4, $scheme, true);

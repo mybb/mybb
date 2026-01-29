@@ -19,9 +19,9 @@
                         <textarea name="threadnotes" cols="80" rows="10" tabindex="1">{{ thread.notes }}</textarea>
                     </div>
                 </div>
-                <div class="form__submit">
+                <div class="block__footer">
                     <button type="submit" class="button button--medium" tabindex="2">
-                        {{ include('partials/icon.twig', {icon: 'file-alt', class: 'button__icon'}, with_context = false) }}
+                        {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.update_notes }}</span>
                     </button>
                 </div>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_mod_options }}</div>
+                <div class="row row--no-results no-results">{{ lang.no_mod_options }}</div>
             {% endfor %}
         </section>
 
@@ -122,7 +122,7 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert--no-results">{{ lang.no_delayed_mods }}</div>
+                <div class="row row--no-results no-results">{{ lang.no_delayed_mods }}</div>
             {% endfor %}
         </section>
     </div>

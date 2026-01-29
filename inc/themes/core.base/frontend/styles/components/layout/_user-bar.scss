@@ -1,28 +1,43 @@
 .user-bar {
     background: var(--user-bar-background);
+    box-shadow: inset 0 3px 3px rgba(0,0,0,0.03), inset 0 -3px 3px rgba(0,0,0,0.03);
 
     &__wrapper {
         position: relative;
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-
-        @include bp-medium {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     &__links {
+        display: flex;
         padding: 0;
         margin: 0;
         list-style: none;
     }
 
     &__item {
-        display: inline-block;
+        display: flex;
         margin: 0;
+
+        &--new-posts,
+        &--todays-posts {
+            
+            @include bp-large-max {
+                display: none;
+            }
+        }
+
+        &--messenger {
+
+            @include bp-small-max {
+
+                .user-bar__text {
+                    display: none;
+                }
+            }
+        }
     }
 
     &__link {
@@ -30,42 +45,28 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        padding: var(--spacing-4);
+        padding: var(--spacing-4) var(--spacing-3);
 
         &,
         &:link,
         &:visited {
             color: var(--alt-font-color-1);
-            border-radius: var(--border-radius);
         }
 
         &:hover {
-            color: var(--link-hover-color);
+            background: var(--user-bar-background-shade-1);
             text-decoration: none;
             cursor: pointer;
         }
     }
 
     &__icon {
-        margin-#{$right}: var(--spacing-2);
+        margin: 0 var(--spacing-2);
         font-size: var(--font-size-large);
     }
 
     &__text {
-        display: none;
         padding: 0 var(--spacing-1);
-
-        @include bp-large {
-            display: inline-block;
-        }
-
-        &--username {
-
-            @include bp-small {
-                display: inline-block;
-            }
-        }
     }
 
     &__caret {
@@ -79,9 +80,9 @@
 
     &__unread-count {
         padding: var(--spacing-1) var(--spacing-2);
-        margin: side-values(0 0 0 var(--spacing-2));
+        margin: 0 var(--spacing-2);
         font-size: var(--font-size-smallest);
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
         color: var(--invert-font-color);
         background: var(--status-unread-color);
         border-radius: calc(var(--border-radius) / 2);
@@ -93,30 +94,22 @@
 
     &__dropdown {
         position: absolute;
+        top: 100%;
         display: none;
-        padding: side-values(0 var(--spacing-4) var(--spacing-3) var(--spacing-4));
+        gap: var(--spacing-5);
+        justify-content: space-between;
+        min-width: 250px;
+        padding: side-values(var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-4));
         font-size: var(--font-size-small);
-        background: var(--user-bar-background);
+        background: var(--user-bar-background-shade-1);
         border-bottom: var(--border-width-thick) solid var(--border-color-1);
         border-radius: corner-values(0 0 var(--border-radius) var(--border-radius));
-
-        .avatar-profile-link {
-            float: $right;
-            margin: side-values(var(--spacing-3) 0 0 var(--spacing-7));
-        }
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.05);
+        clip-path: inset(side-values(0px -10px -10px -10px));
     }
 
-    &__username {
-        padding: var(--spacing-3) var(--spacing-2);
-        margin: 0;
-        overflow: hidden;
-        font-weight: bold;
-        font-size: var(--font-size-large);
-        border-bottom: var(--border-width-base) solid var(--border-color-1);
-
-        @include bp-small {
-            display: none;
-        }
+    &__avatar {
+        padding-top: var(--spacing-2);
     }
 }
 
@@ -125,9 +118,10 @@
 }
 
 #show-user-dropdown:checked ~ .user-bar__item--active-user {
+    background: var(--user-bar-background-shade-1);
 
     .user-bar__dropdown {
-        display: block;
+        display: flex;
         z-index: 100;
     }
 
@@ -151,18 +145,20 @@
 
     &__item {
         display: block;
-        float: none;
         padding: 0;
         margin: 0;
 
-        &:last-child {
-            border-bottom: 0;
+        &--new-posts,
+        &--todays-posts {
+            
+            @include bp-large {
+                display: none;
+            }
         }
     }
 
     &__link {
         display: block;
-        float: none;
         padding: var(--spacing-2);
         margin: 0;
         
