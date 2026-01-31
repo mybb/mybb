@@ -14,6 +14,8 @@ use MyBB\View\Optimization;
 use MyBB\View\Runtime\Runtime;
 use MyLanguage;
 use pluginSystem;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Extension\ProfilerExtension;
@@ -83,6 +85,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
             $env->addExtension($container->make(UserExtension::class));
+            $env->addExtension($container->make(RoutingExtension::class, [
+                'generator' => $container->make(UrlGenerator::class),
+            ]));
 
             if ($mybb->dev_mode) {
                 $env->addExtension($container->make(DebugExtension::class));

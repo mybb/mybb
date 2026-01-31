@@ -27,6 +27,7 @@ $l['nav_subscriptions'] = "Subscriptions";
 $l['nav_removesubscription'] = "Remove Subscription";
 $l['nav_warninglog'] = "Warning Log";
 $l['nav_securitylog'] = "Security Log";
+$l['nav_connections'] = "Connections";
 
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";
@@ -458,3 +459,28 @@ $l['security_log_changed_email'] = "Changed Email Address";
 $l['security_log_changed_password'] = "Changed Password";
 $l['security_log_lost_password'] = "Lost Password email sent";
 $l['security_log_reset_password'] = "Password reset email sent";
+
+$l['connections_title'] = 'Connections';
+$l['connections_header'] = 'Connections';
+$l['connections_connection_table_empty'] = "You haven't connected any provider yet.";
+$l['connections_connection_table_head_provider'] = 'Provider';
+$l['connections_connection_table_head_created_at'] = 'Created At';
+$l['connections_connection_table_head_disconnect'] = 'Disconnect';
+$l['connections_connection_table_button_disconnect'] = 'Disconnect';
+$l['connections_connect_table_empty'] = 'There are no available providers to connect.';
+$l['connections_connect_table_head_provider'] = 'Provider';
+$l['connections_connect_table_head_created_at'] = 'Connect';
+$l['connections_connect_table_button_connect'] = 'Connect';
+$l['connections_provider_discord'] = 'Discord';
+$l['connections_provider_drupal'] = 'Drupal';
+$l['connections_provider_facebook'] = 'Facebook';
+$l['connections_provider_github'] = 'GitHub';
+$l['connections_provider_google'] = 'Google';
+$l['connections_provider_linkedin'] = 'LinkedIn';
+$l['connections_provider_microsoft'] = 'Microsoft';
+$l['connections_provider_paypal'] = 'Paypal';
+$l['connections_provider_spotify'] = 'Spotify';
+$l['connections_provider_wordpress'] = 'WordPress';
+
+$l['connections_redirect_provider_connected'] = 'Your {1} account has been connected successfully.';
+$l['connections_redirect_provider_disconnected'] = 'Your {1} account has been disconnected successfully.';

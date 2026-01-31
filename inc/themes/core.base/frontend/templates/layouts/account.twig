@@ -77,6 +77,12 @@
                     <span class="section-menu__text">{{ lang.nav_securitylog }}</span>
                 </a>
             </li>
+            <li class="section-menu__item section-menu__item--connections{% if mybb.input.action == 'connections' %} section-menu__item--active{% endif %}">
+                <a href="usercp.php?action=connections" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'plug', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.nav_connections }}</span>
+                </a>
+            </li>
         </ul>
     </nav>
 

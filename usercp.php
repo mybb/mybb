@@ -8,6 +8,8 @@
  *
  */
 
+use MyBB\Database\Repositories\oAuthRepository;
+
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
@@ -3506,6 +3508,47 @@ if($mybb->input['action'] == "securitylog")
 	output_page(\MyBB\View\template('usercp/securitylog.twig', [
 		'multipage' => $multipage,
 		'securitylog' => $securitylog,
+	]));
+}
+
+if ($mybb->input['action'] == "connections") {
+	$plugins->run_hooks('usercp_connections_start');
+
+	/** @var \MyBB\Database\Repositories\oAuthRepository $repository */
+	$repository = \MyBB\app(oAuthRepository::class);
+
+	$connections = $providers = [];
+
+	foreach (
+		$repository->usersFetch(
+			[
+				'is_active' => $repository::USER_PROVIDER_IS_ACTIVE,
+				'user_id' => $mybb->user['uid'],
+			],
+			['provider_identifier', 'created_at']
+		) as $userModel
+	) {
+		$connections[$userModel->provider_identifier] = $userModel;
+	}
+
+	foreach (
+		$repository->providersFetch(
+			[
+				'is_enabled' => 1,
+				'allow_connection' => 1,
+			],
+		) as $providerModel
+	) {
+		if (!isset($connections[$providerModel->provider_identifier])) {
+			$providers[$providerModel->provider_identifier] = $providerModel;
+		}
+	}
+
+	$plugins->run_hooks('usercp_connections_end');
+
+	output_page(\MyBB\View\template('usercp/connections.twig', [
+		'connections' => $connections,
+		'providers' => $providers,
 	]));
 }
 

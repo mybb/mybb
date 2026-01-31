@@ -25,6 +25,7 @@ $l['warning_system'] = "Warning System";
 $l['thread_prefixes'] = "Thread Prefixes";
 $l['security_questions'] = "Security Questions";
 $l['report_reasons'] = "Report Reasons";
+$l['oauth'] = "oAuth";
 
 $l['can_manage_settings'] = "Can manage settings?";
 $l['can_manage_banned_accounts'] = "Can manage banned accounts?";
@@ -44,4 +45,5 @@ $l['can_manage_mod_tools'] = "Can manage moderator tools?";
 $l['can_manage_thread_prefixes'] = "Can manage thread prefixes?";
 $l['can_manage_security_questions'] = "Can manage security questions?";
 $l['can_manage_report_reasons'] = "Can manage report reasons?";
+$l['can_manage_oauth'] = "Can manage oauth integration?";
 

@@ -183,6 +183,15 @@ function writeConfigurationFile(array $config): void
         '192.168.0.0/16',
     );
 
+    /**
+     * oAuth Encryption Key for access and refresh tokens
+     *  It is suggested to leave blank and configure as an
+     *  evnrionment variable instead.
+     * Required to be 32 characters long for AES-256 encryption.
+     */
+
+    \$config['OAUTH_ENCRYPTION_KEY'] = '';
+
     PHP;
 
     try {
