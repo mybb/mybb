@@ -1069,7 +1069,7 @@ Four',
             'image' => 'images/smilies/huh_d.svg',
             'disporder' => '40',
             'showclickable' => '1',
-        ],        
+        ],
     ],
     'spiders' => [
         [
@@ -1438,4 +1438,50 @@ Four',
             'starimage' => '',
         ],
     ],
+	'oauth_providers' => [
+		[
+			'provider_identifier' => 'discord',
+			'oauth_scopes' => 'identify email',
+		],
+		[
+			'provider_identifier' => 'drupal',
+			'oauth_scopes' => 'openid email profile',
+			'url_authorize' => 'https://drupal.tld/oauth2/authorize',
+			'url_access_token' => 'https://drupal.tld/oauth2/token',
+			'url_owner_details' => 'https://drupal.tld/oauth2/UserInfo',
+		],
+		[
+			'provider_identifier' => 'facebook',
+			'oauth_scopes' => 'public_profile email',
+		],
+		[
+			'provider_identifier' => 'github',
+			'oauth_scopes' => 'user:email',
+		],
+		[
+			'provider_identifier' => 'google',
+			'oauth_scopes' => 'openid email profile',
+		],
+		[
+			'provider_identifier' => 'linkedin',
+			'oauth_scopes' => 'r_liteprofile r_emailaddress',
+		],
+		[
+			'provider_identifier' => 'microsoft',
+			'oauth_scopes' => 'wl.basic wl.emails',
+		],
+		[
+			'provider_identifier' => 'paypal',
+			'oauth_scopes' => 'openid profile email',
+		],
+		[
+			'provider_identifier' => 'spotify',
+		],
+		[
+			'provider_identifier' => 'wordpress',
+			'url_authorize' => 'https://wordpress.tld/oauth/authorize',
+			'url_access_token' => 'https://wordpress.tld/oauth/token',
+			'url_owner_details' => 'https://wordpress.tld/wp-json/wp/v2/users/me?context=edit',
+		],
+	],
 ];

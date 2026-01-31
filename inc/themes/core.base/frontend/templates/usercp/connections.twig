@@ -1,0 +1,59 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ lang.connections_title }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.connections_header }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <section class="block">
+        <div class="column-headings column-headings--major column-headings--simple-columns connections connections--column-headings">
+            <div class="connections-connection_provider">{{ lang.connections_connection_table_head_provider }}</div>
+            <div class="connections-connection_date">{{ lang.connections_connection_table_head_created_at }}</div>
+            <div class="connections-connection_date">{{ lang.connections_connection_table_head_disconnect }}</div>
+        </div>
+        <div class="results">
+            {% for connection in connections %}
+                <div class="row row--simple-columns connections connections--row">
+                    <div class="connections-connection_provider">{{ trans('connections_provider_' ~ connection.provider_identifier) }}</div>
+                    <div class="connections-connection_date">{{ connection.created_at|my_date }}</div>
+                    <div class="connections-connection_disconnect">
+                        <a href="{{ path(name = 'DisconnectAuth', parameters = {providerIdentifier: connection.provider_identifier}) }}"
+                           class="button button--secondary">
+                            <span class="button__text">{{ lang.connections_connection_table_button_disconnect }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-results">{{ lang.connections_connection_table_empty }}</div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="block">
+        <div class="column-headings column-headings--major column-headings--simple-columns connections connections--column-headings">
+            <div class="connections-connection_provider">{{ lang.connections_connect_table_head_provider }}</div>
+            <div class="connections-connection_date">{{ lang.connections_connect_table_head_created_at }}</div>
+        </div>
+        <div class="results">
+            {% for provider in providers %}
+                <div class="row row--simple-columns connections connections--row">
+                    <div class="connections-connection_provider">{{ trans('connections_provider_' ~ provider.provider_identifier) }}</div>
+                    <div class="connections-connection_date">
+                        <a href="{{ path(name = 'ConnectAuth', parameters = {providerIdentifier: provider.provider_identifier}) }}"
+                           class="button button--secondary">
+                            <span class="button__text">{{ lang.connections_connect_table_button_connect }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-results">{{ lang.connections_connect_table_empty }}</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

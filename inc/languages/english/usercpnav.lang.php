@@ -34,3 +34,4 @@ $l['ucp_nav_usergroups'] = "Group Memberships";
 $l['ucp_nav_attachments'] = "Manage Attachments";
 $l['ucp_nav_warninglog'] = "Warning Log";
 $l['ucp_nav_securitylog'] = "Security Log";
+$l['ucp_nav_connections'] = "Connections";

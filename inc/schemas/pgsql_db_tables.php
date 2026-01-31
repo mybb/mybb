@@ -1241,3 +1241,53 @@ $tables[] = "CREATE TABLE mybb_warnings (
 );";
 
 $tables[] = "CREATE INDEX mybb_warnings_uid ON mybb_warnings (uid);";
+
+$tables[] = "CREATE TABLE mybb_oauth_providers (
+	provider_identifier varchar(20) NOT NULL,
+	client_id varchar(255) NOT NULL default '',
+	client_secret varchar(255) NOT NULL default '',
+	oauth_scopes varchar(255) NOT NULL default '',
+	url_authorize varchar(255) NOT NULL default '',
+	url_access_token varchar(255) NOT NULL default '',
+	url_owner_details varchar(255) NOT NULL default '',
+	store_token smallint NOT NULL default '0',
+	allow_login smallint NOT NULL default '1',
+	allow_registration smallint NOT NULL default '1',
+	allow_connection smallint NOT NULL default '1',
+	is_enabled smallint NOT NULL default '0'
+) ENGINE=InnoDB;";
+
+$tables[] = "CREATE INDEX provider_identifier ON mybb_oauth_providers (provider_identifier);";
+
+$tables[] = "CREATE TABLE mybb_oauth_users (
+	user_id int NOT NULL,
+	provider_identifier varchar(20) NOT NULL,
+	oauth_id varchar(255) NOT NULL,
+	is_active smallint NOT NULL default '1',
+	created_at int NOT NULL
+) ENGINE=InnoDB;";
+
+$tables[] = "CREATE INDEX user_provider ON mybb_oauth_users (user_id,provider_identifier);";
+
+$tables[] = "CREATE INDEX provider_oauth_id ON mybb_oauth_users (provider_identifier,oauth_id);";
+
+$tables[] = "CREATE TABLE mybb_oauth_states (
+    state_id serial,
+	session_id varchar(32) NOT NULL default '',
+	provider_identifier varchar(20) NOT NULL,
+	state_code varchar(255) NOT NULL,
+	pkce_code varchar(255) NOT NULL,
+	created_at int NOT NULL,
+	PRIMARY KEY (state_id)
+);";
+
+$tables[] = "CREATE TABLE mybb_oauth_tokens (
+    token_id serial,
+    user_id int NOT NULL,
+    provider_identifier varchar(20) NOT NULL,
+    access_token varchar(4096) NOT NULL,
+    refresh_token varchar(4096),
+	created_at int NOT NULL,
+    expires_at int NOT NULL default '0',
+	PRIMARY KEY(token_id)
+);";
