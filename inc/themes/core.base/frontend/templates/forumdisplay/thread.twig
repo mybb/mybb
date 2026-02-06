@@ -96,7 +96,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    
+
     <div class="thread__replies thread__count thread__count--replies">
         <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
         <span class="thread__legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
