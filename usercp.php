@@ -3844,8 +3844,8 @@ if(!$mybb->input['action'])
 						$thread['replies'] = my_number_format($thread['replies']);
 						$thread['views'] = my_number_format($thread['views']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
+						$latestsubscriptions[] = $thread;
 					}
-					$latestsubscriptions[] = $thread;
 				}
 			}
 		}
