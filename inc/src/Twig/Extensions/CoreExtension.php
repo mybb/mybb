@@ -556,6 +556,10 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             ]);
         }
 
+        if (!my_validate_url($url)) {
+            $url = $this->mybb->get_asset_url($url);
+        }
+
         return $twig->render('partials/avatar.twig', [
             'url' => $url,
             'alt' => $alt,
