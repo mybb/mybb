@@ -3403,10 +3403,20 @@ if($mybb->input['action'] == "iplookup")
 			$ip_record = @geoip_record_by_name($ipaddress['ipaddress']);
 			if($ip_record)
 			{
-				$ipaddress['location'] = utf8_encode($ip_record['country_name']);
-				if($ip_record['city'])
+				$location = $ip_record['country_name'] ?? '';
+				if(!mb_check_encoding($location, 'UTF-8'))
 				{
-					$ipaddress['location'] .= $lang->comma.utf8_encode($ip_record['city']);
+					$location = mb_convert_encoding($location, 'UTF-8', 'ISO-8859-1');
+				}
+				$ipaddress['location'] = htmlspecialchars_uni($location);
+				if(!empty($ip_record['city']))
+				{
+					$city = $ip_record['city'];
+					if(!mb_check_encoding($city, 'UTF-8'))
+					{
+						$city = mb_convert_encoding($city, 'UTF-8', 'ISO-8859-1');
+					}
+					$ipaddress['location'] .= $lang->comma.htmlspecialchars_uni($city);
 				}
 			}
 		}
