@@ -12,11 +12,11 @@
         <div class="page-controls page-controls--compact">
             <div class="page-buttons">
                 {% if calendar_permissions.canaddevents %}
-                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}" class="button button--half-width">
+                    <a href="{{ path('calendar.php', {action: 'addevent', calendar: calendar.cid}) }}" class="button button--half-width">
                         {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_public_event }}</span>
                     </a>
-                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1" class="button button--half-width">
+                    <a href="{{ path('calendar.php', {action: 'addevent', calendar: calendar.cid, private: 1}) }}" class="button button--half-width">
                         {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_private_event }}</span>
                     </a>
