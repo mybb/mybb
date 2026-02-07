@@ -11,7 +11,6 @@
 /**
  * Upgrade Script: 1.8.x
  */
-
 $upgrade_detail = array(
     "revert_all_templates" => 0,
     "revert_all_themes" => 0,
@@ -22,28 +21,38 @@ function upgrade100_dbchanges()
 {
     global $db;
 
+    // SQLite does not allow schema changes while result sets/cursors are active
     if ($db->type == 'sqlite') {
         $db->close_cursors();
     }
 
-    // Drop deprecated columns
+    // Common schema changes applied across all supported database engines
+    // (database-specific adjustments are handled further below)
+
+    // Drop deprecated pid column in themes table
+    if ($db->field_exists("pid", "themes")) {
+        $db->drop_column("themes", "pid");
+    }
+
+    // Drop deprecated google column in users table
     if ($db->field_exists("google", "users")) {
         $db->drop_column("users", "google");
     }
 
+    // Drop deprecated skype column in users table
     if ($db->field_exists("skype", "users")) {
         $db->drop_column("users", "skype");
     }
 
-    // Modify columns
+    // Increase password column length to support longer password hashes
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
+
+    // Expand SMTP error storage (switch to TEXT to avoid truncation of long error messages)
     $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
-    if ($db->field_exists("pid", "themes")) {
-        $db->drop_column("themes", "pid");
-    }
+    // Introduce theme packages.
     if (!$db->field_exists("package", "themes")) {
-        // Delete incompatible data
+        // Remove incompatible themes and stylesheets
         $db->delete_query("themes");
         $db->delete_query("themestylesheets");
 
@@ -68,18 +77,18 @@ function upgrade100_dbchanges()
         $db->update_query("forums", ["style" => 0], "style != 0");
     }
 
-    // Database specific changes
+    // Database engine specific changes
+    // This section contains schema definitions and data migrations
+    // that must be applied differently depending on the engine
     switch($db->type)
     {
+        // PostgreSQL-specific changes
         case 'pgsql':
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "smallint NOT NULL default '0'");
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
-            }
-            if (!$db->field_exists("showtimespentonline", "users")) {
-                $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
             }
 
             // Add new userfields columns
@@ -89,7 +98,22 @@ function upgrade100_dbchanges()
                 }
             }
 
-            // Add new suspension columns
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "smallint NOT NULL default '0'");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
+            }
+
+            // Add online time visibility preference column to users table
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
+            }
+
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "smallint NOT NULL default '0'");
             }
@@ -98,6 +122,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "smallint NOT NULL default '0'");
             }
@@ -106,24 +131,21 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
-            // Update moved threads
+            // Migrate moved threads data to dedicated column
             $db->query("
                 UPDATE ".TABLE_PREFIX."threads
                 SET closed = '0', moved = SUBSTRING(closed::text FROM 7)::integer
                 WHERE closed::text LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "smallint NOT NULL default '0'");
-            }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
-            }
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed DROP DEFAULT;");
                 $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed SET DATA TYPE smallint USING closed::smallint;");
                 $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed SET DEFAULT 0;");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
                 $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
                     uid int NOT NULL default '0',
@@ -134,15 +156,13 @@ function upgrade100_dbchanges()
             }
             break;
 
+        // SQLite-specific changes
         case 'sqlite':
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "tinyint(1) NOT NULL default '0'");
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
-            }
-            if (!$db->field_exists("showtimespentonline", "users")) {
-                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
             }
 
             // Add new userfields columns
@@ -152,7 +172,23 @@ function upgrade100_dbchanges()
                 }
             }
 
-            // Add new suspension columns
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0'");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
+            }
+
+
+            // Add online time visibility preference column to users table
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
+            }
+
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0'");
             }
@@ -161,6 +197,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0'");
             }
@@ -169,22 +206,19 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
-            // Update moved threads
+            // Migrate moved threads data to dedicated column
             $db->query("
                 UPDATE ".TABLE_PREFIX."threads
                 SET closed = '0', moved = SUBSTR(closed, 7)
                 WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0'");
-            }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
-            }
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->modify_column("threads", "closed", "smallint", "set", "'0'");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
                 $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
                     uid int NOT NULL default '0',
@@ -195,15 +229,13 @@ function upgrade100_dbchanges()
             }
             break;
 
-        default: // MySQL
+        // MySQL-specific changes
+        default:
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "tinyint(1) NOT NULL default '0' AFTER disporder");
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
-            }
-            if (!$db->field_exists("showtimespentonline", "users")) {
-                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
             }
 
             // Add new userfields columns
@@ -213,7 +245,22 @@ function upgrade100_dbchanges()
                 }
             }
 
-            // Add new suspension columns
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0' AFTER canchangewebsite");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT '' AFTER password");
+            }
+
+            // Add online time visibility preference column to users table
+            if (!$db->field_exists("showtimespentonline", "users")) {
+                $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
+            }
+
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
             }
@@ -222,6 +269,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int unsigned NOT NULL default '0' AFTER suspendavatar");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendavatartime");
             }
@@ -230,22 +278,19 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int unsigned NOT NULL default '0' AFTER suspendpm");
             }
 
-            // Update moved threads
+            // Migrate moved threads data to dedicated column
             $db->query("
                 UPDATE ".TABLE_PREFIX."threads
                 SET closed = '0', moved = CAST(SUBSTRING(closed, 7) AS SIGNED)
                 WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0' AFTER canchangewebsite");
-            }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT '' AFTER password");
-            }
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->modify_column("threads", "closed", "tinyint(1)", "set", "'0'");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
                 $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
                     uid int unsigned NOT NULL default '0',
@@ -361,7 +406,6 @@ function upgrade100_convert_innodb()
         }
     }
 }
-
 
 function upgrade100_smilies()
 {
