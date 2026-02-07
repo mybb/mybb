@@ -131,6 +131,21 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
+            // Add unacknowledged warnings counter to users
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
+
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+            }
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
+            }
+
             // Migrate moved threads data to dedicated column
             $db->query("
                 UPDATE " . TABLE_PREFIX . "threads
@@ -182,7 +197,6 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
             }
 
-
             // Add online time visibility preference column to users table
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
@@ -204,6 +218,21 @@ function upgrade100_dbchanges()
 
             if (!$db->field_exists("suspendpmtime", "users")) {
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
+            }
+
+            // Add unacknowledged warnings counter to users table
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
+
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+            }
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
             }
 
             // Migrate moved threads data to dedicated column
@@ -276,6 +305,21 @@ function upgrade100_dbchanges()
 
             if (!$db->field_exists("suspendpmtime", "users")) {
                 $db->add_column("users", "suspendpmtime", "int unsigned NOT NULL default '0' AFTER suspendpm");
+            }
+
+            // Add unacknowledged warnings counter to users
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
+            }
+
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
+            }
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
             }
 
             // Migrate moved threads data to dedicated column
@@ -533,36 +577,5 @@ function upgrade100_check_constraints()
                 ");
             }
         }
-    }
-}
-
-function upgrade100_warnings_acknowledgements()
-{
-    global $db;
-
-    switch ($db->type) {
-        case 'pgsql':
-        case 'sqlite':
-            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
-                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
-            }
-            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
-                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
-            }
-            if (!$db->field_exists("acknowledged", "warnings")) {
-                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
-            }
-            break;
-        default:
-            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
-                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
-            }
-            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
-                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
-            }
-            if (!$db->field_exists("acknowledged", "warnings")) {
-                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
-            }
-            break;
     }
 }
