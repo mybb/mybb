@@ -68,13 +68,6 @@ function upgrade100_dbchanges()
         $db->update_query("forums", ["style" => 0], "style != 0");
     }
 
-    // Add userfields columns
-    foreach (["fid4", "fid5"] as $fid) {
-        if (!$db->field_exists($fid, "userfields")) {
-            $db->add_column("userfields", $fid, "text NOT NULL");
-        }
-    }
-
     // Database specific changes
     switch($db->type)
     {
@@ -87,6 +80,13 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
+            }
+
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL default ''");
+                }
             }
 
             // Add new suspension columns
@@ -145,6 +145,13 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
             }
 
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL");
+                }
+            }
+
             // Add new suspension columns
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0'");
@@ -197,6 +204,13 @@ function upgrade100_dbchanges()
             }
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
+            }
+
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL");
+                }
             }
 
             // Add new suspension columns
