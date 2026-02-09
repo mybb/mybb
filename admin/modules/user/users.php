@@ -411,7 +411,7 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->required_profile_info);
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
-	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->get_input('password'), array('id' => 'password', 'autocomplete' => 'off')), 'password');
+	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->get_input('password'), array('id' => 'password', 'autocomplete' => 'new-password')), 'password');
 	$form_container->output_row($lang->confirm_password." <em>*</em>", "", $form->generate_password_box('confirm_password', $mybb->get_input('confirm_password'), array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->get_input('email'), array('id' => 'email')), 'email');
 
@@ -1184,7 +1184,7 @@ EOF;
 
 	$form_container = new FormContainer($lang->required_profile_info.": ".htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'off')), 'new_password');
+	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'new-password')), 'new_password');
 	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
