@@ -1,5 +1,12 @@
 {
 	"assets": {
+		"./jscripts/fonts/fontawesome/css/all.min.css": {
+			"attached_to": [
+				{
+					"script": "global"
+				}
+			]
+		},
 		"styles/main.css": {
 			"source": "main.scss",
 			"attached_to": [
@@ -165,18 +172,6 @@
 			"depends_on": [
 				"./jscripts/jquery.js"
 			]
-		},
-		"https://use.fontawesome.com/releases/v5.4.1/js/all.js": {
-			"attached_to": [
-				{
-					"script": "global"
-				}
-			],
-			"attributes": {
-				"defer": "defer",
-				"integrity": "sha384-L469/ELG4Bg9sDQbl0hvjMq8pOcqFgkSpwhwnslzvVVGpDjYJ6wJJyYjvG3u8XW7",
-				"crossorigin": "anonymous"
-			}
 		}
 	}
 }
