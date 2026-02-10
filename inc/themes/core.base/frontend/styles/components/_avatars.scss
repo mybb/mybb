@@ -12,6 +12,12 @@
     .avatar__icon {
         font-size: #{$icon-size}px;
     }
+
+    $initial-size: $size/1.9;
+
+    .avatar__initial {
+        font-size: #{$initial-size}px;
+    }
 }
 
 .avatar-profile-link {
@@ -46,6 +52,32 @@
         align-items: center;
         justify-content: center;
         background: var(--background-3);
+
+        &[data-avatar-color] {
+            background: var(--default-avatar-color, var(--background-3));
+        }
+
+        @supports (background: attr(data-avatar-color type(<color>), #000)) {
+            &[data-avatar-color] {
+                background: attr(data-avatar-color type(<color>), var(--default-avatar-color, var(--background-3)));
+            }
+        }
+    }
+
+    &__initial {
+        display: inline-flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        color: var(--invert-font-color);
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+
+        &::before {
+            content: attr(data-avatar-initial);
+        }
     }
 
     &__icon {

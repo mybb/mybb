@@ -318,7 +318,7 @@
                     <input type="hidden" name="method" value="quickreply" />
                     <div class="post__meta">
                         <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
-                            {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar) }}
+                            {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, identifier=mybb.user.username) }}
                         </a>
                         <h3 class="post__author"><a href="{{ get_profile_link(mybb.user.uid) }}">{{ mybb.user|format_name }}</a></h3>
                         <span class="post__date">{{ lang.quick_reply }}</span>
