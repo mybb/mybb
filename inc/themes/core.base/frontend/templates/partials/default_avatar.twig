@@ -1,6 +1,6 @@
-<span class="avatar avatar--default{% if class %} {{ class }}{% endif %}"{% if default_avatar_color %} data-avatar-color="{{ default_avatar_color }}" style="--default-avatar-color: {{ default_avatar_color }};"{% endif %}>
-    {% if default_avatar_initial %}
-        <span class="avatar__initial" data-avatar-initial="{{ default_avatar_initial }}" aria-hidden="true"></span>
+<span class="avatar avatar--default{% if class %} {{ class }}{% endif %}"{% if color %} data-avatar-color="{{ color }}" style="--default-avatar-color: {{ color }};"{% endif %}>
+    {% if initial %}
+        <span class="avatar__initial" data-avatar-initial="{{ initial }}" aria-hidden="true"></span>
     {% else %}
         {{ include('partials/icon.twig', {icon: 'user', class: 'avatar__icon'}, with_context = false) }}
     {% endif %}
