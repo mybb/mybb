@@ -205,6 +205,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 //]]>
 </script>\n";
 
+		$field_options = [];
+
 		foreach($fields as $key => $field)
 		{
 			$field_options[$key] = $field['title'];
@@ -374,6 +376,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$field_select = "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
+
+		$active = [];
+
 		if(is_array($mybb->input['fields']))
 		{
 			foreach($mybb->input['fields'] as $field)
@@ -407,6 +412,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 //<![CDATA[
 document.write('".str_replace("/", "\/", $field_select)."');
 //]]></script>\n";
+
+		$field_options = [];
 
 		foreach($fields as $key => $field)
 		{
@@ -476,6 +483,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n";
 		$xml = "<adminviews version=\"".$mybb->version_code."\" exported=\"".TIME_NOW."\">\n";
 
+		$type_where = '';
+
 		if($mybb->input['type'])
 		{
 			$type_where = "type='".$db->escape_string($mybb->input['type'])."'";
@@ -504,6 +513,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			foreach($conditions as $name => $condition)
 			{
 				if(!$conditions) continue;
+
+				$is_serialized = '';
+
 				if(is_array($condition))
 				{
 					$condition = my_serialize($condition);
@@ -555,7 +567,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		");
 		while($view = $db->fetch_array($query))
 		{
-			$created = "";
+			$created = $default_class = "";
 			if($view['uid'] == 0)
 			{
 				$view_type = "default";

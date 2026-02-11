@@ -363,10 +363,10 @@ global $_month_table_normal,$_month_table_leaf;
 		}
 		/**/
 
-		$secsInYear = 86400 * ($leaf ? 366 : 365) + $lastd;
+		$secsInYear = 86400 * (!empty($leaf) ? 366 : 365) + $lastd;
 
 		$d = $lastd;
-		$mtab = ($leaf) ? $_month_table_leaf : $_month_table_normal;
+		$mtab = !empty($leaf) ? $_month_table_leaf : $_month_table_normal;
 		for ($a = 13 ; --$a > 0;) {
 			$lastd = $d;
 			$d += $mtab[$a] * $_day_power;

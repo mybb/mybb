@@ -71,7 +71,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			$thumb['code'] = 3;
 			return $thumb;
 		}
-		if(!$im)
+		if(empty($im))
 		{
 			$thumb['code'] = 3;
 			return $thumb;

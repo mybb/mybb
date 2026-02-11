@@ -715,7 +715,7 @@ class PostDataHandler extends DataHandler
 					$user = get_user($this->data['uid']);
 				}
 
-				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
+				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && (empty($this->data['tid']) || isset($thread['prefix']) && $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -726,7 +726,7 @@ class PostDataHandler extends DataHandler
 				// Decide whether this prefix can be used in our forum
 				$forums = explode(",", $prefix_cache['forums']);
 
-				if(!in_array($this->data['fid'], $forums) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
+				if(!in_array($this->data['fid'], $forums) && (empty($this->data['tid']) || isset($thread['prefix']) && $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -1105,7 +1105,7 @@ class PostDataHandler extends DataHandler
 			$update_array = array(
 				'lastpost' => "'{$now}'"
 			);
-			if($forum['usepostcounts'] != 0 && $thread['visible'] == 1)
+			if(!empty($forum['usepostcounts']) && $thread['visible'] == 1)
 			{
 				$update_array['postnum'] = 'postnum+1';
 			}

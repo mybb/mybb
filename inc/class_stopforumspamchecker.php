@@ -193,6 +193,8 @@ class StopForumSpamChecker
 	{
 		global $mybb, $lang;
 
+		$settingsenabled = [];
+
 		foreach($sfsSettingsEnabled as $setting)
 		{
 			if($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])

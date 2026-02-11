@@ -388,6 +388,8 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
+	$options = [];
+
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
@@ -604,6 +606,8 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->modify_setting);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
+
+	$options = [];
 
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))

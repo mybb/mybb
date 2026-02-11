@@ -808,6 +808,9 @@ class Moderation
 		");
 		$message = '';
 		$threads = $forum_counters = $thread_counters = $user_counters = array();
+
+		$mastertid = $masterpid = $visible = 0;
+
 		while($post = $db->fetch_array($query))
 		{
 			$threads[$post['tid']] = $post['tid'];
@@ -959,7 +962,7 @@ class Moderation
 				}
 			}
 
-			if($new_firstpost['uid'] != $thread['uid'] && $forum['usethreadcounts'] != 0 && $thread['visible'] == 1)
+			if($new_firstpost['uid'] != $thread['uid'] && !empty($forum['usethreadcounts']) && $thread['visible'] == 1)
 			{
 				if(!isset($user_counters[$new_firstpost['uid']]))
 				{
@@ -2863,6 +2866,9 @@ class Moderation
 		$pids = array_map('intval', $pids);
 
 		$pid_list = implode(',', $pids);
+
+		$unapprove = $approve = [];
+
 		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
 		while($post = $db->fetch_array($query))
 		{
@@ -2875,11 +2881,11 @@ class Moderation
 				$approve[] = $post['pid'];
 			}
 		}
-		if(is_array($unapprove))
+		if($unapprove)
 		{
 			$this->unapprove_posts($unapprove);
 		}
-		if(is_array($approve))
+		if($approve)
 		{
 			$this->approve_posts($approve);
 		}
@@ -2901,6 +2907,9 @@ class Moderation
 
 		$pid_list = implode(',', $pids);
 		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
+
+		$delete = $restore = [];
+
 		while($post = $db->fetch_array($query))
 		{
 			if($post['visible'] != -1)
@@ -2912,11 +2921,11 @@ class Moderation
 				$restore[] = $post['pid'];
 			}
 		}
-		if(is_array($delete))
+		if($delete)
 		{
 			$this->soft_delete_posts($delete);
 		}
-		if(is_array($restore))
+		if($restore)
 		{
 			$this->restore_posts($restore);
 		}
@@ -2939,6 +2948,9 @@ class Moderation
 		$fid = (int)$fid;
 
 		$tid_list = implode(',', $tids);
+
+		$unapprove = $approve = [];
+
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
@@ -2951,11 +2963,11 @@ class Moderation
 				$approve[] = $thread['tid'];
 			}
 		}
-		if(is_array($unapprove))
+		if($unapprove)
 		{
 			$this->unapprove_threads($unapprove, $fid);
 		}
-		if(is_array($approve))
+		if($approve)
 		{
 			$this->approve_threads($approve, $fid);
 		}
@@ -2976,6 +2988,9 @@ class Moderation
 		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
+
+		$delete = $restore = [];
+
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
@@ -2988,11 +3003,11 @@ class Moderation
 				$restore[] = $thread['tid'];
 			}
 		}
-		if(is_array($delete))
+		if($delete)
 		{
 			$this->soft_delete_threads($delete);
 		}
-		if(is_array($restore))
+		if($restore)
 		{
 			$this->restore_threads($restore);
 		}
@@ -3013,6 +3028,9 @@ class Moderation
 		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
+
+		$open = $close = [];
+
 		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
@@ -3025,11 +3043,11 @@ class Moderation
 				$close[] = $thread['tid'];
 			}
 		}
-		if(is_array($open))
+		if($open)
 		{
 			$this->open_threads($open);
 		}
-		if(is_array($close))
+		if($close)
 		{
 			$this->close_threads($close);
 		}

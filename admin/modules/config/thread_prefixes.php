@@ -139,6 +139,8 @@ if($mybb->input['action'] == 'add_prefix')
 
 	$form = new Form('index.php?module=config-thread_prefixes&amp;action=add_prefix', 'post');
 
+	$forum_checked = $group_checked = [];
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -564,7 +566,7 @@ if(!$mybb->input['action'])
 						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forum['name'].'</a>';
 					}
 				}
-				
+
 				$forum_names = implode($lang->comma, $forum_names);
 			}
 

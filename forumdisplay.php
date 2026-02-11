@@ -220,17 +220,17 @@ foreach($parentlistexploded as $mfid)
 	}
 }
 
+$usersBrowsing = [];
+$usersBrowsingCounter = [
+	'guests' => 0,
+	'members' => 0,
+	'invisible' => 0,
+];
+
 // Get the users browsing this forum.
 if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
-
-	$usersBrowsing = [];
-	$usersBrowsingCounter = [
-		'guests' => 0,
-		'members' => 0,
-		'invisible' => 0,
-	];
 
 	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location1 = $fid AND nopermission != 1");
 	$usersBrowsingCounter['guests'] = $db->fetch_field($query, 'guestcount');
@@ -322,7 +322,7 @@ foreach($permissionsToCheck as $permission)
 }
 
 // Check if the active user is a moderator and get the inline moderation tools.
-if($modpermissions['ismod'])
+if(!empty($modpermissions['ismod']))
 {
 	$inlinecount = 0;
 	$inlinecookie = "inlinemod_forum".$fid;
@@ -637,7 +637,7 @@ $multipage = multipage($threadcount, $perpage, $page, $page_url);
 $lpbackground = "trow1";
 $colspan = 6;
 
-if($modpermissions['ismod'])
+if(!empty($modpermissions['ismod']))
 {
 	++$colspan;
 }
@@ -914,7 +914,7 @@ if(!empty($threadCache) && is_array($threadCache))
 			$thread['pages'] = ceil($thread['pages']);
 		}
 
-		if($modpermissions['ismod'] && isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
+		if(!empty($modpermissions['ismod']) && isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
 		{
 			$thread['modChecked'] = true;
 			++$inlinecount;
@@ -988,7 +988,7 @@ if(!empty($threadCache) && is_array($threadCache))
 		$thread['folder']['value'] .= "folder";
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $modpermissions['ismod'])
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || !empty($modpermissions['ismod']))
 		{
 			$thread['inlineEditClass'] = "subject_editable";
 		}
@@ -1008,7 +1008,7 @@ if(!empty($threadCache) && is_array($threadCache))
 		$threadCache[$k] = $thread;
 	}
 
-	if($modpermissions['ismod'] && $modpermissions["canusecustomtools"] && $hasModTools)
+	if(!empty($modpermissions['ismod']) && $modpermissions["canusecustomtools"] && $hasModTools)
 	{
 		$gids = explode(',', $mybb->user['additionalgroups']);
 		$gids[] = $mybb->user['usergroup'];

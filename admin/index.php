@@ -569,7 +569,7 @@ if(!empty($mybb->user['uid']))
 	}
 
 	// Update the session information in the DB
-	if($admin_session['sid'])
+	if(!empty($admin_session['sid']))
 	{
 		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_binary(my_inet_pton(get_ip()))), "sid='".$db->escape_string($admin_session['sid'])."'");
 	}

@@ -41,6 +41,10 @@ function task_checktables($task)
 
 	if($tables_list)
 	{
+		$boardclosed = $mybb->settings['boardclosed'];
+
+		$boardclosed_reason = $mybb->settings['boardclosed_reason'];
+
 		$query = $db->query("CHECK TABLE {$tables_list}CHANGED;");
 		while($table = $db->fetch_array($query))
 		{
@@ -48,9 +52,6 @@ function task_checktables($task)
 			{
 				if($table['Table'] != $mybb->config['database']['database'].".".TABLE_PREFIX."settings" && $setting_done != true)
 				{
-					$boardclosed = $mybb->settings['boardclosed'];
-					$boardclosed_reason = $mybb->settings['boardclosed_reason'];
-
 					$db->update_query("settings", array('value' => 1), "name='boardclosed'", 1);
 					$db->update_query("settings", array('value' => $db->escape_string($lang->error_database_repair)), "name='boardclosed_reason'", 1);
 					rebuild_settings();

@@ -166,9 +166,10 @@ class datacache
 			$this->call_time += $call_time;
 			$this->call_count++;
 
+			$hit = true;
+
 			if($mybb->debug_mode)
 			{
-				$hit = true;
 				if($data === false)
 				{
 					$hit = false;
@@ -595,12 +596,12 @@ class datacache
 	{
 		$usergroups = $this->read("usergroups", true);
 
-		if($usergroups === false) 
+		if($usergroups === false)
 		{
-			$usergroups = array(); 
+			$usergroups = array();
 		}
-		
-		$usergroups = array_keys($usergroups); 
+
+		$usergroups = array_keys($usergroups);
 		if(!empty($this->forum_permissions_forum_cache[$pid]))
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)

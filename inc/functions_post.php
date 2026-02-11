@@ -288,7 +288,9 @@ function build_postbit($post, $post_type=0)
 	{
 		$post['showavatar'] = true;
 	}
-	
+
+	$postnum = 0;
+
 	if($post['userusername'])
 	{
 		$post['isguest'] = false;
@@ -497,8 +499,8 @@ function build_postbit($post, $post_type=0)
 			$field['useropts'] = explode("\n", $post[$fieldfid]);
 
 			$field['multi'] = false;
-			if(is_array($useropts) &&
-				($type == 'multiselect' || $type == 'checkbox'))
+			if($field['useropts'] &&
+				($field['type'] == 'multiselect' || $field['type'] == 'checkbox'))
 			{
 				$field['multi'] = true;
 			}
@@ -522,7 +524,7 @@ function build_postbit($post, $post_type=0)
 					$field_parser_options['nl2br'] = 0;
 				}
 
-				if($mybb->user['showimages'] != 1 &&
+				if(empty($mybb->user['showimages']) &&
 					$mybb->user['uid'] != 0 ||
 					$mybb->settings['guestimages'] != 1 &&
 					$mybb->user['uid'] == 0)
@@ -603,7 +605,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$time = TIME_NOW;
-		if((is_moderator($fid, 'caneditposts') || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time - ($mybb->usergroup['edittimelimit'] * 60))))) &&
+		if((is_moderator($fid, 'caneditposts') || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && empty($thread['closed']) && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time - ($mybb->usergroup['edittimelimit'] * 60))))) &&
 			$mybb->user['uid'] != 0)
 		{
 			$post['can_edit'] = true;
@@ -612,7 +614,7 @@ function build_postbit($post, $post_type=0)
 		// Quick Delete button
 		$can_delete_thread = $can_delete_post = 0;
 		if($mybb->user['uid'] == $post['uid'] &&
-			$thread['closed'] == 0)
+			!empty($thread['closed']))
 		{
 			if($forumpermissions['candeletethreads'] == 1 &&
 				$postcounter == 1)
@@ -813,14 +815,14 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
-	if($mybb->user['showimages'] != 1 &&
+	if(empty($mybb->user['showimages']) &&
 		$mybb->settings['guestimages'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{
 		$parser_options['allow_imgcode'] = 0;
 	}
 
-	if($mybb->user['showvideos'] != 1 &&
+	if(empty($mybb->user['showvideos']) &&
 		$mybb->settings['guestvideos'] != 1 &&
 		$mybb->user['uid'] == 0)
 	{
@@ -836,10 +838,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
-	if($mybb->settings['enableattachments'] != 0)
-	{
-		$attached = get_post_attachments($post['id'], $post);
-	}
+	$attached = $mybb->settings['enableattachments'] ? get_post_attachments($post['id'], $post) : [];
 
 	$post['showbcc'] = false;
 	if($post_type == 2)
@@ -885,7 +884,7 @@ function build_postbit($post, $post_type=0)
 			$sig_parser['nofollow_on'] = 1;
 		}
 
-		if($mybb->user['showimages'] != 1 &&
+		if(empty($mybb->user['showimages']) &&
 			$mybb->user['uid'] != 0 ||
 			$mybb->settings['guestimages'] != 1 &&
 			$mybb->user['uid'] == 0)

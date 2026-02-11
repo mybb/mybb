@@ -595,6 +595,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 {
 	$plugins->run_hooks("editpost_action_start");
 
+	$icon = 0;
+
 	if(!isset($mybb->input['previewpost']))
 	{
 		$icon = $post['icon'];
@@ -714,10 +716,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$editpost['reason'] = $mybb->get_input('editreason');
 	}
 
-	$previewmessage = $message;
-	$previewsubject = $subject;
-	$message = htmlspecialchars_uni($message);
-	$subject = htmlspecialchars_uni($subject);
+	$previewmessage = '';
+	$previewsubject = '';
 
 	if(!isset($post_errors))
 	{
@@ -972,10 +972,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		'loginbox' => $loginbox,
 		'forum' => $forum,
 		'post' => $post,
-		'smilieinserter' => $smilieinserter,
-		'codebuttons' => $codebuttons,
-		'postbit' => $postbit,
-		'attachments' => $attachments,
+		'smilieinserter' => $smilieinserter ?? '',
+		'codebuttons' => $codebuttons ?? '',
+		'postbit' => $postbit ?? '',
+		'attachments' => $attachments ?? '',
 		'prefixes' => $prefixes,
 		'posticons' => $posticons,
         'post_javascript' => $post_javascript,

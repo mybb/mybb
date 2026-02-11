@@ -355,7 +355,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                 $this->mybb->settings['thousandssep']
             );
         } else {
-            $parts = explode('.', $number, 2);
+            $parts = explode('.', (string)$number, 2);
 
             if (count($parts) == 2) {
                 $decimals = my_strlen($parts[1]);

@@ -713,6 +713,9 @@ if($mybb->input['action'] == "thread")
 	// Threaded or linear display?
 	$thread['showthreaded'] = false;
 	$threadedbits = [];
+
+	$multipage = $captcha = '';
+
 	if($mybb->get_input('mode') == 'threaded')
 	{
 		$thread['showthreaded'] = true;
@@ -770,7 +773,7 @@ if($mybb->input['action'] == "thread")
             $visibleonly_p
 			ORDER BY p.dateline, p.pid
 		");
-		if(!is_array($postsdone))
+		if(isset($postsdone) && !is_array($postsdone))
 		{
 			$postsdone = array();
 		}
@@ -1091,7 +1094,6 @@ if($mybb->input['action'] == "thread")
 		$thread['last_pid'] = $db->fetch_field($query, "pid");
 
 		// Show captcha image for guests if enabled
-		$captcha = '';
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -1372,9 +1374,6 @@ if($mybb->input['action'] == "thread")
 		'onlinemembers' => $onlinemembers,
 		'forumjump' => $forumjump,
 		'threadedbits' => $threadedbits,
-		'collapsedthead' => $collapsedthead,
-		'collapsedimg' => $collapsedimg,
-		'collapsed' => $collapsed,
 		'thread_deleted' => $thread_deleted,
 	]));
 }

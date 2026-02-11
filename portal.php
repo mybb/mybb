@@ -202,6 +202,8 @@ if($mybb->settings['portal_showstats'] != 0)
 	}
 }
 
+$onlinemembers = $onlinebots = [];
+
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
@@ -218,8 +220,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$guestcount = $membercount = $botcount = $anoncount = 0;
-	$onlinemembers = [];
-	$doneusers = $onlinemembers = $onlinebots = array();
+	$doneusers = array();
 
 	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
 	$guestcount = $db->fetch_field($query, "guestcount");
@@ -342,11 +343,11 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 }
 
 $portal['latestthreads'] = false;
+$threadlist = [];
 // Latest forum discussions
 if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $mybb->settings['portal_excludediscussion'] != -1)
 {
 	$threadcount = 0;
-	$threadlist = [];
 
 	$excludeforums = '';
 	if(!empty($mybb->settings['portal_excludediscussion']))
@@ -413,6 +414,9 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 }
 
 $announcements = [];
+
+$multipage = '';
+
 if(!empty($mybb->settings['portal_announcementsfid']))
 {
 	// Get latest news announcements
