@@ -560,8 +560,8 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         if (empty($url)) {
             return $twig->render('partials/default_avatar.twig', [
                 'class' => $class,
-                'default_avatar_initial' => $this->getDefaultAvatarInitial($identifier),
-                'default_avatar_color' => $this->getDefaultAvatarColor($identifier),
+                'initial' => $this->getDefaultAvatarInitial($identifier),
+                'color' => $this->getDefaultAvatarColor($identifier),
             ]);
         }
 
