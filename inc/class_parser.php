@@ -262,8 +262,8 @@ class postParser
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
+			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|figure|figcaption)[^>]*>)\s*<br />#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|figure|figcaption)[^>]*>)#i", "$2", $message);
 		}
 
 		if($this->clear_needed)
@@ -866,7 +866,7 @@ class postParser
 
 		if($text_only == false)
 		{
-			$replace = "<blockquote class=\"mycode_quote\"><cite>$lang->quote</cite>$1</blockquote>\n";
+			$replace = "<div>$lang->quote</div><blockquote class=\"mycode_quote\">$1</blockquote>\n";
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback1');
 		}
 		else

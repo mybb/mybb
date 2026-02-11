@@ -154,14 +154,14 @@ $avatar-margin-medium: 110px;
             box-sizing: border-box;
             width: 100% !important;
         }
-        
+
         // Quick edit reason
         .editreason {
             margin-top: var(--spacing-3);
             margin-bottom: var(--spacing-3);
             font-size: var(--font-size-small);
             color: var(--alt-font-color-1);
-            
+
             label {
                 cursor: pointer;
             }
@@ -182,7 +182,6 @@ $avatar-margin-medium: 110px;
 
     .quote,
     .codeblock,
-    blockquote,
     .attachments {
         padding: var(--spacing-4) var(--spacing-5);
         margin: var(--spacing-2) 0;
@@ -191,14 +190,16 @@ $avatar-margin-medium: 110px;
         border-radius: var(--border-radius);
 
         .quote,
-        .codeblock,
-        blockquote {
+        .codeblock {
             border: var(--border-width-base) solid var(--border-color-1);
         }
 
+        blockquote {
+            margin: 0;
+        }
+
         &__cite,
-        &__title,
-        cite {
+        &__title {
             display: block;
             margin-top: 0;
             margin-bottom: var(--spacing-2);
@@ -302,7 +303,7 @@ $avatar-margin-medium: 110px;
     }
 
     &--message {
-        background: var(--background-1);        
+        background: var(--background-1);
     }
 
     &__message-button {
