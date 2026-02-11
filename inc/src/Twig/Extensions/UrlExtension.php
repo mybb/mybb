@@ -12,6 +12,7 @@ class UrlExtension extends AbstractExtension
         return [
             new TwigFunction('path', [$this, 'path']),
             new TwigFunction('url', [$this, 'url']),
+            new TwigFunction('url_from', [$this, 'urlFrom']),
             new TwigFunction('get_profile_link', [$this, 'getProfileLink']),
             new TwigFunction('get_announcement_link', [$this, 'getAnnouncementLink']),
             new TwigFunction('get_forum_link', [$this, 'getForumLink']),
@@ -25,7 +26,6 @@ class UrlExtension extends AbstractExtension
 
     /**
      * Build a relative path by appending query parameters to a script or URL.
-     *
      *
      * @param string $script Base script or URL.
      * @param array $params Query parameters to append or override.
@@ -41,7 +41,6 @@ class UrlExtension extends AbstractExtension
     /**
      * Build an absolute URL by appending query parameters to a script or URL.
      *
-     *
      * @param string $script Base script or URL.
      * @param array $params Query parameters to append or override.
      * @param string|null $fragment Optional fragment identifier.
@@ -50,21 +49,36 @@ class UrlExtension extends AbstractExtension
      */
     public function url(string $script, array $params = [], ?string $fragment = null): string
     {
-        return $this->build($script, $params, $fragment, true);
+        return $this->build($script, $params, $fragment, true, 'bburl');
+    }
+
+    /**
+     * Build an absolute URL by appending query parameters to a script or URL using a configured base setting.
+     *
+     * @param string $baseSetting Setting name to use as URL base.
+     * @param string $script Base script or URL.
+     * @param array $params Query parameters to append or override.
+     * @param string|null $fragment Optional fragment identifier.
+     *
+     * @return string The resulting absolute URL.
+     */
+    public function urlFrom(string $baseSetting, string $script, array $params = [], ?string $fragment = null): string
+    {
+        return $this->build($script, $params, $fragment, true, $baseSetting);
     }
 
     /**
      * Internal URL builder.
      *
-     *
      * @param string $script Base script or URL.
      * @param array $params Query parameters to append or override.
      * @param string|null $fragment Optional fragment identifier.
      * @param bool $absolute Whether to return an absolute URL.
+     * @param string $baseSetting Setting name to use as URL base when $absolute is true.
      *
      * @return string The resulting URL or path.
      */
-    private function build(string $script, array $params, ?string $fragment, bool $absolute): string
+    private function build(string $script, array $params, ?string $fragment, bool $absolute, string $baseSetting = 'bburl'): string
     {
         if ($absolute) {
             $hasScheme = (bool) parse_url($script, PHP_URL_SCHEME);
@@ -72,7 +86,13 @@ class UrlExtension extends AbstractExtension
 
             if (!$hasScheme && !$isProtocolRelative) {
                 global $mybb;
-                $script = rtrim($mybb->settings['bburl'], '/') . '/' . ltrim($script, '/');
+
+                $baseUrl = $mybb->settings[$baseSetting] ?? '';
+                if (!is_string($baseUrl) || $baseUrl === '' || !my_validate_url($baseUrl, false, true)) {
+                    $baseUrl = $mybb->settings['bburl'] ?? '';
+                }
+
+                $script = rtrim($baseUrl, '/') . '/' . ltrim($script, '/');
             }
         }
 
