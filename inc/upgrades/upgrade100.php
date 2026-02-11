@@ -236,11 +236,18 @@ function upgrade100_dbchanges()
             }
 
             // Migrate moved threads data to dedicated column
-            $db->query("
-                UPDATE " . TABLE_PREFIX . "threads
-                SET closed = '0', moved = SUBSTR(closed, 7)
-                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
-            ");
+	        $db->query(
+		        "UPDATE " . TABLE_PREFIX . "threads
+				SET
+				    closed = '0',
+				    moved = CASE
+				        WHEN closed LIKE 'moved|%' THEN CAST(SUBSTR(closed, 7) AS INTEGER)
+				        ELSE 0
+				    END
+				WHERE
+				    closed LIKE 'moved|%'
+				    AND (moved IS NULL OR moved = 0);"
+	        );
 
             // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
@@ -323,11 +330,18 @@ function upgrade100_dbchanges()
             }
 
             // Migrate moved threads data to dedicated column
-            $db->query("
-                UPDATE " . TABLE_PREFIX . "threads
-                SET closed = '0', moved = CAST(SUBSTRING(closed, 7) AS SIGNED)
-                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
-            ");
+	        $db->query(
+		        "UPDATE " . TABLE_PREFIX . "threads
+                SET
+                	closed = '0',
+                	moved = CASE
+						WHEN closed LIKE 'moved|%' THEN CAST(SUBSTRING(closed, 7) AS SIGNED)
+						ELSE 0
+					END
+                WHERE
+                	closed LIKE 'moved|%'
+                	AND (moved IS NULL OR moved = 0);"
+	        );
 
             // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
