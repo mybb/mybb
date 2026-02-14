@@ -22,6 +22,9 @@ $lang->load('index');
 $plugins->run_hooks('index_start');
 
 $whosonline = '';
+
+$groups = $doneusers = $donebots =[];
+
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 
@@ -40,7 +43,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
 
 	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
+	$forum_viewers = $onlinemembers = $onlinebots = array();
 
 	if($mybb->settings['showforumviewing'] != 0)
 	{
@@ -66,7 +69,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		}
 	}
 
-	$groups = [];
 	if($mybb->settings['showgroupslegend'] != 0)
 	{
 		$groups_cache = $cache->read('usergroups');
@@ -105,7 +107,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		ORDER BY {$order_by}, {$order_by2}
 	");
 
-	$forum_viewers = $doneusers = $donebots = array();
+	$forum_viewers = $doneusers =  array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;
 	$onlinemembers = $comma = '';
 
@@ -210,7 +212,8 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 // Build the birthdays for to show on the index page.
 $bdays = '';
-$birthdays = [];
+$birthdays = $mostonline = [];
+$hiddencount = 0;
 if($mybb->settings['showbirthdays'] != 0)
 {
 
@@ -227,10 +230,9 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 
-	$hiddencount = 0;
 	if(isset($bdaycache[$bdaydate]))
 	{
-		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		$hiddencount = $bdaycache[$bdaydate]['hiddencount'] ?? 0;
 		$birthdays = $bdaycache[$bdaydate]['users'];
 	}
 

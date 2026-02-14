@@ -636,7 +636,7 @@ function get_usertitle($uid=0)
 			}
 		}
 
-		return $usertitle['title'];
+		return $usertitle['title'] ?? '';
 	}
 }
 

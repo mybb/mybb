@@ -916,7 +916,9 @@ class postParser
 	{
 		global $lang, $theme, $mybb;
 
-		$quote = [];
+		$quote = [
+			'linkback' => false,
+		];
 
 		$quote['message'] = trim($message);
 		$quote['message'] = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $quote['message']);
@@ -1516,6 +1518,8 @@ class postParser
 
 		$path = empty($parsed_url['path']) ? array() : explode('/', $parsed_url['path']);
 
+		$local = '';
+
 		switch($video)
 		{
 			case "dailymotion":
@@ -1582,10 +1586,6 @@ class postParser
 					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
 					{
 						$local = "{$domain[0]}.";
-					}
-					else
-					{
-						$local = '';
 					}
 				}
 				break;

@@ -38,7 +38,7 @@
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% if mybb.settings.footer.themeselect.options %}
                                 {% for name, field in mybb.input %}
-                                    {% if name != 'theme' and name is not iterable and value is not iterable and value %}
+                                    {% if name != 'theme' and name is not iterable and value is defined and value is not iterable and value %}
                                         <input type="hidden" name="{{ name }}" value="{{ value }}" />
                                     {% endif %}
                                 {% endfor %}

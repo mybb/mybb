@@ -35,7 +35,7 @@ readonly class ThemeRepository
         );
 
         return new Theme(
-            $data['tid'] ?? throw new InvalidArgumentException(),
+            isset($data['tid']) ? (int)$data['tid'] : throw new InvalidArgumentException(),
             $this->themeExtensionRepository->getExisting(
                 $data['package'] ?? throw new InvalidArgumentException(),
             ),

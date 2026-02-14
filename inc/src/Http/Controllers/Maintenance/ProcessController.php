@@ -163,7 +163,7 @@ class ProcessController
                                         'type' => $type,
                                         'title' => $operationResult[$type]['title'],
                                         'message' => $operationResult[$type]['message'],
-                                        'list' => $operationResult[$type]['list'],
+                                        'list' => $operationResult[$type]['list'] ?? null,
                                         'operationName' => $operationName,
                                         'retry' => false,
                                     ];

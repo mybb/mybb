@@ -748,7 +748,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 // Are we showing the quick theme selection box?
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'] ?? 0, 0, '', false, true);
 
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{

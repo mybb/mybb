@@ -79,7 +79,7 @@ function fetch_unread_count($fid)
 	}
 	if(!empty($forums_all))
 	{
-		if(isset($where))
+		if(isset($where) && isset($where2))
 		{
 			$where = "({$where} OR fid IN (".implode(',', $forums_all)."))";
 			$where2 = "({$where2} OR t.fid IN (".implode(',', $forums_all)."))";
@@ -153,7 +153,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.moved=0 AND {$where2} AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					WHERE t.visible=1 AND t.moved=0 ".(isset($where2) ? "AND {$where2}" : '')." AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 				break;
 			default:
@@ -162,7 +162,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.moved=0 AND {$where2} AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					WHERE t.visible=1 AND t.moved=0 ".(isset($where2) ? "AND {$where2}" : '')." AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 		}
 		return $db->fetch_field($query, "unread_count");

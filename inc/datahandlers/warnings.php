@@ -444,12 +444,10 @@ class WarningsHandler extends DataHandler
 								$warning['title'] = $this->warning_type['title'];
 							}
 
-							// Never lift the ban?
-							if($action['length'] <= 0)
-							{
-								$bantime = '---';
-							}
-							else
+							// Never lift the ban as default
+							$bantime = '---';
+
+							if($action['length'] > 0)
 							{
 								$bantimes = fetch_ban_times();
 								foreach($bantimes as $date => $string)
@@ -625,7 +623,7 @@ class WarningsHandler extends DataHandler
 							}
 
 							// if the thing isn't in force, don't bother with trying to update anything
-							if(!$user[$current_inforce_field])
+							if(!isset($current_inforce_field) || !$user[$current_inforce_field])
 							{
 								continue;
 							}
@@ -637,7 +635,10 @@ class WarningsHandler extends DataHandler
 								if(!$lower_expiration_times[$i])
 								{
 									// doesn't expire - enforce this
-									$this->updated_user[$current_expiry_field] = 0;
+									if(isset($current_expiry_field)) {
+										$this->updated_user[$current_expiry_field] = 0;
+									}
+
 									continue;
 								}
 
@@ -657,24 +658,30 @@ class WarningsHandler extends DataHandler
 									// the old level never expired, not much we can do but try to estimate a new expiry time... which will just happen to be starting from today...
 									$expire_offset = TIME_NOW + $lower_expiration_times[$i];
 									// if the user's expiry time is already less than what we're going to set it to, skip
-									if($user[$current_expiry_field] <= $expire_offset)
+									if(isset($current_expiry_field) && $user[$current_expiry_field] <= $expire_offset)
 									{
 										continue;
 									}
 								}
 
-								$this->updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
-								// double-check if it's expired already
-								if($this->updated_user[$current_expiry_field] < TIME_NOW)
-								{
-									$this->updated_user[$current_expiry_field] = 0;
-									$this->updated_user[$current_inforce_field] = 0;
+								if(isset($current_expiry_field)) {
+									$this->updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
+
+									// double-check if it's expired already
+									if($this->updated_user[$current_expiry_field] < TIME_NOW)
+									{
+										$this->updated_user[$current_expiry_field] = 0;
+										$this->updated_user[$current_inforce_field] = 0;
+									}
 								}
 							}
 							else
 							{
 								// there's no lower level for this type - remove the consequence entirely
-								$this->updated_user[$current_expiry_field] = 0;
+								if(isset($current_expiry_field)) {
+									$this->updated_user[$current_expiry_field] = 0;
+								}
+
 								$this->updated_user[$current_inforce_field] = 0;
 							}
 						}

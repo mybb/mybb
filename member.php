@@ -1822,11 +1822,15 @@ if($mybb->input['action'] == "login")
 	// and we can't check loginattempts in the db
 	login_attempt_check();
 
+	$login = [];
+
 	// Redirect to the page where the user came from, but not if that was the login page.
 	if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$login['redirect_url'] = htmlentities($_SERVER['HTTP_REFERER']);
 	}
+
+	$captcha = '';
 
 	// Show captcha image for guests if enabled and only if we have to do
 	if($mybb->settings['captchaimage'] && $do_captcha == true)

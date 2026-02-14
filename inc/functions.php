@@ -390,7 +390,7 @@ function my_date($format, $stamp = 0, $offset = "", $ty = 1, $adodb = false)
 		$adodb = false;
 	}
 
-	$todaysdate = $yesterdaysdate = '';
+	$todaysdate = $yesterdaysdate = $date = '';
 	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal'))
 	{
 		$_stamp = TIME_NOW;
@@ -934,7 +934,7 @@ function error(string $message = "", string $title = "", string $extra_content =
 		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
-	
+
 	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
@@ -1021,6 +1021,8 @@ function error_no_permission()
 		echo json_encode(["errors" => [$lang->error_nopermission_user_ajax]]);
 		exit;
 	}
+
+	$username = $redirect_url = '';
 
 	if($mybb->user['uid'] == 0)
 	{
@@ -1630,10 +1632,10 @@ function forum_permissions($fid = 0, $uid = 0, $gid = 0)
 			$groupperms = $mybb->usergroup;
 		}
 	}
-	else 
+	else
 	{
 		$groupperms = usergroup_permissions($gid);
-	}	
+	}
 
 	if(!is_array($forum_cache))
 	{
@@ -1849,6 +1851,8 @@ function check_forum_password($fid, $pid = 0, $return = false)
 			}
 		}
 	}
+
+	$pwnote = false;
 
 	if($forum_cache[$fid]['password'] !== '')
 	{
@@ -3717,7 +3721,20 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 
 		$editor_language .= "}})(jQuery);";
 
-		$toolbar = [];
+		$toolbar = [
+			'emoticon' => '',
+			'basic1' => '',
+			'basic2' => '',
+			'align' => '',
+			'font' => '',
+			'size' => '',
+			'color' => '',
+			'removeformat' => '',
+			'email' => '',
+			'link' => '',
+			'list' => '',
+			'code' => ''
+		];
 
 		if(defined("IN_ADMINCP"))
 		{
@@ -3727,7 +3744,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 		else
 		{
 			// Smilies
-			$emoticons = [];
+			$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
+
 			if($smilies)
 			{
 				if(!$smiliecache)
@@ -3755,8 +3773,6 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					reset($smiliecache);
 
 					$i = 0;
-
-					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
 
 					foreach($smiliecache as $smilie)
 					{
@@ -3928,7 +3944,7 @@ function build_clickable_smilies()
 
 		if(!$smiliecache)
 		{
-			if(!is_array($smilie_cache))
+			if(empty($smilie_cache))
 			{
 				$smilie_cache = $cache->read("smilies");
 			}
@@ -4523,7 +4539,7 @@ function get_attachment_icon($ext)
 
 	$ext = my_strtolower($ext);
 
-	if($attachtypes[$ext]['icon'])
+	if(!empty($attachtypes[$ext]['icon']))
 	{
 		static $attach_icons_schemes = array();
 		if(!isset($attach_icons_schemes[$ext]))
@@ -6035,11 +6051,11 @@ function get_forum_link(int $fid, int $page = 0) : string
  * Build the thread link.
  *
  * @param int $tid The thread id of the thread.
- * @param int $page (Optional) The page number of the thread.
+ * @param int|string $page (Optional) The page number of the thread.
  * @param string $action (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
-function get_thread_link(int $tid, int $page = 0, string $action = '') : string
+function get_thread_link(int $tid, int|string $page = 0, string $action = '') : string
 {
 	$link = THREAD_URL;
 	$replacements = [

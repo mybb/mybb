@@ -748,6 +748,9 @@ EOF;
 		}
 		$build_menu = "<div id=\"menu\">\n<ul>\n";
 		ksort($this->_menu);
+
+		$sub_menu_title = '';
+
 		foreach($this->_menu as $items)
 		{
 			foreach($items as $menu_item)
@@ -928,6 +931,9 @@ EOF;
 		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
+
+		$dropdownsmilies = $moresmilies = $hiddensmilies = "";
+
 		if($smilies)
 		{
 			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertertot'])
@@ -948,7 +954,7 @@ EOF;
 
 			if(!$smiliecache)
 			{
-				if(!is_array($smilie_cache))
+				if(empty($smilie_cache))
 				{
 					$smilie_cache = $cache->read("smilies");
 				}
@@ -965,7 +971,6 @@ EOF;
 			{
 				reset($smiliecache);
 
-				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
 				foreach($smiliecache as $smilie)

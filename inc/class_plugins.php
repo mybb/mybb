@@ -159,6 +159,8 @@ class pluginSystem
 
 		$this->current_hook_stack[] = $this->current_hook;
 
+		$existing_globals = [];
+
 		if($mybb->config['compat_plugin_globals'] ?? true)
 		{
 			$existing_globals = array_keys($GLOBALS);

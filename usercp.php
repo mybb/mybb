@@ -3597,6 +3597,9 @@ if(!$mybb->input['action'])
 	}
 
 	$latest_warnings = '';
+
+	$warnings = [];
+
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
 		if($mybb->settings['maxwarningpoints'] < 1)
@@ -3614,7 +3617,6 @@ if(!$mybb->input['action'])
 			$mybb->user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 		}
 
-		$warnings = [];
 		if($warning_level > 0)
 		{
 			require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -4013,6 +4015,8 @@ if(!$mybb->input['action'])
 
 				$thread['lastread'] = $lastread;
 				$thread['folder_label'] = '';
+
+				$thread['folder'] = '';
 
 				// Folder Icons
 				if(!empty($thread['doticon']))

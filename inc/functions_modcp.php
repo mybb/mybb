@@ -81,6 +81,8 @@ function fetch_forum_announcements($pid = 0, $depth = 1)
 
 			$moderate = true;
 
+			$currentAnnouncements = [];
+
 			if($forum['active'] == 0 || !is_moderator($forum['fid'], "canmanageannouncements"))
 			{
 				// Check if this forum is a parent of a moderated forum
@@ -98,8 +100,6 @@ function fetch_forum_announcements($pid = 0, $depth = 1)
 			else
 			{
 				// This forum is moderated by the user, so print out the forum's title, and its announcements
-				$currentAnnouncements = [];
-
 				if(isset($announcements[$forum['fid']]))
 				{
 					foreach($announcements[$forum['fid']] as $aid => $announcement)
