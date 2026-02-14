@@ -773,7 +773,7 @@ if($mybb->input['action'] == "thread")
             $visibleonly_p
 			ORDER BY p.dateline, p.pid
 		");
-		if(isset($postsdone) && !is_array($postsdone))
+		if(empty($postsdone) || !is_array($postsdone))
 		{
 			$postsdone = array();
 		}
@@ -1293,6 +1293,9 @@ if($mybb->input['action'] == "thread")
 
 	// Get users viewing this thread
 	$usersbrowsing='';
+
+	$onlinemembers = [];
+	
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -1301,7 +1304,6 @@ if($mybb->input['action'] == "thread")
 		$thread['membercount'] = 0;
 		$thread['inviscount'] = 0;
 		$thread['onlinemembers'] = 0;
-		$onlinemembers = [];
 		$doneusers = array();
 
 		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");

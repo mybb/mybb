@@ -1632,10 +1632,10 @@ function forum_permissions($fid = 0, $uid = 0, $gid = 0)
 			$groupperms = $mybb->usergroup;
 		}
 	}
-	else 
+	else
 	{
 		$groupperms = usergroup_permissions($gid);
-	}	
+	}
 
 	if(!is_array($forum_cache))
 	{
@@ -4537,7 +4537,7 @@ function get_attachment_icon($ext)
 
 	$ext = my_strtolower($ext);
 
-	if(isset($attachtypes[$ext]['icon']))
+	if(!empty($attachtypes[$ext]['icon']))
 	{
 		static $attach_icons_schemes = array();
 		if(!isset($attach_icons_schemes[$ext]))
