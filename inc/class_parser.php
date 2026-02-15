@@ -866,7 +866,7 @@ class postParser
 
 		if($text_only == false)
 		{
-			$replace = "<div>$lang->quote</div><blockquote class=\"mycode_quote\">$1</blockquote>\n";
+			$replace = template('@parser/mycodes/quote_simple.twig');
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback1');
 		}
 		else
