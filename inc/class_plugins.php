@@ -53,17 +53,17 @@ class pluginSystem
 	 * Add a hook onto which a plugin can be attached.
 	 *
 	 * @param string $hook The hook name.
-	 * @param callable $function The function of this hook.
+	 * @param callable|string $function The function of this hook.
 	 * @param int $priority The priority this hook has.
 	 * @param string|null $file The optional file belonging to this hook.
 	 *
 	 * @return boolean Whether the hook was added.
 	 */
-	function add_hook(string $hook, callable $function, int $priority = 10, ?string $file = ""): bool
+	function add_hook(string $hook, callable|string $function, int $priority = 10, ?string $file = ""): bool
 	{
-		if(!is_callable($function))
+		if(!is_callable($function) && !is_string($function))
 		{
-			// $function isn't a valid callable, can't add hook
+			// $function isn't a valid callable or string, can't add hook
 			return false;
 		}
 
@@ -187,6 +187,12 @@ class pluginSystem
 					{
 						$func = $hook['function'];
 
+						// $func isn't a valid callable, can't run hook
+						if(!is_callable($func))
+						{
+							continue;
+						}
+
 						$returnArgs = $func($arguments);
 					}
 
@@ -224,14 +230,14 @@ class pluginSystem
 	 * Remove a specific hook.
 	 *
 	 * @param string $hook The name of the hook.
-	 * @param callable $function The function of the hook.
+	 * @param callable|string $function The function of the hook.
 	 * @param int $priority The priority of the hook.
 	 *
 	 * @return bool Whether the hook was removed successfully.
 	 */
-	function remove_hook(string $hook, callable $function, int $priority = 10): bool
+	function remove_hook(string $hook, callable|string $function, int $priority = 10): bool
 	{
-		if(!is_callable($function))
+		if(!is_callable($function) && !is_string($function))
 		{
 			return false;
 		}
