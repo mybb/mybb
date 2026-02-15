@@ -37,7 +37,7 @@ class SharedData
      */
     public function tryGet(string $key): array|null|int|float|string|bool
     {
-        return $this->data[$key] ?? null;
+        return $GLOBALS[$key] ?? $this->data[$key] ?? null;
     }
 
     /**
