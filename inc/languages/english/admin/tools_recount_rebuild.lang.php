@@ -46,4 +46,4 @@ $l['success_rebuilt_referral'] = "The user referral count have been recounted su
 $l['success_rebuilt_thread_ratings'] = "The thread ratings have been recounted successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
-$l['automatically_redirecting'] = "Automatically Redirecting&hellip;";
+$l['automatically_redirecting'] = "Automatically Redirecting…";

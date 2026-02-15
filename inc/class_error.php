@@ -798,7 +798,7 @@ class errorHandler {
 				{
 					if($html)
 					{
-						$backtrace .= '<li>&hellip;</li>';
+						$backtrace .= '<li>…</li>';
 					}
 					else
 					{
