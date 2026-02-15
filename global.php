@@ -534,7 +534,7 @@ if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_mo
 				$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
 			}
 
-			$headerMessage[] = [
+			$headerMessages[] = [
 				'message' => \MyBB\View\template('misc/modqueue_link.twig', [
 					'modqueue_type' => $modqueue_type,
 					'modqueue_message' => $modqueue_message,
