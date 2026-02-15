@@ -56,7 +56,7 @@ abstract class Extension
 
     public static function codenameValid(string $value): bool
     {
-        return preg_match('/^[a-z_]+$/', $value) === 1;
+        return preg_match('/^[a-zA-Z_]+$/', $value) === 1;
     }
 
     /**
