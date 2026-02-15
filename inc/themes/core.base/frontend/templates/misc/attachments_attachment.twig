@@ -5,7 +5,7 @@
             {% if attachment.visible %}
                 {{ attachment.filename }}
             {% else %}
-                <a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a>
+                <a href="{{ url('attachment.php', { 'aid': attachment.aid }) }}" target="_blank">{{ attachment.filename }}</a>
             {% endif %}
         </span>
         <span class="uploaded-attachment__file-size">({{ attachment.size }})</span>
