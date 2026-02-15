@@ -1,6 +1,6 @@
-<a href="attachment.php?aid={{ thumb.aid }}" target="_blank">
+<a href="{{ url('attachment.php', { 'aid': thumb.aid }) }}" target="_blank">
     <img
-            src="attachment.php?thumbnail={{ thumb.aid }}"
+            src="{{ url('attachment.php', { 'thumbnail': thumb.aid }) }}"
             class="attachments__attachment attachment attachment--image"
             alt=""
             title="{{ lang.postbit_attachment_filename }} {{ thumb.filename }} {{ lang.postbit_attachment_size }} {{ thumb.filesize }} {{ thumb.date }}"

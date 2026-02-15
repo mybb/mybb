@@ -748,7 +748,7 @@ function build_friendly_wol_location($user_activity)
 			$tid = $posts[$pid];
 			if(!empty($threads[$tid]))
 			{
-				$location_name = $lang->sprintf($lang->viewing_attachment2, $user_activity['aid'], $threads[$tid], get_thread_link($tid));
+				$location_name = $lang->sprintf($lang->viewing_attachment2, $mybb->settings['bburl'], $user_activity['aid'], $threads[$tid], get_thread_link($tid));
 			}
 			else
 			{

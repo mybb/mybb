@@ -1,5 +1,5 @@
 <div class="attachments__attachment attachment">
     <span class="attachment__icon">{{ attachment.icon|raw }}</span>
-    <a href="attachment.php?aid={{ attachment.aid }}" target="_blank" title="{{ attachment.date }}" class="attachment__link">{{ attachment.filename }}</a>
+    <a href="{{ url('attachment.php', { 'aid': attachment.aid }) }}" target="_blank" title="{{ attachment.date }}" class="attachment__link">{{ attachment.filename }}</a>
     <span class="attachment__data">({{ lang.postbit_attachment_size }} {{ attachment.filesize }} / {{ lang.postbit_attachment_downloads }} {{ attachment.downloads }})</span>
 </div>

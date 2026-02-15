@@ -1,7 +1,7 @@
 <div class="row mod-queue">
     <div class="mod-queue__header">
         <div class="mod-queue__info">
-            <h2 class="mod-queue__subject"><a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})</h2>
+            <h2 class="mod-queue__subject"><a href="{{ url('attachment.php', { 'aid': attachment.aid }) }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})</h2>
             <div class="mod-queue__author">{{ lang.by }} {{ attachment.profile_link|raw }}</div>
             <div class="mod-queue__date">{{ attachment.attachdate|raw }}</div>
             <div class="mod-queue__post">{{ lang.post }}: <a href="{{ attachment.link }}">{{ attachment.postsubject }}</a></div>
