@@ -163,8 +163,8 @@ $l['multipage_last'] = "Last";
 $l['multipage_first'] = "First";
 $l['multipage_next'] = "Next";
 $l['multipage_previous'] = "Previous";
-$l['multipage_link_start'] = " &hellip;";
-$l['multipage_link_end'] = "&hellip; ";
+$l['multipage_link_start'] = " …";
+$l['multipage_link_end'] = "… ";
 $l['multipage_jump'] = "Jump to page";
 
 $l['editor_bold'] = "Bold";
@@ -459,8 +459,8 @@ $l['warnings'] = "The following warnings occurred:";
 $l['boardclosed'] = 'Temporarily Unavailable';
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later.';
 
-$l['ajax_loading'] = "Loading. <br />Please Wait&hellip;";
-$l['saving_changes'] = "Saving changes&hellip;";
+$l['ajax_loading'] = "Loading. <br />Please Wait…";
+$l['saving_changes'] = "Saving changes…";
 $l['refresh'] = "Refresh";
 $l['select_language'] = "Quick Language Select";
 $l['select_theme'] = "Quick Theme Select";
@@ -610,8 +610,8 @@ $l['select2_inputtoolong_single'] = "Please delete one character";
 $l['select2_inputtoolong_plural'] = "Please delete {1} characters";
 $l['select2_selectiontoobig_single'] = "You can only select one item";
 $l['select2_selectiontoobig_plural'] = "You can only select {1} items";
-$l['select2_loadmore'] = "Loading more results&hellip;";
-$l['select2_searching'] = "Searching&hellip;";
+$l['select2_loadmore'] = "Loading more results…";
+$l['select2_searching'] = "Searching…";
 
 $l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
 $l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';
