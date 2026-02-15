@@ -58,7 +58,7 @@
     <div class="main">
         <div class="wrapper wrapper--main">
             <div id="content">
-                {% for template, options in headerMessages %}
+                {% for template, options in header_messages() %}
                     {% if template matches '/^\\d+$/' %}
                         {% include 'messages/base.twig' %}
                     {% else %}
