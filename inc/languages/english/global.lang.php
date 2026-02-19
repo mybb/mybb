@@ -166,6 +166,7 @@ $l['multipage_previous'] = "Previous";
 $l['multipage_link_start'] = " &hellip;";
 $l['multipage_link_end'] = "&hellip; ";
 $l['multipage_jump'] = "Jump to page";
+$l['multipage_page_of'] = "Page {1} of {2}";
 
 $l['editor_bold'] = "Bold";
 $l['editor_italic'] = "Italic";
