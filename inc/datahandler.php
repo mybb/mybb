@@ -119,13 +119,16 @@ class DataHandler
 	 */
 	function get_friendly_errors()
 	{
-		global $lang;
+		global $lang, $plugins;
 
 		// Load the language pack we need
 		if($this->language_file)
 		{
 			$lang->load($this->language_file, true);
 		}
+
+		$plugins->run_hooks('datahandler_get_friendly_errors', $this);
+
 		// Prefix all the error codes with the language prefix.
 		$errors = array();
 		foreach($this->errors as $error)
