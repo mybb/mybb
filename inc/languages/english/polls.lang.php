@@ -40,6 +40,7 @@ $l['you_voted'] = "You voted for this item.";
 
 $l['redirect_pollposted'] = "Your poll has been posted.<br />You will now be returned to the thread.";
 $l['redirect_pollpostedmoderated'] = "Your poll has been posted, but your thread is still pending moderation.<br />You will be returned to the forum.";
+$l['redirect_pollposted_draft'] = "Your poll has been posted, but your thread is a draft.<br />You will now be taken to your draft listing.";
 $l['redirect_pollupdated'] = "The poll has been updated.<br />You will now be returned to the thread.";
 $l['redirect_votethanks'] = "Thank you for voting.<br />You will now be returned to the thread.";
 $l['redirect_unvoted'] = "Your vote(s) in this thread have been removed.<br />You will now be returned to the thread.";
