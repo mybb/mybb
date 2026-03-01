@@ -704,8 +704,8 @@ min=0]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>			
-		</setting>		
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
@@ -1096,11 +1096,19 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[disabled]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+        <setting name="enable_magic_login">
+            <title>Enable Magic Login</title>
+            <description><![CDATA[Allow users to log in using passwordless magic links sent to their email.]]></description>
+            <disporder>19</disporder>
+            <optionscode><![CDATA[yesno]]></optionscode>
+            <settingvalue><![CDATA[1]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.
 <br />To allow email as a valid login method, no users are allowed to share email addresses.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
 1=Email Only
@@ -1111,7 +1119,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. Set to 0 to disable]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
@@ -1120,7 +1128,7 @@ min=0]]></optionscode>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. Set to 0 to disable.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1129,7 +1137,7 @@ min=0]]></optionscode>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -1138,7 +1146,7 @@ min=0]]></optionscode>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1146,7 +1154,7 @@ min=0]]></optionscode>
 		<setting name="regtime">
 			<title>Minimum Registration Time</title>
 			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form. Used to prevent automated bot signups. Setting this to 0 to disables the function.]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -1155,7 +1163,7 @@ min=0]]></optionscode>
 		<setting name="securityquestion">
 			<title>Show Security Question</title>
 			<description><![CDATA[Do you wish to show a question that users must answer when registering?]]></description>
-			<disporder>25</disporder>
+			<disporder>26</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1565,7 +1573,7 @@ min=0]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>		
+		</setting>
 	</settinggroup>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
@@ -2407,7 +2415,7 @@ min=1]]></optionscode>
 text=Plain text only
 html=HTML only
 both=Plain text + HTML]]></optionscode>
-			<settingvalue><![CDATA[text]]></settingvalue>		
+			<settingvalue><![CDATA[text]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>

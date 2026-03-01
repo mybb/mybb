@@ -8,6 +8,8 @@
  *
  */
 
+$tables[] = "PRAGMA foreign_keys = ON;";
+
 $tables[] = "CREATE TABLE mybb_adminlog (
 	uid int NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default '',
@@ -117,6 +119,22 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 	validated tinyint(1) NOT NULL default '0',
 	misc varchar(255) NOT NULL default ''
 );";
+
+$tables[] = "CREATE TABLE mybb_magic_links (
+	id TEXT NOT NULL PRIMARY KEY,
+	type TEXT NOT NULL,
+	user_id INTEGER NOT NULL,
+	created_at INTEGER NOT NULL,
+	expires_at INTEGER NOT NULL,
+	used_at INTEGER NOT NULL DEFAULT 0,
+	FOREIGN KEY (user_id) REFERENCES mybb_users(uid) ON DELETE CASCADE
+);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_type ON mybb_magic_links(type);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_user_id ON mybb_magic_links(user_id);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_expires_at ON mybb_magic_links(expires_at);";
 
 $tables[] = "CREATE TABLE mybb_badwords (
 	bid INTEGER PRIMARY KEY,
@@ -686,7 +704,7 @@ $tables[] = "CREATE TABLE mybb_securitylog (
 	dateline int NOT NULL default '0',
 	type varchar(50) NOT NULL default ''
  );";
- 
+
 $tables[] = "CREATE INDEX mybb_securitylog_uid ON mybb_securitylog (uid);";
 
 $tables[] = "CREATE TABLE mybb_searchlog (

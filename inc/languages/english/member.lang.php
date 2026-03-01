@@ -36,6 +36,7 @@ $l['error_no_email_subject'] = "You need to enter a subject for your email";
 $l['error_no_email_message'] = "You need to enter a message for your email";
 
 $l['login'] = "Login";
+$l['login_description_magic_link'] = "Enter your email for a login link.";
 $l['pw_note'] = "Please note that passwords are case sensitive.";
 $l['lostpw_note'] = "Lost your password?";
 $l['lost_pw'] = "Lost Account Password";
@@ -210,6 +211,8 @@ $l['redirect_memberrated'] = "The member has been rated successfully.";
 $l['redirect_registered_passwordsent'] = "A random password has been generated and sent to your email address. Before you can login, you will need to check your email for this password.";
 $l['redirect_validated'] = "Thank you, your account has been validated.<br />You will now be taken to the forum index.";
 
+$l['success_magic_link_sent'] = "A magic login link has been sent to your email address. Please check your email and click the link to log in.";
+
 $l['error_activated_by_admin'] = "You are unable to resend your account activation email as all registrations must be approved by an Administrator.";
 $l['error_alreadyregistered'] = "Sorry, but our system shows that you have already registered and the registration of multiple accounts has been disabled.";
 $l['error_alreadyregisteredtime'] = "We cannot process your registration because there has already been {1} new registration(s) from your ip address in the past {2} hours. Please try again later.";
@@ -224,6 +227,10 @@ $l['error_regimageinvalid'] = "The image verification code that you entered was 
 $l['error_regimagerequired'] = "Please fill out the image verification code to continue the login process. Please enter the code exactly how it appears in the image.";
 $l['error_spam_deny'] = "Our systems detect that you may be a spammer and therefore you have been denied registration. If this is a mistake, please contact the Administrator.";
 $l['error_spam_deny_time'] = "Our systems detect that you may be a spammer and therefore you have been denied registration. Registration must take a minimum time of {1} seconds to prevent automated signups, you registered in {2} seconds. If this is a mistake, please contact the Administrator.";
+$l['error_magic_link_limit_exceeded'] = "You have exceeded the maximum number of {1} magic login links that can be generated per hour. Please wait before requesting another magic link.";
+$l['error_invalid_magic_login_validation'] = "There was an error validating your magic login link. Please try logging in with your username and password instead.";
+$l['error_invalid_magic_link'] = "The magic link you used is invalid or has expired. Please request a new magic link to be sent to your email address.";
+$l['error_invalid_magic_link_email'] = "The email address you entered is invalid. Please enter a valid email address.";
 
 $l['js_validator_no_username'] = "You must enter a username";
 $l['js_validator_invalid_email'] = "You need to enter a valid email address";

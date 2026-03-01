@@ -301,7 +301,7 @@ class LoginDataHandler extends DataHandler
 	/**
 	 * @return bool true
 	 */
-	function complete_login()
+	function complete_login(bool $update_hash = true)
 	{
 		global $plugins, $db, $mybb, $session;
 
@@ -333,7 +333,7 @@ class LoginDataHandler extends DataHandler
 			$this->captcha->invalidate_captcha();
 		}
 
-		if (user_password_needs_rehash($user)) {
+		if ($update_hash && user_password_needs_rehash($user)) {
 			$data = create_password($this->data['password']);
 			$db->update_query('users', $data, 'uid=' . (int)$user['uid']);
 		}

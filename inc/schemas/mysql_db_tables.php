@@ -121,6 +121,24 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
   PRIMARY KEY (aid)
 ) ENGINE=InnoDB;";
 
+$tables[] = "CREATE TABLE mybb_magic_links (
+  id varchar(36) NOT NULL,
+  type VARCHAR(32) NOT NULL,
+  user_id int unsigned NOT NULL,
+  created_at int unsigned NOT NULL,
+  expires_at int unsigned NOT NULL,
+  used_at int unsigned NOT NULL default 0,
+  PRIMARY KEY (id),
+  INDEX `mybb_magic_links_type` (`type`),
+  INDEX `mybb_magic_links_user_id` (`user_id`),
+  INDEX `mybb_magic_links_expires_at` (`expires_at`),
+  FOREIGN KEY (`user_id`) REFERENCES `mybb_users`(`uid`) ON DELETE CASCADE,
+  CONSTRAINT `chk_user_id` CHECK (user_id > 0),
+  CONSTRAINT `chk_created_at` CHECK (created_at >= 0),
+  CONSTRAINT `chk_expires_at` CHECK (expires_at >= created_at),
+  CONSTRAINT `chk_used_at` CHECK (used_at = 0 OR used_at >= created_at)
+) ENGINE=InnoDB;";
+
 $tables[] = "CREATE TABLE mybb_badwords (
   bid int unsigned NOT NULL auto_increment,
   badword varchar(100) NOT NULL default '',

@@ -43,6 +43,12 @@
                     <div class="row row--form row--compact field">
                         <p class="option-field option-field--compact"><label><input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" /> {{ lang.remember_me }}</label></p>
                     </div>
+                    {% if mybb.settings.enable_magic_login == 1 %}
+                        <div class="row row--form">
+                            <a href="{{ url('member.php', { 'action': 'login', 'send_magic_link': 1 }) }}"
+                               class="button button--inline button--small">{{ lang.login_with_email_link }}</a>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="block__footer">
                     <button type="submit" class="button button--medium">
