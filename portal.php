@@ -450,7 +450,13 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		}
 	}
 
-	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'", array('limit' => 1));
+	$query_definition = [
+		"where" => "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'",
+	];
+
+	$plugins->run_hooks('portal_announcements_start', $query_definition);
+
+	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", $query_definition['where'], array('limit' => 1));
 	$announcementcount = $db->fetch_field($query, "threads");
 
 	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
@@ -488,7 +494,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
         SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
         FROM ".TABLE_PREFIX."posts p
         LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-        WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0' AND t.firstpost=p.pid
+        WHERE {$query_definition['where']} AND t.firstpost=p.pid
         ORDER BY t.dateline DESC
         LIMIT {$start}, {$numannouncements}"
 	);
