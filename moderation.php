@@ -3612,20 +3612,6 @@ function is_moderator_by_tids($threads, $permission = '')
 function moderation_redirect($url, $message = "", $title = "")
 {
 	global $mybb;
-	if(!empty($mybb->input['url']))
-	{
-		$url = htmlentities($mybb->input['url']);
-	}
 
-	if(my_strpos($url, $mybb->settings['bburl'].'/') !== 0)
-	{
-		if(my_strpos($url, '/') === 0)
-		{
-			$url = my_substr($url, 1);
-		}
-		$url_segments = explode('/', $url);
-		$url = $mybb->settings['bburl'].'/'.end($url_segments);
-	}
-
-	redirect($url, $message, $title);
+	redirect($mybb->get_input('url') === '' ? $url : $mybb->get_input('url'), $message, $title);
 }
