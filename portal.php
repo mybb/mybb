@@ -450,8 +450,14 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		}
 	}
 
-	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'", array('limit' => 1));
-	$announcementcount = $db->fetch_field($query, "threads");
+    $announcements_count_query_definition = [
+        "tables" => "threads t",
+        "fields" => 'COUNT(t.tid) AS threads',
+        "where" => "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'",
+        "options" => [
+            "limit" => 1,
+        ],
+    ];
 
 	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
 	if(!$numannouncements)
@@ -478,20 +484,40 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$page = 1;
 	}
 
+    $announcements_fetch_query_definition = [
+        "tables" => "posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)",
+        "fields" => 'p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount',
+        "where" => "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0' AND t.firstpost=p.pid",
+        "options" => [
+            "order_by" => "t.dateline",
+            "order_dir" => "desc",
+            "limit" => $numannouncements,
+            "limit_start" => $start,
+        ],
+    ];
+
+    $plugins->run_hooks('portal_announcements_start');
+
+    $query = $db->simple_select(
+        $announcements_count_query_definition['tables'],
+        $announcements_count_query_definition['fields'],
+        $announcements_count_query_definition['where'],
+        $announcements_count_query_definition['options'],
+    );
+    $announcementcount = $db->fetch_field($query, "threads");
+
 	$multipage = multipage($announcementcount, $numannouncements, $page, $file_name);
 
 	$pids = '';
 	$tids = '';
 	$posts = [];
 	$attachmentcount = array();
-	$query = $db->query("
-        SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
-        FROM ".TABLE_PREFIX."posts p
-        LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-        WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0' AND t.firstpost=p.pid
-        ORDER BY t.dateline DESC
-        LIMIT {$start}, {$numannouncements}"
-	);
+    $query = $db->simple_select(
+        $announcements_fetch_query_definition['tables'],
+        $announcements_fetch_query_definition['fields'],
+        $announcements_fetch_query_definition['where'],
+        $announcements_fetch_query_definition['options'],
+    );
 	while($getid = $db->fetch_array($query))
 	{
 		$attachmentcount[$getid['tid']] = $getid['attachmentcount'];
