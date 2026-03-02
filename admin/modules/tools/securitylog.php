@@ -52,7 +52,7 @@ if($mybb->input['action'] == 'prune')
 		// Searching for entries by a particular type
 		if($mybb->input['type'])
 		{
-			$where .= " AND type='".$mybb->get_input('type')."'";
+			$where .= " AND type='".$db->escape_string($mybb->get_input('type'))."'";
 		}
 
 		$db->delete_query("securitylog", $where);
@@ -168,7 +168,7 @@ if(!$mybb->input['action'])
 	// Searching for entries by a particular type
 	if($mybb->get_input('type'))
 	{
-		$where .= " AND l.type='".$mybb->get_input('type')."'";
+		$where .= " AND l.type='".$db->escape_string($mybb->get_input('type'))."'";
 	}
 
 	// Order?
