@@ -280,7 +280,9 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;type={$mybb->input['type']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		$type = urlencode($mybb->input['type']);
+
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;type={$type}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 
 	// Fetch filter options
