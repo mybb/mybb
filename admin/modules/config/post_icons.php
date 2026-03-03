@@ -136,12 +136,16 @@ if($mybb->input['action'] == "add_multiple")
 			$icons = array();
 			if(!$errors)
 			{
+                $file_extensions = get_file_extensions(allow_svg: true);
+
+                $image_extensions_file_types = array_keys($file_extensions['image']);
+
 				while($file = readdir($dir))
 				{
 					if($file != ".." && $file != ".")
 					{
 						$ext = get_extension($file);
-						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+						if(in_array($ext, $image_extensions_file_types))
 						{
 							if(!isset($aicons[$path.$file]))
 							{

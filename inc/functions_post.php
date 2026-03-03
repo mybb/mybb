@@ -1051,7 +1051,74 @@ function get_post_attachments($id, &$post)
 
 		$attachment['attach_type_id'] = $attachtypes[$attachment['extension']]['atid'] ?? 0;
 
-		$isImage = in_array($attachment['extension'], ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
+        static $inline_image_extensions_file_types = null;
+        static $inline_image_extensions_mime_types = null;
+        static $inline_audio_extensions_file_types = null;
+        static $inline_audio_extensions_mime_types = null;
+        static $inline_video_extensions_file_types = null;
+        static $inline_video_extensions_mime_types = null;
+        static $inline_other_extensions_file_types = null;
+        static $inline_other_extensions_mime_types = null;
+
+        if($inline_image_extensions_file_types === null) {
+            $file_extensions = get_file_extensions();
+
+            $inline_image_extensions = array_filter(
+                $file_extensions['image'],
+                function(array $extension): bool {
+                    return !empty($extension['allow_inline']);
+                }
+            );
+
+            $inline_image_extensions_file_types = array_keys($inline_image_extensions);
+
+            $inline_image_extensions_mime_types = array_column($inline_image_extensions, 'mime');
+
+            $inline_audio_extensions = array_filter(
+                $file_extensions['audio'],
+                function(array $extension): bool {
+                    return !empty($extension['allow_inline']);
+                }
+            );
+
+            $inline_audio_extensions_file_types = array_keys($inline_audio_extensions);
+
+            $inline_audio_extensions_mime_types = array_column($inline_audio_extensions, 'mime');
+
+            $inline_video_extensions = array_filter(
+                $file_extensions['video'],
+                function(array $extension): bool {
+                    return !empty($extension['allow_inline']);
+                }
+            );
+
+            $inline_video_extensions_file_types = array_keys($inline_video_extensions);
+
+            $inline_video_extensions_mime_types = array_column($inline_video_extensions, 'mime');
+
+            $inline_other_extensions = array_filter(
+                $file_extensions['other'],
+                function(array $extension): bool {
+                    return !empty($extension['allow_inline']);
+                }
+            );
+
+            $inline_other_extensions_file_types = array_keys($inline_other_extensions);
+
+            $inline_other_extensions_mime_types = array_column($inline_other_extensions, 'mime');
+        }
+
+        $isInlineImage = in_array($attachment['extension'], $inline_image_extensions_file_types) &&
+            in_array($attachment['filetype'], $inline_image_extensions_mime_types);
+
+        $isInlineAudio = in_array($attachment['extension'], $inline_audio_extensions_file_types)  &&
+            in_array($attachment['filetype'], $inline_audio_extensions_mime_types);
+
+        $isInlineVideo = in_array($attachment['extension'], $inline_video_extensions_file_types) &&
+            in_array($attachment['filetype'], $inline_video_extensions_mime_types);
+
+        $isInlineOther = in_array($attachment['extension'], $inline_other_extensions_file_types) &&
+            in_array($attachment['filetype'], $inline_other_extensions_mime_types);
 
 		$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 		$attachment['icon'] = get_attachment_icon($attachment['extension']);
@@ -1074,7 +1141,7 @@ function get_post_attachments($id, &$post)
 					'thumb' => $attachment,
 				]);
 			} elseif (
-				$isImage
+				$isInlineImage
 				&& (
 					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
 					|| $mybb->settings['attachthumbnails'] == 'no'
@@ -1083,7 +1150,25 @@ function get_post_attachments($id, &$post)
 				$attachmentBit = \MyBB\View\template('postbit/postbit_attached_image.twig', [
 					'image' => $attachment,
 				]);
-			} else {
+			} elseif ($isInlineAudio && $mybb->settings['attach_inline_audio']) {
+                $attachmentBit = \MyBB\View\template('postbit/postbit_attached_audio.twig', [
+                    'audio' => $attachment,
+                ]);
+            } elseif ($isInlineVideo && $mybb->settings['attach_inline_video']) {
+                $attachmentBit = \MyBB\View\template('postbit/postbit_attached_video.twig', [
+                    'video' => $attachment,
+                ]);
+            }  elseif (
+                $isInlineOther
+                && (
+                    ($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+                    || $mybb->settings['attach_inline_other']
+                )
+            ) {
+                $attachmentBit = \MyBB\View\template('postbit/postbit_attached_other.twig', [
+                    'other' => $attachment,
+                ]);
+            } else {
 				$attachmentBit = \MyBB\View\template('postbit/postbit_attachment.twig', [
 					'attachment' => $attachment,
 				]);
@@ -1102,14 +1187,26 @@ function get_post_attachments($id, &$post)
 			) {
 				$attached['thumbs'][] = $attachment;
 			} elseif (
-				$isImage
-				 && (
-					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
-					|| $mybb->settings['attachthumbnails'] == 'no'
-				)
-			) {
-				$attached['images'][] = $attachment;
-			} else {
+                $isInlineImage
+                && (
+                    ($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+                    || $mybb->settings['attachthumbnails'] == 'no'
+                )
+            ) {
+                $attached['images'][] = $attachment;
+            } elseif ($isInlineAudio && $mybb->settings['attach_inline_audio'] ) {
+                $attached['audios'][] = $attachment;
+            } elseif ($isInlineVideo && $mybb->settings['attach_inline_video']) {
+                $attached['videos'][] = $attachment;
+            } elseif (
+                $isInlineOther
+                && (
+                    ($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+                    || $mybb->settings['attach_inline_other']
+                )
+            ) {
+                $attached['others'][] = $attachment;
+            } else {
 				$attached['attachments'][] = $attachment;
 			}
 		}

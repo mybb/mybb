@@ -130,33 +130,30 @@ $uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
 
 $plugins->run_hooks("attachment_end");
 
+$file_extensions = get_file_extensions();
+
 if(isset($mybb->input['thumbnail']))
 {
-	if(!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
-	{
-		error($lang->error_invalidattachment);
-	}
+    $thumbnail_extensions = array_filter(
+        $file_extensions['image'] + $file_extensions['other'],
+        function(array $extension): bool {
+            return !empty($extension['allows_thumbnails']);
+        }
+    );
+
+    $thumbnail_extensions_file_types = array_keys($thumbnail_extensions);
+
+    $thumbnail_extensions_mime_types = array_column($thumbnail_extensions, 'mime');
 
 	$ext = get_extension($attachment['thumbnail']);
-	switch($ext)
+
+	$type = $attachment['filetype'];
+
+	if(!in_array($ext, $thumbnail_extensions_file_types) ||
+		!in_array($type, $thumbnail_extensions_mime_types) ||
+		!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
 	{
-		case "gif":
-			$type = "image/gif";
-			break;
-		case "bmp":
-			$type = "image/bmp";
-			break;
-		case "png":
-			$type = "image/png";
-			break;
-		case "jpg":
-		case "jpeg":
-		case "jpe":
-			$type = "image/jpeg";
-			break;
-		default:
-			$type = "image/unknown";
-			break;
+		error($lang->error_invalidattachment);
 	}
 
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
@@ -177,39 +174,44 @@ else
 		error($lang->error_invalidattachment);
 	}
 
+    $inline_extensions = array_filter(
+        $file_extensions['image'] + $file_extensions['audio'] + $file_extensions['video'] + $file_extensions['text'] + $file_extensions['other'],
+        function(array $extension): bool {
+            return !empty($extension['allow_inline']);
+        }
+    );
+
+    $inline_extensions_file_types = array_keys($inline_extensions);
+
+    $inline_extensions_mime_types = array_column($inline_extensions, 'mime');
+
 	$ext = get_extension($attachment['filename']);
 
-	switch($attachment['filetype'])
-	{
-		case "application/pdf":
-		case "image/bmp":
-		case "image/gif":
-		case "image/jpeg":
-		case "image/pjpeg":
-		case "image/png":
-		case "text/plain":
-			header("Content-type: {$attachment['filetype']}");
-			if(!empty($attachtypes[$ext]['forcedownload']))
-			{
-				$disposition = "attachment";
-			}
-			else
-			{
-				$disposition = "inline";
-			}
-			break;
+    if(in_array($ext, $inline_extensions_file_types) &&
+        in_array($attachment['filetype'], $inline_extensions_mime_types))
+    {
+        header("Content-type: {$attachment['filetype']}");
+        if(!empty($attachtypes[$ext]['forcedownload']))
+        {
+            $disposition = "attachment";
+        }
+        else
+        {
+            $disposition = "inline";
+        }
+    }
+    else
+    {
+        $filetype = $attachment['filetype'];
 
-		default:
-			$filetype = $attachment['filetype'];
+        if(!$filetype)
+        {
+            $filetype = 'application/force-download';
+        }
 
-			if(!$filetype)
-			{
-				$filetype = 'application/force-download';
-			}
-
-			header("Content-type: {$filetype}");
-			$disposition = "attachment";
-	}
+        header("Content-type: {$filetype}");
+        $disposition = "attachment";
+    }
 
 	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie") !== false)
 	{

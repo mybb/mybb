@@ -1,0 +1,22 @@
+{% if mybb.settings.attach_inline_other == 1 %}
+    <object
+            data="{{ url('attachment.php', { 'aid': other.aid }) }}"
+            type="{{ other.filetype }}"
+            aria-label="{{ lang.postbit_attachment_filename }} {{ other.filename }} {{ lang.postbit_attachment_size }} {{ other.filesize }} {{ other.date }}"
+    >
+        <div class="attachments__attachment attachment">
+            <span class="attachment__icon">{{ other.icon|raw }}</span>
+            <a href="{{ url('attachment.php', { 'aid': other.aid }) }}" target="_blank" title="{{ other.date }}" class="attachment__link">{{ other.filename }}</a>
+            <span class="attachment__data">({{ lang.postbit_attachment_size }} {{ other.filesize }} / {{ lang.postbit_attachment_downloads }} {{ other.downloads }})</span>
+        </div>
+    </object>
+{% else %}
+    <a href="{{ url('attachment.php', { 'aid': other.aid }) }}" target="_blank">
+        <img
+                src="{{ url('attachment.php', { 'aid': other.aid }) }}"
+                class="attachments__attachment attachment attachment--image"
+                alt=""
+                title="{{ lang.postbit_attachment_filename }} {{ other.filename }} {{ lang.postbit_attachment_size }} {{ other.filesize }} {{ other.date }}"
+        />
+    </a>&nbsp;&nbsp;&nbsp;
+{% endif %}
