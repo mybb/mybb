@@ -211,26 +211,32 @@ function run_shutdown()
 			require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 			require_once MYBB_ROOT . 'inc/DbException.php';
 
-			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
-			switch($config['database']['type'])
+			$db_type = $config['database']['type'];
+
+			if($db_type === 'mysql')
 			{
-				case "sqlite":
-					$db = new DB_SQLite;
-					break;
-				case "pgsql":
-					$db = new DB_PgSQL;
-					break;
-				case "pgsql_pdo":
-					$db = new PostgresPdoDbDriver();
-					break;
-				case "mysql_pdo":
-					$db = new MysqlPdoDbDriver();
-					break;
-				case "mysqli":
-				case "mysql":
-				default:
-					$db = new DB_MySQLi;
+				$db_type = 'mysqli';
 			}
+
+			try
+			{
+				$db_class = match($db_type)
+				{
+					'sqlite' => DB_SQLite::class,
+					'pgsql' => DB_PgSQL::class,
+					'pgsql_pdo' => PostgresPdoDbDriver::class,
+					'mysql_pdo' => MysqlPdoDbDriver::class,
+					'mysqli' => DB_MySQLi::class,
+				};
+			}
+			catch(UnhandledMatchError)
+			{
+				return;
+			}
+
+			require_once MYBB_ROOT."inc/db_".$db_type.".php";
+
+			$db = new $db_class();
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))

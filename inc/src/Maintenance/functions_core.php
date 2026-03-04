@@ -13,6 +13,7 @@ use DB_Base;
 use Illuminate\Support\Str;
 use MyBB;
 use MyLanguage;
+use UnhandledMatchError;
 
 use function MyBB\app;
 
@@ -90,36 +91,36 @@ function getConfigurationFileModificationTime(): ?int
 
 function connectToDatabase(array $config): ?DB_Base
 {
-    $path = MYBB_ROOT . "inc/db_{$config['database']['type']}.php";
-
-    if (!file_exists($path)) {
-        return null;
-    } else {
-        require_once $path;
-
-        $db = match ($config['database']['type']) {
-            'sqlite' => new \DB_SQLite(),
-            'pgsql' => new \DB_PgSQL(),
-            'pgsql_pdo' => new \PostgresPdoDbDriver(),
-            'mysql_pdo' => new \MysqlPdoDbDriver(),
-            default => new \DB_MySQLi(),
+    try {
+        $db_class = match ($config['database']['type']) {
+            'sqlite' => \DB_SQLite::class,
+            'pgsql' => \DB_PgSQL::class,
+            'pgsql_pdo' => \PostgresPdoDbDriver::class,
+            'mysql_pdo' => \MysqlPdoDbDriver::class,
+            'mysqli' => \DB_MySQLi::class,
         };
-
-        // Connect to Database
-        if (!defined('TABLE_PREFIX')) {
-            define('TABLE_PREFIX', $config['database']['table_prefix']);
-        }
-
-        try {
-            $db->connect($config['database']);
-            $db->set_table_prefix(TABLE_PREFIX);
-            $db->type = $config['database']['type'];
-        } catch (\Exception) {
-            $db = null;
-        }
-
-        return $db;
+    } catch (UnhandledMatchError) {
+        return null;
     }
+
+    require_once MYBB_ROOT . "inc/db_{$config['database']['type']}.php";
+
+    $db = new $db_class();
+
+    // Connect to Database
+    if (!defined('TABLE_PREFIX')) {
+        define('TABLE_PREFIX', $config['database']['table_prefix']);
+    }
+
+    try {
+        $db->connect($config['database']);
+        $db->set_table_prefix(TABLE_PREFIX);
+        $db->type = $config['database']['type'];
+    } catch (\Exception) {
+        $db = null;
+    }
+
+    return $db;
 }
 
 function getCache(): ?datacache
