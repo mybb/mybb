@@ -490,7 +490,11 @@ function getDatabaseHandle(bool $persistent = false): ?DB_Base
     if (isset($GLOBALS['db'])) {
         $db = $GLOBALS['db'];
     } else {
-        $config = $GLOBALS['config'] ?? getConfigurationFileData();
+        if (isset($GLOBALS['config'])) {
+            $config = getCorrectedConfigurationFileData($GLOBALS['config']);
+        } else {
+            $config = getConfigurationFileData(true);
+        }
 
         if ($config !== null) {
             $db = connectToDatabase($config);
