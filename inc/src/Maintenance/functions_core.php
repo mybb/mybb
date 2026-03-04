@@ -62,6 +62,11 @@ function getCorrectedConfigurationFileData(array $config): array
         $config['database']['type'] = 'sqlite';
     }
 
+    // removed in MyBB 1.9
+    if ($config['database']['type'] === 'mysql') {
+        $config['database']['type'] = 'mysqli';
+    }
+
     return $config;
 }
 
