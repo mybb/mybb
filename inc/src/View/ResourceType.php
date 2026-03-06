@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyBB\View;
 
+use MyBB\Utilities\CodeLanguage;
+
 enum ResourceType: string
 {
     case IMAGE = 'image';
@@ -13,25 +15,25 @@ enum ResourceType: string
 
     public static function tryFromFilename(string $filename): ?self
     {
-        $language = ResourceLanguage::tryFromFilename($filename);
+        $language = CodeLanguage::tryFromFilename($filename);
 
         if ($language === null) {
             return null;
         } else {
-            return self::tryFromLanguage($language);
+            return self::tryFromCodeLanguage($language);
         }
     }
 
-    public static function tryFromLanguage(ResourceLanguage $language): ?self
+    public static function tryFromCodeLanguage(CodeLanguage $language): ?self
     {
         return match ($language) {
-            ResourceLanguage::JAVASCRIPT
+            CodeLanguage::JAVASCRIPT
                 => self::SCRIPT,
-            ResourceLanguage::CSS,
-            ResourceLanguage::SASS,
-            ResourceLanguage::SCSS
+            CodeLanguage::CSS,
+            CodeLanguage::SASS,
+            CodeLanguage::SCSS
                 => self::STYLE,
-            ResourceLanguage::TWIG
+            CodeLanguage::TWIG
                 => self::TEMPLATE,
         };
     }

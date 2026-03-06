@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyBB\View;
+namespace MyBB\Utilities;
 
-enum ResourceLanguage: string
+enum CodeLanguage: string
 {
     case CSS = 'CSS';
     case JAVASCRIPT = 'JavaScript';

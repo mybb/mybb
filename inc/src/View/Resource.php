@@ -8,6 +8,7 @@ use Exception;
 use MyBB\Cargo\EntityInterface as CargoEntityInterface;
 use MyBB\Cargo\EntityTrait;
 use MyBB\Cargo\RepositoryInterface;
+use MyBB\Utilities\CodeLanguage;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Viewlet\ViewletInterface;
 use RuntimeException;
@@ -162,9 +163,9 @@ readonly class Resource implements CargoEntityInterface
         return $this->locator->getSubPath();
     }
 
-    public function getLanguage(): ?ResourceLanguage
+    public function getCodeLanguage(): ?CodeLanguage
     {
-        return ResourceLanguage::tryFromFilename(
+        return CodeLanguage::tryFromFilename(
             $this->getFilename()
         );
     }
