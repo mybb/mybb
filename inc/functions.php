@@ -6088,20 +6088,27 @@ function get_thread_link(int $tid, int|string $page = 0, string $action = '') : 
  *
  * @param int $pid The post ID of the post
  * @param int $tid The thread id of the post.
+ * @param string $action (Optional) The action we're performing.
  * @return string The url to the post.
  */
-function get_post_link(int $pid, int $tid = 0) : string
+function get_post_link(int $pid, int $tid = 0, string $action = '') : string
 {
 	$link = POST_URL;
 	$replacements = [
 		'{pid}' => urlencode($pid),
 	];
 
-    if($tid > 0)
+	if($tid > 0)
 	{
-        $link = THREAD_URL_POST;
-        $replacements['{tid}'] = urlencode($tid);
-    }
+		$link = THREAD_URL_POST;
+		$replacements['{tid}'] = urlencode($tid);
+
+		if($action)
+		{
+			$link = THREAD_URL_POST_ACTION;
+			$replacements['{action}'] = urlencode($action);
+		}
+	}
 
 	return strtr($link, $replacements);
 }
