@@ -30,7 +30,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
 	defaultviews TEXT NOT NULL,
 	loginattempts smallint NOT NULL default '0',
 	loginlockoutexpiry int NOT NULL default '0',
-	authsecret varchar(16) NOT NULL default '',
+	authsecret varchar(64) NOT NULL default '',
 	recovery_codes varchar(177) NOT NULL default ''
  );";
 
