@@ -779,6 +779,8 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
   PRIMARY KEY (gid)
 );";
 
+$tables[] = "CREATE UNIQUE INDEX mybb_settinggroups_name_uq ON mybb_settinggroups (name);";
+
 $tables[] = "CREATE TABLE mybb_settings (
   sid serial,
   name varchar(120) NOT NULL default '',
@@ -793,6 +795,7 @@ $tables[] = "CREATE TABLE mybb_settings (
 );";
 
 $tables[] = "CREATE INDEX mybb_settings_gid ON mybb_settings (gid);";
+$tables[] = "CREATE UNIQUE INDEX mybb_settings_name_uq ON mybb_settings (name);";
 
 $tables[] = "CREATE TABLE mybb_smilies (
   sid serial,

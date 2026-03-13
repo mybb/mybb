@@ -748,6 +748,7 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
   description text NOT NULL,
   disporder smallint unsigned NOT NULL default '0',
   isdefault tinyint(1) NOT NULL default '0',
+  UNIQUE KEY name_uq (name),
   PRIMARY KEY (gid)
 ) ENGINE=InnoDB;";
 
@@ -761,6 +762,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   disporder smallint unsigned NOT NULL default '0',
   gid smallint unsigned NOT NULL default '0',
   isdefault tinyint(1) NOT NULL default '0',
+  UNIQUE KEY name_uq (name),
   KEY gid (gid),
   PRIMARY KEY (sid)
 ) ENGINE=InnoDB;";
