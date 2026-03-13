@@ -23,6 +23,7 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-pdo": "*",
         "chillerlan/php-authenticator": "^5.2",
         "chillerlan/php-qrcode": "^5.0",
