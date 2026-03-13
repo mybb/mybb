@@ -435,6 +435,9 @@ function upgrade100_indexes()
         $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_regip ON " . TABLE_PREFIX . "users (regip);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_lastip ON " . TABLE_PREFIX . "users (lastip);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "warnings_uid ON " . TABLE_PREFIX . "warnings (uid);";
+        // Unique indexes
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "settinggroups_name_uq ON " . TABLE_PREFIX . "settinggroups (name);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "settings_name_uq ON " . TABLE_PREFIX . "settings (name);";
     }
 
     if ($db->type == 'sqlite') {
@@ -445,6 +448,16 @@ function upgrade100_indexes()
 
     foreach ($indexes as $index) {
         $db->write_query($index);
+    }
+
+    if ($db->type === 'mysqli') {
+        if (!$db->index_exists('settinggroups', 'name_uq')) {
+            $db->write_query("ALTER TABLE " . TABLE_PREFIX . "settinggroups ADD UNIQUE KEY name_uq (name)");
+        }
+
+        if (!$db->index_exists('settings', 'name_uq')) {
+            $db->write_query("ALTER TABLE " . TABLE_PREFIX . "settings ADD UNIQUE KEY name_uq (name)");
+        }
     }
 }
 
