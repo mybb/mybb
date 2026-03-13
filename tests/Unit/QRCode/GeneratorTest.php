@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyBB\Tests\Unit\QRCode;
 
 use MyBB\QRCode\Generator;

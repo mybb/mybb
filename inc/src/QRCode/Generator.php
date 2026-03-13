@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyBB\QRCode;
 
 use chillerlan\QRCode\Common\EccLevel;
