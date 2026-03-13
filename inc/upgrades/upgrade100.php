@@ -51,6 +51,11 @@ function upgrade100_dbchanges()
     // Expand SMTP error storage (switch to TEXT to avoid truncation of long error messages)
     $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
+    // Increase 2FA secret storage to accommodate Base32-encoded authenticator secrets
+    if ($db->field_exists("authsecret", "adminoptions")) {
+        $db->modify_column("adminoptions", "authsecret", "varchar(64)", "set", "''");
+    }
+
     // Introduce theme packages.
     if (!$db->field_exists("package", "themes")) {
         // Remove incompatible themes and stylesheets

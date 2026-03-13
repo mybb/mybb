@@ -648,10 +648,8 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	}
 
 	// Validate the code
-	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
-	$auth = new PHPGangsta_GoogleAuthenticator;
-
-	$test = $auth->verifyCode($admin_options['authsecret'], $mybb->get_input('code'));
+	$authenticator = new \MyBB\TwoFactor\Authenticator();
+	$test = $authenticator->verify($admin_options['authsecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
 	if($test === true || $recovery === true)

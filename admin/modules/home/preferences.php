@@ -45,8 +45,8 @@ if($mybb->input['action'] == "recovery_codes")
 
 if(!$mybb->input['action'])
 {
-	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
-	$auth = new PHPGangsta_GoogleAuthenticator;
+	$authenticator = new \MyBB\TwoFactor\Authenticator();
+	$qr_code_generator = new \MyBB\QRCode\Generator();
 
 	$plugins->run_hooks("admin_home_preferences_start");
 
@@ -62,7 +62,7 @@ if(!$mybb->input['action'])
 			// 2FA was enabled -> create secret and log
 			if($mybb->input['2fa'])
 			{
-				$secret = $auth->createSecret();
+				$secret = $authenticator->createSecret(16);
 				// We don't want to close this session now
 				$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 				log_admin_action("enabled");
@@ -143,8 +143,10 @@ if(!$mybb->input['action'])
 
 	if(!empty($admin_options['authsecret']))
 	{
-		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@AdminCP", $admin_options['authsecret'], str_replace(" ", "", $mybb->settings['bbname']));
-		$form_container->output_row($lang->my2fa_qr . "<br /><img src=\"{$qr}\"");
+		$account_name = $mybb->user['username'] . "@AdminCP";
+		$issuer = str_replace(" ", "", $mybb->settings['bbname']);
+		$qr_code = $qr_code_generator->render($authenticator->getUri($admin_options['authsecret'], $account_name, $issuer));
+		$form_container->output_row($lang->my2fa_qr, "", "<img src=\"".htmlspecialchars_uni($qr_code)."\" alt=\"".htmlspecialchars_uni($lang->my2fa_qr)."\" width=\"250\" height=\"250\" />");
 	}
 
 	$form_container->end();
