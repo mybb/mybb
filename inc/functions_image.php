@@ -8,150 +8,118 @@
  *
  */
 
+enum ThumbnailOptionsPosition: string
+{
+    case None = '';
+    case Left = 'L';
+    case TopLeft = 'TL';
+    case BottomLeft = 'BL';
+    case Right = 'R';
+    case TopRight = 'TR';
+    case BottomRight = 'BR';
+    case Top = 'T';
+    case Bottom = 'B';
+    case Center = 'C';
+}
+
 /**
- * Generates a thumbnail based on specified dimensions (supports png, jpg, and gif)
+ * Generates a thumbnail based on specified dimensions (supports png, jpg, gif, bmp, webp, and avif)
  *
  * @param string $file the full path to the original image
  * @param string $path the directory path to where to save the new image
  * @param string $filename the filename to save the new image as
- * @param integer $maxheight maximum hight dimension
- * @param integer $maxwidth maximum width dimension
+ * @param int $maxheight maximum height dimension
+ * @param int $maxwidth maximum width dimension
+ * @param int $quality quality of the thumbnail
+ * @param bool $zoom_crop 0 = no zoom crop, 1 = zoom crop
+ * @param ThumbnailOptionsPosition $fixed_aspect_ratio
+ * @param string $background_color background color
+ * @param ThumbnailOptionsPosition $alignment
+ * @param int $rotate_angle 360 = no rotation
+ * @param int $dots_per_inch 72 = default
+ * @param bool $ignore_aspect_ratio false = no ignore, true = ignore
+ * @param int $maximum_file_bytes 0 = no limit
+ * @param array $filters
  * @return array thumbnail on success, error code 4 on failure
  */
-function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
-{
-	$thumb = array();
+function generate_thumbnail(
+    $file,
+    $path,
+    $filename,
+    $maxheight,
+    $maxwidth,
+    int $quality = 100,
+    bool $zoom_crop = false,
+    ThumbnailOptionsPosition $fixed_aspect_ratio = ThumbnailOptionsPosition::None,
+    string $background_color = '',
+    ThumbnailOptionsPosition $alignment = ThumbnailOptionsPosition::None,
+    int $rotate_angle = 360,
+    int $dots_per_inch = 72,
+    bool $ignore_aspect_ratio = false,
+    int $maximum_file_bytes = 0,
+    array $filters = [
+        //'lvl',
+        //'wmt',
+        //'blur',
+        //'grayscale',
+        //'negate',
+        //'sepia',
+        //'edge',
+        //'edge',
+        //'pixelate',
+    ],
+) {
+    try {
+        $phpThumb = new phpThumb();
 
-	if(!function_exists("imagecreate"))
-	{
-		$thumb['code'] = 3;
-		return $thumb;
-	}
+        $phpThumb->setSourceFilename($file);
 
-	$imgdesc = getimagesize($file);
-	$imgwidth = $imgdesc[0];
-	$imgheight = $imgdesc[1];
-	$imgtype = $imgdesc[2];
-	$imgattr = $imgdesc[3];
-	$imgbits = isset($imgdesc['bits']) ? $imgdesc['bits'] : null;
-	$imgchan = isset($imgdesc['channels']) ? $imgdesc['channels'] : null;
+        $phpThumb->setParameter('h', $maxheight);
 
-	if($imgwidth == 0 || $imgheight == 0)
-	{
-		$thumb['code'] = 3;
-		return $thumb;
-	}
-	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
-	{
-		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
+        $phpThumb->setParameter('w', $maxwidth);
 
-		if($imgtype == 3)
-		{
-			if(@function_exists("imagecreatefrompng"))
-			{
-				$im = @imagecreatefrompng($file);
-			}
-		}
-		elseif($imgtype == 2)
-		{
-			if(@function_exists("imagecreatefromjpeg"))
-			{
-				$im = @imagecreatefromjpeg($file);
-			}
-		}
-		elseif($imgtype == 1)
-		{
-			if(@function_exists("imagecreatefromgif"))
-			{
-				$im = @imagecreatefromgif($file);
-			}
-		}
-		else
-		{
-			$thumb['code'] = 3;
-			return $thumb;
-		}
-		if(empty($im))
-		{
-			$thumb['code'] = 3;
-			return $thumb;
-		}
-		$scale = scale_image($imgwidth, $imgheight, $maxwidth, $maxheight);
-		$thumbwidth = $scale['width'];
-		$thumbheight = $scale['height'];
-		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
+        $phpThumb->setParameter('q', $quality);
 
-		if(!$thumbim)
-		{
-			$thumbim = @imagecreate($thumbwidth, $thumbheight);
-			$resized = true;
-		}
+        $phpThumb->setParameter('zc', $zoom_crop);
 
-		// Attempt to preserve the transparency if there is any
-		if($imgtype == 3)
-		{
-			// A PNG!
-			imagealphablending($thumbim, false);
-			imagefill($thumbim, 0, 0, imagecolorallocatealpha($thumbim, 0, 0, 0, 127));
+        $phpThumb->setParameter('far', $fixed_aspect_ratio);
 
-			// Save Alpha...
-			imagesavealpha($thumbim, true);
-		}
-		elseif($imgtype == 1)
-		{
-			// Transparent GIF?
-			$trans_color = imagecolortransparent($im);
-			if($trans_color >= 0 && $trans_color < imagecolorstotal($im))
-			{
-				$trans = imagecolorsforindex($im, $trans_color);
-				$new_trans_color = imagecolorallocate($thumbim, $trans['red'], $trans['blue'], $trans['green']);
-				imagefill($thumbim, 0, 0, $new_trans_color);
-				imagecolortransparent($thumbim, $new_trans_color);
-			}
-		}
+        $phpThumb->setParameter('f', my_strtolower(my_substr(strrchr($filename, '.'), 1)));
 
-		if(!isset($resized))
-		{
-			@imagecopyresampled($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
-		}
-		else
-		{
-			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
-		}
-		@imagedestroy($im);
-		if(!function_exists("imagegif") && $imgtype == 1)
-		{
-			$filename = str_replace(".gif", ".jpg", $filename);
-		}
-		switch($imgtype)
-		{
-			case 1:
-				if(function_exists("imagegif"))
-				{
-					@imagegif($thumbim, $path."/".$filename);
-				}
-				else
-				{
-					@imagejpeg($thumbim, $path."/".$filename);
-				}
-				break;
-			case 2:
-				@imagejpeg($thumbim, $path."/".$filename);
-				break;
-			case 3:
-				@imagepng($thumbim, $path."/".$filename);
-				break;
-		}
-		@my_chmod($path."/".$filename, '0644');
-		@imagedestroy($thumbim);
-		$thumb['code'] = 1;
-		$thumb['filename'] = $filename;
-		return $thumb;
-	}
-	else
-	{
-		return array("code" => 4);
-	}
+        $phpThumb->setParameter('bg', $background_color);
+
+        $phpThumb->setParameter('fltr', $background_color);
+
+        $phpThumb->setParameter('a', $alignment);
+
+        $phpThumb->setParameter('ra', $rotate_angle);
+
+        $phpThumb->setParameter('bcc', $background_color);
+
+        $phpThumb->setParameter('bc', $background_color);
+
+        $phpThumb->setParameter('dpi', $dots_per_inch);
+
+        $phpThumb->setParameter('iar', $ignore_aspect_ratio);
+
+        $phpThumb->setParameter('maxb', $maximum_file_bytes);
+
+        if ($filters) {
+            $phpThumb->setParameter('fltr', $filters);
+        }
+
+        $phpThumb->GenerateThumbnail();
+
+        if ($phpThumb->RenderToFile($path."/".$filename) !== false) {
+            return [
+                'code' => 1,
+                'filename' => $filename,
+            ];
+        }
+    } catch (Exception $e) {
+    }
+
+    return ['code' => 4];
 }
 
 /**
@@ -163,6 +131,8 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
  * @param string $bitdepth the bits area the number of bits for each color
  * @param string $channels the channels - 3 for RGB pictures and 4 for CMYK pictures
  * @return bool
+ *
+ * @deprecated
  */
 function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 {

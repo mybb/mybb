@@ -368,11 +368,25 @@ function acp_rebuild_attachment_thumbnails()
 
 	require_once MYBB_ROOT."inc/functions_image.php";
 
+    $file_extensions = get_file_extensions();
+
+    $thumbnail_extensions = array_filter(
+        $file_extensions['image'] + $file_extensions['other'],
+        function(array $extension): bool {
+            return !empty($extension['allows_thumbnails']);
+        }
+    );
+
+    $thumbnail_extensions_file_types = array_keys($thumbnail_extensions);
+
+    $thumbnail_extensions_mime_types = array_column($thumbnail_extensions, 'mime');
+
 	$query = $db->simple_select("attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($attachment = $db->fetch_array($query))
 	{
 		$ext = my_strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
-		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+		if(in_array($ext, $thumbnail_extensions_file_types) &&
+            in_array($attachment['filetype'], $thumbnail_extensions_mime_types))
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
 			$thumbnail = generate_thumbnail($uploadspath_abs."/".$attachment['attachname'], $uploadspath_abs, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);

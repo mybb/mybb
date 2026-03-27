@@ -228,9 +228,15 @@ function upload_avatar($avatar=array(), $uid=0)
 		return $ret;
 	}
 
+    $file_extensions = get_file_extensions();
+
+    $image_extensions_file_types = array_keys($file_extensions['image']);
+
+    $image_extensions_mime_types = array_column($file_extensions['image'], 'mime');
+
 	// Check we have a valid extension
 	$ext = get_extension(my_strtolower($avatar['name']));
-	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
+	if(!in_array($ext, $image_extensions_file_types) || !in_array($avatar['type'], $image_extensions_file_types))
 	{
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
@@ -327,30 +333,7 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	$avatar['type'] = my_strtolower($avatar['type']);
 
-	switch($avatar['type'])
-	{
-		case "image/gif":
-			$img_type = 1;
-			break;
-		case "image/jpeg":
-		case "image/x-jpg":
-		case "image/x-jpeg":
-		case "image/pjpeg":
-		case "image/jpg":
-			$img_type = 2;
-			break;
-		case "image/png":
-		case "image/x-png":
-			$img_type = 3;
-			break;
-		case "image/bmp":
-		case "image/x-bmp":
-		case "image/x-windows-bmp":
-			$img_type = 6;
-			break;
-		default:
-			$img_type = 0;
-	}
+    $img_type = $file_extensions['image'][$ext]['image_type'] ?? 0;
 
 	// Check if the uploaded file type matches the correct image type (returned by getimagesize)
 	if(empty($allowed_mime_types[$avatar['type']]) || $img_dimensions[2] != $img_type || $img_type == 0)
@@ -559,29 +542,16 @@ function upload_attachment($attachment, $update_attachment=false)
 		"dateuploaded" => TIME_NOW
 	);
 
+    $file_extensions = get_file_extensions();
+
+    $image_extensions_file_types = array_keys($file_extensions['image'] + $file_extensions['other']);
+
+    $image_extensions_mime_types = array_column($file_extensions['image'] + $file_extensions['other'], 'mime');
+
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
-	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+	if(in_array($ext, $image_extensions_file_types) && in_array($attachtype['mimetype'], $image_extensions_mime_types))
 	{
-		// Check a list of known MIME types to establish what kind of image we're uploading
-		switch(my_strtolower($file['type']))
-		{
-			case "image/gif":
-				$img_type =  1;
-				break;
-			case "image/jpeg":
-			case "image/x-jpg":
-			case "image/x-jpeg":
-			case "image/pjpeg":
-			case "image/jpg":
-				$img_type = 2;
-				break;
-			case "image/png":
-			case "image/x-png":
-				$img_type = 3;
-				break;
-			default:
-				$img_type = 0;
-		}
+        $img_type = $file_extensions['image'][$ext]['image_type'] ?? 0;
 
 		$supported_mimes = array();
 		foreach($attachtypes as $attachtype)

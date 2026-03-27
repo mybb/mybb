@@ -1,0 +1,12 @@
+<audio
+        controls
+        aria-label="{{ lang.postbit_attachment_filename }} {{ audio.filename }} {{ lang.postbit_attachment_size }} {{ audio.filesize }} {{ audio.date }}"
+        preload="metadata"
+>
+    <source src="{{ url('attachment.php', { 'aid': audio.aid }) }}" type="{{ audio.filetype }}">
+    <div class="attachments__attachment attachment">
+        <span class="attachment__icon">{{ audio.icon|raw }}</span>
+        <a href="{{ url('attachment.php', { 'aid': audio.aid }) }}" target="_blank" title="{{ audio.date }}" class="attachment__link">{{ audio.filename }}</a>
+        <span class="attachment__data">({{ lang.postbit_attachment_size }} {{ audio.filesize }} / {{ lang.postbit_attachment_downloads }} {{ audio.downloads }})</span>
+    </div>
+</audio>

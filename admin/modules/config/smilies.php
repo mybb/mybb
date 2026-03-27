@@ -346,13 +346,18 @@ if($mybb->input['action'] == "add_multiple")
 					$asmilies[$smilie['image']] = 1;
 				}
 
+                $file_extensions = get_file_extensions(allow_svg: true);
+
+                $image_extensions_file_types = array_keys($file_extensions['image']);
+
 				$smilies = array();
 				while($file = readdir($dir))
 				{
 					if($file != ".." && $file != ".")
 					{
 						$ext = get_extension($file);
-						if(in_array($ext, array("bmp", "gif", "jpg", "jpeg", "png", "svg")))
+
+						if(in_array($ext, $image_extensions_file_types))
 						{
 							if(!$asmilies[$path.$file])
 							{
@@ -559,8 +564,8 @@ if($mybb->input['action'] == "mass_edit")
 				{
 					unset($mybb->input['find'][$sid][$key]);
 				}
-				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);				
-				
+				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);
+
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),

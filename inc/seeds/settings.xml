@@ -1596,10 +1596,34 @@ download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+        <setting name="attach_inline_audio">
+            <title>Embedded Attached Audio in Posts</title>
+            <description><![CDATA[Enable rendering supported audio inline as embedded media?]]></description>
+            <disporder>4</disporder>
+            <optionscode><![CDATA[yesno]]></optionscode>
+            <settingvalue><![CDATA[1]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
+        <setting name="attach_inline_video">
+            <title>Embedded Attached Videos in Posts</title>
+            <description><![CDATA[Enable rendering supported videos inline as embedded media?]]></description>
+            <disporder>5</disporder>
+            <optionscode><![CDATA[yesno]]></optionscode>
+            <settingvalue><![CDATA[1]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
+        <setting name="attach_inline_other">
+            <title>Embedded Other Attached Files in Posts</title>
+            <description><![CDATA[Enable rendering supported files (PDF, etc) inline as embedded media?]]></description>
+            <disporder>6</disporder>
+            <optionscode><![CDATA[yesno]]></optionscode>
+            <settingvalue><![CDATA[0]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
 		<setting name="attachthumbh">
 			<title>Attached Thumbnail Maximum Height</title>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
-			<disporder>4</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[numeric
 min=1]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
@@ -1608,7 +1632,7 @@ min=1]]></optionscode>
 		<setting name="attachthumbw">
 			<title>Attached Thumbnail Maximum Width</title>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
-			<disporder>5</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[numeric
 min=1]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>

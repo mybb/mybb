@@ -13,12 +13,33 @@
 		{% endfor %}
 	{% endif %}
 
-	{% if attached.images %}
-		<h5 class="attachments__subtitle">{{ lang.postbit_attachments_images }}</h5>
-		{% for image in attached.images %}
-			{% include 'postbit/postbit_attached_image.twig' %}
-		{% endfor %}
-	{% endif %}
+    {% if attached.images %}
+        <h5 class="attachments__subtitle">{{ lang.postbit_attachments_images }}</h5>
+        {% for image in attached.images %}
+            {% include 'postbit/postbit_attached_image.twig' %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attached.audios %}
+        <h5 class="attachments__subtitle">{{ lang.postbit_attachments_audios }}</h5>
+        {% for audio in attached.audios %}
+            {% include 'postbit/postbit_attached_audio.twig' %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attached.videos %}
+        <h5 class="attachments__subtitle">{{ lang.postbit_attachments_videos }}</h5>
+        {% for video in attached.videos %}
+            {% include 'postbit/postbit_attached_video.twig' %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attached.others %}
+        <h5 class="attachments__subtitle">{{ lang.postbit_attachments_others }}</h5>
+        {% for other in attached.others %}
+            {% include 'postbit/postbit_attached_other.twig' %}
+        {% endfor %}
+    {% endif %}
 
 	{% for attachment in attached.attachments %}
 		{% include 'postbit/postbit_attachment.twig' %}

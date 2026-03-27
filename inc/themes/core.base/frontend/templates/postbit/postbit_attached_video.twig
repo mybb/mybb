@@ -1,0 +1,12 @@
+<video
+        controls
+        aria-label="{{ lang.postbit_attachment_filename }} {{ video.filename }} {{ lang.postbit_attachment_size }} {{ video.filesize }} {{ video.date }}"
+        preload="metadata"
+>
+    <source src="{{ url('attachment.php', { 'aid': video.aid }) }}" type="{{ video.filetype }}">
+    <div class="attachments__attachment attachment">
+        <span class="attachment__icon">{{ video.icon|raw }}</span>
+        <a href="{{ url('attachment.php', { 'aid': video.aid }) }}" target="_blank" title="{{ video.date }}" class="attachment__link">{{ video.filename }}</a>
+        <span class="attachment__data">({{ lang.postbit_attachment_size }} {{ video.filesize }} / {{ lang.postbit_attachment_downloads }} {{ video.downloads }})</span>
+    </div>
+</video>&nbsp;&nbsp;&nbsp;

@@ -8839,3 +8839,206 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	}
 	return $backtrace;
 }
+
+/**
+ * Returns an array of file extensions information and options.
+ */
+function get_file_extensions(bool $allow_svg = false): array
+{
+    global $plugins;
+
+    $file_types = [
+        'image' => [
+            'jpg' => [
+                'mime' => 'image/jpeg',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type' => IMAGETYPE_JPEG,
+            ],
+            'jpeg' => [
+                'mime' => 'image/jpeg',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type' => IMAGETYPE_JPEG,
+            ],
+            'jfif' => [
+                'mime' => 'image/jpeg',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type' => IMAGETYPE_JPEG,
+            ],
+            'pjpeg' => [
+                'mime' => 'image/pjpeg',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_JPEG,
+            ],
+            'pjp' => [
+                'mime' => 'image/pjp',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_JPEG,
+            ],
+            'png' => [
+                'mime' => 'image/png',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_PNG,
+            ],
+            'apng' => [
+                'mime' => 'image/apng',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_PNG,
+            ],
+            'gif' => [
+                'mime' => 'image/gif',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_GIF,
+            ],
+
+            'bmp' => [
+                'mime' => 'image/bmp',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_BMP,
+            ],
+            'ico' => [
+                'mime' => 'image/x-icon',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_ICO,
+            ],
+            'cur' => [
+                'mime' => 'image/x-icon',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'   => IMAGETYPE_ICO,
+            ],
+
+            'webp' => [
+                'mime' => 'image/webp',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'   => IMAGETYPE_WEBP,
+            ],
+            'avif' => [
+                'mime' => 'image/avif',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_AVIF,
+            ],
+            'tif' => [
+                'mime' => 'image/tiff',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'   => IMAGETYPE_TIFF_II,
+            ],
+            'tiff' => [
+                'mime' => 'image/tiff',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+                'image_type'  => IMAGETYPE_TIFF_II,
+            ],
+        ],
+
+        'audio' => [
+            'mp3' => [
+                'mime' => 'audio/mpeg',
+                'allow_inline' => true,
+            ],
+            'wav' => [
+                'mime' => 'audio/wav',
+                'allow_inline' => true,
+            ],
+            'ogg' => [
+                'mime' => 'audio/ogg',
+                'allow_inline' => true,
+            ],
+        ],
+
+        'video' => [
+            'mp4' => [
+                'mime' => 'video/mp4',
+                'allow_inline' => true,
+            ],
+            'webm' => [
+                'mime' => 'video/webm',
+                'allow_inline' => true,
+            ],
+            'ogv' => [
+                'mime' => 'video/ogg',
+                'allow_inline' => true,
+            ],
+            'mov' => [
+                'mime' => 'video/quicktime',
+                'allow_inline' => true,
+            ],
+            'avi' => [
+                'mime' => 'video/x-msvideo',
+                'allow_inline' => true,
+            ],
+            'mkv' => [
+                'mime' => 'video/x-matroska',
+                'allow_inline' => true,
+            ],
+            'flv' => [
+                'mime' => 'video/x-flv',
+                'allow_inline' => true,
+            ],
+            'wmv' => [
+                'mime' => 'video/x-ms-wmv',
+                'allow_inline' => true,
+            ],
+            'mpeg' => [
+                'mime' => 'video/mpeg',
+                'allow_inline' => true,
+            ],
+            'mpg' => [
+                'mime' => 'video/mpeg',
+                'allow_inline' => true,
+            ],
+        ],
+
+        'text' => [
+            'txt' => [
+                'mime' => 'text/plain',
+                'allow_inline' => true,
+            ],
+            'log' => [
+                'mime' => 'text/plain',
+                'allow_inline' => true,
+            ],
+            'csv' => [
+                'mime' => 'text/plain',
+                'allow_inline' => true,
+            ],
+            'css' => [
+                'mime' => 'text/css',
+                'allow_inline' => true,
+            ],
+            'js' => [
+                'mime' => 'text/javascript',
+                'allow_inline' => true,
+            ],
+        ],
+
+        'other' => [
+            'pdf' => [
+                'mime' => 'application/pdf',
+                'allows_thumbnails' => true,
+                'allow_inline' => true,
+            ],
+        ],
+    ];
+
+    // this file type is mainly for the smilies and icons modules, which allows SVG files
+    if ($allow_svg) {
+        $file_types['image']['svg'] = [
+            'mime' => 'image/svg+xml',
+        ];
+    }
+
+    return $plugins->run_hooks('get_extension_info', $file_types);
+}
