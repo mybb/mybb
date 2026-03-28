@@ -11,7 +11,132 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'attachment.php');
 
-require_once "./global.php";
+// Load MyBB core files
+require_once dirname(__FILE__)."/inc/init.php";
+
+$shutdown_queries = $shutdown_functions = array();
+
+// Load some of the stock caches we'll be using.
+$groupscache = $cache->read("usergroups");
+
+if(!is_array($groupscache))
+{
+	$cache->update_usergroups();
+	$groupscache = $cache->read("usergroups");
+}
+
+// Send no cache headers
+header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
+
+// Create the session
+require_once MYBB_ROOT."inc/class_session.php";
+$session = new session;
+$session->init();
+
+// Load the language we'll be using
+if(!isset($mybb->settings['bblanguage']))
+{
+	$mybb->settings['bblanguage'] = "english";
+}
+if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
+{
+	$mybb->settings['bblanguage'] = $mybb->user['language'];
+}
+$lang->set_language($mybb->settings['bblanguage']);
+
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
+{
+	@mb_internal_encoding($lang->settings['charset']);
+}
+
+// Load the theme
+// 1. Check cookies
+if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
+{
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
+}
+
+// 2. Load style
+$repository = \MyBB\app(\MyBB\Database\Repositories\ThemeRepository::class);
+$tid = null;
+$theme_model = null;
+
+if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
+{
+	$tid = (int)$mybb->user['style'];
+}
+
+// Fetch the theme to load
+if($tid != null)
+{
+	$theme_model = $repository->find($tid);
+
+	if($theme_model && !$theme_model->allowedForUser($mybb->user))
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$tid = null;
+	}
+}
+
+if($tid == null)
+{
+	$theme_model = $repository->findDefault();
+}
+
+// No Theme model was found - load fallback values
+if(!$theme_model)
+{
+	// Missing theme was from a user, run a query to set any users using the theme to the default
+	$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
+
+	$theme_model = $repository->getFallback();
+}
+
+\MyBB\app()->instance(
+	\MyBB\Database\Models\Theme::class,
+	$theme_model,
+);
+
+if($theme_model->package->exists())
+{
+	// override initial binding
+	\MyBB\app()->instance(
+		\MyBB\Extensions\Theme\Theme::class,
+		$theme_model->package,
+	);
+}
+
+$view = \MyBB\app(\MyBB\View\Runtime\Runtime::class);
+
+$view->setContext([
+	'script' => basename($_SERVER['PHP_SELF']),
+	'action' => $mybb->get_input('action'),
+]);
+
+$view->setMainNamespace('frontend');
+
+$theme = $view->getGlobalThemeArray();
+
+if($lang->settings['charset'])
+{
+	$charset = $lang->settings['charset'];
+}
+// If not, revert to UTF-8
+else
+{
+	$charset = "UTF-8";
+}
+
+$lang->load("global");
+
+$mybb->input['action'] = $mybb->get_input('action');
 
 if($mybb->settings['enableattachments'] != 1)
 {
@@ -39,6 +164,7 @@ else
 {
 	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
+
 $attachment = $db->fetch_array($query);
 
 $plugins->run_hooks("attachment_start");
@@ -54,6 +180,7 @@ if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
 }
 
 $attachtypes = (array)$cache->read('attachtypes');
+
 $ext = get_extension($attachment['filename']);
 
 if(empty($attachtypes[$ext]))

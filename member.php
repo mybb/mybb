@@ -13,8 +13,6 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
-$nosession['avatar'] = 1;
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -722,7 +720,7 @@ if($mybb->input['action'] == "register")
 	}
 
 	$under_thirteen = false;
-	
+
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{

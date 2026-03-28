@@ -44,12 +44,6 @@ if($current_page != 'attachment.php')
 	send_page_headers();
 }
 
-// Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
-{
-	define('NO_ONLINE', 1);
-}
-
 // Create session for this user
 require_once MYBB_ROOT.'inc/class_session.php';
 $session = new session;
