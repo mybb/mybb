@@ -2563,7 +2563,7 @@ delete=Delete]]></optionscode>
 		<setting name="stopforumspam_min_weighting_before_spam">
 			<title>Minimum stop forum spam weighting?</title>
 			<description>
-				<![CDATA[The minimum weighting received from StopForumSpam before deciding a user is a spammer. Should be a number between 0 and 100.]]></description>
+				<![CDATA[The minimum average confidence score (0–100) from the enabled StopForumSpam checks required to automatically flag a user as a spammer. A user is flagged only when the average score is above this value, with lower values increasing blocking aggressiveness and higher values reducing false positives (default 50).]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[50.00]]></settingvalue>
