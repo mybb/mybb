@@ -144,7 +144,7 @@ if(!$mybb->input['action'])
 	if(!empty($admin_options['authsecret']))
 	{
 		$account_name = $mybb->user['username'] . "@AdminCP";
-		$issuer = str_replace(" ", "", $mybb->settings['bbname']);
+		$issuer = trim($mybb->settings['bbname']);
 		$qr_code = $qr_code_generator->render($authenticator->getUri($admin_options['authsecret'], $account_name, $issuer));
 		$form_container->output_row($lang->my2fa_qr, "", "<img src=\"".htmlspecialchars_uni($qr_code)."\" alt=\"".htmlspecialchars_uni($lang->my2fa_qr)."\" width=\"250\" height=\"250\" />");
 	}
