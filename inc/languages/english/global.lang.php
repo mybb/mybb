@@ -85,6 +85,7 @@ $l['login_password'] = "Password";
 $l['lost_password'] = "Lost Password?";
 $l['remember_me'] = "Remember me";
 $l['remember_me_desc'] = "If ticked, your login details will be remembered on this computer, otherwise, you will be logged out as soon as you close your browser.";
+$l['login_with_email_link'] = "Email Login Link";
 
 $l['month_1'] = "January";
 $l['month_2'] = "February";

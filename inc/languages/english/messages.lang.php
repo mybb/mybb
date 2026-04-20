@@ -86,6 +86,8 @@ $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or th
 $l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
 $l['error_attach_filename_length'] = "The file name '{1}' exceeds the maximum file name length {2}. Please upload a file with a shorter file name.";
 
+$l['emailsubject_magic_link_sent'] = "Your login link at {1}";
+$l['emailsubject_magic_link_used'] = "Your login link was used at {1}";
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
 $l['emailsubject_subscription'] = "New Reply to {1}";
@@ -103,6 +105,22 @@ $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
 $l['emailsubject_changepassword'] = "Change of Password at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more...)";
 
+$l['email_magic_link_sent'] = "{1},
+
+To complete your login process on {2}, you will need to go to the URL below in your web browser.
+
+{3}
+
+Thank you,
+{2} Staff";
+$l['email_magic_link_used'] = "{1},
+
+Your login link for {2} was just used. If you did not use this link, please change your password immediately by going to the following URL in your web browser.
+
+{3}
+
+Thank you,
+{2} Staff";
 $l['email_lostpw'] = "{1},
 
 To complete the phase of resetting your account password at {2}, you will need to go to the URL below in your web browser.

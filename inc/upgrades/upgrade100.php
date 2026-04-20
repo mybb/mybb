@@ -169,6 +169,35 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
+
+	        if (!$db->table_exists("magic_links")) {
+		        $db->write_query("CREATE TABLE " . TABLE_PREFIX . "magic_links (
+				  id TEXT NOT NULL PRIMARY KEY,
+				  type VARCHAR(32) NOT NULL,
+				  user_id INTEGER NOT NULL,
+				  created_at INTEGER NOT NULL,
+				  expires_at INTEGER NOT NULL,
+				  used_at INTEGER NULL default '0',
+				  FOREIGN KEY (user_id) REFERENCES " . TABLE_PREFIX . "users(uid) ON DELETE CASCADE,
+				  CHECK (created_at >= 0),
+				  CHECK (expires_at >= created_at),
+				  CHECK (used_at = 0 OR used_at >= created_at),
+				  CHECK (user_id > 0)
+				);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_type")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_type ON " . TABLE_PREFIX . "magic_links(type);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_user_id")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_user_id ON " . TABLE_PREFIX . "magic_links(user_id);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_expires_at")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_expires_at ON " . TABLE_PREFIX . "magic_links(expires_at);");
+	        }
+
             break;
 
         // SQLite-specific changes
@@ -263,6 +292,32 @@ function upgrade100_dbchanges()
                     type varchar(50) NOT NULL default ''
                 );");
             }
+
+	        if (!$db->table_exists("magic_links")) {
+		        $db->write_query("PRAGMA foreign_keys = ON;");
+
+		        $db->write_query("CREATE TABLE " . TABLE_PREFIX . "magic_links (
+					id TEXT NOT NULL PRIMARY KEY,
+					type TEXT NOT NULL,
+					user_id INTEGER NOT NULL,
+					created_at INTEGER NOT NULL,
+					expires_at INTEGER NOT NULL,
+					used_at INTEGER NOT NULL DEFAULT 0,
+					FOREIGN KEY (user_id) REFERENCES " . TABLE_PREFIX . "users(uid) ON DELETE CASCADE
+				);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_type")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_type ON " . TABLE_PREFIX . "magic_links(type);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_user_id")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_user_id ON " . TABLE_PREFIX . "magic_links(user_id);");
+	        }
+
+	        if (!$db->index_exists("magic_links", "mybb_magic_links_expires_at")) {
+		        $db->write_query("CREATE INDEX mybb_magic_links_expires_at ON " . TABLE_PREFIX . "magic_links(expires_at);");
+	        }
             break;
 
         // MySQL-specific changes
@@ -358,6 +413,26 @@ function upgrade100_dbchanges()
                     KEY uid (uid)
                 ) ENGINE=InnoDB;");
             }
+
+	        if (!$db->table_exists("magic_links")) {
+		        $db->write_query("CREATE TABLE " . TABLE_PREFIX . "magic_links (
+				  id varchar(36) NOT NULL,
+				  type VARCHAR(32) NOT NULL,
+				  user_id int unsigned NOT NULL,
+				  created_at int unsigned NOT NULL,
+				  expires_at int unsigned NOT NULL,
+				  used_at int unsigned NOT NULL default 0,
+				  PRIMARY KEY (id),
+				  INDEX `mybb_magic_links_type` (`type`),
+				  INDEX `mybb_magic_links_user_id` (`user_id`),
+				  INDEX `mybb_magic_links_expires_at` (`expires_at`),
+				  FOREIGN KEY (`user_id`) REFERENCES `" . TABLE_PREFIX . "users`(`uid`) ON DELETE CASCADE,
+				  CONSTRAINT `chk_user_id` CHECK (user_id > 0),
+				  CONSTRAINT `chk_created_at` CHECK (created_at >= 0),
+				  CONSTRAINT `chk_expires_at` CHECK (expires_at >= created_at),
+				  CONSTRAINT `chk_used_at` CHECK (used_at = 0 OR used_at >= created_at)
+				) ENGINE=InnoDB;");
+			}
             break;
     }
 

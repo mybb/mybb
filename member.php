@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'member.php');
-define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
+define("ALLOWABLE_PAGE", "register,do_register,login,do_login,magic_login,send_magic_link,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
 $nosession['avatar'] = 1;
 
@@ -722,7 +722,7 @@ if($mybb->input['action'] == "register")
 	}
 
 	$under_thirteen = false;
-	
+
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
@@ -1685,6 +1685,216 @@ if($mybb->input['action'] == "resetpassword")
 
 $do_captcha = $correct = false;
 $inline_errors = "";
+
+if ($mybb->input['action'] == "magic_login") {
+	if (empty($mybb->settings['enable_magic_login'])) {
+		error_no_permission();
+	}
+
+	$plugins->run_hooks("member_magic_login_start");
+
+	login_attempt_check();
+
+	$fifteen_minutes_ago = TIME_NOW - 900;
+
+	$link_id = $db->escape_string($mybb->get_input('link_id'));
+
+	$query = $db->simple_select(
+		'magic_links',
+		'user_id',
+		"id='{$link_id}' AND type='login' AND created_at>'{$fifteen_minutes_ago}' AND used_at='0'"
+	);
+
+	$magic_link_data = $db->fetch_array($query);
+
+	if (empty($magic_link_data['user_id'])) {
+		error($lang->error_invalid_magic_link);
+	}
+
+	require_once MYBB_ROOT."inc/datahandlers/login.php";
+	$loginhandler = new LoginDataHandler("get");
+
+	$user = get_user($magic_link_data['user_id']);
+
+	$loginhandler->set_data([
+		'username' => $user['username'],
+		'remember' => $mybb->get_input('remember'),
+	]);
+
+	$loginhandler->username_method = 0;
+
+	$validated = $loginhandler->validate_login();
+
+	if (!$validated) {
+		error($lang->error_invalid_magerror_invalid_magic_login_validationic_link);
+	}
+
+	// Successful login
+	if ($loginhandler->login_data['coppauser']) {
+		error($lang->error_awaitingcoppa);
+	}
+
+	$db->update_query(
+		'magic_links',
+		['used_at' => TIME_NOW],
+		"id='{$link_id}' AND type='login'"
+	);
+
+	$loginhandler->complete_login(update_hash: false);
+
+	$email_subject = $lang->sprintf($lang->emailsubject_magic_link_used, $mybb->settings['bbname']);
+
+	$email_message = $lang->sprintf(
+		$lang->email_magic_link_used,
+		htmlspecialchars_uni($user['username']),
+		$mybb->settings['bbname'],
+		$mybb->settings['bburl'].'/usercp.php?action=password'
+	);
+
+	my_mail($user['email'], $email_subject, $email_message);
+
+	$plugins->run_hooks("member_magic_login_end");
+
+	$mybb->input['url'] = $mybb->get_input('url');
+
+	// expire any magic links that are over 15 minutes old and haven't been used
+	// todo, add a task file for this action and run it every 15 minutes or so, and remove this from here
+	$db->update_query(
+		'magic_links',
+		['used_at' => TIME_NOW],
+		"type='login' AND created_at<='{$fifteen_minutes_ago}' AND used_at='0'"
+	);
+
+	// this is a copy from the "do_login" action
+	if (!empty($mybb->input['url']) && my_strpos(basename($mybb->input['url']), 'member.php') === false && !preg_match(
+			'#^javascript:#i',
+			$mybb->input['url']
+		)) {
+		if ((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(
+					basename($mybb->input['url']),
+					'newreply.php'
+				) !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false) {
+			$mybb->input['url'] = str_replace('&processed=1', '', $mybb->input['url']);
+		}
+
+		$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
+
+		if (my_strpos($mybb->input['url'], $mybb->settings['bburl'].'/') !== 0) {
+			if (my_strpos($mybb->input['url'], '/') === 0) {
+				$mybb->input['url'] = my_substr($mybb->input['url'], 1);
+			}
+			$url_segments = explode('/', $mybb->input['url']);
+			$mybb->input['url'] = $mybb->settings['bburl'].'/'.end($url_segments);
+		}
+
+		// Redirect to the URL if it is not member.php
+		redirect($mybb->input['url'], $lang->redirect_loggedin);
+	} else {
+		redirect("index.php", $lang->redirect_loggedin);
+	}
+}
+
+if ($mybb->input['action'] == "send_magic_link" && $mybb->request_method == "post") {
+	if (empty($mybb->settings['enable_magic_login'])) {
+		error_no_permission();
+	}
+
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("member_send_magic_login_start");
+
+	login_attempt_check();
+
+	$email = trim($mybb->get_input('email'));
+
+	$errors = [];
+
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$errors[] = $lang->error_invalid_magic_link_email;
+
+		$mybb->input['action'] = 'login';
+	} else {
+		$user = get_user_by_username($email, ['username_method' => 1, 'fields' => 'username']);
+
+		if (!empty($user['uid'])) {
+			$user_id = (int)$user['uid'];
+
+			$sixty_minutes_ago = TIME_NOW - 3600;
+
+			$fifteen_minutes_ago = TIME_NOW - 900;
+
+			$five_minutes_ago = TIME_NOW - 300;
+
+			// expire any magic links that are over 15 minutes old and haven't been used
+			// todo, add a task file for this action and run it every 15 minutes or so, and remove this from here
+			$db->update_query(
+				'magic_links',
+				['used_at' => TIME_NOW],
+				"type='login' AND created_at<='{$fifteen_minutes_ago}' AND used_at='0'"
+			);
+
+			$query = $db->simple_select(
+				'magic_links',
+				'id',
+				"type='login' AND user_id='{$user_id}' AND created_at>='{$sixty_minutes_ago}' AND used_at='0'"
+			);
+
+			if ($db->num_rows($query) >= 5) {
+				error($lang->sprintf($lang->error_magic_link_limit_exceeded, 5));
+			}
+
+			$query = $db->simple_select(
+				'magic_links',
+				'id',
+				"type='login' AND user_id='{$user_id}' AND created_at>='{$five_minutes_ago}' AND used_at='0'"
+			);
+
+			$magic_link_data = $db->fetch_array($query);
+
+			if (empty($magic_link_data['id'])) {
+				$magic_link_data = [
+					'id' => Symfony\Component\Uid\Uuid::v4()->toRfc4122(),
+					'type' => 'login',
+					'user_id' => $user_id,
+					'created_at' => TIME_NOW,
+					'expires_at' => TIME_NOW + 900,
+				];
+
+				$db->insert_query('magic_links', $magic_link_data);
+
+				$url_params = [
+					'link_id' => $magic_link_data['id'],
+				];
+
+				if ($mybb->get_input('remember') === 'yes') {
+					$url_params['remember'] = 'yes';
+				}
+
+				if ($mybb->get_input('url') !== '') {
+					$url_params['url'] = $mybb->get_input('url');
+				}
+
+				$email_subject = $lang->sprintf($lang->emailsubject_magic_link_sent, $mybb->settings['bbname']);
+
+				$email_message = $lang->sprintf(
+					$lang->email_magic_link_sent,
+					htmlspecialchars_uni($user['username']),
+					$mybb->settings['bbname'],
+					$mybb->settings['bburl'].'/member.php?action=magic_login&'.http_build_query($url_params)
+				);
+
+				my_mail($email, $email_subject, $email_message);
+
+				log_security_action('magic_link_sent', $user['uid']);
+
+				$plugins->run_hooks("member_send_magic_login_end");
+			}
+		}
+
+		error($lang->success_magic_link_sent);
+	}
+}
+
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	verify_post_check($mybb->get_input('my_post_key'));

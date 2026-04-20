@@ -130,6 +130,26 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
   PRIMARY KEY (aid)
 );";
 
+$tables[] = "CREATE TABLE mybb_magic_links (
+  id TEXT NOT NULL PRIMARY KEY,
+  type VARCHAR(32) NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL,
+  used_at INTEGER NULL default '0',
+  FOREIGN KEY (user_id) REFERENCES mybb_users(uid) ON DELETE CASCADE,
+  CHECK (created_at >= 0),
+  CHECK (expires_at >= created_at),
+  CHECK (used_at = 0 OR used_at >= created_at),
+  CHECK (user_id > 0)
+);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_type ON mybb_magic_links(type);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_user_id ON mybb_magic_links(user_id);";
+
+$tables[] = "CREATE INDEX mybb_magic_links_expires_at ON mybb_magic_links(expires_at);";
+
 $tables[] = "CREATE TABLE mybb_badwords (
   bid serial,
   badword varchar(100) NOT NULL default '',

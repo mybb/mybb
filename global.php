@@ -789,6 +789,8 @@ $closed_bypass = array(
 	'member.php' => array(
 		'login',
 		'do_login',
+		'magic_login',
+		'send_magic_link',
 		'logout',
 	),
 	'captcha.php',
@@ -856,6 +858,8 @@ $force_bypass = array(
 	'member.php' => array(
 		'login',
 		'do_login',
+		'magic_login',
+		'send_magic_link',
 		'logout',
 		'register',
 		'do_register',
