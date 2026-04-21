@@ -1098,12 +1098,19 @@ class postParser
 		}
 
 		$code = @highlight_string($str, true);
+		$count_pre_wrapper = $count_legacy_wrapper = 0;
 
 		// Do the actual replacing.
-		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code);
-		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
-		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
-		$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
+		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code, -1, $count_pre_wrapper);
+		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code, -1, $count_legacy_wrapper);
+		if($count_pre_wrapper)
+		{
+			$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
+		}
+		if($count_legacy_wrapper)
+		{
+			$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		}
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
 		$code = str_replace('$', '&#36;', $code);
