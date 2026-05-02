@@ -427,13 +427,11 @@ elseif($mybb->input['action'] == "help")
 			{
 				$langnamevar = "s".$section['sid']."_name";
 				$langdescvar = "s".$section['sid']."_desc";
-
-				if($lang->$langnamevar)
+				if(isset($lang->$langnamevar))
 				{
 					$section['name'] = $lang->$langnamevar;
 				}
-
-				if($lang->$langdescvar)
+				if(isset($lang->$langdescvar))
 				{
 					$section['description'] = $lang->$langdescvar;
 				}

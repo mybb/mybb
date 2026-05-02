@@ -151,7 +151,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		$query = $db->simple_select("searchlog", "*", "uid='{$mybb->user['uid']}' AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
-		if($last_search['sid'])
+		if(isset($last_search['sid']))
 		{
 			$remaining_time = $mybb->settings['searchfloodtime'] - (TIME_NOW - $last_search['dateline']);
 			if($remaining_time == 1)
