@@ -3159,7 +3159,7 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 			
-			if($thread['visible'] == -1)
+			if(isset($thread) && $thread['visible'] == -1)
 			{
 				error($lang->error_thread_deleted, $lang->error);
 			}
@@ -3176,6 +3176,12 @@ switch($mybb->input['action'])
 				$searchid = htmlspecialchars_uni($mybb->get_input('searchid'));
 				$url = htmlspecialchars_uni($mybb->get_input('url'));
 				$plugins->run_hooks('moderation_confirmation');
+
+				if(!isset($thread))
+				{
+					$thread['link'] = '';
+					$thread['subject'] = $lang->multiple_threads;
+				}
 
 				eval('$page = "'.$templates->get('moderation_confirmation').'";');
 

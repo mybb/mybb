@@ -4066,7 +4066,7 @@ function build_prefixes($pid=0)
 
 	if(is_array($prefixes_cache))
 	{
-		if($pid > 0 && is_array($prefixes_cache[$pid]))
+		if($pid > 0 && isset($prefixes_cache[$pid]) && is_array($prefixes_cache[$pid]))
 		{
 			return $prefixes_cache[$pid];
 		}
@@ -4093,7 +4093,7 @@ function build_prefixes($pid=0)
 		$prefixes_cache[$prefix['pid']] = $prefix;
 	}
 
-	if($pid != 0 && is_array($prefixes_cache[$pid]))
+	if($pid != 0 && isset($prefixes_cache[$pid]) && is_array($prefixes_cache[$pid]))
 	{
 		return $prefixes_cache[$pid];
 	}

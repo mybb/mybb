@@ -2588,7 +2588,7 @@ if($mybb->input['action'] == "inline_edit")
 
 			break;
 		case 'multiban':
-			if($mybb->input['processed'] == 1)
+			if($mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 			{
 				// We've posted ban information!
 				// Build an array of users to ban, =D
@@ -2603,16 +2603,16 @@ if($mybb->input['action'] == "inline_edit")
 				// Collect the users
 				$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "uid IN (".$sql_array.")");
 
-				if($mybb->input['bantime'] == '---')
+				if($mybb->get_input('bantime') == '---')
 				{
 					$lifted = 0;
 				}
 				else
 				{
-					$lifted = ban_date2timestamp($mybb->input['bantime']);
+					$lifted = ban_date2timestamp($mybb->get_input('bantime'));
 				}
 
-				$reason = my_substr($mybb->input['reason'], 0, 255);
+				$reason = my_substr($mybb->get_input('reason'), 0, 255);
 
 				$banned_count = 0;
 				while($user = $db->fetch_array($query))
@@ -2629,7 +2629,7 @@ if($mybb->input['action'] == "inline_edit")
 						$update_array = array(
 							"admin" => (int)$mybb->user['uid'],
 							"dateline" => TIME_NOW,
-							"bantime" => $db->escape_string($mybb->input['bantime']),
+							"bantime" => $db->escape_string($mybb->get_input('bantime')),
 							"lifted" => $db->escape_string($lifted),
 							"reason" => $db->escape_string($reason)
 						);
@@ -2646,7 +2646,7 @@ if($mybb->input['action'] == "inline_edit")
 							'olddisplaygroup' => $user['displaygroup'],
 							'admin' => (int)$mybb->user['uid'],
 							'dateline' => TIME_NOW,
-							'bantime' => $db->escape_string($mybb->input['bantime']),
+							'bantime' => $db->escape_string($mybb->get_input('bantime')),
 							'lifted' => $db->escape_string($lifted),
 							'reason' => $db->escape_string($reason)
 						);
@@ -2697,7 +2697,7 @@ if($mybb->input['action'] == "inline_edit")
 			echo $form->generate_hidden_field('processed', '1');
 
 			$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
-			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
+			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->get_input('reason'), array('id' => 'reason', 'maxlength' => '255')), 'reason');
 			$ban_times = fetch_ban_times();
 			foreach($ban_times as $time => $period)
 			{
@@ -2708,7 +2708,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				$length_list[$time] = $period;
 			}
-			$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');
+			$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->get_input('bantime'), array('id' => 'bantime')), 'bantime');
 			$form_container->end();
 
 			$buttons[] = $form->generate_submit_button($lang->ban_users);
@@ -2752,19 +2752,19 @@ if($mybb->input['action'] == "inline_edit")
 			}
 			break;
 		case 'multiprune':
-			if($mybb->input['processed'] == 1)
+			$day = $mybb->get_input('day', MyBB::INPUT_INT);
+			$month = $mybb->get_input('month', MyBB::INPUT_INT);
+			$year = $mybb->get_input('year', MyBB::INPUT_INT);
+
+			if($mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 			{
-				if(($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
+				if(($day || $month || $year) && $mybb->get_input('set', MyBB::INPUT_INT))
 				{
 					$errors[] = $lang->multi_selected_dates;
 				}
 
-				$day = $mybb->get_input('day', MyBB::INPUT_INT);
-				$month = $mybb->get_input('month', MyBB::INPUT_INT);
-				$year = $mybb->get_input('year', MyBB::INPUT_INT);
-
 				// Selected a date - check if the date the user entered is valid
-				if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
+				if($day || $month || $year)
 				{
 					// Is the date sort of valid?
 					if($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
@@ -2791,13 +2791,13 @@ if($mybb->input['action'] == "inline_edit")
 						$date = mktime(date('H'), date('i'), date('s'), $month, $day, $year); // Generate a unix time stamp
 					}
 				}
-				elseif($mybb->input['set'] > 0)
+				elseif($mybb->get_input('set', MyBB::INPUT_INT) > 0)
 				{
 					// Set options
 					// For this purpose, 1 month = 31 days
 					$base_time = 24 * 60 * 60;
 
-					switch($mybb->input['set'])
+					switch($mybb->get_input('set', MyBB::INPUT_INT))
 					{
 						case '1':
 							$threshold = $base_time * 31; // 1 month = 31 days, in the standard terms
@@ -2955,23 +2955,23 @@ if($mybb->input['action'] == "inline_edit")
 				$string = "month_{$i}";
 				$month_options[] = $lang->$string;
 			}
-			$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
-			$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
-			$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
+			$date_box = $form->generate_select_box('day', $day_options, $mybb->get_input('day', MyBB::INPUT_INT));
+			$month_box = $form->generate_select_box('month', $month_options, $mybb->get_input('month', MyBB::INPUT_INT));
+			$year_box = $form->generate_numeric_field('year', $mybb->get_input('year', MyBB::INPUT_INT), array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
 
 			$prune_select = $date_box.$month_box.$year_box;
 			$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
 
 			// Generate the set date box
 			$set_options = array();
-			$set_options[] = $lang->set_an_option;
+			$set_options[] = $lang->select_an_option;
 			for($i = 1; $i <= 6; ++$i)
 			{
 				$string = "option_{$i}";
 				$set_options[] = $lang->$string;
 			}
 
-			$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->input['set']), 'set');
+			$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->get_input('set', MyBB::INPUT_INT)), 'set');
 			$form_container->end();
 
 			$buttons[] = $form->generate_submit_button($lang->prune_posts);
@@ -3087,7 +3087,7 @@ if($mybb->input['action'] == "inline_edit")
 
 			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
 			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
-			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->get_input('displaygroup', MyBB::INPUT_INT), array('id' => 'displaygroup')), 'displaygroup');
 
 			$form_container->end();
 

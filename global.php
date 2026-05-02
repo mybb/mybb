@@ -683,17 +683,10 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 
 			// Verify if we have permissions to access forum-moderation_queue
-			require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/forum/module_meta.php";
-			if(function_exists("forum_admin_permissions"))
+			$adminperms = get_admin_permissions($mybb->user['uid']);
+			if(empty($adminperms['forum']['moderation_queue']) || $adminperms['forum']['moderation_queue'] != 1)
 			{
-				// Get admin permissions
-				$adminperms = get_admin_permissions($mybb->user['uid']);
-
-				$permissions = forum_admin_permissions();
-				if(array_key_exists('moderation_queue', $permissions['permissions']) && $adminperms['forum']['moderation_queue'] != 1)
-				{
-					$can_access_moderationqueue = false;
-				}
+				$can_access_moderationqueue = false;
 			}
 		}
 	}
