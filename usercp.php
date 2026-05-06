@@ -441,7 +441,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 	if($mybb->usergroup['canbeinvisible'] == 1)
 	{
-	    $user['options']['invisible'] = $mybb->get_input('invisible', MyBB::INPUT_INT);
+		$user['options']['invisible'] = $mybb->get_input('invisible', MyBB::INPUT_INT);
 	}
 
 	if($mybb->settings['usertppoptions'])
