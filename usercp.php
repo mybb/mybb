@@ -414,10 +414,10 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	));
 
 	$user['options'] = array(
+		"invisible" => 0,
 		"allownotices" => $mybb->get_input('allownotices', MyBB::INPUT_INT),
 		"hideemail" => $mybb->get_input('hideemail', MyBB::INPUT_INT),
 		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', MyBB::INPUT_INT),
-		"invisible" => $mybb->get_input('invisible', MyBB::INPUT_INT),
 		"showtimespentonline" => $mybb->get_input('showtimespentonline', MyBB::INPUT_INT),
 		"dstcorrection" => $mybb->get_input('dstcorrection', MyBB::INPUT_INT),
 		"threadmode" => $mybb->get_input('threadmode'),
@@ -438,6 +438,11 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"showredirect" => $mybb->get_input('showredirect', MyBB::INPUT_INT),
 		"classicpostbit" => $mybb->get_input('classicpostbit', MyBB::INPUT_INT)
 	);
+
+	if($mybb->usergroup['canbeinvisible'] == 1)
+	{
+	    $user['options']['invisible'] = $mybb->get_input('invisible', MyBB::INPUT_INT);
+	}
 
 	if($mybb->settings['usertppoptions'])
 	{
