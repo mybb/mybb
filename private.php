@@ -1473,6 +1473,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	$folders_str = '';
 	$donefolders = array();
 	$mybb->input['folder'] = $mybb->get_input('folder', MyBB::INPUT_ARRAY);
+	$mybb->input['folder'] = array_replace(array_fill_keys(range(0, 4), ''), $mybb->input['folder']);
 	foreach($mybb->input['folder'] as $key => $val)
 	{
 		if(empty($donefolders[$val]))// Probably was a check for duplicate folder names, but doesn't seem to be used now
