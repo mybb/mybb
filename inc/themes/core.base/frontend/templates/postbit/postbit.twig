@@ -46,7 +46,7 @@
 {% endif %}
 
 {# Post bit #}
-<div class="post {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
+<div class="post {{ post.unapproved_shade }} {% if not post.showavatar %}post--no-avatar{% endif %}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
     <div class="post__meta">
         {# Author avatar #}
         {% if post.showavatar %}
