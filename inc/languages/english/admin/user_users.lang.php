@@ -265,6 +265,7 @@ $l['suspend_pm'] = "Suspend private messaging";
 $l['suspend_pm_info'] = "Suspend {1} from sending and receiving new private messages.";
 
 $l['suspendavatar_error'] = "You selected to suspend this user's avatar privileges, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
+$l['suspendavatar_upload_error'] = "You are trying to upload a new avatar, but the 'Suspend Avatar' option is checked. Please untick this option to continue with the upload.";
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendposting_error'] = "You selected to suspend this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
