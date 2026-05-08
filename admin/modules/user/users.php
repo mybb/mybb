@@ -631,7 +631,7 @@ if($mybb->input['action'] == "edit")
 			// Are we uploading a new avatar?
 			if($_FILES['avatar_upload']['name'])
 			{
-				if($user['suspendavatar']
+				if($user['suspendavatar'])
 				{
 					flash_message($lang->suspendavatar_upload_error, 'error');
 					admin_redirect("index.php?module=user-users");
