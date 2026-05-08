@@ -634,7 +634,7 @@ if($mybb->input['action'] == "edit")
 				if($user['suspendavatar'])
 				{
 					flash_message($lang->suspendavatar_upload_error, 'error');
-					admin_redirect("index.php?module=user-users");
+					admin_redirect("index.php?module=user-users&action=edit&uid={$user['uid']}");
 				}
 				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
 				if($avatar['error'])
