@@ -1859,7 +1859,7 @@ if($mybb->input['action'] == "login")
 		}
 		elseif($login_captcha->type == captcha::CFTURNSTILE)
 		{
-			$post_captcha->build_cfturnstile();
+			$login_captcha->build_cfturnstile();
 		}
 
 		if($login_captcha->html)
