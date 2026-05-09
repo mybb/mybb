@@ -63,7 +63,7 @@ class Runtime
         if (!isset($this->globalThemeArray)) {
             $theme = $this->themeModel->toArray();
 
-            $theme = array_merge($theme, (array)my_unserialize($theme['properties']));
+            $theme = array_merge($theme, $this->themeModel->getResolvedProperties());
 
             $theme['imgdir'] = $this->viewlet->getPublishingPath('frontend', ResourceType::IMAGE);
 
@@ -97,9 +97,6 @@ class Runtime
             $theme['imgdir'] = $this->mybb->get_asset_url($theme['imgdir']);
             $theme['imglangdir'] = $this->mybb->get_asset_url($theme['imglangdir']);
             $theme['logo'] = $this->mybb->get_asset_url($theme['logo']);
-
-            // TODO initialize theme properties from package & load set values from DB
-            $theme['editortheme'] = 'mybb.css';
 
             $this->globalThemeArray = $theme;
         }

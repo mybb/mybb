@@ -62,7 +62,20 @@ class Theme extends Extension implements ViewExtensionInterface, HierarchicalExt
                 'required' => false,
                 'type' => 'array',
             ],
+            'extra.properties' => [
+                'required' => false,
+                'type' => 'array',
+            ],
         ];
+    }
+
+    public function getPropertyDefaults(): array
+    {
+        $manifest = $this->getManifest();
+
+        return $manifest !== null && is_array($manifest['extra']['properties'] ?? null)
+            ? $manifest['extra']['properties']
+            : [];
     }
 
     public function getType(): ThemeType
