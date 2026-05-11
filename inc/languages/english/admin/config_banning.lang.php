@@ -45,3 +45,10 @@ $l['success_ban_deleted'] = "The specified ban has been deleted successfully.";
 
 $l['confirm_ban_deletion'] = "Are you sure you wish to delete this ban?";
 
+$l['filter_results'] = "Filter Results";
+$l['sort_by'] = "Sort By:";
+$l['asc'] = "Ascending";
+$l['desc'] = "Descending";
+$l['in'] = "in";
+$l['order'] = "order";
+
