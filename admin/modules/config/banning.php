@@ -230,12 +230,13 @@ if(!$mybb->input['action'])
 
 	$query = $db->simple_select("banfilters", "COUNT(fid) AS filter", "type='{$type}'");
 	$total_rows = $db->fetch_field($query, "filter");
+	$per_page = 20;
 
 	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($pagenum)
 	{
-		$start = ($pagenum - 1) * 20;
-		$pages = ceil($total_rows / 20);
+		$start = ($pagenum - 1) * $per_page;
+		$pages = ceil($total_rows / $per_page);
 		if($pagenum > $pages)
 		{
 			$start = 0;
@@ -247,6 +248,14 @@ if(!$mybb->input['action'])
 		$start = 0;
 		$pagenum = 1;
 	}
+
+	// Sorting logic for IP bans
+	$allowed_sort_by = ['filter', 'dateline', 'lastuse'];
+
+	$sort_by = $mybb->get_input('sort_by');
+	$sort_by = in_array($sort_by, $allowed_sort_by, true) ? $sort_by : 'filter';
+	$order = strtolower($mybb->get_input('order'));
+	$order = in_array($order, array('asc', 'desc'), true) ? $order : 'asc';
 
 	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
 
@@ -297,7 +306,7 @@ if(!$mybb->input['action'])
 	}
 	$table->construct_header($lang->controls, array("width" => 1));
 
-	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array('limit_start' => $start, 'limit' => 20, "order_by" => "filter", "order_dir" => "asc"));
+	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array('limit_start' => $start, 'limit' => $per_page, "order_by" => $sort_by, "order_dir" => $order));
 	while($filter = $db->fetch_array($query))
 	{
 		$filter['filter'] = htmlspecialchars_uni($filter['filter']);
@@ -334,8 +343,35 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($title);
+	echo "<br />".draw_admin_pagination($pagenum, $per_page, $total_rows, "index.php?module=config-banning&amp;type={$mybb->get_input('type')}&amp;sort_by={$sort_by}&amp;order={$order}&amp;page={page}");
 
-	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-banning&amp;type={$mybb->get_input('type')}&amp;page={page}");
+	// Only show sort form for IP bans
+	if($mybb->get_input('type') == "ips")
+	{
+		$sort_options = [
+			'filter' => $lang->ip_address,
+			'dateline' => $lang->ban_date,
+			'lastuse' => $lang->last_access
+		];
+
+		$order_options = [
+			'asc' => $lang->asc,
+			'desc' => $lang->desc
+		];
+
+		$filter_form = new Form("index.php?module=config-banning", "post");
+		$form_container = new FormContainer($lang->filter_results);
+		$form_container->output_row($lang->sort_by, "", $filter_form->generate_select_box('sort_by', $sort_options, $sort_by, array('id' => 'sort_by'))." {$lang->in} ".$filter_form->generate_select_box('order', $order_options, $order, array('id' => 'order'))." {$lang->order}", 'order');
+		$form_container->end();
+
+		$filter_buttons = array();
+		$filter_buttons[] = $filter_form->generate_submit_button($lang->filter_results);
+
+		echo $filter_form->generate_hidden_field("type", $type);
+
+		$filter_form->output_submit_wrapper($filter_buttons);
+		$filter_form->end();
+	}
 
 	$page->output_footer();
 }
