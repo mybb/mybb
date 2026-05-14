@@ -65,6 +65,9 @@
         "vendor-dir": "inc/vendor",
         "bin-dir": "inc/vendor/bin",
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.2"
+        },
         "sort-packages": true
     },
     "scripts": {
