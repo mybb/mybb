@@ -297,6 +297,7 @@ textarea {
     &__button {
         display: block;
         padding: calc(var(--spacing-3) - var(--border-width-base)) var(--spacing-3);
+        color: var(--alt-font-color-1);
         margin: 0;
         border-#{$left}: var(--border-width-base) solid var(--border-color-2);
         border-#{$right}: var(--border-width-base) solid transparent;
