@@ -1057,10 +1057,10 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['icon'] > 0 && !empty($icon_cache[$similar_thread['icon']]))
 			{
 				$similar_thread['hasicon'] = true;
-				$icon = $icon_cache[$similar_thread['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon = build_post_icon($icon_cache[$similar_thread['icon']], $theme['imgdir']);
 				$similar_thread['icon_path'] = $icon['path'];
 				$similar_thread['icon_name'] = $icon['name'];
+				$similar_thread['icon_class'] = $icon['icon_class'];
 			}
 
 			// If this thread has a prefix, insert a space between prefix and subject
@@ -1295,7 +1295,7 @@ if($mybb->input['action'] == "thread")
 	$usersbrowsing='';
 
 	$onlinemembers = [];
-	
+
 	if($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
