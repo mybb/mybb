@@ -18,7 +18,11 @@
     {% if post.hasicon %}
         <div class="thread__icons">
             <span class="thread__icon">
-                <img src="{{ post.icon_path }}" alt="{{ post.icon_name }}" title="{{ post.icon_name }}" />
+                {% if post.icon_class %}
+                    {{ include('partials/icon.twig', {icon: post.icon_class, class: '', title: post.icon_name}, with_context = false) }}
+                {% elseif post.icon_path %}
+                    <img src="{{ post.icon_path }}" alt="{{ post.icon_name }}" title="{{ post.icon_name }}" />
+                {% endif %}
             </span>
         </div>
     {% endif %}
