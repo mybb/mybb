@@ -27,7 +27,7 @@
     </div>
     <div class="thread__avatar">
         <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
+            {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
         </a>
     </div>
     <div class="thread__latest latest-post">
