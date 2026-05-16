@@ -16,7 +16,13 @@
     </div>
     <div class="thread__icons">
         {% if message.hasicon %}
-            <span class="thread__icon"><img src="{{ message.icon_path }}" alt="{{ message.icon_name }}" title="{{ message.icon_name }}" /></span>
+            <span class="thread__icon">
+                {% if message.icon_class %}
+                    {{ include('partials/icon.twig', {icon: message.icon_class, class: '', title: message.icon_name}, with_context = false) }}
+                {% elseif message.icon_path %}
+                    <img src="{{ message.icon_path }}" alt="{{ message.icon_name }}" title="{{ message.icon_name }}" />
+                {% endif %}
+            </span>
         {% endif %}
         {% if message.msgstatus == 'new_pm' %}
             {{ include('partials/icon.twig', {icon: 'envelope', class: 'thread__icon thread__icon--new-message'}, with_context = false) }}

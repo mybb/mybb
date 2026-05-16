@@ -456,10 +456,10 @@ if($mybb->input['action'] == "results")
 		if($message['icon'] > 0 && !empty($icon_cache[$message['icon']]))
 		{
 			$message['hasicon'] = true;
-			$icon = $icon_cache[$message['icon']];
-			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+			$icon = build_post_icon($icon_cache[$message['icon']], $theme['imgdir']);
 			$message['icon_path'] = $icon['path'];
 			$message['icon_name'] = $icon['name'];
+			$message['icon_class'] = $icon['icon_class'];
 		}
 
 		if(!trim($message['subject']))
@@ -2331,10 +2331,10 @@ if(!$mybb->input['action'])
 			if($message['icon'] > 0 && !empty($icon_cache[$message['icon']]))
 			{
 				$message['hasicon'] = true;
-				$icon = $icon_cache[$message['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon = build_post_icon($icon_cache[$message['icon']], $theme['imgdir']);
 				$message['icon_path'] = $icon['path'];
 				$message['icon_name'] = $icon['name'];
+				$message['icon_class'] = $icon['icon_class'];
 			}
 
 			if(!trim($message['subject']))
