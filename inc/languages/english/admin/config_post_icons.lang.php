@@ -18,6 +18,8 @@ $l['manage_post_icons_desc'] = "This section allows you to edit, delete, and man
 $l['name_desc'] = "This is the name for the post icon.";
 $l['image_path'] = "Image Path";
 $l['image_path_desc'] = "This is the path to the post icon image. If you want to use different post icon images for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme.";
+$l['font_icon_class'] = "Icon Class (CSS)";
+$l['font_icon_class_desc'] = "Optional. Enter an icon class name (for example: <strong>bug</strong>). Leave empty to use the image path.";
 $l['save_post_icon'] = "Save Post Icon";
 $l['reset'] = "Reset";
 
@@ -31,7 +33,8 @@ $l['save_post_icons'] = "Save Post Icons";
 $l['no_post_icons'] = "There are no post icons on your forum at this time.";
 
 $l['error_missing_name'] = "You did not enter a name for this post icon";
-$l['error_missing_path'] = "You did not enter a path to this post icon";
+$l['error_missing_path_or_icon'] = "You did not enter an image path or an icon class name";
+$l['error_invalid_icon_class'] = "You did not enter a valid icon class name";
 $l['error_missing_path_multiple'] = "You did not enter a path";
 $l['error_invalid_path'] = "You did not enter a valid path";
 $l['error_no_images'] = "There are no post icons in the specified directory, or all post icons in the directory have already been added.";
