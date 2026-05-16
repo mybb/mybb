@@ -8,7 +8,13 @@
         {% for posticon in posticons %}
             <span class="segmented-control__option">
                 <input type="radio" class="radio segmented-control__input" name="icon" id="posticon{{ posticon.iid }}" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} />
-                <label for="posticon{{ posticon.iid }}" class="segmented-control__button"><img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" /></label>
+                <label for="posticon{{ posticon.iid }}" class="segmented-control__button">
+                    {% if posticon.icon_class %}
+                        {{ include('partials/icon.twig', {icon: posticon.icon_class, class: '', title: posticon.name}, with_context = false) }}
+                    {% elseif posticon.path %}
+                        <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
+                    {% endif %}
+                </label>
             </span>
         {% endfor %}
     </div>
