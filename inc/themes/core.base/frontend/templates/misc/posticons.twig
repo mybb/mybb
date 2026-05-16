@@ -11,6 +11,7 @@
                 <label for="posticon{{ posticon.iid }}" class="segmented-control__button">
                     {% if posticon.icon_class %}
                         {{ include('partials/icon.twig', {icon: posticon.icon_class, class: '', title: posticon.name}, with_context = false) }}
+                        <span class="visually-hidden">{{ posticon.name }}</span>
                     {% elseif posticon.path %}
                         <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
                     {% endif %}
