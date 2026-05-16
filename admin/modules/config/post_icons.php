@@ -42,7 +42,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->request_method == "post")
 	{
-		$path = trim($mybb->input['path']);
+		$path = trim($mybb->get_input('path'));
 		$icon_class_input = trim($mybb->get_input('icon_class'));
 		$icon_class = normalize_post_icon_class($icon_class_input);
 
@@ -117,7 +117,7 @@ if($mybb->input['action'] == "add")
 	$form = new Form("index.php?module=config-post_icons&amp;action=add", "post", "add");
 	$form_container = new FormContainer($lang->add_post_icon);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->image_path, $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row($lang->image_path, $lang->image_path_desc, $form->generate_text_box('path', $mybb->get_input('path'), array('id' => 'path')), 'path');
 	$form_container->output_row($lang->font_icon_class, $lang->font_icon_class_desc, $form->generate_text_box('icon_class', $mybb->get_input('icon_class'), array('id' => 'icon_class')), 'icon_class');
 	$form_container->end();
 
@@ -348,8 +348,8 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
-		$path = trim($mybb->input['path']);
-		$icon_class_input = trim($mybb->input['icon_class']);
+		$path = trim($mybb->get_input('path'));
+		$icon_class_input = trim($mybb->get_input('icon_class'));
 		$icon_class = normalize_post_icon_class($icon_class_input);
 
 		if(!trim($mybb->input['name']))
@@ -415,7 +415,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_post_icon);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->image_path, $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
-	$form_container->output_row($lang->font_icon_class, $lang->font_icon_class_desc, $form->generate_text_box('icon_class', $mybb->input['icon_class'], array('id' => 'icon_class')), 'icon_class');
+	$form_container->output_row($lang->font_icon_class, $lang->font_icon_class_desc, $form->generate_text_box('icon_class', $mybb->get_input('icon_class'), array('id' => 'icon_class')), 'icon_class');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
