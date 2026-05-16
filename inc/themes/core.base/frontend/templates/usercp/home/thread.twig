@@ -14,7 +14,15 @@
         {% endif %}
     </div>
     <div class="thread__icons">
-        {{ icon }}
+        {% if thread.icon is iterable %}
+            <span class="thread__icon">
+                {% if thread.icon.icon_class %}
+                    {{ include('partials/icon.twig', {icon: thread.icon.icon_class, class: '', title: thread.icon.name}, with_context = false) }}
+                {% elseif thread.icon.path %}
+                    <img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" />
+                {% endif %}
+            </span>
+        {% endif %}
     </div>
     <div class="thread__author">{{ lang.by }} <span class="thread__overflow">{{ thread.author|raw }}</span></div>
     <div class="thread__replies thread__count thread__count--replies">
