@@ -80,7 +80,11 @@
 
         {# Post icon #}
         {% if post.showicon %}
-            <img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
+            {% if icon.icon_class %}
+                {{ include('partials/icon.twig', {icon: icon.icon_class, class: '', title: icon.name}, with_context = false) }}&nbsp;
+            {% elseif icon.path %}
+                <img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
+            {% endif %}
         {% endif %}
 
         {# Post date & permalink #}
