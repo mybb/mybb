@@ -2204,6 +2204,41 @@ function get_moderated_fids($uid=0)
 }
 
 /**
+ * Prepare a post icon row for rendering.
+ *
+ * @param array $icon Icon row from cache or database.
+ * @param string $theme_imgdir Theme image directory.
+ * @param bool $asset_url Build an asset URL for icon path.
+ * @return array Normalized icon data.
+ */
+function build_post_icon(array $icon, $theme_imgdir = '', $asset_url = false)
+{
+	global $mybb;
+
+	if(isset($icon['icon_class']))
+	{
+		$icon['icon_class'] = trim((string)$icon['icon_class']);
+	}
+
+	if(!empty($icon['path']))
+	{
+		$icon['path'] = (string)$icon['path'];
+
+		if($theme_imgdir !== '')
+		{
+			$icon['path'] = str_replace('{theme}', $theme_imgdir, $icon['path']);
+		}
+
+		if($asset_url)
+		{
+			$icon['path'] = $mybb->get_asset_url($icon['path']);
+		}
+	}
+
+	return $icon;
+}
+
+/**
  * Generate a list of the posticons.
  *
  * @return array The list of posticons.
@@ -2230,8 +2265,7 @@ function get_post_icons()
 	$icons = [];
 	foreach($posticons as $dbicon)
 	{
-		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
-		$dbicon['path'] = $mybb->get_asset_url($dbicon['path']);
+		$dbicon = build_post_icon($dbicon, $theme['imgdir'], true);
 
 		$dbicon['checked'] = false;
 		if($icon == $dbicon['iid'])
@@ -8843,4 +8877,3 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	}
 	return $backtrace;
 }
-
