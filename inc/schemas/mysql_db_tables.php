@@ -363,6 +363,7 @@ $tables[] = "CREATE TABLE mybb_icons (
   iid smallint unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
   path varchar(220) NOT NULL default '',
+  icon_class varchar(120) NOT NULL default '',
   PRIMARY KEY (iid)
 ) ENGINE=InnoDB;";
 
@@ -1204,4 +1205,3 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	KEY uid (uid),
 	PRIMARY KEY (wid)
 ) ENGINE=InnoDB;";
-
