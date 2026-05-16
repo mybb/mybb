@@ -495,7 +495,7 @@ class datacache
 
 		$icons = array();
 
-		$query = $db->simple_select("icons", "iid, name, path");
+		$query = $db->simple_select("icons", "iid, name, path, icon_class");
 		while($icon = $db->fetch_array($query))
 		{
 			$icons[$icon['iid']] = $icon;
