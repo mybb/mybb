@@ -2215,15 +2215,11 @@ function build_post_icon(array $icon, $theme_imgdir = '', $asset_url = false)
 {
 	global $mybb;
 
-	if(isset($icon['icon_class']))
-	{
-		$icon['icon_class'] = trim((string)$icon['icon_class']);
-	}
+	$icon['icon_class'] = trim((string)($icon['icon_class'] ?? ''));
+	$icon['path'] = (string)($icon['path'] ?? '');
 
-	if(!empty($icon['path']))
+	if($icon['path'] !== '')
 	{
-		$icon['path'] = (string)$icon['path'];
-
 		if($theme_imgdir !== '')
 		{
 			$icon['path'] = str_replace('{theme}', $theme_imgdir, $icon['path']);
