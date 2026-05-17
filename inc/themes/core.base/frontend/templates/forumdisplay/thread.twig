@@ -7,7 +7,9 @@
     <div class="thread__title">
         {# Thread prefix #}
         {% if thread.threadprefix %}
-            <span class="thread__prefix thread-prefix thread-prefix--prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+            <span class="thread__prefix thread-prefix thread-prefix--prefix-{{ thread.prefix }}">
+                <a href="{{ url(get_forum_link(thread.fid), {prefix: thread.prefix}) }}">{{ thread.threadprefix|raw }}</a>
+            </span>
         {% endif %}
         <h3 class="thread__subject">
             {# Thread title #}
