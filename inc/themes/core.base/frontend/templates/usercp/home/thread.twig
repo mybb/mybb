@@ -26,9 +26,13 @@
         <span class="thread__legend">{% if thread.views == 1 %}{{ lang.view }}{% else %}{{ lang.views }}{% endif %}</span>
     </div>
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+        {% if thread.lastposteruid > 0 %}
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
+            </a>
+        {% else %}
             {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
-        </a>
+        {% endif %}
     </div>
     <div class="thread__latest latest-post">
         <span class="latest-post__text">{{ lang.lastpost_by }}</span>
