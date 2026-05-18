@@ -32,7 +32,7 @@
         {% endif %}
         {# TO DO: Multiple recipients dropdown #}
         {% if message.multiplerecipients %}
-            <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients|raw }}</a>
+            <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}"><em>{{ lang.multiple_recipients }}</em></a>
             <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
                 <div class="tcat"><strong>{{ lang.to }}</strong></div>
                 {% for user in messages.tousers %}
