@@ -15,7 +15,7 @@
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
                 <a href="{{ get_thread_link(thread.tid) }}">{{ thread.subject }}</a>
-            </span>                
+            </span>
         </h3>
         {# Deleted thread #}
         {% if thread.visible == -1 %}
@@ -113,9 +113,13 @@
         <span class="thread__legend">{% if thread.views == 1 %}{{ lang.view }}{% else %}{{ lang.views }}{% endif %}</span>
     </div>
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+        {% if thread.lastposteruid > 0 %}
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
+            </a>
+        {% else %}
             {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
-        </a>
+        {% endif %}
     </div>
     <div class="thread__latest latest-post">
         <span class="latest-post__text">{{ lang.lastpost_by }}</span>
