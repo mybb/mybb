@@ -13,7 +13,7 @@
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
                 <a href="{{ get_thread_link(thread.tid) }}">{{ thread.subject }}</a>
-            </span>
+            </span>                
         </h3>
         {# Deleted thread #}
         {% if thread.visible == -1 %}
