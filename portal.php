@@ -257,26 +257,14 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 					++$anoncount;
 				}
 
-				if($user['invisible'] == 1)
-				{
-					$user['invisiblemark'] = "*";
-				}
-				else
-				{
-					$user['invisiblemark'] = '';
-				}
-
 				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
 					$user['isbot'] = false;
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-					$user['profilelink'] = get_profile_link($user['uid']);
-
 					$onlinemembers[] = $user;
 				}
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
+		elseif(my_strpos($user['sid'], 'bot=') !== false && isset($spiders[$botkey]) && $mybb->settings['woldisplayspiders'] > 0)
 		{
 			// The user is a search bot.
 			if($mybb->settings['wolorder'] == 'username')

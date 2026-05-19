@@ -1923,7 +1923,10 @@ min=0]]></optionscode>
 			<title>Who's Online Displays Spiders?</title>
 			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
+			<optionscode><![CDATA[select
+0=Do not display spiders
+1=Display spiders before users
+2=Display spiders after users]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>

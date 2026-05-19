@@ -18,21 +18,32 @@
                 <div class="board-info__content">
                     <p class="board-info__body board-info__body--active-note">{{ lang.online_note }}</p>
                     <p class="board-info__body board-info__body--users">
-                        {% set has_bot = false %}
-                        {% for bot in bots %}
-                            {{ bot }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                        {% set visible_users = users|filter(user =>
+                            user.invisible == 0
+                            or mybb.usergroup.canviewwolinvis == 1
+                            or user.uid == mybb.user.uid
+                        ) %}
 
-                            {% set has_bot = true %}
-                        {% endfor %}
-                        {% for user in users %}
-                            {% if loop.first and has_bot %}
-                                {{ lang.comma }}
-                            {% endif %}
+                        {% set has_bots = mybb.settings.woldisplayspiders > 0 and bots is not empty %}
+                        {% set has_users = visible_users is not empty %}
 
-                            {% if user.invisible == 0 or mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid %}
-                                <a href="{{ get_profile_link(user.uid) }}">{{ user.uid|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}{% if loop.last != true %}{{ lang.comma }}{% endif %}
-                            {% endif %}
-                        {% endfor %}
+                        {% set bots_list %}
+                            {{ bots|join(lang.comma) }}
+                        {% endset %}
+
+                        {% set users_list %}
+                            {% for user in visible_users %}
+                                <a href="{{ get_profile_link(user.uid) }}">{{ user|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                            {% endfor %}
+                        {% endset %}
+
+                        {% if mybb.settings.woldisplayspiders == 1 %}
+                            {{ bots_list }}{% if has_bots and has_users %}{{ lang.comma }}{% endif %}{{ users_list }}
+                        {% elseif mybb.settings.woldisplayspiders == 2 %}
+                            {{ users_list }}{% if has_users and has_bots %}{{ lang.comma }}{% endif %}{{ bots_list }}
+                        {% else %}
+                            {{ users_list }}
+                        {% endif %}
                     </p>
                     {% if mybb.settings.showgroupslegend and groups %}
                         <p class="board-info__body board-info__body--groups">
