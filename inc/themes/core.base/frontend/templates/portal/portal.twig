@@ -110,19 +110,32 @@
                     <ul class="list list--divided list--stats">
                         <li class="list__item">{{ lang.online_users|raw }} ({{ lang.online_counts|raw }})</li>
                         <li class="list__item">
-                            {% set has_bot = false %}
-                            {% for bot in onlinebots %}
-                                {{ bot }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                            {% set visible_users = onlinemembers|filter(user =>
+                                user.invisible == 0
+                                or mybb.usergroup.canviewwolinvis == 1
+                                or user.uid == mybb.user.uid
+                            ) %}
 
-                                {% set has_bot = true %}
-                            {% endfor %}
-                            {% for online in onlinemembers %}
-                                {% if loop.first and has_bot %}
-                                    {{ lang.comma }}
-                                {% endif %}
+                            {% set has_bots = mybb.settings.woldisplayspiders > 0 and onlinebots is not empty %}
+                            {% set has_users = visible_users is not empty %}
 
-                                <a href="{{ mybb.settings.bburl }}/{{ online.profilelink|raw }}">{{ online.username|raw }}</a>{{ online.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
-                            {% endfor %}
+                            {% set bots_list %}
+                                {{ onlinebots|join(lang.comma) }}
+                            {% endset %}
+
+                            {% set users_list %}
+                                {% for user in visible_users %}
+                                    <a href="{{ get_profile_link(user.uid) }}">{{ user|format_name }}</a>{% if user.invisible == 1 %}*{% endif %}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                                {% endfor %}
+                            {% endset %}
+
+                            {% if mybb.settings.woldisplayspiders == 1 %}
+                                {{ bots_list }}{% if has_bots and has_users %}{{ lang.comma }}{% endif %}{{ users_list }}
+                            {% elseif mybb.settings.woldisplayspiders == 2 %}
+                                {{ users_list }}{% if has_users and has_bots %}{{ lang.comma }}{% endif %}{{ bots_list }}
+                            {% else %}
+                                {{ users_list }}
+                            {% endif %}
                         </li>
                     </ul>
                 </section>
