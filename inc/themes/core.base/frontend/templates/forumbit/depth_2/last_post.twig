@@ -8,7 +8,13 @@
         <div class="latest-post__details">
             <h4 class="latest-post__subject"><a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">{{ forum.last_post.subject }}</a></h4>
             <div class="latest-post__date">{{ forum.last_post.date|raw }}</div>
-            <div class="latest-post__author">{{ lang.by }} {{ forum.last_post.profile_link|raw }}</div>
+            <div class="latest-post__author">{{ lang.by }}
+                {% if forum.last_post.lastposteruid > 0 %}
+                    <a href="{{ get_profile_link(forum.last_post.lastposteruid) }}">{{ forum.last_post.lastposteruid|format_name }}</a>
+                {% else %}
+                    {{ forum.last_post.profile_link|raw }}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
