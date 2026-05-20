@@ -2000,7 +2000,6 @@ class PostDataHandler extends DataHandler
 		$db->update_query("posts", $this->post_update_data, "pid='".(int)$post['pid']."'");
 
 		// Automatic subscription to the thread
-		// Automatic subscription to the thread
 		if($post && !empty($post['options']['subscriptionmethod']) && $uid > 0)
 		{
 			switch($post['options']['subscriptionmethod'])
