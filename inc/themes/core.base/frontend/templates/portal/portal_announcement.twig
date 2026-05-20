@@ -8,7 +8,11 @@
                 {{ render_avatar(url=announcement.avatar, alt=announcement.username) }}
             </a>
             <h3 class="post__author">
-                {{ announcement.profilelink|raw }}
+                {% if announcement.uid > 0 %}
+                    <a href="{{ get_profile_link(announcement.uid) }}">{{ announcement|format_name }}</a>
+                {% else %}
+                    {{ announcement|format_name }}
+                {% endif %}
             </h3>
             {% if announcement.hasicon %}
                 <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
