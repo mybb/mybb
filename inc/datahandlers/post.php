@@ -2000,6 +2000,7 @@ class PostDataHandler extends DataHandler
 		$db->update_query("posts", $this->post_update_data, "pid='".(int)$post['pid']."'");
 
 		// Automatic subscription to the thread
+		// Automatic subscription to the thread
 		if($post && !empty($post['options']['subscriptionmethod']) && $uid > 0)
 		{
 			switch($post['options']['subscriptionmethod'])
@@ -2016,7 +2017,7 @@ class PostDataHandler extends DataHandler
 			require_once MYBB_ROOT."inc/functions_user.php";
 			add_subscribed_thread($post['tid'], $notification, $post['uid']);
 		}
-		else
+		else if(isset($post['options']['subscriptionmethod']) && $post['options']['subscriptionmethod'] === "none" && $uid > 0)
 		{
 			$db->delete_query("threadsubscriptions", "uid='".(int)$uid."' AND tid='".(int)$post['tid']."'");
 		}
