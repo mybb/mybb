@@ -576,15 +576,6 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
 			}
 
-			if($announcement['uid'] == 0)
-			{
-				$announcement['profilelink'] = $announcement['threadusername'];
-			}
-			else
-			{
-				$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
-			}
-
 			if(!$announcement['username'])
 			{
 				$announcement['username'] = $announcement['threadusername'];
