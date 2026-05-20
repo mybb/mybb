@@ -13,14 +13,14 @@
             </a>
         </li>
     {% endif %}
-    {# TO DO: need to check if user can change signature #}
+    {% if not mybb.user.suspendsignature or (mybb.user.suspendsigtime != 0 and mybb.user.suspendsigtime < TIME_NOW) %}
         <li class="page-tabs__item{% if mybb.input.action == 'editsig' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=editsig" class="page-tabs__link">
                 {{ include('partials/icon.twig', {icon: 'edit', class: 'page-tabs__icon'}, with_context = false) }}
                 {{ lang.nav_editsig }}
             </a>
         </li>
-    {# #}
+    {% endif %}
     {% if mybb.usergroup.canchangename %}
         <li class="page-tabs__item{% if mybb.input.action == 'changename' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=changename" class="page-tabs__link">
