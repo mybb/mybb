@@ -468,7 +468,7 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 
 // Build the navigation.
 build_forum_breadcrumb($fid, $breadcrumb_multipage);
-add_breadcrumb($thread['displayprefix'].$thread['subject'], get_thread_link($thread['tid']));
+add_breadcrumb($thread['displayprefix'].htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 
 $plugins->run_hooks("showthread_start");
 

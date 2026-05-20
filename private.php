@@ -1189,7 +1189,7 @@ if($mybb->input['action'] == "read")
 		$pm['bcc_form_val'] = '';
 	}
 
-	add_breadcrumb($pm['subject']);
+	add_breadcrumb(htmlspecialchars_uni($pm['subject']));
 	$message = build_postbit($pm, 2);
 
 	// Decide whether or not to show quick reply.

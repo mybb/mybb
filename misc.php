@@ -689,7 +689,7 @@ elseif($mybb->input['action'] == "whoposted")
 
 		// Build the navigation.
 		build_forum_breadcrumb($forum['fid']);
-		add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
+		add_breadcrumb($breadcrumbprefix.htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 		add_breadcrumb($lang->who_posted);
 
 		output_page(\MyBB\View\template('misc/whoposted.twig', [

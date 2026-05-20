@@ -1341,7 +1341,7 @@ if($mybb->input['action'] == "move")
 	}
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb($event['name'], get_event_link($event['eid']));
+	add_breadcrumb(htmlspecialchars_uni($event['name']), get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_move_event);
 
 	$plugins->run_hooks("calendar_move_start");
