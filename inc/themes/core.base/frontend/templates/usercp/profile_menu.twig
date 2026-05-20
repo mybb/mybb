@@ -13,7 +13,7 @@
             </a>
         </li>
     {% endif %}
-    {% if not mybb.user.suspendsignature or (mybb.user.suspendsigtime != 0 and mybb.user.suspendsigtime < TIME_NOW) %}
+    {% if not mybb.user.suspendsignature or (mybb.user.suspendsigtime != 0 and mybb.user.suspendsigtime < 'now'|date('U')) %}
         <li class="page-tabs__item{% if mybb.input.action == 'editsig' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=editsig" class="page-tabs__link">
                 {{ include('partials/icon.twig', {icon: 'edit', class: 'page-tabs__icon'}, with_context = false) }}
