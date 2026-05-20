@@ -30,7 +30,6 @@
         {% else %}
             <span class="thread__label thread__label--from">{{ lang.from }}</span>
         {% endif %}
-        {# TO DO: Multiple recipients dropdown #}
         {% if message.multiplerecipients %}
             <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients|raw }}</a>
             <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
@@ -38,10 +37,10 @@
                 {% for user in messages.tousers %}
                     <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
                 {% endfor %}
-                {% if message.bbcusers %}
+                {% if message.bccusers %}
                     <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
                 {% endif %}
-                {% for user in messages.bbcusers %}
+                {% for user in messages.bccusers %}
                     <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
                 {% endfor %}
             </div>

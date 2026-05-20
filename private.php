@@ -404,7 +404,7 @@ if($mybb->input['action'] == "results")
 			)
 			{
 				$message['multiplerecipients'] = true;
-				$message['tousers'] = $message['bbcusers'] = [];
+				$message['tousers'] = $message['bccusers'] = [];
 				foreach($recipients['to'] as $uid)
 				{
 					$user = $cached_users[$uid];
@@ -421,7 +421,7 @@ if($mybb->input['action'] == "results")
 						$user['profilelink'] = get_profile_link($uid);
 						$user['username_raw'] = $user['username'];
 						$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-						$message['bbcusers'][] = $user;
+						$message['bccusers'][] = $user;
 					}
 				}
 			}
@@ -2258,7 +2258,7 @@ if(!$mybb->input['action'])
 				if(isset($recipients['to']) && count($recipients['to']) > 1 || (isset($recipients['to']) && count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{
 					$message['multiplerecipients'] = true;
-					$message['tousers'] = $message['bbcusers'] = [];
+					$message['tousers'] = $message['bccusers'] = [];
 					foreach($recipients['to'] as $uid)
 					{
 						if(!isset($cached_users[$uid]))
@@ -2285,7 +2285,7 @@ if(!$mybb->input['action'])
 							$user['profilelink'] = get_profile_link($uid);
 							$user['username_raw'] = $user['username'];
 							$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-							$message['bbcusers'][] = $user;
+							$message['bccusers'][] = $user;
 						}
 					}
 				}
