@@ -191,15 +191,7 @@ if($mybb->settings['portal_showstats'] != 0)
 	$portal['numthreads'] = my_number_format($stats['numthreads']);
 	$portal['numposts'] = my_number_format($stats['numposts']);
 	$portal['numusers'] = my_number_format($stats['numusers']);
-
-	if(!$stats['lastusername'])
-	{
-		$portal['newestmember'] = $lang->nobody;
-	}
-	else
-	{
-		$portal['newestmember'] = build_profile_link($stats['lastusername'], $stats['lastuid']);
-	}
+	$portal['newestmember'] = isset($stats['lastusername']) && $stats['lastusername'] != '' ? $stats['lastuid'] : 0;
 }
 
 $onlinemembers = $onlinebots = [];
