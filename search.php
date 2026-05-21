@@ -332,7 +332,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
-			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = last_poster.uid)
 			WHERE $where_conditions AND ({$unapproved_where_t}) {$permsql} AND t.moved='0'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
