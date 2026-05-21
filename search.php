@@ -393,8 +393,6 @@ if($mybb->input['action'] == "results")
 				$thread['username'] = $thread['userusername'];
 			}
 
-			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
-
 			// If this thread has a prefix, insert a space between prefix and subject
 			if($thread['prefix'] != 0)
 			{
@@ -544,28 +542,7 @@ if($mybb->input['action'] == "results")
 
 			$thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-			$lastposteruid = $thread['lastposteruid'];
-			if(!$lastposteruid && !$thread['lastposter'])
-			{
-				$lastposter = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$lastposter = htmlspecialchars_uni($thread['lastposter']);
-			}
-
 			$thread['thread_link'] = get_thread_link($thread['tid']).$highlight;
-
-			// Don't link to guest's profiles (they have no profile).
-			if($lastposteruid == 0)
-			{
-				$thread['lastposterlink'] = $lastposter;
-			}
-			else
-			{
-				$thread['lastposterlink'] = build_profile_link($lastposter, $lastposteruid);
-			}
-
 			$thread['replies'] = my_number_format($thread['replies']);
 			$thread['views'] = my_number_format($thread['views']);
 
@@ -822,7 +799,6 @@ if($mybb->input['action'] == "results")
 				$post['username'] = $post['userusername'];
 			}
 
-			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 
