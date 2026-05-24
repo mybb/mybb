@@ -38,10 +38,10 @@
                 {% for user in messages.tousers %}
                     <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
                 {% endfor %}
-                {% if message.bbcusers %}
+                {% if message.bccusers %}
                     <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
                 {% endif %}
-                {% for user in messages.bbcusers %}
+                {% for user in messages.bccusers %}
                     <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
                 {% endfor %}
             </div>
