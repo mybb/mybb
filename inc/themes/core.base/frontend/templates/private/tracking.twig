@@ -39,7 +39,7 @@
                             {% if unreadmessage.toid > 0 %}
                                 <a href="{{ get_profile_link(unreadmessage.toid) }}">{{ unreadmessage.toid|format_name }}</a>
                             {% else %}
-                                {{ unreadmessage.tousername }}
+                                {{ unreadmessage.tousername ?? lang.guest }}
                             {% endif %}
                         </div>
                         <div class="thread__date">{{ unreadmessage.senddate|raw }}</div>
@@ -94,7 +94,7 @@
                             {% if readmessage.toid > 0 %}
                                 <a href="{{ get_profile_link(readmessage.toid) }}">{{ readmessage.toid|format_name }}</a>
                             {% else %}
-                                {{ readmessage.tousername }}
+                                {{ readmessage.tousername ?? lang.guest }}
                             {% endif %}
                         </div>
                         <div class="thread__date">{{ readmessage.readdate|raw }}</div>
@@ -126,6 +126,6 @@
             </div>
         </div>
     {% endif %}
-
+    
 
 {% endblock messengerBody %}
