@@ -36,6 +36,7 @@ require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
+require_once MYBB_ROOT.'inc/functions_online.php';
 
 // Load global language phrases
 $lang->load("portal");
