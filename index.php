@@ -21,156 +21,31 @@ $lang->load('index');
 
 $plugins->run_hooks('index_start');
 
-$whosonline = '';
+$groups = [];
+$doneusers = [];
+$donebots = [];
 
-$groups = $doneusers = $donebots =[];
+// Build Who's Online data
+$wol_data = build_whosonline_data(array(
+	'include_forum_viewers' => true,
+	'include_groups' => ($mybb->settings['showgroupslegend'] != 0),
+));
 
+// Extract data from returned array
+$doneusers = $wol_data['members'];
+$donebots = $wol_data['bots'];
+$groups = $wol_data['groups'];
+$forum_viewers = $wol_data['forum_viewers'];
+$membercount = $wol_data['membercount'];
+$guestcount = $wol_data['guestcount'];
+$botcount = $wol_data['botcount'];
+$anoncount = $wol_data['anoncount'];
+$onlinecount = $wol_data['onlinecount'];
+$mostonline = $wol_data['mostonline'];
+
+// Build language strings if WOL is enabled
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
-
-	// Get the online users.
-	if($mybb->settings['wolorder'] == 'username')
-	{
-		$order_by = 'u.username ASC';
-		$order_by2 = 's.time DESC';
-	}
-	else
-	{
-		$order_by = 's.time DESC';
-		$order_by2 = 'u.username ASC';
-	}
-
-	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
-
-	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$forum_viewers = $onlinemembers = $onlinebots = array();
-
-	if($mybb->settings['showforumviewing'] != 0)
-	{
-		$query = $db->query("
-			SELECT
-				location1, COUNT(DISTINCT ip) AS guestcount
-			FROM
-				".TABLE_PREFIX."sessions
-			WHERE uid = 0 AND location1 != 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch
-			GROUP BY location1
-		");
-
-		while($location = $db->fetch_array($query))
-		{
-			if(isset($forum_viewers[$location['location1']]))
-			{
-				$forum_viewers[$location['location1']] += $location['guestcount'];
-			}
-			else
-			{
-				$forum_viewers[$location['location1']] = $location['guestcount'];
-			}
-		}
-	}
-
-	if($mybb->settings['showgroupslegend'] != 0)
-	{
-		$groups_cache = $cache->read('usergroups');
-		if($groups_cache === false)
-		{
-			// If the groups cache is not available, rebuild it.
-			$cache->update_usergroups();
-			$groups_cache = $cache->read('usergroups');
-		}
-
-		foreach($groups_cache as $group)
-		{
-			if($group['showinlegend'])
-			{
-				$groups[] = array(
-					'disporder' => $group['disporder'],
-					'display' => format_name($group['title'], $group['gid']),
-				);
-			}
-		}
-		usort($groups, function($a, $b) {
-			return $a['disporder'] - $b['disporder'];
-		});
-	}
-
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
-	$guestcount = $db->fetch_field($query, "guestcount");
-
-	$query = $db->query("
-		SELECT
-			s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM
-			".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
-		ORDER BY {$order_by}, {$order_by2}
-	");
-
-	$forum_viewers = $doneusers =  array();
-	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$onlinemembers = $comma = '';
-
-	// Fetch spiders
-	$spiders = $cache->read('spiders');
-
-	// Loop through all users and spiders.
-	while($user = $db->fetch_array($query))
-	{
-
-		// Create a key to test if this user is a search bot.
-		$botkey = my_strtolower(str_replace('bot=', '', $user['sid']));
-
-		// Decide what type of user we are dealing with.
-		if($user['uid'] > 0)
-		{
-			// The user is registered.
-			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']]['time'] < $user['time'])
-			{
-
-				++$membercount;
-				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
-				{
-					++$anoncount;
-				}
-
-				// This user has been handled.
-				$doneusers[$user['uid']] = $user;
-			}
-		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
-		{
-			if($mybb->settings['wolorder'] == 'username')
-			{
-				$key = $spiders[$botkey]['name'];
-			}
-			else
-			{
-				$key = $user['time'];
-			}
-
-			// The user is a search bot.
-			$donebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			++$botcount;
-		}
-
-		if($user['location1'])
-		{
-			if(isset($forum_viewers[$user['location1']]))
-			{
-				++$forum_viewers[$user['location1']];
-			}
-			else
-			{
-				$forum_viewers[$user['location1']] = 1;
-			}
-		}
-	}
-
-	// Build the who's online bit on the index page.
-	$onlinecount = $membercount + $guestcount + $botcount;
-
 	if($onlinecount != 1)
 	{
 		$onlinebit = $lang->online_online_plural;
@@ -212,7 +87,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 // Build the birthdays for to show on the index page.
 $bdays = '';
-$birthdays = $mostonline = [];
+$birthdays = [];
 $hiddencount = 0;
 if($mybb->settings['showbirthdays'] != 0)
 {
@@ -303,15 +178,7 @@ if($mybb->settings['showindexstats'] != 0)
 	// First, load the stats cache.
 	$stats = $cache->read('stats');
 
-	// Find out what the highest users online count is.
-	$mostonline = $cache->read('mostonline');
-	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
-	{
-		$time = TIME_NOW;
-		$mostonline['numusers'] = $onlinecount;
-		$mostonline['time'] = $time;
-		$cache->update('mostonline', $mostonline);
-	}
+	// mostonline is now updated by build_whosonline_data() function
 }
 
 // Load the stats cache.
