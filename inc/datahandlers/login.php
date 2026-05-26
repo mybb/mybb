@@ -298,15 +298,18 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_complete_start', $this);
 
-		// Login to MyBB
 		my_setcookie('loginattempts', 1);
+
+		// delete old guest session
+		$oldsid = $session->sid;
+		$db->delete_query("sessions", "sid = '{$oldsid}'");
+
+		// Generate a new session
+		$session->create_session($user['uid']);
+
+		// Set the new session cookie
 		my_setcookie("sid", $session->sid, -1, true);
 
-		$newsession = array(
-			"uid" => $user['uid'],
-		);
-
-		$db->update_query("sessions", $newsession, "sid = '{$session->sid}'");
 		$db->update_query("users", array("loginattempts" => 1), "uid = '{$user['uid']}'");
 
 		$remember = null;
