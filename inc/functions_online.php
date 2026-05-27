@@ -1197,10 +1197,10 @@ function build_wol_row($user)
  *    - 'include_forum_viewers' (bool) Include guest viewers per forum (default: false)
  *    - 'include_groups' (bool) Include user groups legend (default: false)
  * @return array Array containing:
- *    - 'membercount' => Total visible members online
+ *    - 'membercount' => Total members online, including invisible/anonymous members
  *    - 'guestcount' => Guest count
  *    - 'botcount' => Search bot count
- *    - 'anoncount' => Invisible/anonymous member count
+ *    - 'anoncount' => Invisible/anonymous member count included in 'membercount'
  *    - 'onlinecount' => Total online count
  *    - 'members' => Array of online member data keyed by uid
  *    - 'bots' => Array of bot data
@@ -1232,13 +1232,23 @@ function build_whosonline_data($options = array())
 		'mostonline' => array(),
 	);
 
+	$mostonline = $cache->read('mostonline');
+	if(is_array($mostonline))
+	{
+		$wol_data['mostonline'] = $mostonline;
+	}
+
 	// Check if user can view online info
-	if($mybb->settings['showwol'] == 0 || $mybb->usergroup['canviewonline'] == 0)
+	if($mybb->usergroup['canviewonline'] == 0)
 	{
 		return $wol_data;
 	}
 
-	$plugins->run_hooks('build_whosonline_data_start');
+	$hook_args = array(
+		'options' => &$options,
+		'wol_data' => &$wol_data,
+	);
+	$plugins->run_hooks('build_whosonline_data_start', $hook_args);
 
 	// Set ordering
 	if($mybb->settings['wolorder'] == 'username')

@@ -206,10 +206,10 @@ if($mybb->settings['portal_showstats'] != 0)
 $onlinemembers = $onlinebots = [];
 
 // Get the online users
-$wol_data = build_whosonline_data();
-
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
+	$wol_data = build_whosonline_data();
+
 	$membercount = $wol_data['membercount'];
 	$guestcount = $wol_data['guestcount'];
 	$botcount = $wol_data['botcount'];
@@ -266,7 +266,24 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		++$onlinecount;
 	}
 
-	$mostonline = $wol_data['mostonline'];
+	$mostonline = [];
+	if(isset($wol_data['mostonline']) && is_array($wol_data['mostonline']))
+	{
+		$mostonline = $wol_data['mostonline'];
+	}
+
+	if(!isset($mostonline['numusers']) || !isset($mostonline['time']))
+	{
+		$cached_mostonline = $cache->read('mostonline');
+		if(is_array($cached_mostonline))
+		{
+			$mostonline = $cached_mostonline;
+		}
+	}
+
+	$mostonline['numusers'] = isset($mostonline['numusers']) ? $mostonline['numusers'] : 0;
+	$mostonline['time'] = isset($mostonline['time']) ? $mostonline['time'] : 0;
+
 	$recordcount = $mostonline['numusers'];
 	$recorddate = my_date('relative', $mostonline['time']);
 

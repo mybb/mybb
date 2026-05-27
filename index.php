@@ -42,7 +42,19 @@ $guestcount = $wol_data['guestcount'];
 $botcount = $wol_data['botcount'];
 $anoncount = $wol_data['anoncount'];
 $onlinecount = $wol_data['onlinecount'];
-$mostonline = $wol_data['mostonline'];
+$mostonline = array();
+if(isset($wol_data['mostonline']) && is_array($wol_data['mostonline']) && !empty($wol_data['mostonline']))
+{
+	$mostonline = $wol_data['mostonline'];
+}
+else
+{
+	$mostonline = $cache->read("mostonline");
+	if(!is_array($mostonline))
+	{
+		$mostonline = array();
+	}
+}
 
 // Build language strings if WOL is enabled
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
