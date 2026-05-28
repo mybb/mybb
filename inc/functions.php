@@ -7505,6 +7505,12 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 	}
 
 	$addresses = get_ip_by_hostname($url_components['host']);
+
+	if(empty($addresses))
+	{
+		return false;
+	}
+
 	$destination_address = $addresses[0];
 
 	if(!empty($config['disallowed_remote_addresses']))
@@ -7766,7 +7772,24 @@ function get_ip_by_hostname($hostname)
 
 		if($result_set)
 		{
-			$addresses = array_column($result_set, 'ip');
+			$addresses = array();
+
+			foreach($result_set as $result)
+			{
+				if(array_key_exists('ip', $result))
+				{
+					$addresses[] = $result['ip'];
+				}
+				elseif(array_key_exists('ipv6', $result))
+				{
+					$addresses[] = $result['ipv6'];
+				}
+			}
+
+			if(empty($addresses))
+			{
+				return false;
+			}
 		}
 		else
 		{
