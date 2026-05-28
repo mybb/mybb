@@ -284,6 +284,12 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "disable")
 {
+	if(!verify_post_check($mybb->get_input('my_post_key')))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=config-questions");
+	}
+
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
@@ -312,6 +318,12 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "enable")
 {
+	if(!verify_post_check($mybb->get_input('my_post_key')))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=config-questions");
+	}
+
 	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
