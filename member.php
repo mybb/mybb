@@ -2571,6 +2571,8 @@ if($mybb->input['action'] == "profile")
 					{
 						if($val != '')
 						{
+							$val = htmlspecialchars_uni($val);
+
 							eval("\$customfield_val .= \"".$templates->get("member_profile_customfields_field_multi_item")."\";");
 						}
 					}

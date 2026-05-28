@@ -492,6 +492,8 @@ function build_postbit($post, $post_type=0)
 						{
 							if($val != '')
 							{
+								$val = htmlspecialchars_uni($val);
+
 								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
 							}
 						}
