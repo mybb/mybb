@@ -167,6 +167,9 @@ class MailHandler
 			$this->from_named .= " <".$this->from.">";
 		}
 
+		$this->from = $this->cleanup($this->from);
+		$this->from_named = $this->cleanup($this->from_named);
+
 		if($return_email)
 		{
 			$this->return_email = $return_email;
@@ -175,6 +178,8 @@ class MailHandler
 		{
 			$this->return_email = $this->get_email('reply-to');
 		}
+
+		$this->return_email = $this->cleanup($this->return_email);
 
 		$this->set_to($to);
 		$this->set_subject($subject);
@@ -335,7 +340,7 @@ class MailHandler
 			$http_host = "unknown.local";
 		}
 
-		$msg_id = md5(uniqid(TIME_NOW, true)) . "@" . $http_host;
+		$msg_id = md5(uniqid(TIME_NOW, true)) . "@" . $this->cleanup($http_host);
 
 		if($mybb->settings['mail_message_id'])
 		{
