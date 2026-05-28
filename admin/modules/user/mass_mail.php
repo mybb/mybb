@@ -1515,6 +1515,12 @@ if($mybb->input['action'] == "preview")
 
 if($mybb->input['action'] == "resend")
 {
+	if(!verify_post_check($mybb->get_input('my_post_key')))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-mass_mail&action=archive");
+	}
+
 	// Copy and resend an email
 	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
@@ -1629,7 +1635,7 @@ if($mybb->input['action'] == "archive")
 		$table->construct_cell($delivery_date, array("class" => "align_center"));
 		$table->construct_cell(my_number_format($email['totalcount']), array("class" => "align_center"));
 
-		$table->construct_cell("<a href=\"index.php?module=user-mass_mail&amp;action=resend&amp;mid={$email['mid']}\">{$lang->resend}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user-mass_mail&amp;action=resend&amp;mid={$email['mid']}&amp;my_post_key={$mybb->post_code}\">{$lang->resend}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user-mass_mail&amp;action=delete&amp;mid={$email['mid']}&amp;my_post_key={$mybb->post_code}&amp;archive=1\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->mass_mail_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 
 		$table->construct_row();
