@@ -1505,11 +1505,11 @@ function create_tables()
 	// Decide if we can use a database encoding or not
 	if($db->fetch_db_charsets() != false)
 	{
-		$db_encoding = "\$config['database']['encoding'] = '".addcslashes($config['encoding'], "'")."';";
+		$db_encoding = "\$config['database']['encoding'] = '".addcslashes($config['encoding'], "\\'")."';";
 	}
 	else
 	{
-		$db_encoding = "// \$config['database']['encoding'] = '".addcslashes($config['encoding'], "'")."';";
+		$db_encoding = "// \$config['database']['encoding'] = '".addcslashes($config['encoding'], "\\'")."';";
 	}
 
 	// Write the configuration file
@@ -1522,13 +1522,13 @@ function create_tables()
  * https://docs.mybb.com/
  */
 
-\$config['database']['type'] = '".addcslashes($mybb->input['dbengine'], "'")."';
-\$config['database']['database'] = '".addcslashes($config['dbname'], "'")."';
-\$config['database']['table_prefix'] = '".addcslashes($config['tableprefix'], "'")."';
+\$config['database']['type'] = '".addcslashes($mybb->input['dbengine'], "\\'")."';
+\$config['database']['database'] = '".addcslashes($config['dbname'], "\\'")."';
+\$config['database']['table_prefix'] = '".addcslashes($config['tableprefix'], "\\'")."';
 
-\$config['database']['hostname'] = '".addcslashes($config['dbhost'], "'")."';
-\$config['database']['username'] = '".addcslashes($config['dbuser'], "'")."';
-\$config['database']['password'] = '".addcslashes($config['dbpass'], "'")."';
+\$config['database']['hostname'] = '".addcslashes($config['dbhost'], "\\'")."';
+\$config['database']['username'] = '".addcslashes($config['dbuser'], "\\'")."';
+\$config['database']['password'] = '".addcslashes($config['dbpass'], "\\'")."';
 
 /**
  * Admin CP directory
