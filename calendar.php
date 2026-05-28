@@ -1414,6 +1414,11 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
+	if($calendar_permissions[$new_calendar['cid']]['canmoderateevents'] != 1)
+	{
+		error_no_permission();
+	}
+
 	$updated_event = array(
 		"cid" => $new_calendar['cid']
 	);
