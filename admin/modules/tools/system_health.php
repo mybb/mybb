@@ -182,6 +182,12 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	if($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
 	{
+		if(!verify_post_check($mybb->get_input('my_post_key')))
+		{
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
+		}
+
 		if(!empty($mybb->input['mb4']) && version_compare($db->get_version(), '5.5.3', '<'))
 		{
 			flash_message($lang->error_utf8mb4_version, 'error');
@@ -432,7 +438,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				{
 					$mb4 = "&amp;mb4=1";
 				}
-				admin_redirect("index.php?module=tools-system_health&action=utf8_conversion&do=all&table={$nexttable}{$mb4}");
+				admin_redirect("index.php?module=tools-system_health&action=utf8_conversion&do=all&table={$nexttable}{$mb4}&my_post_key={$mybb->post_code}");
 				exit;
 			}
 		}
