@@ -14117,11 +14117,11 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</tbody>
 </table>]]></template>
-		<template name="xmlhttp_buddyselect_offline" version="1800"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_offline.png" alt="({$lang->offline})" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+		<template name="xmlhttp_buddyselect_offline" version="1840"><![CDATA[					<tr>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy();" /> <img src="{$theme['imgdir']}/buddy_offline.png" alt="({$lang->offline})" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
-		<template name="xmlhttp_buddyselect_online" version="1800"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.png" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+		<template name="xmlhttp_buddyselect_online" version="1840"><![CDATA[					<tr>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy();" /> <img src="{$theme['imgdir']}/buddy_online.png" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
 		<template name="attachment_icon" version="1800"><![CDATA[<img src="{$icon}" title="{$name}" border="0" alt=".{$ext}" />]]></template>		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>

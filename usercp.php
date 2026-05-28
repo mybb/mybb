@@ -3141,6 +3141,15 @@ if($mybb->input['action'] == "do_editlists")
 
 	$plugins->run_hooks("usercp_do_editlists_end");
 
+	if($mybb->get_input('manage') == "ignored")
+	{
+		$manage_type = "ignored";
+	}
+	else
+	{
+		$manage_type = "buddy";
+	}
+
 	// Ajax based request, throw new list to browser
 	if(!empty($mybb->input['ajax']))
 	{
@@ -3156,24 +3165,24 @@ if($mybb->input['action'] == "do_editlists")
 		$message_js = '';
 		if($message)
 		{
-			$message_js = "$.jGrowl('{$message}', {theme:'jgrowl_success'});";
+			$message_js = "$.jGrowl(".json_encode($message).", {theme:'jgrowl_success'});";
 		}
 
 		if($error_message)
 		{
-			$message_js .= " $.jGrowl('{$error_message}', {theme:'jgrowl_error'});";
+			$message_js .= " $.jGrowl(".json_encode($error_message).", {theme:'jgrowl_error'});";
 		}
 
 		if($mybb->get_input('delete', MyBB::INPUT_INT))
 		{
 			header("Content-type: text/javascript");
-			echo "$(\"#".$mybb->get_input('manage')."_".$mybb->get_input('delete', MyBB::INPUT_INT)."\").remove();\n";
+			echo "$(\"#".$manage_type."_".$mybb->get_input('delete', MyBB::INPUT_INT)."\").remove();\n";
 			if($new_list == "")
 			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
+				echo "$(\"#".$manage_type."_count\").html(\"0\");\n";
 				echo "\$(\"#buddylink\").remove();\n";
 
-				if($mybb->get_input('manage') == "ignored")
+				if($manage_type == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
 				}
@@ -3184,7 +3193,7 @@ if($mybb->input['action'] == "do_editlists")
 			}
 			else
 			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"".count(explode(",", $new_list))."\");\n";
+				echo "$(\"#".$manage_type."_count\").html(\"".count(explode(",", $new_list))."\");\n";
 			}
 			echo $message_js;
 			exit;
@@ -3197,7 +3206,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$message .= "<br />".$error_message;
 		}
-		redirect("usercp.php?action=editlists#".$mybb->get_input('manage'), $message);
+		redirect("usercp.php?action=editlists#".$manage_type, $message);
 	}
 }
 
