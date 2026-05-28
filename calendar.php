@@ -620,7 +620,7 @@ if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post"
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -672,7 +672,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -831,7 +831,7 @@ if($mybb->input['action'] == "editevent")
 		$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 		$event = $db->fetch_array($query);
 
-		if(!$event)
+		if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 		{
 			error($lang->error_invalidevent);
 		}
@@ -1314,7 +1314,7 @@ if($mybb->input['action'] == "move")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1375,7 +1375,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1436,7 +1436,7 @@ if($mybb->input['action'] == "approve")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1484,7 +1484,7 @@ if($mybb->input['action'] == "unapprove")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
