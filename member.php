@@ -304,6 +304,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$db->delete_query("questionsessions", "sid='{$question_id}'");
 		}
+		else
+		{
+			$errors[] = $lang->error_question_wrong;
+		}
 	}
 
 	$regerrors = '';
