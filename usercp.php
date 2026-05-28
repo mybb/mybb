@@ -2455,7 +2455,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				unset($existing_users[$key]);
 				$user = get_user($mybb->get_input('delete', MyBB::INPUT_INT));
-				if(!empty($user))
+				if(!empty($user) && $mybb->get_input('manage') == "buddy")
 				{
 					// We want to remove us from this user's buddy list
 					if($user['buddylist'] != '')
@@ -2467,28 +2467,31 @@ if($mybb->input['action'] == "do_editlists")
 						$user['buddylist'] = [];
 					}
 
-					$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
-					unset($user['buddylist'][$key]);
-
-					// Now we have the new list, so throw it all back together
-					$new_list = implode(",", $user['buddylist']);
-
-					// And clean it up a little to ensure there is no possibility of bad values
-					$new_list = preg_replace("#,{2,}#", ",", $new_list);
-					$new_list = preg_replace("#[^0-9,]#", "", $new_list);
-
-					if(my_substr($new_list, 0, 1) == ",")
+					$key = array_search((int)$mybb->user['uid'], $user['buddylist']);
+					if($key !== false)
 					{
-						$new_list = my_substr($new_list, 1);
-					}
-					if(my_substr($new_list, -1) == ",")
-					{
-						$new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
-					}
+						unset($user['buddylist'][$key]);
 
-					$user['buddylist'] = $db->escape_string($new_list);
+						// Now we have the new list, so throw it all back together
+						$new_list = implode(",", $user['buddylist']);
 
-					$db->update_query("users", ['buddylist' => $user['buddylist']], "uid='".(int)$user['uid']."'");
+						// And clean it up a little to ensure there is no possibility of bad values
+						$new_list = preg_replace("#,{2,}#", ",", $new_list);
+						$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+						if(my_substr($new_list, 0, 1) == ",")
+						{
+							$new_list = my_substr($new_list, 1);
+						}
+						if(my_substr($new_list, -1) == ",")
+						{
+							$new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
+						}
+
+						$user['buddylist'] = $db->escape_string($new_list);
+
+						$db->update_query("users", ['buddylist' => $user['buddylist']], "uid='".(int)$user['uid']."'");
+					}
 				}
 
 				if($mybb->get_input('manage') == "ignored")
