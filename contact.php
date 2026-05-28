@@ -245,15 +245,34 @@ if($mybb->request_method == "post")
 			$db->insert_query("maillogs", $log_entry);
 		}
 		
-		$mybb->input['from'] = $mybb->get_input('from');
-		if(!empty($mybb->input['from']))
+		$redirect_url = '';
+		if(isset($_POST['from']) && is_string($_POST['from']))
 		{
-			redirect($mybb->input['from'], $lang->contact_success_message, '', true);
+			$redirect_url = $_POST['from'];
+
+			if(my_strpos($redirect_url, $mybb->settings['bburl'].'/') !== 0)
+			{
+				if(my_strpos($redirect_url, '/') === 0)
+				{
+					$redirect_url = my_substr($redirect_url, 1);
+				}
+
+				$url_segments = explode('/', $redirect_url);
+				$redirect_url = $mybb->settings['bburl'].'/'.end($url_segments);
+			}
+
+			if(my_strpos($redirect_url, $mybb->settings['bburl'].'/contact.php') === 0)
+			{
+				$redirect_url = '';
+			}
 		}
-		else
+
+		if(empty($redirect_url))
 		{
-			redirect('index.php', $lang->contact_success_message, '', true);
+			$redirect_url = 'index.php';
 		}
+
+		redirect($redirect_url, $lang->contact_success_message, '', true);
 	}
 	else
 	{
@@ -291,11 +310,16 @@ else
 	$user_email = htmlspecialchars_uni($mybb->get_input('email'));
 }
 
-if(isset($mybb->input['from']))
+if(
+	$mybb->request_method == "post" &&
+	verify_post_check($mybb->get_input('my_post_key'), true) &&
+	isset($_POST['from']) &&
+	is_string($_POST['from'])
+)
 {
-	$redirect_url = htmlspecialchars_uni($mybb->get_input('from'));
+	$redirect_url = htmlspecialchars_uni($_POST['from']);
 }
-else if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $mybb->settings['bburl']) !== false  && strpos($_SERVER['HTTP_REFERER'], "contact.php") === false)
+else if(isset($_SERVER['HTTP_REFERER']))
 {
 	$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 }
