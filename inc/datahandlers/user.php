@@ -558,8 +558,13 @@ class UserDataHandler extends DataHandler
 
 				// Sort out multiselect/checkbox profile fields.
 				$options = '';
-				if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
+				if($type == "multiselect" || $type == "checkbox")
 				{
+					if(!is_array($profile_fields[$field]))
+					{
+						$profile_fields[$field] = array();
+					}
+
 					$expoptions = explode("\n", $thing[1]);
 					$expoptions = array_map('trim', $expoptions);
 					foreach($profile_fields[$field] as $value)
