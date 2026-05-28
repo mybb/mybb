@@ -1434,6 +1434,12 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				}
 			}
 
+			// Invalidate solved captcha
+			if($mybb->settings['captchaimage'])
+			{
+				$captcha->invalidate_captcha();
+			}
+
 			$plugins->run_hooks("member_do_resendactivation_end");
 
 			redirect("index.php", $lang->redirect_activationresent);
@@ -1561,6 +1567,12 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 						break;
 				}
 				my_mail($email, $emailsubject, $emailmessage);
+			}
+
+			// Invalidate solved captcha
+			if($mybb->settings['captchaimage'])
+			{
+				$captcha->invalidate_captcha();
 			}
 
 			$plugins->run_hooks("member_do_lostpw_end");
@@ -2986,6 +2998,12 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"type" => 1
 			);
 			$db->insert_query("maillogs", $log_entry);
+		}
+
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+		{
+			$captcha->invalidate_captcha();
 		}
 
 		$plugins->run_hooks("member_do_emailuser_end");

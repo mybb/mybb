@@ -245,6 +245,12 @@ if($mybb->request_method == "post")
 			$db->insert_query("maillogs", $log_entry);
 		}
 		
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		{
+			$captcha->invalidate_captcha();
+		}
+
 		$redirect_url = '';
 		if(isset($_POST['from']) && is_string($_POST['from']))
 		{
