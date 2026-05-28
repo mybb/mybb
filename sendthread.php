@@ -221,6 +221,12 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 			$db->insert_query("maillogs", $log_entry);
 		}
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+		{
+			$captcha->invalidate_captcha();
+		}
+
 		$plugins->run_hooks("sendthread_do_sendtofriend_end");
 		redirect(get_thread_link($thread['tid']), $lang->redirect_emailsent);
 	}
