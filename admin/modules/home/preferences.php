@@ -22,25 +22,38 @@ if($mybb->input['action'] == "recovery_codes")
 {
 	$page->add_breadcrumb_item($lang->recovery_codes, "index.php?module=home-preferences&action=recovery_codes");
 
-	// First: regenerate the codes
-	$codes = generate_recovery_codes();
-	$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($codes))), "uid='{$mybb->user['uid']}'");
+	// User clicked no
+	if($mybb->get_input('no'))
+	{
+		admin_redirect("index.php?module=home-preferences");
+	}
 
-	// And now display them
-	$page->output_header($lang->recovery_codes);
+	if($mybb->request_method == "post")
+	{
+		// First: regenerate the codes
+		$codes = generate_recovery_codes();
+		$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($codes))), "uid='{$mybb->user['uid']}'");
 
-	$table = new Table;
-	$table->construct_header($lang->recovery_codes);
+		// And now display them
+		$page->output_header($lang->recovery_codes);
 
-	$table->construct_cell("{$lang->recovery_codes_warning} <strong><a href=\"javascript:window.print()\">{$lang->print_recovery_codes}</a></strong>");
-	$table->construct_row();
+		$table = new Table;
+		$table->construct_header($lang->recovery_codes);
 
-	$table->construct_cell(implode("<br />", $codes));
-	$table->construct_row();
+		$table->construct_cell("{$lang->recovery_codes_warning} <strong><a href=\"javascript:window.print()\">{$lang->print_recovery_codes}</a></strong>");
+		$table->construct_row();
 
-	$table->output($lang->recovery_codes);
+		$table->construct_cell(implode("<br />", $codes));
+		$table->construct_row();
 
-	$page->output_footer();
+		$table->output($lang->recovery_codes);
+
+		$page->output_footer();
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?module=home-preferences&amp;action=recovery_codes", $lang->recovery_codes_warning);
+	}
 }
 
 if(!$mybb->input['action'])
