@@ -257,6 +257,16 @@ add_breadcrumb($lang->nav_modcp, "modcp.php");
 $mybb->input['action'] = $mybb->get_input('action');
 if($mybb->input['action'] == "do_reports")
 {
+	if($mybb->usergroup['canmanagereportedcontent'] == 0)
+	{
+		error_no_permission();
+	}
+
+	if($numreportedposts == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_view_reported_posts);
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
