@@ -517,7 +517,7 @@ if($mybb->input['action'] == "addevent")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
+		if($calendar_permissions[$calendar_option['cid']]['canviewcalendar'] == 1)
 		{
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
 			if($calendar_option['cid'] == $mybb->input['calendar'])
@@ -1215,7 +1215,7 @@ if($mybb->input['action'] == "move")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
+		if($calendar_permissions[$calendar_option['cid']]['canviewcalendar'] == 1 && $calendar_permissions[$calendar_option['cid']]['canmoderateevents'] == 1)
 		{
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
 			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
