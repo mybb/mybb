@@ -39,6 +39,12 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 	if($mybb->input['do'] == "set_default")
 	{
+		if(!verify_post_check($mybb->get_input('my_post_key')))
+		{
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect($base_url."&action=views");
+		}
+
 		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 		$admin_view = $db->fetch_array($query);
 
@@ -594,7 +600,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$popup->add_item($lang->edit_view, "{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}");
 			if($view['vid'] != $default_view)
 			{
-				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
+				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}");
 			}
 
 			if($views > 1 && $view['vid'] != 1)
