@@ -1023,7 +1023,7 @@ function sync_settings($redo=0)
 			"disporder" => (int)$settinggroup['attributes']['disporder'],
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
-		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
+		if(!isset($settinggroups[$settinggroup['attributes']['name']]) || $redo == 2)
 		{
 			$gid = $db->insert_query("settinggroups", $groupdata);
 			++$groupcount;
@@ -1052,7 +1052,7 @@ function sync_settings($redo=0)
 				"gid" => $gid,
 				"isdefault" => 1
 			);
-			if(!$settings[$setting['attributes']['name']] || $redo == 2)
+			if(!isset($settings[$setting['attributes']['name']]) || $redo == 2)
 			{
 				$settingdata['value'] = $db->escape_string($setting['settingvalue'][0]['value']);
 				$db->insert_query("settings", $settingdata);
