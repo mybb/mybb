@@ -322,7 +322,7 @@ class CustomModeration extends Moderation
 		global $db, $mybb, $plugins;
 
 		$tid = (int)$tids[0]; // Take the first thread to get thread data from
-		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
+		$query = $db->simple_select("threads", 'fid, poll', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		$args = array(
@@ -362,7 +362,7 @@ class CustomModeration extends Moderation
 			{
 				foreach($tids as $tid)
 				{
-					$this->delete_poll($tid);
+					$this->delete_poll($thread['poll']);
 				}
 			}
 			if($thread_options['removeredirects'] == 1) // Remove redirects
