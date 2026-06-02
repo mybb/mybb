@@ -360,9 +360,11 @@ class CustomModeration extends Moderation
 			}
 			if($thread_options['deletepoll'] == 1) // Delete poll
 			{
-				foreach($tids as $tid)
+				$tid_list = implode(',', $tids);
+				$query = $db->simple_select("threads", 'poll', "tid IN ($tid_list)");
+				while($poll = $db->fetch_array($query))
 				{
-					$this->delete_poll($thread['poll']);
+					$this->delete_poll($poll['poll']);
 				}
 			}
 			if($thread_options['removeredirects'] == 1) // Remove redirects
