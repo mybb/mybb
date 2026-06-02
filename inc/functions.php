@@ -4419,8 +4419,8 @@ function get_ip()
 			foreach($addresses as $val)
 			{
 				$val = trim($val);
-				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
+				// Validate IP address and exclude private and reserved addresses
+				if(my_inet_ntop(my_inet_pton($val)) == $val && filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false)
 				{
 					$ip = $val;
 					break;
