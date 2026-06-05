@@ -2,6 +2,32 @@
 
 {% block head %}
     <title>{{ lang.registration }} - {{ mybb.settings.bbname }}</title>
+    <style>
+.field-container {
+    position: relative;
+}
+
+[data-password-peek] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 1px;
+    padding: 8px 9px;
+    cursor: pointer;
+}
+
+[data-password-peek] .icon {
+    color: #aaa;
+}
+
+[data-password-peek][aria-pressed="true"] .icon {
+    color: #222;
+}
+
+input[data-password-peekable] {
+    padding-right: 35px;
+}
+    </style>
 {% endblock head %}
 
 {% block body %}
@@ -24,15 +50,21 @@
                         {% if registration.showpassword %}
                             <div class="row row--form field">
                                 <h3 class="field__name"><label for="password"><label for="password">{{ lang.password|raw }}</label></h3>
-                                <p class="field__description">{{ lang.confirm_password_desc }}</p>
+                                <p class="field__description">{{ lang.confirm_password_desc }} [<label id="newrandompassword">{{ lang.random_password }}</label>]</p>
                                 <div class="confirm-field">
                                     <div class="confirm-field__field">
                                         <h4 class="visually-hidden"><label for="password">{{ lang.password }}</label></h4>
-                                        <input type="password" class="textbox" name="password" id="password" autocomplete="new-password"/>
+                                        <div class="field-container">
+                                        <input type="password" class="textbox" name="password" id="password" autocomplete="new-password" data-password-peekable data-password-revealed="0" />
+                                        <div class="password-score"><div></div></div>
+                                        </div>
                                     </div>
                                     <div class="confirm-field__field">
                                         <h4 class="visually-hidden"><label for="password2">{{ lang.confirm_password }}</label></h4>
-                                        <input type="password" class="textbox" name="password2" id="password2" autocomplete="new-password" />
+                                        <div class="field-container">
+                                        <input type="password" class="textbox" name="password2" id="password2" autocomplete="new-password" data-password-peekable data-password-revealed="0" />
+                                        <div class="password-score"><div></div></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div style="display: none;" id="password_status">&nbsp;</div>
@@ -257,6 +289,18 @@
             <input type="hidden" name="step" value="registration" />
             <input type="hidden" name="action" value="do_register" />
         </form>
+
+        <script>
+            const $ = (selector, $context) => ($context ?? document).querySelector(selector);
+            const $$ = (selector, $context) => ($context ?? document).querySelectorAll(selector);
+        </script>
+        
+        <script src="{{ relative_asset_path }}/jscripts/maintenance/form.js"></script>
+
+        <script>
+        document.getElementById("newrandompassword").addEventListener("click", onClick_newRandomPassword);
+        </script>
+        
         {{ validator_javascript|raw }}
         {{ asset('jscripts/regvalidator.js', static=true) }}
     </div>
