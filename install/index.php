@@ -1213,7 +1213,7 @@ function requirements_check()
 	{
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->req_step_error_tablelist, $error_list);
-		echo "\n			<input type=\"hidden\" name=\"action\" value=\"{$mybb->input['action']}\" />";
+		echo "\n			<input type=\"hidden\" name=\"action\" value=\"".htmlspecialchars_uni($mybb->input['action'])."\" />";
 		echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"{$lang->recheck} &raquo;\" /></div><br style=\"clear: both;\" />\n";
 		$output->print_footer();
 	}
