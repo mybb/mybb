@@ -603,6 +603,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 
 			$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
+			$announcement['attachments'] = '';
+
 			if($mybb->settings['enableattachments'] == 1 && isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
 			{ // This post has 1 or more attachments
 				$announcement['attached'] = get_post_attachments($announcement['pid'], $announcement);
