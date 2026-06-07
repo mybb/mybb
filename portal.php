@@ -668,6 +668,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 
 			$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
+			$announcement['attachments'] = '';
+
 			if($mybb->settings['enableattachments'] != 0)
 			{
 				get_post_attachments($announcement['pid'], $announcement);
