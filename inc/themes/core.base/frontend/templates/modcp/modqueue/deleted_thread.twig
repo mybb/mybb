@@ -1,0 +1,42 @@
+<div class="row mod-queue">
+    <div class="mod-queue__header">
+        <div class="mod-queue__info">
+            <h2 class="mod-queue__subject"><a href="{{ thread.threadlink }}">{{ thread.subject }}</a></h2>
+            <div class="mod-queue__author">{{ lang.by }} {{ thread.profile_link|raw }}</div>
+            <div class="mod-queue__date">{{ thread.threaddate|raw }}</div>
+            <div class="mod-queue__forum">{{ lang.meta_forum }} <a href="{{ thread.forum_link }}">{{ thread.forum_name }}</a></div>
+        </div>
+        <div class="mod-queue__controls">
+            <div class="segmented-control">
+                <span class="segmented-control__option">
+                    <input type="radio" class="radio radio_ignore segmented-control__input" name="deletedthreads[{{ thread.tid }}]" id="deleted_thread_ignore_{{ thread.tid }}" value="ignore" checked />
+                    <label class="segmented-control__button" for="deleted_thread_ignore_{{ thread.tid }}">
+                        {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'segmented-control__icon'}, with_context = false) }}
+                        <span class="segmented-control__text">{{ lang.ignore }}</span>
+                    </label>
+                </span>
+                {% if thread.can_delete %}
+                    <span class="segmented-control__option">
+                        <input type="radio" class="radio radio_delete segmented-control__input" name="deletedthreads[{{ thread.tid }}]" id="deleted_thread_delete_{{ thread.tid }}" value="delete" />
+                        <label class="segmented-control__button segmented-control__button--danger" for="deleted_thread_delete_{{ thread.tid }}">
+                            {{ include('partials/icon.twig', {icon: 'trash', class: 'segmented-control__icon'}, with_context = false) }}
+                            <span class="segmented-control__text">{{ lang.delete }}</span>
+                        </label>
+                    </span>
+                {% endif %}
+                {% if thread.can_restore %}
+                    <span class="segmented-control__option">
+                        <input type="radio" class="radio radio_restore segmented-control__input" name="deletedthreads[{{ thread.tid }}]" id="deleted_thread_restore_{{ thread.tid }}" value="restore" />
+                        <label class="segmented-control__button segmented-control__button--success" for="deleted_thread_restore_{{ thread.tid }}">
+                            {{ include('partials/icon.twig', {icon: 'undo', class: 'segmented-control__icon'}, with_context = false) }}
+                            <span class="segmented-control__text">{{ lang.restore }}</span>
+                        </label>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="mod-queue__message">
+        {{ thread.postmessage|nl2br }}
+    </div>
+</div>
