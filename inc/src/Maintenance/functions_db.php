@@ -405,7 +405,7 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
                         $results['message'] = $e->getMessage();
                         $results['code'] = $e->getCode();
                     } finally {
-                        if (isset($temporaryFilePath)) {
+                        if (isset($temporaryFilePath) && file_exists($temporaryFilePath)) {
                             unlink($temporaryFilePath);
                         }
                     }
