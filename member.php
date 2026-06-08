@@ -1668,8 +1668,7 @@ if($mybb->input['action'] == "resetpassword")
 	{
 		$query = $db->simple_select("awaitingactivation", "code, dateline", "uid='".$user['uid']."' AND type='p'");
 		$activation = $db->fetch_array($query);
-		$activationcode = $activation['code'];
-		if(!$activationcode || $activationcode !== $mybb->get_input('code'))
+		if(!$activation || $activation['code'] !== $mybb->get_input('code'))
 		{
 			error($lang->error_badlostpwcode);
 		}
