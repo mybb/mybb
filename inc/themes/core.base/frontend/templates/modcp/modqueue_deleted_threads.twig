@@ -1,0 +1,53 @@
+{% extends 'layouts/moderation.twig' %}
+
+{% block head %}
+    <title>{{ lang.deleted_threads_moderation_queue }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% set results = true %}
+
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.mod_queue }}</h1>
+    </header>
+{% endblock moderationHeader %}
+
+{% block moderationBody %}
+    {% include 'modcp/modqueue/menu.twig' %}
+    <form action="modcp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_modqueue" />
+        <section class="block">
+            <h1 class="title title--major">{{ lang.deleted_threads_moderation_queue }}</h1>
+            {% for thread in threads %}
+                {% include 'modcp/modqueue/deleted_thread.twig' %}
+            {% else %}
+                {% set results = false %}
+                <div class="row row--no-results no-results">{{ lang.mod_queue_deleted_threads_empty }}</div>
+            {% endfor %}
+            {% if results %}
+                <div class="row mod-queue__mass-controls">
+                    <a href="javascript:void(0)" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_ignore">
+                        {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.mark_all_ignored }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic button--danger mass_delete">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.mark_all_deletion }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="$('input.radio_restore').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic button--success mass_restore">
+                        {{ include('partials/icon.twig', {icon: 'undo', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.mark_all_restored }}</span>
+                    </a>
+                </div>
+                <div class="block__footer">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'arrow-circle-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.perform_actions }}</span>
+                    </button>
+                </div>
+            {% endif %}
+        </section>
+        {{ multipage|raw }}
+    </form>
+{% endblock moderationBody %}

@@ -1,0 +1,42 @@
+<div class="row mod-queue">
+    <div class="mod-queue__header">
+        <div class="mod-queue__info">
+            <h2 class="mod-queue__subject"><a href="{{ post.postlink|raw }}#pid{{ post.pid }}" title="{{ post.subject }}">{{ lang.post }}</a> in <a href="{{ post.threadlink }}">{{ post.threadsubject }}</a></h2>
+            <div class="mod-queue__author">{{ lang.by }} {{ post.profile_link|raw }}</div>
+            <div class="mod-queue__date">{{ post.postdate|raw }}</div>
+            <div class="mod-queue__forum">{{ lang.meta_forum }} <a href="{{ post.forum_link }}">{{ post.forum_name }}</a></div>
+        </div>
+        <div class="mod-queue__controls">
+            <div class="segmented-control">
+                <span class="segmented-control__option">
+                    <input type="radio" class="radio radio_ignore segmented-control__input" name="deletedposts[{{ post.pid }}]" id="deleted_post_ignore_{{ post.pid }}" value="ignore" checked />
+                    <label class="segmented-control__button" for="deleted_post_ignore_{{ post.pid }}">
+                        {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'segmented-control__icon'}, with_context = false) }}
+                        <span class="segmented-control__text">{{ lang.ignore }}</span>
+                    </label>
+                </span>
+                {% if post.can_delete %}
+                    <span class="segmented-control__option">
+                        <input type="radio" class="radio radio_delete segmented-control__input" name="deletedposts[{{ post.pid }}]" id="deleted_post_delete_{{ post.pid }}" value="delete" />
+                        <label class="segmented-control__button segmented-control__button--danger" for="deleted_post_delete_{{ post.pid }}">
+                            {{ include('partials/icon.twig', {icon: 'trash', class: 'segmented-control__icon'}, with_context = false) }}
+                            <span class="segmented-control__text">{{ lang.delete }}</span>
+                        </label>
+                    </span>
+                {% endif %}
+                {% if post.can_restore %}
+                    <span class="segmented-control__option">
+                        <input type="radio" class="radio radio_restore segmented-control__input" name="deletedposts[{{ post.pid }}]" id="deleted_post_restore_{{ post.pid }}" value="restore" />
+                        <label class="segmented-control__button segmented-control__button--success" for="deleted_post_restore_{{ post.pid }}">
+                            {{ include('partials/icon.twig', {icon: 'undo', class: 'segmented-control__icon'}, with_context = false) }}
+                            <span class="segmented-control__text">{{ lang.restore }}</span>
+                        </label>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="mod-queue__message">
+        {{ post.message|nl2br }}
+    </div>
+</div>
