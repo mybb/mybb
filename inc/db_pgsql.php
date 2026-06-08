@@ -549,27 +549,11 @@ class DB_PgSQL implements DB_Base
 	{
 		if($this->error_reporting)
 		{
-			if(class_exists("errorHandler"))
-			{
-				global $error_handler;
-
-				if(!is_object($error_handler))
-				{
-					require_once MYBB_ROOT."inc/class_error.php";
-					$error_handler = new errorHandler();
-				}
-
-				$error = array(
-					"error_no" => $this->error_number($query),
-					"error" => $this->error_string($query),
-					"query" => $string
-				);
-				$error_handler->error(MYBB_SQL, $error);
-			}
-			else
-			{
-				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
-			}
+			throw new DbException(
+				$this->error_string($query),
+				$this->error_number($query),
+				$string,
+			);
 		}
 	}
 

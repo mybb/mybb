@@ -177,16 +177,16 @@ $plugins = new pluginSystem;
 // Include our base data handler class
 require_once MYBB_ROOT."inc/datahandler.php";
 
+// Language initialisation
+require_once MYBB_ROOT."inc/class_language.php";
+$lang = new MyLanguage;
+$lang->set_path(MYBB_ROOT."inc/languages");
+
 // Connect to Database
 define("TABLE_PREFIX", $config['database']['table_prefix']);
 $db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
 $db->type = $db_type;
-
-// Language initialisation
-require_once MYBB_ROOT."inc/class_language.php";
-$lang = new MyLanguage;
-$lang->set_path(MYBB_ROOT."inc/languages");
 
 // Load cache
 $cache->cache();

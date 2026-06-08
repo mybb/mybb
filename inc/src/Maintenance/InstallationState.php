@@ -41,6 +41,8 @@ enum InstallationState: int
 
     public static function getDescription(\MyLanguage $lang, bool $correctOldConfigFormat = false): string
     {
+        $lang->load('maintenance');
+
         return match (self::get($correctOldConfigFormat)) {
             self::CONFIGURATION_FILE => $lang->installation_state_configuration_file,
             self::DATABASE_CONNECTION => $lang->installation_state_database_connection,
