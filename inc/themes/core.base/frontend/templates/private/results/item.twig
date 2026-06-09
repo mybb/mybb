@@ -1,4 +1,4 @@
-<div class="row row--message thread thread--message thread--{{ message.msgstatus }}" {% if message.msgstatus == 'new_pm' %}thread--unread{% endif %}>
+<div class="row row--message thread thread--message thread--{{ message.msgstatus }}{% if message.msgstatus == 'new_pm' %} thread--unread{% endif %}">
     <div class="thread__avatar">
         {% if not message.multiplerecipients and message.tofromuid > 0 %}
             <a href="{{ get_profile_link(message.tofromuid) }}" class="avatar-profile-link">
