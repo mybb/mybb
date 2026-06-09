@@ -67,10 +67,11 @@
             // -->
             </script>
         {% else %}
-            {% if message.tofromuid > 0 %}
-                <a href="{{ get_profile_link(message.tofromuid) }}" class="thread__overflow">{{ message.tofromuid|format_name }}</a>
+            {% set formatted_name = message.tofromuid|format_name %}
+            {% if formatted_name %}
+                <a href="{{ get_profile_link(message.tofromuid) }}" class="thread__overflow">{{ formatted_name }}</a>
             {% else %}
-                <span class="thread__overflow">{{ message.tofromusername }}</span>
+                <span class="thread__overflow">{{ message.tofromusername ?? lang.guest }}</span>
             {% endif %}
         {% endif %}
     </div>
