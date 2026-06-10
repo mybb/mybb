@@ -332,10 +332,8 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
         if ($driverData !== null) {
             $results['checks']['engine'] = true;
 
-            if (strcasecmp($parameters['engine'], 'sqlite') === 0) {
-                if (isset($parameters['path']) && $parameters['path'] !== '') {
-                    $parameters['path'] = mk_path_abs($parameters['path']);
-                }
+            if (!empty($parameters['path'])) {
+                $parameters['path'] = mk_path_abs($parameters['path']);
             }
 
             $dsn = getDsn($parameters);
