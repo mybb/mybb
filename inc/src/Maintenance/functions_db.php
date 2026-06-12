@@ -332,6 +332,10 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
         if ($driverData !== null) {
             $results['checks']['engine'] = true;
 
+            if (!empty($parameters['path'])) {
+                $parameters['path'] = mk_path_abs($parameters['path']);
+            }
+
             $dsn = getDsn($parameters);
 
             if ($dsn !== null) {
