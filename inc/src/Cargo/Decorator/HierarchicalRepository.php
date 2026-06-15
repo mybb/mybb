@@ -150,7 +150,18 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function getResolved(string $key): ?EntityInterface
     {
-        return $this->getResolvedRepository($key)?->getExisting($key);
+        $resolvedRepository = $this->getResolvedRepository($key);
+
+        $entity = $resolvedRepository?->getExisting($key);
+
+        if (
+            $resolvedRepository !== null &&
+            $entity === null
+        ) {
+            $entity = $this->resolveRepository($key)?->getExisting($key);
+        }
+
+        return $entity;
     }
 
     /**
