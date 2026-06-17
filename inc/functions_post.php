@@ -1026,9 +1026,20 @@ function get_post_attachments($id, &$post)
 	];
 	$post['hasattachments'] = false;
 
-	if(!isset($forumpermissions))
+	// $forumpermissions may be unset, a flat permission array, or (as built by
+	// portal.php) an array keyed by forum ID. Resolve this post's permissions
+	// from whichever shape is present so a missing key does not warn.
+	if(isset($forumpermissions[$post['fid']]) && is_array($forumpermissions[$post['fid']]))
 	{
-		$forumpermissions = forum_permissions($post['fid']);
+		$postpermissions = $forumpermissions[$post['fid']];
+	}
+	elseif(isset($forumpermissions['candlattachments']))
+	{
+		$postpermissions = $forumpermissions;
+	}
+	else
+	{
+		$postpermissions = forum_permissions($post['fid']);
 	}
 
 	if(!(isset($attachcache[$id]) && is_array($attachcache[$id])))
@@ -1076,7 +1087,7 @@ function get_post_attachments($id, &$post)
 			} elseif (
 				$isImage
 				&& (
-					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+					($attachment['thumbnail'] == 'SMALL' && $postpermissions['candlattachments'] == 1)
 					|| $mybb->settings['attachthumbnails'] == 'no'
 				)
 			) {
@@ -1104,7 +1115,7 @@ function get_post_attachments($id, &$post)
 			} elseif (
 				$isImage
 				 && (
-					($attachment['thumbnail'] == 'SMALL' && $forumpermissions['candlattachments'] == 1)
+					($attachment['thumbnail'] == 'SMALL' && $postpermissions['candlattachments'] == 1)
 					|| $mybb->settings['attachthumbnails'] == 'no'
 				)
 			) {
