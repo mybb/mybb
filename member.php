@@ -1271,7 +1271,7 @@ if($mybb->input['action'] == "activate")
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND (type='r' OR type='e' OR type='b')");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
 		if(!$activation)
 		{
