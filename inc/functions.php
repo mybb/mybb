@@ -756,7 +756,7 @@ function verify_post_check($code, $silent=false)
 			isset($_SERVER['HTTP_SEC_FETCH_SITE']) &&
 			!in_array(
 				$_SERVER['HTTP_SEC_FETCH_SITE'],
-				array('same-origin', 'same-site')
+				array('same-origin', 'same-site', 'none')
 			)
 		)
 	)
