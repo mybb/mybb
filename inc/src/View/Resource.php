@@ -148,7 +148,7 @@ readonly class Resource implements CargoEntityInterface
         return $this->locator->namespace;
     }
 
-    public function getGroup(): string
+    public function getGroup(): ?string
     {
         return $this->locator->group;
     }

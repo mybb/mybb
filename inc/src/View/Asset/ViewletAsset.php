@@ -85,7 +85,7 @@ class ViewletAsset extends Asset
         return $this->locator->namespace;
     }
 
-    public function getGroup(): string
+    public function getGroup(): ?string
     {
         return $this->locator->group;
     }
