@@ -35,7 +35,13 @@
                         <div class="thread__title">
                             <h3 class="thread__subject">{{ unreadmessage.subject }}</h3>
                         </div>
-                        <div class="thread__author">{{ unreadmessage.profilelink|raw }}</div>
+                        <div class="thread__author">
+                            {% if unreadmessage.toid > 0 %}
+                                <a href="{{ get_profile_link(unreadmessage.toid) }}">{{ unreadmessage.toid|format_name }}</a>
+                            {% else %}
+                                {{ unreadmessage.tousername ?? lang.guest }}
+                            {% endif %}
+                        </div>
                         <div class="thread__date">{{ unreadmessage.senddate|raw }}</div>
                         <div class="thread__checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
                     </div>
@@ -84,7 +90,13 @@
                         <div class="thread__title">
                             <h3 class="thread__subject">{{ readmessage.subject }}</h3>
                         </div>
-                        <div class="thread__author">{{ readmessage.profilelink|raw }}</div>
+                        <div class="thread__author">
+                            {% if readmessage.toid > 0 %}
+                                <a href="{{ get_profile_link(readmessage.toid) }}">{{ readmessage.toid|format_name }}</a>
+                            {% else %}
+                                {{ readmessage.tousername ?? lang.guest }}
+                            {% endif %}
+                        </div>
                         <div class="thread__date">{{ readmessage.readdate|raw }}</div>
                         <div class="thread__checkbox"><input type="checkbox" class="checkbox checkbox--select-row" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
                     </div>

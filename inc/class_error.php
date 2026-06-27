@@ -484,6 +484,16 @@ class errorHandler {
 		{
 			if($type == MYBB_SQL)
 			{
+				// If failure occurred on the first query, add Installation State details
+				if($GLOBALS['db']->query_count === 0)
+				{
+					require_once MYBB_ROOT.'inc/src/Maintenance/functions_db.php';
+					require_once MYBB_ROOT.'inc/src/Maintenance/functions_core.php';
+					require_once MYBB_ROOT.'inc/src/Maintenance/InstallationState.php';
+
+					$data['Installation State'] = \MyBB\Maintenance\InstallationState::getDescription($lang);
+				}
+
 				$data['SQL Error'] = $message['error_no'].' - '.$message['error'];
 
 				if($message['query'] != "")
@@ -613,7 +623,7 @@ class errorHandler {
 
 				foreach($data as $key => $value)
 				{
-					if(!in_array($key, ['Code', 'Backtrace']))
+					if(!in_array($key, ['Installation State', 'Code', 'Backtrace']))
 					{
 						$value = htmlspecialchars_uni($value);
 					}
@@ -798,7 +808,7 @@ class errorHandler {
 				{
 					if($html)
 					{
-						$backtrace .= '<li>&hellip;</li>';
+						$backtrace .= '<li>…</li>';
 					}
 					else
 					{

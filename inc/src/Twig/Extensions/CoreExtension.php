@@ -355,7 +355,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                 $this->mybb->settings['thousandssep']
             );
         } else {
-            $parts = explode('.', $number, 2);
+            $parts = explode('.', (string)$number, 2);
 
             if (count($parts) == 2) {
                 $decimals = my_strlen($parts[1]);
@@ -534,6 +534,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
      * @param string|null $url The URL to the avatar to render, or null for a default avatar.
      * @param string|null $alt The alternative text to use for the avatar.
      * @param string|null $class An optional CSS class or list of CSS classes to apply to the avatar template.
+     * @param string|null $identifier The string to use when generating the default avatar's initial and color.
      *
      * @return string
      * @throws \Twig\Error\LoaderError
@@ -544,16 +545,28 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         Environment $twig,
         ?string $url = '',
         ?string $alt = '',
-        ?string $class = ''
+        ?string $class = '',
+        ?string $identifier = null
     ): string {
         $url = trim($url);
         $alt = trim($alt);
         $class = trim($class);
+        $identifier = trim(strip_tags((string)$identifier));
+
+        if (empty($identifier)) {
+            $identifier = trim(strip_tags((string)$alt));
+        }
 
         if (empty($url)) {
             return $twig->render('partials/default_avatar.twig', [
                 'class' => $class,
+                'initial' => $this->getDefaultAvatarInitial($identifier),
+                'color' => $this->getDefaultAvatarColor($identifier),
             ]);
+        }
+
+        if (!my_validate_url($url)) {
+            $url = $this->mybb->get_asset_url($url);
         }
 
         return $twig->render('partials/avatar.twig', [
@@ -561,5 +574,43 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             'alt' => $alt,
             'class' => $class,
         ]);
+    }
+
+    /**
+     * Returns the initial used for a generated default avatar.
+     *
+     * @param string $identifier Source string for the generated avatar.
+     *
+     * @return string
+     */
+    private function getDefaultAvatarInitial(string $identifier): string
+    {
+        if ($identifier === '') {
+            return '';
+        }
+
+        return my_strtoupper(my_substr($identifier, 0, 1));
+    }
+
+    /**
+     * Returns a background color for a generated default avatar.
+     *
+     * @param string $identifier Source string for the generated avatar.
+     *
+     * @return string
+     */
+    private function getDefaultAvatarColor(string $identifier): string
+    {
+        if ($identifier === '') {
+            return '';
+        }
+
+        $hash = hash('sha256', $identifier);
+
+        $hue = hexdec(substr($hash, 0, 4)) % 360;
+        $saturation = 58 + (hexdec(substr($hash, 4, 2)) / 255) * 24;
+        $lightness = 30 + (hexdec(substr($hash, 6, 2)) / 255) * 14;
+
+        return "hsl({$hue}, {$saturation}%, {$lightness}%)";
     }
 }

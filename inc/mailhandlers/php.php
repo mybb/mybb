@@ -69,6 +69,9 @@ class PhpMail extends MailHandler
 
 		$dir = "/{$mybb->config['admin_dir']}/";
 		$pos = strrpos($_SERVER['PHP_SELF'], $dir);
+
+		$temp_script_path = null;
+
 		if(defined('IN_ADMINCP') && $pos !== false)
 		{
 			$temp_script_path = $_SERVER['PHP_SELF'];

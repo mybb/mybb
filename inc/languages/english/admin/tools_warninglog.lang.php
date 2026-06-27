@@ -20,6 +20,7 @@ $l['filter_warning_logs'] = "Filter Warning Logs";
 $l['filter_warned_user'] = "Warned user:";
 $l['filter_issued_by'] = "Warning issued by:";
 $l['filter_reason'] = "Reason contains:";
+$l['filter_all'] = "All warnings";
 $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['view'] = "View";
@@ -51,3 +52,6 @@ $l['error_no_revoke_reason'] = "You did not enter a reason as to why you want to
 $l['redirect_warning_revoked'] = "This warning has been revoked and the users warning points decreased successfully.";
 
 $l['warning_points'] = "({1} points)";
+$l['acknowledged'] = "Acknowledged";
+$l['not_acknowledged'] = "Not acknowledged";
+$l['acknowledgement_date'] = "Acknowledgement Date";

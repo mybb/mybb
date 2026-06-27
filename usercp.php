@@ -166,20 +166,13 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
 			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				error($lang->error_usercp_return_date_past);
-			}
-
 			$returndate = "{$return_day}-{$return_month}-{$return_year}";
 		}
 		else
 		{
 			$returndate = "";
 		}
+
 		$away = array(
 			"away" => 1,
 			"date" => $awaydate,
@@ -191,9 +184,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	{
 		$away = array(
 			"away" => 0,
-			"date" => '',
-			"returndate" => '',
-			"awayreason" => ''
 		);
 	}
 
@@ -267,6 +257,8 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "profile")
 {
+	$returndate = [];
+
 	if($errors)
 	{
 		$user = $mybb->input;
@@ -275,7 +267,6 @@ if($mybb->input['action'] == "profile")
 		$bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
 		$bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-		$returndate = [];
 		$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
 		$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
 		$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
@@ -310,7 +301,11 @@ if($mybb->input['action'] == "profile")
 	// Away informations
 	if($mybb->settings['allowaway'] != 0)
 	{
-		$returndate = explode("-", $mybb->user['returndate']);
+		if(empty($returndate))
+		{
+			$returndate = explode("-", $mybb->user['returndate']);
+		}
+
 		if(!isset($returndate[1]))
 		{
 			$returndate[1] = 0;
@@ -414,10 +409,10 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	));
 
 	$user['options'] = array(
+		"invisible" => 0,
 		"allownotices" => $mybb->get_input('allownotices', MyBB::INPUT_INT),
 		"hideemail" => $mybb->get_input('hideemail', MyBB::INPUT_INT),
 		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', MyBB::INPUT_INT),
-		"invisible" => $mybb->get_input('invisible', MyBB::INPUT_INT),
 		"showtimespentonline" => $mybb->get_input('showtimespentonline', MyBB::INPUT_INT),
 		"dstcorrection" => $mybb->get_input('dstcorrection', MyBB::INPUT_INT),
 		"threadmode" => $mybb->get_input('threadmode'),
@@ -438,6 +433,11 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"showredirect" => $mybb->get_input('showredirect', MyBB::INPUT_INT),
 		"classicpostbit" => $mybb->get_input('classicpostbit', MyBB::INPUT_INT)
 	);
+
+	if($mybb->usergroup['canbeinvisible'] == 1)
+	{
+		$user['options']['invisible'] = $mybb->get_input('invisible', MyBB::INPUT_INT);
+	}
 
 	if($mybb->settings['usertppoptions'])
 	{
@@ -2455,7 +2455,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				unset($existing_users[$key]);
 				$user = get_user($mybb->get_input('delete', MyBB::INPUT_INT));
-				if(!empty($user))
+				if(!empty($user) && $mybb->get_input('manage') == "buddy")
 				{
 					// We want to remove us from this user's buddy list
 					if($user['buddylist'] != '')
@@ -2467,28 +2467,31 @@ if($mybb->input['action'] == "do_editlists")
 						$user['buddylist'] = [];
 					}
 
-					$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
-					unset($user['buddylist'][$key]);
-
-					// Now we have the new list, so throw it all back together
-					$new_list = implode(",", $user['buddylist']);
-
-					// And clean it up a little to ensure there is no possibility of bad values
-					$new_list = preg_replace("#,{2,}#", ",", $new_list);
-					$new_list = preg_replace("#[^0-9,]#", "", $new_list);
-
-					if(my_substr($new_list, 0, 1) == ",")
+					$key = array_search((int)$mybb->user['uid'], $user['buddylist']);
+					if($key !== false)
 					{
-						$new_list = my_substr($new_list, 1);
-					}
-					if(my_substr($new_list, -1) == ",")
-					{
-						$new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
-					}
+						unset($user['buddylist'][$key]);
 
-					$user['buddylist'] = $db->escape_string($new_list);
+						// Now we have the new list, so throw it all back together
+						$new_list = implode(",", $user['buddylist']);
 
-					$db->update_query("users", ['buddylist' => $user['buddylist']], "uid='".(int)$user['uid']."'");
+						// And clean it up a little to ensure there is no possibility of bad values
+						$new_list = preg_replace("#,{2,}#", ",", $new_list);
+						$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+						if(my_substr($new_list, 0, 1) == ",")
+						{
+							$new_list = my_substr($new_list, 1);
+						}
+						if(my_substr($new_list, -1) == ",")
+						{
+							$new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
+						}
+
+						$user['buddylist'] = $db->escape_string($new_list);
+
+						$db->update_query("users", ['buddylist' => $user['buddylist']], "uid='".(int)$user['uid']."'");
+					}
 				}
 
 				if($mybb->get_input('manage') == "ignored")
@@ -2538,6 +2541,15 @@ if($mybb->input['action'] == "do_editlists")
 
 	$plugins->run_hooks('usercp_do_editlists_end');
 
+	if($mybb->get_input('manage') == "ignored")
+	{
+		$manage_type = "ignored";
+	}
+	else
+	{
+		$manage_type = "buddy";
+	}
+
 	// Ajax based request, throw new list to browser
 	if(!empty($mybb->input['ajax']))
 	{
@@ -2553,25 +2565,24 @@ if($mybb->input['action'] == "do_editlists")
 		$message_js = '';
 		if($message)
 		{
-			$message_js = "$.jGrowl('{$message}', {theme:'jgrowl_success'});";
+			$message_js = "$.jGrowl(".json_encode($message).", {theme:'jgrowl_success'});";
 		}
 
 		if($error_message)
 		{
-			$message_js .= " $.jGrowl('{$error_message}', {theme:'jgrowl_error'});";
+			$message_js .= " $.jGrowl(".json_encode($error_message).", {theme:'jgrowl_error'});";
 		}
 
 		if($mybb->get_input('delete', MyBB::INPUT_INT))
 		{
 			header("Content-type: text/javascript");
-			echo "$(\"#".$mybb->get_input('manage')."_".$mybb->get_input('delete',
-					MyBB::INPUT_INT)."\").remove();\n";
+			echo "$(\"#".$manage_type."_".$mybb->get_input('delete', MyBB::INPUT_INT)."\").remove();\n";
 			if($new_list == "")
 			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
+				echo "$(\"#".$manage_type."_count\").html(\"0\");\n";
 				echo "\$(\"#buddylink\").remove();\n";
 
-				if($mybb->get_input('manage') == "ignored")
+				if($manage_type == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
 				}
@@ -2582,8 +2593,7 @@ if($mybb->input['action'] == "do_editlists")
 			}
 			else
 			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"".count(explode(",",
-						$new_list))."\");\n";
+				echo "$(\"#".$manage_type."_count\").html(\"".count(explode(",", $new_list))."\");\n";
 			}
 			echo $message_js;
 			exit;
@@ -2596,7 +2606,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$message .= "<br />".$error_message;
 		}
-		redirect("usercp.php?action=editlists#".$mybb->get_input('manage'), $message);
+		redirect("usercp.php?action=editlists#".$manage_type, $message);
 	}
 }
 
@@ -3597,6 +3607,9 @@ if(!$mybb->input['action'])
 	}
 
 	$latest_warnings = '';
+
+	$warnings = [];
+
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
 		if($mybb->settings['maxwarningpoints'] < 1)
@@ -3614,7 +3627,6 @@ if(!$mybb->input['action'])
 			$mybb->user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 		}
 
-		$warnings = [];
 		if($warning_level > 0)
 		{
 			require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -3844,8 +3856,8 @@ if(!$mybb->input['action'])
 						$thread['replies'] = my_number_format($thread['replies']);
 						$thread['views'] = my_number_format($thread['views']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
+						$latestsubscriptions[] = $thread;
 					}
-					$latestsubscriptions[] = $thread;
 				}
 			}
 		}
@@ -4013,6 +4025,8 @@ if(!$mybb->input['action'])
 
 				$thread['lastread'] = $lastread;
 				$thread['folder_label'] = '';
+
+				$thread['folder'] = '';
 
 				// Folder Icons
 				if(!empty($thread['doticon']))

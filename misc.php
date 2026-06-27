@@ -427,13 +427,11 @@ elseif($mybb->input['action'] == "help")
 			{
 				$langnamevar = "s".$section['sid']."_name";
 				$langdescvar = "s".$section['sid']."_desc";
-
-				if($lang->$langnamevar)
+				if(isset($lang->$langnamevar))
 				{
 					$section['name'] = $lang->$langnamevar;
 				}
-
-				if($lang->$langdescvar)
+				if(isset($lang->$langdescvar))
 				{
 					$section['description'] = $lang->$langdescvar;
 				}
@@ -689,7 +687,7 @@ elseif($mybb->input['action'] == "whoposted")
 
 		// Build the navigation.
 		build_forum_breadcrumb($forum['fid']);
-		add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
+		add_breadcrumb($breadcrumbprefix.htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 		add_breadcrumb($lang->who_posted);
 
 		output_page(\MyBB\View\template('misc/whoposted.twig', [

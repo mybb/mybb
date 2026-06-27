@@ -30,7 +30,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
 	defaultviews TEXT NOT NULL,
 	loginattempts smallint NOT NULL default '0',
 	loginlockoutexpiry int NOT NULL default '0',
-	authsecret varchar(16) NOT NULL default '',
+	authsecret varchar(64) NOT NULL default '',
 	recovery_codes varchar(177) NOT NULL default ''
  );";
 
@@ -728,6 +728,8 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
 	isdefault tinyint(1) NOT NULL default '0'
 );";
 
+$tables[] = "CREATE UNIQUE INDEX mybb_settinggroups_name_uq ON mybb_settinggroups (name);";
+
 $tables[] = "CREATE TABLE mybb_settings (
 	sid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
@@ -741,6 +743,7 @@ $tables[] = "CREATE TABLE mybb_settings (
 );";
 
 $tables[] = "CREATE INDEX mybb_settings_gid ON mybb_settings (gid);";
+$tables[] = "CREATE UNIQUE INDEX mybb_settings_name_uq ON mybb_settings (name);";
 
 $tables[] = "CREATE TABLE mybb_smilies (
 	sid INTEGER PRIMARY KEY,

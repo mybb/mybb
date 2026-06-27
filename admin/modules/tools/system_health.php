@@ -83,6 +83,9 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	}
 
 	$count = 0;
+
+	$done_set = $done_output = [];
+
 	foreach($t_cache as $sid => $templates)
 	{
 		if(!$done_set[$sid])
@@ -179,6 +182,12 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	if($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
 	{
+		if(!verify_post_check($mybb->get_input('my_post_key')))
+		{
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
+		}
+
 		if(!empty($mybb->input['mb4']) && version_compare($db->get_version(), '5.5.3', '<'))
 		{
 			flash_message($lang->error_utf8mb4_version, 'error');
@@ -429,7 +438,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				{
 					$mb4 = "&amp;mb4=1";
 				}
-				admin_redirect("index.php?module=tools-system_health&action=utf8_conversion&do=all&table={$nexttable}{$mb4}");
+				admin_redirect("index.php?module=tools-system_health&action=utf8_conversion&do=all&table={$nexttable}{$mb4}&my_post_key={$mybb->post_code}");
 				exit;
 			}
 		}
@@ -459,6 +468,8 @@ if($mybb->input['action'] == "utf8_conversion")
 
 		if($mybb->input['do'] == "all")
 		{
+			$mybb_tables = [];
+
 			$tables = $db->list_tables($mybb->config['database']['database']);
 			foreach($tables as $key => $tablename)
 			{
@@ -478,7 +489,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				}
 			}
 
-			if(is_array($mybb_tables))
+			if(!empty($mybb_tables))
 			{
 				asort($mybb_tables);
 				reset($mybb_tables);

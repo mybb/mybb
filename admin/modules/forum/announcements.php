@@ -580,6 +580,8 @@ if($mybb->input['action'] == "edit")
 		$endmonthsel[$i] = $startmonthsel[$i] = '';
 	}
 
+	$endtime_checked = [];
+
 	if($errors || isset($mybb->input['preview']))
 	{
 		// Only show errors if we have any

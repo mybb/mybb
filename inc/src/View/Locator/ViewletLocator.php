@@ -298,7 +298,7 @@ class ViewletLocator extends Locator
         return $this->namespace;
     }
 
-    public function getGroup(): string
+    public function getGroup(): ?string
     {
         return $this->group;
     }

@@ -742,6 +742,9 @@ function privatemessage_perform_search_mysql($search)
 	if($search['status'])
 	{
 		$searchsql .= " AND (";
+
+		$statussql = [];
+
 		if($search['status']['new'])
 		{
 			$statussql[] = " status='0' ";
@@ -1247,7 +1250,7 @@ function perform_search_mysql($search)
 			$prefixlist[] = $threadprefix;
 		}
 	}
-	if(count($prefixlist) == 1)
+	if(count($prefixlist) == 1 && isset($threadprefix))
 	{
 		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
 	}
@@ -1517,7 +1520,7 @@ function perform_search_mysql_ft($search)
 			$inquote = !$inquote;
 		}
 		// Show the minimum search term error only if all search terms are too short
-		if($all_too_short == true)
+		if(!empty($all_too_short))
 		{
 			$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 			error($lang->error_minsearchlength);
@@ -1601,7 +1604,7 @@ function perform_search_mysql_ft($search)
 			$prefixlist[] = $threadprefix;
 		}
 	}
-	if(count($prefixlist) == 1)
+	if(count($prefixlist) == 1 && isset($threadprefix))
 	{
 		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
 	}

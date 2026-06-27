@@ -1560,6 +1560,8 @@ if($mybb->input['action'] == "edit")
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
 
+	$existing_permissions = [];
+
 	$query = $db->simple_select("forumpermissions", "*", "fid='{$fid}'");
 	while($existing = $db->fetch_array($query))
 	{
@@ -2673,6 +2675,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$usergroups = $groupscache;
 		}
 
+		$modgroups = [];
+
 		foreach($usergroups as $group)
 		{
 			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".htmlspecialchars_uni($group['title']);
@@ -2913,6 +2917,8 @@ function retrieve_single_permissions_row($gid, $fid)
 	$query = $db->simple_select("forums", "*", "fid='{$fid}'");
 	$forum_data = $db->fetch_array($query);
 
+	$existing_permissions = [];
+
 	$query = $db->simple_select("forumpermissions", "*", "fid='{$fid}'");
 	while($existing = $db->fetch_array($query))
 	{
@@ -2939,7 +2945,7 @@ function retrieve_single_permissions_row($gid, $fid)
 
 	$perms = array();
 
-	if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
+	if(isset($existing_permissions[$usergroup['gid']]))
 	{
 		$perms = $existing_permissions[$usergroup['gid']];
 		$default_checked = false;
@@ -2975,7 +2981,7 @@ function retrieve_single_permissions_row($gid, $fid)
 
 	$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 
-	if($default_checked == 1)
+	if(!empty($default_checked))
 	{
 		$inherited_text = $lang->inherited_permission;
 	}

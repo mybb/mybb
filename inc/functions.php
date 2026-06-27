@@ -211,26 +211,32 @@ function run_shutdown()
 			require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 			require_once MYBB_ROOT . 'inc/DbException.php';
 
-			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
-			switch($config['database']['type'])
+			$db_type = $config['database']['type'];
+
+			if($db_type === 'mysql')
 			{
-				case "sqlite":
-					$db = new DB_SQLite;
-					break;
-				case "pgsql":
-					$db = new DB_PgSQL;
-					break;
-				case "pgsql_pdo":
-					$db = new PostgresPdoDbDriver();
-					break;
-				case "mysql_pdo":
-					$db = new MysqlPdoDbDriver();
-					break;
-				case "mysqli":
-				case "mysql":
-				default:
-					$db = new DB_MySQLi;
+				$db_type = 'mysqli';
 			}
+
+			try
+			{
+				$db_class = match($db_type)
+				{
+					'sqlite' => DB_SQLite::class,
+					'pgsql' => DB_PgSQL::class,
+					'pgsql_pdo' => PostgresPdoDbDriver::class,
+					'mysql_pdo' => MysqlPdoDbDriver::class,
+					'mysqli' => DB_MySQLi::class,
+				};
+			}
+			catch(UnhandledMatchError)
+			{
+				return;
+			}
+
+			require_once MYBB_ROOT."inc/db_".$db_type.".php";
+
+			$db = new $db_class();
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -390,7 +396,7 @@ function my_date($format, $stamp = 0, $offset = "", $ty = 1, $adodb = false)
 		$adodb = false;
 	}
 
-	$todaysdate = $yesterdaysdate = '';
+	$todaysdate = $yesterdaysdate = $date = '';
 	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal'))
 	{
 		$_stamp = TIME_NOW;
@@ -747,7 +753,9 @@ function generate_post_check($rotation_shift=0)
 }
 
 /**
- * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours)
+ * Verifies a POST check code is valid (i.e. generated using a rotation number from the past 24 hours).
+ *
+ * Additionally, if the SameSite Cookie Flag setting is enabled, verifies same-site request origin.
  *
  * @param string $code The incoming POST check code
  * @param boolean $silent Don't show an error to the user
@@ -755,12 +763,22 @@ function generate_post_check($rotation_shift=0)
  */
 function verify_post_check($code, $silent = false)
 {
-	global $lang;
+	global $mybb, $lang;
 	if(
-		generate_post_check() !== $code &&
-		generate_post_check(-1) !== $code &&
-		generate_post_check(-2) !== $code &&
-		generate_post_check(-3) !== $code
+		(
+			generate_post_check() !== $code &&
+			generate_post_check(-1) !== $code &&
+			generate_post_check(-2) !== $code &&
+			generate_post_check(-3) !== $code
+		) ||
+		(
+			$mybb->settings['cookiesamesiteflag'] == 1 &&
+			isset($_SERVER['HTTP_SEC_FETCH_SITE']) &&
+			!in_array(
+				$_SERVER['HTTP_SEC_FETCH_SITE'],
+				array('same-origin', 'same-site')
+			)
+		)
 	)
 	{
 		if($silent == true)
@@ -934,7 +952,7 @@ function error(string $message = "", string $title = "", string $extra_content =
 		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
-	
+
 	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
@@ -1021,6 +1039,8 @@ function error_no_permission()
 		echo json_encode(["errors" => [$lang->error_nopermission_user_ajax]]);
 		exit;
 	}
+
+	$username = $redirect_url = '';
 
 	if($mybb->user['uid'] == 0)
 	{
@@ -1630,10 +1650,10 @@ function forum_permissions($fid = 0, $uid = 0, $gid = 0)
 			$groupperms = $mybb->usergroup;
 		}
 	}
-	else 
+	else
 	{
 		$groupperms = usergroup_permissions($gid);
-	}	
+	}
 
 	if(!is_array($forum_cache))
 	{
@@ -1849,6 +1869,8 @@ function check_forum_password($fid, $pid = 0, $return = false)
 			}
 		}
 	}
+
+	$pwnote = false;
 
 	if($forum_cache[$fid]['password'] !== '')
 	{
@@ -3525,6 +3547,8 @@ function format_name($username, $usergroup, $displaygroup = 0)
  * @param string $dimensions Dimensions of the avatar, width x height (e.g. 44|44)
  * @param string $max_dimensions The maximum dimensions of the formatted avatar
  * @return array Information for the formatted avatar
+ *
+ * @deprecated Use the render_avatar Twig function instead.
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 {
@@ -3584,9 +3608,13 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 
 		if($dimensions[0] && $dimensions[1])
 		{
-			list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
+			$dims_arr = preg_split('/[|x]/', $max_dimensions);
+			if (count($dims_arr) == 2)
+			{
+				list($max_width, $max_height) = $dims_arr;
+			}
 
-			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
+			if(count($dims_arr) == 2 && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
@@ -3715,7 +3743,20 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 
 		$editor_language .= "}})(jQuery);";
 
-		$toolbar = [];
+		$toolbar = [
+			'emoticon' => '',
+			'basic1' => '',
+			'basic2' => '',
+			'align' => '',
+			'font' => '',
+			'size' => '',
+			'color' => '',
+			'removeformat' => '',
+			'email' => '',
+			'link' => '',
+			'list' => '',
+			'code' => ''
+		];
 
 		if(defined("IN_ADMINCP"))
 		{
@@ -3725,7 +3766,8 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 		else
 		{
 			// Smilies
-			$emoticons = [];
+			$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
+
 			if($smilies)
 			{
 				if(!$smiliecache)
@@ -3753,8 +3795,6 @@ function build_mycode_inserter($bind = "message", $smilies = true)
 					reset($smiliecache);
 
 					$i = 0;
-
-					$emoticons = ['hidden' => '', 'dropdown' => '', 'more' => ''];
 
 					foreach($smiliecache as $smilie)
 					{
@@ -3926,7 +3966,7 @@ function build_clickable_smilies()
 
 		if(!$smiliecache)
 		{
-			if(!is_array($smilie_cache))
+			if(empty($smilie_cache))
 			{
 				$smilie_cache = $cache->read("smilies");
 			}
@@ -3993,7 +4033,7 @@ function build_prefixes($pid = 0)
 
 	if(is_array($prefixes_cache))
 	{
-		if($pid > 0 && is_array($prefixes_cache[$pid]))
+		if($pid > 0 && isset($prefixes_cache[$pid]) && is_array($prefixes_cache[$pid]))
 		{
 			return $prefixes_cache[$pid];
 		}
@@ -4020,7 +4060,7 @@ function build_prefixes($pid = 0)
 		$prefixes_cache[$prefix['pid']] = $prefix;
 	}
 
-	if($pid != 0 && is_array($prefixes_cache[$pid]))
+	if($pid != 0 && isset($prefixes_cache[$pid]) && is_array($prefixes_cache[$pid]))
 	{
 		return $prefixes_cache[$pid];
 	}
@@ -4379,8 +4419,8 @@ function get_ip()
 			foreach($addresses as $val)
 			{
 				$val = trim($val);
-				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
+				// Validate IP address and exclude private and reserved addresses
+				if(my_inet_ntop(my_inet_pton($val)) == $val && filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false)
 				{
 					$ip = $val;
 					break;
@@ -4521,7 +4561,7 @@ function get_attachment_icon($ext)
 
 	$ext = my_strtolower($ext);
 
-	if($attachtypes[$ext]['icon'])
+	if(!empty($attachtypes[$ext]['icon']))
 	{
 		static $attach_icons_schemes = array();
 		if(!isset($attach_icons_schemes[$ext]))
@@ -6033,11 +6073,11 @@ function get_forum_link(int $fid, int $page = 0) : string
  * Build the thread link.
  *
  * @param int $tid The thread id of the thread.
- * @param int $page (Optional) The page number of the thread.
+ * @param int|string $page (Optional) The page number of the thread.
  * @param string $action (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
-function get_thread_link(int $tid, int $page = 0, string $action = '') : string
+function get_thread_link(int $tid, int|string $page = 0, string $action = '') : string
 {
 	$link = THREAD_URL;
 	$replacements = [
@@ -7014,6 +7054,12 @@ function fetch_remote_file($url, $post_data = array(), $max_redirects = 20)
 	}
 
 	$addresses = get_ip_by_hostname($url_components['host']);
+
+	if(empty($addresses))
+	{
+		return false;
+	}
+
 	$destination_address = $addresses[0];
 
 	if(!empty($config['disallowed_remote_addresses']))
@@ -7275,7 +7321,24 @@ function get_ip_by_hostname($hostname)
 
 		if($result_set)
 		{
-			$addresses = array_column($result_set, 'ip');
+			$addresses = array();
+
+			foreach($result_set as $result)
+			{
+				if(array_key_exists('ip', $result))
+				{
+					$addresses[] = $result['ip'];
+				}
+				elseif(array_key_exists('ipv6', $result))
+				{
+					$addresses[] = $result['ipv6'];
+				}
+			}
+
+			if(empty($addresses))
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -8803,3 +8866,4 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	}
 	return $backtrace;
 }
+

@@ -3222,7 +3222,7 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 
-			if($thread['visible'] == -1)
+			if(isset($thread) && $thread['visible'] == -1)
 			{
 				error($lang->error_thread_deleted, $lang->error);
 			}
@@ -3233,11 +3233,16 @@ switch($mybb->input['action'])
 
 				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
 
+				if(!isset($thread))
+				{
+					$thread['subject'] = $lang->multiple_threads;
+				}
+
 				$confirm['action'] = $tool;
 				$confirm['modtype'] = $mybb->get_input('modtype');
-				$confirm['tid'] = $thread['tid'];
-				$confirm['pid'] = $post['pid'];
-				$confirm['fid'] = $forum['fid'];
+				$confirm['tid'] = $tid;
+				$confirm['pid'] = $pid;
+				$confirm['fid'] = $fid;
 				$confirm['inlinetype'] = $mybb->get_input('inlinetype');
 				$confirm['searchid'] = $mybb->get_input('searchid', MyBB::INPUT_INT);
 				$confirm['url'] = $mybb->get_input('url');
@@ -3612,20 +3617,6 @@ function is_moderator_by_tids($threads, $permission = '')
 function moderation_redirect($url, $message = "", $title = "")
 {
 	global $mybb;
-	if(!empty($mybb->input['url']))
-	{
-		$url = htmlentities($mybb->input['url']);
-	}
 
-	if(my_strpos($url, $mybb->settings['bburl'].'/') !== 0)
-	{
-		if(my_strpos($url, '/') === 0)
-		{
-			$url = my_substr($url, 1);
-		}
-		$url_segments = explode('/', $url);
-		$url = $mybb->settings['bburl'].'/'.end($url_segments);
-	}
-
-	redirect($url, $message, $title);
+	redirect($mybb->get_input('url') === '' ? $url : $mybb->get_input('url'), $message, $title);
 }

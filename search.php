@@ -332,7 +332,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
-			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = last_poster.uid)
 			WHERE $where_conditions AND ({$unapproved_where_t}) {$permsql} AND t.moved='0'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -392,8 +392,6 @@ if($mybb->input['action'] == "results")
 			{
 				$thread['username'] = $thread['userusername'];
 			}
-
-			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 
 			// If this thread has a prefix, insert a space between prefix and subject
 			if($thread['prefix'] != 0)
@@ -544,28 +542,7 @@ if($mybb->input['action'] == "results")
 
 			$thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-			$lastposteruid = $thread['lastposteruid'];
-			if(!$lastposteruid && !$thread['lastposter'])
-			{
-				$lastposter = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$lastposter = htmlspecialchars_uni($thread['lastposter']);
-			}
-
 			$thread['thread_link'] = get_thread_link($thread['tid']).$highlight;
-
-			// Don't link to guest's profiles (they have no profile).
-			if($lastposteruid == 0)
-			{
-				$thread['lastposterlink'] = $lastposter;
-			}
-			else
-			{
-				$thread['lastposterlink'] = build_profile_link($lastposter, $lastposteruid);
-			}
-
 			$thread['replies'] = my_number_format($thread['replies']);
 			$thread['views'] = my_number_format($thread['views']);
 
@@ -822,7 +799,6 @@ if($mybb->input['action'] == "results")
 				$post['username'] = $post['userusername'];
 			}
 
-			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 

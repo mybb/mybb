@@ -70,7 +70,15 @@
         </div>
     {% endif %}
     {# Thread author #}
-    <div class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }} {{ lang.in }} <a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a></div>
+    <div class="thread__author">
+        {{ lang.by }}
+        {% if thread.uid > 0 %}
+           <a href="{{ get_profile_link(thread.uid) }}">{{ thread.uid|format_name }}</a>
+        {% else %}
+            {{ thread.username ?? lang.guest }}
+        {% endif %}
+        {{ lang.in }} <a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a>
+    </div>
     <div class="thread__replies thread__count thread__count--replies">
         <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
         <span class="thread__legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
@@ -80,14 +88,22 @@
         <span class="thread__legend">{% if thread.views == 1 %}{{ lang.view }}{% else %}{{ lang.views }}{% endif %}</span>
     </div>
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=thread.user_avatar, alt=thread.lastposter, class='avatar--smallest') }}
-        </a>
+        {% if thread.lastposteruid > 0 %}
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=thread.lastposter, class='avatar--smallest') }}
+            </a>
+        {% else %}
+            {{ render_avatar(url=thread.last_poster_avatar, alt=thread.lastposter ?? lang.guest, class='avatar--smallest') }}
+        {% endif %}
     </div>
     <div class="thread__latest latest-post">
         <span class="latest-post__text">{{ lang.lastpost_by }}</span>
         <span class="latest-post__author">
-            {{ thread.lastposterlink|raw }}
+            {% if thread.lastposteruid > 0 %}
+                <a href="{{ get_profile_link(thread.lastposteruid) }}">{{ thread.lastposteruid|format_name }}</a>
+            {% else %}
+                {{ thread.lastposter ?? lang.guest }}
+            {% endif %}
         </span>
         <a href="{{ thread.lastpostlink|raw }}" class="latest-post__date">{{ thread.lastpostdate|raw }}</a>
     </div>

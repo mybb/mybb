@@ -576,7 +576,7 @@ if($mybb->input['action'] == "addevent")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
+		if($calendar_permissions[$calendar_option['cid']]['canviewcalendar'] == 1)
 		{
 			if($calendar_option['cid'] == $mybb->input['calendar'])
 			{
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post"
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -672,7 +672,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -831,7 +831,7 @@ if($mybb->input['action'] == "editevent")
 		$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 		$event = $db->fetch_array($query);
 
-		if(!$event)
+		if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 		{
 			error($lang->error_invalidevent);
 		}
@@ -1314,7 +1314,7 @@ if($mybb->input['action'] == "move")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1341,7 +1341,7 @@ if($mybb->input['action'] == "move")
 	}
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb($event['name'], get_event_link($event['eid']));
+	add_breadcrumb(htmlspecialchars_uni($event['name']), get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_move_event);
 
 	$plugins->run_hooks("calendar_move_start");
@@ -1352,7 +1352,7 @@ if($mybb->input['action'] == "move")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
+		if($calendar_permissions[$calendar_option['cid']]['canviewcalendar'] == 1 && $calendar_permissions[$calendar_option['cid']]['canmoderateevents'] == 1)
 		{
 			$calendar_select[] = $calendar_option;
 		}
@@ -1375,7 +1375,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1414,6 +1414,11 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
+	if($calendar_permissions[$new_calendar['cid']]['canmoderateevents'] != 1)
+	{
+		error_no_permission();
+	}
+
 	$updated_event = array(
 		"cid" => $new_calendar['cid']
 	);
@@ -1436,7 +1441,7 @@ if($mybb->input['action'] == "approve")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1484,7 +1489,7 @@ if($mybb->input['action'] == "unapprove")
 	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!$event)
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}

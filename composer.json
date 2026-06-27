@@ -23,7 +23,10 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-pdo": "*",
+        "chillerlan/php-authenticator": "^5.2",
+        "chillerlan/php-qrcode": "^5.0",
         "illuminate/config": "^10.0",
         "illuminate/container": "^10.0",
         "illuminate/events": "^10.0",
@@ -62,6 +65,9 @@
         "vendor-dir": "inc/vendor",
         "bin-dir": "inc/vendor/bin",
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.2"
+        },
         "sort-packages": true
     },
     "scripts": {

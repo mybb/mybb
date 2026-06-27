@@ -39,6 +39,7 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('alt_trow', [$this, 'altTrow']),
             new TwigFunction('attached_assets', [$this, 'getAttachedAssets']),
             new TwigFunction('legacy_styles', [$this, 'getLegacyStyles']),
+            new TwigFunction('header_messages', [$this, 'getHeaderMessages']),
         ];
     }
 
@@ -52,7 +53,6 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
         return array_merge(
             [
                 'theme' => $this->view->getGlobalThemeArray(),
-                'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
             ],
         );
     }
@@ -199,5 +199,15 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface
                 }
             }
         }
+    }
+
+    /**
+     * Get the header messages set by the application.
+     *
+     * @return array An array of header messages, if any are set, or an empty array if not.
+     */
+    public function getHeaderMessages(): array
+    {
+        return $GLOBALS['headerMessages'] ?? [];
     }
 }

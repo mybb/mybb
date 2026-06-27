@@ -195,6 +195,10 @@ class ScssProcessor extends Processor
     private function addSourcesFromAbsolutePaths(array $paths): void
     {
         foreach ($paths as $path) {
+            if (str_starts_with($path, 'file://')) {
+                $path = substr($path, strlen('file://'));
+            }
+
             $path = Path::normalize($path);
 
             $resource =

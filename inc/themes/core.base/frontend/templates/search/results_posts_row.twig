@@ -39,7 +39,13 @@
     </div>
     <div class="thread__latest latest-post">
         <span class="latest-post__text">{{ lang.posted_by }}</span>
-        <span class="latest-post__author">{{ post.profilelink|raw }}</span>
+        <span class="latest-post__author">
+            {% if post.uid > 0 %}
+                <a href="{{ get_profile_link(post.uid) }}">{{ post.uid|format_name }}</a>
+            {% else %}
+                {{ post.username ?? lang.guest }}
+            {% endif %}
+        </span>
         <a href="{{ post.post_url|raw }}#pid{{ post.pid }}" class="latest-post__date">{{ post.posted|raw }}</a>
     </div>
     {% if post.show_mod_checkbox %}

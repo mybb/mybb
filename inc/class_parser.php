@@ -262,8 +262,8 @@ class postParser
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
+			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|figure|figcaption)[^>]*>)\s*<br />#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|figure|figcaption)[^>]*>)#i", "$2", $message);
 		}
 
 		if($this->clear_needed)
@@ -866,7 +866,7 @@ class postParser
 
 		if($text_only == false)
 		{
-			$replace = "<blockquote class=\"mycode_quote\"><cite>$lang->quote</cite>$1</blockquote>\n";
+			$replace = template('@parser/mycodes/quote_simple.twig');
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback1');
 		}
 		else
@@ -916,7 +916,9 @@ class postParser
 	{
 		global $lang, $theme, $mybb;
 
-		$quote = [];
+		$quote = [
+			'linkback' => false,
+		];
 
 		$quote['message'] = trim($message);
 		$quote['message'] = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $quote['message']);
@@ -1096,12 +1098,19 @@ class postParser
 		}
 
 		$code = @highlight_string($str, true);
+		$count_pre_wrapper = $count_legacy_wrapper = 0;
 
 		// Do the actual replacing.
-		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code);
-		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
-		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
-		$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
+		$code = preg_replace('#<pre><code style="color: \#000000">#i', "<code>", $code, -1, $count_pre_wrapper);
+		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code, -1, $count_legacy_wrapper);
+		if($count_pre_wrapper)
+		{
+			$code = preg_replace("#</code>\s*</pre>#", "</code>", $code);
+		}
+		if($count_legacy_wrapper)
+		{
+			$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		}
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
 		$code = str_replace('$', '&#36;', $code);
@@ -1516,6 +1525,8 @@ class postParser
 
 		$path = empty($parsed_url['path']) ? array() : explode('/', $parsed_url['path']);
 
+		$local = '';
+
 		switch($video)
 		{
 			case "dailymotion":
@@ -1582,10 +1593,6 @@ class postParser
 					if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
 					{
 						$local = "{$domain[0]}.";
-					}
-					else
-					{
-						$local = '';
 					}
 				}
 				break;

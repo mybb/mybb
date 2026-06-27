@@ -89,42 +89,42 @@
                                         </span>
                                     </div>
                                 {% endif %}
-                                <div class="compose__option-buttons">
-                                    {% if newthread.showpostoptions %}
-                                        <label for="show-post-options" class="button button--basic compose__option-button--options">
-                                            {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
-                                            <span class="button__text">{{ lang.options }}</span>
-                                        </label>
-                                    {% endif %}
-
-                                    {% if newthread.showattachments %}
-                                        <label for="show-attachments" class="button button--basic compose__option-button--attachments">
-                                            {{ include('partials/icon.twig', {icon: 'paperclip', class: 'button__icon'}, with_context = false) }}
-                                            <span class="button__text">{{ lang.upload_attachments }}</span>
-                                        </label>
-                                    {% endif %}
-
-                                    {% if newthread.showpollbox %}
-                                        <label for="show-post-poll" class="button button--basic compose__option-button--poll">
-                                            {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
-                                            <span class="button__text">{{ lang.add_poll }}</span>
-                                        </label>
-                                    {% endif %}
-
-                                    {% if mybb.user.uid %}
-                                        <button type="submit" name="savedraft" value="draft" class="button button--basic">
-                                            {{ include('partials/icon.twig', {icon: 'file', class: 'button__icon'}, with_context = false) }}
-                                            <span class="button__text">{{ lang.save_draft }}</span>
-                                        </button>
-                                    {% endif %}
-
-                                    <button type="submit" name="previewpost" value="preview" class="button button--basic">
-                                        {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
-                                        <span class="button__text">{{ lang.preview_post }}</span>
-                                    </button>
-                                </div>
                             </div>
                             {{ smilieinserter|raw }}
+                        </div>
+                        <div class="compose__option-buttons">
+                            {% if newthread.showpostoptions %}
+                                <label for="show-post-options" class="button button--basic compose__option-button--options">
+                                    {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.options }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if newthread.showattachments %}
+                                <label for="show-attachments" class="button button--basic compose__option-button--attachments">
+                                    {{ include('partials/icon.twig', {icon: 'paperclip', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.upload_attachments }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if newthread.showpollbox %}
+                                <label for="show-post-poll" class="button button--basic compose__option-button--poll">
+                                    {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.add_poll }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if mybb.user.uid %}
+                                <button type="submit" name="savedraft" value="draft" class="button button--basic">
+                                    {{ include('partials/icon.twig', {icon: 'file', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.save_draft }}</span>
+                                </button>
+                            {% endif %}
+
+                            <button type="submit" name="previewpost" value="preview" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'comment-dots', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.preview_post }}</span>
+                            </button>
                         </div>
                     </div>
                 </section>

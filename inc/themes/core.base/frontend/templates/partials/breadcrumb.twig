@@ -11,7 +11,7 @@
         {% if loop.last %}
             <span class="breadcrumb__active">{{ crumb.name|raw }}</span>
         {% else %}
-            <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link"><span class="breadcrumb__text">{{ crumb.name }}</span></a>
+            <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link"><span class="breadcrumb__text">{{ crumb.name|raw }}</span></a>
             {% if crumb.multipage is defined and not empty %}
                 {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
                     {% set perPage = 20 %}

@@ -203,7 +203,7 @@ if($mybb->input['action'] == "check")
 
 	$plugins->run_hooks("admin_config_plugins_check");
 
-	$info = array();
+	$info = $names = array();
 
 	if($plugins_list)
 	{

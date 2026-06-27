@@ -7,7 +7,9 @@
     <div class="thread__title">
         {# Thread prefix #}
         {% if thread.threadprefix %}
-            <span class="thread__prefix thread-prefix thread-prefix--prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+            <span class="thread__prefix thread-prefix thread-prefix--prefix-{{ thread.prefix }}">
+                <a href="{{ url(get_forum_link(thread.fid), {prefix: thread.prefix}) }}">{{ thread.threadprefix|raw }}</a>
+            </span>
         {% endif %}
         <h3 class="thread__subject">
             {# Thread title #}
@@ -96,9 +98,9 @@
             {% endfor %}
         </div>
     {% endif %}
-    
+
     <div class="thread__replies thread__count thread__count--replies">
-        <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
+        <a href="{{ url('misc.php', {action: 'whoposted', tid: thread.tid}) }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
         <span class="thread__legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
         {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
             <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans('thread_unapproved_post_count', 1) : trans('thread_unapproved_posts_count', thread.unapprovedposts) }}">
@@ -111,9 +113,13 @@
         <span class="thread__legend">{% if thread.views == 1 %}{{ lang.view }}{% else %}{{ lang.views }}{% endif %}</span>
     </div>
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+        {% if thread.lastposteruid > 0 %}
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
+            </a>
+        {% else %}
             {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
-        </a>
+        {% endif %}
     </div>
     <div class="thread__latest latest-post">
         <span class="latest-post__text">{{ lang.lastpost_by }}</span>

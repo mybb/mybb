@@ -126,6 +126,8 @@ class FeedGenerator
 				$this->feed .= "\t\t<generator>MyBB</generator>\n";
 		}
 
+		$serial = 0;
+
 		// Now loop through all of the items and add them to the feed.
 		foreach($this->items as $item)
 		{

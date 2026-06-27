@@ -574,7 +574,7 @@ Re-generate **Asset** | ≤ 🟩`BALANCED` | ≤ 🟦`WATCH` | ≤ 🟩`BALANCED
 ## [ABNF](https://datatracker.ietf.org/doc/html/rfc5234)
 ```abnf
 ; Extensions
-extension-codename = 1*( a-z / "_" )
+extension-codename = 1*( a-z / A-Z / "_" )
 package-version    = 1*( DIGIT / a-z / "." / "-" ) ; format supported by PHP's version-compare()
 
 plugin-package-name    = extension-codename

@@ -145,9 +145,11 @@ class DB_SQLite implements DB_Base
 		get_execution_time();
 
 		require_once MYBB_ROOT."inc/db_pdo.php";
+		$db_path = (string)($config['database'] ?? '');
+		$db_path = mk_path_abs($db_path);
 
 		try {
-			$this->db = new dbpdoEngine("sqlite:{$config['database']}");
+			$this->db = new dbpdoEngine("sqlite:$db_path");
 		} catch (Exception $ex) {
 			$this->error("[READ] Unable to open the SQLite database");
 

@@ -22,31 +22,44 @@ if($mybb->input['action'] == "recovery_codes")
 {
 	$page->add_breadcrumb_item($lang->recovery_codes, "index.php?module=home-preferences&action=recovery_codes");
 
-	// First: regenerate the codes
-	$codes = generate_recovery_codes();
-	$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($codes))), "uid='{$mybb->user['uid']}'");
+	// User clicked no
+	if($mybb->get_input('no'))
+	{
+		admin_redirect("index.php?module=home-preferences");
+	}
 
-	// And now display them
-	$page->output_header($lang->recovery_codes);
+	if($mybb->request_method == "post")
+	{
+		// First: regenerate the codes
+		$codes = generate_recovery_codes();
+		$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($codes))), "uid='{$mybb->user['uid']}'");
 
-	$table = new Table;
-	$table->construct_header($lang->recovery_codes);
+		// And now display them
+		$page->output_header($lang->recovery_codes);
 
-	$table->construct_cell("{$lang->recovery_codes_warning} <strong><a href=\"javascript:window.print()\">{$lang->print_recovery_codes}</a></strong>");
-	$table->construct_row();
+		$table = new Table;
+		$table->construct_header($lang->recovery_codes);
 
-	$table->construct_cell(implode("<br />", $codes));
-	$table->construct_row();
+		$table->construct_cell("{$lang->recovery_codes_warning} <strong><a href=\"javascript:window.print()\">{$lang->print_recovery_codes}</a></strong>");
+		$table->construct_row();
 
-	$table->output($lang->recovery_codes);
+		$table->construct_cell(implode("<br />", $codes));
+		$table->construct_row();
 
-	$page->output_footer();
+		$table->output($lang->recovery_codes);
+
+		$page->output_footer();
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?module=home-preferences&amp;action=recovery_codes", $lang->recovery_codes_warning);
+	}
 }
 
 if(!$mybb->input['action'])
 {
-	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
-	$auth = new PHPGangsta_GoogleAuthenticator;
+	$authenticator = new \MyBB\TwoFactor\Authenticator();
+	$qr_code_generator = new \MyBB\QRCode\Generator();
 
 	$plugins->run_hooks("admin_home_preferences_start");
 
@@ -62,7 +75,7 @@ if(!$mybb->input['action'])
 			// 2FA was enabled -> create secret and log
 			if($mybb->input['2fa'])
 			{
-				$secret = $auth->createSecret();
+				$secret = $authenticator->createSecret(16);
 				// We don't want to close this session now
 				$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 				log_admin_action("enabled");
@@ -143,8 +156,10 @@ if(!$mybb->input['action'])
 
 	if(!empty($admin_options['authsecret']))
 	{
-		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@AdminCP", $admin_options['authsecret'], str_replace(" ", "", $mybb->settings['bbname']));
-		$form_container->output_row($lang->my2fa_qr . "<br /><img src=\"{$qr}\"");
+		$account_name = $mybb->user['username'] . "@AdminCP";
+		$issuer = trim($mybb->settings['bbname']);
+		$qr_code = $qr_code_generator->render($authenticator->getUri($admin_options['authsecret'], $account_name, $issuer));
+		$form_container->output_row($lang->my2fa_qr, "", "<img src=\"".htmlspecialchars_uni($qr_code)."\" alt=\"".htmlspecialchars_uni($lang->my2fa_qr)."\" width=\"250\" height=\"250\" />");
 	}
 
 	$form_container->end();

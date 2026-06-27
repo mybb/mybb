@@ -2105,7 +2105,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			}
 		}
 
-		if($mybb->input['add_type'] == 1)
+		if(isset($mybb->input['add_type']) && $mybb->input['add_type'] == 1)
 		{
 			$add_checked[1] = "checked=\"checked\"";
 			$add_checked[2] = "";
@@ -2146,7 +2146,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$mybb->input['attach'] = $mybb->get_input('attach', MyBB::INPUT_INT);
 	$stylesheet['sid'] = null;
 
-	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
+	if(isset($mybb->input['attach']) && $mybb->input['attach'] == 1 && isset($mybb->input['applied_to']) && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
 		foreach($mybb->input['applied_to'] as $name => $actions)
 		{

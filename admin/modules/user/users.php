@@ -164,10 +164,20 @@ if($mybb->input['action'] == 'iplookup')
 			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
 			if($ip_record)
 			{
-				$ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
-				if($ip_record['city'])
+				$location = $ip_record['country_name'] ?? '';
+				if(!mb_check_encoding($location, 'UTF-8'))
 				{
-					$ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
+					$location = mb_convert_encoding($location, 'UTF-8', 'ISO-8859-1');
+				}
+				$ipaddress_location = htmlspecialchars_uni($location);
+				if(!empty($ip_record['city']))
+				{
+					$city = $ip_record['city'];
+					if(!mb_check_encoding($city, 'UTF-8'))
+					{
+						$city = mb_convert_encoding($city, 'UTF-8', 'ISO-8859-1');
+					}
+					$ipaddress_location .= $lang->comma.htmlspecialchars_uni($city);
 				}
 			}
 		}
@@ -411,7 +421,7 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->required_profile_info);
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
-	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->get_input('password'), array('id' => 'password', 'autocomplete' => 'off')), 'password');
+	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->get_input('password'), array('id' => 'password', 'autocomplete' => 'new-password')), 'password');
 	$form_container->output_row($lang->confirm_password." <em>*</em>", "", $form->generate_password_box('confirm_password', $mybb->get_input('confirm_password'), array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->get_input('email'), array('id' => 'email')), 'email');
 
@@ -987,9 +997,9 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1832"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1840"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1837"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1832"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1840"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1052,8 +1062,7 @@ EOF;
 	{
 		if(!my_validate_url($user['avatar']))
 		{
-			$avatar = format_avatar($user['avatar'], $user['avatardimensions']);
-			$user['avatar'] = $avatar['image'];
+			$user['avatar'] = htmlspecialchars_uni($mybb->get_asset_url($user['avatar']));
 		}
 	}
 	else
@@ -1184,7 +1193,7 @@ EOF;
 
 	$form_container = new FormContainer($lang->required_profile_info.": ".htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'off')), 'new_password');
+	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'new-password')), 'new_password');
 	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
@@ -1343,10 +1352,23 @@ EOF;
 		$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
+	$timezone_select_options = build_timezone_select('timezone', $mybb->get_input('timezone'));
+	$timezone_options = [];
+	$selected_timezone = null;
+
+	foreach($timezone_select_options as $timezone)
+	{
+		$timezone_options[(string)$timezone['timezone']] = $timezone['label'];
+		if($timezone['selected'])
+		{
+			$selected_timezone = (string)$timezone['timezone'];
+		}
+	}
+
 	$date_options = array(
 		"<label for=\"dateformat\">{$lang->date_format}:</label><br />".$form->generate_select_box("dateformat", $date_format_options, $mybb->get_input('dateformat'), array('id' => 'dateformat')),
 		"<label for=\"dateformat\">{$lang->time_format}:</label><br />".$form->generate_select_box("timeformat", $time_format_options, $mybb->get_input('timeformat'), array('id' => 'timeformat')),
-		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->get_input('timezone')),
+		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".$form->generate_select_box('timezone', $timezone_options, $selected_timezone, array('id' => 'timezone')),
 		"<label for=\"dstcorrection\">{$lang->daylight_savings_time_correction}:</label><br />".$form->generate_select_box("dstcorrection", array(2 => $lang->automatically_detect, 1 => $lang->always_use_dst_correction, 0 => $lang->never_use_dst_correction), $mybb->get_input('dstcorrection'), array('id' => 'dstcorrection'))
 	);
 
@@ -2790,7 +2812,7 @@ if($mybb->input['action'] == "inline_edit")
 				$banned_groups[$group['gid']] = $group['title'];
 			}
 
-			if($mybb->input['processed'] == 1)
+			if($mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 			{
 				// We've posted ban information!
 				// Build an array of users to ban, =D
@@ -2811,13 +2833,13 @@ if($mybb->input['action'] == "inline_edit")
 				// Collect the users
 				$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "uid IN (".$sql_array.")");
 
-				if($mybb->input['bantime'] == '---')
+				if($mybb->get_input('bantime') == '---')
 				{
 					$lifted = 0;
 				}
 				else
 				{
-					$lifted = ban_date2timestamp($mybb->input['bantime']);
+					$lifted = ban_date2timestamp($mybb->get_input('bantime'));
 				}
 
 				if(empty($mybb->input['reason']))
@@ -2827,7 +2849,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				else
 				{
-					$reason = my_substr($mybb->input['reason'], 0, 255);
+					$reason = my_substr($mybb->get_input('reason'), 0, 255);
 				}
 
 				// Set up user handler.
@@ -2851,7 +2873,7 @@ if($mybb->input['action'] == "inline_edit")
 							'uid' => $user['uid'],
 							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 							'dateline' => TIME_NOW,
-							'bantime' => $mybb->input['bantime'],
+							'bantime' => $mybb->get_input('bantime'),
 							'lifted' => $lifted,
 							'reason' => $reason,
 						);
@@ -2876,7 +2898,7 @@ if($mybb->input['action'] == "inline_edit")
 							'usergroup' => $user['usergroup'],
 							'additionalgroups' => $user['additionalgroups'],
 							'displaygroup' => $user['displaygroup'],
-							'bantime' => $mybb->input['bantime'],
+							'bantime' => $mybb->get_input('bantime'),
 							'lifted' => $lifted,
 							'reason' => $reason,
 						);
@@ -2924,10 +2946,10 @@ if($mybb->input['action'] == "inline_edit")
 			echo $form->generate_hidden_field('processed', '1');
 
 			$form_container = new FormContainer($lang->mass_ban);
-			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
+			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->get_input('reason'), array('id' => 'reason', 'maxlength' => '255')), 'reason');
 			if(count($banned_groups) > 1)
 			{
-				$form_container->output_row($lang->ban_group, "", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+				$form_container->output_row($lang->ban_group, "", $form->generate_select_box('usergroup', $banned_groups, $mybb->get_input('usergroup', MyBB::INPUT_INT), array('id' => 'usergroup')), 'usergroup');
 			}
 
 			$ban_times = fetch_ban_times();
@@ -2940,7 +2962,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				$length_list[$time] = $period;
 			}
-			$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');
+			$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->get_input('bantime'), array('id' => 'bantime')), 'bantime');
 			$form_container->end();
 
 			$buttons[] = $form->generate_submit_button($lang->ban_users);
@@ -2984,19 +3006,19 @@ if($mybb->input['action'] == "inline_edit")
 			}
 			break;
 		case 'multiprune':
-			if($mybb->input['processed'] == 1)
+			$day = $mybb->get_input('day', MyBB::INPUT_INT);
+			$month = $mybb->get_input('month', MyBB::INPUT_INT);
+			$year = $mybb->get_input('year', MyBB::INPUT_INT);
+
+			if($mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 			{
-				if(($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
+				if(($day || $month || $year) && $mybb->get_input('set', MyBB::INPUT_INT))
 				{
 					$errors[] = $lang->multi_selected_dates;
 				}
 
-				$day = $mybb->get_input('day', MyBB::INPUT_INT);
-				$month = $mybb->get_input('month', MyBB::INPUT_INT);
-				$year = $mybb->get_input('year', MyBB::INPUT_INT);
-
 				// Selected a date - check if the date the user entered is valid
-				if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
+				if($day || $month || $year)
 				{
 					// Is the date sort of valid?
 					if($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
@@ -3023,13 +3045,13 @@ if($mybb->input['action'] == "inline_edit")
 						$date = mktime(date('H'), date('i'), date('s'), $month, $day, $year); // Generate a unix time stamp
 					}
 				}
-				elseif($mybb->input['set'] > 0)
+				elseif($mybb->get_input('set', MyBB::INPUT_INT) > 0)
 				{
 					// Set options
 					// For this purpose, 1 month = 31 days
 					$base_time = 24 * 60 * 60;
 
-					switch($mybb->input['set'])
+					switch($mybb->get_input('set', MyBB::INPUT_INT))
 					{
 						case '1':
 							$threshold = $base_time * 31; // 1 month = 31 days, in the standard terms
@@ -3186,23 +3208,23 @@ if($mybb->input['action'] == "inline_edit")
 				$string = "month_{$i}";
 				$month_options[] = $lang->$string;
 			}
-			$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
-			$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
-			$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
+			$date_box = $form->generate_select_box('day', $day_options, $mybb->get_input('day', MyBB::INPUT_INT));
+			$month_box = $form->generate_select_box('month', $month_options, $mybb->get_input('month', MyBB::INPUT_INT));
+			$year_box = $form->generate_numeric_field('year', $mybb->get_input('year', MyBB::INPUT_INT), array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
 
 			$prune_select = $date_box.$month_box.$year_box;
 			$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
 
 			// Generate the set date box
 			$set_options = array();
-			$set_options[] = $lang->set_an_option;
+			$set_options[] = $lang->select_an_option;
 			for($i = 1; $i <= 6; ++$i)
 			{
 				$string = "option_{$i}";
 				$set_options[] = $lang->$string;
 			}
 
-			$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->input['set']), 'set');
+			$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->get_input('set', MyBB::INPUT_INT)), 'set');
 			$form_container->end();
 
 			$buttons[] = $form->generate_submit_button($lang->prune_posts);
@@ -3318,7 +3340,7 @@ if($mybb->input['action'] == "inline_edit")
 
 			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
 			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
-			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->get_input('displaygroup', MyBB::INPUT_INT), array('id' => 'displaygroup')), 'displaygroup');
 
 			$form_container->end();
 
@@ -3711,6 +3733,8 @@ function build_users_view($view)
 			$view['conditions']['usergroup'] = array($view['conditions']['usergroup']);
 		}
 
+		$additional_sql = '';
+
 		foreach($view['conditions']['usergroup'] as $usergroup)
 		{
 			$usergroup = (int)$usergroup;
@@ -3719,8 +3743,6 @@ function build_users_view($view)
 			{
 				continue;
 			}
-
-			$additional_sql = '';
 
 			switch($db->type)
 			{
@@ -3942,9 +3964,26 @@ function build_users_view($view)
 				$max_dimensions = '34x34';
 			}
 
-			$avatar = format_avatar($user['avatar'], $user['avatardimensions'], $max_dimensions);
+			if(empty($user['avatar']))
+			{
+				$user['avatar'] = $mybb->settings['useravatar'];
 
-			$user['view']['avatar'] = "<img src=\"".$avatar['image']."\" alt=\"\" {$avatar['width_height']} />";
+				$user['avatardimensions'] = $mybb->settings['useravatardims'];
+			}
+
+			$avatar_url = htmlspecialchars_uni($mybb->get_asset_url($user['avatar']));
+			$dimensions = '';
+
+			if(!empty($user['avatardimensions']))
+			{
+				list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
+				list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
+				require_once MYBB_ROOT."inc/functions_image.php";
+				$scaled = scale_image($width, $height, $max_width, $max_height);
+				$dimensions = " width=\"{$scaled['width']}\" height=\"{$scaled['height']}\"";
+			}
+
+			$user['view']['avatar'] = "<img src=\"{$avatar_url}\" alt=\"\"{$dimensions} />";
 
 			// Convert IP's to readable
 			$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));

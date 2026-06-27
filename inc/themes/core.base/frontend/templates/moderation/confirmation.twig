@@ -12,7 +12,7 @@
         </header>
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-            <input type="hidden" name="action" value="{{ confirm.action }}" />
+            <input type="hidden" name="action" value="{{ mybb.input.action }}" />
             <input type="hidden" name="modtype" value="{{ confirm.modtype }}" />
             <input type="hidden" name="tid" value="{{ confirm.tid }}" />
             <input type="hidden" name="pid" value="{{ confirm.pid }}" />

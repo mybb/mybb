@@ -90,6 +90,8 @@ function import_theme_xml($xml, $options=array())
 		unset($theme['themebits']);
 	}
 
+	$properties = [];
+
 	if(is_array($theme['properties']))
 	{
 		foreach($theme['properties'] as $property => $value)
@@ -235,6 +237,8 @@ function import_theme_xml($xml, $options=array())
 			// Trick the system into thinking we have a good array =P
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
+
+		$theme_stylesheets = [];
 
 		$loop = 1;
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)

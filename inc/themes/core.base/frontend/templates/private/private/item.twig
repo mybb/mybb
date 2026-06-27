@@ -1,8 +1,12 @@
 <div class="row row--thread thread thread--message thread--{{ message.msgstatus }} {% if message.msgstatus == 'new_pm' %}thread--unread{% endif %}">
     <div class="thread__avatar">
-        <a href="{{ get_profile_link(message.uid) }}" class="avatar-profile-link">
-            {{ render_avatar(url=message.avatar, alt=message.username_raw, class='avatar--smallest') }}
-        </a>
+         {% if not message.multiplerecipients and message.tofromuid > 0 %}
+             <a href="{{ get_profile_link(message.tofromuid) }}" class="avatar-profile-link">
+                 {{ render_avatar(url=message.tofromavatar, alt=message.tofromusername, class='avatar--smallest') }}
+             </a>
+         {% else %}
+            {{ render_avatar(class='avatar--smallest') }}
+         {% endif %}
     </div>
     <div class="thread__title">
         <h3 class="thread__subject">
@@ -32,17 +36,29 @@
         {% endif %}
         {# TO DO: Multiple recipients dropdown #}
         {% if message.multiplerecipients %}
-            <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients|raw }}</a>
+            <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}"><em>{{ lang.multiple_recipients }}</em></a>
             <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
                 <div class="tcat"><strong>{{ lang.to }}</strong></div>
-                {% for user in messages.tousers %}
-                    <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                {% for user in message.tousers %}
+                    <div class="popup_item_container">
+                        {% if user.uid > 0 %}
+                            <a href="{{ get_profile_link(user.uid) }}" class="popup_item">{{ user|format_name }}</a>
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </div>
                 {% endfor %}
-                {% if message.bbcusers %}
+                {% if message.bccusers %}
                     <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
                 {% endif %}
-                {% for user in messages.bbcusers %}
-                    <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                {% for user in message.bccusers %}
+                    <div class="popup_item_container">
+                        {% if user.uid > 0 %}
+                            <a href="{{ get_profile_link(user.uid) }}" class="popup_item">{{ user|format_name }}</a>
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </div>
                 {% endfor %}
             </div>
             <script type="text/javascript">
@@ -51,7 +67,11 @@
             // -->
             </script>
         {% else %}
-            <span class="thread__overflow">{{ message.username|raw }}</span>
+            {% if message.tofromuid > 0 and message.tofromusername %}
+                <a href="{{ get_profile_link(message.tofromuid) }}" class="thread__overflow">{{ message.tofromuid|format_name }}</a>
+            {% else %}
+                <span class="thread__overflow">{{ message.tofromusername ?? lang.guest }}</span>
+            {% endif %}
         {% endif %}
     </div>
     <div class="thread__date">

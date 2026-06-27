@@ -131,27 +131,32 @@ require_once MYBB_ROOT."inc/db_base.php";
 require_once MYBB_ROOT . 'inc/AbstractPdoDbDriver.php';
 require_once MYBB_ROOT . 'inc/DbException.php';
 
-require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
+$db_type = $config['database']['type'];
 
-switch($config['database']['type'])
+if($db_type === 'mysql')
 {
-	case "sqlite":
-		$db = new DB_SQLite;
-		break;
-	case "pgsql":
-		$db = new DB_PgSQL;
-		break;
-	case "pgsql_pdo":
-		$db = new PostgresPdoDbDriver();
-		break;
-	case "mysql_pdo":
-		$db = new MysqlPdoDbDriver();
-		break;
-	case "mysqli":
-	case "mysql":
-	default:
-		$db = new DB_MySQLi;
+	$db_type = 'mysqli';
 }
+
+try
+{
+	$db_class = match($db_type)
+	{
+		'sqlite' => DB_SQLite::class,
+		'pgsql' => DB_PgSQL::class,
+		'pgsql_pdo' => PostgresPdoDbDriver::class,
+		'mysql_pdo' => MysqlPdoDbDriver::class,
+		'mysqli' => DB_MySQLi::class,
+	};
+}
+catch(UnhandledMatchError)
+{
+	$mybb->trigger_generic_error("sql_load_error");
+}
+
+require_once MYBB_ROOT."inc/db_".$db_type.".php";
+
+$db = new $db_class();
 
 // Check if our DB engine is loaded
 if(!extension_loaded($db->engine))
@@ -172,16 +177,16 @@ $plugins = new pluginSystem;
 // Include our base data handler class
 require_once MYBB_ROOT."inc/datahandler.php";
 
-// Connect to Database
-define("TABLE_PREFIX", $config['database']['table_prefix']);
-$db->connect($config['database']);
-$db->set_table_prefix(TABLE_PREFIX);
-$db->type = $config['database']['type'];
-
 // Language initialisation
 require_once MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
 $lang->set_path(MYBB_ROOT."inc/languages");
+
+// Connect to Database
+define("TABLE_PREFIX", $config['database']['table_prefix']);
+$db->connect($config['database']);
+$db->set_table_prefix(TABLE_PREFIX);
+$db->type = $db_type;
 
 // Load cache
 $cache->cache();

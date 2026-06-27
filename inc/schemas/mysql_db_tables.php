@@ -29,7 +29,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   defaultviews text NOT NULL,
   loginattempts smallint unsigned NOT NULL default '0',
   loginlockoutexpiry int unsigned NOT NULL default '0',
-  authsecret varchar(16) NOT NULL default '',
+  authsecret varchar(64) NOT NULL default '',
   recovery_codes varchar(177) NOT NULL default '',
   PRIMARY KEY (uid)
 ) ENGINE=InnoDB;";
@@ -748,6 +748,7 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
   description text NOT NULL,
   disporder smallint unsigned NOT NULL default '0',
   isdefault tinyint(1) NOT NULL default '0',
+  UNIQUE KEY name_uq (name),
   PRIMARY KEY (gid)
 ) ENGINE=InnoDB;";
 
@@ -761,6 +762,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   disporder smallint unsigned NOT NULL default '0',
   gid smallint unsigned NOT NULL default '0',
   isdefault tinyint(1) NOT NULL default '0',
+  UNIQUE KEY name_uq (name),
   KEY gid (gid),
   PRIMARY KEY (sid)
 ) ENGINE=InnoDB;";
@@ -1202,5 +1204,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	KEY uid (uid),
 	PRIMARY KEY (wid)
 ) ENGINE=InnoDB;";
-
 

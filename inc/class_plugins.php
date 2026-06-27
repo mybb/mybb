@@ -30,6 +30,13 @@ class pluginSystem
 	public array $current_hook_stack = [];
 
 	/**
+	 * Keys of new global variables created in plugin hooks
+	 *
+	 * @var array-key[]
+	 */
+	private array $custom_global_keys = [];
+
+	/**
 	 * Load all plugins.
 	 */
 	function load()
@@ -159,9 +166,11 @@ class pluginSystem
 
 		$this->current_hook_stack[] = $this->current_hook;
 
+		$existing_global_keys = [];
+
 		if($mybb->config['compat_plugin_globals'] ?? true)
 		{
-			$existing_globals = array_keys($GLOBALS);
+			$existing_global_keys = array_keys($GLOBALS);
 		}
 
 		ksort($this->hooks[$hook]);
@@ -198,13 +207,25 @@ class pluginSystem
 
 		if($mybb->config['compat_plugin_globals'] ?? true)
 		{
-			$new_globals = array_diff_key(
+			$new_global_keys = array_diff(
+				array_keys($GLOBALS),
+				$existing_global_keys,
+			);
+
+			$this->custom_global_keys = array_unique(
+				array_merge(
+					$this->custom_global_keys,
+					$new_global_keys,
+				)
+			);
+
+			$custom_globals = array_intersect_key(
 				$GLOBALS,
-				array_flip($existing_globals),
+				array_flip($this->custom_global_keys),
 			);
 
 			$legacy_template_variables = array_filter(
-				$new_globals,
+				$custom_globals,
 				$this->has_scalar_values(...),
 			);
 

@@ -78,5 +78,6 @@ $l['error_invalidsearch'] = "An invalid search was specified.  Please go back an
 $l['error_no_search_support'] = "This database engine does not support searching.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
 $l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
+$l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";
 
 $l['dst_settings_updated'] = "Your daylight saving time settings have automatically been adjusted.<br /><br />You will now be taken back to the forum index.";

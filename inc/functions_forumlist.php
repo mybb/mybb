@@ -101,10 +101,10 @@ function build_forumbits($pid=0, $depth=1)
 
 						$prefix = TABLE_PREFIX;
 						$query = <<<SQL
-SELECT tid, fid, subject, lastpost, lastposter, lastposteruid, avatar
-  FROM {$prefix}threads LEFT JOIN {$prefix}users ON ({$prefix}threads.lastposteruid = {$prefix}users.uid
+SELECT tid, fid, subject, {$prefix}threads.lastpost, lastposter, lastposteruid, avatar
+  FROM {$prefix}threads LEFT JOIN {$prefix}users ON ({$prefix}threads.lastposteruid = {$prefix}users.uid)
   WHERE {$prefix}threads.uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'
-  ORDER BY lastpost DESC;
+  ORDER BY {$prefix}threads.lastpost DESC;
 SQL;
 
 						$query = $db->query($query);

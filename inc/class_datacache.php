@@ -60,6 +60,10 @@ class datacache
 	 */
 	public $moderators_forum_cache;
 
+	private array $forum_permissions;
+
+	private array $built_forum_permissions;
+
 	/**
 	 * Build cache data.
 	 *
@@ -166,9 +170,10 @@ class datacache
 			$this->call_time += $call_time;
 			$this->call_count++;
 
+			$hit = true;
+
 			if($mybb->debug_mode)
 			{
-				$hit = true;
 				if($data === false)
 				{
 					$hit = false;
@@ -595,12 +600,12 @@ class datacache
 	{
 		$usergroups = $this->read("usergroups", true);
 
-		if($usergroups === false) 
+		if($usergroups === false)
 		{
-			$usergroups = array(); 
+			$usergroups = array();
 		}
-		
-		$usergroups = array_keys($usergroups); 
+
+		$usergroups = array_keys($usergroups);
 		if(!empty($this->forum_permissions_forum_cache[$pid]))
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)
@@ -885,7 +890,7 @@ class datacache
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$reportcount = $db->fetch_field($query, 'reportcount');
-		
+
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$dateline = $db->fetch_field($query, 'dateline');
 

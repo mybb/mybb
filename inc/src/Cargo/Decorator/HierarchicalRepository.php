@@ -131,6 +131,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
 
             foreach ($entities as $key => $entity) {
                 if (!in_array($key, $disinherited)) {
+                     // return hierarchical entities; don't use getExisting() to avoid premature resolution
                     $results[$key] ??= $this->get($key);
                 }
             }
@@ -149,7 +150,18 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
      */
     public function getResolved(string $key): ?EntityInterface
     {
-        return $this->getResolvedRepository($key)?->get($key);
+        $resolvedRepository = $this->getResolvedRepository($key);
+
+        $entity = $resolvedRepository?->getExisting($key);
+
+        if (
+            $resolvedRepository !== null &&
+            $entity === null
+        ) {
+            $entity = $this->resolveRepository($key)?->getExisting($key);
+        }
+
+        return $entity;
     }
 
     /**
@@ -162,7 +174,7 @@ abstract class HierarchicalRepository extends RepositoryDecorator implements Rep
             throw new LogicException('`' . __FUNCTION__ . '`() cannot be called without existing reference entity');
         }
 
-        return $this->getClosestEntityAncestorRepository($key)?->get($key);
+        return $this->getClosestEntityAncestorRepository($key)?->getExisting($key);
     }
 
     /**

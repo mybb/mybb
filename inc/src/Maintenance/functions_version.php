@@ -117,7 +117,7 @@ function readRepositoryDetails(string $path): ?array
             'branch' => null,
         ];
 
-        if (preg_match('/^ref: refs\/heads\/([a-zA-Z0-9_-]+)/', $headFileContent, $matches)) {
+        if (preg_match('/^ref: refs\/heads\/([a-zA-Z0-9_.-]+)/', $headFileContent, $matches)) {
             $branchName = trim($matches[1]);
 
             $refFilePath = $path . '.git/refs/heads/' . $branchName;

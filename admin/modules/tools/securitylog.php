@@ -52,7 +52,7 @@ if($mybb->input['action'] == 'prune')
 		// Searching for entries by a particular type
 		if($mybb->input['type'])
 		{
-			$where .= " AND type='".$mybb->get_input('type')."'";
+			$where .= " AND type='".$db->escape_string($mybb->get_input('type'))."'";
 		}
 
 		$db->delete_query("securitylog", $where);
@@ -168,7 +168,7 @@ if(!$mybb->input['action'])
 	// Searching for entries by a particular type
 	if($mybb->get_input('type'))
 	{
-		$where .= " AND l.type='".$mybb->get_input('type')."'";
+		$where .= " AND l.type='".$db->escape_string($mybb->get_input('type'))."'";
 	}
 
 	// Order?
@@ -280,7 +280,9 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;type={$mybb->input['type']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		$type = urlencode($mybb->input['type']);
+
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-securitylog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;type={$type}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 
 	// Fetch filter options

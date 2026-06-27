@@ -558,8 +558,13 @@ class UserDataHandler extends DataHandler
 
 				// Sort out multiselect/checkbox profile fields.
 				$options = '';
-				if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
+				if($type == "multiselect" || $type == "checkbox")
 				{
+					if(!is_array($profile_fields[$field]))
+					{
+						$profile_fields[$field] = array();
+					}
+
 					$expoptions = explode("\n", $thing[1]);
 					$expoptions = array_map('trim', $expoptions);
 					foreach($profile_fields[$field] as $value)
@@ -847,8 +852,41 @@ class UserDataHandler extends DataHandler
 			$user['away']['awayreason'] = '';
 			return true;
 		}
-		elseif($user['away']['returndate'])
+		elseif(!empty($user['away']['returndate']))
 		{
+			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate'], 3);
+
+			// Check if the return date is after the away date.
+			$return_time_stamp = gmmktime(
+				0,
+				0,
+				0,
+				$returnmonth,
+				$returnday,
+				$returnyear
+			);
+
+			$away_date = $user['away']['date'] ?? get_user($user['uid'])['awaydate'];
+
+			$away_time_stamp = gmmktime(
+				0,
+				0,
+				0,
+				my_date('n', $away_date),
+				my_date('j', $away_date),
+				my_date('Y', $away_date)
+			);
+
+			if(
+				$returnyear < my_date('Y', $away_date) ||
+				($return_time_stamp < $away_time_stamp && $returnyear == my_date('Y', $away_date))
+			)
+			{
+				$this->set_error('return_date_past');
+
+				return false;
+			}
+
 			// Validate the awayreason length, since the db holds 200 chars for this field
 			$reasonlength = my_strlen($user['away']['awayreason']);
 			if($reasonlength > 200)
@@ -857,7 +895,6 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 
-			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
 			if(!$returnday || !$returnmonth || !$returnyear)
 			{
 				$this->set_error("missing_returndate");
@@ -1530,7 +1567,7 @@ class UserDataHandler extends DataHandler
 
 		foreach($this->delete_uids as $key => $uid)
 		{
-			if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+			if(!$uid || is_super_admin($uid) || (isset($mybb->user['uid']) && $uid === $mybb->user['uid']))
 			{
 				// Remove super admins
 				unset($this->delete_uids[$key]);

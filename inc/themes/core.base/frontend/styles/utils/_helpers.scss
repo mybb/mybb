@@ -46,6 +46,7 @@
     height: #{$size}px;
 
     $icon-size: $size/2;
+    $initial-size: $size/1.9;
 
     .avatar {
         width: #{$size}px;
@@ -53,6 +54,10 @@
 
         &__icon {
             font-size: #{$icon-size}px;
+        }
+
+        &__initial {
+            font-size: #{$initial-size}px;
         }
     }
 }

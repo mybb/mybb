@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MyBB 1.9
  * Copyright 2014 MyBB Group, All Rights Reserved
@@ -11,7 +12,6 @@
 /**
  * Upgrade Script: 1.8.x
  */
-
 $upgrade_detail = array(
     "revert_all_templates" => 0,
     "revert_all_themes" => 0,
@@ -22,28 +22,43 @@ function upgrade100_dbchanges()
 {
     global $db;
 
+    // SQLite does not allow schema changes while result sets/cursors are active
     if ($db->type == 'sqlite') {
         $db->close_cursors();
     }
 
-    // Drop deprecated columns
+    // Common schema changes applied across all supported database engines
+    // (database-specific adjustments are handled further below)
+
+    // Drop deprecated pid column in themes table
+    if ($db->field_exists("pid", "themes")) {
+        $db->drop_column("themes", "pid");
+    }
+
+    // Drop deprecated google column in users table
     if ($db->field_exists("google", "users")) {
         $db->drop_column("users", "google");
     }
 
+    // Drop deprecated skype column in users table
     if ($db->field_exists("skype", "users")) {
         $db->drop_column("users", "skype");
     }
 
-    // Modify columns
+    // Increase password column length to support longer password hashes
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
+
+    // Expand SMTP error storage (switch to TEXT to avoid truncation of long error messages)
     $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
-    if ($db->field_exists("pid", "themes")) {
-        $db->drop_column("themes", "pid");
+    // Increase 2FA secret storage to accommodate Base32-encoded authenticator secrets
+    if ($db->field_exists("authsecret", "adminoptions")) {
+        $db->modify_column("adminoptions", "authsecret", "varchar(64)", "set", "''");
     }
+
+    // Introduce theme packages.
     if (!$db->field_exists("package", "themes")) {
-        // Delete incompatible data
+        // Remove incompatible themes and stylesheets
         $db->delete_query("themes");
         $db->delete_query("themestylesheets");
 
@@ -68,16 +83,11 @@ function upgrade100_dbchanges()
         $db->update_query("forums", ["style" => 0], "style != 0");
     }
 
-    // Add userfields columns
-    foreach (["fid4", "fid5"] as $fid) {
-        if (!$db->field_exists($fid, "userfields")) {
-            $db->add_column("userfields", $fid, "text NOT NULL");
-        }
-    }
-
-    // Database specific changes
-    switch($db->type)
-    {
+    // Database engine specific changes
+    // This section contains schema definitions and data migrations
+    // that must be applied differently depending on the engine
+    switch ($db->type) {
+        // PostgreSQL-specific changes
         case 'pgsql':
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "smallint NOT NULL default '0'");
@@ -85,11 +95,30 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL default ''");
+                }
+            }
+
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "smallint NOT NULL default '0'");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
+            }
+
+            // Add online time visibility preference column to users table
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "smallint NOT NULL default '1'");
             }
 
-            // Add new suspension columns
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "smallint NOT NULL default '0'");
             }
@@ -98,6 +127,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "smallint NOT NULL default '0'");
             }
@@ -106,26 +136,38 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
-            // Update moved threads
+            // Add unacknowledged warnings counter to users
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
+
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+            }
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
+            }
+
+            // Migrate moved threads data to dedicated column
             $db->query("
-                UPDATE ".TABLE_PREFIX."threads
+                UPDATE " . TABLE_PREFIX . "threads
                 SET closed = '0', moved = SUBSTRING(closed::text FROM 7)::integer
                 WHERE closed::text LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "smallint NOT NULL default '0'");
-            }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
-            }
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
-                $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed DROP DEFAULT;");
-                $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed SET DATA TYPE smallint USING closed::smallint;");
-                $db->write_query("ALTER TABLE ".TABLE_PREFIX."threads ALTER COLUMN closed SET DEFAULT 0;");
+                $db->write_query("ALTER TABLE " . TABLE_PREFIX . "threads ALTER COLUMN closed DROP DEFAULT;");
+                $db->write_query("ALTER TABLE " . TABLE_PREFIX . "threads ALTER COLUMN closed SET DATA TYPE smallint USING closed::smallint;");
+                $db->write_query("ALTER TABLE " . TABLE_PREFIX . "threads ALTER COLUMN closed SET DEFAULT 0;");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
-                $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
+                $db->write_query("CREATE TABLE " . TABLE_PREFIX . "securitylog (
                     uid int NOT NULL default '0',
                     ipaddress bytea NOT NULL default '',
                     dateline int NOT NULL default '0',
@@ -134,6 +176,7 @@ function upgrade100_dbchanges()
             }
             break;
 
+        // SQLite-specific changes
         case 'sqlite':
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "tinyint(1) NOT NULL default '0'");
@@ -141,11 +184,30 @@ function upgrade100_dbchanges()
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int NOT NULL default '0'");
             }
+
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL");
+                }
+            }
+
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0'");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
+            }
+
+            // Add online time visibility preference column to users table
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1'");
             }
 
-            // Add new suspension columns
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0'");
             }
@@ -154,6 +216,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int NOT NULL default '0'");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0'");
             }
@@ -162,24 +225,43 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int NOT NULL default '0'");
             }
 
-            // Update moved threads
-            $db->query("
-                UPDATE ".TABLE_PREFIX."threads
-                SET closed = '0', moved = SUBSTR(closed, 7)
-                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
-            ");
+            // Add unacknowledged warnings counter to users table
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
+            }
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0'");
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
             }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT ''");
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
             }
+
+            // Migrate moved threads data to dedicated column
+	        $db->query(
+		        "UPDATE " . TABLE_PREFIX . "threads
+				SET
+				    closed = '0',
+				    moved = CASE
+				        WHEN closed LIKE 'moved|%' THEN CAST(SUBSTR(closed, 7) AS INTEGER)
+				        ELSE 0
+				    END
+				WHERE
+				    closed LIKE 'moved|%'
+				    AND (moved IS NULL OR moved = 0);"
+	        );
+
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->modify_column("threads", "closed", "smallint", "set", "'0'");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
-                $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
+                $db->write_query("CREATE TABLE " . TABLE_PREFIX . "securitylog (
                     uid int NOT NULL default '0',
                     ipaddress blob(16) NOT NULL default '',
                     dateline int NOT NULL default '0',
@@ -188,18 +270,38 @@ function upgrade100_dbchanges()
             }
             break;
 
-        default: // MySQL
+        // MySQL-specific changes
+        default:
             if (!$db->field_exists("contact", "profilefields")) {
                 $db->add_column("profilefields", "contact", "tinyint(1) NOT NULL default '0' AFTER disporder");
             }
             if (!$db->field_exists("moved", "threads")) {
                 $db->add_column("threads", "moved", "int unsigned NOT NULL default '0' AFTER closed");
             }
+
+            // Add new userfields columns
+            foreach (["fid4", "fid5"] as $fid) {
+                if (!$db->field_exists($fid, "userfields")) {
+                    $db->add_column("userfields", $fid, "text NOT NULL");
+                }
+            }
+
+            // Add showinlegend column to control user group visibility in legend
+            if (!$db->field_exists("showinlegend", "usergroups")) {
+                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0' AFTER canchangewebsite");
+            }
+
+            // Add column to store the algorithm used for passwords
+            if (!$db->field_exists("password_algorithm", "users")) {
+                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT '' AFTER password");
+            }
+
+            // Add online time visibility preference column to users table
             if (!$db->field_exists("showtimespentonline", "users")) {
                 $db->add_column("users", "showtimespentonline", "tinyint(1) NOT NULL default '1' AFTER invisible");
             }
 
-            // Add new suspension columns
+            // Add user suspension columns to allow avatar restrictions
             if (!$db->field_exists("suspendavatar", "users")) {
                 $db->add_column("users", "suspendavatar", "tinyint(1) NOT NULL default '0' AFTER suspendsigtime");
             }
@@ -208,6 +310,7 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendavatartime", "int unsigned NOT NULL default '0' AFTER suspendavatar");
             }
 
+            // Add user suspension columns to allow private messaging restrictions
             if (!$db->field_exists("suspendpm", "users")) {
                 $db->add_column("users", "suspendpm", "tinyint(1) NOT NULL default '0' AFTER suspendavatartime");
             }
@@ -216,24 +319,43 @@ function upgrade100_dbchanges()
                 $db->add_column("users", "suspendpmtime", "int unsigned NOT NULL default '0' AFTER suspendpm");
             }
 
-            // Update moved threads
-            $db->query("
-                UPDATE ".TABLE_PREFIX."threads
-                SET closed = '0', moved = CAST(SUBSTRING(closed, 7) AS SIGNED)
-                WHERE closed LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
-            ");
+            // Add unacknowledged warnings counter to users
+            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
+                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
+            }
 
-            if (!$db->field_exists("showinlegend", "usergroups")) {
-                $db->add_column("usergroups", "showinlegend", "tinyint(1) NOT NULL default '0' AFTER canchangewebsite");
+            // Add acknowledgement requirement flag to warnings table
+            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
+                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
             }
-            if (!$db->field_exists("password_algorithm", "users")) {
-                $db->add_column("users", "password_algorithm", "varchar(30) NOT NULL DEFAULT '' AFTER password");
+
+            // Add acknowledgement status column to warnings table
+            if (!$db->field_exists("acknowledged", "warnings")) {
+                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
             }
+
+            // Migrate moved threads data to dedicated column
+	        $db->query(
+		        "UPDATE " . TABLE_PREFIX . "threads
+                SET
+                	closed = '0',
+                	moved = CASE
+						WHEN closed LIKE 'moved|%' THEN CAST(SUBSTRING(closed, 7) AS SIGNED)
+						ELSE 0
+					END
+                WHERE
+                	closed LIKE 'moved|%'
+                	AND (moved IS NULL OR moved = 0);"
+	        );
+
+            // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->modify_column("threads", "closed", "tinyint(1)", "set", "'0'");
             }
+
+            // Create new table to record security-related events
             if (!$db->table_exists("securitylog")) {
-                $db->write_query("CREATE TABLE ".TABLE_PREFIX."securitylog (
+                $db->write_query("CREATE TABLE " . TABLE_PREFIX . "securitylog (
                     uid int unsigned NOT NULL default '0',
                     ipaddress varbinary(16) NOT NULL default '',
                     dateline int unsigned NOT NULL default '0',
@@ -261,73 +383,86 @@ function upgrade100_indexes()
     $indexes = [];
 
     if (in_array($db->type, array('sqlite', 'pgsql'))) {
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."adminlog_module_action ON ".TABLE_PREFIX."adminlog (module, action);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."adminlog_uid ON ".TABLE_PREFIX."adminlog (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."announcements_fid ON ".TABLE_PREFIX."announcements (fid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."attachments_pid_visible ON ".TABLE_PREFIX."attachments (pid, visible);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."attachments_uid ON ".TABLE_PREFIX."attachments (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."banfilters_type ON ".TABLE_PREFIX."banfilters (type);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."banned_uid ON ".TABLE_PREFIX."banned (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."banned_dateline ON ".TABLE_PREFIX."banned (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."buddyrequests_uid ON ".TABLE_PREFIX."buddyrequests (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."buddyrequests_touid ON ".TABLE_PREFIX."buddyrequests (touid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."captcha_imagehash ON ".TABLE_PREFIX."captcha (imagehash);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."captcha_dateline ON ".TABLE_PREFIX."captcha (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."events_cid ON ".TABLE_PREFIX."events (cid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."events_daterange ON ".TABLE_PREFIX."events (starttime, endtime);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."events_private ON ".TABLE_PREFIX."events (private);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."forumpermissions_fid_gid ON ".TABLE_PREFIX."forumpermissions (fid, gid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."forumsread_dateline ON ".TABLE_PREFIX."forumsread (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."forumsubscriptions_uid ON ".TABLE_PREFIX."forumsubscriptions (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."moderatorlog_uid ON ".TABLE_PREFIX."moderatorlog (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."moderatorlog_fid ON ".TABLE_PREFIX."moderatorlog (fid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."moderatorlog_tid ON ".TABLE_PREFIX."moderatorlog (tid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."moderators_id_fid ON ".TABLE_PREFIX."moderators (id, fid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."polls_tid ON ".TABLE_PREFIX."polls (tid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."pollvotes_pid_uid ON ".TABLE_PREFIX."pollvotes (pid, uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_tid_uid ON ".TABLE_PREFIX."posts (tid, uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_uid ON ".TABLE_PREFIX."posts (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_visible ON ".TABLE_PREFIX."posts (visible);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_dateline ON ".TABLE_PREFIX."posts (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_ipaddress ON ".TABLE_PREFIX."posts (ipaddress);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."posts_tid_dateline ON ".TABLE_PREFIX."posts (tid, dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."privatemessages_uid_folder ON ".TABLE_PREFIX."privatemessages (uid, folder);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."privatemessages_toid ON ".TABLE_PREFIX."privatemessages (toid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reportedcontent_reportstatus ON ".TABLE_PREFIX."reportedcontent (reportstatus);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reportedcontent_lastreport ON ".TABLE_PREFIX."reportedcontent (lastreport);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."reputation_uid ON ".TABLE_PREFIX."reputation (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."securitylog_uid ON ".TABLE_PREFIX."securitylog (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_location ON ".TABLE_PREFIX."sessions (location1, location2);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_time ON ".TABLE_PREFIX."sessions (time);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_uid ON ".TABLE_PREFIX."sessions (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."sessions_ip ON ".TABLE_PREFIX."sessions (ip);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."settings_gid ON ".TABLE_PREFIX."settings (gid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."templates_sid_title ON ".TABLE_PREFIX."templates (sid, title);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."themestylesheets_tid ON ".TABLE_PREFIX."themestylesheets (tid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadratings_tid ON ".TABLE_PREFIX."threadratings (tid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadviews_tid ON ".TABLE_PREFIX."threadviews (tid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_fid ON ".TABLE_PREFIX."threads (fid, visible, sticky);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_dateline ON ".TABLE_PREFIX."threads (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_lastpost ON ".TABLE_PREFIX."threads (lastpost, fid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_firstpost ON ".TABLE_PREFIX."threads (firstpost);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threads_uid ON ".TABLE_PREFIX."threads (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsread_dateline ON ".TABLE_PREFIX."threadsread (dateline);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsubscriptions_uid ON ".TABLE_PREFIX."threadsubscriptions (uid);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsubscriptions_tid_notification ON ".TABLE_PREFIX."threadsubscriptions (tid, notification);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_usergroup ON ".TABLE_PREFIX."users (usergroup);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_regip ON ".TABLE_PREFIX."users (regip);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_lastip ON ".TABLE_PREFIX."users (lastip);";
-        $indexes[] = "CREATE INDEX IF NOT EXISTS ".TABLE_PREFIX."warnings_uid ON ".TABLE_PREFIX."warnings (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "adminlog_module_action ON " . TABLE_PREFIX . "adminlog (module, action);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "adminlog_uid ON " . TABLE_PREFIX . "adminlog (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "announcements_fid ON " . TABLE_PREFIX . "announcements (fid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "attachments_pid_visible ON " . TABLE_PREFIX . "attachments (pid, visible);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "attachments_uid ON " . TABLE_PREFIX . "attachments (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "banfilters_type ON " . TABLE_PREFIX . "banfilters (type);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "banned_uid ON " . TABLE_PREFIX . "banned (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "banned_dateline ON " . TABLE_PREFIX . "banned (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "buddyrequests_uid ON " . TABLE_PREFIX . "buddyrequests (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "buddyrequests_touid ON " . TABLE_PREFIX . "buddyrequests (touid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "captcha_imagehash ON " . TABLE_PREFIX . "captcha (imagehash);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "captcha_dateline ON " . TABLE_PREFIX . "captcha (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "events_cid ON " . TABLE_PREFIX . "events (cid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "events_daterange ON " . TABLE_PREFIX . "events (starttime, endtime);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "events_private ON " . TABLE_PREFIX . "events (private);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "forumpermissions_fid_gid ON " . TABLE_PREFIX . "forumpermissions (fid, gid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "forumsread_dateline ON " . TABLE_PREFIX . "forumsread (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "forumsubscriptions_uid ON " . TABLE_PREFIX . "forumsubscriptions (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "moderatorlog_uid ON " . TABLE_PREFIX . "moderatorlog (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "moderatorlog_fid ON " . TABLE_PREFIX . "moderatorlog (fid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "moderatorlog_tid ON " . TABLE_PREFIX . "moderatorlog (tid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "moderators_id_fid ON " . TABLE_PREFIX . "moderators (id, fid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "polls_tid ON " . TABLE_PREFIX . "polls (tid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "pollvotes_pid_uid ON " . TABLE_PREFIX . "pollvotes (pid, uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_tid_uid ON " . TABLE_PREFIX . "posts (tid, uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_uid ON " . TABLE_PREFIX . "posts (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_visible ON " . TABLE_PREFIX . "posts (visible);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_dateline ON " . TABLE_PREFIX . "posts (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_ipaddress ON " . TABLE_PREFIX . "posts (ipaddress);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "posts_tid_dateline ON " . TABLE_PREFIX . "posts (tid, dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "privatemessages_uid_folder ON " . TABLE_PREFIX . "privatemessages (uid, folder);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "privatemessages_toid ON " . TABLE_PREFIX . "privatemessages (toid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "reportedcontent_reportstatus ON " . TABLE_PREFIX . "reportedcontent (reportstatus);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "reportedcontent_lastreport ON " . TABLE_PREFIX . "reportedcontent (lastreport);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "reputation_uid ON " . TABLE_PREFIX . "reputation (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "securitylog_uid ON " . TABLE_PREFIX . "securitylog (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "sessions_location ON " . TABLE_PREFIX . "sessions (location1, location2);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "sessions_time ON " . TABLE_PREFIX . "sessions (time);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "sessions_uid ON " . TABLE_PREFIX . "sessions (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "sessions_ip ON " . TABLE_PREFIX . "sessions (ip);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "settings_gid ON " . TABLE_PREFIX . "settings (gid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "templates_sid_title ON " . TABLE_PREFIX . "templates (sid, title);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "themestylesheets_tid ON " . TABLE_PREFIX . "themestylesheets (tid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadratings_tid ON " . TABLE_PREFIX . "threadratings (tid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadviews_tid ON " . TABLE_PREFIX . "threadviews (tid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threads_fid ON " . TABLE_PREFIX . "threads (fid, visible, sticky);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threads_dateline ON " . TABLE_PREFIX . "threads (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threads_lastpost ON " . TABLE_PREFIX . "threads (lastpost, fid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threads_firstpost ON " . TABLE_PREFIX . "threads (firstpost);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threads_uid ON " . TABLE_PREFIX . "threads (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadsread_dateline ON " . TABLE_PREFIX . "threadsread (dateline);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadsubscriptions_uid ON " . TABLE_PREFIX . "threadsubscriptions (uid);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadsubscriptions_tid_notification ON " . TABLE_PREFIX . "threadsubscriptions (tid, notification);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_usergroup ON " . TABLE_PREFIX . "users (usergroup);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_regip ON " . TABLE_PREFIX . "users (regip);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_lastip ON " . TABLE_PREFIX . "users (lastip);";
+        $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "warnings_uid ON " . TABLE_PREFIX . "warnings (uid);";
+        // Unique indexes
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "settinggroups_name_uq ON " . TABLE_PREFIX . "settinggroups (name);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "settings_name_uq ON " . TABLE_PREFIX . "settings (name);";
     }
 
     if ($db->type == 'sqlite') {
-        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."forumsread_fid_uid_uq ON ".TABLE_PREFIX."forumsread (fid, uid);";
-        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."threadsread_tid_uid_uq ON ".TABLE_PREFIX."threadsread (tid, uid);";
-        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS ".TABLE_PREFIX."users_username_uq ON ".TABLE_PREFIX."users (username);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "forumsread_fid_uid_uq ON " . TABLE_PREFIX . "forumsread (fid, uid);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "threadsread_tid_uid_uq ON " . TABLE_PREFIX . "threadsread (tid, uid);";
+        $indexes[] = "CREATE UNIQUE INDEX IF NOT EXISTS " . TABLE_PREFIX . "users_username_uq ON " . TABLE_PREFIX . "users (username);";
     }
 
     foreach ($indexes as $index) {
         $db->write_query($index);
+    }
+
+    if ($db->type === 'mysqli') {
+        if (!$db->index_exists('settinggroups', 'name_uq')) {
+            $db->write_query("ALTER TABLE " . TABLE_PREFIX . "settinggroups ADD UNIQUE KEY name_uq (name)");
+        }
+
+        if (!$db->index_exists('settings', 'name_uq')) {
+            $db->write_query("ALTER TABLE " . TABLE_PREFIX . "settings ADD UNIQUE KEY name_uq (name)");
+        }
     }
 }
 
@@ -347,7 +482,6 @@ function upgrade100_convert_innodb()
         }
     }
 }
-
 
 function upgrade100_smilies()
 {
@@ -458,7 +592,7 @@ function upgrade100_check_constraints()
         foreach ($constraints as $constraint) {
             $table_name = TABLE_PREFIX . $constraint['table'];
             $column_name = $constraint['column'];
-            $constraint_name = $table_name . '_' . $column_name ."_check";
+            $constraint_name = $table_name . '_' . $column_name . "_check";
             $query = $db->query("
                 SELECT 1 FROM pg_constraint
                 WHERE conrelid = '" . $table_name . "'::regclass
@@ -477,36 +611,3 @@ function upgrade100_check_constraints()
         }
     }
 }
-
-function upgrade100_warnings_acknowledgements()
-{
-    global $db;
-
-    switch($db->type)
-    {
-        case 'pgsql':
-        case 'sqlite':
-            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
-                $db->add_column("users", "unacknowledgedwarnings", "int NOT NULL default '0'");
-            }
-            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
-                $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
-            }
-            if (!$db->field_exists("acknowledged", "warnings")) {
-                $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
-            }
-            break;
-        default:
-            if (!$db->field_exists("unacknowledgedwarnings", "users")) {
-                $db->add_column("users", "unacknowledgedwarnings", "int unsigned NOT NULL default '0' AFTER warningpoints");
-            }
-            if (!$db->field_exists("requiresacknowledgement", "warnings")) {
-                $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
-            }
-            if (!$db->field_exists("acknowledged", "warnings")) {
-                $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
-            }
-            break;
-    }
-}
-

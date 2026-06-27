@@ -4,11 +4,21 @@
     </h1>
     <div class="post portal-announcement__post">
         <div class="post__meta">
-            <a href="{{ get_profile_link(announcement.uid )}}" class="avatar-profile-link">
-                {{ render_avatar(url=announcement.avatar, alt=announcement.username) }}
-            </a>
+            {% if announcement.uid > 0 %}
+                <a href="{{ get_profile_link(announcement.uid )}}" class="avatar-profile-link">
+                    {{ render_avatar(url=announcement.avatar, alt=announcement.username) }}
+                </a>
+            {% else %}
+                <span class="avatar-profile-link">
+                    {{ render_avatar(url=announcement.avatar, alt=announcement.username) }}
+                </span>
+            {% endif %}
             <h3 class="post__author">
-                {{ announcement.profilelink|raw }}
+                {% if announcement.uid > 0 %}
+                    <a href="{{ get_profile_link(announcement.uid) }}">{{ announcement|format_name }}</a>
+                {% else %}
+                    {{ announcement|format_name }}
+                {% endif %}
             </h3>
             {% if announcement.hasicon %}
                 <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />

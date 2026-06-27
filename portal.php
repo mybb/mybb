@@ -191,16 +191,10 @@ if($mybb->settings['portal_showstats'] != 0)
 	$portal['numthreads'] = my_number_format($stats['numthreads']);
 	$portal['numposts'] = my_number_format($stats['numposts']);
 	$portal['numusers'] = my_number_format($stats['numusers']);
-
-	if(!$stats['lastusername'])
-	{
-		$portal['newestmember'] = $lang->nobody;
-	}
-	else
-	{
-		$portal['newestmember'] = build_profile_link($stats['lastusername'], $stats['lastuid']);
-	}
+	$portal['newestmember'] = isset($stats['lastusername']) && $stats['lastusername'] != '' ? $stats['lastuid'] : 0;
 }
+
+$onlinemembers = $onlinebots = [];
 
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
@@ -218,8 +212,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$guestcount = $membercount = $botcount = $anoncount = 0;
-	$onlinemembers = [];
-	$doneusers = $onlinemembers = $onlinebots = array();
+	$doneusers = array();
 
 	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
 	$guestcount = $db->fetch_field($query, "guestcount");
@@ -342,11 +335,11 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 }
 
 $portal['latestthreads'] = false;
+$threadlist = [];
 // Latest forum discussions
 if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $mybb->settings['portal_excludediscussion'] != -1)
 {
 	$threadcount = 0;
-	$threadlist = [];
 
 	$excludeforums = '';
 	if(!empty($mybb->settings['portal_excludediscussion']))
@@ -413,6 +406,9 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 }
 
 $announcements = [];
+
+$multipage = '';
+
 if(!empty($mybb->settings['portal_announcementsfid']))
 {
 	// Get latest news announcements
@@ -446,7 +442,13 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		}
 	}
 
-	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'", array('limit' => 1));
+	$query_definition = [
+		"where" => "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'",
+	];
+
+	$plugins->run_hooks('portal_announcements_start', $query_definition);
+
+	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", $query_definition['where'], array('limit' => 1));
 	$announcementcount = $db->fetch_field($query, "threads");
 
 	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
@@ -484,7 +486,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
         SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
         FROM ".TABLE_PREFIX."posts p
         LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-        WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0' AND t.firstpost=p.pid
+        WHERE {$query_definition['where']} AND t.firstpost=p.pid
         ORDER BY t.dateline DESC
         LIMIT {$start}, {$numannouncements}"
 	);
@@ -564,15 +566,6 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			else
 			{
 				$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
-			}
-
-			if($announcement['uid'] == 0)
-			{
-				$announcement['profilelink'] = $announcement['threadusername'];
-			}
-			else
-			{
-				$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 			}
 
 			if(!$announcement['username'])

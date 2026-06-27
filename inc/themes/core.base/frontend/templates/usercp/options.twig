@@ -21,7 +21,9 @@
                 <h2 class="title title--section">{{ lang.login_cookies_privacy }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
-                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if user.invisible %} checked{% endif %} /> {{ lang.invisible_mode }}</label></p>
+                        {% if mybb.usergroup.canbeinvisible %}
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if user.invisible %} checked{% endif %} /> {{ lang.invisible_mode }}</label></p>
+                        {% endif %}
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showtimespentonline" id="showtimespentonline" value="1"{% if user.showtimespentonline %} checked{% endif %} /> {{ lang.show_time_spent_online }}</label></p>
                     </div>
                 </div>

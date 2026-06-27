@@ -11,6 +11,9 @@ use MyBB\Extensions\Theme\Theme as ThemeExtension;
  */
 class Theme
 {
+    /**
+     * @param array<string, mixed> $properties Raw properties loaded from storage.
+     */
     public function __construct(
         public ?int $id,
         public ThemeExtension $package,
@@ -18,10 +21,22 @@ class Theme
         public array $properties = [],
         public array $stylesheets = [],
         public string $allowedgroups = 'all',
-    ) {
-        $this->properties['templateset'] ??= 0;
-        $this->properties['editortheme'] ??= 'mybb.css';
-        $this->properties['disporder'] ??= [];
+    ) {}
+
+    /**
+     * Returns effective theme properties.
+     *
+     * Combines package-defined defaults with stored properties, where
+     * stored values override defaults when the same key exists.
+     *
+     * @return array<string, mixed>
+     */
+    public function getResolvedProperties(): array
+    {
+        return array_replace(
+            $this->package->getPropertyDefaults(),
+            $this->properties,
+        );
     }
 
     public function allowedForUser(array|int $user): bool
@@ -40,7 +55,7 @@ class Theme
         $array = [
             'package' => $this->package->getPackageName(),
             'name' => $this->name,
-            'properties' => my_serialize($this->properties),
+            'properties' => my_serialize($this->getResolvedProperties()),
             'stylesheets' => my_serialize($this->stylesheets),
             'allowedgroups' => $this->allowedgroups,
         ];

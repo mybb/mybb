@@ -177,4 +177,4 @@ $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
 $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
 
-$l['saving'] = 'Saving&hellip;';
+$l['saving'] = 'Saving…';

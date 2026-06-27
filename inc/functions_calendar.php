@@ -276,6 +276,8 @@ function get_calendar_permissions($cid = 0)
 	}
 	else
 	{
+		$permissions = [];
+
 		foreach($calendars as $calendar)
 		{
 			if(isset($calendar_permissions[$calendar['cid']]))
@@ -563,6 +565,8 @@ function get_birthdays($months, $day=0)
 		$months = array($months);
 	}
 
+	$where = [];
+
 	foreach($months as $month)
 	{
 		if($day)
@@ -604,7 +608,7 @@ function get_birthdays($months, $day=0)
 	}
 	if($day)
 	{
-		if(!isset($bdays["$day-$month"]))
+		if(!isset($month) || !isset($bdays["$day-$month"]))
 		{
 			return array();
 		}
@@ -690,7 +694,7 @@ function fetch_weekday_name($weekday, $short=false)
 			break;
 	}
 
-	if($short == true)
+	if(isset($short_weekday_name) && $short == true)
 	{
 		return $short_weekday_name;
 	}
@@ -976,9 +980,10 @@ function fetch_friendly_repetition($event)
 			return $lang->repeats_on_weekdays;
 			break;
 		case 3:
+			$weekdays  = null;
+
 			if($event['repeats']['days'] || count($event['repeats']['days']) == 7)
 			{
-				$weekdays  = null;
 				foreach($event['repeats']['days'] as $id => $weekday)
 				{
 					$weekday_name = fetch_weekday_name($weekday);

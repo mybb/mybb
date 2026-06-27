@@ -332,6 +332,10 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
         if ($driverData !== null) {
             $results['checks']['engine'] = true;
 
+            if (!empty($parameters['path'])) {
+                $parameters['path'] = mk_path_abs($parameters['path']);
+            }
+
             $dsn = getDsn($parameters);
 
             if ($dsn !== null) {
@@ -405,7 +409,7 @@ function testDatabaseParameters(array $parameters, float $timeoutSeconds = 5): a
                         $results['message'] = $e->getMessage();
                         $results['code'] = $e->getCode();
                     } finally {
-                        if (isset($temporaryFilePath)) {
+                        if (isset($temporaryFilePath) && file_exists($temporaryFilePath)) {
                             unlink($temporaryFilePath);
                         }
                     }
@@ -490,7 +494,11 @@ function getDatabaseHandle(bool $persistent = false): ?DB_Base
     if (isset($GLOBALS['db'])) {
         $db = $GLOBALS['db'];
     } else {
-        $config = $GLOBALS['config'] ?? getConfigurationFileData();
+        if (isset($GLOBALS['config'])) {
+            $config = getCorrectedConfigurationFileData($GLOBALS['config']);
+        } else {
+            $config = getConfigurationFileData(true);
+        }
 
         if ($config !== null) {
             $db = connectToDatabase($config);

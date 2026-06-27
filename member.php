@@ -293,6 +293,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$db->delete_query("questionsessions", "sid='{$question_id}'");
 		}
+		else
+		{
+			$errors[] = $lang->error_question_wrong;
+		}
 	}
 
 	$regerrors = '';
@@ -1267,7 +1271,7 @@ if($mybb->input['action'] == "activate")
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND (type='r' OR type='e' OR type='b')");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
 		if(!$activation)
 		{
@@ -1431,6 +1435,12 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				my_mail($email, $emailsubject, $emailmessage);
 			}
 		}
+
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'])
+		{
+			$captcha->invalidate_captcha();
+		}
 		$plugins->run_hooks("member_do_resendactivation_end");
 
 		redirect("index.php", $lang->redirect_activationresent);
@@ -1503,6 +1513,12 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 				my_mail($email, $emailsubject, $emailmessage);
 
 				log_security_action('lost_password', $user['uid']);
+			}
+
+			// Invalidate solved captcha
+			if($mybb->settings['captchaimage'])
+			{
+				$captcha->invalidate_captcha();
 			}
 
 			$plugins->run_hooks("member_do_lostpw_end");
@@ -1822,11 +1838,15 @@ if($mybb->input['action'] == "login")
 	// and we can't check loginattempts in the db
 	login_attempt_check();
 
+	$login = [];
+
 	// Redirect to the page where the user came from, but not if that was the login page.
 	if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$login['redirect_url'] = htmlentities($_SERVER['HTTP_REFERER']);
 	}
+
+	$captcha = '';
 
 	// Show captcha image for guests if enabled and only if we have to do
 	if($mybb->settings['captchaimage'] && $do_captcha == true)
@@ -1855,7 +1875,7 @@ if($mybb->input['action'] == "login")
 		}
 		elseif($login_captcha->type == captcha::CFTURNSTILE)
 		{
-			$post_captcha->build_cfturnstile();
+			$login_captcha->build_cfturnstile();
 		}
 
 		if($login_captcha->html)
@@ -2840,17 +2860,8 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	if(count($errors) == 0)
 	{
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			$from = $mybb->input['fromemail'];
-		}
-		else
-		{
-			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
-		}
-
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
-		my_mail($to_user['email'], $mybb->get_input('subject'), $message, '', '', '', false, 'text', '', $from);
+		my_mail($to_user['email'], $mybb->get_input('subject'), $message, '', '', '', false, 'text', '', $mybb->input['fromemail']);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{
@@ -2868,6 +2879,12 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"type" => 1
 			);
 			$db->insert_query("maillogs", $log_entry);
+		}
+
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+		{
+			$captcha->invalidate_captcha();
 		}
 
 		$plugins->run_hooks("member_do_emailuser_end");

@@ -136,6 +136,8 @@ class EventDataHandler extends DataHandler
 			return false;
 		}
 
+		$start_time = $end_time = [];
+
 		// For ranged events, we check the end date & times too
 		if($event['type'] == "ranged")
 		{
@@ -215,7 +217,7 @@ class EventDataHandler extends DataHandler
 			$end_time['hour'] -= $event['timezone'];
 		}
 
-		if(!isset($start_time))
+		if(empty($start_time))
 		{
 			$start_time = array("hour" => 0, "min" => 0);
 		}

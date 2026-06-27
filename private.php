@@ -151,7 +151,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		$query = $db->simple_select("searchlog", "*", "uid='{$mybb->user['uid']}' AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
-		if($last_search['sid'])
+		if(isset($last_search['sid']))
 		{
 			$remaining_time = $mybb->settings['searchfloodtime'] - (TIME_NOW - $last_search['dateline']);
 			if($remaining_time == 1)
@@ -404,13 +404,10 @@ if($mybb->input['action'] == "results")
 			)
 			{
 				$message['multiplerecipients'] = true;
-				$message['tousers'] = $message['bbcusers'] = [];
+				$message['tousers'] = $message['bccusers'] = [];
 				foreach($recipients['to'] as $uid)
 				{
 					$user = $cached_users[$uid];
-					$user['profilelink'] = get_profile_link($uid);
-					$user['username_raw'] = $user['username'];
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$message['tousers'][] = $user;
 				}
 				if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
@@ -418,10 +415,7 @@ if($mybb->input['action'] == "results")
 					foreach($recipients['bcc'] as $uid)
 					{
 						$user = $cached_users[$uid];
-						$user['profilelink'] = get_profile_link($uid);
-						$user['username_raw'] = $user['username'];
-						$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-						$message['bbcusers'][] = $user;
+						$message['bccusers'][] = $user;
 					}
 				}
 			}
@@ -429,28 +423,25 @@ if($mybb->input['action'] == "results")
 			{
 				$message['tofromusername'] = $message['tousername'];
 				$message['tofromuid'] = $message['toid'];
-				$message['to_from_avatar'] = $message['to_avatar'];
+				$message['tofromavatar'] = $message['to_avatar'];
 			}
 			else
 			{
 				$message['tofromusername'] = $lang->not_sent;
-				$message['to_from_avatar'] = '';
+				$message['tofromuid'] = 0;
+				$message['tofromavatar'] = '';
 			}
 		}
 		else
 		{
 			$message['tofromusername'] = $message['fromusername'];
 			$message['tofromuid'] = $message['fromid'];
+			$message['tofromavatar'] = $message['from_avatar'];
 			if($message['tofromuid'] == 0)
 			{
 				$message['tofromusername'] = $lang->mybb_engine;
 			}
-			$message['to_from_avatar'] = $message['from_avatar'];
 		}
-
-		$message['avatar'] = $message['to_from_avatar'];
-		$message['username_raw'] = $message['tofromusername'];
-		$message['username'] = build_profile_link($message['tofromusername'], $message['tofromuid']);
 
 		$message['hasicon'] = false;
 		if($message['icon'] > 0 && !empty($icon_cache[$message['icon']]))
@@ -747,7 +738,6 @@ if($mybb->input['action'] == "send")
 	if(!empty($mybb->input['preview']))
 	{
 		$sendpm['preview'] = true;
-		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
 		$query = $db->query("
             SELECT u.username AS userusername, u.*, f.*
             FROM ".TABLE_PREFIX."users u
@@ -762,6 +752,8 @@ if($mybb->input['action'] == "send")
 		$post['message'] = $mybb->get_input('message');
 		$post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
 		$post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
+		$post['to'] = $sendpm['to'];
+		$post['bcc'] = $sendpm['bcc'];
 		if(!isset($options['disablesmilies']))
 		{
 			$options['disablesmilies'] = 0;
@@ -779,6 +771,8 @@ if($mybb->input['action'] == "send")
 			$post['includesig'] = 1;
 		}
 
+		$post['options'] = $options;
+
 		// Merge usergroup data from the cache
 		$data_key = array(
 			'title' => 'grouptitle',
@@ -795,7 +789,27 @@ if($mybb->input['action'] == "send")
 			$post[$key] = $groupscache[$post['usergroup']][$field];
 		}
 
-		$postbit = build_postbit($post, 2);
+		require_once MYBB_ROOT . "inc/datahandlers/pm.php";
+		$pmhandler = new PMDataHandler();
+		$pmhandler->set_data($post);
+
+		$send_errors = '';
+		$display_preview = true;
+		if(!$pmhandler->validate_pm())
+		{
+			$send_errors = $pmhandler->get_friendly_errors();
+			if(!empty($send_errors))
+			{
+				$send_errors = inline_error($send_errors);
+			}
+
+			$display_preview = false;
+		}
+
+		if($display_preview)
+		{
+			$postbit = build_postbit($post, 2);
+		}
 	}
 	elseif(!$send_errors)
 	{
@@ -1166,7 +1180,7 @@ if($mybb->input['action'] == "read")
 		$pm['bcc_form_val'] = '';
 	}
 
-	add_breadcrumb($pm['subject']);
+	add_breadcrumb(htmlspecialchars_uni($pm['subject']));
 	$message = build_postbit($pm, 2);
 
 	// Decide whether or not to show quick reply.
@@ -1280,7 +1294,6 @@ if($mybb->input['action'] == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = $parser->parse_badwords($readmessage['subject']);
-		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
 		$readmessage['readdate'] = my_date('relative', $readmessage['readtime']);
 
 		$readmessages[] = $readmessage;
@@ -1327,7 +1340,6 @@ if($mybb->input['action'] == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = $parser->parse_badwords($unreadmessage['subject']);
-		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$unreadmessage['senddate'] = my_date('relative', $unreadmessage['dateline']);
 
 		$unreadmessages[] = $unreadmessage;
@@ -1450,6 +1462,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	$folders_str = '';
 	$donefolders = array();
 	$mybb->input['folder'] = $mybb->get_input('folder', MyBB::INPUT_ARRAY);
+	$mybb->input['folder'] = array_replace(array_fill_keys(range(0, 4), ''), $mybb->input['folder']);
 	foreach($mybb->input['folder'] as $key => $val)
 	{
 		if(empty($donefolders[$val]))// Probably was a check for duplicate folder names, but doesn't seem to be used now
@@ -2235,7 +2248,7 @@ if(!$mybb->input['action'])
 				if(isset($recipients['to']) && count($recipients['to']) > 1 || (isset($recipients['to']) && count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{
 					$message['multiplerecipients'] = true;
-					$message['tousers'] = $message['bbcusers'] = [];
+					$message['tousers'] = $message['bccusers'] = [];
 					foreach($recipients['to'] as $uid)
 					{
 						if(!isset($cached_users[$uid]))
@@ -2244,9 +2257,6 @@ if(!$mybb->input['action'])
 						}
 
 						$user = $cached_users[$uid];
-						$user['profilelink'] = get_profile_link($uid);
-						$user['username_raw'] = $user['username'];
-						$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 						$message['tousers'][] = $user;
 					}
 					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
@@ -2259,29 +2269,28 @@ if(!$mybb->input['action'])
 							}
 
 							$user = $cached_users[$uid];
-							$user['profilelink'] = get_profile_link($uid);
-							$user['username_raw'] = $user['username'];
-							$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-							$message['bbcusers'][] = $user;
+							$message['bccusers'][] = $user;
 						}
 					}
 				}
 				elseif($message['toid'])
 				{
-					$message['to_from_avatar'] = $message['to_avatar'];
 					$message['tofromusername'] = $message['tousername'];
 					$message['tofromuid'] = $message['toid'];
+					$message['tofromavatar'] = $message['to_avatar'];
 				}
 				else
 				{
 					$message['tofromusername'] = $lang->not_sent;
+					$message['tofromuid'] = 0;
+					$message['tofromavatar'] = '';
 				}
 			}
 			else
 			{
-				$message['to_from_avatar'] = $message['from_avatar'];
 				$message['tofromusername'] = $message['fromusername'];
 				$message['tofromuid'] = $message['fromid'];
+				$message['tofromavatar'] = $message['from_avatar'];
 				if($message['tofromuid'] == 0)
 				{
 					$message['tofromusername'] = $lang->mybb_engine;
@@ -2291,12 +2300,9 @@ if(!$mybb->input['action'])
 				{
 					$message['tofromuid'] = 0;
 					$message['tofromusername'] = $lang->na;
+					$message['tofromavatar'] = '';
 				}
 			}
-
-			$message['username_raw'] = $message['tofromusername'];
-			$message['avatar'] = $message['to_from_avatar'];
-			$message['username'] = build_profile_link($message['tofromusername'], $message['tofromuid']);
 
 			$message['denyreceipt'] = false;
 			if($mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == 1 && $message['folder'] != 3 && $message['folder'] != 2)

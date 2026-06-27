@@ -1,7 +1,7 @@
 <div class="row row--simple-columns attachment">
     <div class="attachment__icon">{{ attachment.icon|raw }}</div>
     <div class="row__primary attachment__file">
-        <h3 class="attachment__file-name"><a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a></h3>
+        <h3 class="attachment__file-name"><a href="{{ url('attachment.php', { 'aid': attachment.aid }) }}" target="_blank">{{ attachment.filename }}</a></h3>
         <div class="attachment__size-downloads">{{ trans('attachment_size_downloads', attachment.size, attachment.downloads) }}</div>
         <div class="attachment__date">{{ attachment.date|raw }}</div>
     </div>

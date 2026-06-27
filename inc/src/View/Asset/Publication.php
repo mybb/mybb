@@ -6,6 +6,7 @@ namespace MyBB\View\Asset;
 
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
+use MyBB\Utilities\CodeLanguage;
 use MyBB\Utilities\Stopwatch\Stopwatch;
 use MyBB\View\Asset\Processor\Processor;
 use MyBB\View\Asset\Processor\ScssProcessor;
@@ -14,7 +15,6 @@ use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
-use MyBB\View\ResourceLanguage;
 use MyBB\View\ResourceType;
 use MyBB\View\Viewlet\ViewletInterface;
 use TypeError;
@@ -160,9 +160,9 @@ class Publication
      */
     private static function getBaseProcessor(ViewletAsset $asset): ?string
     {
-        return match ($asset->getResource()->getLanguage()) {
-            ResourceLanguage::SASS,
-            ResourceLanguage::SCSS
+        return match ($asset->getResource()->getCodeLanguage()) {
+            CodeLanguage::SASS,
+            CodeLanguage::SCSS
                 => ScssProcessor::class,
             default => null,
         };

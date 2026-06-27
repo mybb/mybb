@@ -388,6 +388,8 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->get_input('description'), array('id' => 'description')), 'description');
 
+	$options = [];
+
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
@@ -604,6 +606,8 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->modify_setting);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
+
+	$options = [];
 
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
@@ -2026,8 +2030,7 @@ function print_setting_peekers()
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstilepublickey, #row_setting_cfturnstileprivatekey"), /(8|9)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstileprivatekey, #row_setting_cfturnstileprivatekey"), /(8|9)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstilepublickey, #row_setting_cfturnstileprivatekey"), 9, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstiletheme"), 9, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_cfturnstilesize"), 9, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',

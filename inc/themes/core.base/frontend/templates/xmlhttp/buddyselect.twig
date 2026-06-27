@@ -28,7 +28,7 @@
                             <tr>
                                 <td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';">
                                     <label>
-                                        <input type="checkbox" style="vertical-align: middle;" id="checkbox_{{ buddy.uid }}" onclick="UserCP.selectBuddy('{{ buddy.uid }}', '{{ buddy.username }}');" /> <img src="{{ theme.imgdir }}/buddy_{{ status }}.png" alt="({{ attribute(lang, status) }})" title="{{ attribute(lang, status) }}" style="vertical-align: middle;" /> {{ buddy.fusername }}
+                                        <input type="checkbox" style="vertical-align: middle;" id="checkbox_{{ buddy.uid }}" onclick="UserCP.selectBuddy();" /> <img src="{{ theme.imgdir }}/buddy_{{ status }}.png" alt="({{ attribute(lang, status) }})" title="{{ attribute(lang, status) }}" style="vertical-align: middle;" /> {{ buddy.fusername }}
                                     </label>
                                 </td>
                             </tr>

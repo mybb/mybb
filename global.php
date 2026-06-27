@@ -45,7 +45,7 @@ if($current_page != 'attachment.php')
 }
 
 // Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->get_input('action')])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
 {
 	define('NO_ONLINE', 1);
 }
@@ -434,17 +434,10 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 
 			// Verify if we have permissions to access forum-moderation_queue
-			require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/forum/module_meta.php";
-			if(function_exists("forum_admin_permissions"))
+			$adminperms = get_admin_permissions($mybb->user['uid']);
+			if(empty($adminperms['forum']['moderation_queue']) || $adminperms['forum']['moderation_queue'] != 1)
 			{
-				// Get admin permissions
-				$adminperms = get_admin_permissions($mybb->user['uid']);
-
-				$permissions = forum_admin_permissions();
-				if(array_key_exists('moderation_queue', $permissions['permissions']) && $adminperms['forum']['moderation_queue'] != 1)
-				{
-					$can_access_moderationqueue = false;
-				}
+				$can_access_moderationqueue = false;
 			}
 		}
 	}
@@ -534,7 +527,7 @@ if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_mo
 				$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
 			}
 
-			$headerMessage[] = [
+			$headerMessages[] = [
 				'message' => \MyBB\View\template('misc/modqueue_link.twig', [
 					'modqueue_type' => $modqueue_type,
 					'modqueue_message' => $modqueue_message,
@@ -748,7 +741,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 // Are we showing the quick theme selection box?
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+	$mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'] ?? 0, 0, '', false, true);
 
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{

@@ -529,7 +529,7 @@ if(isset($mybb->user['uid']))
 	$is_super_admin = is_super_admin($mybb->user['uid']);
 }
 
-if(empty($mybb->usergroup['cancp']) && !$is_super_admin || !$mybb->user['uid'])
+if(empty($mybb->usergroup['cancp']) && !$is_super_admin || empty($mybb->user['uid']))
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
@@ -569,7 +569,7 @@ if(!empty($mybb->user['uid']))
 	}
 
 	// Update the session information in the DB
-	if($admin_session['sid'])
+	if(!empty($admin_session['sid']))
 	{
 		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_binary(my_inet_pton(get_ip()))), "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
@@ -648,10 +648,8 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	}
 
 	// Validate the code
-	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
-	$auth = new PHPGangsta_GoogleAuthenticator;
-
-	$test = $auth->verifyCode($admin_options['authsecret'], $mybb->get_input('code'));
+	$authenticator = new \MyBB\TwoFactor\Authenticator();
+	$test = $authenticator->verify($admin_options['authsecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
 	if($test === true || $recovery === true)
