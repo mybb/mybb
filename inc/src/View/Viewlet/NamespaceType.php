@@ -20,7 +20,11 @@ enum NamespaceType
     public static function tryFromNamespace(string $namespace, ?ViewExtensionInterface $contextExtension = null): ?self
     {
         // try self::EXTENSION_OWN before self::EXTENSION
-        foreach ([self::GENERIC, self::EXTENSION_OWN, self::EXTENSION] as $type) {
+        $types = $contextExtension !== null
+            ? [self::GENERIC, self::EXTENSION_OWN, self::EXTENSION]
+            : [self::GENERIC, self::EXTENSION];
+
+        foreach ($types as $type) {
             if ($type->namespaceValid($namespace, $contextExtension)) {
                 return $type;
             }
