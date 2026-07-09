@@ -36,6 +36,7 @@ require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
+require_once MYBB_ROOT.'inc/functions_online.php';
 
 // Load global language phrases
 $lang->load("portal");
@@ -199,92 +200,16 @@ $onlinemembers = $onlinebots = [];
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
-	if($mybb->settings['wolorder'] == 'username')
-	{
-		$order_by = 'u.username ASC';
-		$order_by2 = 's.time DESC';
-	}
-	else
-	{
-		$order_by = 's.time DESC';
-		$order_by2 = 'u.username ASC';
-	}
+	$wol_data = build_whosonline_data();
 
-	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
-	$guestcount = $membercount = $botcount = $anoncount = 0;
-	$doneusers = array();
+	$membercount = $wol_data['membercount'];
+	$guestcount = $wol_data['guestcount'];
+	$botcount = $wol_data['botcount'];
+	$anoncount = $wol_data['anoncount'];
+	$doneusers = $wol_data['members'];
 
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
-	$guestcount = $db->fetch_field($query, "guestcount");
-
-	$query = $db->query("
-		SELECT
-			s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM
-			".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
-		ORDER BY {$order_by}, {$order_by2}
-	");
-
-	// Fetch spiders
-	$spiders = $cache->read('spiders');
-
-	while($user = $db->fetch_array($query))
-	{
-		// Create a key to test if this user is a search bot.
-		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
-
-		if($user['uid'] > 0)
-		{
-			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
-			{
-				++$membercount;
-
-				$doneusers[$user['uid']] = $user['time'];
-
-				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == 1)
-				{
-					++$anoncount;
-				}
-
-				if($user['invisible'] == 1)
-				{
-					$user['invisiblemark'] = "*";
-				}
-				else
-				{
-					$user['invisiblemark'] = '';
-				}
-
-				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
-				{
-					$user['isbot'] = false;
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-					$user['profilelink'] = get_profile_link($user['uid']);
-
-					$onlinemembers[] = $user;
-				}
-			}
-		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey] && $mybb->settings['woldisplayspiders'] == 1)
-		{
-			// The user is a search bot.
-			if($mybb->settings['wolorder'] == 'username')
-			{
-				$key = $spiders[$botkey]['name'];
-			}
-			else
-			{
-				$key = $user['time'];
-			}
-
-			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			++$botcount;
-		}
-	}
-
+	// Convert bots array to format expected by portal template
+	$onlinebots = $wol_data['bots'];
 	if($mybb->settings['wolorder'] == 'activity')
 	{
 		// activity ordering is DESC, username is ASC
@@ -293,6 +218,30 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	else
 	{
 		ksort($onlinebots);
+	}
+
+	// Format member data for portal display
+	$onlinemembers = [];
+	foreach($doneusers as $uid => $user)
+	{
+		// Check visibility permissions
+		if($user['invisible'] == 1)
+		{
+			$user['invisiblemark'] = "*";
+		}
+		else
+		{
+			$user['invisiblemark'] = '';
+		}
+
+		if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
+		{
+			$user['isbot'] = false;
+			$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+			$user['profilelink'] = get_profile_link($user['uid']);
+
+			$onlinemembers[] = $user;
+		}
 	}
 
 	$onlinecount = $membercount + $guestcount + $botcount;
@@ -309,15 +258,23 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		++$onlinecount;
 	}
 
-	// Most users online
-	$mostonline = $cache->read("mostonline");
-	if($onlinecount !== null && $onlinecount > $mostonline['numusers'])
+	$mostonline = [];
+	if(isset($wol_data['mostonline']) && is_array($wol_data['mostonline']))
 	{
-		$time = TIME_NOW;
-		$mostonline['numusers'] = $onlinecount;
-		$mostonline['time'] = $time;
-		$cache->update("mostonline", $mostonline);
+		$mostonline = $wol_data['mostonline'];
 	}
+
+	if(!isset($mostonline['numusers']) || !isset($mostonline['time']))
+	{
+		$cached_mostonline = $cache->read('mostonline');
+		if(is_array($cached_mostonline))
+		{
+			$mostonline = $cached_mostonline;
+		}
+	}
+
+	$mostonline['numusers'] = isset($mostonline['numusers']) ? $mostonline['numusers'] : 0;
+	$mostonline['time'] = isset($mostonline['time']) ? $mostonline['time'] : 0;
 
 	$recordcount = $mostonline['numusers'];
 	$recorddate = my_date('relative', $mostonline['time']);

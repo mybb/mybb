@@ -1185,3 +1185,230 @@ function build_wol_row($user)
 		return false;
 	}
 }
+
+/**
+ * Build the Who's Online data for display on index and portal pages.
+ *
+ * Extracts online users and bots data, handling member deduplication,
+ * bot detection, and invisibility. Returns structured data ready for
+ * template rendering.
+ *
+ * @param array $options Configuration options:
+ *    - 'include_forum_viewers' (bool) Include guest viewers per forum (default: false)
+ *    - 'include_groups' (bool) Include user groups legend (default: false)
+ * @return array Array containing:
+ *    - 'membercount' => Total members online, including invisible/anonymous members
+ *    - 'guestcount' => Guest count
+ *    - 'botcount' => Search bot count
+ *    - 'anoncount' => Invisible/anonymous member count included in 'membercount'
+ *    - 'onlinecount' => Total online count
+ *    - 'members' => Array of online member data keyed by uid
+ *    - 'bots' => Array of bot data
+ *    - 'forum_viewers' => Array of viewers per forum (if requested)
+ *    - 'groups' => Array of user groups (if requested)
+ *    - 'mostonline' => Most online record data
+ */
+function build_whosonline_data($options = array())
+{
+	global $db, $cache, $mybb, $plugins;
+
+	$default_options = array(
+		'include_forum_viewers' => false,
+		'include_groups' => false,
+	);
+
+	$options = array_merge($default_options, $options);
+
+	$wol_data = array(
+		'membercount' => 0,
+		'guestcount' => 0,
+		'botcount' => 0,
+		'anoncount' => 0,
+		'onlinecount' => 0,
+		'members' => array(),
+		'bots' => array(),
+		'forum_viewers' => array(),
+		'groups' => array(),
+		'mostonline' => array(),
+	);
+
+	$mostonline = $cache->read('mostonline');
+	if(is_array($mostonline))
+	{
+		$wol_data['mostonline'] = $mostonline;
+	}
+
+	// Check if user can view online info
+	if($mybb->usergroup['canviewonline'] == 0)
+	{
+		return $wol_data;
+	}
+
+	$hook_args = array(
+		'options' => &$options,
+		'wol_data' => &$wol_data,
+	);
+	$plugins->run_hooks('build_whosonline_data_start', $hook_args);
+
+	// Set ordering
+	if($mybb->settings['wolorder'] == 'username')
+	{
+		$order_by = 'u.username ASC';
+		$order_by2 = 's.time DESC';
+	}
+	else
+	{
+		$order_by = 's.time DESC';
+		$order_by2 = 'u.username ASC';
+	}
+
+	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
+
+	// Get forum viewers if requested
+	if($options['include_forum_viewers'] && $mybb->settings['showforumviewing'] != 0)
+	{
+		$query = $db->query("
+			SELECT
+				location1, COUNT(DISTINCT ip) AS guestcount
+			FROM
+				".TABLE_PREFIX."sessions
+			WHERE uid = 0 AND location1 != 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch
+			GROUP BY location1
+		");
+
+		while($location = $db->fetch_array($query))
+		{
+			if(isset($wol_data['forum_viewers'][$location['location1']]))
+			{
+				$wol_data['forum_viewers'][$location['location1']] += $location['guestcount'];
+			}
+			else
+			{
+				$wol_data['forum_viewers'][$location['location1']] = $location['guestcount'];
+			}
+		}
+	}
+
+	// Get user groups legend if requested
+	if($options['include_groups'] && $mybb->settings['showgroupslegend'] != 0)
+	{
+		$groups_cache = $cache->read('usergroups');
+		if($groups_cache === false)
+		{
+			$cache->update_usergroups();
+			$groups_cache = $cache->read('usergroups');
+		}
+
+		foreach($groups_cache as $group)
+		{
+			if($group['showinlegend'])
+			{
+				$wol_data['groups'][] = array(
+					'disporder' => $group['disporder'],
+					'display' => format_name($group['title'], $group['gid']),
+				);
+			}
+		}
+
+		if(!empty($wol_data['groups']))
+		{
+			usort($wol_data['groups'], function($a, $b) {
+				return $a['disporder'] - $b['disporder'];
+			});
+		}
+	}
+
+	// Count guests
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
+	$wol_data['guestcount'] = $db->fetch_field($query, "guestcount");
+
+	// Get members and bots
+	$query = $db->query("
+		SELECT
+			s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM
+			".TABLE_PREFIX."sessions s
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
+		ORDER BY {$order_by}, {$order_by2}
+	");
+
+	// Fetch spiders
+	$spiders = $cache->read('spiders');
+
+	$doneusers = array();
+
+	// Loop through sessions
+	while($user = $db->fetch_array($query))
+	{
+		// Create a key to test if this user is a search bot
+		$botkey = my_strtolower(str_replace('bot=', '', $user['sid']));
+
+		// Handle registered users
+		if($user['uid'] > 0)
+		{
+			// Deduplicate by uid, keeping most recent session
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']]['time'] < $user['time'])
+			{
+				++$wol_data['membercount'];
+
+				// Track anonymous users
+				if($user['invisible'] == 1)
+				{
+					++$wol_data['anoncount'];
+				}
+
+				// Store member data
+				$wol_data['members'][$user['uid']] = $user;
+				$doneusers[$user['uid']] = $user;
+			}
+		}
+		// Handle search bots/spiders
+		elseif(my_strpos($user['sid'], 'bot=') !== false && !empty($spiders[$botkey]) && $mybb->settings['woldisplayspiders'] == 1)
+		{
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+			else
+			{
+				$key = $user['time'];
+			}
+
+			// Store bot data
+			$wol_data['bots'][$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			++$wol_data['botcount'];
+		}
+
+		// Track forum viewers if requested
+		if($options['include_forum_viewers'] && $user['location1'])
+		{
+			if(isset($wol_data['forum_viewers'][$user['location1']]))
+			{
+				++$wol_data['forum_viewers'][$user['location1']];
+			}
+			else
+			{
+				$wol_data['forum_viewers'][$user['location1']] = 1;
+			}
+		}
+	}
+
+	// Calculate total online count
+	$wol_data['onlinecount'] = $wol_data['membercount'] + $wol_data['guestcount'] + $wol_data['botcount'];
+
+	// Update most online record if applicable
+	$mostonline = $cache->read('mostonline');
+	if($wol_data['onlinecount'] !== null && $wol_data['onlinecount'] > $mostonline['numusers'])
+	{
+		$mostonline['numusers'] = $wol_data['onlinecount'];
+		$mostonline['time'] = TIME_NOW;
+		$cache->update('mostonline', $mostonline);
+	}
+
+	$wol_data['mostonline'] = $mostonline;
+
+	$plugins->run_hooks('build_whosonline_data_end');
+
+	return $wol_data;
+}
