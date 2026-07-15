@@ -341,6 +341,21 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['disporder'] = $section['disporder'];
 			$mybb->input['enabled'] = $section['enabled'];
 			$mybb->input['usetranslation'] = $section['usetranslation'];
+
+			if($section['usetranslation'] == 1)
+			{
+				$lang->load("helpsections", true);
+				$langnamevar = "s".$section['sid']."_name";
+				$langdescvar = "s".$section['sid']."_desc";
+				if(isset($lang->$langnamevar))
+				{
+					$mybb->input['name'] = $lang->$langnamevar;
+				}
+				if(isset($lang->$langdescvar))
+				{
+					$mybb->input['description'] = $lang->$langdescvar;
+				}
+			}
 		}
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
@@ -461,6 +476,26 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['disporder'] = $doc['disporder'];
 			$mybb->input['enabled'] = $doc['enabled'];
 			$mybb->input['usetranslation'] = $doc['usetranslation'];
+
+			if($doc['usetranslation'] == 1)
+			{
+				$lang->load("helpdocs", true);
+				$langnamevar = "d".$doc['hid']."_name";
+				$langdescvar = "d".$doc['hid']."_desc";
+				$langdocvar = "d".$doc['hid']."_document";
+				if(isset($lang->$langnamevar))
+				{
+					$mybb->input['name'] = $lang->$langnamevar;
+				}
+				if(isset($lang->$langdescvar))
+				{
+					$mybb->input['description'] = $lang->$langdescvar;
+				}
+				if(isset($lang->$langdocvar))
+				{
+					$mybb->input['document'] = $lang->$langdocvar;
+				}
+			}
 		}
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
@@ -611,6 +646,21 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("helpsections", "*", "", array('order_by' => "disporder"));
 	while($section = $db->fetch_array($query))
 	{
+		if($section['usetranslation'] == 1)
+		{
+			$lang->load("helpsections", true);
+			$langnamevar = "s".$section['sid']."_name";
+			$langdescvar = "s".$section['sid']."_desc";
+			if(isset($lang->$langnamevar))
+			{
+				$section['name'] = $lang->$langnamevar;
+			}
+			if(isset($lang->$langdescvar))
+			{
+				$section['description'] = $lang->$langdescvar;
+			}
+		}
+
 		$table->construct_cell("<div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$section['name']}</a></strong><br /><small>{$section['description']}</small></div>");
 		$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 		$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
@@ -619,6 +669,21 @@ if(!$mybb->input['action'])
 		$query2 = $db->simple_select("helpdocs", "*", "sid='{$section['sid']}'", array('order_by' => "disporder"));
 		while($doc = $db->fetch_array($query2))
 		{
+			if($doc['usetranslation'] == 1)
+			{
+				$lang->load("helpdocs", true);
+				$langnamevar = "d".$doc['hid']."_name";
+				$langdescvar = "d".$doc['hid']."_desc";
+				if(isset($lang->$langnamevar))
+				{
+					$doc['name'] = $lang->$langnamevar;
+				}
+				if(isset($lang->$langdescvar))
+				{
+					$doc['description'] = $lang->$langdescvar;
+				}
+			}
+
 			$table->construct_cell("<div style=\"padding-left: 40px;\"><div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$doc['name']}</a></strong><br /><small>{$doc['description']}</small></div></div>");
 			$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 			$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
