@@ -39,7 +39,7 @@ abstract class Locator
      */
     public static function fromNamespaceRelativeIdentifier(string $namespace, string $identifier): static
     {
-        return self::fromString(
+        return static::fromString(
             $identifier,
             [
                 'type' => ViewletLocator::COMPONENT_SET,
