@@ -329,9 +329,11 @@ class PublishableViewlet extends ViewletDecorator
     {
         if ($asset === null) {
             return array_merge(
-                ...array_map(
-                    fn (ManagedValue $publicationData) => $publicationData->get(),
-                    $this->assetPublicationData,
+                ...array_values(
+                    array_map(
+                        fn (ManagedValue $publicationData) => $publicationData->get(),
+                        $this->assetPublicationData,
+                    )
                 )
             );
         } else {
