@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MyBB\View\Asset\Processor;
 
 use Exception;
+use InvalidArgumentException;
 use MyBB\View\HierarchicalResource;
-use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\Viewlet\Viewlet;
 use MyBB\View\Viewlet\ViewletInterface;
@@ -222,29 +222,14 @@ class ScssProcessor extends Processor
     private function getResourceFromAbsolutePath(string $path): ?Resource
     {
         foreach ($this->sourceViewlets as $viewlet) {
-            if (!Path::isBasePath($viewlet->getAbsolutePath(), $path)) {
+            try {
+                $resource = $viewlet->getResourceFromAbsolutePath($path);
+            } catch (InvalidArgumentException) {
                 continue;
             }
 
-            foreach ($viewlet->getNamespaceAbsolutePaths() as $namespace => $namespacePaths) {
-                foreach ($namespacePaths as $namespacePath) {
-                    if (!Path::isBasePath($namespacePath, $path)) {
-                        continue;
-                    }
-
-                    $locator = ViewletLocator::fromNamespaceRelativeIdentifier(
-                        $namespace,
-                        Path::makeRelative($path, $namespacePath)
-                    );
-
-                    $resource = $viewlet->getResource($locator);
-
-                    if ($resource === null) {
-                        continue 3; // continue search in other Viewlets
-                    } else {
-                        return $resource;
-                    }
-                }
+            if ($resource->exists()) {
+                return $resource;
             }
         }
 
