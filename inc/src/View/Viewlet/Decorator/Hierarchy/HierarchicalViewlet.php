@@ -139,7 +139,7 @@ class HierarchicalViewlet extends ViewletDecorator
      *
      * @return array<string, ViewletInterface>
      */
-    private function getViewlets(): array
+    public function getViewlets(): array
     {
         if (!isset($this->viewlets)) {
             $viewlets = [

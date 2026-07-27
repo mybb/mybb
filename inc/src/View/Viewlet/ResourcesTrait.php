@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace MyBB\View\Viewlet;
 
+use InvalidArgumentException;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
 use MyBB\View\Viewlet\NamespaceCargo\Repository as NamespaceCargoRepository;
 use MyBB\View\Viewlet\NamespaceCargo\Resource\Repository as ResourceRepository;
+use Symfony\Component\Filesystem\Path;
 
 trait ResourcesTrait
 {
@@ -124,5 +127,52 @@ trait ResourcesTrait
         }
 
         return $results;
+    }
+
+    /**
+     * Returns a Resource that may be found at the given absolute path.
+     */
+    public function getResourceFromAbsolutePath(string $path): Resource
+    {
+        if (!Path::isBasePath($this->getAbsolutePath(), $path)) {
+            throw new InvalidArgumentException('Viewlet path mismatch for path `' . $path . '`');
+        }
+
+        $viewletRelativePath = Path::makeRelative($path, $this->getAbsolutePath());
+
+        $locator = $this->getLocatorFromRelativePath($viewletRelativePath);
+
+        return $this->getResource($locator);
+    }
+
+    /**
+     * Returns the Locator of a Resource that may be found at the given Viewlet-relative path.
+     */
+    private function getLocatorFromRelativePath(string $path): ViewletLocator
+    {
+        if (
+            $this->extension !== null &&
+            $this->extension::VIEWLET_DIRECT_NAMESPACE === true
+        ) {
+            $namespace = $this->extension->getViewletDirectNamespace();
+        } else {
+            $namespace = explode('/', Path::canonicalize($path))[0] ?? null;
+
+            if (
+                $namespace === null ||
+                !$this->hasNamespaceTypeAccess(NamespaceType::tryFromNamespace($namespace, $this->extension))
+            ) {
+                throw new InvalidArgumentException('Could not determine Resource namespace from path `' . $path . '`');
+            }
+        }
+
+        try {
+            return ViewletLocator::fromNamespaceRelativeIdentifier(
+                $namespace,
+                Path::makeRelative($path, $namespace)
+            );
+        } catch (LocatorException $e) {
+            throw new InvalidArgumentException('Invalid Resource path', previous: $e);
+        }
     }
 }

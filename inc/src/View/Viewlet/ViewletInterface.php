@@ -45,5 +45,6 @@ use MyBB\View\Viewlet\NamespaceCargo\Repository;
  * @method Resource getResource(ViewletLocator $locator)
  * @method Resource createResource(ViewletLocator $locator)
  * @method array getResourceProperties()
+ * @method Resource getResourceFromAbsolutePath(string $path)
  */
 interface ViewletInterface {}
