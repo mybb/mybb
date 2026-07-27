@@ -6,6 +6,7 @@ namespace MyBB\View\Viewlet\Decorator;
 
 use Exception;
 use InvalidArgumentException;
+use LogicException;
 use MyBB\Utilities\ManagedValue\ManagedValue;
 use MyBB\View\Asset\Asset;
 use MyBB\View\Asset\Publication;
@@ -15,6 +16,7 @@ use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Optimization;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
+use MyBB\View\Viewlet\NamespaceType;
 
 use function MyBB\app;
 
@@ -137,6 +139,35 @@ class PublishableViewlet extends ViewletDecorator
         }
 
         return $asset;
+    }
+
+    /**
+     * Returns a Viewlet Asset that may be published at the given web root-relative public path.
+     */
+    public function getAssetFromPublicPath(string $path): ?ViewletAsset
+    {
+        $extension = $this->getExtension();
+
+        if ($extension === null) {
+            throw new LogicException('Cannot use public path for non-Extension Viewlet');
+        }
+
+
+        $locator = ViewletAsset::getLocatorFromPublicPath($path, $packageName);
+
+        if ($locator === null) {
+            return null;
+        }
+
+        if (!NamespaceType::namespaceValid($locator->getNamespace(), $extension)) {
+            throw new InvalidArgumentException('Invalid namespace for path `' . $path . '`');
+        }
+
+        if ($packageName !== $extension->getPackageName()) {
+            throw new InvalidArgumentException('Viewlet path mismatch for path `' . $path . '`');
+        }
+
+        return new ViewletAsset($locator, $this);
     }
 
     /**

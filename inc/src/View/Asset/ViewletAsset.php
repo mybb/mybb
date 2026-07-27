@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyBB\View\Asset;
 
 use InvalidArgumentException;
+use MyBB\View\Locator\Exception as LocatorException;
 use MyBB\View\Locator\ViewletLocator;
 use MyBB\View\Resource;
 use MyBB\View\ResourceType;
@@ -25,6 +26,40 @@ class ViewletAsset extends Asset
     public const ABSOLUTE_BASE_PATH = MYBB_ROOT . self::WEB_ROOT_RELATIVE_BASE_PATH;
 
     private Resource $resource;
+
+    /**
+     * Returns a Locator for a Viewlet Asset that may be published at the given web root-relative public path.
+     *
+     * @param-out ?string $packageName The implied Package name.
+     */
+    public static function getLocatorFromPublicPath(
+        string $path,
+        ?string &$packageName = null,
+    ): ?ViewletLocator
+    {
+        $path = Path::canonicalize($path);
+
+        if (!str_starts_with($path, self::WEB_ROOT_RELATIVE_BASE_PATH)) {
+            return null;
+        }
+
+        $webRootRelativePath = Path::makeRelative($path, ViewletAsset::WEB_ROOT_RELATIVE_BASE_PATH);
+
+        [$packageName, $namespace, $namespaceRelativeIdentifier] = explode('/', $webRootRelativePath, 3);
+
+        if (
+            $packageName !== '' &&
+            $namespace !== '' &&
+            $namespaceRelativeIdentifier !== ''
+        ) {
+            try {
+                return ViewletLocator::fromNamespaceRelativeIdentifier($namespace, $namespaceRelativeIdentifier);
+            } catch (LocatorException) {
+            }
+        }
+
+        return null;
+    }
 
     public function __construct(
         readonly protected ViewletLocator $locator,
