@@ -18,7 +18,9 @@ class Plugin extends Extension implements ViewExtensionInterface
 {
     use ViewExtensionTrait;
 
-    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . 'inc/plugins';
+    public const EXTENSION_TYPE_BASE_PATH = 'inc/plugins';
+
+    public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = MYBB_ROOT . self::EXTENSION_TYPE_BASE_PATH;
 
     public const REPOSITORY_CLASS = Repository::class;
 

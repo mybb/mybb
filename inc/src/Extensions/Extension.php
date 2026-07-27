@@ -26,6 +26,11 @@ abstract class Extension
     final public const MANIFEST_FILE_PATH = 'extension.json';
 
     /**
+     * The application root-relative path to the directory containing Extension packages of the type.
+     */
+    public const EXTENSION_TYPE_BASE_PATH = '';
+
+    /**
      * The absolute path to the directory containing Extension packages of the type.
      */
     public const EXTENSION_TYPE_ABSOLUTE_BASE_PATH = '';

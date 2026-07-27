@@ -30,6 +30,14 @@ abstract class Repository
     ) {}
 
     /**
+     * Returns the application root-relative path to the directory containing Extension packages of the type.
+     */
+    final public static function getBasePath(): string
+    {
+        return static::ENTITY_CLASS::EXTENSION_TYPE_BASE_PATH;
+    }
+
+    /**
      * Returns the absolute path to the directory containing Extension packages of the type.
      */
     final public static function getAbsoluteBasePath(): string
