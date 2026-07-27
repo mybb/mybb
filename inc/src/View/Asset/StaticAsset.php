@@ -8,6 +8,7 @@ use LogicException;
 use MyBB\View\Locator\StaticLocator;
 use MyBB\View\ResourceType;
 use MyBB\View\Viewlet\ViewletInterface;
+use RuntimeException;
 
 /**
  * An Asset not published from Viewlet sources.
@@ -40,6 +41,37 @@ class StaticAsset extends Asset
         }
 
         return MYBB_ROOT . str_replace('./', '', $this->getPublicPath());
+    }
+
+    public function exists(): bool
+    {
+        if (!$this->isInApplicationDirectory()) {
+            throw new LogicException('Cannot call `' . __METHOD__ . '` on Assets outside of the application directory');
+        }
+
+        return file_exists(
+            $this->getAbsolutePath()
+        );
+    }
+
+    /**
+     * Returns the modification time as a Unix timestamp.
+     */
+    public function getModificationTime(): int
+    {
+        if (!$this->isInApplicationDirectory()) {
+            throw new LogicException('Cannot call `' . __METHOD__ . '` on Assets outside of the application directory');
+        }
+
+        $path = $this->getAbsolutePath();
+
+        $time = filemtime($path);
+
+        if ($time === false) {
+            throw new RuntimeException('Could not retrieve modification time for `' . $path . '`');
+        }
+
+        return $time;
     }
 
     /**

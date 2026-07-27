@@ -73,6 +73,15 @@ abstract class Asset
         return $url;
     }
 
+    abstract public function getAbsolutePath(): string;
+
+    abstract public function exists(): bool;
+
+    /**
+     * Returns the modification time as a Unix timestamp.
+     */
+    abstract public function getModificationTime(): int;
+
     abstract public function getPublicPath(): string;
 
     abstract public function getType(): ?ResourceType;

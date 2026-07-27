@@ -124,6 +124,22 @@ class ViewletAsset extends Asset
         );
     }
 
+    /**
+     * Returns the modification time as a Unix timestamp.
+     */
+    public function getModificationTime(): int
+    {
+        $path = $this->getAbsolutePath();
+
+        $time = filemtime($path);
+
+        if ($time === false) {
+            throw new RuntimeException('Could not retrieve modification time for `' . $path . '`');
+        }
+
+        return $time;
+    }
+
     public function write(string $content, $pointer = null): bool
     {
         $path = $this->getAbsolutePath();
