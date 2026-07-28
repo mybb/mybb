@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MyBB\View\Viewlet\Decorator;
 
-use Exception;
 use InvalidArgumentException;
 use LogicException;
 use MyBB\Utilities\ManagedValue\ManagedValue;
@@ -221,8 +220,14 @@ class PublishableViewlet extends ViewletDecorator
      */
     public function getAssetsFromResource(Resource $resource): array
     {
+        if (!Publication::resourcePublishable($resource)) {
+            return [];
+        }
+
         return array_merge(
-            $this->getPublishableAssets([$resource]),
+            $this->getPublishableAssets([
+                $resource->getLocator()->getString() => $resource,
+            ]),
             Publication::getAssetsPublishedUsingResource($resource, $this),
         );
     }
@@ -230,17 +235,25 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns Viewlet Assets that can be published.
      *
-     * @param ?Resource[] $sourceResources
+     * @param ?array<string, Resource> $sourceResources
      * @return ViewletAsset[]
      */
     public function getPublishableAssets(?array $sourceResources = null): array
     {
+        foreach ($sourceResources ?? [] as $sourceResource) {
+            if (!Publication::resourcePublishable($sourceResource)) {
+                throw new LogicException('Cannot use ' . __METHOD__ . ' with non-publishable Resource');
+            }
+        }
+
+
         $explicitlyPublishableAssets = $this->getExplicitlyPublishableAssets($sourceResources);
 
-        $claimedResources = array_map(
-            fn (ViewletAsset $asset) => $asset->getResource(),
-            $explicitlyPublishableAssets,
-        );
+        $claimedResources = [];
+
+        foreach ($explicitlyPublishableAssets as $asset) {
+            $claimedResources[$asset->getResource()->getLocator()->getString()] = $asset->getResource();
+        }
 
         return array_merge(
             $explicitlyPublishableAssets,
@@ -256,7 +269,7 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns Assets referenced in the properties file.
      *
-     * @param ?Resource[] $sourceResources
+     * @param ?array<string, Resource> $sourceResources
      * @return ViewletAsset[]
      */
     public function getExplicitlyPublishableAssets(?array $sourceResources = null): array
@@ -267,6 +280,12 @@ class PublishableViewlet extends ViewletDecorator
             $sourceResources = $this->getPublishableResources();
             $namespaces = $this->getNamespaces();
         } else {
+            foreach ($sourceResources as $sourceResource) {
+                if (!Publication::resourcePublishable($sourceResource)) {
+                    throw new LogicException('Cannot use ' . __METHOD__ . ' with non-publishable Resource');
+                }
+            }
+
             $namespaces = array_map(
                 fn (Resource $resource) => $resource->getNamespace(),
                 $sourceResources,
@@ -280,7 +299,7 @@ class PublishableViewlet extends ViewletDecorator
                 if ($locator instanceof ViewletLocator) {
                     $asset = $this->getAsset($locator);
 
-                    if (in_array($asset->getResource(), $sourceResources)) {
+                    if (array_key_exists($asset->getResource()->getLocator()->getString(), $sourceResources)) {
                         $assets[$locator->getString()] = $asset;
                     }
                 }
@@ -293,11 +312,18 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns Assets that could be published without being referenced in the properties file.
      *
-     * @param ?Resource[] $sourceResources
+     * @param ?array<string, Resource> $sourceResources
      * @return ViewletAsset[]
      */
     public function getImplicitlyPublishableAssets(?array $sourceResources = null): array
     {
+        foreach ($sourceResources ?? [] as $sourceResource) {
+            if (!Publication::resourcePublishable($sourceResource)) {
+                throw new LogicException('Cannot use ' . __METHOD__ . ' with non-publishable Resource');
+            }
+        }
+
+
         $assets = [];
 
         foreach ($sourceResources ?? $this->getPublishableResources() as $resource) {
@@ -331,7 +357,7 @@ class PublishableViewlet extends ViewletDecorator
         $extension = $this->getExtension();
 
         if ($extension === null) {
-            throw new Exception('Cannot use publishing path for non-Extension Viewlet');
+            throw new LogicException('Cannot use publishing path for non-Extension Viewlet');
         }
 
         $components = [
