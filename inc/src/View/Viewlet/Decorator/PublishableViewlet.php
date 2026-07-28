@@ -351,6 +351,8 @@ class PublishableViewlet extends ViewletDecorator
 
     /**
      * Returns the base path to published files, relative to the MyBB root directory.
+     *
+     * Includes the whole Viewlet, specific namespaces, or specific Resource Types.
      */
     public function getPublishingPath(?string $namespace = null, ?ResourceType $resourceType = null): string
     {

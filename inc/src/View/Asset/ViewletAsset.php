@@ -91,11 +91,10 @@ class ViewletAsset extends Asset
     {
         return
             $this->viewlet->getPublishingPath(
-                $this->locator->getNamespace(),
-                $this->locator->getType(),
+                $this->locator->getNamespace()
             ) .
             '/' .
-            $this->locator->getSubPath()
+            $this->locator->getNamespaceRelativeIdentifier()
         ;
     }
 
