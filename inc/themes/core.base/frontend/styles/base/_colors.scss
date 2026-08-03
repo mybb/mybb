@@ -99,9 +99,8 @@ $properties:
 
 // Import each of the color schemes listed above
 :root {
-    @each $scheme in $schemes {
-        @import "colors_#{$scheme}";
-    }
+    @import "colors_light";
+    @import "colors_dark";
 }
 
 // Set up the default color scheme properties (unless system theme is default)
