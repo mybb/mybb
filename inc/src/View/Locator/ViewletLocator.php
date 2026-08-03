@@ -16,8 +16,8 @@ class ViewletLocator extends Locator
     final public const COMPONENT_CONTEXT = 8;
     final public const COMPONENT_UNSET = 16;
 
-    private const NAMESPACE_PREFIX = '@';
-    private const DIRECTORY_SEPARATOR = '/';
+    final public const NAMESPACE_PREFIX = '@';
+    final public const DIRECTORY_SEPARATOR = '/';
 
     public readonly ?ResourceType $type;
     public readonly ?string $namespace;

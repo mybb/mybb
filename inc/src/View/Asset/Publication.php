@@ -76,6 +76,26 @@ class Publication
     }
 
     /**
+     * Returns an array of source Viewlet identifiers for a published Asset, indexed by the source Locator string,
+     *   or `null` if no source information is found.
+     *
+     * @return ?array<string, string>
+     */
+    public static function getPublishedAssetSourceViewletIdentifiers(ViewletAsset $asset): ?array
+    {
+        $sourceSignatures = self::getPublishedAssetSourceSignatures($asset);
+
+        if ($sourceSignatures === null) {
+            return null;
+        }
+
+        return array_combine(
+            array_keys($sourceSignatures),
+            array_column($sourceSignatures, 'viewlet'),
+        );
+    }
+
+    /**
      * Returns Assets published using the provided Resource, indexed by Locator string.
      *
      * @return array<string, ViewletAsset>
