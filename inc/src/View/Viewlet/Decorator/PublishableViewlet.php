@@ -39,6 +39,18 @@ class PublishableViewlet extends ViewletDecorator
      */
     final public const PUBLISH_ALWAYS = 8;
 
+
+    /**
+     * The Asset/Resource is declared for publication in Asset Properties.
+     */
+    final public const PUBLICATION_BASIS_EXPLICIT = 2;
+
+    /**
+     * The publication of an Asset/Resource is implied by its Resource Type.
+     */
+    final public const PUBLICATION_BASIS_IMPLICIT = 4;
+
+
     /**
      * When to publish Asset files.
      *
@@ -269,6 +281,8 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns Assets referenced in the properties file.
      *
+     * @see self::PUBLICATION_BASIS_EXPLICIT
+     *
      * @param ?array<string, Resource> $sourceResources
      * @return ViewletAsset[]
      */
@@ -312,6 +326,8 @@ class PublishableViewlet extends ViewletDecorator
     /**
      * Returns Assets that could be published without being referenced in the properties file.
      *
+     * @see self::PUBLICATION_BASIS_IMPLICIT
+     *
      * @param ?array<string, Resource> $sourceResources
      * @return ViewletAsset[]
      */
@@ -347,6 +363,50 @@ class PublishableViewlet extends ViewletDecorator
     public function getPublishableResources(): array
     {
         return $this->getResources(resourceTypes: Publication::PUBLISHABLE_RESOURCE_TYPES);
+    }
+
+    /**
+     * Returns the current reason why the given Resource would be published directly as an Asset.
+     *
+     * @return ?self::PUBLICATION_BASIS_*
+     */
+    public function getResourcePublicationBasis(Resource $resource): ?int
+    {
+        if (Publication::resourcePublishable($resource)) {
+            $sourceResources = [
+                $resource->getLocator()->getString() => $resource,
+            ];
+
+            if ($this->getExplicitlyPublishableAssets($sourceResources) !== []) {
+                return self::PUBLICATION_BASIS_EXPLICIT;
+            }
+
+            if ($this->getImplicitlyPublishableAssets($sourceResources) !== []) {
+                return self::PUBLICATION_BASIS_IMPLICIT;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the current reason why the given Viewlet Asset would be published.
+     *
+     * @return ?self::PUBLICATION_BASIS_*
+     */
+    public function getAssetPublicationBasis(ViewletAsset $asset): ?int
+    {
+        $locatorString = $asset->getLocator()->getString();
+
+        if (array_key_exists($locatorString, $this->getExplicitlyPublishableAssets())) {
+            return self::PUBLICATION_BASIS_EXPLICIT;
+        }
+
+        if (array_key_exists($locatorString, $this->getImplicitlyPublishableAssets())) {
+            return self::PUBLICATION_BASIS_IMPLICIT;
+        }
+
+        return null;
     }
 
     /**
