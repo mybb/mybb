@@ -33,7 +33,7 @@
         "illuminate/hashing": "^10.0",
         "illuminate/routing": "^10.0",
         "laravel/helpers": "^1.7",
-        "scssphp/scssphp": "^1.12",
+        "scssphp/scssphp": "^2.1",
         "symfony/console": "^7.0",
         "symfony/filesystem": "^7.1",
         "symfony/polyfill-mbstring": "^1.32",
