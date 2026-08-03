@@ -35,7 +35,9 @@ class Style extends SymfonyStyle
     {
         $applicationAbsolutePath = Path::canonicalize(MYBB_ROOT);
 
-        if ($relativePath = Path::makeRelative($path, $applicationAbsolutePath)) {
+        if (Path::isBasePath($applicationAbsolutePath, $path)) {
+            $relativePath = Path::makeRelative($path, $applicationAbsolutePath);
+
             return
                 '<base-path>' .  OutputFormatter::escape($applicationAbsolutePath) . '/' . '</base-path>' .
                 '<path>' . OutputFormatter::escape($relativePath) . '</path>';
