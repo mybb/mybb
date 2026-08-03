@@ -5,6 +5,9 @@ use Symfony\Component\Console\Application;
 use MyBB\Console\Command\InstallCommand;
 use MyBB\Console\Command\StatusCommand;
 use MyBB\Console\Command\UpgradeCommand;
+use MyBB\Console\Command\View\ViewInspectCommand;
+
+use function MyBB\app;
 
 define("IN_MYBB", 1);
 define("IN_INSTALL", 1);
@@ -24,6 +27,7 @@ $app->addCommands([
     new InstallCommand(),
     new StatusCommand(),
     new UpgradeCommand(),
+    app(ViewInspectCommand::class),
 ]);
 
 $app->run();
