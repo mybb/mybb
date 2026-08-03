@@ -57,9 +57,9 @@
             background: var(--default-avatar-color, var(--background-3));
         }
 
-        @supports (background: attr(data-avatar-color type(<color>), #000)) {
+        @supports (background: attr(data-avatar-color, #000)) {
             &[data-avatar-color] {
-                background: attr(data-avatar-color type(<color>), var(--default-avatar-color, var(--background-3)));
+                background: attr(data-avatar-color, var(--default-avatar-color, var(--background-3)));
             }
         }
     }
