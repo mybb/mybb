@@ -205,7 +205,7 @@ class HierarchicalRepository extends \MyBB\Cargo\Decorator\HierarchicalRepositor
      *
      * @return RepositoryInterface[]
      */
-    protected function getRepositories(): array
+    public function getRepositories(): array
     {
         $results = [];
 

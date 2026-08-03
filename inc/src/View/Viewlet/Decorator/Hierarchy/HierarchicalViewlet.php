@@ -94,6 +94,14 @@ class HierarchicalViewlet extends ViewletDecorator
         $this->baseViewlets = $viewlets;
     }
 
+    /**
+     * @return ViewletInterface[]
+     */
+    public function getBaseViewlets(): array
+    {
+        return $this->baseViewlets;
+    }
+
     public function getOwnViewlet(): Viewlet
     {
         /** @var Viewlet */
