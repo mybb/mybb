@@ -284,7 +284,7 @@ abstract class Decorator
             $this->target = $object;
             $this->publicMembers = new SplObjectStorage();
 
-            $this->publicMembers->attach($object, [
+            $this->publicMembers->offsetSet($object, [
                 self::MEMBER_TYPE_METHOD => [],
                 self::MEMBER_TYPE_PROPERTY => [],
             ]);
@@ -367,7 +367,7 @@ abstract class Decorator
 
         foreach ($baseDecorator->callStack($after) as $object) {
             if (
-                $baseDecorator->publicMembers->contains($object) &&
+                $baseDecorator->publicMembers->offsetExists($object) &&
                 in_array($name, $baseDecorator->publicMembers[$object][$memberType])
             ) {
                 return $object;
@@ -388,7 +388,7 @@ abstract class Decorator
 
                 $members[$memberType][] = $name;
 
-                $baseDecorator->publicMembers->attach($object, $members);
+                $baseDecorator->publicMembers->offsetSet($object, $members);
 
                 return $object;
             }
@@ -452,7 +452,7 @@ abstract class Decorator
     {
         array_unshift($this->decorators, $object);
 
-        $this->publicMembers->attach($object, [
+        $this->publicMembers->offsetSet($object, [
             self::MEMBER_TYPE_METHOD => [],
             self::MEMBER_TYPE_PROPERTY => [],
         ]);
