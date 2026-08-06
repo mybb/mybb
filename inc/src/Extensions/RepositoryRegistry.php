@@ -59,18 +59,28 @@ final readonly class RepositoryRegistry
 
     /**
      * Returns object representation of the given Extension package, or null if it doesn't exist.
+     *
+     * @note The Extension type is usually known by calling context instead.
+     *
+     * @throws Exception if a matching Extension is found in multiple Repositories.
      */
     public function getExistingExtensionFromPackageName(string $packageName): ?Extension
     {
+        $result = null;
+
         foreach ($this->repositories as $repository) {
             $extension = $repository->getExisting($packageName);
 
             if ($extension !== null) {
-                return $extension;
+                if ($result === null) {
+                    $result = $extension;
+                } else {
+                    throw new Exception('Extension with package name `' . $packageName . '` exists for more than one type (' . $result::class . ', ' . $extension::class . ')');
+                }
             }
         }
 
-        return null;
+        return $result;
     }
 
     /**
