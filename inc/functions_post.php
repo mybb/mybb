@@ -1009,9 +1009,20 @@ function get_post_attachments($id, &$post)
 	$validationcount = 0;
 	$tcount = 0;
 	$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = '';
-	if(!isset($forumpermissions))
+	// $forumpermissions may be unset, a flat permission array, or (as built by
+	// portal.php) an array keyed by forum ID. Resolve this post's permissions
+	// from whichever shape is present so a missing key does not warn.
+	if(isset($forumpermissions[$post['fid']]) && is_array($forumpermissions[$post['fid']]))
 	{
-		$forumpermissions = forum_permissions($post['fid']);
+		$postpermissions = $forumpermissions[$post['fid']];
+	}
+	elseif(isset($forumpermissions['candlattachments']))
+	{
+		$postpermissions = $forumpermissions;
+	}
+	else
+	{
+		$postpermissions = forum_permissions($post['fid']);
 	}
 
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
@@ -1049,7 +1060,7 @@ function get_post_attachments($id, &$post)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
+					elseif((($attachment['thumbnail'] == "SMALL" && $postpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
@@ -1074,9 +1085,9 @@ function get_post_attachments($id, &$post)
 						}
 						++$tcount;
 					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
+					elseif((($attachment['thumbnail'] == "SMALL" && $postpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
-						if ($forumpermissions['candlattachments'])
+						if ($postpermissions['candlattachments'])
 						{
 							eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 						} 
