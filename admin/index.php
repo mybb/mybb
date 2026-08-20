@@ -125,7 +125,7 @@ if($mybb->input['action'] == "unlock")
 	// Do we have the token? If so let's process it
 	if($mybb->input['token'] && $user['uid'])
 	{
-		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
+		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l' AND dateline > '".(int)(TIME_NOW - 86400)."'");
 
 		$plugins->run_hooks("admin_unlock_end");
 
@@ -212,7 +212,7 @@ elseif($mybb->input['do'] == "login")
 				$lockout_array = array(
 					"uid" => $login_user['uid'],
 					"dateline" => TIME_NOW,
-					"code" => random_str(),
+					"code" => random_str(30),
 					"type" => "l"
 				);
 				$db->insert_query("awaitingactivation", $lockout_array);
@@ -372,7 +372,7 @@ elseif($mybb->input['do'] == "login")
 				$lockout_array = array(
 					"uid" => $login_user['uid'],
 					"dateline" => TIME_NOW,
-					"code" => random_str(),
+					"code" => random_str(30),
 					"type" => "l"
 				);
 				$db->insert_query("awaitingactivation", $lockout_array);
@@ -686,7 +686,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 				$lockout_array = array(
 					"uid" => $mybb->user['uid'],
 					"dateline" => TIME_NOW,
-					"code" => random_str(),
+					"code" => random_str(30),
 					"type" => "l"
 				);
 				$db->insert_query("awaitingactivation", $lockout_array);

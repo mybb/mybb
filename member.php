@@ -1311,6 +1311,12 @@ if($mybb->input['action'] == "activate")
 		}
 		if($activation['type'] == "e")
 		{
+			// Email change confirmation links expire after 24 hours.
+			if((int)$activation['dateline'] < TIME_NOW - 86400)
+			{
+				error($lang->error_activationexpired);
+			}
+
 			$newemail = array(
 				"email" => $db->escape_string($activation['misc']),
 			);
@@ -1660,12 +1666,17 @@ if($mybb->input['action'] == "resetpassword")
 
 	if(isset($mybb->input['code']) && $user)
 	{
-		$query = $db->simple_select("awaitingactivation", "code", "uid='".$user['uid']."' AND type='p'");
-		$activationcode = $db->fetch_field($query, 'code');
-		$now = TIME_NOW;
-		if(!$activationcode || $activationcode !== $mybb->get_input('code'))
+		$query = $db->simple_select("awaitingactivation", "code, dateline", "uid='".$user['uid']."' AND type='p'");
+		$activation = $db->fetch_array($query);
+		if(!$activation || $activation['code'] !== $mybb->get_input('code'))
 		{
 			error($lang->error_badlostpwcode);
+		}
+		// Password reset codes expire after 24 hours.
+		if((int)$activation['dateline'] < TIME_NOW - 86400)
+		{
+			$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND type='p'");
+			error($lang->error_resetpwcodeexpired);
 		}
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND type='p'");
 		$username = $user['username'];

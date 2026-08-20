@@ -211,6 +211,8 @@ $l['error_activated_by_admin'] = "You are unable to resend your account activati
 $l['error_alreadyregistered'] = "Sorry, but our system shows that you have already registered and the registration of multiple accounts has been disabled.";
 $l['error_alreadyregisteredtime'] = "We cannot process your registration because there has already been {1} new registration(s) from your ip address in the past {2} hours. Please try again later.";
 $l['error_badlostpwcode'] = "You have entered an invalid password reset code. Please re-read the email you were sent or contact the forum administrators for more help.";
+$l['error_resetpwcodeexpired'] = "This password reset code has expired. Please request a new password reset and use the link within 24 hours.";
+$l['error_activationexpired'] = "This email change confirmation link has expired. Please change your email address again and confirm it within 24 hours.";
 $l['error_badactivationcode'] = "You have entered an invalid account activation code. To resend all activation emails to the email address on file, please click <a href=\"member.php?action=resendactivation\">here</a>.";
 $l['error_alreadyactivated'] = "Your account has already been activated or does not require email validation.";
 $l['error_alreadyvalidated'] = "Your email has already been validated.";
