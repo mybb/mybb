@@ -49,8 +49,7 @@ function task_hourlycleanup($task)
 	$cut = TIME_NOW-(60*60*24*7);
 	$db->delete_query("questionsessions", "dateline < '".(int)$time['question']."'");
 
-	// Delete expired password reset ('p'), email change ('e') and admin lockout ('l') tokens (older than 24 hours).
-	// Account activation ('r') and board validation ('b') tokens are intentionally left untouched.
+	// Delete expired password reset ('p'), email change ('e') and admin lockout ('l') tokens (older than 24 hours)
 	$db->delete_query("awaitingactivation", "type IN ('p','e','l') AND dateline < '".(int)(TIME_NOW-(60*60*24))."'");
 
 	add_task_log($task, $lang->task_hourlycleanup_ran);
