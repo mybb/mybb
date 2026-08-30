@@ -15,7 +15,7 @@
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
                 <a href="{{ get_thread_link(thread.tid) }}">{{ thread.subject }}</a>
-            </span>                
+            </span>
         </h3>
         {# Deleted thread #}
         {% if thread.visible == -1 %}
@@ -37,7 +37,13 @@
     <div class="thread__icons">
         {# Thread icon #}
         {% if thread.icon and iconCache[thread.icon] %}
-            <span class="thread__icon"><img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" /></span>
+            <span class="thread__icon">
+                {% if iconCache[thread.icon].icon_class %}
+                    {{ include('partials/icon.twig', {icon: iconCache[thread.icon].icon_class, class: '', title: iconCache[thread.icon].name}, with_context = false) }}
+                {% elseif iconCache[thread.icon].path %}
+                    <img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" />
+                {% endif %}
+            </span>
         {% endif %}
 
         {# Contains posts by you #}

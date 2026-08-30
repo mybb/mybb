@@ -18,27 +18,55 @@ $page->add_breadcrumb_item($lang->post_icons, "index.php?module=config-post_icon
 
 $plugins->run_hooks("admin_config_post_icons_begin");
 
+/**
+ * Normalize a CSS icon class input to a bare icon name.
+ *
+ * @param string $icon_class Raw icon class input.
+ * @return string Normalized icon name or empty string when invalid.
+ */
+function normalize_post_icon_class($icon_class)
+{
+	$icon_class = strtolower(trim((string)$icon_class));
+
+	if($icon_class === '' || !preg_match('/^[a-z0-9-]+$/', $icon_class))
+	{
+		return '';
+	}
+
+	return $icon_class;
+}
+
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_post_icons_add");
 
 	if($mybb->request_method == "post")
 	{
+		$path = trim($mybb->get_input('path'));
+		$icon_class_input = trim($mybb->get_input('icon_class'));
+		$icon_class = normalize_post_icon_class($icon_class_input);
+
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
 		}
 
-		if(!trim($mybb->input['path']))
+		if($path === '' && $icon_class_input === '')
 		{
-			$errors[] = $lang->error_missing_path;
+			$errors[] = $lang->error_missing_path_or_icon;
+		}
+
+		if($icon_class_input !== '' && $icon_class === '')
+		{
+			$errors[] = $lang->error_invalid_icon_class;
 		}
 
 		if(!$errors)
 		{
 			$new_icon = array(
 				'name' => $db->escape_string($mybb->input['name']),
-				'path' => $db->escape_string($mybb->input['path'])
+				'path' => $db->escape_string($path),
+				'icon_class' => $db->escape_string($icon_class)
 			);
 
 			$iid = $db->insert_query("icons", $new_icon);
@@ -83,12 +111,14 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input['path'] = 'images/icons/';
+		$mybb->input['icon_class'] = '';
 	}
 
 	$form = new Form("index.php?module=config-post_icons&amp;action=add", "post", "add");
 	$form_container = new FormContainer($lang->add_post_icon);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
-	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row($lang->image_path, $lang->image_path_desc, $form->generate_text_box('path', $mybb->get_input('path'), array('id' => 'path')), 'path');
+	$form_container->output_row($lang->font_icon_class, $lang->font_icon_class_desc, $form->generate_text_box('icon_class', $mybb->get_input('icon_class'), array('id' => 'icon_class')), 'icon_class');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
@@ -99,6 +129,9 @@ if($mybb->input['action'] == "add")
 
 	$page->output_footer();
 }
+
+// Load icon font styles in ACP so CSS-class icon previews are visible.
+$page->extra_header .= "\t<link rel=\"stylesheet\" href=\"../jscripts/fonts/fontawesome/css/all.min.css\" type=\"text/css\" />\n";
 
 if($mybb->input['action'] == "add_multiple")
 {
@@ -239,7 +272,8 @@ if($mybb->input['action'] == "add_multiple")
 				{
 					$new_icon = array(
 						'name' => $db->escape_string($name[$image]),
-						'path' => $db->escape_string($path.$image)
+						'path' => $db->escape_string($path.$image),
+						'icon_class' => ''
 					);
 
 					$db->insert_query("icons", $new_icon);
@@ -314,21 +348,31 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
+		$path = trim($mybb->get_input('path'));
+		$icon_class_input = trim($mybb->get_input('icon_class'));
+		$icon_class = normalize_post_icon_class($icon_class_input);
+
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
 		}
 
-		if(!trim($mybb->input['path']))
+		if($path === '' && $icon_class_input === '')
 		{
-			$errors[] = $lang->error_missing_path;
+			$errors[] = $lang->error_missing_path_or_icon;
+		}
+
+		if($icon_class_input !== '' && $icon_class === '')
+		{
+			$errors[] = $lang->error_invalid_icon_class;
 		}
 
 		if(!$errors)
 		{
 			$updated_icon = array(
 				'name'	=> $db->escape_string($mybb->input['name']),
-				'path'	=> $db->escape_string($mybb->input['path'])
+				'path'	=> $db->escape_string($path),
+				'icon_class' => $db->escape_string($icon_class)
 			);
 
 			$plugins->run_hooks("admin_config_post_icons_edit_commit");
@@ -370,7 +414,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_post_icon);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row($lang->image_path, $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row($lang->font_icon_class, $lang->font_icon_class_desc, $form->generate_text_box('icon_class', $mybb->get_input('icon_class'), array('id' => 'icon_class')), 'icon_class');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
@@ -473,17 +518,29 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("icons", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'name'));
 	while($icon = $db->fetch_array($query))
 	{
-		$icon['path'] = str_replace("{theme}", "images", $icon['path']);
-		if(my_validate_url($icon['path'], true))
+		$preview = '';
+		$icon_class = normalize_post_icon_class($icon['icon_class']);
+
+		if($icon_class !== '')
 		{
-			$image = $icon['path'];
+			$preview = '<i class="fas fa-'.htmlspecialchars_uni($icon_class).'" aria-hidden="true"></i>';
 		}
 		else
 		{
-			$image = "../".$icon['path'];
+			$icon['path'] = str_replace("{theme}", "images", $icon['path']);
+			if(my_validate_url($icon['path'], true))
+			{
+				$image = $icon['path'];
+			}
+			else
+			{
+				$image = "../".$icon['path'];
+			}
+
+			$preview = "<img src=\"".htmlspecialchars_uni($image)."\" alt=\"\" />";
 		}
 
-		$table->construct_cell("<img src=\"".htmlspecialchars_uni($image)."\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell($preview, array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($icon['name']));
 
 		$table->construct_cell("<a href=\"index.php?module=config-post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));

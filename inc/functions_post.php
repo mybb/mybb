@@ -922,8 +922,7 @@ function build_postbit($post, $post_type=0)
 	{
 		$post['showicon'] = true;
 
-		$icon = $icon_cache[$post['icon']];
-		$icon['path'] = str_replace('{theme}', $theme['imgdir'], $icon['path']);
+		$icon = build_post_icon($icon_cache[$post['icon']], $theme['imgdir']);
 	}
 
 	$post['visibility'] = '';

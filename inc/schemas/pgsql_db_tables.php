@@ -380,6 +380,7 @@ $tables[] = "CREATE TABLE mybb_icons (
   iid serial,
   name varchar(120) NOT NULL default '',
   path varchar(220) NOT NULL default '',
+  icon_class varchar(120) NOT NULL default '',
   PRIMARY KEY (iid)
 );";
 
