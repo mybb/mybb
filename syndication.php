@@ -154,8 +154,27 @@ if(!empty($onlyusfids))
 	$permsql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 }
 
+$threads_fetch_query_definition = [
+    "tables" => "threads",
+    "fields" => 'subject, tid, dateline, firstpost',
+    "where" => "visible='1' AND moved='0' {$permsql} {$forumlist}",
+    "options" => [
+        "order_by" => "dateline",
+        "order_dir" => "desc",
+        "limit" => $thread_limit,
+    ],
+];
+
+$plugins->run_hooks('syndication_get_posts_before');
+
 // Get the threads to syndicate.
-$query = $db->simple_select("threads", "subject, tid, dateline, firstpost", "visible='1' AND moved='0' {$permsql} {$forumlist}", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => $thread_limit));
+$query = $db->simple_select(
+    $threads_fetch_query_definition['tables'],
+    $threads_fetch_query_definition['fields'],
+    $threads_fetch_query_definition['where'],
+    $threads_fetch_query_definition['options'],
+);
+
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
@@ -191,6 +210,8 @@ if(!empty($firstposts))
 	$query = $db->simple_select("posts", "message, edittime, tid, uid, username, fid, pid", $firstpostlist, array('order_by' => 'dateline DESC, pid DESC'));
 	while($post = $db->fetch_array($query))
 	{
+		$plugins->run_hooks('syndication_post', $post);
+
 		$parser_options = array(
 			"allow_html" => $forumcache[$post['fid']]['allowhtml'],
 			"allow_mycode" => $forumcache[$post['fid']]['allowmycode'],
