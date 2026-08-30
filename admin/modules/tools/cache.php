@@ -76,7 +76,6 @@ if($mybb->input['action'] == 'view')
 	$table->output($lang->cache." {$cacheitem['title']}");
 
 	$page->output_footer();
-
 }
 
 if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
@@ -88,78 +87,44 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 	}
 
 	$plugins->run_hooks("admin_tools_cache_rebuild");
+	$type = array();
 
 	// Rebuilds forum settings
 	if($mybb->input['title'] == 'settings')
 	{
-		rebuild_settings();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_reloaded, 'success');
-		admin_redirect("index.php?module=tools-cache");
+		$type[] = 'rebuild_settings';
+	}
+	else
+	{
+		$type = get_recache_type($mybb->input['title']);
 	}
 
-	if(method_exists($cache, "update_{$mybb->input['title']}"))
+	if(!empty($type))
 	{
-		$func = "update_{$mybb->input['title']}";
-		$cache->$func();
+		$func = $type[0];
+		$glue = (my_substr($func, 0, 6) == 'update') ? 'rebuilt' : 'reloaded';
+
+		if(isset($type[1]) && $type[1] == 'method')
+		{
+			$cache->$func();
+		}
+		else
+		{
+			$func();
+		}
 
 		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
 
 		// Log admin action
 		log_admin_action($mybb->input['title']);
 
-		flash_message($lang->success_cache_rebuilt, 'success');
-		admin_redirect("index.php?module=tools-cache");
-	}
-	elseif(method_exists($cache, "reload_{$mybb->input['title']}"))
-	{
-		$func = "reload_{$mybb->input['title']}";
-		$cache->$func();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_reloaded, 'success');
-		admin_redirect("index.php?module=tools-cache");
-	}
-	elseif(function_exists("update_{$mybb->input['title']}"))
-	{
-		$func = "update_{$mybb->input['title']}";
-		$func();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_rebuilt, 'success');
-		admin_redirect("index.php?module=tools-cache");
-	}
-	elseif(function_exists("reload_{$mybb->input['title']}"))
-	{
-		$func = "reload_{$mybb->input['title']}";
-		$func();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_reloaded, 'success');
-		admin_redirect("index.php?module=tools-cache");
+		flash_message($lang->{'success_cache_' . $glue}, 'success');
 	}
 	else
 	{
 		flash_message($lang->error_cannot_rebuild, 'error');
-		admin_redirect("index.php?module=tools-cache");
 	}
+	admin_redirect("index.php?module=tools-cache");
 }
 
 if($mybb->input['action'] == "rebuild_all")
@@ -175,25 +140,18 @@ if($mybb->input['action'] == "rebuild_all")
 	$query = $db->simple_select("datacache");
 	while($cacheitem = $db->fetch_array($query))
 	{
-		if(method_exists($cache, "update_{$cacheitem['title']}"))
+		$type = get_recache_type($cacheitem['title']);
+		if(!empty($type))
 		{
-			$func = "update_{$cacheitem['title']}";
-			$cache->$func();
-		}
-		elseif(method_exists($cache, "reload_{$cacheitem['title']}"))
-		{
-			$func = "reload_{$cacheitem['title']}";
-			$cache->$func();
-		}
-		elseif(function_exists("update_{$cacheitem['title']}"))
-		{
-			$func = "update_{$cacheitem['title']}";
-			$func();
-		}
-		elseif(function_exists("reload_{$cacheitem['title']}"))
-		{
-			$func = "reload_{$cacheitem['title']}";
-			$func();
+			$func = $type[0];
+			if(isset($type[1]) && $type[1] == 'method')
+			{
+				$cache->$func();
+			}
+			else
+			{
+				$func();
+			}
 		}
 	}
 
@@ -234,21 +192,11 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong><a href=\"index.php?module=tools-cache&amp;action=view&amp;title=".urlencode($cacheitem['title'])."\">{$cacheitem['title']}</a></strong>");
 		$table->construct_cell(get_friendly_size(strlen($cacheitem['cache'])), array("class" => "align_center"));
 
-		if(method_exists($cache, "update_".$cacheitem['title']))
+		$type = get_recache_type($cacheitem['title']);
+		if(!empty($type))
 		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
-		}
-		elseif(method_exists($cache, "reload_".$cacheitem['title']))
-		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
-		}
-		elseif(function_exists("update_".$cacheitem['title']))
-		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
-		}
-		elseif(function_exists("reload_".$cacheitem['title']))
-		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
+			$glue = (my_substr($type[0], 0, 6) == 'update') ? 'rebuild' : 'reload';
+			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action={$glue}&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->{$glue . '_cache'}."</a>", array("class" => "align_center"));
 		}
 		else
 		{
@@ -276,3 +224,25 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+function get_recache_type($title)
+{
+	$type = array();
+	if(!empty($title))
+	{
+		$checks = array('reload_'.$title, 'update_'.$title);
+		$type = array_intersect($checks, get_class_methods("datacache"));
+		if(!empty($type))
+		{
+			$type[] = 'method';
+			return array_values($type);
+		}
+
+		foreach ($checks as $fn) {
+			if (function_exists($fn)){
+				$type[] = $fn;
+				return array_values($type);
+			}
+		}
+	}
+	return array_values($type);
+}
