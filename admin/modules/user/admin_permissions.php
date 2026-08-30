@@ -302,7 +302,7 @@ if($mybb->input['action'] == "edit")
 				$permission_data[$key][$action] = 0;
 			}
 
-			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', (int)$permission_data[$key][$action], array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
+			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', (int)$permission_data[$key][$action], true, array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
 		echo "</div>\n";

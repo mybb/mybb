@@ -235,9 +235,9 @@ if($mybb->input['action'] == "add")
 	);
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->get_input('month', MyBB::INPUT_ARRAY), array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging')));
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);
@@ -440,9 +440,9 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging']));
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);

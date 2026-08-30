@@ -394,9 +394,9 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);
@@ -618,9 +618,9 @@ if($mybb->input['action'] == "add")
 
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->get_input('usergroupchangetype'), array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled')));
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);
