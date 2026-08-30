@@ -37,7 +37,8 @@
         "symfony/console": "^7.0",
         "symfony/filesystem": "^7.1",
         "symfony/polyfill-mbstring": "^1.32",
-        "twig/twig": "^3.10"
+        "twig/twig": "^3.10",
+        "ext-intl": "*"
     },
     "require-dev": {
         "mockery/mockery": "^1.5",
