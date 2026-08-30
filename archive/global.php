@@ -163,17 +163,15 @@ else
 // Initialise session
 $session = new session;
 $session->init();
+$mybb->session = &$session;
 
-if(!$mybb->settings['bblanguage'])
-{
-	$mybb->settings['bblanguage'] = "english";
-}
 $lang->set_language($mybb->settings['bblanguage']);
 
 // Load global language phrases
 $lang->load("global");
 $lang->load("messages");
 $lang->load("archive");
+$langcache[$lang->language] = $lang;
 
 // Draw up the basic part of our naviagation
 $navbits[0]['name'] = $mybb->settings['bbname_orig'];
