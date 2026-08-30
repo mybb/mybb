@@ -184,12 +184,13 @@ class UrlExtension extends AbstractExtension
      *
      * @param int $postId The post's ID.
      * @param int $threadId An optional thread ID that the post belongs to.
+     * @param string $action An optional action.
      *
      * @return string The URL path to the post.
      */
-    public function getPostLink(int $postId, int $threadId = 0): string
+    public function getPostLink(int $postId, int $threadId = 0, string $action = ''): string
     {
-        return get_post_link($postId, $threadId);
+        return get_post_link($postId, $threadId, $action);
     }
 
     /**
