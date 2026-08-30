@@ -9883,7 +9883,7 @@ img { max-width: 100%; height: auto; }
 		<template name="printthread_multipage" version="1839"><![CDATA[<div class="multipage">{$lang->pages} {$mppage}</div>]]></template>
 		<template name="printthread_multipage_page" version="1800"><![CDATA[<a href="{$url}&amp;page={$page}">{$page}</a>]]></template>
 		<template name="printthread_multipage_page_current" version="1800"><![CDATA[<strong>{$page}</strong>]]></template>
-		<template name="printthread_nav" version="1808"><![CDATA[+{$depth} {$lang->forum} {$forumnav['name']} (<i>{$mybb->settings['bburl']}/{$forumnav['link']}</i>)<br />]]></template>
+		<template name="printthread_nav" version="1808"><![CDATA[+{$depth} {$lang->forum} {$forumnav['name']} (<em>{$mybb->settings['bburl']}/{$forumnav['link']}</em>)<br />]]></template>
 		<template name="printthread_post" version="1800"><![CDATA[<strong>{$postrow['subject']}</strong> - {$postrow['profilelink']} -  <strong>{$postrow['date']}</strong>
 <br />
 <br />
