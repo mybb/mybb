@@ -236,6 +236,7 @@ $l['no_drafts'] = "You do not currently have any draft threads or posts.<p>To sa
 $l['drafts'] = "Saved Drafts";
 $l['drafts_count'] = "Saved Drafts ({1})";
 $l['draft_saved'] = "Saved";
+$l['draft_has_poll'] = "Has poll";
 $l['edit_draft'] = "Edit Draft";
 $l['draft_title'] = "Draft Title";
 $l['delete_drafts'] = "Delete Selected Drafts";

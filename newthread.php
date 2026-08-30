@@ -144,10 +144,10 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 $errors = array();
 
 // Handle attachments if we've got any.
-if($mybb->settings['enableattachments'] == 1 && 
-	($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || 
-	((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) || 
-	($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) || 
+if($mybb->settings['enableattachments'] == 1 &&
+	($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') ||
+	((($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit')) ||
+	($mybb->input['action'] == "newthread" && isset($mybb->input['previewpost'])) ||
 	isset($mybb->input['savedraft'])) && isset($_FILES['attachments']))))
 {
 	// Verify incoming POST request
@@ -447,18 +447,20 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		require_once MYBB_ROOT."inc/functions_indicators.php";
 		mark_thread_read($tid, $fid);
 
-		// We were updating a draft thread, send them back to the draft listing.
-		if($new_thread['savedraft'] == 1)
-		{
-			$lang->redirect_newthread = $lang->draft_saved;
-			$url = "usercp.php?action=drafts";
-		}
+		$thread = get_thread($tid);
 
 		// A poll was being posted with this thread, throw them to poll posting page.
-		else if($mybb->get_input('postpoll', MyBB::INPUT_INT) && $forumpermissions['canpostpolls'])
+		if($mybb->get_input('postpoll', MyBB::INPUT_INT) && $forumpermissions['canpostpolls'] && $visible != -1 && empty($thread['poll']))
 		{
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 			$lang->redirect_newthread .= $lang->redirect_newthread_poll;
+		}
+
+		// We were updating a draft thread, send them back to the draft listing.
+		else if($new_thread['savedraft'] == 1)
+		{
+			$lang->redirect_newthread = $lang->draft_saved;
+			$url = "usercp.php?action=drafts";
 		}
 
 		// This thread is stuck in the moderation queue, send them back to the forum.
@@ -1055,7 +1057,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$newthread['showpollbox'] = false;
-	if($forumpermissions['canpostpolls'] != 0)
+	if(empty($thread['poll']) && $forumpermissions['canpostpolls'] != 0)
 	{
 		$newthread['showpollbox'] = true;
 	}
