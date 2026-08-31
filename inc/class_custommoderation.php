@@ -322,7 +322,7 @@ class CustomModeration extends Moderation
 		global $db, $mybb, $plugins;
 
 		$tid = (int)$tids[0]; // Take the first thread to get thread data from
-		$query = $db->simple_select("threads", 'fid, poll', "tid='$tid'");
+		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		$args = array(
