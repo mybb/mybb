@@ -1101,7 +1101,7 @@ Four',
             'useragent' => 'facebookexternalhit',
         ],
         [
-            'name' => 'Twitter',
+            'name' => 'X',
             'useragent' => 'Twitterbot',
         ],
         [
