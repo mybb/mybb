@@ -218,10 +218,12 @@ function import_theme_xml($xml, $options=array())
 		}
 		$theme_id = build_new_theme($name, $properties, $options['parent']);
 	}
-	// Overriding an existing - delete refs.
+	// Overriding an existing theme. Stylesheets are replaced per-name in the
+	// import loop below (instead of wiping them ALL here) so that plugin-added
+	// stylesheets for this theme (e.g. isango.css) are preserved on a core
+	// upgrade / Master re-import. Fixes #4265.
 	else
 	{
-		$db->delete_query("themestylesheets", "tid='{$options['tid']}'");
 		$db->update_query("themes", array("properties" => $db->escape_string(my_serialize($properties))), "tid='{$options['tid']}'");
 		$theme_id = $options['tid'];
 	}
@@ -296,6 +298,10 @@ function import_theme_xml($xml, $options=array())
 				"lastmodified" => (int)$stylesheet['attributes']['lastmodified'],
 				"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 			);
+			// Replace ONLY this stylesheet (by tid+name), leaving any plugin-added
+			// stylesheets for this theme intact rather than wiping them all on
+			// import. Fixes #4265.
+			$db->delete_query("themestylesheets", "tid='{$theme_id}' AND name='".$db->escape_string($stylesheet['attributes']['name'])."'");
 			$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 			$css_url = "css.php?stylesheet={$sid}";
 			$cached = cache_stylesheet($theme_id, $stylesheet['attributes']['name'], $stylesheet['value']);
