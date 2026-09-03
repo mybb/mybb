@@ -646,6 +646,11 @@ if($warnings_count > 0)
 	$headerMessages['warningsnotice']['id'] = 'warning_notice';
 	$headerMessages['warningsnotice']['class'] = 'alert--danger';
 	$headerMessages['warningsnotice']['message'] = $lang->sprintf($lang->unacknowledged_warnings_notice, $warnings_count);
+
+	if(in_array($current_page, array('newthread.php', 'newreply.php'), true))
+	{
+		error($lang->unacknowledged_warnings_posting, $lang->unacknowledged_warnings_posting_title);
+	}
 }
 
 if(isset($mybb->user['avatartype']) && ($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
