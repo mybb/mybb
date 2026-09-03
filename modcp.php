@@ -3743,10 +3743,12 @@ if($mybb->input['action'] == "banuser")
 
 			if($user['uid'] == $mybb->user['uid'])
 			{
+				$lang->load('datahandler_user');
 				$errors = inline_error([$lang->userdata_ban_self]);
 			}
 			elseif(!modcp_can_manage_user($user['uid']))
 			{
+				$lang->load('datahandler_user');
 				$errors = inline_error([$lang->userdata_no_perm_to_ban]);
 			}
 		}
