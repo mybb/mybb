@@ -2445,7 +2445,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['showwarning'] = false;
-	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
+	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && $mybb->usergroup['canwarnusers'] != 0)
 	{
 		$memprofile['showwarning'] = true;
 
@@ -2462,13 +2462,12 @@ if($mybb->input['action'] == "profile")
 		}
 
 		$memprofile['warn_user'] = false;
-		$memprofile['warning_link'] = 'usercp.php';
+		$memprofile['warning_link'] = "warnings.php?uid={$memprofile['uid']}";
 		$memprofile['warning_level'] = get_colored_warning_level($warning_level);
 
-		if($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid'])
+		if($memprofile['uid'] != $mybb->user['uid'])
 		{
 			$memprofile['warn_user'] = true;
-			$memprofile['warning_link'] = "warnings.php?uid={$memprofile['uid']}";
 		}
 	}
 
