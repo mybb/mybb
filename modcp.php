@@ -3734,6 +3734,14 @@ if($mybb->input['action'] == "banuser")
 			"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT)
 		);
 	}
+	elseif($mybb->get_input('uid', MyBB::INPUT_INT))
+	{
+		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
+		if($user)
+		{
+			$banned['username'] = $user['username'];
+		}
+	}
 
 	// Generate the banned times dropdown
 	$liftlist = $lifttime = [];
