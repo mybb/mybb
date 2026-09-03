@@ -325,14 +325,18 @@
                     </div>
                     {% if mybb.user.unacknowledgedwarnings %}
                         <div class="alert alert--danger quick-reply__warning">
-                            {{ trans('unacknowledged_warnings_notice', mybb.user.unacknowledgedwarnings)|raw }}
+                            {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
+                            <div class="alert__message">
+                                <h3 class="alert__title">{{ lang.unacknowledged_warnings_posting_title }}</h3>
+                                <p class="alert__description">{{ lang.unacknowledged_warnings_posting|raw }}</p>
+                            </div>
                         </div>
                     {% else %}
                         <div class="post__body">
                             <textarea class="textarea" rows="8" cols="80" name="message" id="message" tabindex="1" placeholder="{{ lang.quick_reply_message }}"></textarea>
                         </div>
                     {% endif %}
-                    {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
+                    {% if not mybb.user.unacknowledgedwarnings and ((mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads) %}
                         <input type="checkbox" class="compose__checkbox" id="show-quick-reply-options">
                         <div class="quick-reply__options">
                             {% if mybb.usergroup.canusesig and mybb.user.suspendsignature != 1 %}
@@ -349,6 +353,7 @@
                             {% endif %}
                         </div>
                     {% endif %}
+                    {% if not mybb.user.unacknowledgedwarnings %}
                     {{ captcha|raw }}
                     <div class="post__foot">
                         <button type="submit" class="button button--full-width" tabindex="2" accesskey="s" id="quick_reply_submit">
@@ -366,6 +371,7 @@
                             <span class="button__text">{{ lang.preview_post }}</span>
                         </button>
                     </div>
+                    {% endif %}
                 </form>
             </div>
         {% endif %}

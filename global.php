@@ -649,7 +649,7 @@ if($warnings_count > 0)
 
 	if(in_array($current_page, array('newthread.php', 'newreply.php'), true))
 	{
-		error($headerMessages['warningsnotice']['message']);
+		error($lang->unacknowledged_warnings_posting, $lang->unacknowledged_warnings_posting_title);
 	}
 }
 
