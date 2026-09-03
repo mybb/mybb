@@ -3734,6 +3734,25 @@ if($mybb->input['action'] == "banuser")
 			"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT)
 		);
 	}
+	elseif($mybb->get_input('uid', MyBB::INPUT_INT))
+	{
+		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
+		if($user)
+		{
+			$banned['username'] = $user['username'];
+
+			if($user['uid'] == $mybb->user['uid'])
+			{
+				$lang->load('datahandler_user');
+				$errors = inline_error([$lang->userdata_ban_self]);
+			}
+			elseif(!modcp_can_manage_user($user['uid']))
+			{
+				$lang->load('datahandler_user');
+				$errors = inline_error([$lang->userdata_no_perm_to_ban]);
+			}
+		}
+	}
 
 	// Generate the banned times dropdown
 	$liftlist = $lifttime = [];
