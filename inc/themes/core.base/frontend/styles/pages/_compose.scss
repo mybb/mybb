@@ -126,6 +126,10 @@
 
 .quick-reply {
 
+    &__warning {
+        margin: var(--spacing-4);
+    }
+
     &__options {
         @extend .container;
         display: none;
