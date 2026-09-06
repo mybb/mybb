@@ -36,7 +36,8 @@ if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] 
 }
 
 $tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_posts = $flist_queue_posts = $tflist_queue_attach =
-$flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
+$flist_queue_attach = $tflist_queue_deleted_threads = $flist_queue_deleted_threads = $tflist_queue_deleted_posts = $flist_queue_deleted_posts =
+$wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
 $numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
@@ -47,7 +48,9 @@ $counters = [
 	'modqueue' => [
 		'threads' => 0,
 		'posts' => 0,
-		'attachments' => 0
+		'attachments' => 0,
+		'deletedthreads' => 0,
+		'deletedposts' => 0
 	],
 	'reportedposts' => 0,
 	'modlogs' => 0
@@ -82,10 +85,22 @@ if($mybb->usergroup['issupermod'] != 1)
 			++$counters['modqueue']['threads'];
 		}
 
+		if(is_moderator($moderated_forum, 'canrestorethreads') || is_moderator($moderated_forum, 'candeletethreads'))
+		{
+			$flist_queue_deleted_threads .= ",'{$moderated_forum}'";
+			++$counters['modqueue']['deletedthreads'];
+		}
+
 		if(is_moderator($moderated_forum, 'canapproveunapproveposts'))
 		{
 			$flist_queue_posts .= ",'{$moderated_forum}'";
 			++$counters['modqueue']['posts'];
+		}
+
+		if(is_moderator($moderated_forum, 'canrestoreposts') || is_moderator($moderated_forum, 'candeleteposts'))
+		{
+			$flist_queue_deleted_posts .= ",'{$moderated_forum}'";
+			++$counters['modqueue']['deletedposts'];
 		}
 
 		if(is_moderator($moderated_forum, 'canapproveunapproveattachs'))
@@ -119,6 +134,16 @@ if($mybb->usergroup['issupermod'] != 1)
 	{
 		$tflist_queue_posts = " AND t.fid IN (0{$flist_queue_posts})";
 		$flist_queue_posts = " AND fid IN (0{$flist_queue_posts})";
+	}
+	if($flist_queue_deleted_threads)
+	{
+		$tflist_queue_deleted_threads = " AND t.fid IN (0{$flist_queue_deleted_threads})";
+		$flist_queue_deleted_threads = " AND fid IN (0{$flist_queue_deleted_threads})";
+	}
+	if($flist_queue_deleted_posts)
+	{
+		$tflist_queue_deleted_posts = " AND t.fid IN (0{$flist_queue_deleted_posts})";
+		$flist_queue_deleted_posts = " AND fid IN (0{$flist_queue_deleted_posts})";
 	}
 	if($flist_queue_attach)
 	{
@@ -1661,6 +1686,8 @@ if($mybb->input['action'] == "do_modqueue")
 
 	$mybb->input['threads'] = $mybb->get_input('threads', MyBB::INPUT_ARRAY);
 	$mybb->input['posts'] = $mybb->get_input('posts', MyBB::INPUT_ARRAY);
+	$mybb->input['deletedthreads'] = $mybb->get_input('deletedthreads', MyBB::INPUT_ARRAY);
+	$mybb->input['deletedposts'] = $mybb->get_input('deletedposts', MyBB::INPUT_ARRAY);
 	$mybb->input['attachments'] = $mybb->get_input('attachments', MyBB::INPUT_ARRAY);
 	if(!empty($mybb->input['threads']))
 	{
@@ -1759,6 +1786,127 @@ if($mybb->input['action'] == "do_modqueue")
 
 		redirect("modcp.php?action=modqueue&type=posts", $lang->redirect_postsmoderated);
 	}
+	elseif(!empty($mybb->input['deletedthreads']))
+	{
+		$threads = array_map("intval", array_keys($mybb->input['deletedthreads']));
+		$threads_to_restore = $threads_to_delete = array();
+
+		$query = $db->simple_select("threads", "tid, fid", "visible='-1' AND tid IN (".implode(",", $threads)."){$flist_queue_deleted_threads}");
+		while($thread = $db->fetch_array($query))
+		{
+			if(!isset($mybb->input['deletedthreads'][$thread['tid']]))
+			{
+				continue;
+			}
+
+			$action = $mybb->input['deletedthreads'][$thread['tid']];
+			if($action == "restore" && ($mybb->usergroup['issupermod'] == 1 || is_moderator($thread['fid'], 'canrestorethreads')))
+			{
+				$threads_to_restore[] = $thread['tid'];
+			}
+			elseif($action == "delete" && ($mybb->usergroup['issupermod'] == 1 || is_moderator($thread['fid'], 'candeletethreads')))
+			{
+				$threads_to_delete[] = $thread['tid'];
+			}
+		}
+
+		if(!empty($threads_to_restore))
+		{
+			$moderation->restore_threads($threads_to_restore);
+			log_moderator_action(array('tids' => $threads_to_restore), $lang->multi_restore_threads);
+		}
+
+		if(!empty($threads_to_delete))
+		{
+			foreach($threads_to_delete as $tid)
+			{
+				$moderation->delete_thread($tid);
+			}
+
+			log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
+		}
+
+		$plugins->run_hooks('modcp_do_modqueue_end');
+
+		$message = $lang->redirect_softdeletedthreadsnothing;
+		if (!empty($threads_to_restore) && !empty($threads_to_delete))
+		{
+			$message = $lang->redirect_softdeletedthreadsprocessed;
+		}
+		elseif (!empty($threads_to_restore))
+		{
+			$message = $lang->redirect_softdeletedthreadsrestored;
+		}
+		elseif (!empty($threads_to_delete))
+		{
+			$message = $lang->redirect_softdeletedthreadsdeleted;
+		}
+
+		redirect("modcp.php?action=modqueue&type=deletedthreads", $message);
+	}
+	elseif(!empty($mybb->input['deletedposts']))
+	{
+		$posts = array_map("intval", array_keys($mybb->input['deletedposts']));
+		$posts_to_restore = $posts_to_delete = array();
+
+		$query = $db->query("
+			SELECT p.pid, t.fid
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE p.visible='-1' AND p.pid IN (".implode(",", $posts)."){$tflist_queue_deleted_posts} AND t.firstpost != p.pid
+		");
+		while($post = $db->fetch_array($query))
+		{
+			if(!isset($mybb->input['deletedposts'][$post['pid']]))
+			{
+				continue;
+			}
+
+			$action = $mybb->input['deletedposts'][$post['pid']];
+			if($action == "restore" && ($mybb->usergroup['issupermod'] == 1 || is_moderator($post['fid'], 'canrestoreposts')))
+			{
+				$posts_to_restore[] = $post['pid'];
+			}
+			elseif($action == "delete" && ($mybb->usergroup['issupermod'] == 1 || is_moderator($post['fid'], 'candeleteposts')))
+			{
+				$posts_to_delete[] = $post['pid'];
+			}
+		}
+
+		if(!empty($posts_to_restore))
+		{
+			$moderation->restore_posts($posts_to_restore);
+			log_moderator_action(array('pids' => $posts_to_restore), $lang->multi_restore_posts);
+		}
+
+		if(!empty($posts_to_delete))
+		{
+			foreach($posts_to_delete as $post)
+			{
+				$moderation->delete_post($post);
+			}
+
+			log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_delete_posts);
+		}
+
+		$plugins->run_hooks('modcp_do_modqueue_end');
+
+		$message = $lang->redirect_softdeletedpostsnothing;
+		if(!empty($posts_to_restore) && !empty($posts_to_delete))
+		{
+			$message = $lang->redirect_softdeletedpostsprocessed;
+		}
+		elseif(!empty($posts_to_restore))
+		{
+			$message = $lang->redirect_softdeletedpostsrestored;
+		}
+		elseif(!empty($posts_to_delete))
+		{
+			$message = $lang->redirect_softdeletedpostsdeleted;
+		}
+
+		redirect("modcp.php?action=modqueue&type=deletedposts", $message);
+	}
 	elseif(!empty($mybb->input['attachments']))
 	{
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
@@ -1809,13 +1957,13 @@ if($mybb->input['action'] == "modqueue")
 		error_no_permission();
 	}
 
-	if($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $mybb->usergroup['issupermod'] != 1)
+	if($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $counters['modqueue']['deletedthreads'] == 0 && $counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
 		error($lang->you_cannot_use_mod_queue);
 	}
 
 	$mybb->input['type'] = $mybb->get_input('type');
-	$threadqueue = $postqueue = $attachmentqueue = '';
+	$threadqueue = $postqueue = $attachmentqueue = $deletedthreadqueue = $deletedpostqueue = '';
 	if($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1))
 	{
 		if($counters['modqueue']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1)
@@ -1872,7 +2020,8 @@ if($mybb->input['action'] == "modqueue")
         ");
 		while($thread = $db->fetch_array($query))
 		{
-			$thread['subject'] = $parser->parse_badwords($thread['subject']);
+			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+			$thread['postmessage'] = htmlspecialchars_uni($thread['postmessage']);
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['forum_link'] = get_forum_link($thread['fid']);
 			$thread['forum_name'] = $forum_cache[$thread['fid']]['name'];
@@ -1918,6 +2067,18 @@ if($mybb->input['action'] == "modqueue")
 			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
 			{
 				$navlink['attachment'] = true;
+			}
+
+			$navlink['deleted_thread'] = false;
+			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_thread'] = true;
+			}
+
+			$navlink['deleted_post'] = false;
+			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_post'] = true;
 			}
 
 			$threadqueue = true;
@@ -1991,8 +2152,9 @@ if($mybb->input['action'] == "modqueue")
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$post['threadsubject'] = $parser->parse_badwords($post['threadsubject']);
-			$post['subject'] = $parser->parse_badwords($post['subject']);
+			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
+			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+			$post['message'] = htmlspecialchars_uni($post['message']);
 			$post['threadlink'] = get_thread_link($post['tid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$post['forum_link'] = get_forum_link($post['fid']);
@@ -2039,6 +2201,18 @@ if($mybb->input['action'] == "modqueue")
 			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
 			{
 				$navlink['attachment'] = true;
+			}
+
+			$navlink['deleted_thread'] = false;
+			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_thread'] = true;
+			}
+
+			$navlink['deleted_post'] = false;
+			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_post'] = true;
 			}
 
 			$postqueue = true;
@@ -2158,6 +2332,18 @@ if($mybb->input['action'] == "modqueue")
 				$navlink['post'] = true;
 			}
 
+			$navlink['deleted_thread'] = false;
+			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_thread'] = true;
+			}
+
+			$navlink['deleted_post'] = false;
+			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_post'] = true;
+			}
+
 			$attachmentqueue = true;
 			output_page(\MyBB\View\template('modcp/modqueue_attachments.twig', [
 				'attachmentqueue' => $attachmentqueue,
@@ -2168,8 +2354,269 @@ if($mybb->input['action'] == "modqueue")
 		}
 	}
 
+	if($mybb->input['type'] == "deletedthreads" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && !$attachmentqueue && ($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)))
+	{
+		if($counters['modqueue']['deletedthreads'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_deleted_threads);
+		}
+
+		$forum_cache = $cache->read("forums");
+
+		$query = $db->simple_select("threads", "COUNT(tid) AS deletedthreads", "visible='-1' {$flist_queue_deleted_threads}");
+		$deleted_threads = $db->fetch_field($query, "deletedthreads");
+
+		if($mybb->get_input('page') != "last")
+		{
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
+		}
+
+		$perpage = $mybb->settings['threadsperpage'];
+		$pages = $deleted_threads / $perpage;
+		$pages = ceil($pages);
+
+		if($mybb->get_input('page') == "last")
+		{
+			$page = $pages;
+		}
+
+		if($page > $pages || $page <= 0)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page - 1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+
+		$multipage = multipage($deleted_threads, $perpage, $page, "modcp.php?action=modqueue&amp;type=deletedthreads");
+
+		$threads = [];
+		$query = $db->query("
+			SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
+			FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+			WHERE t.visible='-1' {$tflist_queue_deleted_threads}
+			ORDER BY t.lastpost DESC
+			LIMIT {$start}, {$perpage}
+		");
+		while($thread = $db->fetch_array($query))
+		{
+			$thread['subject'] = $parser->parse_badwords($thread['subject']);
+			$thread['threadlink'] = get_thread_link($thread['tid']);
+			$thread['forum_link'] = get_forum_link($thread['fid']);
+			$thread['forum_name'] = $forum_cache[$thread['fid']]['name'];
+			$thread['threaddate'] = my_date('relative', $thread['dateline']);
+			$thread['can_restore'] = ($mybb->usergroup['issupermod'] == 1 || is_moderator($thread['fid'], 'canrestorethreads'));
+			$thread['can_delete'] = ($mybb->usergroup['issupermod'] == 1 || is_moderator($thread['fid'], 'candeletethreads'));
+
+			if($thread['username'] == "")
+			{
+				if($thread['threadusername'] != "")
+				{
+					$thread['profile_link'] = $thread['threadusername'];
+				}
+				else
+				{
+					$thread['profile_link'] = $lang->guest;
+				}
+			}
+			else
+			{
+				$thread['profile_link'] = build_profile_link($thread['username'], $thread['uid']);
+			}
+
+			$threads[] = $thread;
+		}
+
+		if(!$threads && $mybb->input['type'] == "deletedthreads")
+		{
+			$threads = true;
+		}
+
+		if($threads)
+		{
+			add_breadcrumb($lang->mcp_nav_modqueue_deleted_threads, "modcp.php?action=modqueue&amp;type=deletedthreads");
+
+			$plugins->run_hooks('modcp_modqueue_deleted_threads_end');
+
+			$navlink['thread'] = false;
+			if($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['thread'] = true;
+			}
+
+			$navlink['post'] = false;
+			if($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['post'] = true;
+			}
+
+			$navlink['attachment'] = false;
+			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
+			{
+				$navlink['attachment'] = true;
+			}
+
+			$navlink['deleted_post'] = false;
+			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_post'] = true;
+			}
+
+			$deletedthreadqueue = true;
+			output_page(\MyBB\View\template('modcp/modqueue_deleted_threads.twig', [
+				'deletedthreadqueue' => $deletedthreadqueue,
+				'threads' => $threads,
+				'multipage' => $multipage,
+				'navlink' => $navlink,
+			]));
+		}
+	}
+
+	if($mybb->input['type'] == "deletedposts" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && !$attachmentqueue && !$deletedthreadqueue && ($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)))
+	{
+		if($counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_deleted_posts);
+		}
+
+		$forum_cache = $cache->read("forums");
+
+		$query = $db->query("
+			SELECT COUNT(pid) AS deletedposts
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE p.visible='-1' {$tflist_queue_deleted_posts} AND t.firstpost != p.pid
+		");
+		$deleted_posts = $db->fetch_field($query, "deletedposts");
+
+		if($mybb->get_input('page') != "last")
+		{
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
+		}
+
+		$perpage = $mybb->settings['postsperpage'];
+		$pages = $deleted_posts / $perpage;
+		$pages = ceil($pages);
+
+		if($mybb->get_input('page') == "last")
+		{
+			$page = $pages;
+		}
+
+		if($page > $pages || $page <= 0)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page - 1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+
+		$multipage = multipage($deleted_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=deletedposts");
+
+		$posts = [];
+		$query = $db->query("
+			SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.visible='-1' {$tflist_queue_deleted_posts} AND t.firstpost != p.pid
+			ORDER BY p.dateline DESC, p.pid DESC
+			LIMIT {$start}, {$perpage}
+		");
+		while($post = $db->fetch_array($query))
+		{
+			$post['threadsubject'] = $parser->parse_badwords($post['threadsubject']);
+			$post['subject'] = $parser->parse_badwords($post['subject']);
+			$post['threadlink'] = get_thread_link($post['tid']);
+			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+			$post['forum_link'] = get_forum_link($post['fid']);
+			$post['forum_name'] = $forum_cache[$post['fid']]['name'];
+			$post['postdate'] = my_date('relative', $post['dateline']);
+			$post['can_restore'] = ($mybb->usergroup['issupermod'] == 1 || is_moderator($post['fid'], 'canrestoreposts'));
+			$post['can_delete'] = ($mybb->usergroup['issupermod'] == 1 || is_moderator($post['fid'], 'candeleteposts'));
+
+			if($post['username'] == "")
+			{
+				if($post['postusername'] != "")
+				{
+					$post['profile_link'] = $post['postusername'];
+				}
+				else
+				{
+					$post['profile_link'] = $lang->guest;
+				}
+			}
+			else
+			{
+				$post['profile_link'] = build_profile_link($post['username'], $post['uid']);
+			}
+
+			$posts[] = $post;
+		}
+
+		if(!$posts && $mybb->input['type'] == "deletedposts")
+		{
+			$posts = true;
+		}
+
+		if($posts)
+		{
+			add_breadcrumb($lang->mcp_nav_modqueue_deleted_posts, "modcp.php?action=modqueue&amp;type=deletedposts");
+
+			$plugins->run_hooks('modcp_modqueue_deleted_posts_end');
+
+			$navlink['thread'] = false;
+			if($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['thread'] = true;
+			}
+
+			$navlink['post'] = false;
+			if($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['post'] = true;
+			}
+
+			$navlink['attachment'] = false;
+			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
+			{
+				$navlink['attachment'] = true;
+			}
+
+			$navlink['deleted_thread'] = false;
+			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				$navlink['deleted_thread'] = true;
+			}
+
+			$deletedpostqueue = true;
+			output_page(\MyBB\View\template('modcp/modqueue_deleted_posts.twig', [
+				'deletedpostqueue' => $deletedpostqueue,
+				'posts' => $posts,
+				'multipage' => $multipage,
+				'navlink' => $navlink,
+			]));
+		}
+	}
+
 	// Still nothing? All queues are empty! :-D
-	if(!$threadqueue && !$postqueue && !$attachmentqueue)
+	if(!$threadqueue && !$postqueue && !$attachmentqueue && !$deletedthreadqueue && !$deletedpostqueue)
 	{
 		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
 

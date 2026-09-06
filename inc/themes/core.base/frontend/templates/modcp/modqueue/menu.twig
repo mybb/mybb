@@ -14,4 +14,14 @@
             <a href="modcp.php?action=modqueue&amp;type=attachments" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'paperclip', class: ''}, with_context = false) }} {{ lang.attachments }}</a>
         </li>
     {% endif %}
+    {% if navlink.deleted_thread or deletedthreadqueue %}
+        <li class="page-tabs__item{% if deletedthreadqueue %} page-tabs__item--active{% endif %}">
+            <a href="modcp.php?action=modqueue&amp;type=deletedthreads" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'comments', class: ''}, with_context = false) }} {{ lang.deleted_threads }}</a>
+        </li>
+    {% endif %}
+    {% if navlink.deleted_post or deletedpostqueue %}
+        <li class="page-tabs__item{% if deletedpostqueue %} page-tabs__item--active{% endif %}">
+            <a href="modcp.php?action=modqueue&amp;type=deletedposts" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'comment', class: ''}, with_context = false) }} {{ lang.deleted_posts }}</a>
+        </li>
+    {% endif %}
 </ul>
