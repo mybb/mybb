@@ -1,47 +1,47 @@
 @mixin bp($bp) {
-    @media only screen and (min-width: $bp) {
+    @media (min-width: $bp) {
         @content;
     }
 }
 
 @mixin bp-max($bp) {
-    @media only screen and (max-width: $bp - 1) {
+    @media (max-width: $bp - 1) {
         @content;
     }
 }
 
 @mixin bp-large {
-    @media only screen and (min-width: $bp-large) {
+    @media (min-width: $bp-large) {
         @content;
     }
 }
 
 @mixin bp-large-max {
-    @media only screen and (max-width: $bp-large - 1) {
+    @media (max-width: $bp-large - 1) {
         @content;
     }
 }
 
 @mixin bp-medium {
-    @media only screen and (min-width: $bp-medium) {
+    @media (min-width: $bp-medium) {
         @content;
     }
 }
 
 @mixin bp-medium-max {
-    @media only screen and (max-width: $bp-medium - 1) {
+    @media (max-width: $bp-medium - 1) {
         @content;
     }
 }
 
 @mixin bp-small {
-    @media only screen and (min-width: $bp-small) {
+    @media (min-width: $bp-small) {
         @content;
     }
 }
 
 @mixin bp-small-max {
-    @media only screen and (max-width: $bp-small - 1) {
+    @media (max-width: $bp-small - 1) {
         @content;
     }
 }
