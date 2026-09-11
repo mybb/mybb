@@ -41,6 +41,13 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$pid = $post['pid'];
 	$fid = $thread['fid'];
 	$tid = $thread['tid'];
+
+	// Only reconstruct a draft icon during the actual edit-draft page view.
+	// During do_newthread / do_newreply submits the selected request icon must be respected.
+	if($mybb->input['action'] == "editdraft" && isset($post['icon']))
+	{
+		$mybb->input['icon'] = (int)$post['icon'];
+	}
 }
 else
 {
