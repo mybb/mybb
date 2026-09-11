@@ -1,6 +1,11 @@
 <div class="row row--simple-columns draft">
     <div class="row__primary">
-        <h3 class="draft__subject"><a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a></h3>
+        <h3 class="draft__subject">
+            {% if draft.iconpath is defined and draft.iconpath %}
+                <img src="{{ draft.iconpath|raw }}" alt="{{ draft.iconname|default('') }}" title="{{ draft.iconname|default('') }}" class="draft__icon" />
+            {% endif %}
+            <a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a>
+        </h3>
         <p class="draft__location">
             {% if draft.type == 'post' %}
                 {{ lang.thread }}: <a href="{{ get_thread_link(draft.tid) }}">{{ draft.threadsubject }}</a>

@@ -51,6 +51,13 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	}
 	$pid = (int)$post['pid'];
 	$tid = (int)$post['tid'];
+
+	// Only rehydrate the draft icon on the actual edit-draft page load.
+	// The do_newreply POST path must honor the most recent radio input selected by the user.
+	if($mybb->input['action'] == "editdraft" && isset($post['icon']))
+	{
+		$mybb->input['icon'] = (int)$post['icon'];
+	}
 }
 
 // Set up $thread and $forum for later use.
