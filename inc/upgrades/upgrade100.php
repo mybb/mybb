@@ -158,6 +158,9 @@ function upgrade100_dbchanges()
                 WHERE closed::text LIKE 'moved|%' AND (moved IS NULL OR moved = 0);
             ");
 
+            // Normalise remaining non-integer values (e.g. '') before the type cast
+            $db->write_query("UPDATE " . TABLE_PREFIX . "threads SET closed = '0' WHERE closed::text NOT IN ('0', '1');");
+
             // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->write_query("ALTER TABLE " . TABLE_PREFIX . "threads ALTER COLUMN closed DROP DEFAULT;");
@@ -254,6 +257,9 @@ function upgrade100_dbchanges()
 				    AND (moved IS NULL OR moved = 0);"
 	        );
 
+            // Normalise remaining non-integer values (e.g. '') before the type cast
+            $db->write_query("UPDATE " . TABLE_PREFIX . "threads SET closed = '0' WHERE closed NOT IN ('0', '1');");
+
             // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
                 $db->modify_column("threads", "closed", "smallint", "set", "'0'");
@@ -347,6 +353,9 @@ function upgrade100_dbchanges()
                 	closed LIKE 'moved|%'
                 	AND (moved IS NULL OR moved = 0);"
 	        );
+
+            // Normalise remaining non-integer values (e.g. '') before the type cast
+            $db->write_query("UPDATE " . TABLE_PREFIX . "threads SET closed = '0' WHERE closed NOT IN ('0', '1');");
 
             // Convert the threads closed column to an integer after moved thread migration
             if ($db->field_exists("closed", "threads")) {
