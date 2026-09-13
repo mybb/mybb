@@ -391,6 +391,59 @@ function upgrade100_indexes()
     global $db;
     $indexes = [];
 
+    // De-duplicate settings/settinggroups rows (e.g. left behind by plugin re-installs)
+    // before the UNIQUE index on name is created
+    switch ($db->type) {
+        case 'pgsql':
+            // Keep the most recently installed (highest sid/gid) row per duplicate name
+            $db->write_query("DELETE FROM " . TABLE_PREFIX . "settings a USING " . TABLE_PREFIX . "settings b WHERE a.name = b.name AND a.sid < b.sid;");
+            // Remap settings to the retained (highest) gid before dropping duplicate groups
+            $db->write_query("
+                UPDATE " . TABLE_PREFIX . "settings s
+                SET gid = m.max_gid
+                FROM " . TABLE_PREFIX . "settinggroups a
+                JOIN (
+                    SELECT name, MAX(gid) AS max_gid FROM " . TABLE_PREFIX . "settinggroups GROUP BY name
+                ) m ON m.name = a.name
+                WHERE s.gid = a.gid AND a.gid <> m.max_gid;
+            ");
+            $db->write_query("DELETE FROM " . TABLE_PREFIX . "settinggroups a USING " . TABLE_PREFIX . "settinggroups b WHERE a.name = b.name AND a.gid < b.gid;");
+            break;
+        case 'sqlite':
+            // Keep the most recently installed (highest sid/gid) row per duplicate name
+            $db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE sid NOT IN (SELECT MAX(sid) FROM " . TABLE_PREFIX . "settings GROUP BY name);");
+            // Remap settings to the retained (highest) gid before dropping duplicate groups
+            $db->write_query("
+                UPDATE " . TABLE_PREFIX . "settings
+                SET gid = (
+                    SELECT MAX(g2.gid)
+                    FROM " . TABLE_PREFIX . "settinggroups g2
+                    WHERE g2.name = (SELECT g1.name FROM " . TABLE_PREFIX . "settinggroups g1 WHERE g1.gid = " . TABLE_PREFIX . "settings.gid)
+                )
+                WHERE gid IN (
+                    SELECT gid FROM " . TABLE_PREFIX . "settinggroups
+                    WHERE gid NOT IN (SELECT MAX(gid) FROM " . TABLE_PREFIX . "settinggroups GROUP BY name)
+                );
+            ");
+            $db->write_query("DELETE FROM " . TABLE_PREFIX . "settinggroups WHERE gid NOT IN (SELECT MAX(gid) FROM " . TABLE_PREFIX . "settinggroups GROUP BY name);");
+            break;
+        default:
+            // Keep the most recently installed (highest sid/gid) row per duplicate name
+            $db->write_query("DELETE a FROM " . TABLE_PREFIX . "settings a JOIN " . TABLE_PREFIX . "settings b ON a.name = b.name AND a.sid < b.sid;");
+            // Remap settings to the retained (highest) gid before dropping duplicate groups
+            $db->write_query("
+                UPDATE " . TABLE_PREFIX . "settings s
+                JOIN " . TABLE_PREFIX . "settinggroups a ON s.gid = a.gid
+                JOIN (
+                    SELECT name, MAX(gid) AS max_gid FROM " . TABLE_PREFIX . "settinggroups GROUP BY name
+                ) m ON m.name = a.name
+                SET s.gid = m.max_gid
+                WHERE a.gid <> m.max_gid;
+            ");
+            $db->write_query("DELETE a FROM " . TABLE_PREFIX . "settinggroups a JOIN " . TABLE_PREFIX . "settinggroups b ON a.name = b.name AND a.gid < b.gid;");
+            break;
+    }
+
     if (in_array($db->type, array('sqlite', 'pgsql'))) {
         $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "adminlog_module_action ON " . TABLE_PREFIX . "adminlog (module, action);";
         $indexes[] = "CREATE INDEX IF NOT EXISTS " . TABLE_PREFIX . "adminlog_uid ON " . TABLE_PREFIX . "adminlog (uid);";
