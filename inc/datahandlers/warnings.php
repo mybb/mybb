@@ -411,6 +411,11 @@ class WarningsHandler extends DataHandler
 				{
 					// Ban the user for a specified time
 					case 1:
+						if(empty($groupscache[$action['usergroup']]) || $groupscache[$action['usergroup']]['isbannedgroup'] != 1)
+						{
+							break;
+						}
+
 						// Fetch any previous bans for this user
 						$query = $db->simple_select("banned", "*", "uid='{$user['uid']}' AND gid='{$action['usergroup']}' AND lifted>".TIME_NOW);
 						$existing_ban = $db->fetch_array($query);
