@@ -74,10 +74,13 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 	}
 	else // Activate selected user(s)
 	{
-		$query = $db->simple_select("users", "uid, username, email, usergroup, coppauser", "uid IN ({$user_ids})");
+		$query = $db->simple_select("users", "uid, username, email, usergroup, coppauser", "uid IN ({$user_ids}) AND usergroup='5'");
 		while($user = $db->fetch_array($query))
 		{
 			++$num_activated;
+
+			$updated_user = array();
+
 			if($user['coppauser'])
 			{
 				$updated_user = array(
@@ -90,10 +93,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 			}
 
 			// Move out of awaiting activation if they're in it.
-			if($user['usergroup'] == 5)
-			{
-				$updated_user['usergroup'] = 2;
-			}
+			$updated_user['usergroup'] = 2;
 
 			$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
