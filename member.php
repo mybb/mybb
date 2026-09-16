@@ -2936,7 +2936,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		}
 	}
 
-	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 	$to_user = $db->fetch_array($query);
 
 	if(!$to_user['username'])
@@ -2947,6 +2947,11 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
+	}
+
+	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
+	{
+		error_no_permission();
 	}
 
 	$errors = array();
