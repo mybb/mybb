@@ -1215,9 +1215,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
+		if(is_moderator($fid, "canviewunapprove"))
 		{
 			$visibility = "(visible='1' OR visible='0')";
+		}
+		elseif($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$visibility = "(visible='1' OR (visible='0' AND uid='".(int)$mybb->user['uid']."'))";
 		}
 		else
 		{
