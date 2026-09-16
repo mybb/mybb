@@ -126,7 +126,16 @@ if(!isset($mybb->input['thumbnail'])) // Only increment the download count if th
 // basename isn't UTF-8 safe. This is a workaround.
 $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
+// prevent header omission by PHP's header()
+$attachment['filename'] = str_replace(
+	array("\r", "\n", "\0"),
+	'',
+	$attachment['filename'],
+);
+
 $uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
+
+header("Content-Security-Policy: default-src 'none'; form-action 'none'; base-uri 'none'");
 
 $plugins->run_hooks("attachment_end");
 
