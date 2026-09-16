@@ -624,6 +624,11 @@ if($mybb->input['action'] == "allreports")
 		error_no_permission();
 	}
 
+	if($numreportedposts == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_view_reported_posts);
+	}
+
 	$lang->load('report');
 
 	add_breadcrumb($lang->report_center, "modcp.php?action=reports");
