@@ -1708,6 +1708,15 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum, $lang->error);
 		}
+		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
+		{
+			error_no_permission();
+		}
+		$newperms = forum_permissions($moveto);
+		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
+		{
+			error($lang->error_movetononmodforum, $lang->error);
+		}
 
 		$pids = array();
 
@@ -2696,6 +2705,11 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum, $lang->error);
 		}
+		$newperms = forum_permissions($moveto);
+		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_pids($posts, 'canmovetononmodforum'))
+		{
+			error($lang->error_movetononmodforum, $lang->error);
+		}
 
 		$newsubject = $mybb->get_input('newsubject');
 		$newtid = $moderation->split_posts($posts, $tid, $moveto, $newsubject);
@@ -2898,6 +2912,11 @@ switch($mybb->input['action'])
 		if(empty($posts))
 		{
 			error($lang->error_inline_nopostsselected, $lang->error);
+		}
+		$newperms = forum_permissions($newthread['fid']);
+		if(($newperms['canview'] == 0 || !is_moderator($newthread['fid'], 'canmanagethreads')) && !is_moderator_by_pids($posts, 'canmovetononmodforum'))
+		{
+			error($lang->error_movetononmodforum, $lang->error);
 		}
 
 		$pidin = implode(',', $posts);
