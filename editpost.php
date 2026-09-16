@@ -252,6 +252,17 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
+
+	if($mybb->get_input('attachmentact') == "approve" || $mybb->get_input('attachmentact') == "unapprove")
+	{
+		$query = $db->simple_select("attachments", "aid", "aid='{$mybb->input['attachmentaid']}' AND pid='{$pid}'");
+		$attachment = $db->fetch_array($query);
+		if(!$attachment)
+		{
+			error($lang->error_invalidattachment);
+		}
+	}
+
 	if($mybb->input['attachmentact'] == "remove")
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
@@ -259,13 +270,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 1);
-		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}' AND pid='{$pid}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
 	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 0);
-		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}' AND pid='{$pid}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
 
