@@ -591,7 +591,7 @@ function build_friendly_wol_location($user_activity)
 	global $threads, $forums, $forums_linkto, $forum_cache, $posts, $announcements, $events, $usernames, $attachments;
 
 	// Fetch forum permissions for this user
-	$unviewableforums = get_unviewable_forums();
+	$unviewableforums = get_unviewable_forums(true);
 	$inactiveforums = get_inactive_forums();
 	$fidnot = '';
 	$unviewablefids = $inactivefids = array();
