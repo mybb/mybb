@@ -89,7 +89,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 			}
 			else
 			{
-				$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
+				$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND (type='r' OR type='e' OR type='b')");
 			}
 
 			// Move out of awaiting activation if they're in it.
@@ -158,7 +158,7 @@ if(!$mybb->input['action'])
 	$query = $db->query("
 		SELECT u.uid, u.username, u.regdate, u.regip, u.lastactive, u.email, u.coppauser, a.type AS reg_type, a.validated
 		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid)
+		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND (a.type='r' OR a.type='e' OR a.type='b'))
 		WHERE u.usergroup='5'
 		ORDER BY u.regdate DESC
 		LIMIT {$start}, {$per_page}
