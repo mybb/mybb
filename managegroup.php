@@ -164,15 +164,44 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	{
 		error_no_permission();
 	}
+	if($usergroup['type'] != 4)
+	{
+		error_no_permission();
+	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
-	$uidin = null;
-	if(is_array($mybb->get_input('request', MyBB::INPUT_ARRAY)))
+	$uidin = array();
+	$requests = $mybb->get_input('request', MyBB::INPUT_ARRAY);
+	if(is_array($requests) && !empty($requests))
 	{
-		$uidin = array();
-		foreach($mybb->get_input('request', MyBB::INPUT_ARRAY) as $uid => $what)
+		$requested_uids = array();
+		foreach($requests as $uid => $what)
 		{
+			$uid = (int)$uid;
+			if($uid > 0)
+			{
+				$requested_uids[$uid] = $uid;
+			}
+		}
+
+		$pending_uids = array();
+		if(!empty($requested_uids))
+		{
+			$query = $db->simple_select("joinrequests", "uid", "uid IN (".implode(',', $requested_uids).") AND gid='{$gid}' AND invite='0'");
+			while($request = $db->fetch_array($query))
+			{
+				$pending_uids[(int)$request['uid']] = true;
+			}
+		}
+
+		foreach($requests as $uid => $what)
+		{
+			$uid = (int)$uid;
+			if(!isset($pending_uids[$uid]))
+			{
+				continue;
+			}
 			if($what == "accept")
 			{
 				join_usergroup($uid, $gid);
@@ -187,7 +216,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	if(is_array($uidin) && !empty($uidin))
 	{
 		$uids = implode(",", $uidin);
-		$db->delete_query("joinrequests", "uid IN ({$uids}) AND gid='{$gid}'");
+		$db->delete_query("joinrequests", "uid IN ({$uids}) AND gid='{$gid}' AND invite='0'");
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_end");
@@ -197,6 +226,11 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 
 elseif($mybb->input['action'] == "joinrequests")
 {
+	if($mybb->usergroup['cancp'] != 1 && ($groupleader['canmanagerequests'] == 0 || $usergroup['type'] != 4))
+	{
+		error_no_permission();
+	}
+
 	$users = [];
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
@@ -204,7 +238,7 @@ elseif($mybb->input['action'] == "joinrequests")
         SELECT j.*, u.uid, u.username, u.postnum, u.regdate
         FROM ".TABLE_PREFIX."joinrequests j
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid)
-        WHERE j.gid='{$gid}' AND j.uid != 0
+        WHERE j.gid='{$gid}' AND j.uid != 0 AND j.invite='0'
         ORDER BY u.username ASC
     ");
 	while($user = $db->fetch_array($query))
@@ -271,10 +305,10 @@ else
 	}
 	else if($usergroup['type'] == 4)
 	{
-		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}'");
+		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}' AND invite='0'");
 		$numrequests = $db->fetch_array($query);
 
-		if($numrequests['req'])
+		if($numrequests['req'] && ($mybb->usergroup['cancp'] == 1 || $groupleader['canmanagerequests'] == 1))
 		{
 			$usergroup['pendingrequests'] = true;
 			$usergroup['num_requests'] = $numrequests['req'];
