@@ -108,6 +108,10 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 			error_no_permission();
 		}
 	}
+	elseif(!$mybb->user['uid'] || $post['uid'] != $mybb->user['uid'])
+	{
+		error_no_permission();
+	}
 }
 
 if(!isset($mybb->input['thumbnail'])) // Only increment the download count if this is not a thumbnail
