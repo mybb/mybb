@@ -185,7 +185,13 @@ elseif($mybb->input['do'] == "login")
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || !my_hash_equals($config['secret_pin'], $mybb->input['pin'])))
 	{
-		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+		$login_user = get_user_by_username(
+			$mybb->input['username'],
+			array(
+				'fields' => array('email', 'username'),
+				'username_method' => $mybb->settings['username_method']
+			)
+		);
 
 		$plugins->run_hooks("admin_login_incorrect_pin");
 
@@ -346,7 +352,13 @@ elseif($mybb->input['do'] == "login")
 	}
 	else
 	{
-		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+		$login_user = get_user_by_username(
+			$mybb->input['username'],
+			array(
+				'fields' => array('email', 'username'),
+				'username_method' => $mybb->settings['username_method']
+			)
+		);
 
 		$plugins->run_hooks("admin_login_fail");
 
