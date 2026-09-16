@@ -43,7 +43,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	}
 	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
-		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
+		// check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 
 		if($imgtype == 3)
 		{
