@@ -661,6 +661,8 @@ else if($mybb->input['action'] == "edit_post")
 // Fetch the list of multiquoted posts which are not in a specific thread
 else if($mybb->input['action'] == "get_multiquoted")
 {
+	require_once MYBB_ROOT."inc/functions_search.php";
+
 	// If the cookie does not exist, exit
 	if(!array_key_exists("multiquote", $mybb->cookies))
 	{
@@ -687,7 +689,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	$quoted_posts = implode(",", $quoted_posts);
 
 	// Fetch unviewable forums
-	$unviewable_forums = get_unviewable_forums();
+	$unviewable_forums = get_unviewable_forums(true);
 	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
@@ -697,6 +699,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 	{
 		$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 	}
+	$thread_visible_where = get_visible_where('t');
+	$post_visible_where = get_visible_where('p');
 
 	// Check group permissions if we can't view threads not started by us
 	$group_permissions = forum_permissions();
@@ -734,22 +738,17 @@ else if($mybb->input['action'] == "get_multiquoted")
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE {$from_tid}p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums}
+		WHERE {$from_tid}p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} AND {$thread_visible_where} AND {$post_visible_where}
 		ORDER BY p.dateline, p.pid
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
 		if(
-			(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0) ||
-			(!is_moderator($quoted_post['fid'], "canviewdeleted") && $quoted_post['visible'] == -1) ||
-			(in_array($quoted_post['fid'], $onlyusfids) && (!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid']))
+			in_array($quoted_post['fid'], $onlyusfids) &&
+			(!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid'])
 		)
 		{
-			// Allow quoting from own unapproved post
-			if($quoted_post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $quoted_post['uid'] == $mybb->user['uid']))
-			{
-				continue;
-			}
+			continue;
 		}
 
 		$message .= parse_quoted_message($quoted_post, false);
