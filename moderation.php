@@ -148,7 +148,21 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks('moderation_cancel_delayedmoderation');
 
-		$db->delete_query("delayedmoderation", "did='".$mybb->get_input('did', MyBB::INPUT_INT)."'");
+		$did = $mybb->get_input('did', MyBB::INPUT_INT);
+		$query = $db->simple_select("delayedmoderation", "did, uid, tids", "did='{$did}'", 1);
+		$delayedmoderation = $db->fetch_array($query);
+		if(!$delayedmoderation)
+		{
+			error_no_permission();
+		}
+
+		$delayed_tids = array_map('intval', explode(',', $delayedmoderation['tids']));
+		if($delayedmoderation['uid'] != $mybb->user['uid'] && !is_moderator_by_tids($delayed_tids, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
+
+		$db->delete_query("delayedmoderation", "did='{$did}'");
 
 		if($tid == 0)
 		{
@@ -203,7 +217,7 @@ switch($mybb->input['action'])
 
 		add_breadcrumb($lang->delayed_moderation);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		if(!is_moderator_by_tids($mybb->input['tids'], "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -272,6 +286,45 @@ switch($mybb->input['action'])
 
 		if($mybb->input['action'] == "do_delayedmoderation" && $mybb->request_method == "post")
 		{
+			$target_permission = '';
+			switch($mybb->input['type'])
+			{
+				case 'openclosethread':
+					$target_permission = 'canopenclosethreads';
+					break;
+				case 'softdeleterestorethread':
+					if(!is_moderator_by_tids($mybb->input['tids'], 'cansoftdeletethreads') && !is_moderator_by_tids($mybb->input['tids'], 'canrestorethreads'))
+					{
+						$errors[] = $lang->error_delayedmoderation_unsupported_type;
+					}
+					break;
+				case 'deletethread':
+					$target_permission = 'candeletethreads';
+					break;
+				case 'stick':
+					$target_permission = 'canstickunstickthreads';
+					break;
+				case 'approveunapprovethread':
+					$target_permission = 'canapproveunapprovethreads';
+					break;
+				case 'move':
+				case 'merge':
+				case 'removeredirects':
+				case 'removesubscriptions':
+					$target_permission = 'canmanagethreads';
+					break;
+				default:
+					if(my_strpos($mybb->input['type'], 'modtool_') === 0)
+					{
+						$target_permission = 'canusecustomtools';
+					}
+			}
+
+			if($target_permission && !is_moderator_by_tids($mybb->input['tids'], $target_permission))
+			{
+				$errors[] = $lang->error_delayedmoderation_unsupported_type;
+			}
+
 			if(!in_array($mybb->input['type'], $allowed_types))
 			{
 				$mybb->input['type'] = '';
