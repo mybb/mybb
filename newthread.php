@@ -557,7 +557,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
-			$unviewable_forums = get_unviewable_forums();
+			$unviewable_forums = get_unviewable_forums(true);
 			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
 			{

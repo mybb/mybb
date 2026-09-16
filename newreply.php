@@ -106,7 +106,7 @@ if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
 	error_no_permission();
 }
@@ -762,7 +762,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
 			$quoted_ids = array();
-			$unviewable_forums = get_unviewable_forums();
+			$unviewable_forums = get_unviewable_forums(true);
 			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
 			{
