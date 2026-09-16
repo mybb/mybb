@@ -1191,6 +1191,15 @@ class postParser
 	function mycode_parse_url($url, $name="")
 	{
 		global $templates;
+
+		if(
+			stripos($url, "javascript:") === 0 ||
+			stripos($url, "data:") === 0
+		)
+		{
+			return htmlspecialchars_uni($url);
+		}
+
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
