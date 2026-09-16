@@ -44,6 +44,70 @@ class CustomModeration extends Moderation
 	}
 
 	/**
+	 * Check whether all target threads or posts are within the given tool's configured forums.
+	 *
+	 * @param array $tool Tool data
+	 * @param array $tids Thread ID(s)
+	 * @param array $pids Post ID(s)
+	 * @return boolean True when every target is valid and allowed
+	 */
+	function tool_forums_allowed($tool, $tids=array(), $pids=array())
+	{
+		global $db;
+
+		$target_forums = array();
+
+		if(!empty($tids))
+		{
+			$tids = array_unique(array_map('intval', $tids));
+			$query = $db->simple_select('threads', 'fid', 'tid IN ('.implode(',', $tids).')');
+			while($thread = $db->fetch_array($query))
+			{
+				$target_forums[] = (int)$thread['fid'];
+			}
+			if($db->num_rows($query) != count($tids))
+			{
+				return false;
+			}
+		}
+
+		if(!empty($pids))
+		{
+			$pids = array_unique(array_map('intval', $pids));
+			$query = $db->simple_select('posts', 'fid', 'pid IN ('.implode(',', $pids).')');
+			$target_posts = array();
+			while($post = $db->fetch_array($query))
+			{
+				$target_forums[] = (int)$post['fid'];
+			}
+			if($db->num_rows($query) != count($pids))
+			{
+				return false;
+			}
+		}
+
+		if(empty($target_forums))
+		{
+			return false;
+		}
+		elseif($tool['forums'] == '' || $tool['forums'] == '-1')
+		{
+			return true;
+		}
+		else
+		{
+			$allowed_forums = array_map('intval', explode(',', $tool['forums']));
+
+			return empty(
+				array_diff(
+					array_unique($target_forums),
+					$allowed_forums,
+				)
+			);
+		}
+	}
+
+	/**
 	 * Execute Custom Moderation Tool
 	 *
 	 * @param int $tool_id Tool ID
@@ -71,6 +135,10 @@ class CustomModeration extends Moderation
 		if(!is_array($pids))
 		{
 			$pids = array($pids);
+		}
+		if(!$this->tool_forums_allowed($tool, $tids, $pids))
+		{
+			return false;
 		}
 
 		// Unserialize custom moderation
