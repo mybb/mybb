@@ -118,7 +118,7 @@ function get_unsearchable_forums($pid=0, $first=1)
 			}
 		}
 
-		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || !forum_password_validated($forum, true) || $forum['active'] == 0)
+		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || $perms['canviewthreads'] != 1 || !forum_password_validated($forum, true) || $forum['active'] == 0)
 		{
 			if($unsearchableforums)
 			{
