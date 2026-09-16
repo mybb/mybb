@@ -528,6 +528,11 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 
 	$user = get_user($warning['uid']);
 
+	if(!modcp_can_manage_user($user['uid']))
+	{
+		error_no_permission();
+	}
+
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
@@ -588,6 +593,12 @@ if($mybb->input['action'] == "view")
 	{
 		$user = array('uid' => 0, 'username' => $lang->guest);
 	}
+
+	if(!modcp_can_manage_user($user['uid']))
+	{
+		error_no_permission();
+	}
+
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
 	$group_permissions = user_permissions($user['uid']);
@@ -713,6 +724,11 @@ if(!$mybb->input['action'])
 	if(!$user)
 	{
 		error($lang->error_invalid_user);
+	}
+
+	if(!modcp_can_manage_user($user['uid']))
+	{
+		error_no_permission();
 	}
 
 	$group_permissions = user_permissions($user['uid']);
