@@ -44,6 +44,13 @@ if($mybb->input['action'] == "levels" || $mybb->input['action'] == "add_type" ||
 
 $plugins->run_hooks("admin_config_warning_begin");
 
+$banned_groups = array();
+$query = $db->simple_select("usergroups", "gid,title", "isbannedgroup=1");
+while($group = $db->fetch_array($query))
+{
+	$banned_groups[$group['gid']] = $group['title'];
+}
+
 if($mybb->input['action'] == "add_level")
 {
 	$plugins->run_hooks("admin_config_warning_add_level");
@@ -58,6 +65,13 @@ if($mybb->input['action'] == "add_level")
 		if(!$mybb->input['action_type'])
 		{
 			$errors[] = $lang->error_missing_action_type;
+		}
+		elseif(
+			$mybb->input['action_type'] == 1 &&
+			!array_key_exists($mybb->get_input('action_1_usergroup', MyBB::INPUT_INT), $banned_groups)
+		)
+		{
+			$errors[] = $lang->error_invalid_ban_group;
 		}
 
 		if(!$errors)
@@ -119,12 +133,6 @@ if($mybb->input['action'] == "add_level")
 
 	$form_container = new FormContainer($lang->add_warning_level);
 	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->get_input('percentage'), array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
-
-	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
-	while($group = $db->fetch_array($query))
-	{
-		$banned_groups[$group['gid']] = $group['title'];
-	}
 
 	$periods = array(
 		"hours" => $lang->expiration_hours,
@@ -228,6 +236,13 @@ if($mybb->input['action'] == "edit_level")
 		{
 			$errors[] = $lang->error_missing_action_type;
 		}
+		elseif(
+			$mybb->input['action_type'] == 1 &&
+			!array_key_exists($mybb->get_input('action_1_usergroup', MyBB::INPUT_INT), $banned_groups)
+		)
+		{
+			$errors[] = $lang->error_invalid_ban_group;
+		}
 
 		if(!$errors)
 		{
@@ -322,12 +337,6 @@ if($mybb->input['action'] == "edit_level")
 
 	$form_container = new FormContainer($lang->edit_warning_level);
 	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
-
-	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
-	while($group = $db->fetch_array($query))
-	{
-		$banned_groups[$group['gid']] = $group['title'];
-	}
 
 	$periods = array(
 		"hours" => $lang->expiration_hours,
