@@ -1981,6 +1981,11 @@ if($mybb->input['action'] == "do_modqueue")
 	$mybb->input['attachments'] = $mybb->get_input('attachments', MyBB::INPUT_ARRAY);
 	if(!empty($mybb->input['threads']))
 	{
+		if($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_threads);
+		}
+
 		$threads = array_map("intval", array_keys($mybb->input['threads']));
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
@@ -2029,6 +2034,11 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['posts']))
 	{
+		if($nummodqueueposts == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_posts);
+		}
+
 		$posts = array_map("intval", array_keys($mybb->input['posts']));
 		// Fetch posts
 		$posts_to_approve = $posts_to_delete = array();
@@ -2077,6 +2087,11 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['attachments']))
 	{
+		if($nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_attachments);
+		}
+
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
 			SELECT a.pid, a.aid, t.tid
