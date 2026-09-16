@@ -13,6 +13,7 @@ define('THIS_SCRIPT', 'newthread.php');
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
 
@@ -554,15 +555,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
-
-			if(is_moderator($fid))
-			{
-				$visible_where = "AND p.visible != 2";
-			}
-			else
-			{
-				$visible_where = "AND p.visible > 0";
-			}
+			$thread_visible_where = get_visible_where('t');
+			$post_visible_where = get_visible_where('p');
 
 			// Check group permissions if we can't view threads not started by us
 			$group_permissions = forum_permissions();
@@ -581,17 +575,18 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 			}
 
-			if($mybb->get_input('load_all_quotes', MyBB::INPUT_INT) == 1)
+			$load_all = $mybb->get_input('load_all_quotes', MyBB::INPUT_INT);
+			$query = $db->query("
+				SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} AND {$thread_visible_where} AND {$post_visible_where}
+				ORDER BY p.dateline, p.pid
+			");
+			while($quoted_post = $db->fetch_array($query))
 			{
-				$query = $db->query("
-					SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
-					FROM ".TABLE_PREFIX."posts p
-					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-					ORDER BY p.dateline, p.pid
-				");
-				while($quoted_post = $db->fetch_array($query))
+				if($load_all == 1)
 				{
 					if($quoted_post['userusername'])
 					{
@@ -603,20 +598,18 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 					$newthread['message'] .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 				}
+				else
+				{
+					++$external_quotes;
+				}
+			}
 
+			if($load_all == 1)
+			{
 				$newthread['quoted_ids'] = "all";
 			}
 			else
 			{
-				$query = $db->query("
-                    SELECT COUNT(*) AS quotes
-                    FROM ".TABLE_PREFIX."posts p
-                    LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-                    WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-                ");
-				$external_quotes = $db->fetch_field($query, 'quotes');
-
-				$newthread['multiquote'] = false;
 				if($external_quotes > 0)
 				{
 					$newthread['multiquote'] = true;

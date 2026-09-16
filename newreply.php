@@ -13,6 +13,7 @@ define('THIS_SCRIPT', 'newreply.php');
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -763,6 +764,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
+			$thread_visible_where = get_visible_where('t');
+			$post_visible_where = get_visible_where('p');
 
 			// Check group permissions if we can't view threads not started by us
 			$group_permissions = forum_permissions();
@@ -780,31 +783,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 			}
-
-			if(is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
-			{
-				$visible_where = "AND p.visible IN (-1,0,1)";
-			}
-			else if(is_moderator($fid, 'canviewunapprove') && !is_moderator($fid, 'canviewdeleted'))
-			{
-				$visible_where = "AND p.visible IN (0,1)";
-			}
-			else if(!is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
-			{
-				$visible_where = "AND p.visible IN (-1,1)";
-			}
-			else
-			{
-				$visible_where = "AND p.visible=1";
-			}
-
 			require_once MYBB_ROOT."inc/functions_posting.php";
 			$query = $db->query("
                 SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
                 FROM ".TABLE_PREFIX."posts p
                 LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
                 LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-                WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
+                WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} AND {$thread_visible_where} AND {$post_visible_where}
             ");
 			$load_all = $mybb->get_input('load_all_quotes', MyBB::INPUT_INT);
 			while($quoted_post = $db->fetch_array($query))
