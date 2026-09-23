@@ -155,7 +155,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		);
 		$form_container->output_row($lang->visibility, "", implode("<br />", $visibility_options));
 
-		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->get_input('isdefault'), array('yes' => 1, 'no' => 0)));
+		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->get_input('isdefault'), true, array('yes' => 1, 'no' => 0)));
 
 		if(count($sort_options) > 0)
 		{
@@ -358,7 +358,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		);
 		$form_container->output_row($lang->visibility, "", implode("<br />", $visibility_options));
 
-		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
+		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], true, array('yes' => 1, 'no' => 0)));
 
 		if(is_array($sort_options) && count($sort_options) > 0)
 		{
