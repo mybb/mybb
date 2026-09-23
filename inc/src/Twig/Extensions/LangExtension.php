@@ -2,6 +2,7 @@
 
 namespace MyBB\Twig\Extensions;
 
+use Exception;
 use MyLanguage;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -34,6 +35,8 @@ class LangExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('trans', [$this, 'trans'], [
                 'is_safe' => ['html']
             ]),
+            new TwigFunction('_', [$this, 'formatMessage'], [
+            ]),
         ];
     }
 
@@ -60,6 +63,20 @@ class LangExtension extends AbstractExtension implements GlobalsInterface
     public function trans(string $languageVariable, ...$params): string
     {
         return $this->lang->sprintf($this->lang->$languageVariable, ...$params);
+    }
+
+    /**
+     * Get a translation that takes a number of parameters.
+     *
+     * @param string $languageVariable The name of the language variable to translate.
+     * @param array $params A list of parameters to inject into the translation.
+     *
+     * @return string The resolved translation string.
+     * @throws Exception
+     */
+    public function formatMessage(string $languageVariable, array $params): string
+    {
+        return $this->lang->formatMessage($this->lang->$languageVariable, $params);
     }
 
     /**
