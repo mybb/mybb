@@ -2766,7 +2766,7 @@ if($mybb->input['action'] == "drafts")
 	if($draftCount)
 	{
 		$query = $db->query("
-			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
+			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible, t.poll, t.firstpost
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
@@ -2788,6 +2788,15 @@ if($mybb->input['action'] == "drafts")
 					$draft['editurl'] = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 					$draft['type'] = 'thread';
 				}
+			}
+
+			if($draft['firstpost'] != $draft['pid'])
+			{
+				$draft['poll'] = 0;
+			}
+			else
+			{
+				$draft['canmanagepolls'] = is_moderator($draft['fid'], "canmanagepolls");
 			}
 
 			$drafts[] = $draft;

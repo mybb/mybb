@@ -59,7 +59,7 @@ if($mybb->input['action'] == "newpoll")
 	$ismod = is_moderator($thread['fid']);
 
 	// Make sure we are looking at a real thread here.
-	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(($thread['visible'] != -2 && $thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -84,7 +84,16 @@ if($mybb->input['action'] == "newpoll")
 	}
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+
+	if($thread['visible'] == -2)
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), "usercp.php?action=drafts");
+	}
+	else
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+	}
+
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
@@ -352,6 +361,10 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		redirect(get_thread_link($thread['tid']), $lang->redirect_pollposted);
 	}
+	else if($thread['visible'] == -2)
+	{
+		redirect("usercp.php?action=drafts", $lang->redirect_pollposted_draft);
+	}
 	else
 	{
 		redirect(get_forum_link($thread['fid']), $lang->redirect_pollpostedmoderated);
@@ -384,7 +397,16 @@ if($mybb->input['action'] == "editpoll")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+
+	if($thread['visible'] == -2)
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), "usercp.php?action=drafts");
+	}
+	else
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+	}
+
 	add_breadcrumb($lang->nav_editpoll);
 
 	$forumpermissions = forum_permissions($fid);
@@ -765,7 +787,7 @@ if($mybb->input['action'] == "showresults")
 
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
-	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
+	if(!$thread || $thread['visible'] == -2 || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -790,7 +812,16 @@ if($mybb->input['action'] == "showresults")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+
+	if($thread['visible'] == -2)
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), "usercp.php?action=drafts");
+	}
+	else
+	{
+		add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
+	}
+
 	add_breadcrumb($lang->nav_pollresults);
 
 	$voters = $votedfor = $guest_voters = array();
@@ -946,7 +977,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 	$thread = get_thread($poll['tid']);
 
-	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
+	if(!$thread || $thread['visible'] == -2 || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1118,7 +1149,7 @@ if($mybb->input['action'] == "do_undovote")
 	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
 	// Get thread ID and then get forum info
 	$thread = get_thread($poll['tid']);
-	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
+	if(!$thread || $thread['visible'] == -2 || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
