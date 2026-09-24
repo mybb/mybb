@@ -29,7 +29,7 @@
                 </li>
             {% endif %}
 
-            {% if (counters.modqueue.threads > 0 or counters.modqueue.posts > 0 or counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagemodqueue %}
+            {% if (counters.modqueue.threads > 0 or counters.modqueue.posts > 0 or counters.modqueue.attachments > 0 or counters.modqueue.deletedthreads > 0 or counters.modqueue.deletedposts > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagemodqueue %}
                 <li class="section-menu__item section-menu__item--mod-queue{% if mybb.input.action == 'modqueue' %} section-menu__item--active{% endif %}">
                     <a href="modcp.php?action=modqueue" class="section-menu__link">
                         {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
