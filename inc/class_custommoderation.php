@@ -99,12 +99,12 @@ class CustomModeration extends Moderation
 		{
 			$allowed_forums = array_map('intval', explode(',', $tool['forums']));
 
-			return empty(
-				array_diff(
-					array_unique($target_forums),
-					$allowed_forums
-				)
+			$disallowed_forums = array_diff(
+				array_unique($target_forums),
+				$allowed_forums
 			);
+
+			return empty($disallowed_forums);
 		}
 	}
 
