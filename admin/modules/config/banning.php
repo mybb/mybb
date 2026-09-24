@@ -228,7 +228,19 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
-	$query = $db->simple_select("banfilters", "COUNT(fid) AS filter", "type='{$type}'");
+	// Filtering logic for IP bans
+	$search_ip = '';
+	$where = "type='{$type}'";
+	if($mybb->get_input('type') == "ips")
+	{
+		$search_ip = trim($mybb->get_input('search_ip'));
+		if($search_ip !== '')
+		{
+			$where .= " AND filter LIKE '%".$db->escape_string_like($search_ip)."%'";
+		}
+	}
+
+	$query = $db->simple_select("banfilters", "COUNT(fid) AS filter", $where);
 	$total_rows = $db->fetch_field($query, "filter");
 	$per_page = 20;
 
@@ -306,7 +318,7 @@ if(!$mybb->input['action'])
 	}
 	$table->construct_header($lang->controls, array("width" => 1));
 
-	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array('limit_start' => $start, 'limit' => $per_page, "order_by" => $sort_by, "order_dir" => $order));
+	$query = $db->simple_select("banfilters", "*", $where, array('limit_start' => $start, 'limit' => $per_page, "order_by" => $sort_by, "order_dir" => $order));
 	while($filter = $db->fetch_array($query))
 	{
 		$filter['filter'] = htmlspecialchars_uni($filter['filter']);
@@ -343,7 +355,9 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($title);
-	echo "<br />".draw_admin_pagination($pagenum, $per_page, $total_rows, "index.php?module=config-banning&amp;type={$mybb->get_input('type')}&amp;sort_by={$sort_by}&amp;order={$order}&amp;page={page}");
+
+	$pagination_url = "index.php?module=config-banning&amp;type=".htmlspecialchars_uni($mybb->get_input('type'))."&amp;sort_by={$sort_by}&amp;order={$order}&amp;search_ip=".urlencode($search_ip);
+	echo "<br />".draw_admin_pagination($pagenum, $per_page, $total_rows, $pagination_url."&amp;page={page}");
 
 	// Only show sort form for IP bans
 	if($mybb->get_input('type') == "ips")
@@ -361,6 +375,7 @@ if(!$mybb->input['action'])
 
 		$filter_form = new Form("index.php?module=config-banning", "post");
 		$form_container = new FormContainer($lang->filter_results);
+		$form_container->output_row($lang->ip_address, $lang->search_ip_desc, $filter_form->generate_text_box('search_ip', $search_ip, array('id' => 'search_ip')), 'search_ip');
 		$form_container->output_row($lang->sort_by, "", $filter_form->generate_select_box('sort_by', $sort_options, $sort_by, array('id' => 'sort_by'))." {$lang->in} ".$filter_form->generate_select_box('order', $order_options, $order, array('id' => 'order'))." {$lang->order}", 'order');
 		$form_container->end();
 

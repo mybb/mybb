@@ -51,4 +51,5 @@ $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
 $l['in'] = "in";
 $l['order'] = "order";
+$l['search_ip_desc'] = "Enter an IP address, or part of one, to filter the results by.";
 
