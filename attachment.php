@@ -134,7 +134,7 @@ $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 $attachment['filename'] = str_replace(
 	array("\r", "\n", "\0"),
 	'',
-	$attachment['filename'],
+	$attachment['filename']
 );
 
 $uploadspath_abs = mk_path_abs($mybb->settings['uploadspath']);
