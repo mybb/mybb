@@ -631,118 +631,132 @@ if($mybb->input['action'] == "edit")
 			// Are we uploading a new avatar?
 			if($_FILES['avatar_upload']['name'])
 			{
-				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
-				if($avatar['error'])
+				if($mybb->get_input('suspendavatar'))
 				{
-					$errors = array($avatar['error']);
+					$errors[] = $lang->suspendavatar_upload_error;
 				}
 				else
 				{
-					if($avatar['width'] > 0 && $avatar['height'] > 0)
+					$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
+					if($avatar['error'])
 					{
-						$avatar_dimensions = $avatar['width']."|".$avatar['height'];
+						$errors = array($avatar['error']);
 					}
-					$extra_user_updates = array(
-						"avatar" => $avatar['avatar'].'?dateline='.TIME_NOW,
-						"avatardimensions" => $avatar_dimensions,
-						"avatartype" => "upload"
-					);
+					else
+					{
+						if($avatar['width'] > 0 && $avatar['height'] > 0)
+						{
+							$avatar_dimensions = $avatar['width']."|".$avatar['height'];
+						}
+						$extra_user_updates = array(
+							"avatar" => $avatar['avatar'].'?dateline='.TIME_NOW,
+							"avatardimensions" => $avatar_dimensions,
+							"avatartype" => "upload"
+						);
+					}
 				}
 			}
 			// Are we setting a new avatar from a URL?
 			else if(!empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
 			{
-				if(!$mybb->settings['allowremoteavatars'])
+				if($mybb->get_input('suspendavatar'))
 				{
-					$errors = array($lang->error_remote_avatar_not_allowed);
+					$errors[] = $lang->suspendavatar_upload_error;
 				}
 				else
 				{
-					if(filter_var($mybb->input['avatar_url'], FILTER_VALIDATE_EMAIL) !== false)
+					if(!$mybb->settings['allowremoteavatars'])
 					{
-						// Gravatar
-						$email = md5(strtolower(trim($mybb->input['avatar_url'])));
-
-						$s = '';
-						if(!$mybb->settings['maxavatardims'])
-						{
-							$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits
-						}
-
-						// Because Gravatars are square, hijack the width
-						list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
-
-						$s = "?s={$maxwidth}";
-						$maxheight = (int)$maxwidth;
-
-						$extra_user_updates = array(
-							"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
-							"avatardimensions" => "{$maxheight}|{$maxheight}",
-							"avatartype" => "gravatar"
-						);
+						$errors = array($lang->error_remote_avatar_not_allowed);
 					}
 					else
 					{
-						$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
-						$ext = get_extension($mybb->input['avatar_url']);
-
-						// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
-						$file = fetch_remote_file($mybb->input['avatar_url']);
-						if(!$file)
+						if(filter_var($mybb->input['avatar_url'], FILTER_VALIDATE_EMAIL) !== false)
 						{
-							$avatar_error = $lang->error_invalidavatarurl;
+							// Gravatar
+							$email = md5(strtolower(trim($mybb->input['avatar_url'])));
+
+							$s = '';
+							if(!$mybb->settings['maxavatardims'])
+							{
+								$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits
+							}
+
+							// Because Gravatars are square, hijack the width
+							list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
+
+							$s = "?s={$maxwidth}";
+							$maxheight = (int)$maxwidth;
+
+							$extra_user_updates = array(
+								"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
+								"avatardimensions" => "{$maxheight}|{$maxheight}",
+								"avatartype" => "gravatar"
+							);
 						}
 						else
 						{
-							$tmp_name = "../".$mybb->settings['avataruploadpath']."/remote_".md5(random_str());
-							$fp = @fopen($tmp_name, "wb");
-							if(!$fp)
+							$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
+							$ext = get_extension($mybb->input['avatar_url']);
+
+							// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
+							$file = fetch_remote_file($mybb->input['avatar_url']);
+							if(!$file)
 							{
 								$avatar_error = $lang->error_invalidavatarurl;
 							}
 							else
 							{
-								fwrite($fp, $file);
-								fclose($fp);
-								list($width, $height, $type) = @getimagesize($tmp_name);
-								@unlink($tmp_name);
-								echo $type;
-								if(!$type)
+								$tmp_name = "../".$mybb->settings['avataruploadpath']."/remote_".md5(random_str());
+								$fp = @fopen($tmp_name, "wb");
+								if(!$fp)
 								{
 									$avatar_error = $lang->error_invalidavatarurl;
 								}
-							}
-						}
-
-						if(empty($avatar_error))
-						{
-							if($width && $height && $mybb->settings['maxavatardims'] != "")
-							{
-								list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
-								if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+								else
 								{
-									$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-									$avatar_error = $lang->error_avatartoobig;
+									fwrite($fp, $file);
+									fclose($fp);
+									list($width, $height, $type) = @getimagesize($tmp_name);
+									@unlink($tmp_name);
+									echo $type;
+									if(!$type)
+									{
+										$avatar_error = $lang->error_invalidavatarurl;
+									}
 								}
 							}
-						}
 
-						if(empty($avatar_error))
-						{
-							if($width > 0 && $height > 0)
+							if(empty($avatar_error))
 							{
-								$avatar_dimensions = (int)$width."|".(int)$height;
+								if($width && $height && $mybb->settings['maxavatardims'] != "")
+								{
+									list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
+									if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+									{
+										$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+										$avatar_error = $lang->error_avatartoobig;
+									}
+								}
 							}
-							$extra_user_updates = array(
-								"avatar" => $db->escape_string($mybb->input['avatar_url'].'?dateline='.TIME_NOW),
-								"avatardimensions" => $avatar_dimensions,
-								"avatartype" => "remote"
-							);
-							remove_avatars($user['uid']);
-						}
-						else
-						{
-							$errors = array($avatar_error);
+
+							if(empty($avatar_error))
+							{
+								if($width > 0 && $height > 0)
+								{
+									$avatar_dimensions = (int)$width."|".(int)$height;
+								}
+								$extra_user_updates = array(
+									"avatar" => $db->escape_string($mybb->input['avatar_url'].'?dateline='.TIME_NOW),
+									"avatardimensions" => $avatar_dimensions,
+									"avatartype" => "remote"
+								);
+								remove_avatars($user['uid']);
+							}
+							else
+							{
+								$errors = array($avatar_error);
+							}
 						}
 					}
 				}
