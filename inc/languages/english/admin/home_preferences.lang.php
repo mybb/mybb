@@ -26,5 +26,5 @@ $l['use_2fa_desc'] = "Two-Factor Authentication is a method to secure your admin
 $l['my2fa_qr'] = "Two-Factor Authentication Code";
 $l['recovery_codes_desc'] = "View your <a href=\"index.php?module=home-preferences&amp;action=recovery_codes\">recovery codes</a>.";
 $l['recovery_codes'] = "Recovery Codes";
-$l['recovery_codes_warning'] = "<b>Note:</b> the codes will be regenerated on every page visit and can be only used once.";
+$l['recovery_codes_warning'] = "<strong>Note:</strong> the codes will be regenerated on every page visit and can be only used once.";
 $l['print_recovery_codes'] = "Print Recovery Codes";

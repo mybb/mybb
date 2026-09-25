@@ -712,7 +712,7 @@ function upgradedone()
 	}
 	if(empty($written))
 	{
-		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
+		$lock_note = "<p><strong><span style=\"color: red;\">".$lang->upgrade_removedir."</span></strong></p>";
 	}
 
 	// Rebuild inc/settings.php at the end of the upgrade

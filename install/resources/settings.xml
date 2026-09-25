@@ -446,7 +446,7 @@ max=9]]></optionscode>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
-			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers). If it is a relative path then it is taken to be relative to the MyBB root directory. Default value: "./uploads" (relative path).]]></description>
+			<description><![CDATA[The path used for all board uploads. It <strong>must be chmod 777</strong> (on *nix servers). If it is a relative path then it is taken to be relative to the MyBB root directory. Default value: "./uploads" (relative path).]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
@@ -1302,7 +1302,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
-			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
+			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <strong>must be chmod 777</strong> (writable) for uploads to work.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
