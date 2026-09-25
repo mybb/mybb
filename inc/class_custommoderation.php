@@ -102,7 +102,7 @@ class CustomModeration extends Moderation
 			return empty(
 				array_diff(
 					array_unique($target_forums),
-					$allowed_forums,
+					$allowed_forums
 				)
 			);
 		}
