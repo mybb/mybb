@@ -21,7 +21,11 @@
                 {% endif %}
             </h3>
             {% if announcement.hasicon %}
-                <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
+                {% if announcement.icon_class %}
+                    {{ include('partials/icon.twig', {icon: announcement.icon_class, class: '', title: announcement.icon_name}, with_context = false) }}
+                {% elseif announcement.icon_path %}
+                    <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
+                {% endif %}
             {% endif %}
             <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}" class="post__date">{{ announcement.date|raw }}</a>
         </div>

@@ -1029,8 +1029,7 @@ if($mybb->input['action'] == "subscriptions")
 			// Fetch the thread icon if we have one
 			if($thread['icon'] > 0 && !empty($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 			{
-				$icon = $icon_cache[$thread['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon = build_post_icon($icon_cache[$thread['icon']], $theme['imgdir']);
 				$thread['icon'] = $icon;
 			}
 			else
@@ -3816,8 +3815,7 @@ if(!$mybb->input['action'])
 						// Fetch the thread icon if we have one
 						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 						{
-							$icon = $icon_cache[$thread['icon']];
-							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+							$icon = build_post_icon($icon_cache[$thread['icon']], $theme['imgdir']);
 							$thread['icon'] = $icon;
 						}
 						else
@@ -3976,13 +3974,11 @@ if(!$mybb->input['action'])
 
 				if($thread['icon'] > 0 && !empty($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 				{
-					$icon = $icon_cache[$thread['icon']];
-					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-					$thread['icon'] = $icon;
+					$thread['icon'] = build_post_icon($icon_cache[$thread['icon']], $theme['imgdir']);
 				}
 				else
 				{
-					$thread['icon'] = "&nbsp;";
+					$thread['icon'] = null;
 				}
 
 				if($mybb->settings['threadreadcut'] > 0)

@@ -83,6 +83,11 @@ function upgrade100_dbchanges()
         $db->update_query("forums", ["style" => 0], "style != 0");
     }
 
+    // Introduce icon class to post icons
+    if (!$db->field_exists("icon_class", "icons")) {
+        $db->add_column("icons", "icon_class", "varchar(120) NOT NULL default ''");
+    }
+
     // Database engine specific changes
     // This section contains schema definitions and data migrations
     // that must be applied differently depending on the engine

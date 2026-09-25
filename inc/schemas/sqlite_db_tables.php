@@ -354,7 +354,8 @@ $tables[] = "CREATE TABLE mybb_helpsections (
 $tables[] = "CREATE TABLE mybb_icons (
 	iid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
-	path varchar(220) NOT NULL default ''
+	path varchar(220) NOT NULL default '',
+	icon_class varchar(120) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_joinrequests (
@@ -686,7 +687,7 @@ $tables[] = "CREATE TABLE mybb_securitylog (
 	dateline int NOT NULL default '0',
 	type varchar(50) NOT NULL default ''
  );";
- 
+
 $tables[] = "CREATE INDEX mybb_securitylog_uid ON mybb_securitylog (uid);";
 
 $tables[] = "CREATE TABLE mybb_searchlog (

@@ -405,10 +405,10 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$thread['icon']]) && $forums_cache[$thread['fid']]['allowpicons'] != 0)
 			{
 				$thread['hasicon'] = true;
-				$posticon = $icon_cache[$thread['icon']];
-				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
+				$posticon = build_post_icon($icon_cache[$thread['icon']], $theme['imgdir']);
 				$thread['icon_path'] = $posticon['path'];
 				$thread['icon_name'] = $posticon['name'];
+				$thread['icon_class'] = $posticon['icon_class'];
 			}
 
 			// Determine the folder
@@ -806,10 +806,10 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$post['icon']]) && $forums_cache[$post['fid']]['allowpicons'] != 0)
 			{
 				$post['hasicon'] = true;
-				$posticon = $icon_cache[$post['icon']];
-				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
+				$posticon = build_post_icon($icon_cache[$post['icon']], $theme['imgdir']);
 				$post['icon_path'] = $posticon['path'];
 				$post['icon_name'] = $posticon['name'];
+				$post['icon_class'] = $posticon['icon_class'];
 			}
 
 			if(!empty($forumcache[$post['fid']]))

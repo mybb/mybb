@@ -567,10 +567,10 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			if($announcement['icon'] > 0 && !empty($icon_cache[$announcement['icon']]) && $forum[$announcement['fid']]['allowpicons'] != 0)
 			{
 				$announcement['hasicon'] = true;
-				$icon = $icon_cache[$announcement['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon = build_post_icon($icon_cache[$announcement['icon']], $theme['imgdir']);
 				$announcement['icon_path'] = $icon['path'];
 				$announcement['icon_name'] = $icon['name'];
+				$announcement['icon_class'] = $icon['icon_class'];
 			}
 
 			$announcement['date'] = my_date('relative', $announcement['dateline']);
