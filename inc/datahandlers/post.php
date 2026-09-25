@@ -2012,7 +2012,7 @@ class PostDataHandler extends DataHandler
 			require_once MYBB_ROOT."inc/functions_user.php";
 			add_subscribed_thread($post['tid'], $notification, $post['uid']);
 		}
-		else
+		else if(isset($post['options']['subscriptionmethod']) && $post['options']['subscriptionmethod'] === "none" && $uid > 0)
 		{
 			$db->delete_query("threadsubscriptions", "uid='".(int)$uid."' AND tid='".(int)$post['tid']."'");
 		}
