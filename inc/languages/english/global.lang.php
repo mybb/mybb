@@ -78,6 +78,7 @@ $l['username'] = "Username";
 $l['username1'] = "Email";
 $l['username2'] = "Username/Email";
 $l['password'] = "Password";
+$l['random_password'] = "Or generate random password";
 $l['login_username'] = "Username";
 $l['login_username1'] = "Email";
 $l['login_username2'] = "Username/Email";
