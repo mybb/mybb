@@ -2,7 +2,7 @@
     <div class="row__primary">
         <h3 class="draft__subject">
             {% if draft.iconpath is defined and draft.iconpath %}
-                <img src="{{ draft.iconpath }}" alt="{{ draft.iconname|default('') }}" title="{{ draft.iconname|default('') }}" class="draft__icon" />
+                <img src="{{ draft.iconpath|escape }}" alt="{{ draft.iconname|default('')|escape }}" title="{{ draft.iconname|default('')|escape }}" class="draft__icon" />
             {% endif %}
             <a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a>
         </h3>
