@@ -31,6 +31,7 @@ error.log
 .idea
 .editorconfig
 .phpunit.cache
+.env
 
 # Generic OS stuff
 .DS_Store
