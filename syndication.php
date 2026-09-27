@@ -213,6 +213,7 @@ if(!empty($firstposts))
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$attachment['icon'] = get_attachment_icon($ext);
+				$attachdate = my_date('normal', $attachment['dateuploaded'] ? $attachment['dateuploaded'] : $items[$post['tid']]['date']);
 				eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
 				if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
 				{
