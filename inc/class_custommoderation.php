@@ -156,6 +156,11 @@ class CustomModeration extends Moderation
 		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
+			if(empty($tids) || empty($pids))
+			{
+				return false;
+			}
+
 			$deleted_thread = $this->execute_post_moderation($tids, $post_options, $pids);
 		}
 		// Always execute thead moderation
