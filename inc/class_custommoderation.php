@@ -133,10 +133,16 @@ class CustomModeration extends Moderation
 		{
 			$tids = array($tids);
 		}
-		if(!is_array($pids))
+
+		if($pids === 0)
+		{
+			$pids = array();
+		}
+		elseif(!is_array($pids))
 		{
 			$pids = array($pids);
 		}
+
 		if(!$this->tool_forums_allowed($tool, $tids, $pids))
 		{
 			return false;
