@@ -1151,14 +1151,17 @@ class postParser
 		if($added_end_tag)
 		{
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
-			// Wait a minute. It fails highlighting? Stupid highlighter.
 			$code = str_replace("?&gt;</code>", "</code>", $code);
+			$code = str_replace("?&gt;</span></pre>", "</span></pre>", $code);
 		}
-
+		
 		$code = preg_replace("#<span style=\"color: \#([A-Z0-9]{6})\"></span>#", "", $code);
+		// PHP 8.3+ compatibility: remove stray wrapping <pre> tags leftover from new highlight_string format
+		$code = str_replace("<pre>", "", $code);
+		$code = str_replace("</pre>", "", $code);
+		
 		$code = str_replace("<code>", "<div dir=\"ltr\"><code>", $code);
 		$code = str_replace("</code>", "</code></div>", $code);
-		$code = preg_replace("# *$#", "", $code);
 
 		if($bare_return)
 		{
