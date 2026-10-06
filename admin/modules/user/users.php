@@ -1599,7 +1599,7 @@ EOF;
 
 	// Do we have any existing suspensions here?
 	$existing_info = '';
-	if($user['moderateposts'] || ($mybb->get_input('moderateposting') && !empty($errors)))
+	if((empty($errors) && $user['moderateposts']) || (!empty($errors) && $mybb->get_input('moderateposting')))
 	{
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
@@ -1638,7 +1638,8 @@ EOF;
 	$suspost_options = $form->generate_select_box('suspost_period', $periods, $mybb->get_input('suspost_period'), array('id' => 'suspost_period'));
 
 	// Do we have any existing suspensions here?
-	if($user['suspendposting'] || ($mybb->get_input('suspendposting') && !empty($errors)))
+	$existing_info = '';
+	if((empty($errors) && $user['suspendposting']) || (!empty($errors) && $mybb->get_input('suspendposting')))
 	{
 		$mybb->input['suspendposting'] = 1;
 
@@ -1678,7 +1679,8 @@ EOF;
 	$suspm_options = $form->generate_select_box('suspm_period', $periods, $mybb->get_input('suspm_period'), array('id' => 'suspm_period'));
 
 	// Do we have an existing private messaging suspension?
-	if($user['suspendpm'] || ($mybb->get_input('suspendpm') && !empty($errors)))
+	$existing_info = '';
+	if((empty($errors) && $user['suspendpm']) || (!empty($errors) && $mybb->get_input('suspendpm')))
 	{
 		$mybb->input['suspendpm'] = 1;
 		if($user['suspendpmtime'] == 0 || $mybb->get_input('suspm_period') == "never")
@@ -1718,7 +1720,7 @@ EOF;
 
 	// Do we have any existing suspensions here?
 	$existing_info = '';
-	if($user['suspendavatar'] || ($mybb->get_input('suspendavatar') && !empty($errors)))
+	if((empty($errors) && $user['suspendavatar']) || (!empty($errors) && $mybb->get_input('suspendavatar')))
 	{
 		$mybb->input['suspendavatar'] = 1;
 		if($user['suspendavatartime'] != 0)
@@ -1814,11 +1816,11 @@ function toggleBox(action)
 {
 	if(action == "modpost")
 	{
-		$("#suspendposting").attr("checked", false);
-		$("#suspost").hide();
-
 		if($("#moderateposting").is(":checked") == true)
 		{
+			$("#suspendposting").prop("checked", false);
+			$("#suspost").hide();
+
 			$("#modpost").show();
 		}
 		else if($("#moderateposting").is(":checked") == false)
@@ -1828,11 +1830,11 @@ function toggleBox(action)
 	}
 	else if(action == "suspost")
 	{
-		$("#moderateposting").attr("checked", false);
-		$("#modpost").hide();
-
 		if($("#suspendposting").is(":checked") == true)
 		{
+			$("#moderateposting").prop("checked", false);
+			$("#modpost").hide();
+
 			$("#suspost").show();
 		}
 		else if($("#suspendposting").is(":checked") == false)
@@ -1842,9 +1844,6 @@ function toggleBox(action)
 	}
 	else if(action == "suspm")
 	{
-		$("#suspendpm").attr("checked", false);
-		$("#suspm").hide();
-
 		if($("#suspendpm").is(":checked") == true)
 		{
 			$("#suspm").show();
@@ -1856,9 +1855,6 @@ function toggleBox(action)
 	}
 	else if(action == "suspendavatar")
 	{
-		$("#suspendavatar").attr("checked", false);
-		$("#suspend_avatar").hide();
-
 		if($("#suspendavatar").is(":checked") == true)
 		{
 			$("#suspend_avatar").show();
