@@ -335,16 +335,29 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$excludeforums = "AND t.fid NOT IN ({$mybb->settings['portal_excludediscussion']})";
 	}
 
-	$query = $db->query("
-        SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.replies, t.views, u.username
-        FROM ".TABLE_PREFIX."threads t
-        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-        WHERE 1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.moved='0'
-        ORDER BY t.lastpost DESC
-        LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
-	);
+    $latest_threads_fetch_query_definition = [
+        "tables" => "threads t LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)",
+        "fields" => 't.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.replies, t.views, u.username',
+        "where" => "1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.moved='0'",
+        "options" => [
+            "order_by" => "t.lastpost DESC",
+            "limit" => $mybb->settings['portal_showdiscussionsnum'],
+            "limit_start" => 0,
+        ],
+    ];
+
+    $plugins->run_hooks('portal_latest_threads');
+
+    $query = $db->simple_select(
+        $latest_threads_fetch_query_definition['tables'],
+        $latest_threads_fetch_query_definition['fields'],
+        $latest_threads_fetch_query_definition['where'],
+        $latest_threads_fetch_query_definition['options'],
+    );
 	while($thread = $db->fetch_array($query))
 	{
+		$plugins->run_hooks('portal_latest_threads_thread', $thread);
+
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// Make sure we can view this thread
