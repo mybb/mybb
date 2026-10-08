@@ -256,6 +256,22 @@ class MyLanguage implements JsonSerializable
 		return array_merge($this->phrases, get_object_vars($this));
 	}
 
+	/**
+	 * @throws IntlException
+	 */
+	public function formatMessage(string $string, array $params = []): string
+	{
+		static $formatter = null;
+
+		if($formatter===null) {
+			$formatter = new \MessageFormatter($this->settings['htmllang'], $string);
+		} else {
+			$formatter->setPattern($string);
+		}
+
+		return $formatter->format($params);
+	}
+
 	public function __set(string $name, string $value): void
 	{
 		$this->phrases[$name] = $value;
