@@ -149,6 +149,8 @@ function upgrade100_dbchanges()
             // Add acknowledgement requirement flag to warnings table
             if (!$db->field_exists("requiresacknowledgement", "warnings")) {
                 $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+                // Existing warnings must not require acknowledgement retroactively.
+                $db->update_query("warnings", ["requiresacknowledgement" => 0]);
             }
 
             // Add acknowledgement status column to warnings table
@@ -241,6 +243,8 @@ function upgrade100_dbchanges()
             // Add acknowledgement requirement flag to warnings table
             if (!$db->field_exists("requiresacknowledgement", "warnings")) {
                 $db->add_column("warnings", "requiresacknowledgement", "smallint NOT NULL default '1'");
+                // Existing warnings must not require acknowledgement retroactively.
+                $db->update_query("warnings", ["requiresacknowledgement" => 0]);
             }
 
             // Add acknowledgement status column to warnings table
@@ -338,6 +342,8 @@ function upgrade100_dbchanges()
             // Add acknowledgement requirement flag to warnings table
             if (!$db->field_exists("requiresacknowledgement", "warnings")) {
                 $db->add_column("warnings", "requiresacknowledgement", "tinyint(1) NOT NULL default '1' AFTER issuedby");
+                // Existing warnings must not require acknowledgement retroactively.
+                $db->update_query("warnings", ["requiresacknowledgement" => 0]);
             }
 
             // Add acknowledgement status column to warnings table
@@ -379,6 +385,16 @@ function upgrade100_dbchanges()
             }
             break;
     }
+
+    // Rebuild counters, including when acknowledgement columns already existed.
+    $db->write_query("
+        UPDATE " . TABLE_PREFIX . "users
+        SET unacknowledgedwarnings = (
+            SELECT COUNT(*) FROM " . TABLE_PREFIX . "warnings
+            WHERE " . TABLE_PREFIX . "warnings.uid = " . TABLE_PREFIX . "users.uid
+                AND requiresacknowledgement=1 AND acknowledged=0 AND daterevoked=0
+        )
+    ");
 
     // Remove deprecated settings
     $db->delete_query("settings", "name='mail_parameters'");
