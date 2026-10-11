@@ -1135,7 +1135,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
-			error($lang->error_movetononmodforum, $lang->error);
+			error($lang->error_movetononmodforum, $lang->error, status_code: 403);
 		}
 
 		$newforum = get_forum($moveto);
@@ -1732,7 +1732,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
-			error($lang->error_movetononmodforum, $lang->error);
+			error($lang->error_movetononmodforum, $lang->error, status_code: 403);
 		}
 
 		$pids = array();
@@ -2271,7 +2271,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_tids($tids, 'canmovetononmodforum'))
 		{
-			error($lang->error_movetononmodforum, $lang->error);
+			error($lang->error_movetononmodforum, $lang->error, status_code: 403);
 		}
 
 		$newforum = get_forum($moveto);
@@ -2725,7 +2725,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_pids($posts, 'canmovetononmodforum'))
 		{
-			error($lang->error_movetononmodforum, $lang->error);
+			error($lang->error_movetononmodforum, $lang->error, status_code: 403);
 		}
 
 		$newsubject = $mybb->get_input('newsubject');
@@ -2933,7 +2933,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($newthread['fid']);
 		if(($newperms['canview'] == 0 || !is_moderator($newthread['fid'], 'canmanagethreads')) && !is_moderator_by_pids($posts, 'canmovetononmodforum'))
 		{
-			error($lang->error_movetononmodforum, $lang->error);
+			error($lang->error_movetononmodforum, $lang->error, status_code: 403);
 		}
 
 		$pidin = implode(',', $posts);

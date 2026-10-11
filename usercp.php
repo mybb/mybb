@@ -2874,7 +2874,7 @@ if($mybb->input['action'] == "usergroups")
 
 		if(my_strpos($ingroups, ",".$mybb->input['displaygroup'].",") === false)
 		{
-			error($lang->not_member_of_group);
+			error($lang->not_member_of_group, status_code: 403);
 		}
 
 		$dispgroup = $usergroups[$mybb->get_input('displaygroup', MyBB::INPUT_INT)];
@@ -2897,7 +2897,7 @@ if($mybb->input['action'] == "usergroups")
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', MyBB::INPUT_INT).",") === false)
 		{
-			error($lang->not_member_of_group);
+			error($lang->not_member_of_group, status_code: 403);
 		}
 		if($mybb->user['usergroup'] == $mybb->get_input('leavegroup', MyBB::INPUT_INT))
 		{

@@ -793,7 +793,7 @@ function verify_post_check($code, $silent = false)
 			}
 			else
 			{
-				error($lang->invalid_post_code);
+				error($lang->invalid_post_code, status_code: 403);
 			}
 		}
 	}
@@ -1080,7 +1080,7 @@ function error_no_permission()
 		'redirect_url' => $redirect_url
 	]);
 
-	error($error_message, $lang->error_nopermission, $error_page, 403);
+	error($error_message, $lang->error_nopermission, $error_page, http_response_code());
 }
 
 /**

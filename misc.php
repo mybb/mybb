@@ -50,7 +50,7 @@ elseif($mybb->input['action'] == "markread")
 	if($mybb->user['uid'] && verify_post_check($mybb->get_input('my_post_key'), true) !== true)
 	{
 		// Protect our user's unread forums from CSRF
-		error($lang->invalid_post_code);
+		error($lang->invalid_post_code, status_code: 403);
 	}
 
 	if(isset($mybb->input['fid']))
@@ -101,7 +101,7 @@ elseif($mybb->input['action'] == "clearpass")
 	{
 		if(!verify_post_check($mybb->get_input('my_post_key')))
 		{
-			error($lang->invalid_post_code);
+			error($lang->invalid_post_code, status_code: 403);
 		}
 
 		my_unsetcookie("forumpass[".$mybb->get_input('fid', MyBB::INPUT_INT)."]");
@@ -216,7 +216,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
