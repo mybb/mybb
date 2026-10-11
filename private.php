@@ -23,7 +23,7 @@ $lang->load("private");
 
 if($mybb->settings['enablepms'] == 0)
 {
-	error($lang->pms_disabled);
+	error($lang->pms_disabled, status_code: 404);
 }
 
 if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 0)
@@ -162,7 +162,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 			{
 				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			}
-			error($lang->error_searchflooding);
+			error($lang->error_searchflooding, status_code: 429);
 		}
 	}
 
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "results")
 
 	if(!$search)
 	{
-		error($lang->error_invalidsearch);
+		error($lang->error_invalidsearch, status_code: 404);
 	}
 
 	$plugins->run_hooks("private_results_start");
@@ -554,7 +554,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
 		}
 		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
-		error($lang->error_suspend_pm);
+		error($lang->error_suspend_pm, status_code: 403);
 	}
 
 	// Verify incoming POST request
@@ -677,7 +677,7 @@ if($mybb->input['action'] == "send")
 			$suspendpmtype = $lang->sprintf($lang->error_suspend_pm_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspendpmtime']));
 		}
 		$lang->error_suspend_pm = $lang->sprintf($lang->error_suspend_pm, $suspendpmtype, my_date($mybb->settings['timeformat'], $mybb->user['suspendpmtime']));
-		error($lang->error_suspend_pm);
+		error($lang->error_suspend_pm, status_code: 403);
 	}
 
 	$plugins->run_hooks("private_send_start");
@@ -1025,7 +1025,7 @@ if($mybb->input['action'] == "read")
 
 	if(!$pm)
 	{
-		error($lang->error_invalidpm);
+		error($lang->error_invalidpm, status_code: 404);
 	}
 
 	if($pm['folder'] == 3)
@@ -1536,7 +1536,7 @@ if($mybb->input['action'] == "empty")
 {
 	if($mybb->user['totalpms'] == 0)
 	{
-		error($lang->error_nopms);
+		error($lang->error_nopms, status_code: 200);
 	}
 
 	$plugins->run_hooks("private_empty_start");
@@ -1711,7 +1711,7 @@ if($mybb->input['action'] == "export")
 {
 	if($mybb->user['totalpms'] == 0)
 	{
-		error($lang->error_nopms);
+		error($lang->error_nopms, status_code: 200);
 	}
 
 	$plugins->run_hooks("private_export_start");
@@ -1824,7 +1824,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	if(!$numpms)
 	{
-		error($lang->error_nopmsarchive);
+		error($lang->error_nopmsarchive, status_code: 200);
 	}
 
 	$mybb->input['exporttype'] = $mybb->get_input('exporttype');

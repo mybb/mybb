@@ -55,7 +55,7 @@ if($mybb->input['action'] == "results")
 
 	if(!$search)
 	{
-		error($lang->error_invalidsearch);
+		error($lang->error_invalidsearch, status_code: 404);
 	}
 
 	$plugins->run_hooks("search_results_start");
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "results")
 			// No results.
 			else
 			{
-				error($lang->error_nosearchresults);
+				error($lang->error_nosearchresults, status_code: 200);
 			}
 			$where_conditions = "t.tid IN (".$search['threads'].")";
 		}
@@ -280,7 +280,7 @@ if($mybb->input['action'] == "results")
 
 			if(!$count['resultcount'])
 			{
-				error($lang->error_nosearchresults);
+				error($lang->error_nosearchresults, status_code: 200);
 			}
 			$results['threadcount'] = $count['resultcount'];
 		}
@@ -353,7 +353,7 @@ if($mybb->input['action'] == "results")
 
 		if(empty($thread_ids))
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		// Fetch dot icons if enabled
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "results")
 
 		if(!$threads)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		$multipage = multipage($results['threadcount'], $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "results")
 	{
 		if(empty($search['posts']))
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		$results['postcount'] = 0;
@@ -743,7 +743,7 @@ if($mybb->input['action'] == "results")
 
 		if(!$results['postcount'])
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		// And now we have our sanatized post list
@@ -975,7 +975,7 @@ if($mybb->input['action'] == "results")
 
 		if(!$posts)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		$multipage = multipage($results['postcount'], $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
@@ -1457,7 +1457,7 @@ elseif($mybb->input['action'] == "do_search")
 			{
 				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			}
-			error($lang->error_searchflooding);
+			error($lang->error_searchflooding, status_code: 429);
 		}
 	}
 	if($mybb->get_input('showresults') == "threads")
@@ -1547,14 +1547,14 @@ else if($mybb->input['action'] == "thread")
 
 	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	// Get forum info
 	$forum = get_forum($thread['fid']);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 
 	$forum_permissions = forum_permissions($forum['fid']);
@@ -1604,7 +1604,7 @@ else if($mybb->input['action'] == "thread")
 				{
 					$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 				}
-				error($lang->error_searchflooding);
+				error($lang->error_searchflooding, status_code: 429);
 			}
 		}
 	}

@@ -27,7 +27,7 @@ $plugins->run_hooks('announcements_start');
 
 if(!$announcement)
 {
-	error($lang->error_invalidannouncement);
+	error($lang->error_invalidannouncement, status_code: 404);
 }
 
 // Get forum info
@@ -38,7 +38,7 @@ if($fid > 0)
 
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 
 	// Make navigation
@@ -73,7 +73,7 @@ $announcementarray = $db->fetch_array($query);
 
 if(!$announcementarray)
 {
-	error($lang->error_invalidannouncement);
+	error($lang->error_invalidannouncement, status_code: 404);
 }
 
 // Gather usergroup data from the cache
