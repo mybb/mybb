@@ -727,6 +727,13 @@ if($task_cache['nextrun'] <= TIME_NOW)
 // Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
 $mybb->settings['footer'] = [];
 
+// Do not carry a submitted form action into the footer selectors.
+$footer_ignore = isset($_POST['action']) ? array('action', 'my_post_key') : array('my_post_key');
+if(isset($_POST['action']))
+{
+	$mybb->settings['footer']['submitted_action'] = $mybb->get_input('action');
+}
+
 // Are we showing the quick language selection box?
 if($mybb->settings['showlanguageselect'] != 0)
 {
@@ -734,7 +741,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 
 	if(count($mybb->settings['footer']['langselect']['options']) > 1)
 	{
-		$mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
+		$mybb->settings['footer']['langselect']['current_url'] = htmlspecialchars_decode(get_current_location(false, array_merge($footer_ignore, array('language'))), ENT_QUOTES);
 	}
 }
 
@@ -745,7 +752,7 @@ if($mybb->settings['showthemeselect'] != 0)
 
 	if(!empty($mybb->settings['footer']['themeselect']['options']))
 	{
-		$mybb->settings['footer']['themeselect']['current_url'] = get_current_location(true, 'theme');
+		$mybb->settings['footer']['themeselect']['current_url'] = htmlspecialchars_decode(get_current_location(false, array_merge($footer_ignore, array('theme'))), ENT_QUOTES);
 	}
 }
 

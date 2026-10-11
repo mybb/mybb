@@ -6,16 +6,15 @@
             {% if constant("THIS_SCRIPT") != "index.php" %}
                 {{ build_breadcrumb_navigation('breadcrumb--footer') }}
             {% endif %}
+            {% set footer_params = {} %}
+            {% if mybb.settings.footer.submitted_action is defined and mybb.input.action is defined and mybb.input.action != mybb.settings.footer.submitted_action %}
+                {% set footer_params = {action: mybb.input.action} %}
+            {% endif %}
             <div class="footer__selectors">
                 {% if mybb.settings.footer.langselect.options is iterable and mybb.settings.footer.langselect.options|length > 1 %}
                     <div class="language form form--compact multi-field">
-                        <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
+                        <form method="post" action="{{ path(mybb.settings.footer.langselect.current_url, footer_params)|e }}" id="lang_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                            {% for name, field in mybb.input %}
-                                {% if name != 'language' and name is not iterable and value is not iterable and value %}
-                                    <input type="hidden" name="{{ name }}" value="{{ value }}" />
-                                {% endif %}
-                            {% endfor %}
                             <div class="select-field">
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="language" onchange="MyBB.changeLanguage();">
@@ -34,15 +33,8 @@
 
                 {% if mybb.settings.footer.themeselect is iterable and mybb.settings.footer.themeselect|length > 1 %}
                     <div class="theme form form--compact multi-field">
-                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url.location }}" id="theme_select">
+                        <form method="post" action="{{ path(mybb.settings.footer.themeselect.current_url, footer_params)|e }}" id="theme_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                            {% if mybb.settings.footer.themeselect.options %}
-                                {% for name, field in mybb.input %}
-                                    {% if name != 'theme' and name is not iterable and value is defined and value is not iterable and value %}
-                                        <input type="hidden" name="{{ name }}" value="{{ value }}" />
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
                             <div class="select-field">
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 {{ mybb.settings.footer.themeselect.options|raw }}
