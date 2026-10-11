@@ -79,7 +79,7 @@ if($mybb->input['action'] == "newpoll")
 		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 	// Make navigation
@@ -102,7 +102,7 @@ if($mybb->input['action'] == "newpoll")
 	if($thread['dateline'] < ($time - ($mybb->settings['polltimelimit'] * 60 * 60)) && $mybb->settings['polltimelimit'] != 0 && $ismod == false)
 	{
 		$lang->poll_time_limit = $lang->sprintf($lang->poll_time_limit, $mybb->settings['polltimelimit']);
-		error($lang->poll_time_limit);
+		error($lang->poll_time_limit, status_code: 403);
 	}
 
 	// Sanitize number of poll options
@@ -210,7 +210,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 
@@ -401,7 +401,7 @@ if($mybb->input['action'] == "editpoll")
 		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 
@@ -604,7 +604,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 
@@ -970,7 +970,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 
@@ -978,7 +978,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$now = TIME_NOW;
 	if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout']))
 	{
-		error($lang->error_pollclosed);
+		error($lang->error_pollclosed, status_code: 403);
 	}
 
 	if(!isset($mybb->input['option']))
@@ -1137,7 +1137,7 @@ if($mybb->input['action'] == "do_undovote")
 		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
-			error($lang->error_closedinvalidforum);
+			error($lang->error_closedinvalidforum, status_code: 403);
 		}
 	}
 
@@ -1147,7 +1147,7 @@ if($mybb->input['action'] == "do_undovote")
 	$expiretime = $poll['dateline'] + $poll['timeout'];
 	if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < TIME_NOW && $poll['timeout']))
 	{
-		error($lang->error_pollclosed);
+		error($lang->error_pollclosed, status_code: 403);
 	}
 
 	// Check if the user has voted before...

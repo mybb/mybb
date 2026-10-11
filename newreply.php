@@ -95,7 +95,7 @@ if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thre
 }
 if($forum['open'] == 0 || $forum['type'] != "f")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
@@ -336,14 +336,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						$stop_forum_spam_checker->getErrorText(array(
 							'stopforumspam_check_usernames',
 							'stopforumspam_check_ips'
-						))));
+						))), status_code: 403);
 				}
 			}
 			catch(Exception $e)
 			{
 				if($mybb->settings['stopforumspam_block_on_error'])
 				{
-					error($lang->error_stop_forum_spam_fetching);
+					error($lang->error_stop_forum_spam_fetching, status_code: 503);
 				}
 			}
 		}

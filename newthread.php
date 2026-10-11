@@ -63,7 +63,7 @@ $forumpermissions = forum_permissions($fid);
 
 if($forum['open'] == 0 || $forum['type'] != "f" || $forum['linkto'] != "")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 
 if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0)

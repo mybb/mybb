@@ -2379,7 +2379,7 @@ if($mybb->input['action'] == "modqueue")
 	{
 		if($counters['modqueue']['deletedthreads'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_deleted_threads);
+			error($lang->you_cannot_moderate_deleted_threads, status_code: 403);
 		}
 
 		$forum_cache = $cache->read("forums");
@@ -2507,7 +2507,7 @@ if($mybb->input['action'] == "modqueue")
 	{
 		if($counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_deleted_posts);
+			error($lang->you_cannot_moderate_deleted_posts, status_code: 403);
 		}
 
 		$forum_cache = $cache->read("forums");

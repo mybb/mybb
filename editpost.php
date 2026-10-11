@@ -71,7 +71,7 @@ if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread
 }
 if(!$forum || $forum['type'] != "f")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 if(($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1)
 {
@@ -184,7 +184,7 @@ check_forum_password($forum['fid']);
 
 if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == '1')
 {
-	error($lang->error_cannot_upload_php_post);
+	error($lang->error_cannot_upload_php_post, status_code: 413);
 }
 
 if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_editpost" && isset($mybb->input['submitbutton'])) || ($mybb->input['action'] == "editpost" && isset($mybb->input['previewpost']))) && isset($_FILES['attachments']))))

@@ -1355,7 +1355,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 
 	if($mybb->settings['regtype'] == "admin")
 	{
-		error($lang->error_activated_by_admin);
+		error($lang->error_activated_by_admin, status_code: 403);
 	}
 
 	$errors = array();
@@ -1394,7 +1394,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 			{
 				if($user['type'] == "b" && $user['validated'] == 1)
 				{
-					error($lang->error_activated_by_admin);
+					error($lang->error_activated_by_admin, status_code: 403);
 				}
 
 				if($user['usergroup'] == 5)
@@ -1981,12 +1981,12 @@ if($mybb->input['action'] == "logout")
 	// Check session ID if we have one
 	if(isset($mybb->input['sid']) && $mybb->get_input('sid') !== $session->sid)
 	{
-		error($lang->error_notloggedout);
+		error($lang->error_notloggedout, status_code: 403);
 	}
 	// Otherwise, check logoutkey
 	else if(!isset($mybb->input['sid']) && $mybb->get_input('logoutkey') !== $mybb->user['logoutkey'])
 	{
-		error($lang->error_notloggedout);
+		error($lang->error_notloggedout, status_code: 403);
 	}
 
 	my_unsetcookie("mybbuser");
@@ -2852,7 +2852,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	if(!$to_user['username'])
 	{
-		error($lang->error_invalidusername);
+		error($lang->error_invalidusername, status_code: 404);
 	}
 
 	if($to_user['hideemail'] != 0)

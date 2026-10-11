@@ -1509,7 +1509,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
@@ -1561,7 +1561,7 @@ else if($mybb->input['action'] == "thread")
 
 	if($forum['open'] == 0 || $forum['type'] != "f")
 	{
-		error($lang->error_closedinvalidforum);
+		error($lang->error_closedinvalidforum, status_code: 403);
 	}
 	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1 || (isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
@@ -1628,7 +1628,7 @@ else if($mybb->input['action'] == "thread")
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
