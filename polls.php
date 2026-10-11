@@ -52,7 +52,7 @@ if($mybb->input['action'] == "newpoll")
 	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	if(!$thread || $thread['visible'] == -1)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	// Is the currently logged in user a moderator of this forum?
@@ -61,7 +61,7 @@ if($mybb->input['action'] == "newpoll")
 	// Make sure we are looking at a real thread here.
 	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$fid = $thread['fid'];
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "newpoll")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{
@@ -192,7 +192,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	if(!$thread)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$fid = $thread['fid'];
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{
@@ -369,14 +369,14 @@ if($mybb->input['action'] == "editpoll")
 
 	if(!$poll)
 	{
-		error($lang->error_invalidpoll);
+		error($lang->error_invalidpoll, status_code: 404);
 	}
 
 	$query = $db->simple_select("threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
 	if(!$thread)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$tid = $thread['tid'];
@@ -393,7 +393,7 @@ if($mybb->input['action'] == "editpoll")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{
@@ -579,14 +579,14 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	if(!$poll)
 	{
-		error($lang->error_invalidpoll);
+		error($lang->error_invalidpoll, status_code: 404);
 	}
 
 	$query = $db->simple_select("threads", "*", "poll='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$thread = $db->fetch_array($query);
 	if(!$thread)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$forumpermissions = forum_permissions($thread['fid']);
@@ -596,7 +596,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$fid = $thread['fid'];
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{
@@ -760,14 +760,14 @@ if($mybb->input['action'] == "showresults")
 
 	if(!$poll)
 	{
-		error($lang->error_invalidpoll);
+		error($lang->error_invalidpoll, status_code: 404);
 	}
 
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
 	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$fid = $thread['fid'];
@@ -776,7 +776,7 @@ if($mybb->input['action'] == "showresults")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 
 	$forumpermissions = forum_permissions($forum['fid']);
@@ -937,7 +937,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 	if(!$poll)
 	{
-		error($lang->error_invalidpoll);
+		error($lang->error_invalidpoll, status_code: 404);
 	}
 
 	$plugins->run_hooks("polls_vote_start");
@@ -948,7 +948,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$fid = $thread['fid'];
@@ -962,7 +962,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{
@@ -1108,7 +1108,7 @@ if($mybb->input['action'] == "do_undovote")
 
 	if(!$poll)
 	{
-		error($lang->error_invalidpoll);
+		error($lang->error_invalidpoll, status_code: 404);
 	}
 
 	$plugins->run_hooks("polls_do_undovote_start");
@@ -1120,7 +1120,7 @@ if($mybb->input['action'] == "do_undovote")
 	$thread = get_thread($poll['tid']);
 	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$fid = $thread['fid'];
@@ -1129,7 +1129,7 @@ if($mybb->input['action'] == "do_undovote")
 	$forum = get_forum($fid);
 	if(!$forum)
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 	else
 	{

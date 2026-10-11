@@ -60,7 +60,7 @@ elseif($mybb->input['action'] == "markread")
 		{
 			if(!isset($mybb->input['ajax']))
 			{
-				error($lang->error_invalidforum);
+				error($lang->error_invalidforum, status_code: 404);
 			}
 			else
 			{
@@ -119,7 +119,7 @@ elseif($mybb->input['action'] == "rules")
 
 		if(!$forum || $forum['type'] != "f" || $forum['rules'] == '')
 		{
-			error($lang->error_invalidforum);
+			error($lang->error_invalidforum, status_code: 404);
 		}
 
 		$forumpermissions = forum_permissions($forum['fid']);
@@ -162,7 +162,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 
 	if($mybb->settings['helpsearch'] != 1)
 	{
-		error($lang->error_helpsearchdisabled);
+		error($lang->error_helpsearchdisabled, status_code: 404);
 	}
 
 	// Check if search flood checking is enabled and user is not admin
@@ -184,7 +184,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 			{
 				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			}
-			error($lang->error_searchflooding);
+			error($lang->error_searchflooding, status_code: 429);
 		}
 	}
 
@@ -244,7 +244,7 @@ elseif($mybb->input['action'] == "helpresults")
 
 	if($mybb->settings['helpsearch'] != 1)
 	{
-		error($lang->error_helpsearchdisabled);
+		error($lang->error_helpsearchdisabled, status_code: 404);
 	}
 
 	$sid = $mybb->get_input('sid');
@@ -253,7 +253,7 @@ elseif($mybb->input['action'] == "helpresults")
 
 	if(!$search)
 	{
-		error($lang->error_invalidsearch);
+		error($lang->error_invalidsearch, status_code: 404);
 	}
 
 	$plugins->run_hooks("misc_helpresults_start");
@@ -392,7 +392,7 @@ elseif($mybb->input['action'] == "help")
 		}
 		else
 		{
-			error($lang->error_invalidhelpdoc);
+			error($lang->error_invalidhelpdoc, status_code: 404);
 		}
 	}
 	else
@@ -538,13 +538,13 @@ elseif($mybb->input['action'] == "whoposted")
 	// Make sure we are looking at a real thread here.
 	if(!$thread)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	// Make sure we are looking at a real thread here.
 	if(($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted")) || ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || $thread['visible'] > 1)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	if(is_moderator($thread['fid'], "canviewdeleted") || is_moderator($thread['fid'], "canviewunapprove"))
@@ -571,7 +571,7 @@ elseif($mybb->input['action'] == "whoposted")
 	$forum = get_forum($thread['fid']);
 	if(!$forum || $forum['type'] != "f")
 	{
-		error($lang->error_invalidforum);
+		error($lang->error_invalidforum, status_code: 404);
 	}
 
 	// Does the user have permission to view this thread?

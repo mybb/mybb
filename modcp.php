@@ -232,7 +232,7 @@ if($mybb->input['action'] == "do_reports")
 
 	if($counters['reportedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_view_reported_posts);
+		error($lang->you_cannot_view_reported_posts, status_code: 403);
 	}
 
 	// Verify incoming POST request
@@ -305,7 +305,7 @@ if($mybb->input['action'] == "reports")
 
 	if($counters['reportedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_view_reported_posts);
+		error($lang->you_cannot_view_reported_posts, status_code: 403);
 	}
 
 	$lang->load('report');
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "allreports")
 
 	if($numreportedposts == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_view_reported_posts);
+		error($lang->you_cannot_view_reported_posts, status_code: 403);
 	}
 
 	$lang->load('report');
@@ -739,7 +739,7 @@ if($mybb->input['action'] == "modlogs")
 
 	if($counters['modlogs'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_view_mod_logs);
+		error($lang->you_cannot_view_mod_logs, status_code: 403);
 	}
 
 	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
@@ -978,7 +978,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 
 	if(!$announcement)
 	{
-		error($lang->error_invalid_announcement);
+		error($lang->error_invalid_announcement, status_code: 404);
 	}
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
@@ -1009,7 +1009,7 @@ if($mybb->input['action'] == "delete_announcement")
 
 	if(!$announcement)
 	{
-		error($lang->error_invalid_announcement);
+		error($lang->error_invalid_announcement, status_code: 404);
 	}
 
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
@@ -1332,7 +1332,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	// Check that it exists
 	if(!$announcement)
 	{
-		error($lang->error_invalid_announcement);
+		error($lang->error_invalid_announcement, status_code: 404);
 	}
 
 	// Mod has permissions to edit this announcement
@@ -1503,7 +1503,7 @@ if($mybb->input['action'] == "edit_announcement")
 
 	if(!$announcement)
 	{
-		error($lang->error_invalid_announcement);
+		error($lang->error_invalid_announcement, status_code: 404);
 	}
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
@@ -1645,7 +1645,7 @@ if($mybb->input['action'] == "announcements")
 
 	if($counters['announcements'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_manage_announcements);
+		error($lang->you_cannot_manage_announcements, status_code: 403);
 	}
 
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
@@ -1699,7 +1699,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		if($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_threads);
+			error($lang->you_cannot_moderate_threads, status_code: 403);
 		}
 
 		$threads = array_map("intval", array_keys($mybb->input['threads']));
@@ -1752,7 +1752,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		if($nummodqueueposts == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_posts);
+			error($lang->you_cannot_moderate_posts, status_code: 403);
 		}
 
 		$posts = array_map("intval", array_keys($mybb->input['posts']));
@@ -1927,7 +1927,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		if($nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_attachments);
+			error($lang->you_cannot_moderate_attachments, status_code: 403);
 		}
 
 		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
@@ -1980,7 +1980,7 @@ if($mybb->input['action'] == "modqueue")
 
 	if($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $counters['modqueue']['deletedthreads'] == 0 && $counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
-		error($lang->you_cannot_use_mod_queue);
+		error($lang->you_cannot_use_mod_queue, status_code: 403);
 	}
 
 	$mybb->input['type'] = $mybb->get_input('type');
@@ -1989,7 +1989,7 @@ if($mybb->input['action'] == "modqueue")
 	{
 		if($counters['modqueue']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_threads);
+			error($lang->you_cannot_moderate_threads, status_code: 403);
 		}
 
 		$forum_cache = $cache->read("forums");
@@ -2116,7 +2116,7 @@ if($mybb->input['action'] == "modqueue")
 	{
 		if($counters['modqueue']['posts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_posts);
+			error($lang->you_cannot_moderate_posts, status_code: 403);
 		}
 
 		$forum_cache = $cache->read("forums");
@@ -2250,12 +2250,12 @@ if($mybb->input['action'] == "modqueue")
 	{
 		if($mybb->settings['enableattachments'] == 0)
 		{
-			error($lang->attachments_disabled);
+			error($lang->attachments_disabled, status_code: 404);
 		}
 
 		if($counters['modqueue']['attachments'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
-			error($lang->you_cannot_moderate_attachments);
+			error($lang->you_cannot_moderate_attachments, status_code: 403);
 		}
 
 		$query = $db->query("
@@ -2662,7 +2662,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$user = get_user($mybb->input['uid']);
 	if(!$user)
 	{
-		error($lang->error_nomember);
+		error($lang->error_nomember, status_code: 404);
 	}
 
 	// Check if the current user has permission to edit this user
@@ -2931,7 +2931,7 @@ if($mybb->input['action'] == "editprofile")
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	if(!$user)
 	{
-		error($lang->error_nomember);
+		error($lang->error_nomember, status_code: 404);
 	}
 
 	// Check if the current user has permission to edit this user
@@ -4077,7 +4077,7 @@ if($mybb->input['action'] == "liftban")
 
 	if(!$ban)
 	{
-		error($lang->error_invalidban);
+		error($lang->error_invalidban, status_code: 404);
 	}
 
 	// Permission to edit this ban?
@@ -4275,7 +4275,7 @@ if($mybb->input['action'] == "banuser")
 
 	if($banned['numgroups'] == 0)
 	{
-		error($lang->no_banned_group);
+		error($lang->no_banned_group, status_code: 200);
 	}
 
 	$plugins->run_hooks('modcp_banuser_end');
@@ -4391,7 +4391,7 @@ if($mybb->input['action'] == "editban")
 
 	if(!$banned)
 	{
-		error($lang->error_nomember);
+		error($lang->error_nomember, status_code: 404);
 	}
 
 	// Permission to edit this ban?
@@ -4464,7 +4464,7 @@ if($mybb->input['action'] == "editban")
 
 	if($banned['numgroups'] == 0)
 	{
-		error($lang->no_banned_group);
+		error($lang->no_banned_group, status_code: 200);
 	}
 
 	$plugins->run_hooks('modcp_editban_end');

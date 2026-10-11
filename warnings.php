@@ -22,7 +22,7 @@ $lang->load("datahandler_warnings");
 
 if($mybb->settings['enablewarningsystem'] == 0)
 {
-	error($lang->error_warning_system_disabled);
+	error($lang->error_warning_system_disabled, status_code: 404);
 }
 
 // Expire old warnings
@@ -50,19 +50,19 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	if(!$user)
 	{
-		error($lang->error_invalid_user);
+		error($lang->error_invalid_user, status_code: 404);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
 
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
-		error($lang->error_cant_warn_group);
+		error($lang->error_cant_warn_group, status_code: 403);
 	}
 
 	if(!modcp_can_manage_user($user['uid']))
 	{
-		error($lang->error_cant_warn_user);
+		error($lang->error_cant_warn_user, status_code: 403);
 	}
 
 	$plugins->run_hooks("warnings_do_warn_start");
@@ -161,19 +161,19 @@ if($mybb->input['action'] == "warn")
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
-			error($lang->sprintf($lang->warnings_reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
+			error($lang->sprintf($lang->warnings_reached_max_warnings_day, $mybb->usergroup['maxwarningsday']), status_code: 429);
 		}
 	}
 
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	if(!$user)
 	{
-		error($lang->error_invalid_user);
+		error($lang->error_invalid_user, status_code: 404);
 	}
 
 	if($user['uid'] == $mybb->user['uid'])
 	{
-		error($lang->warnings_error_cannot_warn_self);
+		error($lang->warnings_error_cannot_warn_self, status_code: 403);
 	}
 
 	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
@@ -185,12 +185,12 @@ if($mybb->input['action'] == "warn")
 
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
-		error($lang->error_cant_warn_group);
+		error($lang->error_cant_warn_group, status_code: 403);
 	}
 
 	if(!modcp_can_manage_user($user['uid']))
 	{
-		error($lang->error_cant_warn_user);
+		error($lang->error_cant_warn_user, status_code: 403);
 	}
 
 	$warnings = [];
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "warn")
 
 		if(!$post || !$thread)
 		{
-			error($lang->warnings_error_invalid_post);
+			error($lang->warnings_error_invalid_post, status_code: 404);
 		}
 
 		$forum_permissions = forum_permissions($thread['fid']);
@@ -501,7 +501,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 
 	if(!$warning)
 	{
-		error($lang->error_invalid_warning);
+		error($lang->error_invalid_warning, status_code: 404);
 	}
 	else if($warning['daterevoked'])
 	{
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
-		error($lang->error_cant_warn_group);
+		error($lang->error_cant_warn_group, status_code: 403);
 	}
 
 	$plugins->run_hooks("warnings_do_revoke_start");
@@ -567,7 +567,7 @@ if($mybb->input['action'] == "view")
 
 	if(!$warning)
 	{
-		error($lang->error_invalid_warning);
+		error($lang->error_invalid_warning, status_code: 404);
 	}
 
 	$user = get_user((int)$warning['uid']);
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "view")
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
-		error($lang->error_cant_warn_group);
+		error($lang->error_cant_warn_group, status_code: 403);
 	}
 
 	$plugins->run_hooks("warnings_view_start");
@@ -697,7 +697,7 @@ if(!$mybb->input['action'])
 	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	if(!$user)
 	{
-		error($lang->error_invalid_user);
+		error($lang->error_invalid_user, status_code: 404);
 	}
 
 	if(!modcp_can_manage_user($user['uid']))
@@ -708,7 +708,7 @@ if(!$mybb->input['action'])
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
 	{
-		error($lang->error_cant_warn_group);
+		error($lang->error_cant_warn_group, status_code: 403);
 	}
 
 	$user['username'] = htmlspecialchars_uni($user['username']);

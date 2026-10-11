@@ -41,7 +41,7 @@ if($pid)
 	$post = get_post($pid);
 	if(!$post)
 	{
-		error($lang->error_invalidpost, $lang->error);
+		error($lang->error_invalidpost, $lang->error, status_code: 404);
 	}
 	$tid = $post['tid'];
 }
@@ -51,7 +51,7 @@ if($tid)
 	$thread = get_thread($tid);
 	if(!$thread)
 	{
-		error($lang->error_invalidthread, $lang->error);
+		error($lang->error_invalidthread, $lang->error, status_code: 404);
 	}
 	$fid = $thread['fid'];
 }
@@ -76,7 +76,7 @@ if($pmid > 0)
 
 	if(!$pm)
 	{
-		error($lang->error_invalidpm, $lang->error);
+		error($lang->error_invalidpm, $lang->error, status_code: 404);
 	}
 }
 
@@ -781,7 +781,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		if($thread['closed'] == 1)
@@ -816,7 +816,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_stick");
@@ -854,7 +854,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_removeredirects");
@@ -934,7 +934,7 @@ switch($mybb->input['action'])
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
-			error($lang->error_invalidpoll, $lang->error);
+			error($lang->error_invalidpoll, $lang->error, status_code: 404);
 		}
 
 		output_page(\MyBB\View\template('moderation/deletepoll.twig', [
@@ -951,7 +951,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		if(!isset($mybb->input['delete']))
@@ -969,7 +969,7 @@ switch($mybb->input['action'])
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
-			error($lang->error_invalidpoll, $lang->error);
+			error($lang->error_invalidpoll, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_do_deletepoll");
@@ -995,7 +995,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$thread = get_thread($tid);
@@ -1023,7 +1023,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$thread = get_thread($tid);
@@ -1093,7 +1093,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_move");
@@ -1129,7 +1129,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$newperms = forum_permissions($moveto);
@@ -1141,7 +1141,7 @@ switch($mybb->input['action'])
 		$newforum = get_forum($moveto);
 		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
-			error($lang->error_invalidforum, $lang->error);
+			error($lang->error_invalidforum, $lang->error, status_code: 404);
 		}
 		if($method != "copy" && $thread['fid'] == $moveto)
 		{
@@ -1186,7 +1186,7 @@ switch($mybb->input['action'])
 		// Make sure we are looking at a real thread here.
 		if(!$thread)
 		{
-			error($lang->error_nomember, $lang->error);
+			error($lang->error_nomember, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks('moderation_viewthreadnotes');
@@ -1447,7 +1447,7 @@ switch($mybb->input['action'])
 	case "getpmip":
 		if($pmid <= 0)
 		{
-			error($lang->error_invalidpm, $lang->error);
+			error($lang->error_invalidpm, $lang->error, status_code: 404);
 		}
 
 		add_breadcrumb($lang->nav_pms, "private.php");
@@ -1498,7 +1498,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_merge");
@@ -1522,7 +1522,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_do_merge");
@@ -1622,7 +1622,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$query = $db->query("
@@ -1688,7 +1688,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_do_split");
@@ -1723,7 +1723,7 @@ switch($mybb->input['action'])
 		$newforum = get_forum($moveto);
 		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
-			error($lang->error_invalidforum, $lang->error);
+			error($lang->error_invalidforum, $lang->error, status_code: 404);
 		}
 		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
 		{
@@ -1768,7 +1768,7 @@ switch($mybb->input['action'])
 
 		if($thread['visible'] == -1)
 		{
-			error($lang->error_thread_deleted, $lang->error);
+			error($lang->error_thread_deleted, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks("moderation_removesubscriptions");
@@ -2277,7 +2277,7 @@ switch($mybb->input['action'])
 		$newforum = get_forum($moveto);
 		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
-			error($lang->error_invalidforum, $lang->error);
+			error($lang->error_invalidforum, $lang->error, status_code: 404);
 		}
 
 		$plugins->run_hooks('moderation_do_multimovethreads');
@@ -2720,7 +2720,7 @@ switch($mybb->input['action'])
 		$newforum = get_forum($moveto);
 		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
-			error($lang->error_invalidforum, $lang->error);
+			error($lang->error_invalidforum, $lang->error, status_code: 404);
 		}
 		$newperms = forum_permissions($moveto);
 		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_pids($posts, 'canmovetononmodforum'))
@@ -3177,7 +3177,7 @@ switch($mybb->input['action'])
 		$user = get_user($uid);
 		if(!$user || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
-			error($lang->purgespammer_invalid_user);
+			error($lang->purgespammer_invalid_user, status_code: 404);
 		}
 
 		if($mybb->input['action'] == "do_purgespammer")
@@ -3313,7 +3313,7 @@ switch($mybb->input['action'])
 
 			if(isset($thread) && $thread['visible'] == -1)
 			{
-				error($lang->error_thread_deleted, $lang->error);
+				error($lang->error_thread_deleted, $lang->error, status_code: 404);
 			}
 
 			if(!empty($options['confirmation']) && empty($mybb->input['confirm']))

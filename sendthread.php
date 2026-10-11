@@ -26,7 +26,7 @@ $thread = get_thread($tid);
 // Invalid thread
 if(!$thread || $thread['visible'] != 1)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 
 // Get thread prefix
@@ -55,7 +55,7 @@ $forumpermissions = forum_permissions($forum['fid']);
 // Invalid forum?
 if(!$forum || $forum['type'] != "f")
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 // This user can't view this forum or this thread
@@ -89,7 +89,7 @@ if($mybb->usergroup['maxemails'] > 0)
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
 		$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-		error($lang->error_max_emails_day);
+		error($lang->error_max_emails_day, status_code: 429);
 	}
 }
 
@@ -133,7 +133,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 		}
 
-		error($lang->error_emailflooding);
+		error($lang->error_emailflooding, status_code: 429);
 	}
 }
 

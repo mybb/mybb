@@ -23,7 +23,7 @@ $lang->load("calendar");
 
 if($mybb->settings['enablecalendar'] == 0)
 {
-	error($lang->calendar_disabled);
+	error($lang->calendar_disabled, status_code: 404);
 }
 
 if($mybb->usergroup['canviewcalendar'] == 0)
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar or post events?
@@ -223,7 +223,7 @@ if($mybb->input['action'] == "addevent")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar or post events?
@@ -622,7 +622,7 @@ if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post"
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -631,7 +631,7 @@ if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post"
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar or post events?
@@ -674,7 +674,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -683,7 +683,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar or post events?
@@ -833,7 +833,7 @@ if($mybb->input['action'] == "editevent")
 
 		if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 		{
-			error($lang->error_invalidevent);
+			error($lang->error_invalidevent, status_code: 404);
 		}
 
 		$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -842,7 +842,7 @@ if($mybb->input['action'] == "editevent")
 		// Invalid calendar?
 		if(!$calendar)
 		{
-			error($lang->invalid_calendar);
+			error($lang->invalid_calendar, status_code: 404);
 		}
 
 		// Do we have permission to view this calendar or post events?
@@ -1316,7 +1316,7 @@ if($mybb->input['action'] == "move")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -1325,7 +1325,7 @@ if($mybb->input['action'] == "move")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar or post events?
@@ -1377,7 +1377,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -1386,7 +1386,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -1406,7 +1406,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 
 	if(!$new_calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	if($calendar_permissions[$mybb->input['new_calendar']]['canviewcalendar'] != 1)
@@ -1443,7 +1443,7 @@ if($mybb->input['action'] == "approve")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -1452,7 +1452,7 @@ if($mybb->input['action'] == "approve")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -1491,7 +1491,7 @@ if($mybb->input['action'] == "unapprove")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -1500,7 +1500,7 @@ if($mybb->input['action'] == "unapprove")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -1541,7 +1541,7 @@ if($mybb->input['action'] == "event")
 
 	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_invalidevent);
+		error($lang->error_invalidevent, status_code: 404);
 	}
 
 	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
@@ -1550,7 +1550,7 @@ if($mybb->input['action'] == "event")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -1789,7 +1789,7 @@ if($mybb->input['action'] == "dayview")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -2128,7 +2128,7 @@ if($mybb->input['action'] == "weekview")
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?
@@ -2408,7 +2408,7 @@ if(!$mybb->input['action'])
 	// Invalid calendar?
 	if(!$calendar)
 	{
-		error($lang->invalid_calendar);
+		error($lang->invalid_calendar, status_code: 404);
 	}
 
 	// Do we have permission to view this calendar?

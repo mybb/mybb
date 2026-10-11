@@ -774,7 +774,7 @@ if(is_banned_ip($session->ipaddress, true))
 	{
 		$db->delete_query('sessions', "ip = ".$db->escape_binary($session->packedip));
 	}
-	error($lang->error_banned);
+	error($lang->error_banned, status_code: 403);
 }
 
 // Board Closed

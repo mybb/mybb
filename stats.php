@@ -23,14 +23,14 @@ add_breadcrumb($lang->nav_stats);
 
 $stats = $cache->read("stats");
 
-if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
-{
-	error($lang->not_enough_info_stats);
-}
-
 if($mybb->settings['statsenabled'] != 1)
 {
-	error($lang->stats_disabled);
+	error($lang->stats_disabled, status_code: 404);
+}
+
+if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
+{
+	error($lang->not_enough_info_stats, status_code: 200);
 }
 
 $plugins->run_hooks("stats_start");

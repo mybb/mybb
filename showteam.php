@@ -18,7 +18,7 @@ $lang->load('showteam');
 
 if($mybb->settings['enableshowteam'] == 0)
 {
-	error($lang->showteam_disabled);
+	error($lang->showteam_disabled, status_code: 404);
 }
 
 add_breadcrumb($lang->nav_memberlist, "memberlist.php");
@@ -39,7 +39,7 @@ while($usergroup = $db->fetch_array($query))
 
 if(empty($usergroups))
 {
-	error($lang->error_noteamstoshow);
+	error($lang->error_noteamstoshow, status_code: 200);
 }
 
 // Fetch specific forum moderator details
@@ -260,7 +260,7 @@ foreach($usergroups as $usergroup)
 
 if(empty($usergrouplist))
 {
-	error($lang->error_noteamstoshow);
+	error($lang->error_noteamstoshow, status_code: 200);
 }
 
 $plugins->run_hooks("showteam_end");
