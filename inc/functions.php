@@ -942,6 +942,8 @@ function error(string $message = "", string $title = "", string $extra_content =
 {
 	global $db, $lang, $mybb, $plugins;
 
+	http_response_code($status_code);
+
 	$message = $plugins->run_hooks("error", $message);
 
 	// AJAX error message?
@@ -952,8 +954,6 @@ function error(string $message = "", string $title = "", string $extra_content =
 		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
-
-	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
 	reset_breadcrumb();
