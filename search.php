@@ -1509,7 +1509,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
@@ -1628,7 +1628,7 @@ else if($mybb->input['action'] == "thread")
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(

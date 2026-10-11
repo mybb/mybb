@@ -216,7 +216,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 	}
 	else
 	{
-		error($lang->error_no_search_support);
+		error($lang->error_no_search_support, status_code: 404);
 	}
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
