@@ -56,7 +56,7 @@ if($fid < 0)
 $foruminfo = get_forum($fid);
 if(!$foruminfo)
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 $currentitem = $fid;
@@ -146,7 +146,7 @@ if(!empty($child_forums) && !empty($child_forums['forum_list']))
 // No forums available within a category forum, get out
 if($foruminfo['type'] == 'c' && empty($subforums))
 {
-	error($lang->error_containsnoforums);
+	error($lang->error_containsnoforums, status_code: 200);
 }
 
 $excols = "forumdisplay";

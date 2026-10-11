@@ -6496,7 +6496,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 				$hoursleft = floor($secsleft / 3600);
 				$minsleft = floor(($secsleft / 60) % 60);
 				$secsleft = floor($secsleft % 60);
-				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft), status_code: 429);
 			}
 			return false;
 		}

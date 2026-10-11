@@ -711,7 +711,7 @@ function privatemessage_perform_search_mysql($search)
 
 		if(count($userids) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 		else
 		{
@@ -787,7 +787,7 @@ function privatemessage_perform_search_mysql($search)
 
 	if(count($pms) < 1)
 	{
-		error($lang->error_nosearchresults);
+		error($lang->error_nosearchresults, status_code: 200);
 	}
 	$pms = implode(',', $pms);
 
@@ -1020,7 +1020,7 @@ function helpdocument_perform_search_mysql($search)
 
 	if(count($helpdocs) < 1)
 	{
-		error($lang->error_nosearchresults);
+		error($lang->error_nosearchresults, status_code: 200);
 	}
 	$helpdocs = implode(',', $helpdocs);
 
@@ -1200,7 +1200,7 @@ function perform_search_mysql($search)
 
 		if(count($userids) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 		else
 		{
@@ -1412,7 +1412,7 @@ function perform_search_mysql($search)
 
 		if(count($posts) < 1 && count($threads) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 		$threads = implode(',', $threads);
 		$posts = implode(',', $posts);
@@ -1437,7 +1437,7 @@ function perform_search_mysql($search)
 		}
 		if(count($threads) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		$threads = implode(',', $threads);
@@ -1554,7 +1554,7 @@ function perform_search_mysql_ft($search)
 
 		if(count($userids) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 		else
 		{
@@ -1763,7 +1763,7 @@ function perform_search_mysql_ft($search)
 		}
 		if(count($posts) < 1 && count($threads) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 		$threads = implode(',', $threads);
 		$posts = implode(',', $posts);
@@ -1788,7 +1788,7 @@ function perform_search_mysql_ft($search)
 		}
 		if(count($threads) < 1)
 		{
-			error($lang->error_nosearchresults);
+			error($lang->error_nosearchresults, status_code: 200);
 		}
 
 		$threads = implode(',', $threads);
