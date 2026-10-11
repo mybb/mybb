@@ -938,7 +938,7 @@ function get_child_list($fid)
  * @param string $extra_content Optional additional error page content
  * @param int $status_code HTTP status code to send with the error page
  */
-function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 200): never
+function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 400): never
 {
 	global $db, $lang, $mybb, $plugins;
 
@@ -1020,6 +1020,8 @@ function inline_error($errors, $title = "", $json_data = array())
 function error_no_permission()
 {
 	global $mybb, $theme, $db, $lang, $plugins, $session;
+
+	http_response_code(403);
 
 	$time = TIME_NOW;
 	$plugins->run_hooks('no_permission');
@@ -6459,7 +6461,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 			$hoursleft = floor($secsleft / 3600);
 			$minsleft = floor(($secsleft / 60) % 60);
 			$secsleft = floor($secsleft % 60);
-			error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+			error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft), status_code: 429);
 		}
 		return false;
 	}
