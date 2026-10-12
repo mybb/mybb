@@ -58,7 +58,7 @@ function get_profile_invisible_content_counts($uid)
 	$query = $db->simple_select(
 		"threads t",
 		"t.visible, COUNT(*) AS total",
-		"t.uid={$uid} AND t.visible IN (0, -1) AND ({$thread_where})",
+		"t.uid={$uid} AND t.moved='0' AND t.visible IN (0, -1) AND ({$thread_where})",
 		array('group_by' => 't.visible')
 	);
 	while($row = $db->fetch_array($query))
