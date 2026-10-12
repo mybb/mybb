@@ -9,6 +9,84 @@
  */
 
 /**
+ * Count a user's non-visible content that the current viewer may access.
+ *
+ * @param int $uid The author ID
+ * @return array Counts indexed by content type and visibility
+ */
+function get_profile_invisible_content_counts($uid)
+{
+	global $db, $mybb;
+
+	require_once MYBB_ROOT."inc/functions_search.php";
+
+	$uid = (int)$uid;
+	$counts = array('posts' => array(0 => 0, -1 => 0), 'threads' => array(0 => 0, -1 => 0));
+	if(get_visible_where('t') === 't.visible = 1')
+	{
+		return $counts;
+	}
+
+	$access_where = array();
+	foreach(array(get_unsearchable_forums(), get_inactive_forums()) as $excluded_forums)
+	{
+		if($excluded_forums)
+		{
+			$access_where[] = '{alias}.fid NOT IN ('.$excluded_forums.')';
+		}
+	}
+
+	$onlyown = array();
+	foreach(forum_permissions() as $fid => $permissions)
+	{
+		if(!empty($permissions['canonlyviewownthreads']))
+		{
+			$onlyown[] = (int)$fid;
+		}
+	}
+	if($onlyown)
+	{
+		$access_where[] = '({alias}.fid NOT IN ('.implode(',', $onlyown).') OR {alias}.uid='.(int)$mybb->user['uid'].')';
+	}
+
+	$access_where = implode(' AND ', $access_where);
+	$thread_where = get_visible_where('t');
+	if($access_where)
+	{
+		$thread_where .= ' AND '.str_replace('{alias}', 't', $access_where);
+	}
+	$query = $db->simple_select(
+		"threads t",
+		"t.visible, COUNT(*) AS total",
+		"t.uid={$uid} AND t.visible IN (0, -1) AND ({$thread_where})",
+		array('group_by' => 't.visible')
+	);
+	while($row = $db->fetch_array($query))
+	{
+		$counts['threads'][(int)$row['visible']] = (int)$row['total'];
+	}
+
+	$query = $db->query("
+		SELECT q.visible, COUNT(*) AS total
+		FROM (
+			SELECT p.uid AS postuid, t.uid, t.fid, CASE WHEN t.visible=0 THEN 0 WHEN t.visible=-1 THEN -1 WHEN p.visible=-1 THEN -1 WHEN p.visible=0 THEN 0 ELSE 1 END AS visible
+			FROM ".TABLE_PREFIX."posts p
+			INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE (".get_visible_where('t').") AND (".get_visible_where('p').")
+		) q
+		WHERE q.postuid={$uid} AND q.visible IN (0, -1)
+			".($access_where ? "AND ".str_replace('{alias}', 'q', $access_where) : '')."
+		GROUP BY q.visible
+	");
+	while($row = $db->fetch_array($query))
+	{
+		$counts['posts'][(int)$row['visible']] = (int)$row['total'];
+	}
+
+	return $counts;
+}
+
+/**
  * Checks if a user with uid $uid exists in the database.
  *
  * @param int $uid The uid to check for.
