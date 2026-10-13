@@ -1497,100 +1497,6 @@ EOF;
 	$form_container = new FormContainer($lang->signature.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->signature, $lang->sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
-	$periods = array(
-		"hours" => $lang->expire_hours,
-		"days" => $lang->expire_days,
-		"weeks" => $lang->expire_weeks,
-		"months" => $lang->expire_months,
-		"never" => $lang->expire_permanent
-	);
-
-	// Are we already suspending the signature?
-	if($mybb->get_input('suspendsignature'))
-	{
-		$sig_checked = 1;
-
-		// Display how much time is left on the ban for the user to extend it
-		if($user['suspendsigtime'] == "0")
-		{
-			// Permanent
-			$lang->suspend_expire_info = $lang->suspend_sig_perm;
-		}
-		else
-		{
-			// There's a limit to the suspension!
-			$remaining = $user['suspendsigtime']-TIME_NOW;
-			$expired = nice_time($remaining, array('seconds' => false));
-
-			$color = 'inherit';
-			if($remaining < 3600)
-			{
-				$color = 'red';
-			}
-			elseif($remaining < 86400)
-			{
-				$color = 'maroon';
-			}
-			elseif($remaining < 604800)
-			{
-				$color = 'green';
-			}
-
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
-		}
-		$user_suspend_info = '
-				<tr>
-					<td colspan="2">'.$lang->suspend_expire_info.'<br />'.$lang->suspend_sig_extend.'</td>
-				</tr>';
-	}
-	else
-	{
-		$sig_checked = 0;
-		$user_suspend_info = '';
-	}
-
-	$actions = '
-	<script type="text/javascript">
-	<!--
-		var sig_checked = "'.$sig_checked.'";
-
-		function toggleAction()
-		{
-			if($("#suspend_action").is(\':visible\'))
-			{
-				$("#suspend_action").hide();
-			}
-			else
-			{
-				$("#suspend_action").show();
-			}
-		}
-	// -->
-	</script>
-
-	<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-		<dt>'.$form->generate_check_box("suspendsignature", 1, $lang->suspend_sig_box, array('checked' => $sig_checked, 'onclick' => 'toggleAction();')).'</dt>
-		<dd style="margin-top: 4px;" id="suspend_action" class="actions">
-			<table cellpadding="4">'.$user_suspend_info.'
-				<tr>
-					<td width="30%"><small>'.$lang->expire_length.'</small></td>
-					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
-				</tr>
-			</table>
-		</dd>
-	</dl>
-
-	<script type="text/javascript">
-	<!--
-		if(sig_checked == 0)
-		{
-			$("#suspend_action").hide();
-		}
-	// -->
-	</script>';
-
-	$form_container->output_row($lang->suspend_sig, $lang->suspend_sig_info, $actions);
-
 	$signature_options = array(
 		$form->generate_radio_button("update_posts", "enable", $lang->enable_sig_in_all_posts, array("checked" => 0)),
 		$form->generate_radio_button("update_posts", "disable", $lang->disable_sig_in_all_posts, array("checked" => 0)),
@@ -1846,6 +1752,50 @@ EOF;
 	$suspend_avatar_div = '<div id="suspend_avatar">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspendavatar_time", $mybb->get_input('suspendavatar_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$suspendavatar_options.'</div>';
 	$form_container->output_row($form->generate_check_box("suspendavatar", 1, $lang->suspend_avatar, array("id" => "suspendavatar", "onclick" => "toggleBox('suspendavatar');", "checked" => $mybb->get_input('suspendavatar'))), $lang->suspend_avatar_info, $suspend_avatar_div);
 
+	// Are we already suspending the signature?
+	if($mybb->get_input('suspendsignature'))
+	{
+		$sig_checked = 1;
+
+		// Display how much time is left on the ban for the user to extend it
+		if($user['suspendsigtime'] == "0")
+		{
+			// Permanent
+			$lang->suspend_expire_info = $lang->suspend_sig_perm;
+		}
+		else
+		{
+			// There's a limit to the suspension!
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
+		}
+		$user_suspend_info = '<p>'.$lang->suspend_expire_info.'<br />'.$lang->suspend_sig_extend.'</p>';
+	}
+	else
+	{
+		$sig_checked = 0;
+		$user_suspend_info = '';
+	}
+
+	$suspend_signature_div = '<div id="suspend_action">'.$user_suspend_info.$lang->expire_length.' '.$form->generate_numeric_field('action_time', $mybb->get_input('action_time'), array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->get_input('action_period')).'</div>';
+	$form_container->output_row($form->generate_check_box("suspendsignature", 1, $lang->suspend_sig_box, array('id' => 'suspendsignature', 'checked' => $sig_checked, 'onclick' => "toggleBox('suspendsignature');")), $lang->suspend_sig_info, $suspend_signature_div);
+
 	$form_container->end();
 	$plugins->run_hooks("admin_user_users_edit_moderator_options");
 	echo "</div>\n";
@@ -1918,6 +1868,10 @@ function toggleBox(action)
 			$("#suspend_avatar").hide();
 		}
 	}
+	else if(action == "suspendsignature")
+	{
+		$("#suspend_action").toggle($("#suspendsignature").prop("checked"));
+	}
 }
 
 if($("#moderateposting").is(":checked") == false)
@@ -1955,6 +1909,8 @@ else
 {
 	$("#suspend_avatar").show();
 }
+
+$("#suspend_action").toggle($("#suspendsignature").prop("checked"));
 
 // -->
 </script>';
