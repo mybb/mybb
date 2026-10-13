@@ -31,7 +31,7 @@
 
         var captchaOnloadCallback = function() {
 
-            captchaTarget = $('input[name="regsubmit"], #quick_reply_submit').filter(function(){
+            captchaTarget = $('input[name="regsubmit"], #quick_reply_submit, #resendactivation_submit').filter(function(){
                 return $(this).closest('#quick_login').length == 0
             });
 
@@ -79,7 +79,7 @@
 
         var captchaOnloadCallback = function() {
 
-            captchaTarget = $('input[name="regsubmit"], #quick_reply_submit').filter(function(){
+            captchaTarget = $('input[name="regsubmit"], #quick_reply_submit, #resendactivation_submit').filter(function(){
                 return $(this).closest('#quick_login').length == 0
             });
 
