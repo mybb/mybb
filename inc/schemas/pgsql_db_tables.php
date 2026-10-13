@@ -145,6 +145,7 @@ $tables[] = "CREATE TABLE mybb_banfilters (
   lastuse int NOT NULL default '0',
   dateline int NOT NULL default '0',
   notes text NULL,
+  expires int NOT NULL default '0',
   PRIMARY KEY (fid)
 );";
 

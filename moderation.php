@@ -3213,7 +3213,7 @@ switch($mybb->input['action'])
 					foreach(array($user['regip'], $user['lastip']) as $ip)
 					{
 						$ip = my_inet_ntop($db->unescape_binary($ip));
-						$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
+						$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."' AND (expires = 0 OR expires > ".TIME_NOW.")");
 						if($db->num_rows($query) == 0)
 						{
 							$insert = array(

@@ -156,6 +156,11 @@ function upgrade100_dbchanges()
                 $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
             }
 
+            // Add expiration column for ban filters
+            if (!$db->field_exists('expires', 'banfilters')) {
+                $db->add_column('banfilters', 'expires', "int NOT NULL default '0'");
+            }
+
             // Migrate moved threads data to dedicated column
             $db->query("
                 UPDATE " . TABLE_PREFIX . "threads
@@ -243,6 +248,11 @@ function upgrade100_dbchanges()
             // Add acknowledgement status column to warnings table
             if (!$db->field_exists("acknowledged", "warnings")) {
                 $db->add_column("warnings", "acknowledged", "int NOT NULL default '0'");
+            }
+
+            // Add expiration column for ban filters
+            if (!$db->field_exists('expires', 'banfilters')) {
+                $db->add_column('banfilters', 'expires', "int NOT NULL default '0'");
             }
 
             // Migrate moved threads data to dedicated column
@@ -337,6 +347,11 @@ function upgrade100_dbchanges()
             // Add acknowledgement status column to warnings table
             if (!$db->field_exists("acknowledged", "warnings")) {
                 $db->add_column("warnings", "acknowledged", "int unsigned NOT NULL default '0' AFTER requiresacknowledgement");
+            }
+
+            // Add expiration column for ban filters
+            if (!$db->field_exists('expires', 'banfilters')) {
+                $db->add_column('banfilters', 'expires', "int unsigned NOT NULL default '0'");
             }
 
             // Migrate moved threads data to dedicated column
