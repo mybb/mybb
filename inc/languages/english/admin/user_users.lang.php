@@ -240,7 +240,7 @@ $l['signature_preferences'] = "Signature Preferences";
 $l['suspend_sig'] = "Suspend Signature";
 $l['suspend_sig_box'] = "Suspend signature use";
 $l['suspend_sig_perm'] = "<small>Suspended permanently.</small>";
-$l['suspend_sig_info'] = "Suspend this user's abaility to use a signature";
+$l['suspend_sig_info'] = "Suspend this user's ability to use a signature";
 $l['suspend_sig_extend'] = "<small>Enter a new time below to change, or untick this option to remove this suspension.</small>";
 $l['suspend_expire_info'] = "<small>Remaining: <span style=\"color: {2};\">{1}</span></small>";
 $l['suspend_never_expire'] = "<small>{1}'s suspension will never expire (permanently suspended).</small>";
