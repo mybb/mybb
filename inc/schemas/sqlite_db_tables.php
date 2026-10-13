@@ -130,7 +130,8 @@ $tables[] = "CREATE TABLE mybb_banfilters (
 	filter varchar(200) NOT NULL default '',
 	type tinyint(1) NOT NULL default '0',
 	lastuse int NOT NULL default '0',
-	dateline int NOT NULL default '0'
+	dateline int NOT NULL default '0',
+	notes TEXT NULL
 );";
 
 $tables[] = "CREATE INDEX mybb_banfilters_type ON mybb_banfilters (type);";

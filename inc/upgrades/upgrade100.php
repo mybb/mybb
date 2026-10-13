@@ -56,6 +56,11 @@ function upgrade100_dbchanges()
         $db->modify_column("adminoptions", "authsecret", "varchar(64)", "set", "''");
     }
 
+    // Add notes used for IP ban filters
+    if (!$db->field_exists('notes', 'banfilters')) {
+        $db->add_column('banfilters', 'notes', 'text NULL');
+    }
+
     // Introduce theme packages.
     if (!$db->field_exists("package", "themes")) {
         // Remove incompatible themes and stylesheets
