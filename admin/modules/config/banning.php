@@ -133,6 +133,12 @@ if($mybb->input['action'] == "edit_notes")
 
 	if($mybb->request_method == "post")
 	{
+		if(!verify_post_check($mybb->get_input('my_post_key')))
+		{
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=config-banning");
+		}
+
 		$db->update_query("banfilters", array('notes' => $db->escape_string($mybb->get_input('notes'))), "fid='{$filter['fid']}' AND type='1'");
 
 		$plugins->run_hooks("admin_config_banning_edit_notes_commit");
