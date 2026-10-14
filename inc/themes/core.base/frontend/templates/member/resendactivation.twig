@@ -10,6 +10,7 @@
             <h1 class="title title--page">{{ lang.resend_activation }}</h1>
         </header>
         <form action="member.php" method="post">
+            {{ errors|raw }}
             <div class="block block--form form">
                 <section class="section section--form">
                     <div class="row row--form field">
@@ -17,14 +18,16 @@
                         <input type="text" class="textbox" name="email" id="email" value="{{ email }}" />
                     </div>
                 </section>
+                {{ captcha|raw }}
                 <div class="block__footer">
-                    <button type="submit" class="button button--medium" name="submit" tabindex="3">
+                    <button type="submit" class="button button--medium" name="submit" id="resendactivation_submit" tabindex="3">
                         {{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.request_activation }}</span>
                     </button>
                 </div>
             </div>
             <input type="hidden" name="action" value="do_resendactivation" />
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         </form>
     </div>
 {% endblock body %}

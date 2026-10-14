@@ -1347,6 +1347,105 @@ if($mybb->input['action'] == "activate")
 	}
 }
 
+if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
+{
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("member_do_resendactivation_start");
+
+	if($mybb->settings['regtype'] == "admin")
+	{
+		error($lang->error_activated_by_admin);
+	}
+
+	$errors = array();
+
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			$errors = $captcha->get_errors();
+		}
+	}
+
+	if(count($errors) > 0)
+	{
+		$mybb->input['action'] = "resendactivation";
+	}
+	else
+	{
+		$query = $db->query("
+			SELECT u.uid, u.username, u.usergroup, u.email, a.code, a.type, a.validated
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND (a.type='r' OR a.type='b'))
+			WHERE u.email='".$db->escape_string($mybb->get_input('email'))."'
+		");
+		$numusers = $db->num_rows($query);
+		if($numusers < 1)
+		{
+			error($lang->error_invalidemail);
+		}
+		else
+		{
+			while($user = $db->fetch_array($query))
+			{
+				if($user['type'] == "b" && $user['validated'] == 1)
+				{
+					error($lang->error_activated_by_admin);
+				}
+
+				if($user['usergroup'] == 5)
+				{
+					if(!$user['code'])
+					{
+						$user['code'] = random_str();
+						$uid = $user['uid'];
+						$awaitingarray = array(
+							"uid" => $uid,
+							"dateline" => TIME_NOW,
+							"code" => $user['code'],
+							"type" => $user['type']
+						);
+						$db->insert_query("awaitingactivation", $awaitingarray);
+					}
+					$username = $user['username'];
+					$email = $user['email'];
+					$activationcode = $user['code'];
+					$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+					switch($mybb->settings['username_method'])
+					{
+						case 0:
+							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+							break;
+						case 1:
+							$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+							break;
+						case 2:
+							$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+							break;
+						default:
+							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+							break;
+					}
+					my_mail($email, $emailsubject, $emailmessage);
+				}
+			}
+
+			// Invalidate solved captcha
+			if($mybb->settings['captchaimage'])
+			{
+				$captcha->invalidate_captcha();
+			}
+			$plugins->run_hooks("member_do_resendactivation_end");
+
+			redirect("index.php", $lang->redirect_activationresent);
+		}
+	}
+}
+
 if($mybb->input['action'] == "resendactivation")
 {
 	$plugins->run_hooks("member_resendactivation");
@@ -1369,88 +1468,24 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_activated_by_admin);
 	}
 
+	$captcha = '';
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post");
+		$captcha = $post_captcha->html;
+	}
+
+	$email = $mybb->get_input('email');
+	$errors = isset($errors) && count($errors) > 0 ? inline_error($errors) : '';
+
 	$plugins->run_hooks("member_resendactivation_end");
 
 	output_page(\MyBB\View\template('member/resendactivation.twig', [
+		'captcha' => $captcha,
+		'errors' => $errors,
 		'email' => $email,
-    ]));
-}
-
-if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("member_do_resendactivation_start");
-
-	if($mybb->settings['regtype'] == "admin")
-	{
-		error($lang->error_activated_by_admin);
-	}
-
-	$query = $db->query("
-		SELECT u.uid, u.username, u.usergroup, u.email, a.code, a.type, a.validated
-		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND (a.type='r' OR a.type='b'))
-		WHERE u.email='".$db->escape_string($mybb->get_input('email'))."'
-	");
-	$numusers = $db->num_rows($query);
-	if($numusers < 1)
-	{
-		error($lang->error_invalidemail);
-	}
-	else
-	{
-		while($user = $db->fetch_array($query))
-		{
-			if($user['type'] == "b" && $user['validated'] == 1)
-			{
-				error($lang->error_activated_by_admin);
-			}
-
-			if($user['usergroup'] == 5)
-			{
-				if(!$user['code'])
-				{
-					$user['code'] = random_str();
-					$uid = $user['uid'];
-					$awaitingarray = array(
-						"uid" => $uid,
-						"dateline" => TIME_NOW,
-						"code" => $user['code'],
-						"type" => $user['type']
-					);
-					$db->insert_query("awaitingactivation", $awaitingarray);
-				}
-				$username = $user['username'];
-				$email = $user['email'];
-				$activationcode = $user['code'];
-				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-				switch($mybb->settings['username_method'])
-				{
-					case 0:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-						break;
-					case 1:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-						break;
-					case 2:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-						break;
-					default:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-						break;
-				}
-				my_mail($email, $emailsubject, $emailmessage);
-			}
-		}
-
-		// Invalidate solved captcha
-		if($mybb->settings['captchaimage'])
-		{
-			$captcha->invalidate_captcha();
-		}
-		$plugins->run_hooks("member_do_resendactivation_end");
-
-		redirect("index.php", $lang->redirect_activationresent);
-	}
+	]));
 }
 
 if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
