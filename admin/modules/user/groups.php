@@ -60,6 +60,7 @@ $usergroup_permissions = array(
 	"canbeinvisible" => 1,
 	"canbereported" => 0,
 	"canchangewebsite" => 1,
+	"showinlegend" => 0,
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
