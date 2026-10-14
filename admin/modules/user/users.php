@@ -3117,6 +3117,9 @@ if($mybb->input['action'] == "inline_edit")
 						admin_redirect("index.php?module=user-users".$vid_url);
 					}
 
+					// Refresh report totals once after pruning all selected users
+					$cache->update_reportedcontent();
+
 					// Require the rebuild functions
 					require_once MYBB_ROOT.'/inc/functions.php';
 					require_once MYBB_ROOT.'/inc/functions_rebuild.php';
@@ -3126,6 +3129,12 @@ if($mybb->input['action'] == "inline_edit")
 					{
 						foreach($prune_array['to_delete'] as $tid)
 						{
+							$query = $db->simple_select("polls", "pid", "tid='$tid'");
+							while($poll = $db->fetch_array($query))
+							{
+								$db->delete_query("pollvotes", "pid='{$poll['pid']}'");
+							}
+
 							$db->delete_query("threads", "tid='$tid'");
 							$db->delete_query("threads", "moved='$tid'");
 							$db->delete_query("threadsubscriptions", "tid='$tid'");
