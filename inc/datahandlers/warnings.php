@@ -788,7 +788,8 @@ class WarningsHandler extends DataHandler
 	{
 		global $db;
 
-		$query = $db->simple_select("warnings", "COUNT(wid) AS count", "uid={$uid} AND requiresacknowledgement=1 AND acknowledged=0 and daterevoked=0");
+		// Expiration removes points, but does not cancel the acknowledgement requirement.
+		$query = $db->simple_select("warnings", "COUNT(wid) AS count", "uid={$uid} AND requiresacknowledgement=1 AND acknowledged=0 AND daterevoked=0");
 		$result = $db->fetch_array($query);
 		$db->update_query("users", ['unacknowledgedwarnings' => (int)$result['count']], "uid={$uid}");
 
@@ -798,19 +799,36 @@ class WarningsHandler extends DataHandler
 	/**
 	 * Acknowledges a warning
 	 *
+	 * @return bool Whether the warning was acknowledged by its owner.
 	 */
-	function acknowledge_warning() : void
+	function acknowledge_warning() : bool
 	{
-		global $db, $plugins;
+		global $db, $mybb, $plugins;
 
 		$warning = &$this->data;
+		$wid = (int)($warning['wid'] ?? 0);
+		$uid = (int)$mybb->user['uid'];
 
-		$db->update_query("warnings", ["acknowledged" => TIME_NOW], "wid='{$warning['wid']}'");
+		if($wid <= 0 || $uid <= 0 || (int)($warning['uid'] ?? 0) !== $uid)
+		{
+			return false;
+		}
+
+		// Check the current database state so stale forms cannot acknowledge revoked
+		// warnings or overwrite an acknowledgement made by another request.
+		$db->update_query("warnings", ["acknowledged" => TIME_NOW], "wid='{$wid}' AND uid='{$uid}' AND requiresacknowledgement=1 AND acknowledged=0 AND daterevoked=0");
+		if($db->affected_rows() !== 1)
+		{
+			return false;
+		}
+
 		$warning['acknowledged'] = TIME_NOW;
 
 		$plugins->run_hooks("datahandler_warnings_acknowledge_warning", $this);
 
 		// Update the user's unacknowledged warnings count
 		$this->update_unacknowledged_warnings_count($warning['uid']);
+
+		return true;
 	}
 }
