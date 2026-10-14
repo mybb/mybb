@@ -795,9 +795,9 @@ if(
 	) &&
 	(
 		!in_array($current_page, $closed_bypass) &&
-		(
-			!is_array($closed_bypass[$current_page]) ||
-			!in_array($mybb->get_input('action'), $closed_bypass[$current_page])
+		!(
+			isset($closed_bypass[$current_page]) &&
+			in_array($mybb->get_input('action'), $closed_bypass[$current_page])
 		)
 	)
 )
