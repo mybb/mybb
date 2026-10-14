@@ -511,6 +511,7 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
+		$onlinedata['ip'] = $db->escape_binary($this->packedip);
 
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(false, $this->ignore_parameters), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
