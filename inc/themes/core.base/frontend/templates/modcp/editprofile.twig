@@ -233,7 +233,7 @@
                         {% for opt in modOptions %}
                             <p class="option-field option-field--compact">
                                 <label>
-                                    <input type="checkbox" name="{{ opt.action }}" value="1"{% if user[opt.option] or (mybb.input[opt.action] and errors) %} checked{% endif %} class="checkbox" onclick="toggleSuspend('{{ opt.select_option }}s');" id="{{ opt.select_option }}" /> {{ attribute(lang, opt.lang.title) }}
+                                    <input type="checkbox" name="{{ opt.action }}" value="1"{% if opt.checked %} checked{% endif %} class="checkbox" onclick="toggleSuspend('{{ opt.select_option }}s');" id="{{ opt.select_option }}" /> {{ attribute(lang, opt.lang.title) }}
                                 </label>
                             </p>
                             <div class="section section--inline" id="{{ opt.select_option }}s_action">
@@ -287,30 +287,13 @@
     </form>
     <script type="text/javascript">
         <!--
-            var mod_posts = '{% if user.moderateposts or (mybb.input.moderateposting and errors) %}1{% else %}0{% endif %}';
-            var susp_posts = '{% if user.suspendposting or (mybb.input.suspendposting and errors) %}1{% else %}0{% endif %}';
-            var susp_pms = '{% if user.suspendpm or (mybb.input.suspendpm and errors) %}1{% else %}0{% endif %}';
-            var susp_avatar = '{% if user.suspendavatar or (mybb.input.suspendavatar and errors) %}1{% else %}0{% endif %}';
             var sig_checked = '{% if user.suspendsignature or (mybb.input.suspendsignature and errors) %}1{% else %}0{% endif %}';
-            if(mod_posts == 0)
-            {
-                $("#modposts_action").hide();
-            }
-
-            if(susp_posts == 0)
-            {
-                $("#susposts_action").hide();
-            }
-
-            if(susp_pms == 0)
-            {
-                $("#suspms_action").hide();
-            }
-
-            if(susp_avatar == 0)
-            {
-                $("#suspendavatars_action").hide();
-            }
+            {% for opt in modOptions %}
+                if(!$("#{{ opt.select_option }}").prop("checked"))
+                {
+                    $("#{{ opt.select_option }}s_action").hide();
+                }
+            {% endfor %}
 
             if(sig_checked == 0)
             {
@@ -321,30 +304,24 @@
             {
                 if(action == "modposts")
                 {
-                    $("#susposts_action").hide();
-                    $("#suspost").attr("checked", false);
-
                     if($("#modpost").prop("checked") == false)
                     {
-                        $("#modpost").attr("checked", false);
                         $("#modposts_action").hide();
                     } else {
-                        $("#modpost").attr("checked", true);
+                        $("#suspost").prop("checked", false);
+                        $("#susposts_action").hide();
                         $("#modposts_action").show();
                     }
                 }
 
                 if(action == "susposts")
                 {
-                    $("#modposts_action").hide();
-                    $("#modpost").attr("checked", false);
-
                     if($("#suspost").prop("checked") == false)
                     {
-                        $("#suspost").attr("checked", false);
                         $("#susposts_action").hide();
                     } else {
-                        $("#suspost").attr("checked", true);
+                        $("#modpost").prop("checked", false);
+                        $("#modposts_action").hide();
                         $("#susposts_action").show();
                     }
                 }
@@ -353,10 +330,8 @@
                 {
                     if($("#suspm").prop("checked") == false)
                     {
-                        $("#suspm").attr("checked", false);
                         $("#suspms_action").hide();
                     } else {
-                        $("#suspm").attr("checked", true);
                         $("#suspms_action").show();
                     }
                 }
@@ -365,10 +340,8 @@
                 {
                     if($("#suspendavatar").prop("checked") == false)
                     {
-                        $("#suspendavatar").attr("checked", false);
                         $("#suspendavatars_action").hide();
                     } else {
-                        $("#suspendavatar").attr("checked", true);
                         $("#suspendavatars_action").show();
                     }
                 }

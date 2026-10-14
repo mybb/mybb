@@ -2679,6 +2679,14 @@ if($mybb->input['action'] == "editprofile")
 		),
 	);
 
+	foreach($modoptions as &$option)
+	{
+		$option['checked'] = !empty($errors)
+			? (bool)$mybb->get_input($option['action'])
+			: !empty($user[$option['option']]);
+	}
+	unset($option);
+
 	$periods = array(
 		"" => $lang->no_change,
 		"hours" => $lang->expire_hours,
