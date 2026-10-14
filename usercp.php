@@ -1828,7 +1828,7 @@ if($mybb->input['action'] == 'editsig')
 
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
-	if((int)$mybb->user['suspendavatar'] === 1)
+	if(is_avatar_suspended($mybb->user))
 	{
 		error($lang->avatar_suspended);
 	}
@@ -2011,10 +2011,7 @@ if($mybb->input['action'] == "avatar")
 	$avatarurl = '';
 	$extranotes = [];
 
-	$suspend_avatar = (int)$mybb->user['suspendavatar'];
-	$suspend_avatar_time = (int)$mybb->user['suspendavatartime'];
-
-	if($suspend_avatar === 1 && ($suspend_avatar_time == 0 || $suspend_avatar_time > 0 && $suspend_avatar_time > TIME_NOW))
+	if(is_avatar_suspended($mybb->user))
 	{
 		error($lang->avatar_suspended);
 	}

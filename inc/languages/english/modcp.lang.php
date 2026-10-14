@@ -271,6 +271,7 @@ $l['suspendsignature_error'] = "You selected to suspend this user's signature, b
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendposting_error'] = "You selected to suspend this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendpm_error'] = "You selected to suspend this user's private messaging, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
+$l['suspendavatar_error'] = "You selected to suspend this user's avatar privileges, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['suspendmoderate_error'] = "You've selected to suspend and moderate the user's posts. Please select only one type of moderation.";
 
 $l['no_change'] = "No change";

@@ -14,7 +14,13 @@ class UserExtension extends AbstractExtension
                 'is_safe' => ['html'],
             ]),
             new TwigFilter('is_member', [$this, 'isMember']),
+            new TwigFilter('is_avatar_suspended', [$this, 'isAvatarSuspended']),
         ];
+    }
+
+    public function isAvatarSuspended(array $user): bool
+    {
+        return is_avatar_suspended($user);
     }
 
     /**
