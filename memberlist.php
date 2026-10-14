@@ -18,7 +18,7 @@ $lang->load("memberlist");
 
 if($mybb->settings['enablememberlist'] == 0)
 {
-	error($lang->memberlist_disabled);
+	error($lang->memberlist_disabled, status_code: 404);
 }
 
 $plugins->run_hooks("memberlist_start");

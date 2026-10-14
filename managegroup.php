@@ -19,7 +19,7 @@ $lang->load("managegroup");
 $gid = $mybb->get_input('gid', MyBB::INPUT_INT);
 if(!isset($groupscache[$gid]))
 {
-	error($lang->invalid_group);
+	error($lang->invalid_group, status_code: 404);
 }
 $usergroup = $groupscache[$gid];
 $lang->nav_group_management = $lang->sprintf($lang->nav_group_management, htmlspecialchars_uni($usergroup['title']));
@@ -39,7 +39,7 @@ $groupleader = $db->fetch_array($query);
 
 if(!$groupleader && $mybb->usergroup['cancp'] != 1)
 {
-	error($lang->not_leader_of_this_group);
+	error($lang->not_leader_of_this_group, status_code: 403);
 }
 
 if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
@@ -252,7 +252,7 @@ elseif($mybb->input['action'] == "joinrequests")
 
 	if(!$users)
 	{
-		error($lang->no_requests);
+		error($lang->no_requests, status_code: 200);
 	}
 
 	$plugins->run_hooks("managegroup_joinrequests_end");

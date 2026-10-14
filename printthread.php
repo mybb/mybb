@@ -25,7 +25,7 @@ $thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread || $thread['visible'] == -1)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 
 $plugins->run_hooks('printthread_start');
@@ -52,14 +52,14 @@ $ismod = is_moderator($fid);
 // Make sure we are looking at a real thread here.
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 
 // Get forum info
 $forum = get_forum($fid);
 if(!$forum)
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 $breadcrumb = makeprintablenav();
@@ -75,7 +75,7 @@ $forumpermissions = forum_permissions($forum['fid']);
 
 if($forum['type'] != "f")
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {

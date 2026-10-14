@@ -58,11 +58,11 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 {
 	if($mybb->settings['disableregs'] == 1)
 	{
-		error($lang->registrations_disabled);
+		error($lang->registrations_disabled, status_code: 404);
 	}
 	if($mybb->user['uid'] != 0)
 	{
-		error($lang->error_alreadyregistered);
+		error($lang->error_alreadyregistered, status_code: 403);
 	}
 	if($mybb->settings['betweenregstime'] && $mybb->settings['maxregsbetweentime'])
 	{
@@ -73,7 +73,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
 			$lang->error_alreadyregisteredtime = $lang->sprintf($lang->error_alreadyregisteredtime, $regcount, $mybb->settings['betweenregstime']);
-			error($lang->error_alreadyregisteredtime);
+			error($lang->error_alreadyregisteredtime, status_code: 429);
 		}
 	}
 }
@@ -97,12 +97,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			{
 				// This user registered pretty quickly, bot detected!
 				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time, $mybb->settings['regtime'], $timetook);
-				error($lang->error_spam_deny_time);
+				error($lang->error_spam_deny_time, status_code: 403);
 			}
 		}
 		else
 		{
-			error($lang->error_spam_deny);
+			error($lang->error_spam_deny, status_code: 403);
 		}
 	}
 
@@ -113,7 +113,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		if(!empty($mybb->input[$string]))
 		{
-			error($lang->error_spam_deny);
+			error($lang->error_spam_deny, status_code: 403);
 		}
 	}
 
@@ -221,14 +221,14 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 						'stopforumspam_check_usernames',
 						'stopforumspam_check_emails',
 						'stopforumspam_check_ips'
-					))));
+					))), status_code: 403);
 			}
 		}
 		catch(Exception $e)
 		{
 			if($mybb->settings['stopforumspam_block_on_error'])
 			{
-				error($lang->error_stop_forum_spam_fetching);
+				error($lang->error_stop_forum_spam_fetching, status_code: 503);
 			}
 		}
 	}
@@ -397,7 +397,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			my_unsetcookie("coppauser");
 			my_unsetcookie("coppadob");
 			$plugins->run_hooks("member_do_register_end");
-			error($lang->redirect_registered_coppa_activate);
+			error($lang->redirect_registered_coppa_activate, status_code: 200);
 		}
 		else if($mybb->settings['regtype'] == "verify")
 		{
@@ -432,7 +432,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_activation);
+			error($lang->redirect_registered_activation, status_code: 200);
 		}
 		else if($mybb->settings['regtype'] == "randompass")
 		{
@@ -456,7 +456,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_passwordsent);
+			error($lang->redirect_registered_passwordsent, status_code: 200);
 		}
 		else if($mybb->settings['regtype'] == "admin")
 		{
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_admin_activate);
+			error($lang->redirect_registered_admin_activate, status_code: 200);
 		}
 		else if($mybb->settings['regtype'] == "both")
 		{
@@ -653,7 +653,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_activation);
+			error($lang->redirect_registered_activation, status_code: 200);
 		}
 		else
 		{
@@ -786,7 +786,7 @@ if($mybb->input['action'] == "register")
 			$coppa_agreement = true;
 			if($mybb->settings['coppa'] == "deny")
 			{
-				error($lang->error_need_to_be_thirteen);
+				error($lang->error_need_to_be_thirteen, status_code: 403);
 			}
 		}
 
@@ -1275,7 +1275,7 @@ if($mybb->input['action'] == "activate")
 		$activation = $db->fetch_array($query);
 		if(!$activation)
 		{
-			error($lang->error_alreadyactivated);
+			error($lang->error_alreadyactivated, status_code: 200);
 		}
 		if($activation['code'] !== $mybb->get_input('code'))
 		{
@@ -1284,7 +1284,7 @@ if($mybb->input['action'] == "activate")
 
 		if($activation['type'] == "b" && $activation['validated'] == 1)
 		{
-			error($lang->error_alreadyvalidated);
+			error($lang->error_alreadyvalidated, status_code: 200);
 		}
 
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
@@ -1353,12 +1353,12 @@ if($mybb->input['action'] == "resendactivation")
 
 	if($mybb->settings['regtype'] == "admin")
 	{
-		error($lang->error_activated_by_admin);
+		error($lang->error_activated_by_admin, status_code: 403);
 	}
 
 	if($mybb->user['uid'] && $mybb->user['usergroup'] != 5)
 	{
-		error($lang->error_alreadyactivated);
+		error($lang->error_alreadyactivated, status_code: 200);
 	}
 
 	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
@@ -1366,7 +1366,7 @@ if($mybb->input['action'] == "resendactivation")
 
 	if($activation && $activation['validated'] == 1)
 	{
-		error($lang->error_activated_by_admin);
+		error($lang->error_activated_by_admin, status_code: 403);
 	}
 
 	$plugins->run_hooks("member_resendactivation_end");
@@ -1382,7 +1382,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 
 	if($mybb->settings['regtype'] == "admin")
 	{
-		error($lang->error_activated_by_admin);
+		error($lang->error_activated_by_admin, status_code: 403);
 	}
 
 	$query = $db->query("
@@ -1402,7 +1402,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 		{
 			if($user['type'] == "b" && $user['validated'] == 1)
 			{
-				error($lang->error_activated_by_admin);
+				error($lang->error_activated_by_admin, status_code: 403);
 			}
 
 			if($user['usergroup'] == 5)
@@ -1673,7 +1673,7 @@ if($mybb->input['action'] == "resetpassword")
 
 		$plugins->run_hooks("member_resetpassword_reset");
 
-		error($lang->redirect_passwordreset);
+		error($lang->redirect_passwordreset, status_code: 200);
 	}
 	else
 	{
@@ -1794,7 +1794,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		// Successful login
 		if($loginhandler->login_data['coppauser'])
 		{
-			error($lang->error_awaitingcoppa);
+			error($lang->error_awaitingcoppa, status_code: 403);
 		}
 
 		$loginhandler->complete_login();
@@ -1978,7 +1978,7 @@ if($mybb->input['action'] == "viewnotes")
 	// Make sure we are looking at a real user here.
 	if(!$user)
 	{
-		error($lang->error_nomember);
+		error($lang->error_nomember, status_code: 404);
 	}
 
 	if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
@@ -2022,7 +2022,7 @@ if($mybb->input['action'] == "profile")
 
 	if(!$memprofile)
 	{
-		error($lang->error_nomember);
+		error($lang->error_nomember, status_code: 404);
 	}
 
 	$uid = $memprofile['uid'];
@@ -2764,7 +2764,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		if($sent_count >= $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-			error($lang->error_max_emails_day);
+			error($lang->error_max_emails_day, status_code: 429);
 		}
 	}
 
@@ -2808,7 +2808,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 			}
 
-			error($lang->error_emailflooding);
+			error($lang->error_emailflooding, status_code: 429);
 		}
 	}
 
@@ -2822,7 +2822,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	if($to_user['hideemail'] != 0)
 	{
-		error($lang->error_hideemail);
+		error($lang->error_hideemail, status_code: 403);
 	}
 
 	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
@@ -2939,7 +2939,7 @@ if($mybb->input['action'] == "emailuser")
 		if($sent_count >= $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-			error($lang->error_max_emails_day);
+			error($lang->error_max_emails_day, status_code: 429);
 		}
 	}
 
@@ -2983,7 +2983,7 @@ if($mybb->input['action'] == "emailuser")
 				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 			}
 
-			error($lang->error_emailflooding);
+			error($lang->error_emailflooding, status_code: 429);
 		}
 	}
 
@@ -2996,12 +2996,12 @@ if($mybb->input['action'] == "emailuser")
 
 	if(!$to_user['uid'])
 	{
-		error($lang->error_invaliduser);
+		error($lang->error_invaliduser, status_code: 404);
 	}
 
 	if($to_user['hideemail'] != 0)
 	{
-		error($lang->error_hideemail);
+		error($lang->error_hideemail, status_code: 403);
 	}
 
 	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
@@ -3060,7 +3060,7 @@ if($mybb->input['action'] == 'referrals')
 	$user = get_user($uid);
 	if(!isset($user['uid']))
 	{
-		error($lang->referrals_invalid_user);
+		error($lang->referrals_invalid_user, status_code: 404);
 	}
 
 	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);

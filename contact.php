@@ -53,7 +53,7 @@ if($mybb->usergroup['maxemails'] > 0)
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
 		$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-		error($lang->error_max_emails_day);
+		error($lang->error_max_emails_day, status_code: 429);
 	}
 }
 
@@ -97,7 +97,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 		}
 
-		error($lang->error_emailflooding);
+		error($lang->error_emailflooding, status_code: 429);
 	}
 }
 
