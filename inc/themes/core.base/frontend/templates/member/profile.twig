@@ -123,6 +123,12 @@
                             <p class="profile-field__value">
                                 {{ memprofile.postnum|my_number_format }} ({{ trans('ppd_percent_total', memprofile.ppd|my_number_format, memprofile.post_percent) }})
                             </p>
+                            {% if memprofile.invisible_content_counts.posts[0] %}
+                                <p class="profile-field__value">{{ trans('profile_unapproved_posts', memprofile.invisible_content_counts.posts[0]|my_number_format) }}</p>
+                            {% endif %}
+                            {% if memprofile.invisible_content_counts.posts[-1] %}
+                                <p class="profile-field__value">{{ trans('profile_deleted_posts', memprofile.invisible_content_counts.posts[-1]|my_number_format) }}</p>
+                            {% endif %}
                         </div>
                         {% if mybb.usergroup.cansearch %}
                             <div class="row__controls">
@@ -139,6 +145,12 @@
                             <p class="profile-field__value">
                                 {{ memprofile.threadnum|my_number_format }} ({{ trans('tpd_percent_total', memprofile.tpd|my_number_format, memprofile.thread_percent) }})
                             </p>
+                            {% if memprofile.invisible_content_counts.threads[0] %}
+                                <p class="profile-field__value">{{ trans('profile_unapproved_threads', memprofile.invisible_content_counts.threads[0]|my_number_format) }}</p>
+                            {% endif %}
+                            {% if memprofile.invisible_content_counts.threads[-1] %}
+                                <p class="profile-field__value">{{ trans('profile_deleted_threads', memprofile.invisible_content_counts.threads[-1]|my_number_format) }}</p>
+                            {% endif %}
                         </div>
                         {% if mybb.usergroup.cansearch %}
                             <div class="row__controls">
