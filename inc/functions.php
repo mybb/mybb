@@ -6865,6 +6865,11 @@ function is_banned_ip($ip_address, $update_lastuse = false)
 	$ip_address = my_inet_pton($ip_address);
 	foreach($banned_ips as $banned_ip)
 	{
+		if(!empty($banned_ip['expires']) && $banned_ip['expires'] <= TIME_NOW)
+		{
+			continue;
+		}
+
 		if(!$banned_ip['filter'])
 		{
 			continue;

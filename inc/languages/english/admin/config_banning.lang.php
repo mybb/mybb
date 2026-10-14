@@ -22,6 +22,7 @@ $l['email_address'] = "Email Address";
 $l['ip_address'] = "IP Address";
 $l['ban_date'] = "Ban Date";
 $l['last_access'] = "Last Access";
+$l['lift_date'] = "Lift Date";
 $l['no_bans'] = "There are no bans currently set at this time.";
 $l['add_disallowed_username'] = "Add a Disallowed Username";
 $l['username_desc'] = "Note: To indicate a wild card match, use *";
@@ -32,9 +33,16 @@ $l['disallow_email_address'] = "Disallow Email Address";
 $l['ban_an_ip_address'] = "Ban an IP Address";
 $l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['ban_ip_address'] = "Ban IP Address";
+$l['ban_length'] = "Ban Length";
+$l['notes'] = "Notes";
+$l['notes_desc'] = "Optional notes about this IP ban. These are visible only to administrators with permission to manage bans.";
+$l['edit_notes'] = "Edit Notes";
+$l['save_notes'] = "Save Notes";
+$l['success_notes_updated'] = "The IP ban notes have been updated successfully.";
 
 $l['error_missing_ban_input'] = "You did not enter a value to ban.";
 $l['error_invalid_filter'] = "The specified filter is not valid.";
+$l['error_invalid_ban_length'] = "Please select a valid ban length.";
 $l['error_filter_not_found'] = "The specified filter does not exist.";
 $l['error_filter_already_banned'] = "The filter you entered is already banned.";
 
