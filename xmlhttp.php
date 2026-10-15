@@ -956,14 +956,23 @@ else if($mybb->input['action'] == "username_availability")
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->get_input('username');
 
+	header("Content-type: application/json; charset={$charset}");
+
+	// Validate UTF-8 before using Unicode regular expressions.
+	if(!preg_match('//u', $username) || !validate_utf8_string($username, false, false))
+	{
+		echo json_encode($lang->banned_characters_username);
+		exit;
+	}
+
 	// Fix bad characters
 	$username = trim_blank_chrs($username);
 	$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
-	// Remove multiple spaces from the username
-	$username = preg_replace("#\s{2,}#", " ", $username);
-
-	header("Content-type: application/json; charset={$charset}");
+	// Apply the same cleanup as username validation before checking availability.
+	$username = remove_blank_chrs($username);
+	$username = preg_replace('#\p{Z}+#u', ' ', $username);
+	$username = trim_blank_chrs($username);
 
 	if(empty($username))
 	{
