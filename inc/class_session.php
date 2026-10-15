@@ -209,11 +209,10 @@ class session
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent{$lastip_add} WHERE uid='{$mybb->user['uid']}'");
 		}
 
-		// Sort out the language and forum preferences.
-		if($mybb->user['language'] && $lang->language_exists($mybb->user['language']))
-		{
-			$mybb->settings['bblanguage'] = $mybb->user['language'];
-		}
+		// Set user language
+		$this->set_language($mybb->user['language']);
+
+		// Choose date format.
 		if($mybb->user['dateformat'] != 0 && $mybb->user['dateformat'] != '')
 		{
 			global $date_formats;
@@ -366,6 +365,9 @@ class session
 		$mybb->user['subscriptionmethod'] = 0;
 		$mybb->user['suspendposting'] = 0;
 
+		// Set guest language
+		$this->set_language($mybb->cookies['mybblang']);
+
 		// Has this user visited before? Lastvisit need updating?
 		if(isset($mybb->cookies['mybb']['lastvisit']))
 		{
@@ -453,10 +455,7 @@ class session
 		$mybb->user['lastvisit'] = $spider['lastvisit'];
 
 		// Set spider language
-		if($spider['language'] && $lang->language_exists($spider['language']))
-		{
-			$mybb->settings['bblanguage'] = $spider['language'];
-		}
+		$this->set_language($spider['language']);
 
 		// Set spider theme
 		if($spider['theme'])
@@ -614,5 +613,28 @@ class session
 			}
 		}
 		return $array;
+	}
+
+	/**
+	 * Set the language name for this session.
+	 * 
+	 * @param string $language The language name.
+	 */
+	private function set_language($language='')
+	{
+		global $mybb, $lang;
+
+		if(!empty($language) && $lang->language_exists($language))
+		{
+			$mybb->settings['bblanguage'] = $language;
+		}
+		elseif(!empty($mybb->settings['orig_bblanguage']) && $lang->language_exists($mybb->settings['orig_bblanguage']))
+		{
+			$mybb->settings['bblanguage'] = $mybb->settings['orig_bblanguage'];
+		}
+		else
+		{
+			$mybb->settings['bblanguage'] = 'english';
+		}
 	}
 }
