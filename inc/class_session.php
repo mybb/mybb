@@ -450,6 +450,12 @@ class session
 		$mybb->user['displaygroup'] = $mybb->user['usergroup'];
 		$mybb->user['additionalgroups'] = '';
 		$mybb->user['invisible'] = 0;
+		$mybb->user['moderateposts'] = 0;
+		$mybb->user['showquickreply'] = 1;
+		$mybb->user['signature'] = '';
+		$mybb->user['sourceeditor'] = 0;
+		$mybb->user['subscriptionmethod'] = 0;
+		$mybb->user['suspendposting'] = 0;
 		$mybb->user['lastvisit'] = $spider['lastvisit'];
 
 		// Set spider language
