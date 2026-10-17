@@ -35,11 +35,6 @@ a:active {
     text-decoration: underline;
 }
 
-a:focus,
-button:focus {
-    outline: 0;
-}
-
 hr {
     display: block;
     height: var(--border-width-base);
