@@ -1,6 +1,69 @@
 $(function ($) {
 	'use strict';
 
+	var editorIcons = {
+		bold: 'fa-solid fa-bold',
+		bulletlist: 'fa-solid fa-list-ul',
+		center: 'fa-solid fa-align-center',
+		code: 'fa-solid fa-code',
+		source: 'fa-solid fa-code',
+		color: 'fa-solid fa-palette',
+		copy: 'fa-solid fa-copy',
+		cut: 'fa-solid fa-scissors',
+		date: 'fa-solid fa-calendar-days',
+		email: 'fa-solid fa-envelope',
+		emoticon: 'fa-solid fa-face-smile',
+		font: 'fa-solid fa-font',
+		format: 'fa-solid fa-paragraph',
+		grip: 'fa-solid fa-grip',
+		horizontalrule: 'fa-solid fa-minus',
+		image: 'fa-solid fa-image',
+		indent: 'fa-solid fa-indent',
+		italic: 'fa-solid fa-italic',
+		justify: 'fa-solid fa-align-justify',
+		left: 'fa-solid fa-align-left',
+		link: 'fa-solid fa-link',
+		ltr: 'fa-solid fa-indent',
+		maximize: 'fa-solid fa-expand',
+		orderedlist: 'fa-solid fa-list-ol',
+		outdent: 'fa-solid fa-outdent',
+		paste: 'fa-solid fa-paste',
+		pastetext: 'fa-solid fa-file-lines',
+		php: 'fa-brands fa-php',
+		print: 'fa-solid fa-print',
+		quote: 'fa-solid fa-quote-left',
+		redo: 'fa-solid fa-arrow-rotate-right',
+		removeformat: 'fa-solid fa-eraser',
+		right: 'fa-solid fa-align-right',
+		rtl: 'fa-solid fa-outdent',
+		size: 'fa-solid fa-text-height',
+		strike: 'fa-solid fa-strikethrough',
+		subscript: 'fa-solid fa-subscript',
+		superscript: 'fa-solid fa-superscript',
+		table: 'fa-solid fa-table',
+		time: 'fa-solid fa-clock',
+		underline: 'fa-solid fa-underline',
+		undo: 'fa-solid fa-arrow-rotate-left',
+		unlink: 'fa-solid fa-link-slash',
+		video: 'fa-solid fa-video',
+		youtube: 'fa-brands fa-youtube'
+	};
+
+	$.sceditor.icons.fontawesome = function () {
+		return {
+			create: function (command) {
+				if(!Object.prototype.hasOwnProperty.call(editorIcons, command)) {
+					return;
+				}
+
+				var icon = document.createElement('i');
+				icon.className = editorIcons[command];
+				icon.setAttribute('aria-hidden', 'true');
+				return icon;
+			}
+		};
+	};
+
 	var mybbCmd = {
 		align: ['left', 'center', 'right', 'justify'],
 		fsStr: ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
