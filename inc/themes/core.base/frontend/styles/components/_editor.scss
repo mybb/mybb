@@ -1,0 +1,33 @@
+.sceditor-button > i {
+    width: 16px;
+    height: 16px;
+    margin: 2px 0;
+    font-size: 16px;
+    line-height: 16px;
+    text-align: center;
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.sceditor-button:hover > i,
+.sceditor-button.active > i {
+    color: var(--secondary-color);
+}
+
+.sceditor-button.disabled > i {
+    opacity: .3;
+}
+
+.sceditor-button.text > i,
+.text .sceditor-button > i {
+    display: none;
+}
+
+.sceditor-grip > i {
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
+    line-height: 10px;
+    color: var(--primary-color);
+    pointer-events: none;
+}
