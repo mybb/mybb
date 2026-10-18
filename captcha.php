@@ -30,6 +30,14 @@ if($mybb->input['imagehash'])
 	{
 		exit;
 	}
+
+	// Claim the image before rendering so concurrent requests cannot fetch it again.
+	$db->update_query('captcha', array('used' => 1), "imagehash='".$db->escape_string($regimage['imagehash'])."' AND used=0");
+	if($db->affected_rows() != 1)
+	{
+		exit;
+	}
+
 	$imagestring = $regimage['imagestring'];
 }
 else
@@ -38,9 +46,6 @@ else
 }
 
 $image = (new \MyBB\Captcha\Generator())->render($imagestring);
-
-// Mark the image as fetched after rendering succeeds, without consuming the answer.
-$db->update_query('captcha', array('used' => 1), "imagehash='".$db->escape_string($regimage['imagehash'])."'");
 
 header("Content-type: image/png");
 header("Cache-Control: no-store");
