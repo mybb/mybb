@@ -4653,7 +4653,7 @@ if(!$mybb->input['action'])
 			if($unapproved_attachments > 0)
 			{
 				$query = $db->query("
-					SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
+					SELECT t.tid, p.pid, p.uid, p.username, a.filename, a.dateuploaded
 					FROM  ".TABLE_PREFIX."attachments a
 					LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
