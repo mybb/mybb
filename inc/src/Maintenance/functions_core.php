@@ -320,6 +320,12 @@ function getRequirementsCheckResults(): array
                 'failMessage' => $lang->no_multi_byte_extensions,
             ];
         },
+        'gd_support' => function () use ($lang) {
+            return [
+                'result' => function_exists('imagepng') && function_exists('imagettftext'),
+                'failMessage' => $lang->no_gd_support,
+            ];
+        },
         'xml_support' => function () use ($lang) {
             return [
                 'result' => function_exists('xml_parser_create'),
