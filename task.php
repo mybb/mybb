@@ -35,6 +35,8 @@ require_once MYBB_ROOT."inc/functions_task.php";
 // php task.php [tid]
 if(PHP_SAPI == "cli")
 {
+	$tid = 0;
+
 	// Passing a specific task ID
 	if($_SERVER['argc'] == 2)
 	{
