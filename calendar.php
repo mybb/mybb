@@ -1716,7 +1716,7 @@ if($mybb->input['action'] == "dayview")
 	$plugins->run_hooks("calendar_dayview_start");
 
 	// Load Birthdays for this day
-	$birthday_list = $birthdays = '';
+	$birthday_list = $birthdays = $comma = '';
 	if($calendar['showbirthdays'])
 	{
 		$birthdays2 = get_birthdays($month, $day);
