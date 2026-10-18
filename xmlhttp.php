@@ -706,7 +706,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 		xmlhttp_error($lang->captcha_not_exists);
 	}
 	$db->delete_query("captcha", "imagehash='$imagehash'");
-	$randomstr = random_str(5);
+	$randomstr = (new \MyBB\Captcha\Generator())->generatePhrase();
 	$imagehash = md5(random_str(12));
 	$regimagearray = array(
 		"imagehash" => $imagehash,
@@ -735,7 +735,7 @@ else if($mybb->input['action'] == "validate_captcha")
 
 	$plugins->run_hooks("xmlhttp_validate_captcha");
 
-	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
+	if((new \MyBB\Captcha\Generator())->verify($imagestring, $mybb->get_input('imagestring')))
 	{
 		//echo json_encode(array("success" => $lang->captcha_matches));
 		echo json_encode("true");

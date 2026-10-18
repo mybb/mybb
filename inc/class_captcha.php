@@ -158,7 +158,7 @@ class captcha
 		}
 		elseif($this->type == captcha::DEFAULT_CAPTCHA)
 		{
-			if(!function_exists("imagecreatefrompng"))
+			if(!function_exists("imagepng") || !function_exists("imagettftext"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
 				return;
@@ -180,7 +180,7 @@ class captcha
 		global $db, $lang, $theme;
 
 		// This will build a MyBB CAPTCHA
-		$randomstr = random_str(5);
+		$randomstr = (new \MyBB\Captcha\Generator())->generatePhrase();
 		$imagehash = md5(random_str(12));
 
 		$insert_array = array(
@@ -230,7 +230,7 @@ class captcha
 	 */
 	function build_hidden_captcha()
 	{
-		global $db, $mybb;
+		global $mybb;
 
 		$fields = array();
 
@@ -241,8 +241,8 @@ class captcha
 			$fields['names']['string'] = "imagestring";
 
 			// Values
-			$field['hash'] = $db->escape_string($mybb->get_input('imagehash'));
-			$field['string'] = $db->escape_string($mybb->get_input('imagestring'));
+			$fields['hash'] = $mybb->get_input('imagehash');
+			$fields['string'] = $mybb->get_input('imagestring');
 		}
 		elseif($this->type == 3)
 		{
@@ -253,6 +253,8 @@ class captcha
 		$this->html = \MyBB\View\template('misc/captcha/hidden.twig', [
 			'fields' => $fields
 		]);
+
+		return $this->html;
 	}
 
 	/**
@@ -268,23 +270,10 @@ class captcha
 		{
 			// We have a normal CAPTCHA to handle
 			$imagehash = $db->escape_string($mybb->get_input('imagehash'));
-			$imagestring = $db->escape_string(my_strtolower($mybb->get_input('imagestring')));
-
-			switch($db->type)
-			{
-				case 'mysql':
-				case 'mysqli':
-					$field = 'imagestring';
-					break;
-				default:
-					$field = 'LOWER(imagestring)';
-					break;
-			}
-
-			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND {$field} = '{$imagestring}'");
+			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}'");
 			$imgcheck = $db->fetch_array($query);
 
-			if(!$imgcheck)
+			if(!$imgcheck || !(new \MyBB\Captcha\Generator())->verify($imgcheck['imagestring'], $mybb->get_input('imagestring')))
 			{
 				$this->set_error($lang->invalid_captcha_verify);
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
