@@ -326,6 +326,12 @@ function getRequirementsCheckResults(): array
                 'failMessage' => $lang->no_gd_support,
             ];
         },
+        'fileinfo_support' => function () use ($lang) {
+            return [
+                'result' => extension_loaded('fileinfo'),
+                'failMessage' => $lang->no_fileinfo_support,
+            ];
+        },
         'xml_support' => function () use ($lang) {
             return [
                 'result' => function_exists('xml_parser_create'),
