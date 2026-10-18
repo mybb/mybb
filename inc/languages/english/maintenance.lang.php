@@ -233,6 +233,7 @@ $l['no_multi_byte_extensions'] = 'No PHP extensions for multi-byte support avail
 $l['no_database_drivers'] = 'No available database engine drivers (MySQL, PostgreSQL, SQLite)';
 $l['no_xml_support'] = 'No PHP extension for XML support available (<code>xml</code>)';
 $l['no_gd_support'] = 'No PHP extension for image support available (<code>gd</code> with PNG and FreeType support)';
+$l['no_fileinfo_support'] = 'No PHP extension for file information support available (<code>fileinfo</code>)';
 $l['directory_not_writable'] = 'The <code>{1}</code> directory is not writable. Please <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noreferrer">adjust permissions</a> to allow it to be written to.';
 $l['file_not_writable'] = 'The <code>{1}</code> file is not writable. Please <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank" rel="noreferrer">adjust permissions</a> to allow it to be written to.';
 $l['lock_file_not_writable'] = 'Could not create the lock file <code>{1}</code>. Please remove the install directory before proceeding to your forum.';
