@@ -470,7 +470,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 		if($mybb->get_input('ajax', MyBB::INPUT_INT) && $post_captcha->type == 1)
 		{
-			$randomstr = random_str(5);
+			$randomstr = (new \MyBB\Captcha\Generator())->generatePhrase();
 			$imagehash = md5(random_str(12));
 
 			$imagearray = array(
@@ -485,7 +485,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$data = '';
 			$data .= "<captcha>$imagehash";
 
-			if($hide_captcha)
+			if($hide_captcha && count($post_errors) > 0)
 			{
 				$data .= "|$randomstr";
 			}
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$pid = $post['pid'];
 				$post = build_postbit($post);
 
-				$data = '';
+				$data = $json_data['data'] ?? '';
 				$data .= $post;
 
 				// Build a new posthash incase the user wishes to quick reply again
