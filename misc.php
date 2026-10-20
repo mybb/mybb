@@ -212,7 +212,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 	{
 		require_once MYBB_ROOT."inc/functions_search.php";
 
-		$search_results = helpdocument_perform_search_mysql($search_data);
+		$search_results = helpdocument_perform_search($search_data);
 	}
 	else
 	{
@@ -239,6 +239,9 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 }
 elseif($mybb->input['action'] == "helpresults")
 {
+	$lang->load("helpdocs");
+	$lang->load("customhelpdocs");
+
 	if($mybb->settings['helpsearch'] != 1)
 	{
 		error($lang->error_helpsearchdisabled);
@@ -315,6 +318,8 @@ elseif($mybb->input['action'] == "helpresults")
     ");
 	while($helpdoc = $db->fetch_array($query))
 	{
+		$helpdoc = translate_helpdocument($helpdoc);
+
 		$parser_options = array(
 			'allow_html' => 1,
 			'allow_mycode' => 0,
@@ -370,24 +375,7 @@ elseif($mybb->input['action'] == "help")
 				$helpdoc['document'] = $parser->highlight_message($helpdoc['document'], $highlight);
 			}
 
-			if($helpdoc['usetranslation'] == 1)
-			{
-				$langnamevar = "d".$helpdoc['hid']."_name";
-				$langdescvar = "d".$helpdoc['hid']."_desc";
-				$langdocvar = "d".$helpdoc['hid']."_document";
-				if(isset($lang->$langnamevar))
-				{
-					$helpdoc['name'] = $lang->$langnamevar;
-				}
-				if(isset($lang->$langdescvar))
-				{
-					$helpdoc['description'] = $lang->$langdescvar;
-				}
-				if(isset($lang->$langdocvar))
-				{
-					$helpdoc['document'] = $lang->$langdocvar;
-				}
-			}
+			$helpdoc = translate_helpdocument($helpdoc);
 
 			if($helpdoc['hid'] == 3)
 			{
@@ -446,19 +434,7 @@ elseif($mybb->input['action'] == "help")
 					{
 						if($helpdoc['enabled'] != 0)
 						{
-							if($helpdoc['usetranslation'] == 1)
-							{
-								$langnamevar = "d".$helpdoc['hid'].'_name';
-								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if(isset($lang->$langnamevar))
-								{
-									$helpdoc['name'] = $lang->$langnamevar;
-								}
-								if(isset($lang->$langdescvar))
-								{
-									$helpdoc['description'] = $lang->$langdescvar;
-								}
-							}
+							$helpdoc = translate_helpdocument($helpdoc);
 
 							$section['helpdocs'][] = $helpdoc;
 						}
