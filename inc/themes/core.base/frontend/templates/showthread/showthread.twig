@@ -439,7 +439,11 @@
                                     <a href="{{ get_thread_link(similar_thread.tid) }}">{{ similar_thread.subject }}</a>
                                     <span class="thread__icons">
                                         {% if similar_thread.hasicon %}
-                                            <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
+                                            {% if similar_thread.icon_class %}
+                                                {{ include('partials/icon.twig', {icon: similar_thread.icon_class, class: '', title: similar_thread.icon_name}, with_context = false) }}
+                                            {% elseif similar_thread.icon_path %}
+                                                <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
+                                            {% endif %}
                                         {% endif %}
                                     </span>
                                 </h3>
