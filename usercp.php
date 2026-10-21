@@ -2761,12 +2761,18 @@ if($mybb->input['action'] == "drafts")
 
 	$deleteDraftsEnabled = $draftCount > 0;
 	$drafts = [];
+	$posticons_cache = (array)$cache->read("posticons");
+	$posticonmap = [];
+	foreach($posticons_cache as $posticon)
+	{
+		$posticonmap[$posticon['iid']] = $posticon;
+	}
 
 	// Show a listing of all of the current 'draft' posts or threads the user has.
 	if($draftCount)
 	{
 		$query = $db->query("
-			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
+			SELECT p.subject, p.pid, p.icon AS posticon, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
@@ -2788,6 +2794,14 @@ if($mybb->input['action'] == "drafts")
 					$draft['editurl'] = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 					$draft['type'] = 'thread';
 				}
+			}
+
+			if((int)$draft['posticon'] > 0 && isset($posticonmap[(int)$draft['posticon']]))
+			{
+				$posticon = $posticonmap[(int)$draft['posticon']];
+				$draft['iconpath'] = str_replace('{theme}', $theme['imgdir'], $posticon['path']);
+				$draft['iconpath'] = $mybb->get_asset_url($draft['iconpath']);
+				$draft['iconname'] = $posticon['name'];
 			}
 
 			$drafts[] = $draft;
