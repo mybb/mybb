@@ -1024,7 +1024,7 @@ if(!empty($threadCache) && is_array($threadCache))
 					$gid = (int)$gid;
 					$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
 				}
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR forums='-1' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 				break;
 			default:
 				foreach($gids as $gid)
@@ -1032,7 +1032,7 @@ if(!empty($threadCache) && is_array($threadCache))
 					$gid = (int)$gid;
 					$gidswhere .= " OR CONCAT(',',`groups`,',') LIKE '%,{$gid},%'";
 				}
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR forums='-1' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 				break;
 		}
 

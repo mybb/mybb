@@ -260,14 +260,14 @@ switch($mybb->input['action'])
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", 'tid, name, "groups"', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name, "groups"', "(','||forums||',' LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 					break;
 				default:
-					$query = $db->simple_select("modtools", 'tid, name, `groups`', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name, `groups`', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 			}
 			while($tool = $db->fetch_array($query))
 			{
-				if(is_member($tool['groups']))
+				if($tool['groups'] === '' || is_member($tool['groups']))
 				{
 					$allowed_types[] = "modtool_".$tool['tid'];
 
@@ -501,14 +501,17 @@ switch($mybb->input['action'])
 		{
 			case "pgsql":
 			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name, "groups"', "(','||forums||',' LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 				break;
 			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name, `groups`', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 		}
 		while($tool = $db->fetch_array($query))
 		{
-			$actions['modtool_'.$tool['tid']] = $tool['name'];
+			if($tool['groups'] === '' || is_member($tool['groups']))
+			{
+				$actions['modtool_'.$tool['tid']] = $tool['name'];
+			}
 		}
 
 		$delayedmods = [];
@@ -584,6 +587,11 @@ switch($mybb->input['action'])
 
 		while($delayedmod = $db->fetch_array($query))
 		{
+			if(!isset($actions[$delayedmod['type']]))
+			{
+				continue;
+			}
+
 			$delayedmod['dateline'] = my_date('normal', $delayedmod['delaydateline'], "", 2);
 			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
@@ -1248,6 +1256,7 @@ switch($mybb->input['action'])
 
 		$actions = array(
 			'openclosethread' => $lang->open_close_thread,
+			'softdeleterestorethread' => $lang->softdelete_restore_thread,
 			'deletethread' => $lang->delete_thread,
 			'move' => $lang->move_copy_thread,
 			'stick' => $lang->stick_unstick_thread,
@@ -1261,14 +1270,17 @@ switch($mybb->input['action'])
 		{
 			case "pgsql":
 			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name, "groups"', "(','||forums||',' LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 				break;
 			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name, `groups`', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR forums='-1' OR forums='') AND type = 't'");
 		}
 		while($tool = $db->fetch_array($query))
 		{
-			$actions['modtool_'.$tool['tid']] = $tool['name'];
+			if($tool['groups'] === '' || is_member($tool['groups']))
+			{
+				$actions['modtool_'.$tool['tid']] = $tool['name'];
+			}
 		}
 
 		$forum_cache = $cache->read("forums");
@@ -1301,6 +1313,11 @@ switch($mybb->input['action'])
 		$delayedmods = [];
 		while($delayedmod = $db->fetch_array($query))
 		{
+			if(!isset($actions[$delayedmod['type']]))
+			{
+				continue;
+			}
+
 			$delayedmod['dateline'] = my_date('normal', $delayedmod['delaydateline'], "", 2);
 			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
@@ -3289,7 +3306,7 @@ switch($mybb->input['action'])
 
 			$options = my_unserialize($tool['threadoptions']);
 
-			if(!is_member($tool['groups']))
+			if($tool['groups'] !== '' && !is_member($tool['groups']))
 			{
 				error_no_permission();
 			}
