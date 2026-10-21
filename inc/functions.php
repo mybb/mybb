@@ -8867,3 +8867,29 @@ function generate_backtrace($html=true, $strip=1, $trace=null)
 	return $backtrace;
 }
 
+/**
+ * Translates a help document using the already loaded help language files.
+ * Missing translations retain the database value for that field.
+ *
+ * @param array $helpdoc The database document
+ * @return array The document in the current language
+ */
+function translate_helpdocument($helpdoc)
+{
+	global $lang;
+
+	if($helpdoc['usetranslation'] == 1)
+	{
+		foreach(array('name' => 'name', 'description' => 'desc', 'document' => 'document') as $field => $suffix)
+		{
+			$key = "d".$helpdoc['hid']."_".$suffix;
+			if(isset($lang->$key))
+			{
+				$helpdoc[$field] = $lang->$key;
+			}
+		}
+	}
+
+	return $helpdoc;
+}
+
