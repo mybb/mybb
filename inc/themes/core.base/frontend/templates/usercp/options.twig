@@ -123,8 +123,8 @@
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="tpp" id="tpp">
                                     <option value="">{{ lang.use_default }}</option>
-                                    {% for key, val in mybb.settings.usertppoptions|split(',') %}
-                                        <option value="{{ key }}"{% if key == user.tpp %} selected{% endif %}>{{ trans('tpp_option', val) }}</option>
+                                    {% for val in mybb.settings.usertppoptions|split(',') %}
+                                        <option value="{{ val }}"{% if val == user.tpp %} selected{% endif %}>{{ trans('tpp_option', val) }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -174,8 +174,8 @@
                                 {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="ppp" id="ppp">
                                     <option value="">{{ lang.use_default }}</option>
-                                    {% for key, val in mybb.settings.userpppoptions|split(',') %}
-                                        <option value="{{ key }}"{% if key == user.ppp %} selected{% endif %}>{{ trans('ppp_option', val) }}</option>
+                                    {% for val in mybb.settings.userpppoptions|split(',') %}
+                                        <option value="{{ val }}"{% if val == user.ppp %} selected{% endif %}>{{ trans('ppp_option', val) }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
