@@ -1525,7 +1525,7 @@ EOF;
 	}
 	elseif($user['avatartype'] == "remote" || my_validate_url($user['avatar']))
 	{
-		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
+		$current_avatar_msg = "<br /><strong>{$lang->user_currently_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
 	}
 
