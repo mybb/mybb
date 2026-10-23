@@ -1006,7 +1006,7 @@ class datacache
 		global $db;
 
 		$banned_ips = array();
-		$query = $db->simple_select("banfilters", "fid,filter", "type=1");
+		$query = $db->simple_select("banfilters", "fid,filter,expires", "type=1 AND (expires=0 OR expires>".TIME_NOW.")");
 		while($banned_ip = $db->fetch_array($query))
 		{
 			$banned_ips[$banned_ip['fid']] = $banned_ip;
