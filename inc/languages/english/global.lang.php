@@ -432,6 +432,8 @@ $l['quickrestore_confirm'] = "Are you sure you want to restore this post?";
 $l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from {1} titled <a href=\"{2}/private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
 $l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from {2} titled <a href=\"{3}/private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>";
 $l['unacknowledged_warnings_notice'] = "<strong>You have {1} unacknowledged warning(s).</strong> Please check your <strong><a href=\"usercp.php?action=warninglog\">control panel</a></strong> for more information.";
+$l['unacknowledged_warnings_posting_title'] = "Posting Restricted";
+$l['unacknowledged_warnings_posting'] = "You have a warning that requires your acknowledgement. You cannot post replies or create new threads until you acknowledge it. Please review your <a href=\"usercp.php?action=warninglog\">warning log</a>.";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
