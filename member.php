@@ -3198,6 +3198,7 @@ if($mybb->input['action'] == 'referrals')
 
 	$query = $db->simple_select('users', 'COUNT(uid) AS total', "referrer='{$uid}'");
 	$referral_count = $db->fetch_field($query, 'total');
+	$multipage = '';
 
 	$bg_color = 'trow1';
 
