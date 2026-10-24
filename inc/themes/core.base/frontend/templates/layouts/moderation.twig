@@ -19,7 +19,6 @@
                     <span class="section-menu__text">{{ lang.mcp_nav_home }}</span>
                 </a>
             </li>
-            {# TO DO : `counters` needs to be passed to template #}
             {% if (counters.announcements > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanageannounce %}
                 <li class="section-menu__item section-menu__item--announcements{% if mybb.input.action == 'announcements' or mybb.input.action == 'new_announcement' or mybb.input.action == 'edit_announcement' or mybb.input.action == 'delete_announcement' %} section-menu__item--active{% endif %}">
                     <a href="modcp.php?action=announcements" class="section-menu__link">
@@ -29,11 +28,20 @@
                 </li>
             {% endif %}
 
-            {% if (counters.modqueue.threads > 0 or counters.modqueue.posts > 0 or counters.modqueue.attachments > 0 or counters.modqueue.deletedthreads > 0 or counters.modqueue.deletedposts > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagemodqueue %}
+            {% if (counters.modqueue.threads > 0 or counters.modqueue.posts > 0 or counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagemodqueue %}
                 <li class="section-menu__item section-menu__item--mod-queue{% if mybb.input.action == 'modqueue' %} section-menu__item--active{% endif %}">
                     <a href="modcp.php?action=modqueue" class="section-menu__link">
                         {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
                         <span class="section-menu__text">{{ lang.mcp_nav_modqueue }}</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if counters.deletedcontent.threads > 0 or counters.deletedcontent.posts > 0 or mybb.usergroup.issupermod %}
+                <li class="section-menu__item section-menu__item--deleted-content{% if mybb.input.action == 'deletedcontent' %} section-menu__item--active{% endif %}">
+                    <a href="modcp.php?action=deletedcontent" class="section-menu__link">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                        <span class="section-menu__text">{{ lang.mcp_nav_deleted_content }}</span>
                     </a>
                 </li>
             {% endif %}

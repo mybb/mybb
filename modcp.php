@@ -53,9 +53,11 @@ $counters = [
 	'modqueue' => [
 		'threads' => 0,
 		'posts' => 0,
-		'attachments' => 0,
-		'deletedthreads' => 0,
-		'deletedposts' => 0
+		'attachments' => 0
+	],
+	'deletedcontent' => [
+		'threads' => 0,
+		'posts' => 0
 	],
 	'reportedposts' => 0,
 	'modlogs' => 0
@@ -83,7 +85,7 @@ if($mybb->usergroup['issupermod'] != 1)
 			++$counters['announcements'];
 		}
 
-		// For the Mod Queues
+		// For approval queues and deleted content
 		if(is_moderator($moderated_forum, 'canapproveunapprovethreads'))
 		{
 			$flist_queue_threads .= ",'{$moderated_forum}'";
@@ -93,9 +95,9 @@ if($mybb->usergroup['issupermod'] != 1)
 		if(is_moderator($moderated_forum, 'canviewdeleted'))
 		{
 			$flist_queue_deleted_threads .= ",'{$moderated_forum}'";
-			++$counters['modqueue']['deletedthreads'];
+			++$counters['deletedcontent']['threads'];
 			$flist_queue_deleted_posts .= ",'{$moderated_forum}'";
-			++$counters['modqueue']['deletedposts'];
+			++$counters['deletedcontent']['posts'];
 		}
 
 		if(is_moderator($moderated_forum, 'canapproveunapproveposts'))
@@ -558,6 +560,7 @@ if($mybb->input['action'] == "reports")
 	$report['page'] = $page;
 
 	output_page(\MyBB\View\template('modcp/reports.twig', [
+		'counters' => $counters,
 		'report' => $report,
 		'multipage' => $multipage,
 		'reports' => $reports,
@@ -725,6 +728,7 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks('modcp_allreports_end');
 
 	output_page(\MyBB\View\template('modcp/allreports.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'allreports' => $allreports,
 	]));
@@ -955,6 +959,7 @@ if($mybb->input['action'] == "modlogs")
 	$forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, true, '', "fid");
 
 	output_page(\MyBB\View\template('modcp/modlogs.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'modlogs' => $modlogs,
 		'select' => $select,
@@ -1020,6 +1025,7 @@ if($mybb->input['action'] == "delete_announcement")
 	$plugins->run_hooks('modcp_delete_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_delete.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement
 	]));
 }
@@ -1305,6 +1311,7 @@ if($mybb->input['action'] == "new_announcement")
 	$plugins->run_hooks('modcp_new_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_add.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement,
 		'preview' => $preview,
 		'codebuttons' => $codebuttons,
@@ -1626,6 +1633,7 @@ if($mybb->input['action'] == "edit_announcement")
 	$plugins->run_hooks('modcp_edit_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_edit.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement,
 		'preview' => $preview,
 		'codebuttons' => $codebuttons,
@@ -1670,12 +1678,13 @@ if($mybb->input['action'] == "announcements")
 	$plugins->run_hooks('modcp_announcements');
 
 	output_page(\MyBB\View\template('modcp/announcements.twig', [
+		'counters' => $counters,
 		'globalAnnouncements' => $global_announcements,
 		'forumAnnouncements' => $announcements_forum
 	]));
 }
 
-if($mybb->input['action'] == "do_modqueue")
+if(($mybb->input['action'] == "do_modqueue" || $mybb->input['action'] == "do_deletedcontent") && $mybb->request_method == "post")
 {
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -1683,19 +1692,23 @@ if($mybb->input['action'] == "do_modqueue")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	if($mybb->usergroup['canmanagemodqueue'] == 0)
+	if($mybb->input['action'] == "do_modqueue" && $mybb->usergroup['canmanagemodqueue'] == 0)
 	{
 		error_no_permission();
 	}
 
 	$plugins->run_hooks('modcp_do_modqueue_start');
+	if($mybb->input['action'] == "do_deletedcontent")
+	{
+		$plugins->run_hooks('modcp_do_deletedcontent_start');
+	}
 
 	$mybb->input['threads'] = $mybb->get_input('threads', MyBB::INPUT_ARRAY);
 	$mybb->input['posts'] = $mybb->get_input('posts', MyBB::INPUT_ARRAY);
 	$mybb->input['deletedthreads'] = $mybb->get_input('deletedthreads', MyBB::INPUT_ARRAY);
 	$mybb->input['deletedposts'] = $mybb->get_input('deletedposts', MyBB::INPUT_ARRAY);
 	$mybb->input['attachments'] = $mybb->get_input('attachments', MyBB::INPUT_ARRAY);
-	if(!empty($mybb->input['threads']))
+	if($mybb->input['action'] == "do_modqueue" && !empty($mybb->input['threads']))
 	{
 		if($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
@@ -1748,7 +1761,7 @@ if($mybb->input['action'] == "do_modqueue")
 
 		redirect("modcp.php?action=modqueue", $lang->redirect_threadsmoderated);
 	}
-	elseif(!empty($mybb->input['posts']))
+	elseif($mybb->input['action'] == "do_modqueue" && !empty($mybb->input['posts']))
 	{
 		if($nummodqueueposts == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
@@ -1802,8 +1815,13 @@ if($mybb->input['action'] == "do_modqueue")
 
 		redirect("modcp.php?action=modqueue&type=posts", $lang->redirect_postsmoderated);
 	}
-	elseif(!empty($mybb->input['deletedthreads']))
+	elseif($mybb->input['action'] == "do_deletedcontent" && !empty($mybb->input['deletedthreads']))
 	{
+		if($counters['deletedcontent']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_deleted_threads);
+		}
+
 		$threads = array_map("intval", array_keys($mybb->input['deletedthreads']));
 		$threads_to_restore = $threads_to_delete = array();
 
@@ -1843,6 +1861,7 @@ if($mybb->input['action'] == "do_modqueue")
 		}
 
 		$plugins->run_hooks('modcp_do_modqueue_end');
+		$plugins->run_hooks('modcp_do_deletedcontent_end');
 
 		$message = $lang->redirect_softdeletedthreadsnothing;
 		if (!empty($threads_to_restore) && !empty($threads_to_delete))
@@ -1858,10 +1877,15 @@ if($mybb->input['action'] == "do_modqueue")
 			$message = $lang->redirect_softdeletedthreadsdeleted;
 		}
 
-		redirect("modcp.php?action=modqueue&type=deletedthreads", $message);
+		redirect("modcp.php?action=deletedcontent&type=threads", $message);
 	}
-	elseif(!empty($mybb->input['deletedposts']))
+	elseif($mybb->input['action'] == "do_deletedcontent" && !empty($mybb->input['deletedposts']))
 	{
+		if($counters['deletedcontent']['posts'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_deleted_posts);
+		}
+
 		$posts = array_map("intval", array_keys($mybb->input['deletedposts']));
 		$posts_to_restore = $posts_to_delete = array();
 
@@ -1906,6 +1930,7 @@ if($mybb->input['action'] == "do_modqueue")
 		}
 
 		$plugins->run_hooks('modcp_do_modqueue_end');
+		$plugins->run_hooks('modcp_do_deletedcontent_end');
 
 		$message = $lang->redirect_softdeletedpostsnothing;
 		if(!empty($posts_to_restore) && !empty($posts_to_delete))
@@ -1921,9 +1946,9 @@ if($mybb->input['action'] == "do_modqueue")
 			$message = $lang->redirect_softdeletedpostsdeleted;
 		}
 
-		redirect("modcp.php?action=modqueue&type=deletedposts", $message);
+		redirect("modcp.php?action=deletedcontent&type=posts", $message);
 	}
-	elseif(!empty($mybb->input['attachments']))
+	elseif($mybb->input['action'] == "do_modqueue" && !empty($mybb->input['attachments']))
 	{
 		if($nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
@@ -1978,13 +2003,13 @@ if($mybb->input['action'] == "modqueue")
 		error_no_permission();
 	}
 
-	if($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $counters['modqueue']['deletedthreads'] == 0 && $counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
+	if($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $mybb->usergroup['issupermod'] != 1)
 	{
 		error($lang->you_cannot_use_mod_queue);
 	}
 
 	$mybb->input['type'] = $mybb->get_input('type');
-	$threadqueue = $postqueue = $attachmentqueue = $deletedthreadqueue = $deletedpostqueue = '';
+	$threadqueue = $postqueue = $attachmentqueue = '';
 	if($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1))
 	{
 		if($counters['modqueue']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1)
@@ -2090,20 +2115,9 @@ if($mybb->input['action'] == "modqueue")
 				$navlink['attachment'] = true;
 			}
 
-			$navlink['deleted_thread'] = false;
-			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_thread'] = true;
-			}
-
-			$navlink['deleted_post'] = false;
-			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_post'] = true;
-			}
-
 			$threadqueue = true;
 			output_page(\MyBB\View\template('modcp/modqueue_threads.twig', [
+				'counters' => $counters,
 				'threadqueue' => $threadqueue,
 				'threads' => $threads,
 				'multipage' => $multipage,
@@ -2224,20 +2238,9 @@ if($mybb->input['action'] == "modqueue")
 				$navlink['attachment'] = true;
 			}
 
-			$navlink['deleted_thread'] = false;
-			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_thread'] = true;
-			}
-
-			$navlink['deleted_post'] = false;
-			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_post'] = true;
-			}
-
 			$postqueue = true;
 			output_page(\MyBB\View\template('modcp/modqueue_posts.twig', [
+				'counters' => $counters,
 				'postqueue' => $postqueue,
 				'posts' => $posts,
 				'multipage' => $multipage,
@@ -2353,20 +2356,9 @@ if($mybb->input['action'] == "modqueue")
 				$navlink['post'] = true;
 			}
 
-			$navlink['deleted_thread'] = false;
-			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_thread'] = true;
-			}
-
-			$navlink['deleted_post'] = false;
-			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['deleted_post'] = true;
-			}
-
 			$attachmentqueue = true;
 			output_page(\MyBB\View\template('modcp/modqueue_attachments.twig', [
+				'counters' => $counters,
 				'attachmentqueue' => $attachmentqueue,
 				'attachments' => $attachments,
 				'multipage' => $multipage,
@@ -2375,9 +2367,32 @@ if($mybb->input['action'] == "modqueue")
 		}
 	}
 
-	if($mybb->input['type'] == "deletedthreads" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && !$attachmentqueue && ($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)))
+	if(!$threadqueue && !$postqueue && !$attachmentqueue)
 	{
-		if($counters['modqueue']['deletedthreads'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
+
+		$plugins->run_hooks('modcp_modqueue_end');
+
+		output_page(\MyBB\View\template('modcp/modqueue_empty.twig', [
+			'counters' => $counters,
+		]));
+	}
+}
+
+if($mybb->input['action'] == "deletedcontent")
+{
+	if($counters['deletedcontent']['threads'] == 0 && $counters['deletedcontent']['posts'] == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_view_deleted_content);
+	}
+
+	add_breadcrumb($lang->mcp_nav_deleted_content, "modcp.php?action=deletedcontent");
+
+	$mybb->input['type'] = $mybb->get_input('type');
+	$deletedthreadqueue = $deletedpostqueue = '';
+	if($mybb->input['type'] == "threads" || (!$mybb->input['type'] && ($counters['deletedcontent']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)))
+	{
+		if($counters['deletedcontent']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
 			error($lang->you_cannot_moderate_deleted_threads);
 		}
@@ -2416,7 +2431,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($deleted_threads, $perpage, $page, "modcp.php?action=modqueue&amp;type=deletedthreads");
+		$multipage = multipage($deleted_threads, $perpage, $page, "modcp.php?action=deletedcontent&amp;type=threads");
 
 		$threads = [];
 		$query = $db->query("
@@ -2458,43 +2473,22 @@ if($mybb->input['action'] == "modqueue")
 			$threads[] = $thread;
 		}
 
-		if(!$threads && $mybb->input['type'] == "deletedthreads")
+		if($threads || $mybb->input['type'] == "threads")
 		{
-			$threads = true;
-		}
-
-		if($threads)
-		{
-			add_breadcrumb($lang->mcp_nav_modqueue_deleted_threads, "modcp.php?action=modqueue&amp;type=deletedthreads");
+			add_breadcrumb($lang->mcp_nav_deleted_threads, "modcp.php?action=deletedcontent&amp;type=threads");
 
 			$plugins->run_hooks('modcp_modqueue_deleted_threads_end');
-
-			$navlink['thread'] = false;
-			if($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['thread'] = true;
-			}
-
-			$navlink['post'] = false;
-			if($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['post'] = true;
-			}
-
-			$navlink['attachment'] = false;
-			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
-			{
-				$navlink['attachment'] = true;
-			}
+			$plugins->run_hooks('modcp_deletedcontent_threads_end');
 
 			$navlink['deleted_post'] = false;
-			if($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			if($counters['deletedcontent']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
 				$navlink['deleted_post'] = true;
 			}
 
 			$deletedthreadqueue = true;
-			output_page(\MyBB\View\template('modcp/modqueue_deleted_threads.twig', [
+			output_page(\MyBB\View\template('modcp/deleted_content_threads.twig', [
+				'counters' => $counters,
 				'deletedthreadqueue' => $deletedthreadqueue,
 				'threads' => $threads,
 				'multipage' => $multipage,
@@ -2503,9 +2497,9 @@ if($mybb->input['action'] == "modqueue")
 		}
 	}
 
-	if($mybb->input['type'] == "deletedposts" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && !$attachmentqueue && !$deletedthreadqueue && ($counters['modqueue']['deletedposts'] > 0 || $mybb->usergroup['issupermod'] == 1)))
+	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$deletedthreadqueue && ($counters['deletedcontent']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)))
 	{
-		if($counters['modqueue']['deletedposts'] == 0 && $mybb->usergroup['issupermod'] != 1)
+		if($counters['deletedcontent']['posts'] == 0 && $mybb->usergroup['issupermod'] != 1)
 		{
 			error($lang->you_cannot_moderate_deleted_posts);
 		}
@@ -2549,7 +2543,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($deleted_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=deletedposts");
+		$multipage = multipage($deleted_posts, $perpage, $page, "modcp.php?action=deletedcontent&amp;type=posts");
 
 		$posts = [];
 		$query = $db->query("
@@ -2593,43 +2587,22 @@ if($mybb->input['action'] == "modqueue")
 			$posts[] = $post;
 		}
 
-		if(!$posts && $mybb->input['type'] == "deletedposts")
+		if($posts || $mybb->input['type'] == "posts")
 		{
-			$posts = true;
-		}
-
-		if($posts)
-		{
-			add_breadcrumb($lang->mcp_nav_modqueue_deleted_posts, "modcp.php?action=modqueue&amp;type=deletedposts");
+			add_breadcrumb($lang->mcp_nav_deleted_posts, "modcp.php?action=deletedcontent&amp;type=posts");
 
 			$plugins->run_hooks('modcp_modqueue_deleted_posts_end');
-
-			$navlink['thread'] = false;
-			if($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['thread'] = true;
-			}
-
-			$navlink['post'] = false;
-			if($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1)
-			{
-				$navlink['post'] = true;
-			}
-
-			$navlink['attachment'] = false;
-			if($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))
-			{
-				$navlink['attachment'] = true;
-			}
+			$plugins->run_hooks('modcp_deletedcontent_posts_end');
 
 			$navlink['deleted_thread'] = false;
-			if($counters['modqueue']['deletedthreads'] > 0 || $mybb->usergroup['issupermod'] == 1)
+			if($counters['deletedcontent']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
 				$navlink['deleted_thread'] = true;
 			}
 
 			$deletedpostqueue = true;
-			output_page(\MyBB\View\template('modcp/modqueue_deleted_posts.twig', [
+			output_page(\MyBB\View\template('modcp/deleted_content_posts.twig', [
+				'counters' => $counters,
 				'deletedpostqueue' => $deletedpostqueue,
 				'posts' => $posts,
 				'multipage' => $multipage,
@@ -2638,14 +2611,14 @@ if($mybb->input['action'] == "modqueue")
 		}
 	}
 
-	// Still nothing? All queues are empty! :-D
-	if(!$threadqueue && !$postqueue && !$attachmentqueue && !$deletedthreadqueue && !$deletedpostqueue)
+	if(!$deletedthreadqueue && !$deletedpostqueue)
 	{
-		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
-
 		$plugins->run_hooks('modcp_modqueue_end');
+		$plugins->run_hooks('modcp_deletedcontent_end');
 
-		output_page(\MyBB\View\template('modcp/modqueue_empty.twig'));
+		output_page(\MyBB\View\template('modcp/deleted_content_empty.twig', [
+			'counters' => $counters,
+		]));
 	}
 }
 
@@ -3148,6 +3121,7 @@ if($mybb->input['action'] == "editprofile")
 	$plugins->run_hooks('modcp_editprofile_end');
 
 	output_page(\MyBB\View\template('modcp/editprofile.twig', [
+		'counters' => $counters,
 		'user' => $user,
 		'customFields' => $customfields,
 		'requiredFields' => $requiredfields,
@@ -3271,6 +3245,7 @@ if($mybb->input['action'] == "finduser")
 	$plugins->run_hooks('modcp_finduser_end');
 
 	output_page(\MyBB\View\template('modcp/finduser.twig', [
+		'counters' => $counters,
 		'users' => $users,
 		'multipage' => $multipage
 	]));
@@ -3505,6 +3480,7 @@ if($mybb->input['action'] == "warninglogs")
 	$select['per_page'] = $per_page;
 
 	output_page(\MyBB\View\template('modcp/warninglogs.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'select' => $select,
 		'warning_list' => $warning_list,
@@ -3853,6 +3829,7 @@ if($mybb->input['action'] == "ipsearch")
 	$plugins->run_hooks('modcp_ipsearch_end');
 
 	output_page(\MyBB\View\template('modcp/ipsearch.twig', [
+		'counters' => $counters,
 		'ipsearch' => $ipsearch,
 		'multipage' => $multipage,
 		'ipresults' => $ipresults,
@@ -3922,6 +3899,7 @@ if($mybb->input['action'] == "iplookup")
 	else
 	{
 		output_page(\MyBB\View\template('modcp/iplookup.twig', [
+			'counters' => $counters,
 			'ipaddress' => $ipaddress,
 		]));
 	}
@@ -4057,6 +4035,7 @@ if($mybb->input['action'] == "banning")
 	$plugins->run_hooks('modcp_banning');
 
 	output_page(\MyBB\View\template('modcp/banning.twig', [
+		'counters' => $counters,
 		'bannedusers' => $bannedusers,
 		'multipage' => $multipage,
 	]));
@@ -4281,6 +4260,7 @@ if($mybb->input['action'] == "banuser")
 	$plugins->run_hooks('modcp_banuser_end');
 
 	output_page(\MyBB\View\template('modcp/banuser.twig', [
+		'counters' => $counters,
 		'banned' => $banned,
 		'errors' => $errors,
 		'liftlist' => $liftlist,
@@ -4470,6 +4450,7 @@ if($mybb->input['action'] == "editban")
 	$plugins->run_hooks('modcp_editban_end');
 
 	output_page(\MyBB\View\template('modcp/editban.twig', [
+		'counters' => $counters,
 		'banned' => $banned,
 		'errors' => $errors,
 		'liftlist' => $liftlist,
