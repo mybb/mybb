@@ -560,6 +560,7 @@ if($mybb->input['action'] == "reports")
 	$report['page'] = $page;
 
 	output_page(\MyBB\View\template('modcp/reports.twig', [
+		'counters' => $counters,
 		'report' => $report,
 		'multipage' => $multipage,
 		'reports' => $reports,
@@ -727,6 +728,7 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks('modcp_allreports_end');
 
 	output_page(\MyBB\View\template('modcp/allreports.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'allreports' => $allreports,
 	]));
@@ -957,6 +959,7 @@ if($mybb->input['action'] == "modlogs")
 	$forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, true, '', "fid");
 
 	output_page(\MyBB\View\template('modcp/modlogs.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'modlogs' => $modlogs,
 		'select' => $select,
@@ -1022,6 +1025,7 @@ if($mybb->input['action'] == "delete_announcement")
 	$plugins->run_hooks('modcp_delete_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_delete.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement
 	]));
 }
@@ -1307,6 +1311,7 @@ if($mybb->input['action'] == "new_announcement")
 	$plugins->run_hooks('modcp_new_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_add.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement,
 		'preview' => $preview,
 		'codebuttons' => $codebuttons,
@@ -1628,6 +1633,7 @@ if($mybb->input['action'] == "edit_announcement")
 	$plugins->run_hooks('modcp_edit_announcement');
 
 	output_page(\MyBB\View\template('modcp/announcements_edit.twig', [
+		'counters' => $counters,
 		'announcement' => $announcement,
 		'preview' => $preview,
 		'codebuttons' => $codebuttons,
@@ -1672,6 +1678,7 @@ if($mybb->input['action'] == "announcements")
 	$plugins->run_hooks('modcp_announcements');
 
 	output_page(\MyBB\View\template('modcp/announcements.twig', [
+		'counters' => $counters,
 		'globalAnnouncements' => $global_announcements,
 		'forumAnnouncements' => $announcements_forum
 	]));
@@ -3114,6 +3121,7 @@ if($mybb->input['action'] == "editprofile")
 	$plugins->run_hooks('modcp_editprofile_end');
 
 	output_page(\MyBB\View\template('modcp/editprofile.twig', [
+		'counters' => $counters,
 		'user' => $user,
 		'customFields' => $customfields,
 		'requiredFields' => $requiredfields,
@@ -3237,6 +3245,7 @@ if($mybb->input['action'] == "finduser")
 	$plugins->run_hooks('modcp_finduser_end');
 
 	output_page(\MyBB\View\template('modcp/finduser.twig', [
+		'counters' => $counters,
 		'users' => $users,
 		'multipage' => $multipage
 	]));
@@ -3471,6 +3480,7 @@ if($mybb->input['action'] == "warninglogs")
 	$select['per_page'] = $per_page;
 
 	output_page(\MyBB\View\template('modcp/warninglogs.twig', [
+		'counters' => $counters,
 		'multipage' => $multipage,
 		'select' => $select,
 		'warning_list' => $warning_list,
@@ -3819,6 +3829,7 @@ if($mybb->input['action'] == "ipsearch")
 	$plugins->run_hooks('modcp_ipsearch_end');
 
 	output_page(\MyBB\View\template('modcp/ipsearch.twig', [
+		'counters' => $counters,
 		'ipsearch' => $ipsearch,
 		'multipage' => $multipage,
 		'ipresults' => $ipresults,
@@ -3888,6 +3899,7 @@ if($mybb->input['action'] == "iplookup")
 	else
 	{
 		output_page(\MyBB\View\template('modcp/iplookup.twig', [
+			'counters' => $counters,
 			'ipaddress' => $ipaddress,
 		]));
 	}
@@ -4023,6 +4035,7 @@ if($mybb->input['action'] == "banning")
 	$plugins->run_hooks('modcp_banning');
 
 	output_page(\MyBB\View\template('modcp/banning.twig', [
+		'counters' => $counters,
 		'bannedusers' => $bannedusers,
 		'multipage' => $multipage,
 	]));
@@ -4247,6 +4260,7 @@ if($mybb->input['action'] == "banuser")
 	$plugins->run_hooks('modcp_banuser_end');
 
 	output_page(\MyBB\View\template('modcp/banuser.twig', [
+		'counters' => $counters,
 		'banned' => $banned,
 		'errors' => $errors,
 		'liftlist' => $liftlist,
@@ -4436,6 +4450,7 @@ if($mybb->input['action'] == "editban")
 	$plugins->run_hooks('modcp_editban_end');
 
 	output_page(\MyBB\View\template('modcp/editban.twig', [
+		'counters' => $counters,
 		'banned' => $banned,
 		'errors' => $errors,
 		'liftlist' => $liftlist,
