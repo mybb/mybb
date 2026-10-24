@@ -1,29 +1,29 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ lang.deleted_posts_moderation_queue }} - {{ mybb.settings.bbname }}</title>
+    <title>{{ lang.deleted_threads }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% set results = true %}
 
 {% block moderationHeader %}
     <header class="page-header">
-        <h1 class="title title--page">{{ lang.mod_queue }}</h1>
+        <h1 class="title title--page">{{ lang.deleted_content }}</h1>
     </header>
 {% endblock moderationHeader %}
 
 {% block moderationBody %}
-    {% include 'modcp/modqueue/menu.twig' %}
+    {% include 'modcp/deletedcontent/menu.twig' %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <input type="hidden" name="action" value="do_modqueue" />
+        <input type="hidden" name="action" value="do_deletedcontent" />
         <section class="block">
-            <h1 class="title title--major">{{ lang.deleted_posts_moderation_queue }}</h1>
-            {% for post in posts %}
-                {% include 'modcp/modqueue/deleted_post.twig' %}
+            <h1 class="title title--major">{{ lang.deleted_threads }}</h1>
+            {% for thread in threads %}
+                {% include 'modcp/deletedcontent/thread.twig' %}
             {% else %}
                 {% set results = false %}
-                <div class="row row--no-results no-results">{{ lang.mod_queue_deleted_posts_empty }}</div>
+                <div class="row row--no-results no-results">{{ lang.deleted_threads_empty }}</div>
             {% endfor %}
             {% if results %}
                 <div class="row mod-queue__mass-controls">

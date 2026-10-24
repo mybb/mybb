@@ -265,6 +265,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			$accepted_parameters['delete_announcement'] = array("do_delete_announcement", "delete_announcement");
 			$accepted_parameters['edit_announcement'] = array("do_edit_announcement", "edit_announcement");
 			$accepted_parameters['mod_queue'] = array("do_modqueue", "modqueue");
+			$accepted_parameters['deleted_content'] = array("do_deletedcontent", "deletedcontent");
 			$accepted_parameters['editprofile'] = array("do_editprofile", "editprofile");
 			$accepted_parameters['banning'] = array("do_banuser", "banning", "liftban", "banuser");
 
@@ -915,6 +916,9 @@ function build_friendly_wol_location($user_activity)
 			break;
 		case "modcp_mod_queue":
 			$location_name = $lang->managing_modqueue;
+			break;
+		case "modcp_deleted_content":
+			$location_name = $lang->managing_deleted_content;
 			break;
 		case "modcp_editprofile":
 			$location_name = $lang->editing_user_profiles;
