@@ -804,18 +804,42 @@ function privatemessage_perform_search_mysql($search)
  */
 function helpdocument_perform_search_mysql($search)
 {
+	return helpdocument_perform_search($search);
+}
+
+/**
+ * Search database help documents and their enabled translations
+ *
+ * @param array $search Array of search data
+ * @return array Array of search data with results mixed in
+ */
+function helpdocument_perform_search($search)
+{
 	global $mybb, $db, $lang;
 
-	$keywords = clean_keywords($search['keywords']);
-	if(!$keywords && !$search['sender'])
+	// Normalize before parsing; escape each term only when it enters SQL.
+	$keywords = trim(preg_replace('#\s+#s', ' ', my_strtolower($search['keywords'])));
+	$keywords = preg_replace('#\*{2,}#', '*', $keywords);
+	$keywords = preg_replace('/^((and|or)(\s|$))+/', '', $keywords);
+	if(!$keywords)
 	{
 		error($lang->error_nosearchterms);
 	}
-
 	if($mybb->settings['minsearchword'] < 1)
 	{
 		$mybb->settings['minsearchword'] = 3;
 	}
+
+	// Collect the same phrases for PHP matching while building the SQL search.
+	$terms = array();
+	$prepareterm = function($term, $boolean = 'AND') use (&$terms, $db) {
+		if(!$terms || strtolower($boolean) === 'or')
+		{
+			$terms[] = array();
+		}
+		$terms[count($terms) - 1][] = $term;
+		return str_replace('*', '%', $db->escape_string_like($term));
+	};
 
 	$name_lookin = "";
 	$document_lookin = "";
@@ -823,6 +847,9 @@ function helpdocument_perform_search_mysql($search)
 
 	if($keywords)
 	{
+		$lang->load("helpdocs");
+		$lang->load("customhelpdocs");
+
 		switch($db->type)
 		{
 			case 'mysql':
@@ -909,6 +936,7 @@ function helpdocument_perform_search_mysql($search)
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
+							$word = $prepareterm($word, $boolean);
 							if($search['name'] == 1)
 							{
 								$name_lookin .= " $boolean {$nfield} LIKE '%{$word}%'";
@@ -925,13 +953,14 @@ function helpdocument_perform_search_mysql($search)
 				// In the middle of a quote (phrase)
 				else
 				{
-					$phrase = str_replace(array("+", "-", "*"), '', trim($phrase));
+					$phrase = str_replace(array("+", "-"), '', trim($phrase));
 					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 					{
 						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
+					$phrase = $prepareterm($phrase, $boolean);
 					$name_lookin .= " $boolean {$nfield} LIKE '%{$phrase}%'";
 					if($search['document'] == 1)
 					{
@@ -990,6 +1019,8 @@ function helpdocument_perform_search_mysql($search)
 				error($lang->error_minsearchlength);
 			}
 
+			$keywords = $prepareterm($keywords);
+
 			// If we're looking in both, then find matches in either the name or the document
 			if($search['name'] == 1 && $search['document'] == 1)
 			{
@@ -1016,6 +1047,57 @@ function helpdocument_perform_search_mysql($search)
 	while($help = $db->fetch_array($query))
 	{
 		$helpdocs[$help['hid']] = $help['hid'];
+	}
+
+	// Add matches from enabled language strings without sending their text to SQL.
+	$fields = array();
+	foreach(array('name', 'document') as $field)
+	{
+		if($search[$field] == 1)
+		{
+			$fields[] = $field;
+		}
+	}
+	// SQL already covers database values, including fields without translations.
+	$query = $db->simple_select('helpdocs', 'hid,usetranslation', "enabled='1' AND usetranslation='1'");
+	while($helpdoc = $db->fetch_array($query))
+	{
+		if(isset($helpdocs[$helpdoc['hid']]))
+		{
+			continue;
+		}
+		$translated = translate_helpdocument($helpdoc);
+		foreach($fields as $field)
+		{
+			if(!isset($translated[$field]))
+			{
+				continue;
+			}
+			$text = my_strtolower($translated[$field]);
+			foreach($terms as $group)
+			{
+				$matched = true;
+				foreach($group as $term)
+				{
+					$offset = 0;
+					foreach(explode('*', $term) as $part)
+					{
+						$position = strpos($text, $part, $offset);
+						if($position === false)
+						{
+							$matched = false;
+							break 2;
+						}
+						$offset = $position + strlen($part);
+					}
+				}
+				if($matched)
+				{
+					$helpdocs[$helpdoc['hid']] = $helpdoc['hid'];
+					break 2;
+				}
+			}
+		}
 	}
 
 	if(count($helpdocs) < 1)
