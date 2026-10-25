@@ -266,6 +266,7 @@ $l['postbit_status_online'] = "Online";
 $l['postbit_status_offline'] = "Offline";
 $l['postbit_status_away'] = "Away";
 $l['postbit_edited'] = "This post was last modified: {1} by";
+$l['postbit_edit_information'] = "Post edit information";
 $l['postbit_editreason'] = "Edit Reason";
 $l['postbit_ipaddress'] = "IP Address";
 $l['postbit_ipaddress_logged'] = "Logged";

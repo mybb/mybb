@@ -555,23 +555,21 @@ else if($mybb->input['action'] == "edit_post")
 			get_post_attachments($post['pid'], $post);
 		}
 
-		// Figure out if we need to show an "edited by" message
-		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
-		if($mybb->settings['showeditedby'] != 0 && $mybb->settings['showeditedbyadmin'] != 0)
+		// Only show a recorded edit when the post author's notice setting allows it.
+		$author_group = usergroup_permissions(get_user($post['uid'])['usergroup'] ?? 1);
+		$editedmsg = null;
+		if(!empty($posthandler->post_update_data['edituid']) && ($author_group['cancp'] == 1 || is_moderator($post['fid'], "", $post['uid']) ? $mybb->settings['showeditedbyadmin'] : $mybb->settings['showeditedby']))
 		{
+			$post['editedmsg'] = true;
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
-			$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
-			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
+			$post['editedprofilelink'] = build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']);
 			$post['editreason'] = trim($editreason);
-			$editreason = "";
 			if($post['editreason'] != "")
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
-				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-// 				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
 			}
-// 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+			$editedmsg = \MyBB\app(\Twig\Environment::class)->load('postbit/postbit.twig')->renderBlock('edit_information', ['post' => $post, 'lang' => $lang]);
 		}
 
 		// Send our headers.

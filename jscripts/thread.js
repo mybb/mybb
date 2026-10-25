@@ -277,14 +277,20 @@ var Thread = {
 						{
 							// Change html content
 							$(this).html(json.message);
-							$('#edited_by_' + pid).html(json.editedmsg);
+							if(json.editedmsg != null)
+							{
+								$('#edited_by_' + pid).html(json.editedmsg);
+							}
 						}
 					}
 					else
 					{
 						// Change html content
 						$(this).html(json.message);
-						$('#edited_by_' + pid).html(json.editedmsg);
+						if(json.editedmsg != null)
+						{
+							$('#edited_by_' + pid).html(json.editedmsg);
+						}
 					}
 					$('#pid_' + pid + '_temp').remove();
 				}
