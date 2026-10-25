@@ -62,24 +62,77 @@ $avatar-margin-medium: 110px;
         }
     }
 
+    &__edit-information {
+        display: inline;
+    }
+
     &__edit-log {
+        display: inline;
         margin-#{$left}: var(--spacing-2);
         font-size: var(--font-size-smaller);
+        color: var(--alt-font-color-2);
 
-        &:link,
-        &:visited {
-            color: var(--alt-font-color-2);
+        &-button {
+            display: none;
+            min-width: var(--spacing-6);
+            min-height: var(--spacing-6);
+            padding: 0;
+            border: 0;
+            background: none;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+                color: var(--link-hover-color);
+            }
         }
 
-        &:hover {
-            color: var(--link-hover-color);
+        &-content {
+            color: var(--font-color);
+            overflow-wrap: anywhere;
+        }
+
+        @supports selector(:popover-open) {
+            &-button {
+                display: inline-block;
+            }
+
+            &-content {
+                // A centered popover remains usable without anchor positioning.
+                position: fixed;
+                inset: 0;
+                margin: auto;
+                box-sizing: border-box;
+                width: max-content;
+                max-width: min(24rem, calc(100vw - 2 * var(--spacing-5)));
+                max-height: calc(100vh - 2 * var(--spacing-5));
+                overflow: auto;
+                padding: var(--spacing-3);
+                background: var(--background-default);
+                border: var(--border-width-base) solid var(--border-color-1);
+                border-radius: var(--border-radius);
+                font-size: var(--font-size-smaller);
+                @include box-shadow;
+
+                @supports (position-anchor: --post-edit) and (position-area: bottom) {
+                    inset: auto;
+                    margin: var(--spacing-2);
+                    position-area: bottom span-#{$right};
+                    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+                }
+            }
         }
     }
 
     &__edit-reason {
         color: var(--alt-font-color-1);
-        margin-#{$left}: var(--spacing-2);
-        font-size: var(--font-size-smaller);
+        margin-top: var(--spacing-2);
+
+        @supports selector(:popover-open) {
+            display: block;
+        }
     }
 
     &__ip-address {
