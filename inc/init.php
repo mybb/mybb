@@ -302,6 +302,7 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('THREAD_URL_POST', 'thread-{tid}-post-{pid}.html');
 	define('THREAD_URL_POST_ACTION', 'thread-{tid}-post-{pid}-{action}.html');
 	define('POST_URL', "post-{pid}.html");
+	define('POST_URL_ACTION', 'post-{pid}-{action}.html');
 	define('PROFILE_URL', "user-{uid}.html");
 	define('ANNOUNCEMENT_URL', "announcement-{aid}.html");
 	define('CALENDAR_URL', "calendar-{calendar}.html");
@@ -320,6 +321,7 @@ else
 	define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
 	define('THREAD_URL_POST_ACTION', 'showthread.php?tid={tid}&pid={pid}&action={action}');
 	define('POST_URL', "showthread.php?pid={pid}");
+	define('POST_URL_ACTION', 'showthread.php?pid={pid}&action={action}');
 	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
 	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
 	define('CALENDAR_URL', "calendar.php?calendar={calendar}");
