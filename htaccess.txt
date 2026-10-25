@@ -52,6 +52,7 @@ Options -MultiViews +FollowSymlinks -Indexes
 	RewriteRule ^thread-([0-9]+)-post-([0-9]+)-([^/]+)\.html$ showthread.php?tid=$1&pid=$2&action=$3 [L,QSA]
 	RewriteRule ^thread-([0-9]+)-post-([0-9]+)\.html$ showthread.php?tid=$1&pid=$2 [L,QSA]
 
+	RewriteRule ^post-([0-9]+)-([^/]+)\.html$ showthread.php?pid=$1&action=$2 [L,QSA]
 	RewriteRule ^post-([0-9]+)\.html$ showthread.php?pid=$1 [L,QSA]
 
 	RewriteRule ^announcement-([0-9]+)\.html$ announcements.php?aid=$1 [L,QSA]
