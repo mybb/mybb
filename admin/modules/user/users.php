@@ -3687,6 +3687,7 @@ function build_users_view($view)
 				$reputation = "-";
 			}
 
+			$user['view']['warninglevel'] = "-";
 			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
 				if($mybb->settings['maxwarningpoints'] < 1)
