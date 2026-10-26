@@ -2140,6 +2140,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$stats = $cache->read("stats");
+	$memprofile['invisible_content_counts'] = get_profile_invisible_content_counts($memprofile['uid']);
 
 	// Format post count, per day count and percent of total
 	$ppd = $memprofile['postnum'] / $daysreg;
