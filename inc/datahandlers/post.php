@@ -144,14 +144,14 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 			$post['username'] = $user['username'];
 		}
-		// if the uid is 0 verify the username
-		else if($post['uid'] == 0 && $post['username'] != '')
+		// Verify supplied guest usernames and require one for new posts when configured.
+		else if($post['uid'] == 0 && (($post['username'] ?? '') != '' || ($this->method == "insert" && ($mybb->settings['guestusernamemode'] ?? 'optional') == 'required')))
 		{
 			// Set up user handler
 			require_once MYBB_ROOT."inc/datahandlers/user.php";
 			$userhandler = new UserDataHandler();
 
-			$data_array = array('username' => $post['username']);
+			$data_array = array('username' => $post['username'] ?? '');
 			$userhandler->set_data($data_array);
 
 			if(!$userhandler->verify_username())

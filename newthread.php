@@ -116,7 +116,9 @@ if($mybb->user['uid'] != 0)
 // Otherwise we have a guest, determine the "username" and get the login box.
 else
 {
-	$loginbox = \MyBB\View\template('misc/loginbox.twig');
+	$loginbox = \MyBB\View\template('misc/loginbox.twig', [
+		'username_required' => ($mybb->settings['guestusernamemode'] ?? 'optional') == 'required',
+	]);
 }
 
 // If we're not performing a new thread insert and not editing a draft then we're posting a new thread.
