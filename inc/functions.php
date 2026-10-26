@@ -8047,6 +8047,18 @@ function my_rand($min = 0, $max = PHP_INT_MAX)
 }
 
 /**
+ * Removes invisible controls, formatting characters, blank fillers, and Unicode separators.
+ * Ordinary spaces (U+0020) are preserved.
+ *
+ * @param string $string The string to clean
+ * @return string|null The cleaned string, or null on a regex error
+ */
+function remove_blank_chrs($string)
+{
+	return preg_replace('#(?!\x{0020})[\p{Cc}\p{Cf}\p{Z}\x{034F}\x{115F}\x{1160}\x{17B4}\x{17B5}\x{3164}\x{FFA0}]#u', '', $string);
+}
+
+/**
  * More robust version of PHP's trim() function. It includes a list of UTF-8 blank characters
  * from http://kb.mozillazine.org/Network.IDN.blacklist_chars
  *
