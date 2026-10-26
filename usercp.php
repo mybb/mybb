@@ -3560,12 +3560,12 @@ if($mybb->input['action'] === "do_acknowledge" && $mybb->request_method === "pos
 
 	if(!empty($warning['daterevoked']))
 	{
-		error($lang->warning_already_revoked);
+		error($lang->warning_already_revoked, status_code: 409);
 	}
 
 	if(!$warningshandler->acknowledge_warning())
 	{
-		error($lang->warning_acknowledgement_failed);
+		error($lang->warning_acknowledgement_failed, status_code: 500);
 	}
 	redirect("usercp.php", $lang->warning_acknowledgement_success);
 }
