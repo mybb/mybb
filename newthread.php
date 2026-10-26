@@ -36,7 +36,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 
 	if(!$thread || !$post || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
 	{
-		error($lang->invalidthread);
+		error($lang->invalidthread, status_code: 404);
 	}
 
 	$pid = $post['pid'];
@@ -52,7 +52,7 @@ else
 $forum = get_forum($fid);
 if(!$forum)
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 // Draw the navigation
@@ -63,7 +63,7 @@ $forumpermissions = forum_permissions($fid);
 
 if($forum['open'] == 0 || $forum['type'] != "f" || $forum['linkto'] != "")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 
 if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0)
@@ -81,7 +81,7 @@ if($mybb->user['suspendposting'] == 1)
 
 	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
 
-	error($lang->error_suspendedposting);
+	error($lang->error_suspendedposting, status_code: 403);
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -242,7 +242,7 @@ if($mybb->usergroup['maxposts'] > 0)
 	if($post_count >= $mybb->usergroup['maxposts'])
 	{
 		$lang->error_maxposts = $lang->sprintf($lang->error_maxposts, $mybb->usergroup['maxposts']);
-		error($lang->error_maxposts);
+		error($lang->error_maxposts, status_code: 429);
 	}
 }
 

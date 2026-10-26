@@ -15,7 +15,7 @@ require_once "./global.php";
 
 if($mybb->settings['enableattachments'] != 1)
 {
-	error($lang->attachments_disabled);
+	error($lang->attachments_disabled, status_code: 404);
 }
 
 // Find the AID we're looking for
@@ -45,12 +45,12 @@ $plugins->run_hooks("attachment_start");
 
 if(!$attachment)
 {
-	error($lang->error_invalidattachment);
+	error($lang->error_invalidattachment, status_code: 404);
 }
 
 if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
 {
-	error($lang->error_invalidattachment);
+	error($lang->error_invalidattachment, status_code: 404);
 }
 
 $attachtypes = (array)$cache->read('attachtypes');
@@ -58,7 +58,7 @@ $ext = get_extension($attachment['filename']);
 
 if(empty($attachtypes[$ext]))
 {
-	error($lang->error_invalidattachment);
+	error($lang->error_invalidattachment, status_code: 404);
 }
 
 $attachtype = $attachtypes[$ext];
@@ -72,7 +72,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 
 	if(!$post)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	// Check permissions if the post is not a draft
@@ -82,7 +82,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 
 		if(!$thread && !isset($mybb->input['thumbnail']))
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 		$fid = $thread['fid'];
 
@@ -100,7 +100,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 		// Error if attachment is invalid or not visible
 		if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
 		{
-			error($lang->error_invalidattachment);
+			error($lang->error_invalidattachment, status_code: 404);
 		}
 
 		if($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$fid.',') === false)
@@ -147,7 +147,7 @@ if(isset($mybb->input['thumbnail']))
 {
 	if(!file_exists($uploadspath_abs."/".$attachment['thumbnail']))
 	{
-		error($lang->error_invalidattachment);
+		error($lang->error_invalidattachment, status_code: 404);
 	}
 
 	$ext = get_extension($attachment['thumbnail']);
@@ -187,7 +187,7 @@ else
 {
 	if(!file_exists($uploadspath_abs."/".$attachment['attachname']))
 	{
-		error($lang->error_invalidattachment);
+		error($lang->error_invalidattachment, status_code: 404);
 	}
 
 	$ext = get_extension($attachment['filename']);

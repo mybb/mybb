@@ -610,7 +610,7 @@ if($mybb->input['action'] == 'do_email' && $mybb->request_method == 'post')
 				log_security_action('changed_email');
 
 				$plugins->run_hooks('usercp_do_email_verify');
-				error($lang->redirect_changeemail_activation);
+				error($lang->redirect_changeemail_activation, status_code: 200);
 			}
 			else
 			{
@@ -1318,7 +1318,7 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 	$thread = get_thread($mybb->get_input('tid'));
 	if(!$thread || $thread['visible'] == -1)
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	// Is the currently logged in user a moderator of this forum?
@@ -1327,7 +1327,7 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 	// Make sure we are looking at a real thread here.
 	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 
 	$forumpermissions = forum_permissions($thread['fid']);
@@ -1377,7 +1377,7 @@ if($mybb->input['action'] == "addsubscription")
 		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
 		if(!$forum)
 		{
-			error($lang->error_invalidforum);
+			error($lang->error_invalidforum, status_code: 404);
 		}
 		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
@@ -1407,7 +1407,7 @@ if($mybb->input['action'] == "addsubscription")
 		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread || $thread['visible'] == -1)
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		// Is the currently logged in user a moderator of this forum?
@@ -1416,7 +1416,7 @@ if($mybb->input['action'] == "addsubscription")
 		// Make sure we are looking at a real thread here.
 		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
@@ -1462,7 +1462,7 @@ if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "
 		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
 		if(!$forum)
 		{
-			error($lang->error_invalidforum);
+			error($lang->error_invalidforum, status_code: 404);
 		}
 
 		// check if the forum requires a password to view. If so, we need to show a form to the user
@@ -1487,7 +1487,7 @@ if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "
 		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		// Is the currently logged in user a moderator of this forum?
@@ -1496,7 +1496,7 @@ if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "
 		// Make sure we are looking at a real thread here.
 		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		// check if the forum requires a password to view. If so, we need to show a form to the user
@@ -1527,7 +1527,7 @@ if($mybb->input['action'] == "removesubscription")
 		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
 		if(!$forum)
 		{
-			error($lang->error_invalidforum);
+			error($lang->error_invalidforum, status_code: 404);
 		}
 
 		add_breadcrumb($lang->nav_forumsubscriptions, "usercp.php?action=forumsubscriptions");
@@ -1557,7 +1557,7 @@ if($mybb->input['action'] == "removesubscription")
 		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread || $thread['visible'] == -1)
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		// Is the currently logged in user a moderator of this forum?
@@ -1566,7 +1566,7 @@ if($mybb->input['action'] == "removesubscription")
 		// Make sure we are looking at a real thread here.
 		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 		{
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
@@ -1703,7 +1703,7 @@ if($mybb->input['action'] == 'editsig')
 	if($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW))
 	{
 		// User currently has no signature and they're suspended
-		error($lang->sig_suspended);
+		error($lang->sig_suspended, status_code: 403);
 	}
 
 	if($mybb->usergroup['canusesig'] != 1)
@@ -1716,7 +1716,7 @@ if($mybb->input['action'] == 'editsig')
 		if($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts'])
 		{
 			// Usergroup can use this facility, but only after x posts
-			error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']));
+			error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']), status_code: 403);
 		}
 	}
 
@@ -1830,7 +1830,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	if((int)$mybb->user['suspendavatar'] === 1)
 	{
-		error($lang->avatar_suspended);
+		error($lang->avatar_suspended, status_code: 403);
 	}
 
 	// Verify incoming POST request
@@ -2016,7 +2016,7 @@ if($mybb->input['action'] == "avatar")
 
 	if($suspend_avatar === 1 && ($suspend_avatar_time == 0 || $suspend_avatar_time > 0 && $suspend_avatar_time > TIME_NOW))
 	{
-		error($lang->avatar_suspended);
+		error($lang->avatar_suspended, status_code: 403);
 	}
 
 	if($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath']))
@@ -2145,7 +2145,7 @@ if($mybb->input['action'] == "acceptrequest")
 	}
 	else
 	{
-		error($lang->user_doesnt_exist);
+		error($lang->user_doesnt_exist, status_code: 404);
 	}
 
 	$plugins->run_hooks('usercp_acceptrequest_end');
@@ -2174,7 +2174,7 @@ elseif($mybb->input['action'] == "declinerequest")
 	}
 	else
 	{
-		error($lang->user_doesnt_exist);
+		error($lang->user_doesnt_exist, status_code: 404);
 	}
 
 	$plugins->run_hooks('usercp_declinerequest_end');
@@ -2874,13 +2874,13 @@ if($mybb->input['action'] == "usergroups")
 
 		if(my_strpos($ingroups, ",".$mybb->input['displaygroup'].",") === false)
 		{
-			error($lang->not_member_of_group);
+			error($lang->not_member_of_group, status_code: 403);
 		}
 
 		$dispgroup = $usergroups[$mybb->get_input('displaygroup', MyBB::INPUT_INT)];
 		if($dispgroup['candisplaygroup'] != 1)
 		{
-			error($lang->cannot_set_displaygroup);
+			error($lang->cannot_set_displaygroup, status_code: 403);
 		}
 		$db->update_query("users", array('displaygroup' => $mybb->get_input('displaygroup', MyBB::INPUT_INT)), "uid='".$mybb->user['uid']."'");
 		$cache->update_moderators();
@@ -2897,17 +2897,17 @@ if($mybb->input['action'] == "usergroups")
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', MyBB::INPUT_INT).",") === false)
 		{
-			error($lang->not_member_of_group);
+			error($lang->not_member_of_group, status_code: 403);
 		}
 		if($mybb->user['usergroup'] == $mybb->get_input('leavegroup', MyBB::INPUT_INT))
 		{
-			error($lang->cannot_leave_primary_group);
+			error($lang->cannot_leave_primary_group, status_code: 403);
 		}
 
 		$usergroup = $usergroups[$mybb->get_input('leavegroup', MyBB::INPUT_INT)];
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
-			error($lang->cannot_leave_group);
+			error($lang->cannot_leave_group, status_code: 403);
 		}
 		leave_usergroup($mybb->user['uid'], $mybb->get_input('leavegroup', MyBB::INPUT_INT));
 		$plugins->run_hooks('usercp_usergroups_leave_group');
@@ -2939,12 +2939,12 @@ if($mybb->input['action'] == "usergroups")
 
 		if($usergroup['type'] == 5)
 		{
-			error($lang->cannot_join_invite_group);
+			error($lang->cannot_join_invite_group, status_code: 403);
 		}
 
 		if(($usergroup['type'] != 4 && $usergroup['type'] != 3) || !$usergroup['gid'])
 		{
-			error($lang->cannot_join_group);
+			error($lang->cannot_join_group, status_code: 403);
 		}
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('joingroup', MyBB::INPUT_INT).",") !== false)
@@ -3174,7 +3174,7 @@ if($mybb->input['action'] == "attachments")
 
 	if($mybb->settings['enableattachments'] == 0)
 	{
-		error($lang->attachments_disabled);
+		error($lang->attachments_disabled, status_code: 404);
 	}
 
 	$plugins->run_hooks("usercp_attachments_start");
@@ -3550,7 +3550,7 @@ if($mybb->input['action'] === "do_acknowledge" && $mybb->request_method === "pos
 
 	if(!$warning || (int)$warning['uid'] !== $mybb->user['uid'])
 	{
-		error($lang->warning_invalid);
+		error($lang->warning_invalid, status_code: 404);
 	}
 
 	if((int)$warning['acknowledged'])

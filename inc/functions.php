@@ -793,7 +793,7 @@ function verify_post_check($code, $silent = false)
 			}
 			else
 			{
-				error($lang->invalid_post_code);
+				error($lang->invalid_post_code, status_code: 403);
 			}
 		}
 	}
@@ -938,9 +938,11 @@ function get_child_list($fid)
  * @param string $extra_content Optional additional error page content
  * @param int $status_code HTTP status code to send with the error page
  */
-function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 200): never
+function error(string $message = "", string $title = "", string $extra_content = "", int $status_code = 400): never
 {
 	global $db, $lang, $mybb, $plugins;
+
+	http_response_code($status_code);
 
 	$message = $plugins->run_hooks("error", $message);
 
@@ -952,8 +954,6 @@ function error(string $message = "", string $title = "", string $extra_content =
 		echo json_encode(array("errors" => array($message)));
 		exit;
 	}
-
-	http_response_code($status_code);
 
 	$timenow = my_date('relative', TIME_NOW);
 	reset_breadcrumb();
@@ -1021,6 +1021,8 @@ function error_no_permission()
 {
 	global $mybb, $theme, $db, $lang, $plugins, $session;
 
+	http_response_code(403);
+
 	$time = TIME_NOW;
 	$plugins->run_hooks('no_permission');
 
@@ -1078,7 +1080,7 @@ function error_no_permission()
 		'redirect_url' => $redirect_url
 	]);
 
-	error($error_message, $lang->error_nopermission, $error_page, 403);
+	error($error_message, $lang->error_nopermission, $error_page, http_response_code());
 }
 
 /**
@@ -6459,7 +6461,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 			$hoursleft = floor($secsleft / 3600);
 			$minsleft = floor(($secsleft / 60) % 60);
 			$secsleft = floor($secsleft % 60);
-			error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+			error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft), status_code: 429);
 		}
 		return false;
 	}
@@ -6494,7 +6496,7 @@ function login_attempt_check($uid = 0, $fatal = true)
 				$hoursleft = floor($secsleft / 3600);
 				$minsleft = floor(($secsleft / 60) % 60);
 				$secsleft = floor($secsleft % 60);
-				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft), status_code: 429);
 			}
 			return false;
 		}

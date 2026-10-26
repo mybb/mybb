@@ -43,7 +43,7 @@ else
 
 if(!$post || ($post['visible'] == -1 && $mybb->input['action'] != "restorepost"))
 {
-	error($lang->error_invalidpost);
+	error($lang->error_invalidpost, status_code: 404);
 }
 
 // Get thread info
@@ -52,7 +52,7 @@ $thread = get_thread($tid);
 
 if(!$thread)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -66,12 +66,12 @@ if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread
 {
 	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 }
 if(!$forum || $forum['type'] != "f")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 if(($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1)
 {
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	{
 		if($thread['closed'] == 1)
 		{
-			error($lang->redirect_threadclosed);
+			error($lang->redirect_threadclosed, status_code: 403);
 		}
 		if($forumpermissions['candeleteposts'] == 0 && $pid != $thread['firstpost'] || $forumpermissions['candeletethreads'] == 0 && $pid == $thread['firstpost'])
 		{
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	}
 	if($post['visible'] == -1 && $mybb->settings['soft_delete'] == 1)
 	{
-		error($lang->error_already_deleted);
+		error($lang->error_already_deleted, status_code: 404);
 	}
 }
 elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
@@ -154,7 +154,7 @@ else
 	{
 		if($thread['closed'] == 1)
 		{
-			error($lang->redirect_threadclosed);
+			error($lang->redirect_threadclosed, status_code: 403);
 		}
 		if($forumpermissions['caneditposts'] == 0)
 		{
@@ -169,7 +169,7 @@ else
 		if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < ($time - ($mybb->usergroup['edittimelimit'] * 60)))
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
-			error($lang->edit_time_limit);
+			error($lang->edit_time_limit, status_code: 403);
 		}
 		// User can't edit unapproved post
 		if(($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid'])) || $post['visible'] == -1)
@@ -184,7 +184,7 @@ check_forum_password($forum['fid']);
 
 if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == '1')
 {
-	error($lang->error_cannot_upload_php_post);
+	error($lang->error_cannot_upload_php_post, status_code: 413);
 }
 
 if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_editpost" && isset($mybb->input['submitbutton'])) || ($mybb->input['action'] == "editpost" && isset($mybb->input['previewpost']))) && isset($_FILES['attachments']))))
@@ -259,7 +259,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		$attachment = $db->fetch_array($query);
 		if(!$attachment)
 		{
-			error($lang->error_invalidattachment);
+			error($lang->error_invalidattachment, status_code: 404);
 		}
 	}
 
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	}
 	else
 	{
-		error($lang->redirect_nodelete);
+		error($lang->redirect_nodelete, status_code: 403);
 	}
 }
 
@@ -502,7 +502,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 	}
 	else
 	{
-		error($lang->redirect_norestore);
+		error($lang->redirect_norestore, status_code: 403);
 	}
 }
 

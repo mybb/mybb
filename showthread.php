@@ -49,7 +49,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		)
 		{
 			// Post does not exist --> show corresponding error
-			error($lang->error_invalidpost);
+			error($lang->error_invalidpost, status_code: 404);
 		}
 
 		$mybb->input['tid'] = $post['tid'];
@@ -61,7 +61,7 @@ $thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread || $thread['moved'] != 0)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 
 // Get thread prefix if there is one.
@@ -170,7 +170,7 @@ if(($thread['visible'] != 1 && $modpermissions['ismod'] == false) || ($thread['v
 	// Allow viewing own unapproved thread
 	if (!($mybb->user['uid'] && $mybb->settings['showownunapproved'] && $thread['visible'] == 0 && ($thread['uid'] == $mybb->user['uid'])))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 }
 
@@ -189,7 +189,7 @@ if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canon
 $forum = get_forum($fid);
 if(!$forum || $forum['type'] != "f")
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "nextnewest")
 	// Are there actually next newest posts?
 	if(!$nextthread)
 	{
-		error($lang->error_nonextnewest);
+		error($lang->error_nonextnewest, status_code: 200);
 	}
 	$options = array(
 		"limit_start" => 0,
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "nextoldest")
 	// Are there actually next oldest posts?
 	if(!$nextthread)
 	{
-		error($lang->error_nonextoldest);
+		error($lang->error_nonextoldest, status_code: 200);
 	}
 	$options = array(
 		"limit_start" => 0,
@@ -745,7 +745,7 @@ if($mybb->input['action'] == "thread")
 		// Is there actually a pid to display?
 		if(!$showpost)
 		{
-			error($lang->error_invalidpost);
+			error($lang->error_invalidpost, status_code: 404);
 		}
 
 		// Choose what pid to display.
@@ -979,7 +979,7 @@ if($mybb->input['action'] == "thread")
 		else
 		{
 			// If there are no pid's the thread is probably awaiting approval.
-			error($lang->error_invalidthread);
+			error($lang->error_invalidthread, status_code: 404);
 		}
 
 		// Get the actual posts from the database here.

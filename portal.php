@@ -42,7 +42,7 @@ $lang->load("portal");
 
 if($mybb->settings['portal'] == 0)
 {
-	error($lang->portal_disabled);
+	error($lang->portal_disabled, status_code: 404);
 }
 
 // Fetch the current URL

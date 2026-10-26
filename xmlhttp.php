@@ -170,7 +170,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 		$message = $lang->boardclosed_reason;
 	}
 
-	xmlhttp_error($message);
+	xmlhttp_error($message, status_code: 503);
 }
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
@@ -247,7 +247,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	// Verify POST request
 	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
-		xmlhttp_error($lang->invalid_post_code);
+		xmlhttp_error($lang->invalid_post_code, status_code: 403);
 	}
 
 	// We're editing a thread subject.
@@ -257,7 +257,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
-			xmlhttp_error($lang->thread_doesnt_exist);
+			xmlhttp_error($lang->thread_doesnt_exist, status_code: 404);
 		}
 
 		// Fetch some of the information from the first post of this thread.
@@ -278,7 +278,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	// Missing thread, invalid forum? Error.
 	if(!$forum || $forum['type'] != "f")
 	{
-		xmlhttp_error($lang->thread_doesnt_exist);
+		xmlhttp_error($lang->thread_doesnt_exist, status_code: 404);
 	}
 
 	// Fetch forum permissions.
@@ -292,18 +292,18 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == 1)
 		{
-			xmlhttp_error($lang->thread_closed_edit_subjects);
+			xmlhttp_error($lang->thread_closed_edit_subjects, status_code: 403);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == 0 || $forumpermissions['caneditposts'] == 0 || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
 		{
-			xmlhttp_error($lang->no_permission_edit_subject);
+			xmlhttp_error($lang->no_permission_edit_subject, status_code: 403);
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW - ($mybb->usergroup['edittimelimit'] * 60)))
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
-			xmlhttp_error($lang->edit_time_limit);
+			xmlhttp_error($lang->edit_time_limit, status_code: 403);
 		}
 		$ismod = false;
 	}
@@ -382,7 +382,7 @@ else if($mybb->input['action'] == "edit_post")
 	// No result, die.
 	if(!$post || $post['visible'] == -1)
 	{
-		xmlhttp_error($lang->post_doesnt_exist);
+		xmlhttp_error($lang->post_doesnt_exist, status_code: 404);
 	}
 
 	// Fetch the thread associated with this post.
@@ -394,13 +394,13 @@ else if($mybb->input['action'] == "edit_post")
 	// Missing thread, invalid forum? Error.
 	if(!$thread || !$forum || $forum['type'] != "f")
 	{
-		xmlhttp_error($lang->thread_doesnt_exist);
+		xmlhttp_error($lang->thread_doesnt_exist, status_code: 404);
 	}
 
 	// Check if this forum is password protected and we have a valid password
 	if(check_forum_password($forum['fid'], 0, true))
 	{
-		xmlhttp_error($lang->wrong_forum_password);
+		xmlhttp_error($lang->wrong_forum_password, status_code: 403);
 	}
 
 	// Fetch forum permissions.
@@ -414,23 +414,23 @@ else if($mybb->input['action'] == "edit_post")
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == 1)
 		{
-			xmlhttp_error($lang->thread_closed_edit_message);
+			xmlhttp_error($lang->thread_closed_edit_message, status_code: 403);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == 0 || $forumpermissions['caneditposts'] == 0 || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0 || $mybb->user['suspendposting'] == 1)
 		{
-			xmlhttp_error($lang->no_permission_edit_post);
+			xmlhttp_error($lang->no_permission_edit_post, status_code: 403);
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW - ($mybb->usergroup['edittimelimit'] * 60)))
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
-			xmlhttp_error($lang->edit_time_limit);
+			xmlhttp_error($lang->edit_time_limit, status_code: 403);
 		}
 		// User can't edit unapproved post unless permitted for own
 		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
-			xmlhttp_error($lang->post_moderation);
+			xmlhttp_error($lang->post_moderation, status_code: 403);
 		}
 	}
 
@@ -450,7 +450,7 @@ else if($mybb->input['action'] == "edit_post")
 		// Verify POST request
 		if(!verify_post_check($mybb->get_input('my_post_key'), true))
 		{
-			xmlhttp_error($lang->invalid_post_code);
+			xmlhttp_error($lang->invalid_post_code, status_code: 403);
 		}
 
 		$message = $mybb->get_input('value');
@@ -703,7 +703,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 	$query = $db->simple_select("captcha", "dateline", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
-		xmlhttp_error($lang->captcha_not_exists);
+		xmlhttp_error($lang->captcha_not_exists, status_code: 404);
 	}
 	$db->delete_query("captcha", "imagehash='$imagehash'");
 	$randomstr = (new \MyBB\Captcha\Generator())->generatePhrase();
@@ -761,7 +761,7 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 
 	if($db->num_rows($query) == 0)
 	{
-		xmlhttp_error($lang->answer_valid_not_exists);
+		xmlhttp_error($lang->answer_valid_not_exists, status_code: 404);
 	}
 
 	$qsession = $db->fetch_array($query);
@@ -805,7 +805,7 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	}
 	else
 	{
-		xmlhttp_error($lang->answer_valid_not_exists);
+		xmlhttp_error($lang->answer_valid_not_exists, status_code: 404);
 	}
 }
 elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securityquestion'])
@@ -881,7 +881,7 @@ else if($mybb->input['action'] == "username_availability")
 {
 	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
-		xmlhttp_error($lang->invalid_post_code);
+		xmlhttp_error($lang->invalid_post_code, status_code: 403);
 	}
 
 	require_once MYBB_ROOT."inc/functions_user.php";
@@ -939,7 +939,7 @@ else if($mybb->input['action'] == "email_availability")
 {
 	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
-		xmlhttp_error($lang->invalid_post_code);
+		xmlhttp_error($lang->invalid_post_code, status_code: 403);
 	}
 
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
@@ -1048,11 +1048,14 @@ else if($mybb->input['action'] == 'get_referrals')
 /**
  * Spits an XML Http based error message back to the browser
  *
- * @param string $message The message to send back.
+ * @param string|array $message The message(s) to send back.
+ * @param int $status_code HTTP status code to send with the error response.
  */
-function xmlhttp_error($message)
+function xmlhttp_error($message, int $status_code = 400)
 {
 	global $charset;
+
+	http_response_code($status_code);
 
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");

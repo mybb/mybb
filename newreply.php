@@ -44,11 +44,11 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	$post = get_post($pid);
 	if(!$post)
 	{
-		error($lang->error_invalidpost);
+		error($lang->error_invalidpost, status_code: 404);
 	}
 	else if($mybb->user['uid'] != $post['uid'])
 	{
-		error($lang->error_post_noperms);
+		error($lang->error_post_noperms, status_code: 403);
 	}
 	$pid = (int)$post['pid'];
 	$tid = (int)$post['tid'];
@@ -58,7 +58,7 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 $thread = get_thread($tid);
 if(!$thread)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidthread, status_code: 404);
 }
 $fid = (int)$thread['fid'];
 
@@ -66,7 +66,7 @@ $fid = (int)$thread['fid'];
 $forum = get_forum($fid);
 if(!$forum)
 {
-	error($lang->error_invalidforum);
+	error($lang->error_invalidforum, status_code: 404);
 }
 
 // Make navigation
@@ -83,19 +83,19 @@ if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid, "canviewunappr
 {
 	if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 	{
-		error($lang->error_invalidpost);
+		error($lang->error_invalidpost, status_code: 404);
 	}
 }
 if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thread['visible'] < 0)
 {
 	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
 	{
-		error($lang->error_invalidthread);
+		error($lang->error_invalidthread, status_code: 404);
 	}
 }
 if($forum['open'] == 0 || $forum['type'] != "f")
 {
-	error($lang->error_closedinvalidforum);
+	error($lang->error_closedinvalidforum, status_code: 403);
 }
 if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
@@ -112,7 +112,7 @@ if($mybb->user['suspendposting'] == 1)
 
 	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
 
-	error($lang->error_suspendedposting);
+	error($lang->error_suspendedposting, status_code: 403);
 }
 
 if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
@@ -158,7 +158,7 @@ if(!is_moderator($fid, "canpostclosedthreads"))
 {
 	if($thread['closed'] == 1)
 	{
-		error($lang->redirect_threadclosed);
+		error($lang->redirect_threadclosed, status_code: 403);
 	}
 }
 
@@ -283,7 +283,7 @@ if($mybb->usergroup['maxposts'] > 0)
 	if($post_count >= $mybb->usergroup['maxposts'])
 	{
 		$lang->error_maxposts = $lang->sprintf($lang->error_maxposts, $mybb->usergroup['maxposts']);
-		error($lang->error_maxposts);
+		error($lang->error_maxposts, status_code: 429);
 	}
 }
 
@@ -336,14 +336,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						$stop_forum_spam_checker->getErrorText(array(
 							'stopforumspam_check_usernames',
 							'stopforumspam_check_ips'
-						))));
+						))), status_code: 403);
 				}
 			}
 			catch(Exception $e)
 			{
 				if($mybb->settings['stopforumspam_block_on_error'])
 				{
-					error($lang->error_stop_forum_spam_fetching);
+					error($lang->error_stop_forum_spam_fetching, status_code: 503);
 				}
 			}
 		}

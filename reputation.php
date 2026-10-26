@@ -23,7 +23,7 @@ $plugins->run_hooks("reputation_start");
 // Check if the reputation system is globally disabled or not.
 if($mybb->settings['enablereputation'] != 1)
 {
-	error($lang->reputation_disabled);
+	error($lang->reputation_disabled, status_code: 404);
 }
 
 // Does this user have permission to view the board?
@@ -37,7 +37,7 @@ $uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 $user = get_user($uid);
 if(!$user)
 {
-	error($lang->add_no_uid);
+	error($lang->add_no_uid, status_code: 404);
 }
 $user_permissions = user_permissions($uid);
 
@@ -503,7 +503,7 @@ if(!$mybb->input['action'])
 	if($user_permissions['usereputationsystem'] != 1)
 	{
 		// Group has reputation disabled or user has a display group that has reputation disabled
-		error($lang->reputations_disabled_group);
+		error($lang->reputations_disabled_group, status_code: 403);
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
