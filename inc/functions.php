@@ -3502,7 +3502,9 @@ function format_name($username, $usergroup, $displaygroup = 0)
 
 	static $formattednames = array();
 
-	if(!isset($formattednames[$username]))
+	$cache_key = serialize(array($username, $usergroup, $displaygroup));
+
+	if(!isset($formattednames[$cache_key]))
 	{
 		if(!is_array($groupscache))
 		{
@@ -3534,10 +3536,10 @@ function format_name($username, $usergroup, $displaygroup = 0)
 
 		$format = $parameters['format'];
 
-		$formattednames[$username] = str_replace("{username}", $username, $format);
+		$formattednames[$cache_key] = str_replace("{username}", $username, $format);
 	}
 
-	return $formattednames[$username];
+	return $formattednames[$cache_key];
 }
 
 /**
