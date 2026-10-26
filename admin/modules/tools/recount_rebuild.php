@@ -231,6 +231,9 @@ function acp_recount_warning()
 {
 	global $db, $mybb, $lang;
 
+	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+	$warningshandler = new WarningsHandler('update');
+
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
@@ -251,6 +254,7 @@ function acp_recount_warning()
 		$warn_lev = $db->fetch_field($query2, "warn_lev");
 
 		$db->update_query("users", array("warningpoints" => (int)$warn_lev), "uid='{$user['uid']}'");
+		$warningshandler->update_unacknowledged_warnings_count((int)$user['uid']);
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "warning", "do_recountwarning", $lang->success_rebuilt_warning);
