@@ -748,9 +748,9 @@ if($fpermissions['canviewthreads'] != 0)
 		//todo thread icons need some work after introducing theme system. Currently missing $theme settings
 		//$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 
-		if(!empty($icon_cache[$thread['icon']]['path']))
+		if(!empty($icon_cache[$thread['icon']]))
 		{
-			$icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
+			$icon_cache[$thread['icon']] = build_post_icon($icon_cache[$thread['icon']], $theme['imgdir']);
 		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread

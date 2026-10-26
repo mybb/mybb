@@ -15,7 +15,15 @@
         </h3>
     </div>
     <div class="thread__icons">
-        <span class="thread__icon"><img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" /></span>
+        {% if thread.icon is iterable %}
+            <span class="thread__icon">
+                {% if thread.icon.icon_class %}
+                    {{ include('partials/icon.twig', {icon: thread.icon.icon_class, class: '', title: thread.icon.name}, with_context = false) }}
+                {% elseif thread.icon.path %}
+                    <img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" />
+                {% endif %}
+            </span>
+        {% endif %}
     </div>
     <div class="thread__notification"><span class="thread__notification-legend">{{ lang.notification_method }}</span> <span class="thread__notification-method">{{ thread.notification_type }}</span></div>
     <div class="thread__replies thread__count thread__count--replies">

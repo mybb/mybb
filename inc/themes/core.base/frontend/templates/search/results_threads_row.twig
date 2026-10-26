@@ -26,7 +26,13 @@
     <div class="thread__icons">
         {# Thread icon #}
         {% if thread.hasicon %}
-            <span class="thread__icon"><img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /></span>
+            <span class="thread__icon">
+                {% if thread.icon_class %}
+                    {{ include('partials/icon.twig', {icon: thread.icon_class, class: '', title: thread.icon_name}, with_context = false) }}
+                {% elseif thread.icon_path %}
+                    <img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" />
+                {% endif %}
+            </span>
         {% endif %}
 
         {# Contains posts by you #}
