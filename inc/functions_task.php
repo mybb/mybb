@@ -134,12 +134,12 @@ function add_task_log($task, $message)
 function fetch_next_run($task)
 {
 	$time = TIME_NOW;
-	$next_minute = $current_minute = date("i", $time);
-	$next_hour = $current_hour = date("H", $time);
-	$next_day = $current_day = date("d", $time);
-	$next_weekday = $current_weekday = date("w", $time);
-	$next_month = $current_month = date("m", $time);
-	$next_year = $current_year = date("Y", $time);
+	$next_minute = $current_minute = (int)date("i", $time);
+	$next_hour = $current_hour = (int)date("H", $time);
+	$next_day = $current_day = (int)date("d", $time);
+	$next_weekday = $current_weekday = (int)date("w", $time);
+	$next_month = $current_month = (int)date("m", $time);
+	$next_year = $current_year = (int)date("Y", $time);
 	$reset_day = $reset_hour = $reset_month = $reset_year = 0;
 
 	if($task['minute'] == "*")
@@ -341,13 +341,13 @@ function fetch_next_run($task)
  */
 function build_next_run_bit($data, $bit)
 {
-	if($data == "*") return $bit;
+	if($data == "*") return (int)$bit;
 	$data = explode(",", $data);
 	foreach($data as $thing)
 	{
 		if($thing > $bit)
 		{
-			return $thing;
+			return (int)$thing;
 		}
 	}
 	return false;
@@ -361,9 +361,9 @@ function build_next_run_bit($data, $bit)
  */
 function fetch_first_run_time($data)
 {
-	if($data == "*") return "0";
+	if($data == "*") return 0;
 	$data = explode(",", $data);
-	return $data[0];
+	return (int)$data[0];
 }
 
 /**
