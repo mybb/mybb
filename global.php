@@ -748,13 +748,9 @@ if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_mo
 	$query = $db->simple_select("forums", "SUM(unapprovedthreads) AS unapprovedthreads");
 	$unapproved_threads = (int)$db->fetch_field($query, "unapprovedthreads");
 
-	$query = $db->query("
-		SELECT COUNT(p.pid) AS unapprovedposts
-		FROM ".TABLE_PREFIX."posts p
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE p.visible='0' AND t.firstpost != p.pid
-	");
-	$unapproved_posts = (int)$db->fetch_field($query, "unapprovedposts");
+	// Unapproved posts minus the first posts of unapproved threads, matching the Mod CP queue
+	$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "visible='0'");
+	$unapproved_posts = max(0, (int)$db->fetch_field($query, "unapprovedposts") - $unapproved_threads);
 
 	$query = $db->simple_select("attachments", "COUNT(aid) AS unapprovedattachments", "visible=0");
 	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
