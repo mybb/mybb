@@ -92,6 +92,7 @@ $tables[] = "CREATE TABLE mybb_attachments (
   thumbnail varchar(120) NOT NULL default '',
   KEY pid (pid, visible),
   KEY uid (uid),
+  KEY visible (visible),
   PRIMARY KEY (aid)
 ) ENGINE=MyISAM;";
 
