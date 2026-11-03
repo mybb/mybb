@@ -133,6 +133,15 @@ function add_task_log($task, $message)
  */
 function fetch_next_run($task)
 {
+	// Empty values (e.g. no month selected) mean "every"
+	foreach(array('minute', 'hour', 'day', 'weekday', 'month') as $field)
+	{
+		if(!isset($task[$field]) || trim($task[$field]) === '')
+		{
+			$task[$field] = '*';
+		}
+	}
+
 	$time = TIME_NOW;
 	$next_minute = $current_minute = date("i", $time);
 	$next_hour = $current_hour = date("H", $time);
@@ -347,7 +356,7 @@ function build_next_run_bit($data, $bit)
 	{
 		if($thing > $bit)
 		{
-			return $thing;
+			return (int)$thing;
 		}
 	}
 	return false;
@@ -361,9 +370,9 @@ function build_next_run_bit($data, $bit)
  */
 function fetch_first_run_time($data)
 {
-	if($data == "*") return "0";
+	if($data == "*") return 0;
 	$data = explode(",", $data);
-	return $data[0];
+	return (int)$data[0];
 }
 
 /**
