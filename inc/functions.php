@@ -6888,6 +6888,10 @@ function is_banned_ip($ip_address, $update_lastuse = false)
 	}
 	$ranges = $banned_ips['ranges'][$length];
 
+	// The cache stores addresses hex encoded, which keeps their order for strcmp()
+	$ip_address = bin2hex($ip_address);
+	$width = $length * 2;
+
 	// Find the last range whose lower bound is at or below the address
 	$low = 0;
 	$high = $ranges['count'] - 1;
@@ -6895,7 +6899,7 @@ function is_banned_ip($ip_address, $update_lastuse = false)
 	while($low <= $high)
 	{
 		$middle = ($low + $high) >> 1;
-		if(strcmp(substr($ranges['lower'], $middle * $length, $length), $ip_address) <= 0)
+		if(strcmp(substr($ranges['lower'], $middle * $width, $width), $ip_address) <= 0)
 		{
 			$last = $middle;
 			$low = $middle + 1;
@@ -6907,22 +6911,16 @@ function is_banned_ip($ip_address, $update_lastuse = false)
 	}
 
 	// No range up to that point reaches the address
-	if($last < 0 || strcmp(substr($ranges['max_upper'], $last * $length, $length), $ip_address) < 0)
+	if($last < 0 || strcmp(substr($ranges['max_upper'], $last * $width, $width), $ip_address) < 0)
 	{
 		return false;
 	}
 
 	if($update_lastuse == true)
 	{
-		for($i = $last; $i >= 0; --$i)
-		{
-			if(strcmp(substr($ranges['upper'], $i * $length, $length), $ip_address) >= 0)
-			{
-				$fid = unpack('N', $ranges['fids'], $i * 4)[1];
-				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$fid}'");
-				break;
-			}
-		}
+		// The range reaching max_upper starts at or before the address, so it contains it
+		$fid = hexdec(substr($ranges['max_fids'], $last * 8, 8));
+		$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$fid}'");
 	}
 
 	return true;

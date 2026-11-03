@@ -1001,12 +1001,12 @@ class datacache
 	/**
 	 * Updates the banned IPs cache.
 	 *
-	 * Filters are stored as packed binary address ranges per address length (4 bytes for IPv4, 16 for IPv6),
-	 * sorted by lower bound, so is_banned_ip() can binary search them. Each family contains:
+	 * Filters are stored as address ranges per address length (4 bytes for IPv4, 16 for IPv6), sorted by
+	 * lower bound, so is_banned_ip() can binary search them. Addresses are hex encoded so the cache stays
+	 * text-safe, which keeps the byte order for strcmp(). Each family contains:
 	 * - lower: concatenated lower bounds,
-	 * - upper: concatenated upper bounds,
 	 * - max_upper: running maximum of the upper bounds,
-	 * - fids: filter IDs packed as unsigned 32-bit integers,
+	 * - max_fids: for each position, the filter ID (8 hex digits) of the range that reaches max_upper,
 	 * - count: number of ranges.
 	 */
 	function update_bannedips()
@@ -1049,25 +1049,25 @@ class datacache
 				return strcmp($a[0], $b[0]);
 			});
 
-			$lower = $upper = $max_upper = $fids = '';
+			$lower = $max_upper = $max_fids = '';
 			$running_max = str_repeat("\0", $length);
+			$running_fid = 0;
 			foreach($family as $ip_range)
 			{
 				if(strcmp($ip_range[1], $running_max) > 0)
 				{
 					$running_max = $ip_range[1];
+					$running_fid = $ip_range[2];
 				}
-				$lower .= $ip_range[0];
-				$upper .= $ip_range[1];
-				$max_upper .= $running_max;
-				$fids .= pack('N', $ip_range[2]);
+				$lower .= bin2hex($ip_range[0]);
+				$max_upper .= bin2hex($running_max);
+				$max_fids .= sprintf('%08x', $running_fid);
 			}
 
 			$banned_ips['ranges'][$length] = array(
 				'lower' => $lower,
-				'upper' => $upper,
 				'max_upper' => $max_upper,
-				'fids' => $fids,
+				'max_fids' => $max_fids,
 				'count' => count($family)
 			);
 		}

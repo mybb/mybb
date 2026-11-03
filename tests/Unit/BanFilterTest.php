@@ -58,11 +58,22 @@ class BanFilterTest extends TestCase
     #[TestWith(['2001:db8::1', 5])]
     #[TestWith(['2001:db8:1:0:abcd::1', 6])]
     #[TestWith(['172.31.255.255', 7])]
-    #[TestWith(['172.16.5.20', 8])]
+    #[TestWith(['172.16.5.20', 7])]
     public function testBannedIpAddresses(string $ip, int $fid): void
     {
         $this->assertTrue(is_banned_ip($ip, true));
-        $this->assertContains($fid, $this->updatedFilters);
+        $this->assertSame([$fid], $this->updatedFilters);
+    }
+
+    public function testIpCacheIsTextSafe(): void
+    {
+        $GLOBALS['cache']->update_bannedips();
+
+        foreach ($GLOBALS['cache']->read('bannedips')['ranges'] as $ranges) {
+            foreach (['lower', 'max_upper', 'max_fids'] as $field) {
+                $this->assertMatchesRegularExpression('/^[0-9a-f]*$/', $ranges[$field]);
+            }
+        }
     }
 
     #[TestWith(['192.0.2.11'])]
