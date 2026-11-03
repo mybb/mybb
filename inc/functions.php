@@ -6815,30 +6815,41 @@ function is_banned_email($email, $update_lastuse = false)
 
 	$banned_cache = $cache->read("bannedemails");
 
-	if($banned_cache === false)
+	if(!isset($banned_cache['filters']))
 	{
-		// Failed to read cache, see if we can rebuild it
+		// Missing or outdated cache, see if we can rebuild it
 		$cache->update_bannedemails();
 		$banned_cache = $cache->read("bannedemails");
 	}
 
-	if(is_array($banned_cache) && !empty($banned_cache))
+	if(empty($banned_cache['filters']))
 	{
-		foreach($banned_cache as $banned_email)
-		{
-			// Make regular expression * match
-			$banned_email['filter'] = str_replace('\*', '(.*)', preg_quote($banned_email['filter'], '#'));
+		return false;
+	}
 
-			if(preg_match("#{$banned_email['filter']}#i", $email))
+	$email = strtolower($email);
+	foreach($banned_cache['filters'] as $banned_email)
+	{
+		list($fid, $parts) = $banned_email;
+
+		// * matches anything, so the literal parts only need to appear in order
+		$offset = 0;
+		foreach($parts as $part)
+		{
+			$offset = strpos($email, $part, $offset);
+			if($offset === false)
 			{
-				// Updating last use
-				if($update_lastuse == true)
-				{
-					$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_email['fid']}'");
-				}
-				return true;
+				continue 2;
 			}
+			$offset += strlen($part);
 		}
+
+		// Updating last use
+		if($update_lastuse == true)
+		{
+			$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$fid}'");
+		}
+		return true;
 	}
 
 	// Still here - good email
@@ -6857,46 +6868,64 @@ function is_banned_ip($ip_address, $update_lastuse = false)
 	global $db, $cache;
 
 	$banned_ips = $cache->read("bannedips");
-	if(!is_array($banned_ips))
+	if(!isset($banned_ips['ranges']))
+	{
+		// Missing or outdated cache, see if we can rebuild it
+		$cache->update_bannedips();
+		$banned_ips = $cache->read("bannedips");
+	}
+
+	$ip_address = my_inet_pton($ip_address);
+	if($ip_address === false)
 	{
 		return false;
 	}
 
-	$ip_address = my_inet_pton($ip_address);
-	foreach($banned_ips as $banned_ip)
+	$length = strlen($ip_address);
+	if(empty($banned_ips['ranges'][$length]['count']))
 	{
-		if(!$banned_ip['filter'])
-		{
-			continue;
-		}
+		return false;
+	}
+	$ranges = $banned_ips['ranges'][$length];
 
-		$banned = false;
-
-		$ip_range = fetch_ip_range($banned_ip['filter']);
-		if(is_array($ip_range))
+	// Find the last range whose lower bound is at or below the address
+	$low = 0;
+	$high = $ranges['count'] - 1;
+	$last = -1;
+	while($low <= $high)
+	{
+		$middle = ($low + $high) >> 1;
+		if(strcmp(substr($ranges['lower'], $middle * $length, $length), $ip_address) <= 0)
 		{
-			if(strcmp($ip_range[0], $ip_address) <= 0 && strcmp($ip_range[1], $ip_address) >= 0)
-			{
-				$banned = true;
-			}
+			$last = $middle;
+			$low = $middle + 1;
 		}
-		elseif($ip_address == $ip_range)
+		else
 		{
-			$banned = true;
-		}
-		if($banned)
-		{
-			// Updating last use
-			if($update_lastuse == true)
-			{
-				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_ip['fid']}'");
-			}
-			return true;
+			$high = $middle - 1;
 		}
 	}
 
-	// Still here - good ip
-	return false;
+	// No range up to that point reaches the address
+	if($last < 0 || strcmp(substr($ranges['max_upper'], $last * $length, $length), $ip_address) < 0)
+	{
+		return false;
+	}
+
+	if($update_lastuse == true)
+	{
+		for($i = $last; $i >= 0; --$i)
+		{
+			if(strcmp(substr($ranges['upper'], $i * $length, $length), $ip_address) >= 0)
+			{
+				$fid = unpack('N', $ranges['fids'], $i * 4)[1];
+				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$fid}'");
+				break;
+			}
+		}
+	}
+
+	return true;
 }
 
 /**

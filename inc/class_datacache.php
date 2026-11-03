@@ -999,37 +999,102 @@ class datacache
 	}
 
 	/**
-	 * Updates the banned IPs cache
+	 * Updates the banned IPs cache.
+	 *
+	 * Filters are stored as packed binary address ranges per address length (4 bytes for IPv4, 16 for IPv6),
+	 * sorted by lower bound, so is_banned_ip() can binary search them. Each family contains:
+	 * - lower: concatenated lower bounds,
+	 * - upper: concatenated upper bounds,
+	 * - max_upper: running maximum of the upper bounds,
+	 * - fids: filter IDs packed as unsigned 32-bit integers,
+	 * - count: number of ranges.
 	 */
 	function update_bannedips()
 	{
 		global $db;
 
-		$banned_ips = array();
+		$ranges = array(4 => array(), 16 => array());
 		$query = $db->simple_select("banfilters", "fid,filter", "type=1");
 		while($banned_ip = $db->fetch_array($query))
 		{
-			$banned_ips[$banned_ip['fid']] = $banned_ip;
+			if(!$banned_ip['filter'])
+			{
+				continue;
+			}
+
+			$ip_range = fetch_ip_range($banned_ip['filter']);
+			if($ip_range === false)
+			{
+				continue;
+			}
+			if(!is_array($ip_range))
+			{
+				$ip_range = array($ip_range, $ip_range);
+			}
+
+			$length = strlen($ip_range[0]);
+			if(!isset($ranges[$length]) || strlen($ip_range[1]) != $length)
+			{
+				continue;
+			}
+
+			$ranges[$length][] = array($ip_range[0], $ip_range[1], (int)$banned_ip['fid']);
 		}
+
+		$banned_ips = array('ranges' => array());
+		foreach($ranges as $length => $family)
+		{
+			usort($family, function($a, $b)
+			{
+				return strcmp($a[0], $b[0]);
+			});
+
+			$lower = $upper = $max_upper = $fids = '';
+			$running_max = str_repeat("\0", $length);
+			foreach($family as $ip_range)
+			{
+				if(strcmp($ip_range[1], $running_max) > 0)
+				{
+					$running_max = $ip_range[1];
+				}
+				$lower .= $ip_range[0];
+				$upper .= $ip_range[1];
+				$max_upper .= $running_max;
+				$fids .= pack('N', $ip_range[2]);
+			}
+
+			$banned_ips['ranges'][$length] = array(
+				'lower' => $lower,
+				'upper' => $upper,
+				'max_upper' => $max_upper,
+				'fids' => $fids,
+				'count' => count($family)
+			);
+		}
+
 		$this->update("bannedips", $banned_ips);
 	}
 
 	/**
-	 * Updates the banned emails cache
+	 * Updates the banned emails cache.
+	 *
+	 * Each filter is stored with its lowercase literal parts (the filter split on `*`),
+	 * which is_banned_email() matches in order without compiling a regular expression per filter.
 	 */
 	function update_bannedemails()
 	{
 		global $db;
 
-		$banned_emails = array();
+		$filters = array();
 		$query = $db->simple_select("banfilters", "fid, filter", "type = '3'");
 
 		while($banned_email = $db->fetch_array($query))
 		{
-			$banned_emails[$banned_email['fid']] = $banned_email;
+			$parts = explode('*', strtolower($banned_email['filter']));
+			$filters[] = array((int)$banned_email['fid'], array_values(array_filter($parts, 'strlen')));
 		}
 
-		$this->update("bannedemails", $banned_emails);
+		$this->update("bannedemails", array('filters' => $filters));
 	}
 
 	/**
