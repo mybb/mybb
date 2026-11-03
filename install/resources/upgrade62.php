@@ -30,7 +30,7 @@ function upgrade62_dbchanges()
 
 	flush();
 
-	if($db->type != 'pgsql' && $db->type != 'sqlite' && !$db->index_exists('attachments', 'visible'))
+	if(in_array($db->type, array('mysql', 'mysqli', 'mysql_pdo')) && !$db->index_exists('attachments', 'visible'))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments ADD INDEX visible (visible)");
 	}
