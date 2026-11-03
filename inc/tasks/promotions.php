@@ -167,9 +167,11 @@ function task_promotions($task)
 			$plugins->run_hooks('task_promotions', $args);
 		}
 
-		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
+		$user_fields = array_unique(array('uid', $usergroup_select, 'usergroup', 'additionalgroups', 'displaygroup'));
+		$query2 = $db->simple_select("users", implode(',', $user_fields), $sql_where);
 
 		$uids = array();
+		$displaygroup_uids = array();
 		while($user = $db->fetch_array($query2))
 		{
 			if(is_super_admin($user['uid']))
@@ -204,6 +206,15 @@ function task_promotions($task)
 
 			$uids[] = $user['uid'];
 
+			// Users displaying the primary group they're losing switch to the new one, like leave_usergroup() does
+			if($usergroup_select == "usergroup" && $user['displaygroup'] == $user['usergroup'])
+			{
+				$additionalgroups = array_map('intval', explode(',', $user['additionalgroups']));
+				if(!in_array((int)$user['usergroup'], $additionalgroups, true))
+				{
+					$displaygroup_uids[] = $user['uid'];
+				}
+			}
 
 			if($usergroup_select == "additionalgroups")
 			{
@@ -220,6 +231,11 @@ function task_promotions($task)
 				if($usergroup_select == "usergroup")
 				{
 					$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+
+					if(!empty($displaygroup_uids))
+					{
+						$db->update_query("users", array('displaygroup' => $promotion['newusergroup']), "uid IN(".implode(",", $displaygroup_uids).")");
+					}
 				}
 
 				if(!empty($log_inserts))
@@ -228,6 +244,7 @@ function task_promotions($task)
 				}
 
 				$uids = array();
+				$displaygroup_uids = array();
 				$log_inserts = array();
 			}
 		}
@@ -237,6 +254,11 @@ function task_promotions($task)
 			if($usergroup_select == "usergroup")
 			{
 				$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+
+				if(!empty($displaygroup_uids))
+				{
+					$db->update_query("users", array('displaygroup' => $promotion['newusergroup']), "uid IN(".implode(",", $displaygroup_uids).")");
+				}
 			}
 
 			if(!empty($log_inserts))
