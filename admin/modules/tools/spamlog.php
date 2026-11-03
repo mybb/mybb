@@ -235,7 +235,7 @@ if(!$mybb->get_input('action'))
 		{
 			if(isset($data['confidence']))
 			{
-				$confidence = (double)$data['confidence'].'%';
+				$confidence = (float)$data['confidence'].'%';
 			}
 		}
 
