@@ -93,7 +93,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_invalid_minute;
 		}
 
-		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
+		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 23, 'string');
 		if($mybb->input['hour'] === false)
 		{
 			$errors[] = $lang->error_invalid_hour;
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_invalid_minute;
 		}
 
-		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
+		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 23, 'string');
 		if($mybb->input['hour'] === false)
 		{
 			$errors[] = $lang->error_invalid_hour;
