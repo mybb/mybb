@@ -5439,10 +5439,10 @@ function join_usergroup($uid, $joingroup)
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
-	$groups = array_map(
+	$groups = array_filter(array_map(
 		'intval',
 		explode(',', $user['additionalgroups'])
-	);
+	));
 
 	if(!in_array((int)$joingroup, $groups))
 	{
@@ -5478,10 +5478,10 @@ function leave_usergroup($uid, $leavegroup)
 		return false;
 	}
 
-	$groups = array_map(
+	$groups = array_filter(array_map(
 		'intval',
 		explode(',', $user['additionalgroups'])
-	);
+	));
 	$groups = array_diff($groups, array($leavegroup));
 	$groups = array_unique($groups);
 
