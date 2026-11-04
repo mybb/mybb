@@ -512,8 +512,8 @@ class Services_JSON
                     // return (float)$str;
 
                     // Return float or int, as appropriate
-                    return ((float)$str == (int)$str)
-                        ? (int)$str
+                    return ((float)$str == (integer)$str)
+                        ? (integer)$str
                         : (float)$str;
 
                 } elseif (preg_match('/^("|\').*(\1)$/s', $str, $m) && $m[1] == $m[2]) {
