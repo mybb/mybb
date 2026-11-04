@@ -12,6 +12,7 @@ $l['postdata_missing_message'] = 'The message is missing. Please enter a message
 $l['postdata_message_too_long'] = 'The message is too long. Please enter a message shorter than {1} characters (currently {2}).';
 $l['postdata_message_too_short'] = 'The message is too short. Please enter a message longer than {1} characters.';
 $l['postdata_subject_too_long'] = 'The subject is too long. Please enter a subject shorter than {1} characters (currently {2}).';
+$l['postdata_missing_username'] = 'You did not enter a username. Please enter one.';
 $l['postdata_banned_username'] = 'The username you entered may not be registered. Please enter a different username.';
 $l['postdata_bad_characters_username'] = 'The username you entered contains bad characters. Please enter a different username.';
 $l['postdata_invalid_username_length'] = 'The username you entered is of invalid length. Please enter a username between {1} and {2} characters.';

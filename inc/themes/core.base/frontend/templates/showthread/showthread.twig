@@ -324,6 +324,9 @@
                         <span class="post__date">{{ lang.quick_reply }}</span>
                     </div>
                     <div class="post__body">
+                        {% if not mybb.user.uid and mybb.settings.guestusernamemode == 'required' %}
+                            {{ include('misc/loginbox.twig', {username_required: true}) }}
+                        {% endif %}
                         <textarea class="textarea" rows="8" cols="80" name="message" id="message" tabindex="1" placeholder="{{ lang.quick_reply_message }}"></textarea>
                     </div>
                     {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
