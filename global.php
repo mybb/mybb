@@ -745,16 +745,16 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 // Just leave this queue notification blank for editpost.php.
 if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1)))
 {
-	$unapproved_posts = $unapproved_threads = 0;
-	$query = $db->simple_select("posts", "replyto", "visible = 0");
-	while($unapproved = $db->fetch_array($query))
-	{
-		if($unapproved["replyto"] == 0){
-			$unapproved_threads++;
-		} else {
-			$unapproved_posts++;
-		}
-	}
+	$query = $db->simple_select("forums", "SUM(unapprovedthreads) AS unapprovedthreads");
+	$unapproved_threads = (int)$db->fetch_field($query, "unapprovedthreads");
+
+	$query = $db->query("
+		SELECT COUNT(p.pid) AS unapprovedposts
+		FROM ".TABLE_PREFIX."posts p
+		INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE p.visible='0' AND t.firstpost != p.pid
+	");
+	$unapproved_posts = (int)$db->fetch_field($query, "unapprovedposts");
 
 	$query = $db->simple_select("attachments", "COUNT(aid) AS unapprovedattachments", "visible=0");
 	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
