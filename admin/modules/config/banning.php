@@ -19,6 +19,12 @@ $page->add_breadcrumb_item($lang->banning, "index.php?module=config-banning");
 $plugins->run_hooks("admin_config_banning_begin");
 
 $mybb->input['filter'] = $mybb->get_input('filter');
+$ban_times = fetch_ban_times();
+$bantime = $mybb->get_input('bantime');
+if($bantime === '')
+{
+	$bantime = '---';
+}
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
@@ -29,10 +35,15 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$errors[] = $lang->error_missing_ban_input;
 	}
 
-	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".$mybb->get_input('type', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".$mybb->get_input('type', MyBB::INPUT_INT)."' AND (type != 1 OR expires = 0 OR expires > ".TIME_NOW.")");
 	if($db->num_rows($query))
 	{
 		$errors[] = $lang->error_filter_already_banned;
+	}
+
+	if($mybb->get_input('type', MyBB::INPUT_INT) === 1 && !isset($ban_times[$bantime]))
+	{
+		$errors[] = $lang->error_invalid_ban_length;
 	}
 
 	if(!$errors && $mybb->input['type'] == 1)
@@ -64,6 +75,13 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 			"dateline" => TIME_NOW
 		);
+		if($new_filter['type'] === 1)
+		{
+			// Remove expired IP bans so the same address can be banned again.
+			$db->delete_query("banfilters", "type=1 AND expires!=0 AND expires<=".TIME_NOW);
+			$new_filter['expires'] = $bantime === '---' ? 0 : ban_date2timestamp($bantime);
+			$new_filter['notes'] = $db->escape_string($mybb->get_input('notes'));
+		}
 		$fid = $db->insert_query("banfilters", $new_filter);
 
 		$plugins->run_hooks("admin_config_banning_add_commit");
@@ -112,6 +130,63 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 		$mybb->input['action'] = '';
 	}
+}
+
+if($mybb->input['action'] == "edit_notes")
+{
+	$query = $db->simple_select("banfilters", "*", "fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."' AND type='1'");
+	$filter = $db->fetch_array($query);
+
+	if(!$filter)
+	{
+		flash_message($lang->error_filter_not_found, 'error');
+		admin_redirect("index.php?module=config-banning");
+	}
+
+	$plugins->run_hooks("admin_config_banning_edit_notes");
+
+	if($mybb->request_method == "post")
+	{
+		if(!verify_post_check($mybb->get_input('my_post_key')))
+		{
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=config-banning");
+		}
+
+		$db->update_query("banfilters", array('notes' => $db->escape_string($mybb->get_input('notes'))), "fid='{$filter['fid']}' AND type='1'");
+
+		$plugins->run_hooks("admin_config_banning_edit_notes_commit");
+
+		log_admin_action($filter['fid'], $filter['filter']);
+		flash_message($lang->success_notes_updated, 'success');
+		admin_redirect("index.php?module=config-banning");
+	}
+
+	$page->add_breadcrumb_item($lang->edit_notes);
+	$page->output_header($lang->banned_ip_addresses." - ".$lang->edit_notes);
+
+	$sub_tabs['ips'] = array(
+		'title' => $lang->banned_ips,
+		'link' => "index.php?module=config-banning"
+	);
+	$sub_tabs['edit_notes'] = array(
+		'title' => $lang->edit_notes,
+		'link' => "index.php?module=config-banning&amp;action=edit_notes&amp;fid={$filter['fid']}",
+		'description' => $lang->notes_desc
+	);
+	$page->output_nav_tabs($sub_tabs, 'edit_notes');
+
+	$form = new Form("index.php?module=config-banning&amp;action=edit_notes&amp;fid={$filter['fid']}", "post");
+	$form_container = new FormContainer($lang->edit_notes);
+	$form_container->output_row($lang->ip_address, "", htmlspecialchars_uni($filter['filter']));
+	$form_container->output_row($lang->notes, $lang->notes_desc, $form->generate_text_area('notes', $filter['notes'] ?? '', array('id' => 'notes')), 'notes');
+	$form_container->end();
+	$form->output_submit_wrapper(array(
+		$form->generate_submit_button($lang->save_notes)
+	));
+	$form->end();
+
+	$page->output_footer();
 }
 
 if($mybb->input['action'] == "delete")
@@ -287,6 +362,8 @@ if(!$mybb->input['action'])
 	{
 		$form_container = new FormContainer($lang->ban_an_ip_address);
 		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$form_container->output_row($lang->ban_length, "", $form->generate_select_box('bantime', $ban_times, $bantime, array('id' => 'bantime')), 'bantime');
+		$form_container->output_row($lang->notes, $lang->notes_desc, $form->generate_text_area('notes', $mybb->get_input('notes'), array('id' => 'notes')), 'notes');
 		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
 	}
 
@@ -315,6 +392,8 @@ if(!$mybb->input['action'])
 		$table->construct_header($lang->ip_address);
 		$table->construct_header($lang->ban_date, array("class" => "align_center", "width" => 200));
 		$table->construct_header($lang->last_access, array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->lift_date, array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->notes);
 	}
 	$table->construct_header($lang->controls, array("width" => 1));
 
@@ -344,13 +423,21 @@ if(!$mybb->input['action'])
 		$table->construct_cell($filter['filter']);
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($last_use, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config-banning&amp;action=delete&amp;fid={$filter['fid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.png\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
+		$controls = '';
+		if($type == 1)
+		{
+			$lift_date = $filter['expires'] == 0 ? $lang->permanent : my_date($mybb->settings['dateformat']." ".$mybb->settings['timeformat'], $filter['expires']);
+			$table->construct_cell($lift_date, array("class" => "align_center"));
+			$table->construct_cell(nl2br(htmlspecialchars_uni($filter['notes'] ?? '')));
+			$controls = "<a href=\"index.php?module=config-banning&amp;action=edit_notes&amp;fid={$filter['fid']}\">{$lang->edit_notes}</a> ";
+		}
+		$table->construct_cell($controls."<a href=\"index.php?module=config-banning&amp;action=delete&amp;fid={$filter['fid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.png\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_bans, array("colspan" => 4));
+		$table->construct_cell($lang->no_bans, array("colspan" => $type == 1 ? 6 : 4));
 		$table->construct_row();
 	}
 

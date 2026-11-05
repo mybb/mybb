@@ -49,6 +49,7 @@ $l['admin_log_config_badwords_add'] = "Added word filter #{1} ({2})";
 $l['admin_log_config_badwords_edit'] = "Edited word filter #{1} ({2})";
 $l['admin_log_config_badwords_delete'] = "Deleted word filter #{1} ({2})";
 
+$l['admin_log_config_banning_edit_notes'] = "Updated notes for IP ban #{1} ({2})";
 $l['admin_log_config_banning_add_ip'] = "Added IP ban #{1} ({2})";
 $l['admin_log_config_banning_add_username'] = "Added disallowed username #{1} ({2})";
 $l['admin_log_config_banning_add_email'] = "Added disallowed email #{1} ({2})";
