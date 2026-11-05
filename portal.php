@@ -214,7 +214,21 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	$guestcount = $membercount = $botcount = $anoncount = 0;
 	$doneusers = array();
 
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
+	// Fetch spiders for both the guest count and the online list.
+	$spiders = $cache->read('spiders');
+
+	$guestcondition = "uid = 0 AND time > $timesearch AND (SUBSTR(sid,1,4) != 'bot='";
+	if($mybb->settings['woldisplayspiders'] > 0 && !empty($spiders))
+	{
+		$spidersessions = array();
+		foreach(array_keys($spiders) as $spiderid)
+		{
+			$spidersessions[] = "'bot=".(int)$spiderid."'";
+		}
+		$guestcondition .= " OR sid IN (".implode(',', $spidersessions).")";
+	}
+	$guestcondition .= ")";
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", $guestcondition);
 	$guestcount = $db->fetch_field($query, "guestcount");
 
 	$query = $db->query("
@@ -226,9 +240,6 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
 		ORDER BY {$order_by}, {$order_by2}
 	");
-
-	// Fetch spiders
-	$spiders = $cache->read('spiders');
 
 	while($user = $db->fetch_array($query))
 	{
@@ -283,7 +294,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		ksort($onlinebots);
 	}
 
-	$onlinecount = $membercount + $guestcount + $botcount;
+	$onlinecount = $membercount + $guestcount;
 
 	// If we can see invisible users add them to the count
 	if($mybb->usergroup['canviewwolinvis'] == 1)

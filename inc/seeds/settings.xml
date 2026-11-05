@@ -1921,7 +1921,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="woldisplayspiders">
 			<title>Who's Online Displays Spiders?</title>
-			<description><![CDATA[Display spiders in the online list. Note: This setting only takes effect on the portal and index pages.]]></description>
+			<description><![CDATA[Display spiders in the online list and include them in the guest and total online counts. Hidden spiders are excluded from these counts. Note: This setting only takes effect on the portal and index pages.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[select
 0=Do not display spiders
