@@ -5,7 +5,7 @@
             {{ lang.nav_profile }}
         </a>
     </li>
-    {% if not mybb.user.suspendavatar %}
+    {% if not (mybb.user|is_avatar_suspended) %}
         <li class="page-tabs__item{% if mybb.input.action == 'avatar' %} page-tabs__item--active{% endif %}">
             <a href="usercp.php?action=avatar" class="page-tabs__link">
                 {{ include('partials/icon.twig', {icon: 'image', class: 'page-tabs__icon'}, with_context = false) }}
