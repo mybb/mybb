@@ -264,11 +264,11 @@ class errorHandler {
 				if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 				{
 					$this->warnings .= $warning;
-					$this->warnings .= $this->generate_backtrace();
+					$this->warnings .= $this->generate_backtrace(true, 1);
 				}
 				else
 				{
-					echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+					echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace(true, 1)."</div>";
 				}
 			}
 		}
@@ -433,18 +433,11 @@ class errorHandler {
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
 
-		if(function_exists('debug_backtrace'))
-		{
-			ob_start();
-			debug_print_backtrace();
-			$trace = ob_get_contents();
-			ob_end_clean();
+		$back_trace = $this->generate_backtrace(false, 2);
 
-			$back_trace = "\nBack Trace: {$trace}";
-		}
-		else
+		if($back_trace)
 		{
-			$back_trace = '';
+			$back_trace = "\nBack Trace: {$back_trace}";
 		}
 
 		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message{$back_trace}";
@@ -588,7 +581,7 @@ class errorHandler {
 						$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 					}
 				}
-				$backtrace = $this->generate_backtrace();
+				$backtrace = $this->generate_backtrace(true, 2);
 				if($backtrace && !in_array($type, $this->mybb_error_types))
 				{
 					$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
@@ -786,6 +779,12 @@ EOF;
 
 			foreach($trace as $call)
 			{
+				// Skip calls originating inside the error handler.
+				if(isset($call['file']) && $call['file'] === __FILE__)
+				{
+					continue;
+				}
+
 				if(empty($call['file'])) $call['file'] = "[PHP]";
 				if(empty($call['line'])) $call['line'] = " ";
 				if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
