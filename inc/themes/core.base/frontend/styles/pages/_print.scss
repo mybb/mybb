@@ -1,0 +1,109 @@
+@media print {
+
+    :root {
+        --font-size-base: 14px;
+        --font-size-large: 1.1rem;
+        --font-size-larger: 1.2rem;
+        --font-size-largest: 1.8rem;
+
+        --font-color: #000;
+        --invert-font-color: #000;
+        --alt-font-color-1: #000;
+        --alt-font-color-2: #000;
+        --alt-font-color-3: #000;
+
+        --background-default: #fff;
+        --content-background: #fff;
+        --background-1: #fff;
+        --background-2: #fff;
+        --background-3: #fff;
+        --background-4: #fff;
+
+        --border-color-1: #ccc;
+        --border-color-2: #ccc;
+        --border-color-3: #ccc;
+        --border-color-4: #ccc;
+    }
+
+    .user-bar,
+    .main-menu,
+    .breadcrumb__multipage-link,
+    .alert,
+    .section-menu,
+    .footer__navigation,
+    .footer__selectors,
+    .page-controls,
+    .user-status,
+    .post__edit-log,
+    .post__edit-reason,
+    .post__inline-mod,
+    .post__ip-address,
+    .post__signature,
+    .post__foot,
+    .post--reply,
+    .container--jump-form,
+    .container--users-browsing,
+    .breadcrumb--footer {
+        display: none;
+    }
+
+    .block,
+    .container,
+    .user-list__user {
+        box-shadow: none;
+    }
+
+    .thread-page-count {
+        display: block;
+    }
+
+    .header {
+        background: var(--background-default);
+        border-bottom: var(--border-width-page-header) solid var(--header-background);  
+    }
+
+    .logo .logo__icon > svg * {
+        fill: #000;
+    }
+
+    .logo__text {
+        color: #000;
+    }
+    
+    .title--major,
+    .column-headings--major {
+        background: var(--background-default);
+        border: var(--border-width-base) solid var(--border-color-1);
+
+        &,
+        & a:link,
+        & a:visited {
+            color: var(--primary-color);
+        }
+    }
+
+    .post {
+        padding: var(--spacing-3) 0;
+        margin: side-values(0 0 var(--spacing-3) 0);
+        border-top: 0;
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+
+        &__meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+        }
+
+        &__body {
+            padding: var(--spacing-4) 0;
+        }
+
+        .avatar-profile-link {
+            display: none;
+        }
+    }
+}

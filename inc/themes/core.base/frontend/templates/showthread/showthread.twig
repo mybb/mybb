@@ -38,6 +38,10 @@
                 {% endif %}
                 <span class="thread-subject">{{ thread.subject }}</span>
             </h1>
+            <p class="page-description thread-page-count">
+                {% set total_pages = ((thread.replies + 1) / mybb.settings.postsperpage)|round(0, 'ceil') %}
+                {{ trans('multipage_page_of', thread.page, total_pages) }}
+            </p>
         </header>
 
         {# Thread moderator notes #}
@@ -390,10 +394,6 @@
                         <span class="button__text">{{ lang.threaded }}</span>
                     </a>
                 {% endif %}
-                <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
-                    {{ include('partials/icon.twig', {icon: 'print', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.view_printable }}</span>
-                </a>
                 {% if mybb.usergroup.cansendemail %}
                     <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
                         {{ include('partials/icon.twig', {icon: 'share', class: 'button__icon'}, with_context = false) }}
