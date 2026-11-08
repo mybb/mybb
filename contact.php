@@ -278,15 +278,10 @@ if($mybb->request_method == "post")
 
 		redirect($redirect_url, $lang->contact_success_message, '', true);
 	}
-	else
+	else if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
-		$errors = inline_error($errors);
+		inline_error($errors);
 	}
-}
-
-if(empty($errors))
-{
-	$errors = '';
 }
 
 // Generate CAPTCHA?
