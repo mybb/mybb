@@ -85,6 +85,14 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                 ]
             ),
             new TwigFunction(
+                'inline_error',
+                [$this, 'buildInlineError'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html'],
+                ]
+            ),
+            new TwigFunction(
                 'multi_page',
                 [$this, 'buildMultiPage'],
                 [
@@ -393,6 +401,29 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         return $twig->render('partials/breadcrumb.twig', [
             'breadcrumbs' => $this->breadcrumbManager,
             'class' => $class,
+        ]);
+    }
+
+    /**
+     * Render errors inline on a page.
+     *
+     * @param Environment $twig Twig environment to use to render the error template.
+     * @param array|string $errors The errors to display, or a single error message.
+     * @param string $title An optional title, defaulting to the template's translated title.
+     *
+     * @return string The inline error HTML.
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function buildInlineError(Environment $twig, array|string $errors, string $title = ''): string
+    {
+        return $twig->render('error/inline.twig', [
+            'errors' => [
+                'title' => $title,
+                'list' => is_array($errors) ? $errors : [$errors],
+            ],
         ]);
     }
 
