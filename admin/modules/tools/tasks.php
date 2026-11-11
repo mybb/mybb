@@ -53,12 +53,14 @@ function check_time_values($value, $min, $max, $return_type)
 		return ($return_type == 'string') ? '*' : array('*');
 	}
 	// Validate each value in array
-	foreach($value as $time)
+	foreach($value as $key => $time)
 	{
-		if($time < $min || $time > $max)
+		$time = trim((string)$time);
+		if(!ctype_digit($time) || $time < $min || $time > $max)
 		{
 			return false;
 		}
+		$value[$key] = (int)$time;
 	}
 	// Return based on return type
 	if($return_type == 'string')

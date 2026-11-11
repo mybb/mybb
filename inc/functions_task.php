@@ -133,6 +133,15 @@ function add_task_log($task, $message)
  */
 function fetch_next_run($task)
 {
+	// Treat empty schedule fields saved by older versions as unrestricted.
+	foreach(array('minute', 'hour', 'day', 'month', 'weekday') as $field)
+	{
+		if(!isset($task[$field]) || trim($task[$field]) === '')
+		{
+			$task[$field] = '*';
+		}
+	}
+
 	$time = TIME_NOW;
 	$next_minute = $current_minute = (int)date("i", $time);
 	$next_hour = $current_hour = (int)date("H", $time);
