@@ -42,18 +42,25 @@ function check_time_values($value, $min, $max, $return_type)
 		$implode = 1;
 		$value = explode(',', $value);
 	}
+	// An empty selection does not contain a valid run time.
+	if(empty($value))
+	{
+		return false;
+	}
 	// If * is in the array, always return with * because it overrides all
 	if(in_array('*', $value))
 	{
 		return ($return_type == 'string') ? '*' : array('*');
 	}
 	// Validate each value in array
-	foreach($value as $time)
+	foreach($value as $key => $time)
 	{
-		if($time < $min || $time > $max)
+		$time = trim((string)$time);
+		if(!ctype_digit($time) || $time < $min || $time > $max)
 		{
 			return false;
 		}
+		$value[$key] = (int)$time;
 	}
 	// Return based on return type
 	if($return_type == 'string')
@@ -110,7 +117,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
+			$mybb->input['weekday'] = check_time_values($mybb->get_input('weekday', MyBB::INPUT_ARRAY), 0, 6, 'array');
 			if($mybb->input['weekday'] === false)
 			{
 				$errors[] = $lang->error_invalid_weekday;
@@ -305,7 +312,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
+			$mybb->input['weekday'] = check_time_values($mybb->get_input('weekday', MyBB::INPUT_ARRAY), 0, 6, 'array');
 			if($mybb->input['weekday'] === false)
 			{
 				$errors[] = $lang->error_invalid_weekday;
