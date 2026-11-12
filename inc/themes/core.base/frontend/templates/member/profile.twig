@@ -19,7 +19,11 @@
                 {% if memprofile.stars > 0 %}
                     <p class="profile__stars">
                         {% for star in 1..memprofile.stars %}
-                            {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
+                            {% if memprofile.starimage %}
+                                <img src="{{ memprofile.starimage }}" alt="*" />
+                            {% else %}
+                                {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
+                            {% endif %}
                         {% endfor %}
                     </p>
                 {% endif %}

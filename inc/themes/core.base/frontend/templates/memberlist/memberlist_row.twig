@@ -12,7 +12,11 @@
     {% if user.stars > 0 %}
         <p class="user-list__stars">
             {% for star in 1..user.stars %}
-                {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
+                {% if user.starimage %}
+                    <img src="{{ user.starimage }}" alt="*" />
+                {% else %}
+                    {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
+                {% endif %}
             {% endfor %}
         </p>
     {% endif %}

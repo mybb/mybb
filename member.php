@@ -2403,15 +2403,13 @@ if($mybb->input['action'] == "profile")
 		$memprofile['groupimage'] = $displaygroup['image'];
 	}
 
+	$memprofile['stars'] = $stars;
 	if(empty($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
-
 	if(!empty($starimage))
 	{
-		// Only display stars if we have an image to use...
-		$memprofile['stars'] = $stars;
 		$memprofile['starimage'] = str_replace("{theme}", $theme['imgdir'], $starimage);
 	}
 
