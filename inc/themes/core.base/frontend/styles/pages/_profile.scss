@@ -15,6 +15,12 @@
     &__usertitle {
         margin: var(--spacing-1) 0;
     }
+
+    &__stars {
+        margin: 0;
+        font-size: var(--font-size-small);
+        color: var(--secondary-color);
+    }
 }
 
 .profile-field {

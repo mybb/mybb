@@ -16,12 +16,12 @@
                 {% if memprofile.groupimage %}
                     <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
                 {% endif %}
-                {% if memprofile.starimage and memprofile.stars %}
-                    {% apply spaceless %}
-                        {% for star in range(1, memprofile.stars) %}
-                            <img src="{{ memprofile.starimage }}" border="0" alt="*" />
+                {% if memprofile.stars > 0 %}
+                    <p class="profile__stars">
+                        {% for star in 1..memprofile.stars %}
+                            {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
                         {% endfor %}
-                    {% endapply %}
+                    </p>
                 {% endif %}
             </div>
         </header>
