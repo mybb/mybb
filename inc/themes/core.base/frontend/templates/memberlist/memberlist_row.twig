@@ -4,19 +4,18 @@
     </a>
     <h2 class="user-list__username">{{ user.profilelink|raw }}</h2>
     <p class="user-list__user-title">{{ user.usertitle }}</p>
-    {# TO DO: USER GROUP IMAGES, STARS #}
-    {# {% if user.groupimage %}
-        <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
-    <br />
+    {% if user.groupimage %}
+        <p class="user-list__group-image">
+            <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
+        </p>
     {% endif %}
-    {% if user.starimage and user.stars %}
-        {% apply spaceless %}
-            {% for star in range(1, user.stars) %}
-                <img src="{{ user.starimage }}" border="0" alt="*" />
+    {% if user.stars > 0 %}
+        <p class="user-list__stars">
+            {% for star in 1..user.stars %}
+                {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
             {% endfor %}
-        {% endapply %}
-        <br />
-    {% endif %} #}
+        </p>
+    {% endif %}
 
     <ul class="list list--stats list--user">
         <li class="list__item">
