@@ -495,8 +495,8 @@ if($mybb->input['action'] == "options")
 	output_page(\MyBB\View\template('usercp/options.twig', [
 		'errors' => $errors,
 		'user' => $user,
-		'date_formats' => $date_formats,
-		'time_formats' => $time_formats,
+		'date_formats' => array_map(fn($format) => my_date($format, TIME_NOW, '', 0), $date_formats),
+		'time_formats' => array_map(fn($format) => my_date($format, TIME_NOW, '', 0), $time_formats),
 		'timezones' => $timezones,
 		'languages' => $languages,
 		'stylelist' => $stylelist
