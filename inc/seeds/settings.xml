@@ -2058,18 +2058,10 @@ min=1]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="portal_showsearch">
-			<title>Show Search Box</title>
-			<description><![CDATA[Do you want to show the search box, allowing users to quickly search the forums on the portal?]]></description>
-			<disporder>8</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="portal_showdiscussions">
 			<title>Show Latest Discussions</title>
 			<description><![CDATA[Do you wish to show the current forum discussions on the portal page?]]></description>
-			<disporder>9</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2077,7 +2069,7 @@ min=1]]></optionscode>
 		<setting name="portal_showdiscussionsnum">
 			<title>Number of latest discussions to show</title>
 			<description><![CDATA[Please enter the number of current forum discussions to show on the portal page.]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[numeric
 min=1]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -2086,7 +2078,7 @@ min=1]]></optionscode>
 		<setting name="portal_excludediscussion">
 			<title>Forums to exclude latest discussions from</title>
 			<description><![CDATA[Please select the forums you wish to exclude from the current forum discussions box.]]></description>
-			<disporder>11</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
