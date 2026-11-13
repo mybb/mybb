@@ -11,7 +11,7 @@
                     {% apply spaceless %}
                         {% for star in range(1, event.stars) %}
                             {% if event.rank_icon %}
-                                {{ include('partials/icon.twig', {icon: event.rank_icon}, with_context = false) }}
+                                {{ include('partials/icon.twig', {icon: event.rank_icon, class: 'rank-icon rank-icon--' ~ event.rank_icon}, with_context = false) }}
                             {% else %}
                                 <img src="{{ event.starimage }}" border="0" alt="*" />
                             {% endif %}

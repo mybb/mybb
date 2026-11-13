@@ -139,7 +139,7 @@
                 {% apply spaceless %}
                     {% for star in range(1, post.stars) %}
                         {% if post.rank_icon %}
-                            {{ include('partials/icon.twig', {icon: post.rank_icon}, with_context = false) }}
+                            {{ include('partials/icon.twig', {icon: post.rank_icon, class: 'rank-icon rank-icon--' ~ post.rank_icon}, with_context = false) }}
                         {% else %}
                             <img src="{{ post.starimage }}" border="0" alt="*" />
                         {% endif %}

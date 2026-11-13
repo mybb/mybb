@@ -13,7 +13,7 @@
         <p class="user-list__stars">
             {% for star in 1..user.stars %}
                 {% if user.rank_icon %}
-                    {{ include('partials/icon.twig', {icon: user.rank_icon}, with_context = false) }}
+                    {{ include('partials/icon.twig', {icon: user.rank_icon, class: 'rank-icon rank-icon--' ~ user.rank_icon}, with_context = false) }}
                 {% elseif user.starimage %}
                     <img src="{{ user.starimage }}" alt="*" />
                 {% endif %}
