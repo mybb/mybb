@@ -1288,6 +1288,7 @@ if($mybb->input['action'] == "new_announcement")
 			'usertitle' => 'groupusertitle',
 			'stars' => 'groupstars',
 			'starimage' => 'groupstarimage',
+			'rank_icon' => 'grouprankicon',
 			'image' => 'groupimage',
 			'namestyle' => 'namestyle',
 			'usereputationsystem' => 'usereputationsystem'
@@ -1609,6 +1610,7 @@ if($mybb->input['action'] == "edit_announcement")
 			'usertitle' => 'groupusertitle',
 			'stars' => 'groupstars',
 			'starimage' => 'groupstarimage',
+			'rank_icon' => 'grouprankicon',
 			'image' => 'groupimage',
 			'namestyle' => 'namestyle',
 			'usereputationsystem' => 'usereputationsystem'

@@ -88,6 +88,14 @@ function upgrade100_dbchanges()
         $db->add_column("icons", "icon_class", "varchar(120) NOT NULL default ''");
     }
 
+    // Introduce rank icons for user titles and user groups
+    if (!$db->field_exists("rank_icon", "usertitles")) {
+        $db->add_column("usertitles", "rank_icon", "varchar(120) NOT NULL default ''");
+    }
+    if (!$db->field_exists("rank_icon", "usergroups")) {
+        $db->add_column("usergroups", "rank_icon", "varchar(120) NOT NULL default ''");
+    }
+
     // Database engine specific changes
     // This section contains schema definitions and data migrations
     // that must be applied differently depending on the engine

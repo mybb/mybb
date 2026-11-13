@@ -38,6 +38,12 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->request_method == "post")
 	{
+		$mybb->input['rank_icon'] = strtolower(trim($mybb->get_input('rank_icon')));
+		if($mybb->input['rank_icon'] !== '' && !preg_match('/^[a-z0-9-]+$/', $mybb->input['rank_icon']))
+		{
+			$errors[] = $lang->error_invalid_rank_icon;
+		}
+
 		if(!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
@@ -60,7 +66,8 @@ if($mybb->input['action'] == "add")
 				"title" => $db->escape_string($mybb->input['title']),
 				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage'])
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon'))
 			);
 
 			$utid = $db->insert_query("usertitles", $new_title);
@@ -81,6 +88,7 @@ if($mybb->input['action'] == "add")
 		$mybb->input = array_merge($mybb->input, array(
 				'stars' => '1',
 				'starimage' => '{theme}/star.png',
+				'rank_icon' => '',
 			)
 		);
 	}
@@ -102,6 +110,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->get_input('posts'), array('id' => 'posts', 'min' => 0)), 'posts');
 	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->get_input('stars'), array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->get_input('starimage'), array('id' => 'starimage')), 'starimage');
+	$form_container->output_row($lang->rank_icon, $lang->rank_icon_desc, $form->generate_text_box('rank_icon', $mybb->get_input('rank_icon'), array('id' => 'rank_icon')), 'rank_icon');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_user_title);
@@ -127,6 +136,12 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
+		$mybb->input['rank_icon'] = strtolower(trim($mybb->get_input('rank_icon')));
+		if($mybb->input['rank_icon'] !== '' && !preg_match('/^[a-z0-9-]+$/', $mybb->input['rank_icon']))
+		{
+			$errors[] = $lang->error_invalid_rank_icon;
+		}
+
 		if(!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
@@ -149,7 +164,8 @@ if($mybb->input['action'] == "edit")
 				"title" => $db->escape_string($mybb->input['title']),
 				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage'])
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon'))
 			);
 
 			$plugins->run_hooks("admin_user_titles_edit_commit");
@@ -193,6 +209,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
 	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
+	$form_container->output_row($lang->rank_icon, $lang->rank_icon_desc, $form->generate_text_box('rank_icon', $mybb->input['rank_icon'], array('id' => 'rank_icon')), 'rank_icon');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_user_title);

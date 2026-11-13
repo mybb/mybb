@@ -7,10 +7,14 @@
             {# TO DO: incorporate?
             <span class="smalltext">
                 {{ event.usertitle }}<br />
-                {% if event.starimage and event.stars %}
+                {% if event.stars > 0 and (event.rank_icon or event.starimage) %}
                     {% apply spaceless %}
                         {% for star in range(1, event.stars) %}
-                            <img src="{{ event.starimage }}" border="0" alt="*" />
+                            {% if event.rank_icon %}
+                                {{ include('partials/icon.twig', {icon: event.rank_icon, class: 'rank-icon rank-icon--' ~ event.rank_icon}, with_context = false) }}
+                            {% else %}
+                                <img src="{{ event.starimage }}" border="0" alt="*" />
+                            {% endif %}
                         {% endfor %}
                     {% endapply %}
                     <br />

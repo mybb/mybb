@@ -9,6 +9,7 @@
 		<usertitle><![CDATA[Unregistered]]></usertitle>
 		<stars><![CDATA[0]]></stars>
 		<starimage><![CDATA[]]></starimage>
+		<rank_icon><![CDATA[]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -103,6 +104,7 @@
 		<usertitle><![CDATA[]]></usertitle>
 		<stars><![CDATA[0]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -197,6 +199,7 @@
 		<usertitle><![CDATA[Super Moderator]]></usertitle>
 		<stars><![CDATA[6]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -291,6 +294,7 @@
 		<usertitle><![CDATA[Administrator]]></usertitle>
 		<stars><![CDATA[7]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -385,6 +389,7 @@
 		<usertitle><![CDATA[Account not Activated]]></usertitle>
 		<stars><![CDATA[0]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -479,6 +484,7 @@
 		<usertitle><![CDATA[Moderator]]></usertitle>
 		<stars><![CDATA[5]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -573,6 +579,7 @@
 		<usertitle><![CDATA[Banned]]></usertitle>
 		<stars><![CDATA[0]]></stars>
 		<starimage><![CDATA[images/star.png]]></starimage>
+		<rank_icon><![CDATA[star]]></rank_icon>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[1]]></isbannedgroup>

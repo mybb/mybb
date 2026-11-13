@@ -2071,7 +2071,7 @@ if($mybb->input['action'] == "profile")
 	$memperms = user_permissions($memprofile['uid']);
 
 	// Set display group
-	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 	if(is_array($displaygroup))
 	{
@@ -2310,6 +2310,7 @@ if($mybb->input['action'] == "profile")
 		"usertitle",
 		"stars",
 		"starimage",
+		"rank_icon",
 		"image",
 		"usereputationsystem"
 	);
@@ -2319,6 +2320,7 @@ if($mybb->input['action'] == "profile")
 	unset($stars);
 	$memprofile['user_title'] = '';
 	$starimage = '';
+	$rank_icon = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
 		// User has custom user title
@@ -2346,6 +2348,7 @@ if($mybb->input['action'] == "profile")
 					$memprofile['user_title'] = $title['title'];
 					$stars = $title['stars'];
 					$starimage = $title['starimage'];
+					$rank_icon = $title['rank_icon'] ?? '';
 
 					break;
 				}
@@ -2374,6 +2377,7 @@ if($mybb->input['action'] == "profile")
 				{
 					$stars = $title['stars'];
 					$starimage = $title['starimage'];
+					$rank_icon = $title['rank_icon'] ?? '';
 					break;
 				}
 			}
@@ -2404,10 +2408,12 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['stars'] = $stars;
-	if(empty($starimage))
+	if(empty($starimage) && empty($rank_icon))
 	{
 		$starimage = $displaygroup['starimage'];
+		$rank_icon = $displaygroup['rank_icon'] ?? '';
 	}
+	$memprofile['rank_icon'] = $rank_icon;
 	if(!empty($starimage))
 	{
 		$memprofile['starimage'] = str_replace("{theme}", $theme['imgdir'], $starimage);
