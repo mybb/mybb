@@ -9,13 +9,13 @@
             <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
         </p>
     {% endif %}
-    {% if user.stars > 0 %}
+    {% if user.stars > 0 and (user.rank_icon or user.starimage) %}
         <p class="user-list__stars">
             {% for star in 1..user.stars %}
-                {% if user.starimage %}
+                {% if user.rank_icon %}
+                    {{ include('partials/icon.twig', {icon: user.rank_icon}, with_context = false) }}
+                {% elseif user.starimage %}
                     <img src="{{ user.starimage }}" alt="*" />
-                {% else %}
-                    {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
                 {% endif %}
             {% endfor %}
         </p>

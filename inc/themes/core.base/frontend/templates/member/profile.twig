@@ -16,13 +16,13 @@
                 {% if memprofile.groupimage %}
                     <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
                 {% endif %}
-                {% if memprofile.stars > 0 %}
+                {% if memprofile.stars > 0 and (memprofile.rank_icon or memprofile.starimage) %}
                     <p class="profile__stars">
                         {% for star in 1..memprofile.stars %}
-                            {% if memprofile.starimage %}
+                            {% if memprofile.rank_icon %}
+                                {{ include('partials/icon.twig', {icon: memprofile.rank_icon}, with_context = false) }}
+                            {% elseif memprofile.starimage %}
                                 <img src="{{ memprofile.starimage }}" alt="*" />
-                            {% else %}
-                                {{ include('partials/icon.twig', {icon: 'star'}, with_context = false) }}
                             {% endif %}
                         {% endfor %}
                     </p>

@@ -134,20 +134,24 @@
 
         {# Currently not used #}
 
-        {#	{{ post.usertitle|raw }}<br />
-        	{% if post.starimage and post.stars %}
-        		{% apply spaceless %}
-        			{% for star in range(1, post.stars) %}
-        				<img src="{{ post.starimage }}" border="0" alt="*" />
-        			{% endfor %}
-        		{% endapply %}
-        		<br />
-        	{% endif %}
-        	{% if post.groupimage %}
-        		<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
-        	{% endif %}
+        {# {{ post.usertitle|raw }}<br />
+            {% if post.stars > 0 and (post.rank_icon or post.starimage) %}
+                {% apply spaceless %}
+                    {% for star in range(1, post.stars) %}
+                        {% if post.rank_icon %}
+                            {{ include('partials/icon.twig', {icon: post.rank_icon}, with_context = false) }}
+                        {% else %}
+                            <img src="{{ post.starimage }}" border="0" alt="*" />
+                        {% endif %}
+                    {% endfor %}
+                {% endapply %}
+                <br />
+            {% endif %}
+            {% if post.groupimage %}
+                <img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
+            {% endif %}
 
-        	#}
+        #}
 
         {#
         	{% if post.isguest %}
