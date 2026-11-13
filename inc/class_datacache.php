@@ -868,7 +868,7 @@ class datacache
 		global $db;
 
 		$usertitles = array();
-		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage, rank_icon", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($usertitle = $db->fetch_array($query))
 		{
 			$usertitles[] = $usertitle;

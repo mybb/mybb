@@ -83,6 +83,7 @@ $data_key = array(
 	'usertitle' => 'groupusertitle',
 	'stars' => 'groupstars',
 	'starimage' => 'groupstarimage',
+	'rank_icon' => 'grouprankicon',
 	'image' => 'groupimage',
 	'namestyle' => 'namestyle',
 	'usereputationsystem' => 'usereputationsystem'
