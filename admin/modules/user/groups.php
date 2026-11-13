@@ -671,6 +671,12 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->request_method == "post")
 	{
+		$mybb->input['rank_icon'] = strtolower(trim($mybb->get_input('rank_icon')));
+		if($mybb->input['rank_icon'] !== '' && !preg_match('/^[a-z0-9-]+$/', $mybb->input['rank_icon']))
+		{
+			$errors[] = $lang->error_invalid_rank_icon;
+		}
+
 		if(!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
@@ -685,7 +691,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_disallowed_namestyle_username;
 		}
 
-		if(!$mybb->get_input('starimage'))
+		if(!$mybb->get_input('starimage') && !$mybb->input['rank_icon'])
 		{
 			$mybb->input['starimage'] = "images/star.png";
 		}
@@ -709,6 +715,7 @@ if($mybb->input['action'] == "add")
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage']),
+				"rank_icon" => $db->escape_string($mybb->input['rank_icon']),
 				"disporder" => 0
 			);
 
@@ -836,6 +843,12 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
+		$mybb->input['rank_icon'] = strtolower(trim($mybb->get_input('rank_icon')));
+		if($mybb->input['rank_icon'] !== '' && !preg_match('/^[a-z0-9-]+$/', $mybb->input['rank_icon']))
+		{
+			$errors[] = $lang->error_invalid_rank_icon;
+		}
+
 		if(!trim($mybb->get_input('title')))
 		{
 			$errors[] = $lang->error_missing_title;
@@ -891,6 +904,7 @@ if($mybb->input['action'] == "edit")
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage']),
+				"rank_icon" => $db->escape_string($mybb->input['rank_icon']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"isbannedgroup" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT),
 				"canview" => $mybb->get_input('canview', MyBB::INPUT_INT),
@@ -1080,8 +1094,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
 	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 
-	$stars = "<table cellpadding=\"3\"><tr><td>".$form->generate_numeric_field('stars', $mybb->input['stars'], array('class' => 'field50', 'id' => 'stars', 'min' => 0))."</td><td>".$form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage'))."</td></tr>";
-	$stars .= "<tr><td><small>{$lang->stars}</small></td><td><small>{$lang->star_image}</small></td></tr></table>";
+	$stars = "<table cellpadding=\"3\"><tr><td>".$form->generate_numeric_field('stars', $mybb->input['stars'], array('class' => 'field50', 'id' => 'stars', 'min' => 0))."</td><td>".$form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage'))."</td><td>".$form->generate_text_box('rank_icon', $mybb->input['rank_icon'], array('id' => 'rank_icon'))."</td></tr>";
+	$stars .= "<tr><td><small>{$lang->stars}</small></td><td><small>{$lang->star_image}</small></td><td><small>{$lang->rank_icon}</small></td></tr></table>";
 	$form_container->output_row($lang->user_stars, $lang->user_stars_desc, $stars, "stars");
 
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
