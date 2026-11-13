@@ -66,8 +66,8 @@ if($mybb->input['action'] == "add")
 				"title" => $db->escape_string($mybb->input['title']),
 				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage']),
-				"rank_icon" => $db->escape_string($mybb->input['rank_icon'])
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon'))
 			);
 
 			$utid = $db->insert_query("usertitles", $new_title);
@@ -164,8 +164,8 @@ if($mybb->input['action'] == "edit")
 				"title" => $db->escape_string($mybb->input['title']),
 				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage']),
-				"rank_icon" => $db->escape_string($mybb->input['rank_icon'])
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon'))
 			);
 
 			$plugins->run_hooks("admin_user_titles_edit_commit");

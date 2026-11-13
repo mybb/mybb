@@ -714,8 +714,8 @@ if($mybb->input['action'] == "add")
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage']),
-				"rank_icon" => $db->escape_string($mybb->input['rank_icon']),
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon')),
 				"disporder" => 0
 			);
 
@@ -903,8 +903,8 @@ if($mybb->input['action'] == "edit")
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
 				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
-				"starimage" => $db->escape_string($mybb->input['starimage']),
-				"rank_icon" => $db->escape_string($mybb->input['rank_icon']),
+				"starimage" => $db->escape_string($mybb->get_input('starimage')),
+				"rank_icon" => $db->escape_string($mybb->get_input('rank_icon')),
 				"image" => $db->escape_string($mybb->input['image']),
 				"isbannedgroup" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT),
 				"canview" => $mybb->get_input('canview', MyBB::INPUT_INT),
