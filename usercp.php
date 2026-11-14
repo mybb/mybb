@@ -430,8 +430,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"pmnotify" => $mybb->get_input('pmnotify', MyBB::INPUT_INT),
 		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', MyBB::INPUT_INT),
 		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', MyBB::INPUT_INT),
-		"showredirect" => $mybb->get_input('showredirect', MyBB::INPUT_INT),
-		"classicpostbit" => $mybb->get_input('classicpostbit', MyBB::INPUT_INT)
+		"showredirect" => $mybb->get_input('showredirect', MyBB::INPUT_INT)
 	);
 
 	if($mybb->usergroup['canbeinvisible'] == 1)

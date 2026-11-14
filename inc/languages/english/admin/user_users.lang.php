@@ -213,7 +213,6 @@ $l['show_all_threads'] = "Show all threads";
 $l['threads_per_page'] = "Threads Per Page";
 $l['default_thread_age_view'] = "Default Thread Age View";
 $l['forum_display_options'] = "Forum Display Options";
-$l['show_classic_postbit'] = "Display posts in classic mode";
 $l['display_images'] = "Display images in posts";
 $l['display_videos'] = "Display videos in posts";
 $l['display_users_sigs'] = "Display users' signatures in their posts";
