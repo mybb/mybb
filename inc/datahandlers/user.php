@@ -678,15 +678,6 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'buddyrequestspm', 1);
 		$this->verify_yesno_option($options, 'buddyrequestsauto', 0);
 
-		if($mybb->settings['postlayout'] == 'classic')
-		{
-			$this->verify_yesno_option($options, 'classicpostbit', 1);
-		}
-		else
-		{
-			$this->verify_yesno_option($options, 'classicpostbit', 0);
-		}
-
 		if(array_key_exists('subscriptionmethod', $options))
 		{
 			// Value out of range
@@ -1236,7 +1227,6 @@ class UserDataHandler extends DataHandler
 			"suspendposting" => 0,
 			"suspensiontime" => 0,
 			"coppauser" => (int)$user['coppa_user'],
-			"classicpostbit" => (int)$user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
 
