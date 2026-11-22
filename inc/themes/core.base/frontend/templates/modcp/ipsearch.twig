@@ -29,7 +29,7 @@
         <section class="block">
            <h1 class="title title--major">
                {% if ipsearch.ipaddress %}
-                    {{ trans('ipsearch_results', ipsearch.ipaddress) }}
+                    {{ trans('ipsearch_results', ipsearch.ipaddress|escape) }}
                 {% else %}
                     {{ lang.ipsearch }}
                 {% endif %}
