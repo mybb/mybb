@@ -1,7 +1,7 @@
 <div class="modal">
     <div style="overflow-y: auto; max-height: 400px;">
         <section class="block block--modal">
-            <h1 class="title title--modal">{{ trans('ipaddress_misc_info', ipaddress.ipaddress) }}</h1>
+            <h1 class="title title--modal">{{ trans('ipaddress_misc_info', ipaddress.ipaddress|escape) }}</h1>
             <div class="block__content">
                 <ul class="list list--divided list--stats">
                     <li class="list__item">

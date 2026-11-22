@@ -12,7 +12,7 @@
 
 {% block moderationBody %}
     <section class="block">
-        <h1 class="title title--major">{{ trans('ipaddress_misc_info', ipaddress.ipaddress) }}</h1>
+        <h1 class="title title--major">{{ trans('ipaddress_misc_info', ipaddress.ipaddress|escape) }}</h1>
         <div class="block__body">
             <ul class="list list--divided list--stats">
                 <li class="list__item">
