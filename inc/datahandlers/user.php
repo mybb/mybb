@@ -716,6 +716,15 @@ class UserDataHandler extends DataHandler
 			}
 		}
 
+		if(array_key_exists('sourceeditor', $options))
+		{
+			$options['sourceeditor'] = (int)$options['sourceeditor'];
+			if($options['sourceeditor'] < 0 || $options['sourceeditor'] > 2)
+			{
+				$options['sourceeditor'] = 0;
+			}
+		}
+
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded" && $options['threadmode'] != ''))
 		{
 			$options['threadmode'] = '';
