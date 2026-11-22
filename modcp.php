@@ -494,7 +494,7 @@ if($mybb->input['action'] == "reports")
 				$report_data['post'] = get_post_link($report['id'])."#pid{$report['id']}";
 				$report_data['user'] = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
 				$report_data['thread_link'] = get_thread_link($postcache[$report['id']]['tid']);
-				$report_data['thread_subject'] = $parser->parse_badwords($postcache[$report['id']]['subject']);
+				$report_data['thread_subject'] = htmlspecialchars_uni($parser->parse_badwords($postcache[$report['id']]['subject']));
 				break;
 			case 'profile':
 				$report_data['profile_user'] = build_profile_link($usercache[$report['id']]['username'], $usercache[$report['id']]['uid']);
@@ -680,7 +680,7 @@ if($mybb->input['action'] == "allreports")
 			$report_data['post'] = get_post_link($report['id'])."#pid{$report['id']}";
 			$report_data['user'] = build_profile_link($report['postusername'], $report['postuid']);
 			$report_data['thread_link'] = get_thread_link($report['id2']);
-			$report_data['thread_subject'] = $parser->parse_badwords($report['threadsubject']);
+			$report_data['thread_subject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 		}
 		elseif($report['type'] == 'profile')
 		{

@@ -937,7 +937,7 @@ if(!$mybb->input['action'])
 			{
 				$reputation_vote['postrep_perm'] = true;
 				$thread_link = get_thread_link($post_reputation[$reputation_vote['pid']]['tid']);
-				$subject = $parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']);
+				$subject = htmlspecialchars_uni($parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']));
 
 				$reputation_vote['thread_link'] = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
 				$reputation_vote['post_link'] = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
