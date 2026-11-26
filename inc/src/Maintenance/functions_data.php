@@ -879,8 +879,8 @@ function syncSettings(bool $restoreValuesFromCache = false): void
                 'settings',
                 [
                     'value' => $db->escape_string($val),
-                    "name='" . $db->escape_string($key) . "'",
                 ],
+                "name='" . $db->escape_string($key) . "'",
             );
         }
     }
