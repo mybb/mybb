@@ -54,7 +54,7 @@ if($report_info['type'] == 'post')
 
 	if(!$post)
 	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+		$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 	}
 	else
 	{
@@ -68,7 +68,7 @@ if($report_info['type'] == 'post')
 
 		if(!$forum)
 		{
-			$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+			$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 		}
 		else
 		{
@@ -88,7 +88,7 @@ else if($report_info['type'] == 'profile')
 
 	if(!$user)
 	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+		$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 	}
 	else
 	{
@@ -106,7 +106,7 @@ else if($report_info['type'] == 'reputation')
 
 	if(!$db->num_rows($query))
 	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+		$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 	}
 	else
 	{
@@ -125,7 +125,7 @@ $plugins->run_hooks("report_type");
 $permissions = user_permissions($checkid);
 if(empty($permissions['canbereported']))
 {
-	$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+	$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 }
 
 // Check for an existing report
@@ -193,7 +193,7 @@ if(empty($error) &&
 
 		if(!$db->num_rows($query))
 		{
-			$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+			$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 			$verified = false;
 		}
 		else
@@ -250,7 +250,7 @@ if(!empty($error) ||
 	if($verified == false &&
 		empty($error))
 	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
+		$error = $lang->sprintf($lang->error_invalid_report, htmlspecialchars_uni($report_info['type']));
 	}
 }
 
