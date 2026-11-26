@@ -588,6 +588,10 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
             $identifier = trim(strip_tags((string)$alt));
         }
 
+        if (my_strpos($url, '://') !== false && !$this->mybb->settings['allowremoteavatars']) {
+            $url = '';
+        }
+
         if (empty($url)) {
             return $twig->render('partials/default_avatar.twig', [
                 'class' => $class,
