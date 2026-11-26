@@ -2024,7 +2024,7 @@ if($mybb->input['action'] == "viewnotes")
 	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $user['username']);
 
-	$user['usernotes'] = nl2br($user['usernotes']);
+	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
 
 	$plugins->run_hooks('member_viewnotes');
 
