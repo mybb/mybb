@@ -75,7 +75,8 @@ $l['mod_cp'] = "Moderator CP";
 $l['stars'] = "# of Stars";
 $l['star_image'] = "Star Image";
 $l['user_stars'] = "User Stars";
-$l['user_stars_desc'] = "If you enter a number of stars and the location of a star image, this star image will be shown for this particular user group. If you want to use different star images for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme. The number of stars only takes effect if Default User Title is not blank.";
+$l['user_stars_desc'] = "Enter a number of stars and either a star image or a rank icon. The rank icon takes precedence when both are set. Use <strong>{theme}</strong> in the image path to represent each theme's image directory. The number of stars only takes effect if Default User Title is not blank.";
+$l['rank_icon'] = "Rank Icon";
 $l['group_image'] = "Group Image";
 $l['group_image_desc'] = "Here you can set a group image which will show on each post made by users in this group. Please use <strong>{lang}</strong> to represent the user's chosen language if translated group images are available";
 $l['general_options'] = "General Options";
@@ -205,6 +206,7 @@ $l['error_invalid_group_leader'] = "You specified an invalid group leader.";
 $l['error_missing_namestyle_username'] = "The username style must contain {username}";
 $l['error_disallowed_namestyle_username'] = "You can't use script, meta or base tags in the username style.";
 $l['error_disallowed_starimage_path'] = "You can't use script, meta or base tags in the star image path.";
+$l['error_invalid_rank_icon'] = "You did not enter a valid rank icon name.";
 $l['error_default_group_delete'] = "Default groups cannot be deleted";
 $l['error_cannot_have_both_types'] = "You cannot have a joinable group that is both moderated and invite only. Please choose one or the other.";
 

@@ -779,6 +779,7 @@ if($mybb->input['action'] == "send")
 			'usertitle' => 'groupusertitle',
 			'stars' => 'groupstars',
 			'starimage' => 'groupstarimage',
+			'rank_icon' => 'grouprankicon',
 			'image' => 'groupimage',
 			'namestyle' => 'namestyle',
 			'usereputationsystem' => 'usereputationsystem'
@@ -1040,6 +1041,7 @@ if($mybb->input['action'] == "read")
 		'usertitle' => 'groupusertitle',
 		'stars' => 'groupstars',
 		'starimage' => 'groupstarimage',
+		'rank_icon' => 'grouprankicon',
 		'image' => 'groupimage',
 		'namestyle' => 'namestyle'
 	);

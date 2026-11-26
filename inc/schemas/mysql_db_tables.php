@@ -979,6 +979,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   usertitle varchar(120) NOT NULL default '',
   stars smallint(4) unsigned NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
+  rank_icon varchar(120) NOT NULL default '',
   image varchar(120) NOT NULL default '',
   disporder smallint(6) unsigned NOT NULL,
   isbannedgroup tinyint(1) NOT NULL default '0',
@@ -1167,6 +1168,7 @@ $tables[] = "CREATE TABLE mybb_usertitles (
   title varchar(250) NOT NULL default '',
   stars smallint(4) unsigned NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
+  rank_icon varchar(120) NOT NULL default '',
   PRIMARY KEY (utid)
 ) ENGINE=InnoDB;";
 

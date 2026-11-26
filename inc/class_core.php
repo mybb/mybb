@@ -586,7 +586,7 @@ class MyBB {
  * Do this here because the core is used on every MyBB page
  */
 
-$grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 $groupzerogreater = array(
 	'maxposts',
 	'attachquota',
@@ -622,7 +622,7 @@ $grouppermbyswitch = array(
 	'emailfloodtime' => 'cansendemail',
 );
 
-$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.
 $fpermfields = array(

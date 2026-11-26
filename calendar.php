@@ -1596,7 +1596,7 @@ if($mybb->input['action'] == "event")
 	{
 		$user_usergroup = usergroup_permissions(1);
 	}
-	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 	if(!$event['displaygroup'])
 	{
 		$event['displaygroup'] = $event['usergroup'];
@@ -1633,6 +1633,7 @@ if($mybb->input['action'] == "event")
 					$event['usertitle'] = $title['title'];
 					$event['stars'] = $title['stars'];
 					$event['starimage'] = $title['starimage'];
+					$event['rank_icon'] = $title['rank_icon'] ?? '';
 					break;
 				}
 			}
@@ -1643,9 +1644,10 @@ if($mybb->input['action'] == "event")
 			$event['stars'] = $user_usergroup['stars'];
 		}
 
-		if(empty($event['starimage']))
+		if(empty($event['starimage']) && empty($event['rank_icon']))
 		{
 			$event['starimage'] = $user_usergroup['starimage'];
+			$event['rank_icon'] = $user_usergroup['rank_icon'] ?? '';
 		}
 		$event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
 	}
@@ -1932,7 +1934,7 @@ if($mybb->input['action'] == "dayview")
 			{
 				$user_usergroup = usergroup_permissions(1);
 			}
-			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 			if(!$event['displaygroup'])
 			{
 				$event['displaygroup'] = $event['usergroup'];
@@ -1968,6 +1970,7 @@ if($mybb->input['action'] == "dayview")
 							$event['usertitle'] = $title['title'];
 							$event['stars'] = $title['stars'];
 							$event['starimage'] = $title['starimage'];
+							$event['rank_icon'] = $title['rank_icon'] ?? '';
 							break;
 						}
 					}
@@ -1978,9 +1981,10 @@ if($mybb->input['action'] == "dayview")
 					$event['stars'] = $user_usergroup['stars'];
 				}
 
-				if(empty($event['starimage']))
+				if(empty($event['starimage']) && empty($event['rank_icon']))
 				{
 					$event['starimage'] = $user_usergroup['starimage'];
+					$event['rank_icon'] = $user_usergroup['rank_icon'] ?? '';
 				}
 			}
 			else

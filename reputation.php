@@ -42,7 +42,7 @@ if(!$user)
 $user_permissions = user_permissions($uid);
 
 // Fetch display group properties.
-$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 
 if(!$user['displaygroup'])
 {

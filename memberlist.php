@@ -322,7 +322,7 @@ else
 			$usergroup = usergroup_permissions(1);
 		}
 
-		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 		if(!$user['displaygroup'])
 		{
 			$user['displaygroup'] = $user['usergroup'];
@@ -394,6 +394,7 @@ else
 					}
 					$user['stars'] = $titleinfo['stars'];
 					$user['starimage'] = $titleinfo['starimage'];
+					$user['rank_icon'] = $titleinfo['rank_icon'] ?? '';
 					break;
 				}
 			}
@@ -404,9 +405,10 @@ else
 			$user['stars'] = $usergroup['stars'];
 		}
 
-		if(empty($user['starimage']))
+		if(empty($user['starimage']) && empty($user['rank_icon']))
 		{
 			$user['starimage'] = $usergroup['starimage'];
+			$user['rank_icon'] = $usergroup['rank_icon'] ?? '';
 		}
 
 		$user['userstars'] = '';

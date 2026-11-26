@@ -223,7 +223,7 @@ function build_postbit($post, $post_type=0)
 		$usergroup = usergroup_permissions(1);
 	}
 	// Fetch display group data.
-	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "rank_icon", "image");
 
 	if(empty($post['displaygroup']))
 	{
@@ -324,6 +324,7 @@ function build_postbit($post, $post_type=0)
 					}
 					$post['stars'] = $titleinfo['stars'];
 					$post['starimage'] = $titleinfo['starimage'];
+					$post['rank_icon'] = $titleinfo['rank_icon'] ?? '';
 					break;
 				}
 			}
@@ -336,9 +337,10 @@ function build_postbit($post, $post_type=0)
 			$post['stars'] = $usergroup['stars'];
 		}
 
-		if(empty($post['starimage']))
+		if(empty($post['starimage']) && empty($post['rank_icon']))
 		{
 			$post['starimage'] = $usergroup['starimage'];
+			$post['rank_icon'] = $usergroup['rank_icon'] ?? '';
 		}
 
 		if($post['starimage'] && isset($post['stars']))
