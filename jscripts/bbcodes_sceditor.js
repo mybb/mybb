@@ -5,7 +5,7 @@ $(function ($) {
 		bold: 'fa-solid fa-bold',
 		bulletlist: 'fa-solid fa-list-ul',
 		center: 'fa-solid fa-align-center',
-		code: 'fa-solid fa-code',
+		code: 'fa-solid fa-file-code',
 		source: 'fa-solid fa-code',
 		color: 'fa-solid fa-palette',
 		copy: 'fa-solid fa-copy',
