@@ -45,15 +45,18 @@ function upgrade100_dbchanges()
         $db->drop_column("users", "skype");
     }
 
-    // Increase password column length to support longer password hashes
-    $db->modify_column("users", "password", "varchar(500)", "set", "''");
+    // SQLite does not enforce VARCHAR lengths, and VARCHAR and TEXT have the same affinity.
+    if ($db->type != 'sqlite') {
+        // Increase password column length to support longer password hashes
+        $db->modify_column("users", "password", "varchar(500)", "set", "''");
 
-    // Expand SMTP error storage (switch to TEXT to avoid truncation of long error messages)
-    $db->modify_column("mailerrors", "smtperror", "text", "set", false);
+        // Expand SMTP error storage (switch to TEXT to avoid truncation of long error messages)
+        $db->modify_column("mailerrors", "smtperror", "text", "set", false);
 
-    // Increase 2FA secret storage to accommodate Base32-encoded authenticator secrets
-    if ($db->field_exists("authsecret", "adminoptions")) {
-        $db->modify_column("adminoptions", "authsecret", "varchar(64)", "set", "''");
+        // Increase 2FA secret storage to accommodate Base32-encoded authenticator secrets
+        if ($db->field_exists("authsecret", "adminoptions")) {
+            $db->modify_column("adminoptions", "authsecret", "varchar(64)", "set", "''");
+        }
     }
 
     // Introduce theme packages.
