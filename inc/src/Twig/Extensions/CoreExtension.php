@@ -68,6 +68,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
                 'needs_environment' => true,
                 'is_safe' => ['html'],
             ]),
+            new TwigFilter('my_friendly_size', 'get_friendly_size'),
             new TwigFilter('my_number_format', [$this, 'numberFormat']),
             new TwigFilter('remove_page_one', [$this, 'removePageOne']),
         ];
