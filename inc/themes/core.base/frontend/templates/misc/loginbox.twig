@@ -1,4 +1,4 @@
 <div class="row row--form field">
     <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
-    <input type="text" class="textbox" name="username" id="username" size="30" value="{% if mybb.input.previewpost and mybb.input.action not in ["do_newreply", "do_newthread"] %}{% else %}{{ mybb.input.username }}{% endif %}" />
+    <input type="text" class="textbox" name="username" id="username" size="30" value="{% if mybb.input.previewpost and mybb.input.action not in ["do_newreply", "do_newthread", "newreply", "newthread"] %}{% else %}{{ mybb.input.username }}{% endif %}"{% if username_required|default(false) %} required tabindex="1"{% endif %} />
 </div>

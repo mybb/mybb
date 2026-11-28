@@ -150,7 +150,9 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
-	$loginbox = \MyBB\View\template('misc/loginbox.twig');
+	$loginbox = \MyBB\View\template('misc/loginbox.twig', [
+		'username_required' => ($mybb->settings['guestusernamemode'] ?? 'optional') == 'required',
+	]);
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
