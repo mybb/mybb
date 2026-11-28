@@ -162,7 +162,6 @@ $l['thread_mode'] = "Thread View Mode";
 $l['thread_mode_desc'] = "The style of threads shown to you. Selecting 'Use Default' will use the boards default mode.";
 $l['threaded'] = "Threaded";
 $l['linear'] = "Linear";
-$l['show_classic_postbit'] = "Display posts in classic mode.";
 $l['show_images'] = "Display images in posts.";
 $l['show_videos'] = "Display videos in posts.";
 $l['show_sigs'] = "Display users' signatures in their posts.";

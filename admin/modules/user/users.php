@@ -578,7 +578,6 @@ if($mybb->input['action'] == "edit")
 			"showtimespentonline" => $mybb->get_input('showtimespentonline'),
 			"dstcorrection" => $mybb->get_input('dstcorrection'),
 			"threadmode" => $mybb->get_input('threadmode'),
-			"classicpostbit" => $mybb->get_input('classicpostbit'),
 			"showimages" => $mybb->get_input('showimages'),
 			"showvideos" => $mybb->get_input('showvideos'),
 			"showsigs" => $mybb->get_input('showsigs'),
@@ -1432,7 +1431,6 @@ EOF;
 	}
 
 	$thread_options = array(
-		$form->generate_check_box("classicpostbit", 1, $lang->show_classic_postbit, array("checked" => $mybb->get_input('classicpostbit'))),
 		$form->generate_check_box("showimages", 1, $lang->display_images, array("checked" => $mybb->get_input('showimages'))),
 		$form->generate_check_box("showvideos", 1, $lang->display_videos, array("checked" => $mybb->get_input('showvideos'))),
 		$form->generate_check_box("showsigs", 1, $lang->display_users_sigs, array("checked" => $mybb->get_input('showsigs'))),

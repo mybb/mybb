@@ -245,16 +245,6 @@ class session
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
 
-		// Does this user prefer posts in classic mode?
-		if($mybb->user['classicpostbit'])
-		{
-			$mybb->settings['postlayout'] = 'classic';
-		}
-		else
-		{
-			$mybb->settings['postlayout'] = 'horizontal';
-		}
-
 		$usergroups = $cache->read('usergroups');
 
 		if(!empty($usergroups[$mybb->user['usergroup']]) && $usergroups[$mybb->user['usergroup']]['isbannedgroup'] == 1)

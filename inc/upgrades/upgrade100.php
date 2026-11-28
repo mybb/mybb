@@ -45,6 +45,11 @@ function upgrade100_dbchanges()
         $db->drop_column("users", "skype");
     }
 
+    // Drop obsolete classic post layout preference
+    if ($db->field_exists("classicpostbit", "users")) {
+        $db->drop_column("users", "classicpostbit");
+    }
+
     // Increase password column length to support longer password hashes
     $db->modify_column("users", "password", "varchar(500)", "set", "''");
 
@@ -400,6 +405,7 @@ function upgrade100_dbchanges()
     $db->delete_query("settings", "name='mail_parameters'");
     $db->delete_query("settings", "name='smilieinsertercols'");
     $db->delete_query("settings", "name='portal_showsearch'");
+    $db->delete_query("settings", "name='postlayout'");
 
     // Remove deprecated profile fields
     $db->delete_query("profilefields", "name='Skype'");
