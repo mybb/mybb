@@ -6,6 +6,9 @@ use Generator;
 use MyBB\Tests\Traits\LegacyCoreAwareTest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
+use Twig\Environment;
+
+use function MyBB\app;
 
 class ParserTest extends TestCase
 {
@@ -40,6 +43,50 @@ class ParserTest extends TestCase
         ]);
 
         $this->parser = new \postParser();
+    }
+
+    public function testParseImageMyCodeWithTemplates(): void
+    {
+        $originalTemplates = app()->resolved(Environment::class) ? app(Environment::class) : null;
+        $templates = $this->createMock(Environment::class);
+        $templates->expects($this->once())
+            ->method('render')
+            ->with('@parser/mycodes/img.twig', $this->anything())
+            ->willReturn('Rendered image');
+
+        app()->instance(Environment::class, $templates);
+        try {
+            $result = $this->parser->mycode_parse_img('https://example.com/image.png');
+            $this->assertSame('Rendered image', $result);
+        } finally {
+            if ($originalTemplates !== null) {
+                app()->instance(Environment::class, $originalTemplates);
+            } else {
+                app()->forgetInstance(Environment::class);
+            }
+        }
+    }
+
+    public function testParseQuoteMyCodeWithTemplates(): void
+    {
+        $originalTemplates = app()->resolved(Environment::class) ? app(Environment::class) : null;
+        $templates = $this->createMock(Environment::class);
+        $templates->expects($this->once())
+            ->method('render')
+            ->with('@parser/mycodes/quote_simple.twig', [])
+            ->willReturn('Rendered quote: $1');
+
+        app()->instance(Environment::class, $templates);
+        try {
+            $result = $this->parser->mycode_parse_quotes('[quote]Quoted text[/quote]');
+            $this->assertSame('Rendered quote: Quoted text', $result);
+        } finally {
+            if ($originalTemplates !== null) {
+                app()->instance(Environment::class, $originalTemplates);
+            } else {
+                app()->forgetInstance(Environment::class);
+            }
+        }
     }
 
     public function testParseBoldMyCode()
