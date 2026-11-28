@@ -3,9 +3,13 @@
     <div class="section__container">
         <div class="row row--form field">
             <div class="option-field">
-                <input type="checkbox" class="checkbox" name="postpoll" id="postpoll" value="1" {% if editpost.postpollchecked %} checked="checked"{% endif %} />
+                <input type="checkbox" class="checkbox" name="postpoll" id="postpoll"
+                       value="1" {% if newthread.postpollchecked or editpost.postpollchecked %} checked="checked"{% endif %} />
                 <h3 class="option-field__name"><label for="postpoll">{{ lang.poll_check }}</label></h3>
-                {{ lang.num_options }} <input type="text" class="textbox textbox--small" name="numpolloptions" value="{{ composepost.numpolloptions }}" size="10" /> {{ trans('max_options', mybb.settings.maxpolloptions) }}
+                {{ lang.num_options }} <input type="text" class="textbox textbox--small" name="numpolloptions"
+                                              value="{{ composepost.numpolloptions }}"
+                                              size="10"/> {{ trans('max_options', mybb.settings.maxpolloptions) }}
+            </div>
         </div>
     </div>
 </section>

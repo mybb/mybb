@@ -1,6 +1,16 @@
 <div class="row row--simple-columns draft">
     <div class="row__primary">
-        <h3 class="draft__subject"><a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a></h3>
+        <h3 class="draft__subject">
+            <a href="{{ draft.editurl|raw }}">{{ draft.subject }}</a>
+            {# Poll #}
+            {% if draft.poll and draft.canmanagepolls %}
+                <a href="{{ url('polls.php', { 'action': 'editpoll', 'pid': draft.poll}) }}">
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon thread__icon--poll fa-fw', title: lang.draft_has_poll}, with_context = false) }}
+                </a>
+            {% elseif draft.poll %}
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon thread__icon--poll fa-fw', title: lang.draft_has_poll}, with_context = false) }}
+            {% endif %}
+        </h3>
         <p class="draft__location">
             {% if draft.type == 'post' %}
                 {{ lang.thread }}: <a href="{{ get_thread_link(draft.tid) }}">{{ draft.threadsubject }}</a>
@@ -19,6 +29,7 @@
         </a>
     </div>
     <div class="row__checkbox">
-        <input type="checkbox" class="checkbox checkbox--select-row" name="deletedraft[{{ draft.id }}]" value="{{ draft.type }}" />
+        <input type="checkbox" class="checkbox checkbox--select-row" name="deletedraft[{{ draft.id }}]"
+               value="{{ draft.type }}"/>
     </div>
 </div>
