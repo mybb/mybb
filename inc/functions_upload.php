@@ -840,79 +840,104 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 }
 
 /**
- * Delete an uploaded file both from the relative path and the CDN path if a CDN is in use.
+ * Delete an uploaded file both from the provided absolute path
+ * as well as from the associated CDN path if a CDN is in use.
  *
- * @param string $path The relative path to the uploaded file.
+ * @param string $abs_path The absolute path to the uploaded file.
+ *                         Must resolve to a directory under MYBB_ROOT.
  *
  * @return bool Whether the file was deleted successfully.
  */
-function delete_uploaded_file($path = '')
+function delete_uploaded_file($abs_path)
 {
 	global $mybb, $plugins;
 
 	$deleted = false;
 
-	$deleted = @unlink($path);
-
-	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
-	$path = ltrim($path, '/');
-	$cdn_path = realpath($cdn_base_path . '/' . $path);
-
-	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
+	$realpath = realpath($abs_path);
+	if (substr($realpath, 0, strlen(MYBB_ROOT)) !== MYBB_ROOT || $realpath === realpath(MYBB_ROOT.'install/lock'))
 	{
-		$deleted = $deleted && @unlink($cdn_path);
+		return false;
 	}
+	else
+	{
+		$deleted = @unlink($realpath);
 
-	$hook_params = array(
-		'path' => &$path,
-		'deleted' => &$deleted,
-	);
+		$rel_path = substr($realpath, strlen(MYBB_ROOT));
 
-	$plugins->run_hooks('delete_uploaded_file', $hook_params);
+		if (!empty($mybb->settings['usecdn']))
+		{
+			$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+			if (!empty($cdn_base_path))
+			{
+				$cdn_path = realpath("{$cdn_base_path}/{$rel_path}");
+				$deleted = $deleted && @unlink($cdn_path);
+			}
+		}
 
-	return $deleted;
+		$hook_params = array(
+			'path' => &$rel_path,
+			'deleted' => &$deleted,
+		);
+
+		$plugins->run_hooks('delete_uploaded_file', $hook_params);
+
+		// Earlier return possible
+		return $deleted;
+	}
 }
 
 /**
  * Delete an upload directory on both the local filesystem and the CDN filesystem.
  *
- * @param string $path The directory to delete.
+ * @param string $abs_path The absolute path to the directory to delete.
  *
  * @return bool Whether the directory was deleted.
  */
-function delete_upload_directory($path = '')
+function delete_upload_directory($abs_path) 
 {
 	global $mybb, $plugins;
 
 	$deleted = false;
 
-	$deleted_index = @unlink(rtrim($path, '/').'/index.html');
-
-	$deleted = @rmdir($path);
-
-	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
-	$path = ltrim($path, '/');
-	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
-
-	if(!empty($mybb->settings['usecdn']) && !empty($cdn_base_path))
+	$realpath = realpath($abs_path);
+	if (substr($realpath, 0, strlen(MYBB_ROOT)) !== MYBB_ROOT)
 	{
-		$deleted = $deleted && @rmdir($cdn_path);
+		return false;
 	}
-
-	$hook_params = array(
-		'path' => &$path,
-		'deleted' => &$deleted,
-	);
-
-	$plugins->run_hooks('delete_upload_directory', $hook_params);
-
-	// If not successfully deleted then reinstante the index file
-	if(!$deleted && $deleted_index)
+	else
 	{
-		create_attachment_index($path);
-	}
+		$deleted_index = @unlink(rtrim($realpath, '/').'/index.html');
 
-	return $deleted;
+		$deleted = @rmdir($realpath);
+
+		$rel_path = substr($realpath, strlen(MYBB_ROOT));
+
+		if (!empty($mybb->settings['usecdn']))
+		{
+			$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+			if (!empty($cdn_base_path))
+			{
+				$cdn_path = realpath("{$cdn_base_path}/{$rel_path}");
+				$deleted = $deleted && @rmdir($cdn_path);
+			}
+		}
+
+		$hook_params = array(
+			'path' => &$rel_path,
+			'deleted' => &$deleted,
+		);
+
+		$plugins->run_hooks('delete_upload_directory', $hook_params);
+
+		// If not successfully deleted then reinstate the index file
+		if (!$deleted && $deleted_index)
+		{
+			create_attachment_index($realpath);
+		}
+
+		return $deleted;
+	}
 }
 
 /**
