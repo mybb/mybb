@@ -1,0 +1,15 @@
+{% extends 'layouts/moderation.twig' %}
+
+{% block head %}
+    <title>{{ lang.deleted_content }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.deleted_content }}</h1>
+    </header>
+{% endblock moderationHeader %}
+
+{% block moderationBody %}
+    <div class="container container--no-results no-results">{{ lang.deleted_content_empty }}</div>
+{% endblock moderationBody %}
