@@ -94,7 +94,21 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		});
 	}
 
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND SUBSTR(sid,4,1) != '=' AND time > $timesearch");
+	// Fetch spiders for both the guest count and the online list.
+	$spiders = $cache->read('spiders');
+
+	$guestcondition = "uid = 0 AND time > $timesearch AND (SUBSTR(sid,1,4) != 'bot='";
+	if($mybb->settings['woldisplayspiders'] > 0 && !empty($spiders))
+	{
+		$spidersessions = array();
+		foreach(array_keys($spiders) as $spiderid)
+		{
+			$spidersessions[] = "'bot=".(int)$spiderid."'";
+		}
+		$guestcondition .= " OR sid IN (".implode(',', $spidersessions).")";
+	}
+	$guestcondition .= ")";
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", $guestcondition);
 	$guestcount = $db->fetch_field($query, "guestcount");
 
 	$query = $db->query("
@@ -108,11 +122,8 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	");
 
 	$forum_viewers = $doneusers =  array();
-	$membercount = $guestcount = $anoncount = $botcount = 0;
+	$membercount = $anoncount = $botcount = 0;
 	$onlinemembers = $comma = '';
-
-	// Fetch spiders
-	$spiders = $cache->read('spiders');
 
 	// Loop through all users and spiders.
 	while($user = $db->fetch_array($query))
@@ -169,7 +180,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	// Build the who's online bit on the index page.
-	$onlinecount = $membercount + $guestcount + $botcount;
+	$onlinecount = $membercount + $guestcount;
 
 	if($onlinecount != 1)
 	{
