@@ -719,7 +719,7 @@ function delete_user_posts($uid, $date)
 		// Let's start deleting posts
 		$user_posts = implode(",", $postcache);
 		$query = $db->query("
-			SELECT p.pid, p.visible, f.usepostcounts, t.tid AS thread, t.firstpost, t.fid AS forum
+			SELECT p.pid, p.visible, f.usepostcounts, t.tid AS thread, t.firstpost, t.fid AS forum, t.visible AS threadvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -738,7 +738,7 @@ function delete_user_posts($uid, $date)
 		{
 			while($post = $db->fetch_array($query))
 			{
-				if($post['usepostcounts'] != 0 && $post['visible'] == 1)
+				if($post['usepostcounts'] != 0 && $post['visible'] == 1 && $post['threadvisible'] != 0 && $post['threadvisible'] != -1)
 				{
 					++$post_count;
 				}
@@ -760,7 +760,7 @@ function delete_user_posts($uid, $date)
 				// Remove the attachments to this post, then delete the post
 				remove_attachments($post['pid']);
 				$db->delete_query("posts", "pid = '".$post['pid']."'");
-				$db->delete_query("pollvotes", "pid = '".$post['pid']."'"); // Delete pollvotes attached to this post
+				$db->delete_query("reportedcontent", "id='{$post['pid']}' AND (type = 'post' OR type = '')");
 			}
 
 			$db->update_query("users", array("postnum" => "postnum-".$post_count.""), "uid='".$uid."'", 1, true);
