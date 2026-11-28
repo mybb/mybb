@@ -408,12 +408,12 @@ if($mybb->input['action'] == "add")
 
 	if ($mybb->settings['announcementshtml'])
 	{
-		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], true, array('style' => 'width: 2em;')));
 	}
 
-	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], true, array('style' => 'width: 2em;')));
 
-	$form_container->output_row($lang->allow_smilies." <em>*</em>", "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->allow_smilies." <em>*</em>", "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies'], true, array('style' => 'width: 2em;')));
 
 	$form_container->end();
 
@@ -775,12 +775,12 @@ if($mybb->input['action'] == "edit")
 
 	if ($mybb->settings['announcementshtml'])
 	{
-		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], true, array('style' => 'width: 2em;')));
 	}
 
-	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], true, array('style' => 'width: 2em;')));
 
-	$form_container->output_row($lang->allow_smilies." <em>*</em>", "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->allow_smilies." <em>*</em>", "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies'], true, array('style' => 'width: 2em;')));
 
 	$form_container->end();
 

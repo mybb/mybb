@@ -539,7 +539,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
-	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], true, array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -581,7 +581,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->leave_redirect}</small></td>
-					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], array('style' => 'width: 2em;'))."</td>
+					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], true, array('style' => 'width: 2em;'))."</td>
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
@@ -621,12 +621,12 @@ if($mybb->input['action'] == "edit_thread_tool")
 	);
 
 	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
-	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], true, array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -1023,7 +1023,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
-	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], true, array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -1065,7 +1065,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->leave_redirect}</small></td>
-					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], array('style' => 'width: 2em;'))."</td>
+					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], true, array('style' => 'width: 2em;'))."</td>
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
@@ -1105,12 +1105,12 @@ if($mybb->input['action'] == "add_thread_tool")
 	);
 
 	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
-	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], true, array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], true, array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -1617,7 +1617,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
-	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], true, array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -2197,7 +2197,7 @@ if($mybb->input['action'] == "add_post_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
-	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], true, array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(

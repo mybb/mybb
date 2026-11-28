@@ -744,7 +744,7 @@ class DefaultForm
 	 *
 	 * @param string $name The name of the yes/no choice field.
 	 * @param string $value The value that should be checked.
-	 * @param boolean $int Using integers for the checkbox?
+	 * @param bool $int Using integers for the checkbox?
 	 * @param array $yes_options Array of options for the yes checkbox (@see generate_radio_button)
 	 * @param array $no_options Array of options for the no checkbox (@see generate_radio_button)
 	 * @return string The generated yes/no radio button.
