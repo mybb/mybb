@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block moderationBody %}
+    {{ errors|raw }}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">

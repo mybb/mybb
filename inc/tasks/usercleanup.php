@@ -55,6 +55,12 @@ function task_usercleanup($task)
 		}
 	}
 
+	// Expire any temporary avatar suspensions
+	$db->update_query("users", array(
+		"suspendavatar" => 0,
+		"suspendavatartime" => 0,
+	), "suspendavatar != 0 AND suspendavatartime != 0 AND suspendavatartime <= ".TIME_NOW);
+
 	// Expire bans
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$query = $db->simple_select("banned", "*", "lifted!=0 AND lifted<".TIME_NOW);

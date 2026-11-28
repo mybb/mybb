@@ -618,39 +618,16 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			// Are we removing an avatar from this user?
-			if($mybb->get_input('remove_avatar'))
+			if($mybb->get_input('remove_avatar') && empty($_FILES['avatar_upload']['name']))
 			{
 				$extra_user_updates = array(
 					"avatar" => "",
 					"avatardimensions" => "",
 					"avatartype" => ""
 				);
-				remove_avatars($user['uid']);
-			}
-
-			// Are we uploading a new avatar?
-			if($_FILES['avatar_upload']['name'])
-			{
-				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
-				if($avatar['error'])
-				{
-					$errors = array($avatar['error']);
-				}
-				else
-				{
-					if($avatar['width'] > 0 && $avatar['height'] > 0)
-					{
-						$avatar_dimensions = $avatar['width']."|".$avatar['height'];
-					}
-					$extra_user_updates = array(
-						"avatar" => $avatar['avatar'].'?dateline='.TIME_NOW,
-						"avatardimensions" => $avatar_dimensions,
-						"avatartype" => "upload"
-					);
-				}
 			}
 			// Are we setting a new avatar from a URL?
-			else if(!empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
+			else if(empty($_FILES['avatar_upload']['name']) && !empty($mybb->input['avatar_url']) && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				if(!$mybb->settings['allowremoteavatars'])
 				{
@@ -738,7 +715,6 @@ if($mybb->input['action'] == "edit")
 								"avatardimensions" => $avatar_dimensions,
 								"avatartype" => "remote"
 							);
-							remove_avatars($user['uid']);
 						}
 						else
 						{
@@ -790,6 +766,31 @@ if($mybb->input['action'] == "edit")
 			require_once MYBB_ROOT."inc/functions_warnings.php";
 			foreach($moderator_options as $option)
 			{
+				if($option['action'] === 'suspendavatar' && !empty($mybb->input[$option['action']]))
+				{
+					$suspend_time = trim($mybb->get_input($option['time']));
+					$suspend_period = $mybb->get_input($option['period']);
+					if($user['suspendavatar'] == 1 && preg_match('/^0*$/D', $suspend_time) && in_array($suspend_period, array('', 'hours', 'days', 'weeks', 'months'), true))
+					{
+						continue;
+					}
+
+					$suspend_length = fetch_avatar_suspension_length($suspend_time, $suspend_period);
+					if($suspend_length === 0)
+					{
+						$errors[] = $lang->suspendavatar_error;
+					}
+					else
+					{
+						$extra_user_updates['suspendavatar'] = 1;
+						$extra_user_updates['suspendavatartime'] = $suspend_length === -1 ? 0 : TIME_NOW + $suspend_length;
+						$extra_user_updates['avatar'] = '';
+						$extra_user_updates['avatardimensions'] = '';
+						$extra_user_updates['avatartype'] = '';
+					}
+					continue;
+				}
+
 				if(empty($mybb->input[$option['action']]))
 				{
 					if($user[$option['update_field']] == 1)
@@ -841,14 +842,6 @@ if($mybb->input['action'] == "edit")
 								$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 							}
 						}
-						// If suspending the avatar privilege, remove existing avatar
-						if($option['action'] === "suspendavatar")
-						{
-							$extra_user_updates["avatar"] = "";
-							$extra_user_updates["avatardimensions"] = "";
-							$extra_user_updates["avatartype"] = "";
-							remove_avatars($user["uid"]);
-						}
 					}
 				}
 			}
@@ -863,6 +856,28 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_acp_return_date_past;
 			}
 
+			// Are we uploading a new avatar?
+			if(!$errors && !empty($_FILES['avatar_upload']['name']))
+			{
+				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
+				if(!empty($avatar['error']))
+				{
+					$errors = array($avatar['error']);
+				}
+				else
+				{
+					if($avatar['width'] > 0 && $avatar['height'] > 0)
+					{
+						$avatar_dimensions = $avatar['width']."|".$avatar['height'];
+					}
+					$extra_user_updates = array_replace(array(
+						"avatar" => $avatar['avatar'].'?dateline='.TIME_NOW,
+						"avatardimensions" => $avatar_dimensions,
+						"avatartype" => "upload"
+					), $extra_user_updates ?? array());
+				}
+			}
+
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
@@ -872,6 +887,12 @@ if($mybb->input['action'] == "edit")
 				if(!empty($extra_user_updates))
 				{
 					$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
+
+					// Remove old avatar files only after all profile changes have been validated and saved.
+					if(isset($extra_user_updates['avatar']) && ($extra_user_updates['avatar'] === '' || in_array($extra_user_updates['avatartype'], array('remote', 'gravatar'), true)))
+					{
+						remove_avatars($user['uid']);
+					}
 				}
 
 				// if we're updating the user's signature preferences, do so now
