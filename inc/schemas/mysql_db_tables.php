@@ -135,6 +135,8 @@ $tables[] = "CREATE TABLE mybb_banfilters (
   type tinyint(1) NOT NULL default '0',
   lastuse int unsigned NOT NULL default '0',
   dateline int unsigned NOT NULL default '0',
+  notes text NULL,
+  expires int unsigned NOT NULL default '0',
   KEY (type),
   PRIMARY KEY (fid)
 ) ENGINE=InnoDB;";

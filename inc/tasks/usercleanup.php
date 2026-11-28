@@ -10,7 +10,7 @@
 
 function task_usercleanup($task)
 {
-	global $db, $lang, $plugins;
+	global $db, $lang, $plugins, $cache;
 
 	// Expire any old warnings
 	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
@@ -65,6 +65,13 @@ function task_usercleanup($task)
 		$userhandler->set_data($ban);
 
 		$userhandler->lift_ban();
+	}
+
+	// Remove expired IP bans and refresh the cache only when bans were removed.
+	$query = $db->delete_query("banfilters", "type=1 AND expires!=0 AND expires<=".TIME_NOW);
+	if($db->affected_rows($query))
+	{
+		$cache->update_bannedips();
 	}
 
 	if(is_object($plugins))
